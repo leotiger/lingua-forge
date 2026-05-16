@@ -160,25 +160,15 @@ document.addEventListener('click', async (event) => {
             }
         }
 
-        // ── Auto-save ─────────────────────────────────────────────────────────
-        // Trigger a native Gutenberg save so the DB reflects the translated
-        // content immediately.  This is needed because other features (e.g.
-        // Meta Description Generator) read post_content from the database —
-        // without saving here they would still see the pre-translation content.
-        button.textContent = __( 'Saving…', 'lingua-forge' );
+        button.textContent = __( 'Applied ✓', 'lingua-forge' );
 
-        try {
-            await window.parent.wp.data
-                .dispatch('core/editor')
-                .savePost();
-
-            button.textContent = __( 'Saved ✓', 'lingua-forge' );
-
-        } catch (_saveErr) {
-            // Non-fatal: the editor content was applied; only the auto-save
-            // failed.  Show a degraded confirmation so the user knows.
-            button.textContent = __( 'Applied ✓ (auto-save failed)', 'lingua-forge' );
-        }
+        // Show a persistent hint reminding the user to save.
+        // We do NOT call savePost() here: with meta boxes present Gutenberg's
+        // save flow is a two-step (REST + hidden iframe POST for meta box values)
+        // that cannot be triggered reliably from the iframe context.
+        // The content is already in the editor store and will save correctly
+        // when the user clicks Update / Save in the Gutenberg toolbar.
+        showApplyHint(button, __( 'Save the post to persist changes.', 'lingua-forge' ));
 
         // Leave disabled — re-applying the same content is a no-op and confusing.
 
@@ -190,6 +180,29 @@ document.addEventListener('click', async (event) => {
         showApplyError(button, err.message || __( 'Apply failed — please try again.', 'lingua-forge' ));
     }
 });
+
+/**
+ * Show an inline hint beneath the Apply button's row (e.g. "click Update to save").
+ * Replaces any previous hint. Auto-removed after 6 seconds.
+ */
+function showApplyHint(button, message) {
+
+    const btnRow = button.closest('.lingua-forge-btn-row');
+    if (!btnRow) return;
+
+    let hint = btnRow.nextElementSibling?.classList.contains('lingua-forge-apply-hint')
+        ? btnRow.nextElementSibling
+        : null;
+
+    if (!hint) {
+        hint = document.createElement('span');
+        hint.className = 'lingua-forge-apply-hint';
+        btnRow.insertAdjacentElement('afterend', hint);
+    }
+
+    hint.textContent = message;
+    setTimeout(() => hint.remove(), 6000);
+}
 
 /**
  * Show an inline error message beneath the Apply button's row.
@@ -265,7 +278,7 @@ document.addEventListener('click', async (event) => {
 
 // ─── "Apply to Meta Description" button ──────────────────────────────────────
 
-document.addEventListener('click', async (event) => {
+document.addEventListener('click', (event) => {
 
     const button = event.target.closest('.lingua-forge-apply-meta');
     if (!button) return;
@@ -281,47 +294,28 @@ document.addEventListener('click', async (event) => {
 
     button.disabled = true;
 
-    // ── Write to the meta box field (classic meta box / same iframe) ──────────
-    // Both the AI panel and the Meta Description meta box are rendered in the
-    // same meta box iframe by Gutenberg, so getElementById reaches it directly.
+    // ── Write to the meta box field (same iframe as AI panel) ────────────────
+    // Both meta boxes are rendered inside the Gutenberg meta box iframe, so
+    // getElementById reaches lf_meta_description_field directly.
     const metaField = document.getElementById('lf_meta_description_field');
     if (metaField) {
         metaField.value = value;
-        // Trigger the character-counter script that listens for 'input'.
-        metaField.dispatchEvent(new Event('input'));
+        metaField.dispatchEvent(new Event('input')); // triggers character counter
     }
 
     // ── Write to the Gutenberg editor store ───────────────────────────────────
-    // meta_description is registered with show_in_rest: true, so the block
-    // editor tracks it.  Dispatching here ensures the value is included in
-    // the next save cycle rather than being overwritten by Gutenberg flushing
-    // stale meta on its own save.
+    // Keeps the value in sync so the block editor doesn't overwrite it with
+    // the stale DB value when the user clicks Update.
     if (window.parent.wp?.data) {
-        await window.parent.wp.data
+        window.parent.wp.data
             .dispatch('core/editor')
             ?.editPost({ meta: { meta_description: value } });
     }
 
-    // ── Auto-save ─────────────────────────────────────────────────────────────
-    // Persist immediately so the stored meta description is up to date in the
-    // DB — consistent with "Apply to Editor" behaviour for translation.
-    button.textContent = __( 'Saving…', 'lingua-forge' );
+    // ── Feedback ──────────────────────────────────────────────────────────────
+    button.textContent = __( 'Applied ✓', 'lingua-forge' );
 
-    try {
-        if (window.parent.wp?.data) {
-            await window.parent.wp.data
-                .dispatch('core/editor')
-                .savePost();
-        }
-
-        button.textContent = __( 'Saved ✓', 'lingua-forge' );
-
-    } catch (_) {
-        button.textContent = __( 'Applied ✓ (auto-save failed)', 'lingua-forge' );
-    }
-
-    // Re-enable after a short pause so a second click doesn't trigger a
-    // duplicate save request.
+    // Re-enable after a short pause; remind the user to save.
     setTimeout(() => {
         button.textContent = __( 'Apply to Meta Description', 'lingua-forge' );
         button.disabled    = false;
@@ -519,7 +513,10 @@ function renderTextResult(container, data, featureKey, postId) {
         : '';
 
     const copyLabel  = __( 'Copy', 'lingua-forge' );
-    const applyHtml  = featureKey === 'meta-description'
+
+    // "Apply to Meta Description" gets its own full-width row below the textarea
+    // so it is always visible regardless of how many items are in the result bar.
+    const applyMetaHtml = featureKey === 'meta-description'
         ? `<button
                 type="button"
                 class="button button-primary lingua-forge-apply-meta"
@@ -539,9 +536,9 @@ function renderTextResult(container, data, featureKey, postId) {
                 type="button"
                 class="button button-secondary lingua-forge-copy"
             >${copyLabel}</button>
-            ${applyHtml}
             ${infoHtml}
         </div>
+        ${applyMetaHtml}
         ${refreshRow}`;
 }
 

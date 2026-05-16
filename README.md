@@ -488,6 +488,41 @@ Every feature caches its output in post meta using a SHA-256 hash of the inputs.
 
 ## Known Issues and Troubleshooting
 
+### AI request times out or returns a white screen on long content
+
+**Symptom:** Generating a translation or content for a large post fails silently, returns a white screen, or produces a PHP fatal error in the log along the lines of `Maximum execution time of 30 seconds exceeded`.
+
+**Root cause:** Managed hosting plans commonly cap `max_execution_time` at 30–60 seconds. LinguaForge uses a 120-second HTTP timeout for AI API calls, but PHP will kill the process first if the server limit is lower.
+
+**Fix options (in order of preference):**
+1. Raise the limit for the request in `wp-config.php` or a must-use plugin:
+   ```php
+   // Only applies to the current process — safe on most hosts
+   set_time_limit( 180 );
+   ```
+2. Add to `.htaccess` (Apache):
+   ```apache
+   php_value max_execution_time 180
+   ```
+3. Ask your host to raise the limit, or switch to a plan that allows longer execution times (common on VPS and dedicated servers).
+4. As a workaround without changing server config: translate the post in sections using **Chunk mode** (translate individual blocks rather than the full page).
+
+### AI returns an empty result or "generation failed" with no error detail
+
+**Symptom:** Clicking Generate or Translate shows the error message "Generation failed. Please try again." with no further explanation.
+
+**Root cause:** The most common causes are an invalid or expired API key, the provider's rate limit being hit, or the provider's API being temporarily unavailable.
+
+**Fix:** Check the PHP error log — LinguaForge logs the raw HTTP response code and body whenever a provider call fails. Also verify the API key in **Settings → LinguaForge AI → API Keys** and test it directly in the provider's dashboard.
+
+### Translation is cut off at the end of a long page
+
+**Symptom:** The translated content ends abruptly mid-sentence or mid-block. The AI result cache stores the truncated version.
+
+**Root cause:** The AI provider hit its output token limit before finishing the response.
+
+**Fix:** Go to **Settings → LinguaForge AI → Translation Limits** and increase **Max output tokens** (default: 16 000). Use **↺ Refresh** in the result panel to re-run without the cached truncated result.
+
 ### Editor toolbar Quick Translate button does not appear on first load
 
 **Symptom:** The ⇌ button is missing from the Gutenberg top toolbar on first page load. A single reload (F5) makes it appear consistently from then on.
@@ -496,9 +531,21 @@ Every feature caches its output in post meta using a SHA-256 hash of the inputs.
 
 **Status:** Under investigation.
 
+### Meta description generator uses old content after applying a translation
+
+**Symptom:** After applying a translation via "Apply to Editor", clicking Generate Meta Description produces a description based on the original (pre-translation) content.
+
+**Root cause:** The meta description generator reads `post_content` from the database. If the post hasn't been saved yet, the DB still holds the pre-translation content.
+
+**Fix:** This is handled automatically — clicking "Apply to Editor" now triggers an auto-save before the button shows "Saved ✓". If the auto-save fails (shown as "Applied ✓ (auto-save failed)"), save the post manually before generating the meta description.
+
 ### Footnotes are not imported between translation pages
 
-Gutenberg footnotes cannot be copied reliably from a source page to a translation page. Footnote markup is stripped from imported content; the source footnotes are shown as a read-only reference in the **Source Footnotes** meta box on the translation page's edit screen. Add footnotes manually using chunk mode for translation.
+**Symptom:** Footnotes from the source page are not carried over when importing content into a translation page.
+
+**Root cause:** Gutenberg footnotes are tightly coupled to post-specific UUIDs shared between `post_content` and the `footnotes` post meta. Footnote markup is stripped from imported content to avoid UUID collisions; the source footnotes are shown as a read-only reference in the **Source Footnotes** meta box on the translation page's edit screen.
+
+**Fix:** Add footnotes manually to the translation using **Chunk mode** — copy each footnote text, switch to Translate chunk, translate it, and paste the result into the footnote panel.
 
 ---
 
@@ -549,6 +596,17 @@ On activation and version bump, LinguaForge creates a composite index on `wp_pos
 ## Author
 
 Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https://profiles.wordpress.org/ulihake/) on WordPress.org
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
+
+**Current release — 1.0.1**
+
+- Fixes a fatal PHP memory error (infinite recursion) in `Translation.php`
+- Fixes the invisible "Apply to Meta Description" button in the AI meta box
+- Language override files moved to `wp-content/uploads/lingua-forge/i18n-overrides/` so they survive plugin updates
+- Upload/delete UI added to **Settings → LinguaForge AI → Language Overrides**
 
 ## License
 

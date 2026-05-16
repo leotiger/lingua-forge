@@ -169,13 +169,21 @@
     flex: 0 0 auto;
 }
 
-/* ── Apply-to-editor error notice ───────────────────────────────────────── */
+/* ── Apply-to-editor error / hint notices ────────────────────────────────── */
 
 .lingua-forge-apply-error {
     display:    block;
     margin-top: 4px;
     font-size:  12px;
     color:      #d63638;
+}
+
+.lingua-forge-apply-hint {
+    display:    block;
+    margin-top: 4px;
+    font-size:  12px;
+    color:      #646970;
+    font-style: italic;
 }
 
 /* ── Text result (meta-description, excerpt…) ────────────────────────────── */

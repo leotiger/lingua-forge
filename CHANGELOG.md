@@ -2,6 +2,68 @@
 
 ---
 
+## [1.0.1] — 2026-05-17
+
+### Added
+
+- **Language Overrides UI** — new section in **Settings → LinguaForge AI** to upload, list, and
+  delete `.mo` override files for third-party plugins (e.g. VikBooking terminology customisation).
+  Each row shows both `.mo` and `.po` presence; Delete removes both files together.
+- **Language overrides in uploads** — override `.mo` files are now stored in
+  `wp-content/uploads/lingua-forge/i18n-overrides/` instead of inside the plugin directory.
+  Files survive plugin updates. The folder is created automatically on activation.
+- **`lf_i18n_overrides_dir` filter** — allows custom storage path for override files.
+- **"Apply to Meta Description" button** — AI-generated meta descriptions now have a dedicated
+  button that writes the result directly into the Meta Description meta box field and into the
+  Gutenberg editor store.
+- **"Save the post to persist changes" hint** — shown for 6 seconds after applying a translation
+  or meta description to the editor, since programmatic auto-save is not reliable with meta boxes.
+- **Content Generator limits** — max output tokens, max hints characters, and max context
+  characters are now configurable from Settings → LinguaForge AI → Content Generator.
+- **Quick Translation limits** — model tier (Light/Quality), max output tokens, and max input
+  characters are now configurable from Settings → LinguaForge AI → Quick Translation.
+- **`linguaforge_translation_languages` filter** — the 38-language translation target list is now
+  filterable; add, remove, or replace languages without modifying plugin files.
+- **38 languages** supported out of the box for AI translation (up from 13), grouped by region.
+- **`uninstall.php`** — cleans up all plugin options, post meta, user meta, and the
+  `lf_lang_meta` DB index on plugin deletion.
+- **Known Issues & Troubleshooting** section added to both README.md and readme.txt covering
+  PHP timeouts, empty AI results, translation cut-off, and the meta description workflow.
+
+### Fixed
+
+- **Infinite recursion crash** — `Translation::get_languages()` was passing `self::get_languages()`
+  as the default to `apply_filters()`, causing a fatal `Allowed memory size exhausted` error on
+  every page load. Fixed to pass `self::LANGUAGES` (the constant array).
+- **"Apply to Meta Description" button invisible** — the button was being clipped in the
+  flex result bar because `.lingua-forge-feature-group .button { width: 100% }` overrode the
+  `flex: 0 0 auto` rule. Moved to its own full-width row below the textarea.
+- **Quick Translate double icon** — the editor toolbar inject loop continued past the first
+  matching container, injecting the button into multiple elements. Fixed with `break` after
+  first successful injection.
+- **Translation truncation** — a hardcoded `mb_substr($content, 0, 20000)` cap was silently
+  cutting input before sending to the AI, causing incomplete translations. Removed; input limit
+  is now configurable (default: no limit).
+- **Max-tokens truncation detection** — Anthropic, OpenAI, and Gemini providers now detect
+  `stop_reason: max_tokens` / `finish_reason: length` / `finishReason: MAX_TOKENS` and return
+  `null` with an error log entry instead of silently returning truncated output.
+- **Autoload flags** — all plugin-specific `update_option()` calls now pass `false` as the
+  autoload argument so options are not loaded on every page request.
+
+### Changed
+
+- **`BlockTextExtractor`** — removed the `tag()`, `reconstruct()`, and `strip_all_lfids()`
+  methods and all related private helpers. The `_lfid` tagging system was compensating for input
+  truncation (now fixed at the source) and is no longer needed.
+- **Translation max tokens** — raised default from 8 192 to 16 000 to accommodate full-page
+  translations without cut-off.
+- **Language Router i18n overrides** path moved from `language-router/languages/` to the
+  uploads-based `i18n-overrides/` directory (see Added above).
+- **`readme.txt`** — added External Services section (required for WordPress.org), Language
+  Overrides feature, FAQ entries for timeout and AI errors, and full 38-language list.
+
+---
+
 ## [1.0.0] — 2026-05-16
 
 First release of **LinguaForge** — a combined WordPress plugin merging the previously separate
