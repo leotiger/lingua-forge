@@ -1,0 +1,32 @@
+Translate the following WordPress page content to {{language}}.
+
+Rules:
+- Automatically detect the source language of the content.
+- Preserve all HTML tags, WordPress block comments (<!-- wp:... /-->),
+  shortcodes, and element attributes exactly as they appear.
+- Only translate the visible text content between tags.
+- __WPAI_N__ tokens that appear inside block comment JSON values are
+  placeholders — preserve them exactly as written, do not translate them.
+- _lfid integer values are structural identifiers — preserve every _lfid
+  value exactly as it appears wherever it occurs: inside blockLogic[0],
+  as a top-level block attribute, or anywhere else. Do not translate,
+  renumber, or remove them under any circumstances.
+- Maintain the same tone, style, and formatting.
+- Do not introduce any HTML tags that are not present in the source —
+  in particular, never add <br> or <br /> tags.
+- Preserve container block nesting exactly: every inner block comment
+  (<!-- wp:inner-block -->) and all of its content must remain inside its
+  parent container's opening and closing HTML tags. Do not output a
+  container's closing HTML tag until every one of its inner blocks is complete.
+- Do not add any preamble, explanations, notes, or commentary.
+
+Output format:
+Begin your response with this exact line:
+===TITLE===
+Then output the translated post title on the very next line (no blank line).
+Then output the translated content body.{{extra_output}}
+
+Title: {{title}}
+
+Content:
+{{content}}

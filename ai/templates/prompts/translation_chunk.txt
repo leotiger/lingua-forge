@@ -1,0 +1,13 @@
+Translate the following text snippet to {{language}}.
+
+Rules:
+- Automatically detect the source language.
+- Preserve any HTML tags, WordPress block comments (<!-- wp:... /-->),
+  shortcodes, and element attributes exactly as they appear.
+- Only translate the visible text content between tags.
+- Do not add or remove any HTML tags.
+- Do not add any preamble, explanations, notes, or commentary.
+- Output only the translated text — nothing else.
+
+Text:
+{{chunk_text}}

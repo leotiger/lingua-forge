@@ -1,0 +1,19 @@
+Write WordPress post content for the title below.
+
+Requirements:
+- Output type: {{content_type}}
+- Tone: {{tone}}
+- Use clean WordPress block-editor (Gutenberg) markup throughout.
+- Wrap each paragraph in <!-- wp:paragraph --> ... <!-- /wp:paragraph -->.
+- Wrap headings in <!-- wp:heading --> ... <!-- /wp:heading --> using <h2> or <h3> tags.
+- Wrap lists in <!-- wp:list --> ... <!-- /wp:list --> with <ul><li> elements.
+- Do NOT include the post title itself in the output — only the body content.
+- Do not use <br> or <br /> tags — all line breaks and paragraph separations
+  must be expressed through block structure.
+- Do not add any preamble, commentary, or closing remarks.
+- Return ONLY the post body markup — nothing else.
+
+Post title: {{title}}
+{{existing_content}}
+
+If hints or existing content are provided above, use them as the foundation and expand upon them fully. If no seed content is provided, generate the content from the title alone.

@@ -1,0 +1,231 @@
+/* =========================================
+   LSFLR: Language Switcher For Language Router (theme-friendly css)
+========================================= */
+
+/* =========================================
+   Variables (theme-friendly)
+========================================= */
+.lsflr-switcher {
+    --lsflr-bg: #fff;
+    --lsflr-color: currentColor;
+    --lsflr-border: rgba(0,0,0,0.08);
+    --lsflr-hover: rgba(0,0,0,0.05);
+    --lsflr-shadow: 0 10px 26px rgba(0,0,0,0.14);
+    --lsflr-radius: 8px;
+    --lsflr-speed: 0.18s;
+    --lsflr-delay: 0.04s;	
+}
+
+/* =========================================
+   Container
+========================================= */
+.lsflr-switcher {
+    position: relative;
+    display: inline-block;
+    font-size: 1.3rem;
+	font-family: var(--wp--preset--font-family--base-hand);	
+    color: var(--lsflr-color);
+	color-scheme: light;
+	margin-block-start: 0;
+}
+
+/* =========================================
+   Toggle
+========================================= */
+.lsflr-toggle {
+    list-style: none;
+    cursor: pointer;
+    outline: none;	
+}
+
+.lsflr-current {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+/* Arrow */
+.lsflr-current::after {
+    content: "▾";
+    font-size: 1.7em;
+    opacity: 0.6;
+    transition: transform var(--lsflr-speed) ease;
+}
+
+.lsflr-toggle .lsflr-current img, .lsflr-toggle .lsflr-current svg {
+	height: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);
+	width: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);	
+}
+
+.lsflr-toggle .lsflr-current svg {
+	fill: currentColor;
+	display: inline-block;
+}
+
+.lsflr-toggle .lsflr-current svg path {
+	fill: currentColor;
+}
+
+.lsflr-toggle:hover .lsflr-current::after,
+.lsflr-toggle:focus-within .lsflr-current::after {
+    transform: rotate(180deg);
+}
+
+/* =========================================
+   Submenu
+========================================= */
+.lsflr-submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+
+    min-width: max-content;
+
+    margin: 0;
+    padding: 0.35em 0;
+    list-style: none;
+
+    background: var(--lsflr-bg);
+    border: 1px solid var(--lsflr-border);
+    border-radius: var(--lsflr-radius);
+    box-shadow: var(--lsflr-shadow);
+
+    /* animation */
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+    pointer-events: none;
+
+    transform-origin: top left;
+
+    transition:
+        opacity var(--lsflr-speed) ease var(--lsflr-delay),
+        transform var(--lsflr-speed) cubic-bezier(.2,.7,.3,1) var(--lsflr-delay);
+}
+
+/* Dropup */
+.lsflr-dropup .lsflr-submenu {
+    top: auto;
+    bottom: 100%;
+    transform: translateY(8px) scale(0.96);
+    transform-origin: bottom left;
+}
+
+/* =========================================
+   AUTO EDGE DETECTION (CSS trick)
+========================================= */
+/* If near right edge, add this class in block wrapper */
+.lsflr-auto-right .lsflr-submenu {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
+}
+
+.lsflr-dropup.lsflr-auto-right .lsflr-submenu {
+    transform-origin: bottom right;
+}
+
+/* =========================================
+   Show
+========================================= */
+.lsflr-toggle:hover .lsflr-submenu,
+.lsflr-toggle:focus-within .lsflr-submenu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* =========================================
+   Items
+========================================= */
+.lsflr-submenu li {
+    margin: 0;
+    padding: 0;
+}
+
+.lsflr-submenu a {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    padding: 0.45em 0.85em;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+
+    transition:
+        background 0.14s ease,
+        transform 0.12s ease;
+}
+
+.lsflr-submenu a:hover,
+.lsflr-submenu a:focus {
+    background: var(--lsflr-hover);
+    outline: none;
+}
+
+.lsflr-submenu a:active {
+    transform: scale(0.97);
+}
+
+/* =========================================
+   LANGUAGE ICONS (CSS-only flags)
+   Add class: lsflr-lang-en, lsflr-lang-ca, etc.
+========================================= */
+.lsflr-submenu a::before {
+    content: attr(data-lang);
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+/* Optional nicer icons (emoji flags) */
+.lsflr-lang-en::before { content: "🇬🇧"; }
+.lsflr-lang-es::before { content: "🇪🇸"; }
+.lsflr-lang-ca::before { content: "🏴"; } /* Catalan alt */
+.lsflr-lang-fr::before { content: "🇫🇷"; }
+.lsflr-lang-de::before { content: "🇩🇪"; }
+
+/* =========================================
+   Icon block support
+========================================= */
+.lsflr-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.lsflr-icon svg {
+    width: 1em;
+    height: 1em;
+}
+
+/* =========================================
+   Accessibility
+========================================= */
+.lsflr-toggle:focus {
+    outline: 2px solid rgba(100,100,255,0.4);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   Mobile (no hover devices)
+========================================= */
+@media (hover: none) {
+
+    .lsflr-submenu a {
+        padding: 0.6em 1em;
+    }
+
+    /* reduce animation slightly */
+    .lsflr-submenu {
+        transition: opacity 0.15s ease;
+    }
+}
+
+/* =========================================
+   Reduced motion
+========================================= */
+@media (prefers-reduced-motion: reduce) {
+    .lsflr-submenu {
+        transition: none;
+    }
+}

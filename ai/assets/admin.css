@@ -1,0 +1,320 @@
+/* WPEnhance AI – admin meta box styles */
+
+/* ── Panel layout ────────────────────────────────────────────────────────── */
+
+/*
+ * The metabox now lives in the 'normal' context (full-width main column).
+ * We lay out feature groups horizontally so multiple features sit side-by-side
+ * when there is enough horizontal space.
+ */
+.lingua-forge-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+/* ── Feature groups (one per feature) ───────────────────────────────────── */
+
+.lingua-forge-feature-group {
+    flex: 1 1 280px;        /* grow freely, but don't collapse below 280 px */
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+.lingua-forge-feature-group .button {
+    width: 100%;
+    text-align: center;
+}
+
+/* ── Extra UI fields (language selector, chunk textarea, etc.) ───────────── */
+
+.lingua-forge-feature-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Selects sit side-by-side when the group is wide enough */
+@media (min-width: 600px) {
+    .lingua-forge-feature-fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 8px;
+    }
+
+    /* Conditional wrappers that are currently hidden don't consume grid cells */
+    .lingua-forge-field-wrapper[style*="display: none"] {
+        display: none !important;
+    }
+
+    /* Chunk textarea should always span the full row */
+    .lingua-forge-field-wrapper:has(.lingua-forge-input-textarea) {
+        grid-column: 1 / -1;
+    }
+}
+
+.lingua-forge-label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 12px;
+    color: #50575e;
+}
+
+.lingua-forge-select {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* ── Chunk input textarea ────────────────────────────────────────────────── */
+
+.lingua-forge-input-textarea {
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    box-sizing: border-box;
+    min-height: 100px;
+}
+
+/* ── Result area ─────────────────────────────────────────────────────────── */
+
+.lingua-forge-result {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lingua-forge-status {
+    color: #646970;
+    font-style: italic;
+    margin: 0;
+}
+
+.lingua-forge-error {
+    color: #d63638;
+    margin: 0;
+}
+
+.lingua-forge-result-meta {
+    margin: 0;
+    font-size: 12px;
+    color: #50575e;
+}
+
+.lingua-forge-cached-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: #e8f4fd;
+    color: #0073aa;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    vertical-align: middle;
+}
+
+/* ── Chunk result hint ───────────────────────────────────────────────────── */
+
+.lingua-forge-chunk-hint {
+    margin: 0;
+    font-size: 11px;
+    color: #8c8f94;
+    font-style: italic;
+}
+
+/* ── Textareas (output) ──────────────────────────────────────────────────── */
+
+.lingua-forge-textarea {
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.lingua-forge-textarea--large {
+    min-height: 240px;
+}
+
+/* ── Content result (translation) ───────────────────────────────────────── */
+
+.lingua-forge-content-result {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lingua-forge-btn-row {
+    display: flex;
+    gap: 6px;
+}
+
+.lingua-forge-btn-row .button {
+    flex: 1;
+    text-align: center;
+}
+
+/* Chunk result: Copy button should not stretch to full width */
+.lingua-forge-chunk-result .lingua-forge-btn-row .button {
+    flex: 0 0 auto;
+}
+
+/* ── Apply-to-editor error notice ───────────────────────────────────────── */
+
+.lingua-forge-apply-error {
+    display:    block;
+    margin-top: 4px;
+    font-size:  12px;
+    color:      #d63638;
+}
+
+/* ── Text result (meta-description, excerpt…) ────────────────────────────── */
+
+.lingua-forge-textarea-wrap {
+    position: relative;
+}
+
+.lingua-forge-result-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Buttons inside the result bar should size to their label, not stretch full-width.
+ * width:auto overrides the broad .lingua-forge-feature-group .button { width:100% }
+ * rule — without it flex-basis:auto defers back to width:100% and each button
+ * tries to fill the entire row, pushing extra buttons out of view. */
+.lingua-forge-result-bar .button {
+    flex:  0 0 auto;
+    width: auto;
+}
+
+/* ── ⓘ info button + overlay ─────────────────────────────────────────────── */
+
+.lingua-forge-info-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.lingua-forge-info-btn {
+    background:  none;
+    border:      none;
+    padding:     0 2px;
+    color:       #8c8f94;
+    font-size:   15px;
+    line-height: 1;
+    cursor:      pointer;
+    transition:  color 0.1s;
+}
+
+.lingua-forge-info-btn:hover,
+.lingua-forge-info-btn:focus {
+    color:   #135e96;
+    outline: none;
+}
+
+.lingua-forge-info-overlay {
+    position:   absolute;
+    bottom:     calc(100% + 8px);
+    right:      0;
+    min-width:  220px;
+    padding:    8px 10px;
+    background: #1d2327;
+    color:      #f0f0f0;
+    border-radius: 4px;
+    font-size:  12px;
+    line-height: 1.5;
+    display:    flex;
+    flex-direction: column;
+    gap:        4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity:    0;
+    transition: opacity 0.15s;
+    z-index:    9999;
+}
+
+/* Caret arrow pointing down toward the button */
+.lingua-forge-info-overlay::after {
+    content:      '';
+    position:     absolute;
+    top:          100%;
+    right:        10px;
+    border:       5px solid transparent;
+    border-top-color: #1d2327;
+}
+
+.lingua-forge-info-wrap:hover    .lingua-forge-info-overlay,
+.lingua-forge-info-wrap:focus-within .lingua-forge-info-overlay {
+    opacity:        1;
+    pointer-events: auto;
+}
+
+/* Quality text colours */
+.lingua-forge-info-quality.--good {
+    color:       #00a32a;
+    font-weight: 600;
+}
+
+.lingua-forge-info-quality.--warn {
+    color:       #dba617;
+    font-weight: 600;
+}
+
+.lingua-forge-info-quality.--bad {
+    color:       #d63638;
+    font-weight: 600;
+}
+
+.lingua-forge-info-hint {
+    color:     #a7aaad;
+    font-size: 11px;
+}
+
+/* ── Force-refresh row ───────────────────────────────────────────────────── */
+
+.lingua-forge-refresh-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.lingua-forge-refresh {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #646970;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.lingua-forge-refresh:hover {
+    color: #135e96;
+}
+
+.lingua-forge-refresh-hint {
+    font-size: 11px;
+    color: #8c8f94;
+    font-style: italic;
+}
+
+/* ── Spinner (kept for potential future use) ─────────────────────────────── */
+
+.lingua-forge-spinner {
+    float: none;
+    margin: 0;
+}
