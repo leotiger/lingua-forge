@@ -2,9 +2,27 @@
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 
-A WordPress plugin that combines multilingual routing, SEO meta tags, and AI-powered content tools in a single package. Built for FSE / block-theme sites that serve content in multiple languages and need editorial AI assistance without a heavyweight third-party subscription service.
+LinguaForge is a WordPress plugin for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
 
-LinguaForge merges three previously separate must-use plugins — **Language Router**, **Meta Description**, and **WPEnhance AI** — into one installable plugin with a shared path and URL foundation.
+At its core it does three things that always end up intertwined on multilingual sites:
+
+1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, with hreflang SEO tags, a language switcher block, and an admin panel that keeps translations linked and warns you when source content has changed.
+
+2. **Keeps SEO meta descriptions accurate and in the right language** — a simple meta box on every post and page, with AI generation available in one click when you need a fresh description.
+
+3. **Gives editors an AI assistant directly inside the block editor** — translate full pages, revise individual blocks, generate content from scratch, and fix quick-translate snippets on the fly, all without leaving WordPress. Results are previewed before anything is applied, and a terminology glossary ensures brand names and technical terms stay consistent across languages.
+
+Everything ships as a single installable plugin. No external services beyond an AI provider API key (Anthropic, OpenAI, or Google Gemini — your choice). No subscription. No data leaves your server except the content you actively send for translation or generation.
+
+---
+
+## How does it compare to WPML and Polylang?
+
+The short version: LinguaForge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups — while adding a deeper AI editorial layer that neither ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
+
+Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included.
+
+→ [Full competitive analysis — LinguaForge vs WPML vs Polylang](COMPETITIVE-ANALYSIS.md)
 
 ---
 
@@ -49,9 +67,10 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
 - **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
 - **Footnote tab** in the Block Action popover — translate or revise individual footnotes without switching to chunk mode; translate button also appears in the footnote editing toolbar
+- **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A usage summary (requests, input tokens, output tokens) is available in **Settings → AI Usage** for any date range
 - SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
-- **WP-CLI support** — `wp linguaforge translate` and `wp linguaforge cache-clear` commands for scripted workflows
+- **WP-CLI support** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` commands for scripted and automated workflows
 
 ---
 
@@ -518,6 +537,44 @@ Manage a terminology table per language pair from **Settings → Glossary**. Eac
 ### Result Caching
 
 Every feature caches its output using a SHA-256 hash of the inputs in a dedicated plugin table. The cache is invalidated automatically when any input changes — there is no TTL. A **cached** badge appears in the UI when a stored result is returned. A **↺ Refresh** link forces a new API call. Translation caches are keyed per language so multiple language versions can be cached independently.
+
+### AI Usage
+
+Every successful AI call is recorded in a dedicated database table, grouped by feature, provider, model, and calendar date. Go to **Settings → LinguaForge AI → AI Usage** to see a summary table for any date range:
+
+| Column | Description |
+|---|---|
+| Feature | Which tool made the call (Translation, Meta Description, Content Generator, etc.) |
+| Provider / Model | The specific provider and model string that handled the request |
+| Requests | Number of API calls in the selected period |
+| Input tokens | Total prompt tokens sent (including system messages and glossary addenda) |
+| Output tokens | Total completion tokens received |
+| Total tokens | Input + output combined |
+
+Use the quick-range buttons (Today / 7 days / 30 days / All time) or the custom date fields to filter. The table helps you spot which features or models are driving the most token usage, and estimate costs before your next provider invoice.
+
+Test Connection pings (from the API Keys tab) are deliberately excluded from usage totals.
+
+### WP-CLI
+
+Three commands are available for scripted and automated workflows:
+
+**`wp linguaforge translate <post_id> --to=<langs>`** — translate a post into one or more target languages using the full feature pipeline (cache lookup, Translation Memory, Glossary, Behavior preset). Writes the result into the TRID-linked target-language post. Options: `--force` (skip cache), `--dry-run` (generate but don't write), `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--format=<table|json|csv|yaml>`.
+
+**`wp linguaforge retranslate <post_id> --to=<langs>`** — designed for the "source page was edited, retranslate now" workflow. Always bypasses the cache (no `--force` needed), clears the previous cached translation before running, and marks the target post as synced after a successful write so the ⚠ outdated indicator clears. The `--temperature` flag is front-and-centre here because preset tuning is the most common reason to retranslate manually (e.g. `--temperature=0.1` for a legal page). Options: `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--dry-run`, `--format=<table|json|csv|yaml>`.
+
+**`wp linguaforge cache-clear`** — wipes AI-result cache entries. Bare command truncates the entire table (prompts for confirmation unless `--yes` is passed). Scope with `--feature=translation` or `--post-id=<id>` to target a subset.
+
+```bash
+# Retranslate a legal page in French with strict temperature
+wp linguaforge retranslate 123 --to=fr --temperature=0.1
+
+# Translate into three languages at once
+wp linguaforge translate 456 --to=fr,de,es
+
+# Clear all cached translations for one post
+wp linguaforge cache-clear --feature=translation --post-id=123
+```
 
 ---
 

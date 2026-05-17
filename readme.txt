@@ -12,7 +12,11 @@ Multilingual routing, SEO meta descriptions, and AI-powered content tools — al
 
 == Description ==
 
-LinguaForge brings together three concerns that always end up intertwined on multilingual WordPress sites: language routing, SEO meta output, and AI-assisted editorial work. Instead of coordinating three separate plugins that each make assumptions about the others, everything ships as a single installable package with a shared foundation.
+LinguaForge is a free, permanently open-source multilingual plugin for WordPress. There is no paid tier, no annual license fee, and no subscription. AI features are powered by the API key of your choice (Anthropic, OpenAI, or Google Gemini) — you pay the provider directly at standard API rates, with no markup and no proprietary credit system in between. Every AI feature has a fully usable manual fallback, so the plugin works without any API key at all.
+
+LinguaForge is for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
+
+It brings together three concerns that always end up intertwined on multilingual WordPress sites: language routing, SEO meta output, and AI-assisted editorial work. Instead of coordinating three separate plugins that each make assumptions about the others, everything ships as a single installable package with a shared foundation.
 
 **Language Router**
 
@@ -33,7 +37,7 @@ Adds a meta description field to every public post type and outputs `<meta name=
 * Editable in the Classic meta box, fully compatible with the Block Editor
 * Character counter with green/amber/red guidance (120–160 ideal range)
 * Fallback chain: custom field → post excerpt → site description
-* Uses the neutral `meta_description` post-meta key — themes and other plugins that already read this key continue to work without any changes
+* Stores descriptions under `_linguaforge_meta_description` (prefixed, plugin-owned). A one-time migration on upgrade copies any existing `meta_description` rows to the new key automatically. The old key is left intact so other plugins that read it are unaffected
 
 **AI Content Tools**
 
@@ -44,7 +48,13 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **Content Translation** — translates full posts while preserving all Gutenberg block markup, block attribute strings (accordion summaries, image alt text, etc.), and footnotes; chunk mode for individual snippets. Max output tokens and max input characters are configurable from Settings with no code changes needed
 * **Content Generator** — drafts or rewrites post content from topic hints, tone, and output-type controls; outputs native Gutenberg block markup. Max output tokens, max hints characters, and max context characters are configurable from Settings
 * **Quick Translate** — available in the admin toolbar and inside the Gutenberg / FSE editor toolbar for on-the-fly translation of any text snippet
+* **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing) control the AI's temperature and system instructions. Set a site-wide default from Settings or override it per post from the editor metabox (Translation and Content Generator only)
+* **Translation Memory** — opt-in block-level cache shared across posts; only new or changed blocks are sent to the API on subsequent translations, reducing token usage on recurring content
+* **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt so brand names, technical terms, and units stay consistent
+* **Side-by-side diff preview** — "Apply to Editor" shows a two-column before/after modal so you can review the translation before it touches the post
+* **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A summary table with token counts is available in **Settings → AI Usage**
 * **Language Overrides** — upload custom `.mo` files to override third-party plugin strings per locale (e.g. replace "room" with "apartment" in VikBooking). Files are stored in the uploads folder and survive plugin updates. Managed from **Settings → LinguaForge AI → Language Overrides**
+* **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` for scripted and automated workflows
 
 API keys are stored encrypted (AES-256-CBC, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
 

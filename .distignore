@@ -1,0 +1,31 @@
+# Files excluded from the WordPress.org SVN deployment / plugin ZIP.
+# Any path listed here is kept in the GitHub repo but not pushed to SVN
+# (compatible with wp-env, wp-scripts, and manual deploy scripts).
+
+# Developer / project documentation
+CLAUDE.md
+CONTRIBUTING.md
+REVIEW.md
+COMPETITIVE-ANALYSIS.md
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Editor and IDE
+.editorconfig
+.vscode/
+.idea/
+
+# Node / build tooling (if added in future)
+node_modules/
+package.json
+package-lock.json
+
+# PHP tooling
+phpcs.xml
+phpcs.xml.dist
+.phpcs.xml
+phpunit.xml
+phpunit.xml.dist
