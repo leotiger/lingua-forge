@@ -64,6 +64,7 @@ class KeyStore {
 
             // Also check the superglobal (some server setups only populate this).
             if (!empty($_ENV[$env_name])) {
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- API keys are read verbatim from the server environment; sanitize_text_field() would strip valid key characters (+, /, =) and wp_unslash() would corrupt keys containing backslashes.
                 return (string) $_ENV[$env_name];
             }
         }
@@ -162,6 +163,7 @@ class KeyStore {
         try {
             $iv = random_bytes($iv_len);
         } catch (\Exception $e) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for a cryptographic failure that would silently prevent API key storage.
             error_log('LinguaForge AI [KeyStore] could not generate IV: ' . $e->getMessage());
             return '';
         }

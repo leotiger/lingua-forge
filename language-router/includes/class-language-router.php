@@ -171,6 +171,7 @@ class Language_Router {
 
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $this->cached_source_language = apply_filters( 'lf_primary_language', 'ca' );
 	}
 
@@ -195,6 +196,7 @@ class Language_Router {
 
 		$langs[] = $this->source_language();
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $this->cached_languages = apply_filters( 'lf_languages_list', array_values( array_unique( $langs ) ) );
 	}
 
@@ -218,6 +220,7 @@ class Language_Router {
 		$upload = wp_upload_dir();
 		$dir    = trailingslashit( $upload['basedir'] ) . 'lingua-forge/i18n-overrides/';
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return (string) apply_filters( 'lf_i18n_overrides_dir', $dir );
 	}
 
@@ -332,6 +335,7 @@ class Language_Router {
 		if ( isset( $cache[$lang] ) ) return $cache[$lang];
 
 		// 1. Hard overrides
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		$force = apply_filters( 'lf_lang_force_locale', [
 			'ca' => 'ca',
 		] );
@@ -351,6 +355,7 @@ class Language_Router {
 
 		// 3. Fallback map — extend via the filter for custom or regional variants.
 		//    'pt' defaults to pt_PT (Portugal); override with 'pt' => 'pt_BR' if needed.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		$fallback_map = apply_filters( 'lf_lang_fallback_map', [
 			'ca' => 'ca',
 			'en' => 'en_US',
@@ -383,6 +388,7 @@ class Language_Router {
 		}
 
 		// 4. Default
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $cache[$lang] = apply_filters( 'lf_lang_default_fallback', 'en_US' );
 	}
 
@@ -402,7 +408,8 @@ class Language_Router {
 		$default = $this->source_language();
 
 		// 1. URL
-		$uri = trim( $_SERVER['REQUEST_URI'] ?? '/', '/' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
 		$seg = explode( '/', $uri );
 		if ( ! empty( $seg[0] ) ) {
 			$url_lang = strtolower( $seg[0] );
@@ -410,14 +417,18 @@ class Language_Router {
 		}
 
 		// 2. GET
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
 		if ( ! empty( $_GET['lang'] ) ) {
-			$q_lang = strtolower( $_GET['lang'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
+			$q_lang = strtolower( sanitize_key( wp_unslash( $_GET['lang'] ) ) );
 			if ( in_array( $q_lang, $langs, true ) ) return $q_lang;
 		}
 
 		// 3. Cookie
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
 		if ( ! empty( $_COOKIE['lf_lang'] ) ) {
-			$cookie_lang = strtolower( trim( $_COOKIE['lf_lang'] ) );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
+			$cookie_lang = strtolower( trim( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ) ) ) );
 			if ( str_contains( $cookie_lang, '-' ) ) {
 				$cookie_lang = substr( $cookie_lang, 0, 2 );
 			}
@@ -432,7 +443,8 @@ class Language_Router {
 		$default = $this->source_language();
 
 		// 1. URL
-		$uri = trim( $_SERVER['REQUEST_URI'] ?? '/', '/' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
 		$seg = explode( '/', $uri );
 		if ( ! empty( $seg[0] ) ) {
 			$url_lang = strtolower( $seg[0] );
@@ -440,8 +452,10 @@ class Language_Router {
 		}
 
 		// 2. Cookie
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
 		if ( ! empty( $_COOKIE['lf_lang'] ) ) {
-			$cookie_lang = strtolower( trim( $_COOKIE['lf_lang'] ) );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
+			$cookie_lang = strtolower( trim( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ) ) ) );
 			if ( str_contains( $cookie_lang, '-' ) ) {
 				$cookie_lang = substr( $cookie_lang, 0, 2 );
 			}
@@ -459,10 +473,12 @@ class Language_Router {
 		if ( is_admin() ) return;
 		if ( ! defined( 'LF_LANG' ) ) return;
 
+		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- $wp_locale_switcher is WordPress core's own global; we are initialising it defensively, not defining a plugin variable.
 		if ( ! isset( $GLOBALS['wp_locale_switcher'] ) ) {
 			$GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
 			$GLOBALS['wp_locale_switcher']->init();
 		}
+		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 		$locale = $this->locale_from_lang( LF_LANG );
 		if ( $locale !== get_locale() ) {
@@ -477,8 +493,10 @@ class Language_Router {
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) return $locale;
 
 		// 1. REQUEST (AJAX or manual)
-		if ( ! empty( $_REQUEST['lang'] ) && $this->is_valid_lang( $_REQUEST['lang'] ) ) {
-			return $this->locale_from_lang( $_REQUEST['lang'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads REQUEST parameters for routing; not form processing.
+		if ( ! empty( $_REQUEST['lang'] ) && $this->is_valid_lang( sanitize_key( wp_unslash( $_REQUEST['lang'] ) ) ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads REQUEST parameters for routing; not form processing.
+			return $this->locale_from_lang( sanitize_key( wp_unslash( $_REQUEST['lang'] ) ) );
 		}
 
 		// 2. Frontend LF_LANG
@@ -487,8 +505,10 @@ class Language_Router {
 		}
 
 		// 3. Cookie fallback
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
 		if ( ! empty( $_COOKIE['lf_lang'] ) ) {
-			$lang = substr( strtolower( $_COOKIE['lf_lang'] ), 0, 2 );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
+			$lang = substr( strtolower( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ) ) ), 0, 2 );
 			if ( $this->is_valid_lang( $lang ) ) {
 				return $this->locale_from_lang( $lang );
 			}
@@ -538,19 +558,24 @@ class Language_Router {
 		if ( $this->is_system_request() ) return;
 		if ( is_admin() ) return;
 
-		$uri  = $_SERVER['REQUEST_URI'] ?? '';
-		$path = parse_url( $uri, PHP_URL_PATH );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
+		$path = wp_parse_url( $uri, PHP_URL_PATH );
 
 		// Search redirect
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 		if ( isset( $_GET['s'] ) && preg_match( '#^/[a-z]{2}/#', $path ) ) {
-			$lang = $_GET['lang'] ?? LF_LANG;
-			$s    = $_GET['s'] ?? '';
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
+			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
+			$s    = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 			$this->debug( 'SEARCH REDIRECT: /?lang=' . $lang . '&s=' . $s );
-			wp_redirect( '/?lang=' . $lang . '&s=' . urlencode( $s ), 301 );
+			wp_safe_redirect( '/?lang=' . $lang . '&s=' . urlencode( $s ), 301 );
 			exit;
 		}
 
 		// Homepage redirect
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 		if ( ( $path === '/' || $path === '' ) && empty( $_GET['s'] ) ) {
 			$front_id = get_option( 'page_on_front' );
 			if ( ! $front_id ) return;
@@ -561,7 +586,7 @@ class Language_Router {
 				$target = get_permalink( $translations[LF_LANG] );
 				if ( untrailingslashit( $target ) !== untrailingslashit( home_url( '/' ) ) ) {
 					$target = $this->safe_query_args( $target );
-					wp_redirect( $target, 302 );
+					wp_safe_redirect( $target, 302 );
 					exit;
 				}
 			}
@@ -633,10 +658,12 @@ class Language_Router {
 
 		$q->set( 'lang', LF_LANG );
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 		if ( ! empty( $_GET['s'] ) ) {
 			$q->is_search = true;
 			$q->is_home   = false;
-			$this->debug( 'Search forced', [ 's' => $_GET['s'] ] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
+			$this->debug( 'Search forced', [ 's' => sanitize_text_field( wp_unslash( $_GET['s'] ) ) ] );
 		}
 	}
 
@@ -673,8 +700,10 @@ class Language_Router {
 		$user_id    = get_current_user_id();
 		$lang       = null;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		if ( isset( $_GET['lf_lang_filter'] ) ) {
-			$lang = sanitize_text_field( $_GET['lf_lang_filter'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
+			$lang = sanitize_key( wp_unslash( $_GET['lf_lang_filter'] ) );
 		} else {
 			$lang = get_user_meta( $user_id, 'lf_lang_filter', true );
 		}
@@ -683,6 +712,7 @@ class Language_Router {
 			$meta_query[] = [ 'key' => '_lang', 'value' => $lang ];
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		if ( ! empty( $_GET['lf_outdated_filter'] ) ) {
 			$meta_query[] = [
 				'key'     => '_lang',
@@ -708,8 +738,10 @@ class Language_Router {
 	public function persist_admin_lang_filter(): void {
 		if ( ! current_user_can( 'edit_posts' ) ) return;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		if ( isset( $_GET['lf_lang_filter'] ) ) {
-			$lang = sanitize_text_field( $_GET['lf_lang_filter'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
+			$lang = sanitize_key( wp_unslash( $_GET['lf_lang_filter'] ) );
 			update_user_meta( get_current_user_id(), 'lf_lang_filter', $lang );
 		}
 	}
@@ -871,8 +903,10 @@ class Language_Router {
 		$params  = [];
 
 		foreach ( $allowed as $key ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 			if ( isset( $_GET[$key] ) && $_GET[$key] !== '' ) {
-				$params[$key] = sanitize_text_field( $_GET[$key] );
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
+				$params[$key] = sanitize_text_field( wp_unslash( $_GET[$key] ) );
 			}
 		}
 
@@ -918,8 +952,8 @@ class Language_Router {
 		$translations = $this->get_translations( $post->ID );
 
 		if ( empty( $translations[LF_LANG] ) ) {
-			if ( ! defined( 'LF_LANG_FALLBACK_ACTIVE' ) ) {
-				define( 'LF_LANG_FALLBACK_ACTIVE', true );
+			if ( ! defined( 'LINGUAFORGE_LANG_FALLBACK_ACTIVE' ) ) {
+				define( 'LINGUAFORGE_LANG_FALLBACK_ACTIVE', true );
 			}
 			return;
 		}
@@ -931,7 +965,7 @@ class Language_Router {
 		if ( ! $target_url ) return;
 
 		$target_url = $this->safe_query_args( $target_url );
-		wp_redirect( $target_url, 301 );
+		wp_safe_redirect( $target_url, 301 );
 		exit;
 	}
 
@@ -941,7 +975,8 @@ class Language_Router {
 		if ( ! defined( 'LF_LANG' ) ) return;
 		if ( is_search() ) return;
 
-		$path = parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
 
 		if (
 			$path !== '/' &&
@@ -972,18 +1007,19 @@ class Language_Router {
 		if ( untrailingslashit( $target ) === untrailingslashit( $current ) ) return;
 
 		$target = $this->safe_query_args( $target );
-		wp_redirect( $target, 302 );
+		wp_safe_redirect( $target, 302 );
 		exit;
 	}
 
 	public function normalize_duplicate_slashes(): void {
 		if ( is_admin() ) return;
 
-		$uri   = $_SERVER['REQUEST_URI'] ?? '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$uri   = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 		$clean = preg_replace( '#(?<!:)//+#', '/', $uri );
 
 		if ( $clean !== $uri ) {
-			wp_redirect( $clean, 301 );
+			wp_safe_redirect( $clean, 301 );
 			exit;
 		}
 	}
@@ -991,13 +1027,15 @@ class Language_Router {
 	public function redirect_search_under_lang_prefix(): void {
 		if ( ! is_search() ) return;
 
-		$uri = $_SERVER['REQUEST_URI'] ?? '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		$uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 
 		if ( preg_match( '#^/[a-z]{2}/#', $uri ) ) {
-			$lang = $_GET['lang'] ?? LF_LANG;
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
+			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
 			$s    = get_query_var( 's' );
 			$url  = '/?lang=' . $lang . '&s=' . urlencode( $s );
-			wp_redirect( $url, 301 );
+			wp_safe_redirect( $url, 301 );
 			exit;
 		}
 	}
@@ -1062,7 +1100,7 @@ class Language_Router {
 		$lang = $this->get_lang( $post->ID );
 		if ( ! $lang || $lang === $this->source_language() ) return $url;
 
-		$path = parse_url( $url, PHP_URL_PATH );
+		$path = wp_parse_url( $url, PHP_URL_PATH );
 		if ( ! $path ) return $url;
 
 		$path        = trim( $path, '/' );
@@ -1118,8 +1156,10 @@ class Language_Router {
 		if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
 		// Language
-		if ( isset( $_POST['lf_lang'] ) && $this->is_valid_lang( $_POST['lf_lang'] ) ) {
-			$this->set_lang( $post_id, sanitize_text_field( $_POST['lf_lang'] ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
+		if ( isset( $_POST['lf_lang'] ) && $this->is_valid_lang( sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
+			$this->set_lang( $post_id, sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) );
 		}
 		if ( ! get_post_meta( $post_id, '_lang', true ) ) {
 			$this->set_lang( $post_id, $this->source_language() );
@@ -1205,9 +1245,11 @@ class Language_Router {
 		$this->build_search_content( $post_id );
 
 		// Template selection (manual)
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
 		if ( ! isset( $_POST['lf_page_template'] ) ) return;
 
-		$template = sanitize_text_field( $_POST['lf_page_template'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
+		$template = sanitize_text_field( wp_unslash( $_POST['lf_page_template'] ) );
 		update_post_meta( $post_id, '_wp_page_template', $template );
 	}
 
@@ -1218,13 +1260,13 @@ class Language_Router {
 	public function ajax_import_translation(): void {
 		check_ajax_referer( 'lf_import_translation_nonce', 'nonce' );
 
-		$target_id = (int) $_POST['post_id'];
+		$target_id = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 
 		if ( ! current_user_can( 'edit_post', $target_id ) ) {
 			wp_send_json_error( 'Permission denied' );
 		}
 
-		$source_lang = sanitize_text_field( $_POST['lang'] ?? '' );
+		$source_lang = sanitize_key( wp_unslash( $_POST['lang'] ?? '' ) );
 
 		// Validate the requested source language; fall back to the primary language
 		// if the parameter is missing or not in the active language list.
@@ -1299,7 +1341,7 @@ class Language_Router {
 		$cur = $this->get_lang( $post->ID );
 		echo '<select name="lf_lang" class="lf-lr-lang" id="lf_lr_lang">';
 		foreach ( $this->languages() as $l ) {
-			echo '<option value="' . esc_attr( $l ) . '" ' . selected( $cur, $l, false ) . '>' . strtoupper( $l ) . '</option>';
+			echo '<option value="' . esc_attr( $l ) . '" ' . selected( $cur, $l, false ) . '>' . esc_html( strtoupper( $l ) ) . '</option>';
 		}
 		echo '</select>';
 	}
@@ -1353,14 +1395,14 @@ class Language_Router {
 		$current_lang = $this->get_lang( $post->ID );
 		$translations = $this->get_translations( $post->ID );
 
-		echo '<p><strong>Current language:</strong> ' . strtoupper( $current_lang ) . '</p>';
+		echo '<p><strong>Current language:</strong> ' . esc_html( strtoupper( $current_lang ) ) . '</p>';
 
 		foreach ( $this->languages() as $l ) {
 			if ( $l === $current_lang ) continue;
 
 			$id = $translations[$l] ?? '';
 
-			echo '<p><strong>' . strtoupper( $l ) . '</strong>';
+			echo '<p><strong>' . esc_html( strtoupper( $l ) ) . '</strong>';
 			if ( $id && $this->is_outdated( (int) $id ) ) echo ' ⚠';
 			echo '<br>';
 
@@ -1376,6 +1418,7 @@ class Language_Router {
 				$args['selected'] = $id;
 			}
 
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_dropdown_pages() is a WordPress core function that escapes all its own output.
 			wp_dropdown_pages( $args );
 
 			echo '<br>';
@@ -1464,13 +1507,13 @@ class Language_Router {
 		if ( $col !== 'lang' ) return;
 
 		$lang = $this->get_lang( $id );
-		echo '<strong data-lang="' . esc_attr( $lang ) . '">' . strtoupper( $lang ) . '</strong>';
+		echo '<strong data-lang="' . esc_attr( $lang ) . '">' . esc_html( strtoupper( $lang ) ) . '</strong>';
 
 		if ( $this->is_outdated( $id ) ) echo ' ⚠';
 
 		$missing = $this->get_missing_languages( $id );
 		if ( ! empty( $missing ) ) {
-			echo ' ⭕ ' . implode( ',', array_map( 'strtoupper', $missing ) );
+			echo ' ⭕ ' . esc_html( implode( ',', array_map( 'strtoupper', $missing ) ) );
 		}
 	}
 
@@ -1487,7 +1530,7 @@ class Language_Router {
 				<span class="title">Language</span>
 				<select name="lf_lang">
 					<?php foreach ( $this->languages() as $l ) : ?>
-						<option value="<?php echo esc_attr( $l ); ?>"><?php echo strtoupper( $l ); ?></option>
+						<option value="<?php echo esc_attr( $l ); ?>"><?php echo esc_html( strtoupper( $l ) ); ?></option>
 					<?php endforeach; ?>
 				</select>
 			</label>
@@ -1507,8 +1550,10 @@ class Language_Router {
 
 		$lang = null;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		if ( ! empty( $_GET['lf_lang_filter'] ) ) {
-			$lang = sanitize_text_field( $_GET['lf_lang_filter'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
+			$lang = sanitize_key( wp_unslash( $_GET['lf_lang_filter'] ) );
 		} else {
 			$lang = get_user_meta( get_current_user_id(), 'lf_lang_filter', true );
 		}
@@ -1529,14 +1574,16 @@ class Language_Router {
 		if ( ! in_array( $post_type, [ 'post', 'page' ] ) ) return;
 
 		$user_id = get_current_user_id();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		$current = ! empty( $_GET['lf_lang_filter'] )
-			? sanitize_text_field( $_GET['lf_lang_filter'] )
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
+			? sanitize_key( wp_unslash( $_GET['lf_lang_filter'] ) )
 			: ( get_user_meta( $user_id, 'lf_lang_filter', true ) ?: '' );
 
 		echo '<select name="lf_lang_filter">';
 		echo '<option value="">All languages</option>';
 		foreach ( $this->languages() as $lang ) {
-			echo '<option value="' . esc_attr( $lang ) . '" ' . selected( $current, $lang, false ) . '>' . strtoupper( $lang ) . '</option>';
+			echo '<option value="' . esc_attr( $lang ) . '" ' . selected( $current, $lang, false ) . '>' . esc_html( strtoupper( $lang ) ) . '</option>';
 		}
 		echo '</select>';
 	}
@@ -1544,7 +1591,8 @@ class Language_Router {
 	public function render_outdated_filter_dropdown( string $post_type ): void {
 		if ( ! in_array( $post_type, [ 'post', 'page' ] ) ) return;
 
-		$current = $_GET['lf_outdated_filter'] ?? '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reading admin list-filter URL parameter; no data is modified.
+		$current = isset( $_GET['lf_outdated_filter'] ) ? sanitize_key( wp_unslash( $_GET['lf_outdated_filter'] ) ) : '';
 
 		echo '<select name="lf_outdated_filter">';
 		echo '<option value="">All statuses</option>';
@@ -1559,6 +1607,7 @@ class Language_Router {
 	public function hreflang_mode(): string {
 		static $mode = null;
 		if ( $mode !== null ) return $mode;
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		$mode = apply_filters( 'lf_hreflang_mode', 'custom' );
 		return $mode;
 	}
@@ -1593,7 +1642,8 @@ class Language_Router {
 		}
 
 		if ( is_archive() || is_home() ) {
-			$path = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+			$path = trim( wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
 
 			$langs_regex = implode( '|', array_map( 'preg_quote', $this->languages() ) );
 			$path        = preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
@@ -1778,7 +1828,10 @@ class Language_Router {
 
 		if ( $exists ) return true;
 
-		$result = $wpdb->query( "CREATE INDEX {$index_name} ON {$table} (meta_key, meta_value(10))" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- DDL identifiers cannot use placeholders; values are escaped with esc_sql() and wrapped in backticks.
+		$result = $wpdb->query(
+			'CREATE INDEX `' . esc_sql( $index_name ) . '` ON `' . esc_sql( $table ) . '` (meta_key, meta_value(10))'
+		);
 
 		return $result !== false;
 	}
@@ -1940,6 +1993,7 @@ jQuery(function($){
 
 		$prefix = '[LANG ROUTER] ';
 		if ( ! empty( $context ) ) $message .= ' | ' . json_encode( $context );
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
 		error_log( $prefix . $message );
 	}
 
@@ -1956,8 +2010,9 @@ jQuery(function($){
 	public function debug_request_context(): void {
 		if ( is_admin() ) return;
 		if ( ! is_singular() && ! is_archive() && ! is_home() && ! is_search() ) return;
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 		$this->debug( 'Request context', [
-			'url'  => $_SERVER['REQUEST_URI'] ?? '',
+			'url'  => wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ),
 			'lang' => defined( 'LF_LANG' ) ? LF_LANG : null,
 			'type' => [
 				'singular' => is_singular(),

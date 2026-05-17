@@ -31,7 +31,7 @@ add_action( 'add_meta_boxes', function () {
 		add_meta_box(
 			'lf_meta_description',
 			__( 'Meta Description', 'lingua-forge' ),
-			'lf_meta_description_box',
+			'linguaforge_meta_description_box',
 			$type,
 			'normal',
 			'high',
@@ -40,7 +40,7 @@ add_action( 'add_meta_boxes', function () {
 	}
 } );
 
-function lf_meta_description_box( $post ) {
+function linguaforge_meta_description_box( $post ) {
 	$custom = get_post_meta( $post->ID, 'meta_description', true );
 
 	if ( ! empty( $custom ) ) {
@@ -97,7 +97,7 @@ function lf_meta_description_box( $post ) {
 add_action( 'save_post', function ( $post_id ) {
 
 	if ( ! isset( $_POST['lf_meta_description_nonce'] ) ||
-		! wp_verify_nonce( $_POST['lf_meta_description_nonce'], 'lf_meta_description_save' ) ) {
+		! wp_verify_nonce( wp_unslash( $_POST['lf_meta_description_nonce'] ), 'lf_meta_description_save' ) ) {
 		return;
 	}
 
@@ -105,7 +105,7 @@ add_action( 'save_post', function ( $post_id ) {
 	if ( ! current_user_can( 'edit_post', $post_id ) )    return;
 
 	if ( isset( $_POST['lf_meta_description_field'] ) ) {
-		$value = sanitize_textarea_field( $_POST['lf_meta_description_field'] );
+		$value = sanitize_textarea_field( wp_unslash( $_POST['lf_meta_description_field'] ) );
 
 		if ( $value === '' ) {
 			// Clean up rather than storing an empty string
@@ -164,9 +164,8 @@ add_action( 'wp_head', function () {
 
 	if ( empty( $description ) ) return;
 
-	$esc = esc_attr( $description );
-	echo '<meta name="description" content="'          . $esc . '">' . "\n";
-	echo '<meta property="og:description" content="'  . $esc . '">' . "\n";
-	echo '<meta name="twitter:description" content="' . $esc . '">' . "\n";
+	echo '<meta name="description" content="'          . esc_attr( $description ) . '">' . "\n";
+	echo '<meta property="og:description" content="'  . esc_attr( $description ) . '">' . "\n";
+	echo '<meta name="twitter:description" content="' . esc_attr( $description ) . '">' . "\n";
 
 }, 1 );

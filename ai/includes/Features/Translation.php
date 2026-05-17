@@ -113,10 +113,7 @@ class Translation implements FeatureInterface {
      *   2. Polylang — pll_get_post_language( $post_id, 'slug' ) returns the
      *      language slug (e.g. "fr") when the Polylang plugin is active.
      *
-     *   3. WPML — the wpml_post_language_details filter returns an array with
-     *      a 'language_code' key when WPML is installed and active.
-     *
-     *   4. Site locale — get_locale() (e.g. "de_DE") is trimmed to its 2-letter
+     *   3. Site locale — get_locale() (e.g. "de_DE") is trimmed to its 2-letter
      *      ISO 639-1 prefix.  Used as a fallback for single-language sites.
      *
      * Returns null when no post context exists (e.g. a generic admin screen or
@@ -139,8 +136,9 @@ class Translation implements FeatureInterface {
             // Screen base 'post' covers all post types in both the classic
             // editor and Gutenberg (posts, pages, custom post types).
             if ( $screen && $screen->base === 'post' ) {
-                $post_id = (int) ( $_GET['post']     ?? 0 )
-                        ?: (int) ( $_POST['post_ID'] ?? 0 );
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Reading post ID from URL/POST to identify which post is open, not processing a form submission.
+                $post_id = (int) wp_unslash( $_GET['post']     ?? 0 )
+                        ?: (int) wp_unslash( $_POST['post_ID'] ?? 0 );
             }
 
         } else {
@@ -174,20 +172,7 @@ class Translation implements FeatureInterface {
             }
         }
 
-        // ── 3. WPML ───────────────────────────────────────────────────────────
-
-        $wpml = apply_filters( 'wpml_post_language_details', null, $post_id );
-
-        if ( is_array( $wpml ) && ! empty( $wpml['language_code'] ) ) {
-
-            $lang = (string) $wpml['language_code'];
-
-            if ( array_key_exists( $lang, self::get_languages() ) ) {
-                return $lang;
-            }
-        }
-
-        // ── 4. Site locale ────────────────────────────────────────────────────
+        // ── 3. Site locale ────────────────────────────────────────────────────
         // Trim "de_DE" → "de", "en_US" → "en", etc.
 
         $code = strtolower( substr( get_locale(), 0, 2 ) );
@@ -417,6 +402,7 @@ class Translation implements FeatureInterface {
 
         if ($max_input > 0 && mb_strlen($placeholder_content) > $max_input) {
             $content_to_translate = mb_substr($placeholder_content, 0, $max_input);
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations are cut off.
             error_log(sprintf(
                 'LinguaForge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
                 $post_id,
@@ -536,6 +522,7 @@ class Translation implements FeatureInterface {
             if (json_decode($candidate) !== null) {
                 $translated_footnotes = $candidate;
             } else {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for JSON parse failures in AI response.
                 error_log('LinguaForge AI [Translation] footnotes section was not valid JSON — skipped.');
             }
         }
@@ -551,6 +538,7 @@ class Translation implements FeatureInterface {
                     $translated_attrs
                 );
             } else {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for JSON parse failures in AI response.
                 error_log('LinguaForge AI [Translation] block attribute translations were not valid JSON — skipped.');
             }
         }

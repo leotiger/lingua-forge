@@ -1,5 +1,7 @@
 # LinguaForge
 
+**GitHub:** https://github.com/leotiger/lingua-forge
+
 A WordPress plugin that combines multilingual routing, SEO meta tags, and AI-powered content tools in a single package. Built for FSE / block-theme sites that serve content in multiple languages and need editorial AI assistance without a heavyweight third-party subscription service.
 
 LinguaForge merges three previously separate must-use plugins — **Language Router**, **Meta Description**, and **WPEnhance AI** — into one installable plugin with a shared path and URL foundation.
@@ -601,12 +603,12 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.0.1**
+**Current release — 1.1.0**
 
-- Fixes a fatal PHP memory error (infinite recursion) in `Translation.php`
-- Fixes the invisible "Apply to Meta Description" button in the AI meta box
-- Language override files moved to `wp-content/uploads/lingua-forge/i18n-overrides/` so they survive plugin updates
-- Upload/delete UI added to **Settings → LinguaForge AI → Language Overrides**
+- Public template functions renamed from `lf_*` to `linguaforge_*` for WordPress.org naming compliance
+- Fixes an uninstall bug that left an orphaned DB index after plugin deletion
+- Fixes a character-escaping bug in the Language Switcher custom label mode
+- Full WordPress.org Plugin Check compliance pass across all files
 
 ## License
 

@@ -39,6 +39,7 @@ class OpenAI implements AIProviderInterface {
         );
 
         if (is_wp_error($response)) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
             error_log('LinguaForge AI [OpenAI] request failed: ' . $response->get_error_message());
             return null;
         }
@@ -46,6 +47,7 @@ class OpenAI implements AIProviderInterface {
         $http_code = (int) wp_remote_retrieve_response_code($response);
 
         if ($http_code < 200 || $http_code >= 300) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unexpected HTTP responses from the OpenAI API.
             error_log(sprintf(
                 'LinguaForge AI [OpenAI] unexpected HTTP %d: %s',
                 $http_code,
@@ -62,6 +64,7 @@ class OpenAI implements AIProviderInterface {
         // Detect output truncation: 'length' means the model hit max_tokens
         // before finishing — the result would be a partial translation.
         if (($body['choices'][0]['finish_reason'] ?? '') === 'length') {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for truncated AI responses; users are directed here by the plugin FAQ.
             error_log('LinguaForge AI [OpenAI] response truncated: finish_reason=length. Raise max_tokens in WorkerConfig.');
             return null;
         }

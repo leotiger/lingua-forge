@@ -2,8 +2,8 @@
 Contributors: ulihake
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
-Tested up to: 6.8
-Stable tag: 1.0.1
+Tested up to: 6.9
+Stable tag: 1.1.0
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,8 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **Language Overrides** — upload custom `.mo` files to override third-party plugin strings per locale (e.g. replace "room" with "apartment" in VikBooking). Files are stored in the uploads folder and survive plugin updates. Managed from **Settings → LinguaForge AI → Language Overrides**
 
 API keys are stored encrypted (AES-256-CBC, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
+
+Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
 == Installation ==
 
@@ -149,6 +151,12 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.1.0 =
+* Changed: Public template functions renamed from `lf_*` to `linguaforge_*` for WordPress.org naming compliance (e.g. `linguaforge_get_lang()`, `linguaforge_languages()`).
+* Fixed: Index name mismatch in `uninstall.php` — was attempting to drop `lf_lang_meta` instead of the actual index `idx_lang`, leaving an orphaned index after plugin deletion.
+* Fixed: Double-escaping bug in the Language Switcher when using a custom toggle label containing special characters (e.g. `&`).
+* Changed: WordPress.org Plugin Check compliance pass across all files — escaping, sanitization, nonce suppression comments, and i18n translators comments.
+
 = 1.0.1 =
 * Added: Language Overrides UI — upload and delete `.mo` files from **Settings → LinguaForge AI → Language Overrides** without FTP access.
 * Added: Override files are now stored in `wp-content/uploads/lingua-forge/i18n-overrides/` so they survive plugin updates. Deleting a `.mo` also removes the matching `.po` if present.
@@ -164,8 +172,11 @@ Used when the active provider is set to Google Gemini.
 
 == Upgrade Notice ==
 
+= 1.1.0 =
+Template functions renamed from lf_* to linguaforge_* for WordPress.org compliance. Update any direct calls in custom themes. Fixes an uninstall bug and a character-escaping issue in the Language Switcher.
+
 = 1.0.1 =
-Fixes a fatal PHP memory error in Translation.php and resolves the invisible "Apply to Meta Description" button. Language override files are now stored in the uploads folder — move any existing `.mo` files from `lingua-forge/language-router/i18n-overrides/` to `wp-content/uploads/lingua-forge/i18n-overrides/` after upgrading.
+Fixes a fatal PHP memory error and the invisible Apply to Meta Description button. Language override .mo files are now stored in wp-content/uploads/lingua-forge/i18n-overrides/ — move any existing files there after upgrading.
 
 = 1.0.0 =
 Initial release.

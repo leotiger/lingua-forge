@@ -64,11 +64,12 @@ class LSFLR_Switcher {
 	}
 
 	public function translate_current_url( string $target_lang, ?int $post_id = null ): string {
-		$current_url = home_url( $_SERVER['REQUEST_URI'] );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set value used only for URL path parsing; home_url() encodes the result.
+		$current_url = home_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/' );
 		$langs       = $this->router->languages();
 		$source      = $this->router->source_language();
 
-		$parsed  = parse_url( $current_url );
+		$parsed  = wp_parse_url( $current_url );
 		$path    = trim( $parsed['path'] ?? '', '/' );
 		$query   = isset( $parsed['query'] ) ? '?' . $parsed['query'] : '';
 
@@ -133,7 +134,9 @@ class LSFLR_Switcher {
 		};
 
 		if ( $atts['show'] === 'custom' ) {
-			$toggle = esc_html( $atts['customLabel'] );
+			// Store raw value — wp_kses_post() at echo point handles entity normalisation.
+			// Pre-escaping with esc_html() here would double-encode entities (e.g. & → &amp;amp;).
+			$toggle = $atts['customLabel'];
 		} elseif ( $atts['show'] === 'icon' ) {
 			$toggle = $get_icon( $atts['iconHtml'] );
 		} elseif ( $atts['show'] === 'icon-label' ) {
@@ -151,7 +154,11 @@ class LSFLR_Switcher {
 		<ul class="lsflr-switcher <?php echo esc_attr( $dir ); ?>">
 			<li class="lsflr-toggle" tabindex="0">
 
-				<div class="lsflr-current"><?php echo $toggle; ?></div>
+				<div class="lsflr-current"><?php echo wp_kses( $toggle, [
+						'svg'  => [ 'xmlns' => true, 'viewbox' => true ],
+						'path' => [ 'd' => true, 'fill' => true ],
+						'span' => [ 'class' => true ],
+					] ); ?></div>
 
 				<?php if ( $others ) : ?>
 				<ul class="lsflr-submenu">
@@ -181,7 +188,7 @@ class LSFLR_Switcher {
 			'lsflr-switcher-editor',
 			'',
 			[ 'wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor' ],
-			null,
+			'1.1.9',
 			true
 		);
 

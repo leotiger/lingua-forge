@@ -341,7 +341,7 @@ class LSFLR_Link_Fixer {
 			wp_send_json_error( 'Permission denied' );
 		}
 
-		$lang = sanitize_text_field( $_POST['lang'] ?? '' );
+		$lang = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
 		if ( ! $this->router->is_valid_lang( $lang ) ) {
 			wp_send_json_error( 'Invalid language' );
 		}
@@ -385,8 +385,9 @@ class LSFLR_Link_Fixer {
 			wp_send_json_error( 'Permission denied' );
 		}
 
-		$post_id = (int) ( $_POST['post_id'] ?? 0 );
-		$lang    = sanitize_text_field( $_POST['lang'] ?? '' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- absint() sanitizes to a non-negative integer; no further sanitization is meaningful for a numeric ID.
+		$post_id = absint( $_POST['post_id'] ?? 0 );
+		$lang    = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
 
 		if ( ! $post_id || ! $this->router->is_valid_lang( $lang ) ) {
 			wp_send_json_error( 'Invalid parameters' );
@@ -425,7 +426,7 @@ class LSFLR_Link_Fixer {
 			. '</button>',
 			esc_attr( $lang ),
 			esc_attr( $nonce ),
-			strtoupper( $lang )
+			esc_html( strtoupper( $lang ) )
 		);
 	}
 
@@ -843,8 +844,10 @@ class LSFLR_Link_Fixer {
 	 * or an empty string when no filter is active.
 	 */
 	private function active_lang_filter(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading a list-filter URL parameter to determine the active language column filter; no data is modified.
 		if ( ! empty( $_GET['lf_lang_filter'] ) ) {
-			$lang = sanitize_text_field( $_GET['lf_lang_filter'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only list-filter parameter; no data is modified.
+			$lang = sanitize_text_field( wp_unslash( $_GET['lf_lang_filter'] ) );
 			return $this->router->is_valid_lang( $lang ) ? $lang : '';
 		}
 

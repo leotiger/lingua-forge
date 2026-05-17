@@ -57,6 +57,7 @@ class Anthropic implements AIProviderInterface {
         );
 
         if (is_wp_error($response)) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
             error_log('LinguaForge AI [Anthropic] request failed: ' . $response->get_error_message());
             return null;
         }
@@ -64,6 +65,7 @@ class Anthropic implements AIProviderInterface {
         $http_code = (int) wp_remote_retrieve_response_code($response);
 
         if ($http_code < 200 || $http_code >= 300) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unexpected HTTP responses from the Anthropic API.
             error_log(sprintf(
                 'LinguaForge AI [Anthropic] unexpected HTTP %d: %s',
                 $http_code,
@@ -80,6 +82,7 @@ class Anthropic implements AIProviderInterface {
         // Detect output truncation: 'max_tokens' means the model hit the token
         // ceiling before finishing — the result would be a partial translation.
         if (($body['stop_reason'] ?? '') === 'max_tokens') {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for truncated AI responses; users are directed here by the plugin FAQ.
             error_log('LinguaForge AI [Anthropic] response truncated: stop_reason=max_tokens. Raise max_tokens in WorkerConfig.');
             return null;
         }

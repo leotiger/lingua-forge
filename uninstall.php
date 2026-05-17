@@ -29,7 +29,7 @@ global $wpdb;
 
 // ── wp_options — named keys ───────────────────────────────────────────────────
 
-$named_options = [
+$linguaforge_named_options = [
     // Core
     'linguaforge_flush_rewrite_rules',
     'linguaforge_mu_migration_done',
@@ -37,8 +37,8 @@ $named_options = [
     'lf_lang_router_version',
 ];
 
-foreach ( $named_options as $option ) {
-    delete_option( $option );
+foreach ( $linguaforge_named_options as $linguaforge_option ) {
+    delete_option( $linguaforge_option );
 }
 
 // ── wp_options — wildcard prefixes ────────────────────────────────────────────
@@ -46,7 +46,13 @@ foreach ( $named_options as $option ) {
 // linguaforge_quick_translate_*, linguaforge_content_generator_*,
 // and any other options added in future versions.
 
-$prefixes = [
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+// Rationale: uninstall.php runs exactly once (on plugin deletion) to irreversibly
+// remove plugin data. Caching is meaningless for one-shot destructive operations,
+// and there are no WordPress API equivalents for LIKE-based bulk DELETEs or DDL
+// (DROP INDEX). All values are either hardcoded literals or escaped via $wpdb->prepare().
+
+$linguaforge_prefixes = [
     'linguaforge\_key\_%',
     'linguaforge\_model\_%',
     'linguaforge\_translation\_%',
@@ -54,18 +60,18 @@ $prefixes = [
     'linguaforge\_content\_generator\_%',
 ];
 
-foreach ( $prefixes as $like ) {
+foreach ( $linguaforge_prefixes as $linguaforge_like ) {
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-            $like
+            $linguaforge_like
         )
     );
 }
 
 // ── Post meta ─────────────────────────────────────────────────────────────────
 
-$post_meta_keys = [
+$linguaforge_post_meta_keys = [
     // AI result caches — safe to bulk-delete; keyed by pattern below
     // Language Router
     '_lang',
@@ -78,8 +84,8 @@ $post_meta_keys = [
     'meta_description',
 ];
 
-foreach ( $post_meta_keys as $key ) {
-    $wpdb->delete( $wpdb->postmeta, [ 'meta_key' => $key ] );
+foreach ( $linguaforge_post_meta_keys as $linguaforge_key ) {
+    $wpdb->delete( $wpdb->postmeta, [ 'meta_key' => $linguaforge_key ] );
 }
 
 // AI caches use a prefix (_linguaforge_cache_*) — delete with LIKE.
@@ -99,14 +105,15 @@ $wpdb->delete( $wpdb->usermeta, [ 'meta_key' => 'my_lang_filter' ] );
 // The plugin adds a composite index on wp_postmeta for fast _lang queries.
 // Remove it on uninstall to leave the database in its original state.
 
-$index_exists = $wpdb->get_var(
+$linguaforge_index_exists = $wpdb->get_var(
     "SELECT COUNT(1)
      FROM information_schema.STATISTICS
      WHERE table_schema = DATABASE()
        AND table_name   = '{$wpdb->postmeta}'
-       AND index_name   = 'lf_lang_meta'"
+       AND index_name   = 'idx_lang'"
 );
 
-if ( $index_exists ) {
-    $wpdb->query( "ALTER TABLE {$wpdb->postmeta} DROP INDEX lf_lang_meta" );
+if ( $linguaforge_index_exists ) {
+    $wpdb->query( "ALTER TABLE {$wpdb->postmeta} DROP INDEX idx_lang" );
 }
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange

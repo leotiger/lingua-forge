@@ -135,7 +135,7 @@ class SettingsPage {
             }
 
             $new_key = sanitize_text_field(
-                trim($_POST["linguaforge_key_{$slug}"] ?? '')
+                wp_unslash( $_POST["linguaforge_key_{$slug}"] ?? '' )
             );
 
             if ($new_key !== '') {
@@ -153,7 +153,7 @@ class SettingsPage {
 
                 $option_key  = "linguaforge_model_{$slug}_{$tier}";
                 $model_value = sanitize_text_field(
-                    trim($_POST[$option_key] ?? '')
+                    wp_unslash( $_POST[$option_key] ?? '' )
                 );
 
                 // Allow saving an empty string to reset to the built-in default.
@@ -164,14 +164,14 @@ class SettingsPage {
         // ── Translation limits ────────────────────────────────────────────────
         // Store as integers; 0 / empty means "use built-in default".
 
-        $max_tokens = (int) ($_POST['linguaforge_translation_max_tokens'] ?? 0);
+        $max_tokens = (int) wp_unslash( $_POST['linguaforge_translation_max_tokens'] ?? 0 );
         update_option(
             'linguaforge_translation_max_tokens',
             $max_tokens > 0 ? $max_tokens : '',
             false
         );
 
-        $max_input = (int) ($_POST['linguaforge_translation_max_input_chars'] ?? 0);
+        $max_input = (int) wp_unslash( $_POST['linguaforge_translation_max_input_chars'] ?? 0 );
         // 0 is a valid value here (means no limit), so store whatever was submitted.
         update_option(
             'linguaforge_translation_max_input_chars',
@@ -188,14 +188,14 @@ class SettingsPage {
             false
         );
 
-        $qt_tokens = (int) ($_POST['linguaforge_quick_translate_max_tokens'] ?? 0);
+        $qt_tokens = (int) wp_unslash( $_POST['linguaforge_quick_translate_max_tokens'] ?? 0 );
         update_option(
             'linguaforge_quick_translate_max_tokens',
             $qt_tokens > 0 ? $qt_tokens : '',
             false
         );
 
-        $qt_input = (int) ($_POST['linguaforge_quick_translate_max_input_chars'] ?? 0);
+        $qt_input = (int) wp_unslash( $_POST['linguaforge_quick_translate_max_input_chars'] ?? 0 );
         update_option(
             'linguaforge_quick_translate_max_input_chars',
             $qt_input > 0 ? $qt_input : '',
@@ -204,21 +204,21 @@ class SettingsPage {
 
         // ── Content Generator limits ──────────────────────────────────────────
 
-        $cg_tokens = (int) ($_POST['linguaforge_content_generator_max_tokens'] ?? 0);
+        $cg_tokens = (int) wp_unslash( $_POST['linguaforge_content_generator_max_tokens'] ?? 0 );
         update_option(
             'linguaforge_content_generator_max_tokens',
             $cg_tokens > 0 ? $cg_tokens : '',
             false
         );
 
-        $cg_hints = (int) ($_POST['linguaforge_content_generator_max_hints_chars'] ?? 0);
+        $cg_hints = (int) wp_unslash( $_POST['linguaforge_content_generator_max_hints_chars'] ?? 0 );
         update_option(
             'linguaforge_content_generator_max_hints_chars',
             $cg_hints > 0 ? $cg_hints : '',
             false
         );
 
-        $cg_context = (int) ($_POST['linguaforge_content_generator_max_context_chars'] ?? 0);
+        $cg_context = (int) wp_unslash( $_POST['linguaforge_content_generator_max_context_chars'] ?? 0 );
         update_option(
             'linguaforge_content_generator_max_context_chars',
             $cg_context > 0 ? $cg_context : '',
@@ -253,6 +253,7 @@ class SettingsPage {
             exit;
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- $_FILES array is passed directly to wp_handle_upload() which performs its own validation.
         $file = $_FILES['linguaforge_mo_file'];
 
         // Validate extension — only .mo files are loaded at runtime
@@ -268,13 +269,33 @@ class SettingsPage {
             exit;
         }
 
-        $dir      = self::overrides_dir();
-        $filename = sanitize_file_name($file['name']);
-        $dest     = $dir . $filename;
+        $dir = self::overrides_dir();
 
         wp_mkdir_p($dir);
 
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+        // Redirect wp_handle_upload() to our override directory and preserve the
+        // exact filename so the {textdomain}-{locale}.mo convention is maintained.
+        $upload_dir_cb = static function ( $dirs ) use ( $dir ) {
+            $dirs['path']   = untrailingslashit( $dir );
+            $dirs['url']    = '';
+            $dirs['subdir'] = '';
+            return $dirs;
+        };
+
+        add_filter( 'upload_dir', $upload_dir_cb );
+
+        $uploaded = wp_handle_upload(
+            $file,
+            [
+                'test_form'                => false, // nonce already verified via check_admin_referer
+                'test_type'                => false, // extension already validated above
+                'unique_filename_callback' => static fn( $d, $n, $e ) => $n, // keep exact name
+            ]
+        );
+
+        remove_filter( 'upload_dir', $upload_dir_cb );
+
+        if ( isset( $uploaded['error'] ) || empty( $uploaded['file'] ) ) {
             wp_safe_redirect(add_query_arg('lf_override_error', 'move_failed', $redirect_base));
             exit;
         }
@@ -293,7 +314,7 @@ class SettingsPage {
 
         $redirect_base = admin_url('options-general.php?page=' . self::PAGE_SLUG);
 
-        $filename = sanitize_file_name($_POST['linguaforge_override_file'] ?? '');
+        $filename = sanitize_file_name( wp_unslash( $_POST['linguaforge_override_file'] ?? '' ) );
 
         // Validate: must be a .mo filename, no path separators
         if ($filename === '' || strpos($filename, '/') !== false || strpos($filename, '\\') !== false) {
@@ -358,7 +379,8 @@ class SettingsPage {
 
             <h1><?php esc_html_e('LinguaForge AI — Settings', 'lingua-forge'); ?></h1>
 
-            <?php if (!empty($_GET['linguaforge_saved'])): ?>
+            <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after a successful save; no data is processed here.
+            if (!empty($_GET['linguaforge_saved'])): ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php esc_html_e('Settings saved.', 'lingua-forge'); ?></p>
                 </div>
@@ -405,6 +427,7 @@ class SettingsPage {
                                 <p class="description">
                                     <?php
                                     printf(
+                                        /* translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags. */
                                         esc_html__(
                                             'Currently inherited from the %s constant. Selecting a value here will override it.',
                                             'lingua-forge'
@@ -581,10 +604,10 @@ class SettingsPage {
                                     <p class="description">
                                         <?php
                                         printf(
+                                            /* translators: %s is the key source: either "environment variable" or "PHP constant". */
                                             esc_html__(
-                                                'This key is currently supplied by a server %s and ' .
-                                                'cannot be removed here. Enter a new key above to ' .
-                                                'override it with a database value.'
+                                                'This key is currently supplied by a server %s and cannot be removed here. Enter a new key above to override it with a database value.',
+                                                'lingua-forge'
                                             ),
                                             $source === 'environment'
                                                 ? esc_html__('environment variable', 'lingua-forge')
@@ -606,12 +629,7 @@ class SettingsPage {
 
                 <p>
                     <?php
-                    esc_html_e(
-                        'Control how much content is sent to the AI and how large the response can be. ' .
-                        'Leave a field blank to use the built-in default (shown as placeholder). ' .
-                        'Raise these values if large pages are being cut off; lower them to reduce API costs.',
-                        'lingua-forge'
-                    );
+                    esc_html_e( 'Control how much content is sent to the AI and how large the response can be. Leave a field blank to use the built-in default (shown as placeholder). Raise these values if large pages are being cut off; lower them to reduce API costs.', 'lingua-forge' );
                     ?>
                 </p>
 
@@ -637,12 +655,7 @@ class SettingsPage {
                             >
                             <p class="description">
                                 <?php
-                                esc_html_e(
-                                    'Maximum number of tokens the AI may produce in a single translation response. ' .
-                                    'If a translation is silently cut off at the end, increase this value. ' .
-                                    'Default: 16 000.',
-                                    'lingua-forge'
-                                );
+                                esc_html_e( 'Maximum number of tokens the AI may produce in a single translation response. If a translation is silently cut off at the end, increase this value. Default: 16 000.', 'lingua-forge' );
                                 ?>
                             </p>
                         </td>
@@ -668,13 +681,7 @@ class SettingsPage {
                             >
                             <p class="description">
                                 <?php
-                                esc_html_e(
-                                    'Maximum number of characters of post content forwarded to the AI. ' .
-                                    '0 means no limit — the full content is always sent (recommended). ' .
-                                    'Set a non-zero value only if your provider has a tight context window. ' .
-                                    'A warning is written to the PHP error log whenever the content is trimmed.',
-                                    'lingua-forge'
-                                );
+                                esc_html_e( 'Maximum number of characters of post content forwarded to the AI. 0 means no limit — the full content is always sent (recommended). Set a non-zero value only if your provider has a tight context window. A warning is written to the PHP error log whenever the content is trimmed.', 'lingua-forge' );
                                 ?>
                             </p>
                         </td>
@@ -687,11 +694,7 @@ class SettingsPage {
 
                 <p>
                     <?php
-                    esc_html_e(
-                        'Quick Translation is used for snippet/chunk mode — short passages translated on demand from the toolbar, editor, or block popovers. ' .
-                        'It uses a separate, lighter configuration from the full-page translation to keep responses fast and cost-effective.',
-                        'lingua-forge'
-                    );
+                    esc_html_e( 'Quick Translation is used for snippet/chunk mode — short passages translated on demand from the toolbar, editor, or block popovers. It uses a separate, lighter configuration from the full-page translation to keep responses fast and cost-effective.', 'lingua-forge' );
                     ?>
                 </p>
 
@@ -720,11 +723,7 @@ class SettingsPage {
                             </select>
                             <p class="description">
                                 <?php
-                                esc_html_e(
-                                    'The Light tier uses the fast model configured in the Models table above (default: Haiku / Flash). ' .
-                                    'Switch to Quality if you need the same translation accuracy as full-page mode for snippets.',
-                                    'lingua-forge'
-                                );
+                                esc_html_e( 'The Light tier uses the fast model configured in the Models table above (default: Haiku / Flash). Switch to Quality if you need the same translation accuracy as full-page mode for snippets.', 'lingua-forge' );
                                 ?>
                             </p>
                         </td>
@@ -785,11 +784,7 @@ class SettingsPage {
 
                 <p>
                     <?php
-                    esc_html_e(
-                        'Controls the token budget and input limits for the AI Content Generator feature. ' .
-                        'Leave fields blank to use the built-in defaults.',
-                        'lingua-forge'
-                    );
+                    esc_html_e( 'Controls the token budget and input limits for the AI Content Generator feature. Leave fields blank to use the built-in defaults.', 'lingua-forge' );
                     ?>
                 </p>
 
@@ -874,12 +869,7 @@ class SettingsPage {
                     <p>
                         <strong><?php esc_html_e('Alternative (server-side):', 'lingua-forge'); ?></strong>
                         <?php
-                        esc_html_e(
-                            'You can also define keys as constants or environment ' .
-                            'variables (e.g. in wp-config.php). Those sources are ' .
-                            'used automatically as a fallback when no database key ' .
-                            'is stored.'
-                        , 'lingua-forge');
+                        esc_html_e( 'You can also define keys as constants or environment variables (e.g. in wp-config.php). Those sources are used automatically as a fallback when no database key is stored.', 'lingua-forge' );
                         ?>
                     </p>
                     <pre class="lingua-forge-code-sample">define( 'ANTHROPIC_API_KEY', 'sk-ant-…' );
@@ -906,27 +896,24 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
 
             <p>
                 <?php
-                esc_html_e(
-                    'Upload compiled .mo files to override third-party plugin strings for specific locales — ' .
-                    'for example, a custom VikBooking translation that uses "apartment" instead of "room". ' .
-                    'Files must follow the WordPress naming convention: {textdomain}-{locale}.mo ' .
-                    '(e.g. vikbooking-ca.mo). They are stored in the uploads folder and survive plugin updates.',
-                    'lingua-forge'
-                );
+                esc_html_e( 'Upload compiled .mo files to override third-party plugin strings for specific locales — for example, a custom VikBooking translation that uses "apartment" instead of "room". Files must follow the WordPress naming convention: {textdomain}-{locale}.mo (e.g. vikbooking-ca.mo). They are stored in the uploads folder and survive plugin updates.', 'lingua-forge' );
                 ?>
             </p>
 
             <?php
             // ── Feedback notices ─────────────────────────────────────────────
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flags set by wp_safe_redirect() after upload/delete actions; no data is modified here.
             if (!empty($_GET['lf_override_uploaded'])): ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php esc_html_e('Override file uploaded successfully.', 'lingua-forge'); ?></p>
                 </div>
-            <?php elseif (!empty($_GET['lf_override_deleted'])): ?>
+            <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            elseif (!empty($_GET['lf_override_deleted'])): ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php esc_html_e('Override file deleted.', 'lingua-forge'); ?></p>
                 </div>
-            <?php elseif (!empty($_GET['lf_override_error'])):
+            <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            elseif (!empty($_GET['lf_override_error'])):
                 $error_map = [
                     'empty'        => __('No file was selected.', 'lingua-forge'),
                     'invalid_type' => __('Only .mo files are accepted.', 'lingua-forge'),
@@ -935,7 +922,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                     'invalid_file' => __('Invalid filename.', 'lingua-forge'),
                     'invalid_path' => __('Security check failed — file path is not permitted.', 'lingua-forge'),
                 ];
-                $error_key = sanitize_key($_GET['lf_override_error']);
+                $error_key = sanitize_key( wp_unslash( $_GET['lf_override_error'] ) );
                 $error_msg = $error_map[$error_key] ?? __('An unknown error occurred.', 'lingua-forge');
                 ?>
                 <div class="notice notice-error is-dismissible">
@@ -982,7 +969,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                         ?>
                             <tr>
                                 <td><code><?php echo esc_html($base); ?></code></td>
-                                <td><?php echo implode(' ', $badges); ?></td>
+                                <td><?php echo wp_kses( implode( ' ', $badges ), [ 'code' => [] ] ); ?></td>
                                 <td><?php echo esc_html($size); ?></td>
                                 <td>
                                     <form
@@ -1037,11 +1024,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                             >
                             <p class="description">
                                 <?php
-                                esc_html_e(
-                                    'Accepts compiled .mo files only. Filename must follow the pattern {textdomain}-{locale}.mo. ' .
-                                    'Uploading a file with the same name as an existing one will replace it.',
-                                    'lingua-forge'
-                                );
+                                esc_html_e( 'Accepts compiled .mo files only. Filename must follow the pattern {textdomain}-{locale}.mo. Uploading a file with the same name as an existing one will replace it.', 'lingua-forge' );
                                 ?>
                             </p>
                         </td>
