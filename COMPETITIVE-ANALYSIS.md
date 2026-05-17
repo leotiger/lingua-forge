@@ -15,7 +15,7 @@ LinguaForge is already a credible replacement for WPML and Polylang Pro on block
 
 | | LinguaForge | WPML | Polylang |
 |---|---|---|---|
-| **Plugin license** | Free — GPL-2.0-or-later (compatible with GPL-3), no expiry | €29–€199 / year (3 tiers) | Free (limited) / €99 / year (Pro) |
+| **Plugin license** | Free — GPL-2.0 or higher, no expiry | €29–€199 / year (3 tiers) | Free (limited) / €99 / year (Pro) |
 | **Updates & support** | Included | Requires active license | Included in Pro |
 | **AI / Auto-translation** | Pay-as-you-go API key (Claude, OpenAI, or Gemini — your account, your rate) | WPML Credits: 2 credits / word via DeepL ≈ €0.90 / 1 000 words; 2 000 free credits / month then top-up required | DeepL / Google add-on (Polylang Pro); separate subscription |
 | **WooCommerce multilingual** | Not yet included | Separate WPML WooCommerce add-on (bundled in top tier) | Polylang for WooCommerce add-on (extra) |
