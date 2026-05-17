@@ -7,7 +7,7 @@
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Author:            Uli Hake
- * Author URI:        https://ulihake.com
+ * Author URI:        https://cal-talaia.cat
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       lingua-forge
