@@ -161,6 +161,19 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.2.0 =
+* Added: `wp linguaforge retranslate` WP-CLI command — force-retranslates a post into one or more target languages, wipes the prior translation cache, and marks the translation synced. Accepts `--to`, `--temperature`, `--max-tokens`, `--model`, `--dry-run`, and `--format` flags.
+* Added: AI Behavior Presets — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing) with tuned temperature and system-prompt addenda. Set a site-wide default from **Settings → Behavior** or override per post from the LinguaForge AI metabox.
+* Added: AI Usage tracking — every API call is logged by feature, provider, model, and date. Summary table available in **Settings → AI Usage**.
+* Added: Translation Memory — opt-in block-level cache shared across posts; only new or changed blocks are sent to the API on subsequent translations. Enable from **Settings → Behavior**.
+* Added: Glossary — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**.
+* Added: Side-by-side diff preview — "Apply to Editor" shows a two-column before/after modal before writing to the post.
+* Changed: Language Router classes moved into the `LinguaForge\Router` namespace (`Router`, `Switcher`, `LinkFixer`). Back-compat aliases (`Language_Router`, `LSFLR_Switcher`, `LSFLR_Link_Fixer`) remain active; targeted for removal in 1.5.
+* Changed: Meta descriptions stored under the prefixed key `_linguaforge_meta_description`. A one-time bulk migration copies existing `meta_description` rows to the new key automatically on the first admin request after upgrade. The old key is left intact.
+* Fixed: `phpcs` / Plugin Check compliance — all direct `$wpdb` queries against the plugin's own tables now carry the correct five-rule ignore directives (`DirectQuery`, `NoCaching`, `SchemaChange`, `InterpolatedNotPrepared`, `NotPrepared`, `PluginCheck.Security.DirectDB.UnescapedDBParameter`).
+* Fixed: Nested `phpcs:disable/enable` blocks in `uninstall.php` were re-enabling `DirectQuery` and `NoCaching` mid-file, leaving later DROP and DELETE statements without the required ignore coverage.
+* Fixed: `stable_tag` mismatch between plugin header and `readme.txt` flagged by Plugin Check.
+
 = 1.1.0 =
 * Changed: Public template functions renamed from `lf_*` to `linguaforge_*` for WordPress.org naming compliance (e.g. `linguaforge_get_lang()`, `linguaforge_languages()`).
 * Fixed: Index name mismatch in `uninstall.php` — was attempting to drop `lf_lang_meta` instead of the actual index `idx_lang`, leaving an orphaned index after plugin deletion.
@@ -181,6 +194,9 @@ Used when the active provider is set to Google Gemini.
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Language Router classes are now namespaced; back-compat aliases remain active. Meta descriptions migrate automatically to the new `_linguaforge_meta_description` key — no manual steps required. Adds WP-CLI retranslate command, AI Usage tracking, Behavior Presets, Translation Memory, and Glossary.
 
 = 1.1.0 =
 Template functions renamed from lf_* to linguaforge_* for WordPress.org compliance. Update any direct calls in custom themes. Fixes an uninstall bug and a character-escaping issue in the Language Switcher.
