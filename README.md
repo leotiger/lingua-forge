@@ -1,4 +1,4 @@
-# LinguaForge
+# Lingua Forge
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 

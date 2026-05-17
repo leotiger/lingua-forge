@@ -1,4 +1,4 @@
-=== LinguaForge ===
+=== Lingua Forge ===
 Contributors: ulihake
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
