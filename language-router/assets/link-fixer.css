@@ -1,0 +1,118 @@
+/* =========================================
+   LSFLR Link Fixer — modal styles
+   Extracted from LSFLR_Link_Fixer::render_modal() inline <style> block.
+========================================= */
+
+#lsflr-fixer-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, .55);
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#lsflr-fixer-modal {
+	position: relative;
+	background: #fff;
+	border-radius: 6px;
+	padding: 28px 32px;
+	width: min(860px, 92vw);
+	max-height: 82vh;
+	overflow-y: auto;
+	box-shadow: 0 8px 40px rgba(0, 0, 0, .25);
+}
+
+#lsflr-fixer-modal h2 {
+	margin-top: 0;
+}
+
+#lsflr-fixer-close {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	background: none;
+	border: none;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+	color: #666;
+	padding: 0;
+}
+
+#lsflr-fixer-close:hover {
+	color: #000;
+}
+
+/* ---- Results table ---- */
+#lsflr-fixer-results table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 16px;
+	font-size: 13px;
+}
+
+#lsflr-fixer-results th {
+	background: #f6f7f7;
+	text-align: left;
+	padding: 8px 10px;
+	border-bottom: 2px solid #dcdcde;
+}
+
+#lsflr-fixer-results td {
+	padding: 8px 10px;
+	border-bottom: 1px solid #f0f0f1;
+	vertical-align: top;
+}
+
+#lsflr-fixer-results tr.lsflr-fixed  td { background: #edfaee; }
+#lsflr-fixer-results tr.lsflr-failed td { background: #fdf0f0; }
+
+/* ---- Link-pair display ---- */
+.lsflr-fix-pair {
+	font-family: monospace;
+	font-size: 11px;
+	line-height: 1.6;
+	margin-bottom: 4px;
+	word-break: break-all;
+}
+
+.lsflr-fix-pair .lsflr-from { color: #c0392b; }
+.lsflr-fix-pair .lsflr-to   { color: #27ae60; }
+
+/* ---- Flagged (needs manual review) ---- */
+.lsflr-fix-pair.lsflr-flagged   { margin-top: 6px; }
+.lsflr-flagged .lsflr-flag-url    { color: #b45309; }
+.lsflr-flagged .lsflr-flag-reason { color: #92400e; font-family: sans-serif; font-size: 11px; }
+
+/* ---- Actions bar ---- */
+#lsflr-fixer-actions {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-top: 22px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+#lsflr-fix-progress {
+	color: #555;
+	font-size: 13px;
+}
+
+.lsflr-spinner {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 2px solid #ccc;
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	animation: lsflr-spin .7s linear infinite;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+@keyframes lsflr-spin {
+	to { transform: rotate(360deg); }
+}

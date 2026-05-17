@@ -2,21 +2,21 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: LinguaForge 1.1.0\n"
+"Project-Id-Version: Lingua Forge 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-17T00:33:29+00:00\n"
+"POT-Creation-Date: 2026-05-17T19:51:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
 
 #. Plugin Name of the plugin
 #: lingua-forge.php
-msgid "LinguaForge"
+msgid "Lingua Forge"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -36,16 +36,18 @@ msgstr ""
 
 #. Author URI of the plugin
 #: lingua-forge.php
-msgid "https://ulihake.com"
+msgid "https://cal-talaia.cat"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:39
-#: ai/assets/block-action.js:157
-#: ai/assets/block-action.js:174
+#: ai/assets/block-action.js:252
+#: ai/assets/block-action.js:271
+#: ai/assets/block-action.js:296
+#: ai/assets/block-action.js:309
 #: ai/assets/editor-translate.js:212
 #: ai/assets/editor-translate.js:460
-#: ai/assets/toolbar-translate.js:177
-#: ai/assets/toolbar-translate.js:398
+#: ai/assets/toolbar-translate.js:179
+#: ai/assets/toolbar-translate.js:400
 msgid "Translate"
 msgstr ""
 
@@ -53,683 +55,1468 @@ msgstr ""
 msgid "LinguaForge AI — Quick Translate"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:45
+#: ai/includes/Admin/MetaBox.php:284
+msgid "AI Behaviour Preset"
+msgstr ""
+
+#. translators: %s: name of the globally configured preset
+#: ai/includes/Admin/MetaBox.php:291
+#, php-format
+msgid "Global default (%s)"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:303
+msgid "Applies to Translation and Content Generation on this page only. Other features use the global preset."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:54
 msgid "Anthropic (Claude)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:46
+#: ai/includes/Admin/SettingsPage.php:55
 msgid "OpenAI (GPT)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:47
+#: ai/includes/Admin/SettingsPage.php:56
 msgid "Google (Gemini)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:61
+#: ai/includes/Admin/SettingsPage.php:70
 msgid "Light"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:62
+#: ai/includes/Admin/SettingsPage.php:71
 msgid "Meta Description, Excerpt Generator"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:74
 msgid "Quality"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:75
 msgid "Translation, Content Generator"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:114
-msgid "You do not have permission to manage these settings."
+#: ai/includes/Admin/SettingsPage.php:111
+#: ai/includes/Admin/SettingsPage.php:1205
+msgid "Glossary"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:243
-#: ai/includes/Admin/SettingsPage.php:310
-msgid "Permission denied."
+#: ai/includes/Admin/SettingsPage.php:115
+msgid "User-managed terminology table per language pair. Entries are appended to the translation system prompt so the AI uses preferred terms consistently — critical for domain vocabulary (\"kWp\", \"PPA\", \"interconnection point\"), brand names that must not translate, and standardised regulatory phrasing. Leaving \"Source language\" empty applies the entry to any source language (useful for brand names)."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:380
-msgid "LinguaForge AI — Settings"
+#: ai/includes/Admin/SettingsPage.php:126
+msgid "Glossary entry added."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:385
-msgid "Settings saved."
+#: ai/includes/Admin/SettingsPage.php:131
+msgid "Glossary entry removed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:402
-msgid "Active Provider"
+#: ai/includes/Admin/SettingsPage.php:141
+msgid "Could not add entry: source term, target term, and target language are all required."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:408
-#: ai/includes/Admin/SettingsPage.php:460
+#: ai/includes/Admin/SettingsPage.php:143
+msgid "Could not save the glossary entry."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:155
+#: ai/includes/Admin/SettingsPage.php:271
+msgid "Source language"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:158
+#: ai/includes/Admin/SettingsPage.php:170
+msgid "— Any —"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:167
+#: ai/includes/Admin/SettingsPage.php:285
+msgid "Target language"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:178
+msgid "Filter"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:179
+msgid "Reset"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:188
+msgid "No glossary entries match the current filter. Clear the filter to see all entries, or add a new entry below."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:190
+msgid "No glossary entries yet. Add one below to start enforcing terminology in translations."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:199
+#: ai/includes/Admin/SettingsPage.php:253
+msgid "Source term"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:200
+#: ai/includes/Admin/SettingsPage.php:262
+msgid "Target term"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:201
+msgid "Source lang"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:202
+msgid "Target lang"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:203
+#: ai/includes/Admin/SettingsPage.php:297
+msgid "Notes"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:215
+msgid "any"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:231
+msgid "Delete this glossary entry?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:233
+#: ai/includes/Admin/SettingsPage.php:2094
+msgid "Delete"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:244
+msgid "Add new entry"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:257
+msgid "The phrase as it appears in the source text."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:266
+msgid "How it should appear in the translation. Type the same value as the source term to instruct the AI to preserve it verbatim."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:275
+msgid "— Any source language —"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:280
+msgid "Leave blank for brand names and language-agnostic terms that should be enforced regardless of which language we are translating from."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:301
+msgid "Optional context for editors (e.g. \"ASIC = Application-Specific Integrated Circuit; preserve in English in technical contexts\")."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:306
+msgid "Add entry"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:321
+msgid "Today"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:325
+msgid "Last 7 days"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:329
+msgid "Last 30 days"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:333
+msgid "All time"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:1206
+msgid "AI Usage"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:374
+msgid "Token consumption rolled up by feature, provider, and model. Recorded on every successful AI call; Test Connection pings are deliberately excluded so they don't skew the totals. The underlying table aggregates daily — pick a window below to view it."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:398
+msgid "No AI usage recorded yet. Once an editor runs a translation, generates a meta description, or uses any other AI feature, totals will appear here."
+msgstr ""
+
+#. translators: %s is a date-range label like "Today" or "Last 7 days".
+#: ai/includes/Admin/SettingsPage.php:413
+#, php-format
+msgid "No AI usage recorded in the selected window (%s). Pick a wider range above."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:425
+msgid "Feature"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:1232
+#: ai/includes/Admin/SettingsPage.php:1284
 msgid "Provider"
 msgstr ""
 
-#. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
+#: ai/includes/Admin/SettingsPage.php:427
+msgid "Model"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:428
+msgid "Requests"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:429
+msgid "Input tokens"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:430
+msgid "Output tokens"
+msgstr ""
+
 #: ai/includes/Admin/SettingsPage.php:431
+msgid "Total tokens"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:449
+msgid "Total"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:465
+msgid "Authors and above (edit_published_posts)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:466
+msgid "Contributors and above — default (edit_posts)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:467
+msgid "Editors and above (edit_others_posts)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:468
+msgid "Administrators only (manage_options)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:539
+msgid "Testing…"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:540
+msgid "✓ Connection OK"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:541
+msgid "✗ Failed:"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:542
+msgid "No response from provider — check the error log for details."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:543
+msgid "Network error — could not reach the WordPress AJAX endpoint."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:580
+msgid "You do not have permission to manage these settings."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:771
+#: ai/includes/Admin/SettingsPage.php:845
+#: ai/includes/Admin/SettingsPage.php:918
+#: ai/includes/Admin/SettingsPage.php:944
+#: ai/includes/Admin/SettingsPage.php:974
+#: ai/includes/Admin/SettingsPage.php:999
+#: ai/includes/Admin/SettingsPage.php:1034
+#: ai/includes/Admin/SettingsPage.php:1056
+#: ai/includes/Admin/SettingsPage.php:1096
+msgid "Permission denied."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1109
+msgid "Unknown provider."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1117
+msgid "No API key configured for this provider."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1148
+msgid "Could not instantiate the provider."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1163
+msgid "Provider returned no text. Check the WordPress error log for the detailed failure reason."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1190
+msgid "LinguaForge AI — Settings"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1195
+msgid "Settings saved."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1201
+msgid "General"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1202
+#: ai/includes/Admin/SettingsPage.php:1358
+msgid "API Keys"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1203
+msgid "Limits"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1204
+msgid "Behavior"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1207
+msgid "Maintenance"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1226
+msgid "Active Provider"
+msgstr ""
+
+#. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
+#: ai/includes/Admin/SettingsPage.php:1255
 #, php-format
 msgid "Currently inherited from the %s constant. Selecting a value here will override it."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:445
+#: ai/includes/Admin/SettingsPage.php:1269
 msgid "Models"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:449
+#: ai/includes/Admin/SettingsPage.php:1273
 msgid "Features are grouped into two tiers. Enter the exact model identifier for each tier and provider. Leave a field blank to use the built-in default (shown as placeholder). Only the active provider's models are called at runtime — configure the others in advance if you plan to switch."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:482
+#: ai/includes/Admin/SettingsPage.php:1306
 msgid "active"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:509
+#: ai/includes/Admin/SettingsPage.php:1333
 msgid "overridden"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:524
+#: ai/includes/Admin/SettingsPage.php:1348
 msgid "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:529
-msgid "API Keys"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:533
+#: ai/includes/Admin/SettingsPage.php:1362
 msgid "Keys are encrypted with AES-256-CBC before being stored in the WordPress database. The encryption secret is derived from your WordPress auth salts (wp-config.php), so plaintext keys never touch the database."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:553
+#: ai/includes/Admin/SettingsPage.php:1382
 msgid "API Key"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:566
+#: ai/includes/Admin/SettingsPage.php:1395
 msgid "Paste your API key…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:574
+#: ai/includes/Admin/SettingsPage.php:1403
 msgid "✓ Configured"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:579
+#: ai/includes/Admin/SettingsPage.php:1408
 msgid "✗ Not configured"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:585
+#: ai/includes/Admin/SettingsPage.php:1418
+msgid "Test connection"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1429
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:600
+#: ai/includes/Admin/SettingsPage.php:1444
 msgid "Remove stored key"
 msgstr ""
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/SettingsPage.php:608
+#: ai/includes/Admin/SettingsPage.php:1452
 #, php-format
 msgid "This key is currently supplied by a server %s and cannot be removed here. Enter a new key above to override it with a database value."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:613
+#: ai/includes/Admin/SettingsPage.php:1457
 msgid "environment variable"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:1458
 msgid "PHP constant"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:628
-msgid "Translation Limits"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:632
-msgid "Control how much content is sent to the AI and how large the response can be. Leave a field blank to use the built-in default (shown as placeholder). Raise these values if large pages are being cut off; lower them to reduce API costs."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:641
-#: ai/includes/Admin/SettingsPage.php:735
-#: ai/includes/Admin/SettingsPage.php:796
-msgid "Max output tokens"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:658
-msgid "Maximum number of tokens the AI may produce in a single translation response. If a translation is silently cut off at the end, increase this value. Default: 16 000."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:667
-#: ai/includes/Admin/SettingsPage.php:759
-msgid "Max input characters"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:684
-msgid "Maximum number of characters of post content forwarded to the AI. 0 means no limit — the full content is always sent (recommended). Set a non-zero value only if your provider has a tight context window. A warning is written to the PHP error log whenever the content is trimmed."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:693
-msgid "Quick Translation"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:697
-msgid "Quick Translation is used for snippet/chunk mode — short passages translated on demand from the toolbar, editor, or block popovers. It uses a separate, lighter configuration from the full-page translation to keep responses fast and cost-effective."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:706
-msgid "Model tier"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:718
-msgid "Light (default — fast and cost-effective)"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:721
-msgid "Quality (same model as full-page translation)"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:726
-msgid "The Light tier uses the fast model configured in the Models table above (default: Haiku / Flash). Switch to Quality if you need the same translation accuracy as full-page mode for snippets."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:751
-msgid "Maximum tokens the AI may produce per quick translation. Default: 2 000."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:775
-msgid "Maximum characters accepted from the input field. Default: 8 000."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:783
-msgid "Content Generator"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:787
-msgid "Controls the token budget and input limits for the AI Content Generator feature. Leave fields blank to use the built-in defaults."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:812
-msgid "Maximum tokens the AI may produce per generation run. Raise this if full articles are being cut off. Default: 8 192."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:820
-msgid "Max hints characters"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:836
-msgid "Maximum characters read from the Hints field. Default: 2 000."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:844
-msgid "Max context characters"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:860
-msgid "Maximum characters of existing post content passed to the AI as seed context when no Hints are provided. Default: 6 000."
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:870
+#: ai/includes/Admin/SettingsPage.php:1474
 msgid "Alternative (server-side):"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:872
+#: ai/includes/Admin/SettingsPage.php:1476
 msgid "You can also define keys as constants or environment variables (e.g. in wp-config.php). Those sources are used automatically as a fallback when no database key is stored."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:879
+#: ai/includes/Admin/SettingsPage.php:1483
 msgid "To use a custom encryption secret (instead of the derived wp_salt value), add this to wp-config.php:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:888
+#: ai/includes/Admin/SettingsPage.php:1498
+msgid "AI Limits & Security"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1502
+msgid "Cap how much AI usage the site can generate and restrict which user roles may trigger paid AI calls. Sits on top of the per-user rate limit (30 requests / minute, hardcoded) that already protects against single-user runaway loops."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1511
+msgid "Daily request limit"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1526
+msgid "Site-wide ceiling on AI requests per UTC day (counts both Toolbar translations and block revisions). Counter resets at UTC midnight. Set to 0 to disable the cap."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1535
+msgid "Minimum role"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1555
+msgid "Lowest WordPress capability allowed to trigger AI features. Tightening this on multi-author sites prevents Contributors or trial accounts from running paid AI calls. Override per-feature via the linguaforge_required_capability filter."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1564
+msgid "Translation Limits"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1568
+msgid "Control how much content is sent to the AI and how large the response can be. Leave a field blank to use the built-in default (shown as placeholder). Raise these values if large pages are being cut off; lower them to reduce API costs."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1577
+#: ai/includes/Admin/SettingsPage.php:1671
+msgid "Model tier"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1589
+msgid "Quality (default — Sonnet / GPT-4o / Gemini Pro)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1592
+msgid "Light (fast and cost-effective — Haiku / Flash)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1597
+msgid "Which model tier to use for full-page translation. Quality uses the model configured in the Models table above and is recommended for accurate, long-form translation. Switch to Light only if speed or cost is the priority and the content is short."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1606
+#: ai/includes/Admin/SettingsPage.php:1700
+#: ai/includes/Admin/SettingsPage.php:1761
+msgid "Max output tokens"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1623
+msgid "Maximum number of tokens the AI may produce in a single translation response. If a translation is silently cut off at the end, increase this value. Default: 16 000."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1632
+#: ai/includes/Admin/SettingsPage.php:1724
+msgid "Max input characters"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1649
+msgid "Maximum number of characters of post content forwarded to the AI. 0 means no limit — the full content is always sent (recommended). Set a non-zero value only if your provider has a tight context window. A warning is written to the PHP error log whenever the content is trimmed."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1658
+msgid "Quick Translation"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1662
+msgid "Quick Translation is used for snippet/chunk mode — short passages translated on demand from the toolbar, editor, or block popovers. It uses a separate, lighter configuration from the full-page translation to keep responses fast and cost-effective."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1683
+msgid "Light (default — fast and cost-effective)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1686
+msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1691
+msgid "The Light tier uses the fast model configured in the Models table above (default: Haiku / Flash). Switch to Quality if you need the same translation accuracy as full-page mode for snippets."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1716
+msgid "Maximum tokens the AI may produce per quick translation. Default: 2 000."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1740
+msgid "Maximum characters accepted from the input field. Default: 8 000."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1748
+msgid "Content Generator"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1752
+msgid "Controls the token budget and input limits for the AI Content Generator feature. Leave fields blank to use the built-in defaults."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1777
+msgid "Maximum tokens the AI may produce per generation run. Raise this if full articles are being cut off. Default: 8 192."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1785
+msgid "Max hints characters"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1801
+msgid "Maximum characters read from the Hints field. Default: 2 000."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1809
+msgid "Max context characters"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1825
+msgid "Maximum characters of existing post content passed to the AI as seed context when no Hints are provided. Default: 6 000."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1838
+msgid "Block Editor"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1842
+msgid "LinguaForge restricts two Gutenberg features by default to keep editorial behavior consistent across languages. Opt in here when you need full Gutenberg / FSE capabilities."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1849
+msgid "Block locking"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1859
+msgid "Allow editors to lock individual blocks"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1862
+msgid "Re-enables Gutenberg's canLockBlocks. Useful for editorial templates that need to prevent contributors from moving or deleting specific blocks."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1868
+msgid "Template mode"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1878
+msgid "Allow Gutenberg template-editing mode on post screens"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1881
+msgid "Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where post-level template overrides are intentional."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1888
+msgid "Compliance Preset"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1892
+msgid "Strict-preservation mode for legal, regulatory, medical, or technical content. When on, every AI feature uses a low sampling temperature and appends the addendum below to its system prompt — terminology, article numbers, units, brand names, and regulatory language are preserved verbatim rather than paraphrased."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1900
+msgid "Global AI preset"
+msgstr ""
+
+#. translators: %s: sampling temperature value, e.g. 0.2
+#: ai/includes/Admin/SettingsPage.php:1915
+#, php-format
+msgid "T=%s"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1922
+msgid "Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the LinguaForge AI meta box."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1929
+msgid "Custom system-prompt addendum"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1938
+msgid "Leave blank to use the preset's built-in instructions."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1941
+msgid "When non-empty, this text replaces the active preset's built-in system-prompt addendum. Use it to add domain-specific instructions (e.g. renewable-energy abbreviations, proprietary brand names, regulatory citation formats). Leave blank to use the preset default."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1948
+#: ai/includes/Admin/SettingsPage.php:1959
+#: ai/includes/Admin/SettingsPage.php:2378
+msgid "Translation Memory"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1952
+msgid "Cache translated equivalents at the block level so reusable content (shared footers, sidebars, accordions, boilerplate-heavy legal sections) does not pay an API call every time. When enabled, the translation flow parses each post into blocks, looks each block up in the cache, and sends only uncached blocks to the AI in a single batched request. Glossary edits and Compliance preset changes automatically invalidate affected cached translations. View statistics and clear the cache under Maintenance."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1969
+msgid "Enable block-level translation cache reuse across posts"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1972
+msgid "Currently skipped for posts that use block-comment attribute placeholders (wp:details summary fields, etc.) — they fall through to the existing single-call translation path."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:1980
 msgid "Save Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:895
+#: ai/includes/Admin/SettingsPage.php:2004
 msgid "Language Overrides"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:899
+#: ai/includes/Admin/SettingsPage.php:2008
 msgid "Upload compiled .mo files to override third-party plugin strings for specific locales — for example, a custom VikBooking translation that uses \"apartment\" instead of \"room\". Files must follow the WordPress naming convention: {textdomain}-{locale}.mo (e.g. vikbooking-ca.mo). They are stored in the uploads folder and survive plugin updates."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:908
+#: ai/includes/Admin/SettingsPage.php:2017
 msgid "Override file uploaded successfully."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:913
+#: ai/includes/Admin/SettingsPage.php:2022
 msgid "Override file deleted."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:918
+#: ai/includes/Admin/SettingsPage.php:2027
 msgid "No file was selected."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:919
+#: ai/includes/Admin/SettingsPage.php:2028
 msgid "Only .mo files are accepted."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:920
+#: ai/includes/Admin/SettingsPage.php:2029
 msgid "The upload failed — please try again."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:921
+#: ai/includes/Admin/SettingsPage.php:2030
 msgid "Could not save the file. Check that the uploads folder is writable."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:922
+#: ai/includes/Admin/SettingsPage.php:2031
 msgid "Invalid filename."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:923
+#: ai/includes/Admin/SettingsPage.php:2032
 msgid "Security check failed — file path is not permitted."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:926
+#: ai/includes/Admin/SettingsPage.php:2035
 msgid "An unknown error occurred."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:954
+#: ai/includes/Admin/SettingsPage.php:2063
 msgid "Text domain / locale"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:955
+#: ai/includes/Admin/SettingsPage.php:2064
+#: ai/includes/Admin/SettingsPage.php:2340
 msgid "Files"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:956
+#: ai/includes/Admin/SettingsPage.php:2065
 msgid "Size"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:979
+#: ai/includes/Admin/SettingsPage.php:2088
 msgid "Delete all files for this override (both .mo and .po)?"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:985
-msgid "Delete"
-msgstr ""
-
-#: ai/includes/Admin/SettingsPage.php:997
+#: ai/includes/Admin/SettingsPage.php:2106
 msgid "No override files uploaded yet."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:1015
+#: ai/includes/Admin/SettingsPage.php:2124
 msgid "Upload .mo file"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:1027
+#: ai/includes/Admin/SettingsPage.php:2136
 msgid "Accepts compiled .mo files only. Filename must follow the pattern {textdomain}-{locale}.mo. Uploading a file with the same name as an existing one will replace it."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:1034
+#: ai/includes/Admin/SettingsPage.php:2143
 msgid "Upload Override"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:33
-msgid "Informative"
+#: ai/includes/Admin/SettingsPage.php:2150
+msgid "AI Cache"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2154
+msgid "LinguaForge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue."
+msgstr ""
+
+#. translators: %d is the number of cleared cache entries.
+#: ai/includes/Admin/SettingsPage.php:2172
+#, php-format
+msgid "AI cache cleared. %d entry was removed."
+msgid_plural "AI cache cleared. %d entries were removed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/SettingsPage.php:2188
+msgid "Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2194
+msgid "Clear AI Cache"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2204
+msgid "Debug Files"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2208
+msgid "When LINGUAFORGE_AI_DEBUG is defined in wp-config.php, the Translation feature writes its raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter."
+msgstr ""
+
+#. translators: %d is the number of removed debug files.
+#: ai/includes/Admin/SettingsPage.php:2235
+#, php-format
+msgid "Debug files cleared. %d file was removed."
+msgid_plural "Debug files cleared. %d files were removed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/SettingsPage.php:2256
+msgid "Debug logging enabled."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2258
+msgid "Debug logging disabled."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2274
+msgid "Debug logging"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2285
+#: ai/includes/Admin/SettingsPage.php:2306
+msgid "Write AI prompts and responses to disk for troubleshooting"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2290
+msgid "Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2292
+msgid "Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2310
+msgid "Files land in the directory below. Useful for diagnosing translation issues — turn off once you have what you need so the files do not accumulate. You can also force this from wp-config.php with `define( 'LINGUAFORGE_AI_DEBUG', true );` which overrides the toggle."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2317
+msgid "Currently:"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2320
+#: ai/includes/Admin/SettingsPage.php:2424
+msgid "✓ Enabled"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2324
+#: ai/includes/Admin/SettingsPage.php:2428
+msgid "✗ Disabled"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2331
+msgid "Directory"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2335
+msgid "Filter with linguaforge_debug_dir to redirect debug output to a non-public location."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2343
+msgid ".txt file(s) in the directory"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2350
+msgid "Save Debug Setting"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2361
+msgid "Delete all .txt files in the debug directory? The directory itself will remain so future debug writes still land cleanly."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2367
+msgid "Clear Debug Files"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2382
+msgid "Per-block translation cache shared across posts. Configure on/off in Settings → Behavior. Stats below show what is currently cached; clearing forces every block to be re-translated on next request (useful after upgrading models or to recover database space)."
+msgstr ""
+
+#. translators: %d is the number of removed cached blocks.
+#: ai/includes/Admin/SettingsPage.php:2400
+#, php-format
+msgid "Translation Memory cleared. %d cached block was removed."
+msgid_plural "Translation Memory cleared. %d cached blocks were removed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/SettingsPage.php:2420
+msgid "Status"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2430
+msgid "— toggle in Settings → Behavior."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2435
+msgid "Cached blocks"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2441
+msgid "Cumulative cache hits"
+msgstr ""
+
+#. translators: %s is the average hits per cached block.
+#: ai/includes/Admin/SettingsPage.php:2449
+#, php-format
+msgid "(avg %.1f hits/block)"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2458
+msgid "Oldest entry"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2462
+msgid "Newest entry"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2467
+msgid "Approximate size"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2479
+msgid "Clear the entire Translation Memory? Future translations will rebuild the cache as they run."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:2485
+msgid "Clear Translation Memory"
+msgstr ""
+
+#: ai/includes/Core/Config.php:54
+msgid "Standard"
+msgstr ""
+
+#: ai/includes/Core/Config.php:59
+msgid "Technical / Scientific"
+msgstr ""
+
+#: ai/includes/Core/Config.php:64
+msgid "Legal / Compliance"
+msgstr ""
+
+#: ai/includes/Core/Config.php:69
+msgid "Creative / Marketing"
 msgstr ""
 
 #: ai/includes/Features/ContentGenerator.php:34
-msgid "Persuasive"
+msgid "Informative"
 msgstr ""
 
 #: ai/includes/Features/ContentGenerator.php:35
-msgid "Storytelling"
+msgid "Persuasive"
 msgstr ""
 
 #: ai/includes/Features/ContentGenerator.php:36
-msgid "Technical"
+msgid "Storytelling"
 msgstr ""
 
 #: ai/includes/Features/ContentGenerator.php:37
+msgid "Technical"
+msgstr ""
+
+#: ai/includes/Features/ContentGenerator.php:38
 msgid "Conversational"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:50
+#: ai/includes/Features/ContentGenerator.php:51
 msgid "Full Article"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:51
+#: ai/includes/Features/ContentGenerator.php:52
 msgid "Introduction only"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:52
+#: ai/includes/Features/ContentGenerator.php:53
 msgid "Structured Outline"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:63
+#: ai/includes/Features/ContentGenerator.php:64
 msgid "Generate Content"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:87
+#: ai/includes/Features/ContentGenerator.php:88
 msgid "Hints"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:88
+#: ai/includes/Features/ContentGenerator.php:89
 msgid "Key points, ideas, or structure to build from…"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:93
+#: ai/includes/Features/ContentGenerator.php:94
 msgid "Tone"
 msgstr ""
 
-#: ai/includes/Features/ContentGenerator.php:99
+#: ai/includes/Features/ContentGenerator.php:100
 msgid "Output"
 msgstr ""
 
-#: ai/includes/Features/ExcerptGenerator.php:23
+#: ai/includes/Features/ExcerptGenerator.php:24
 msgid "Generate Excerpt"
 msgstr ""
 
-#: ai/includes/Features/MetaDescription.php:23
+#: ai/includes/Features/MetaDescription.php:24
 msgid "Generate Meta Description"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:194
+#: ai/includes/Features/Translation.php:208
 msgid "Translate Content"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:220
+#: ai/includes/Features/Translation.php:633
 msgid "Mode"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:222
+#: ai/includes/Features/Translation.php:635
 msgid "Full post"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:223
+#: ai/includes/Features/Translation.php:636
 msgid "Translate chunk"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:229
-#: ai/assets/block-action.js:165
+#: ai/includes/Features/Translation.php:642
+#: ai/assets/block-action.js:262
+#: ai/assets/block-action.js:302
 #: ai/assets/editor-translate.js:195
-#: ai/assets/toolbar-translate.js:155
+#: ai/assets/toolbar-translate.js:157
 msgid "Target Language"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:235
+#: ai/includes/Features/Translation.php:648
 #: ai/assets/editor-translate.js:201
-#: ai/assets/toolbar-translate.js:164
+#: ai/assets/toolbar-translate.js:166
 msgid "Text to translate"
 msgstr ""
 
-#: ai/includes/Features/Translation.php:236
+#: ai/includes/Features/Translation.php:649
 msgid "Paste a footnote, sentence, or any snippet here…"
 msgstr ""
 
-#: language-router/includes/class-language-router.php:1460
+#. translators: %d is seconds until the next AI request is allowed.
+#: ai/includes/REST/FeatureController.php:458
+#, php-format
+msgid "Too many AI requests. Please retry in %d seconds."
+msgstr ""
+
+#. translators: 1: quota number, 2: reset time.
+#: ai/includes/REST/FeatureController.php:522
+#, php-format
+msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
+msgstr ""
+
+#: language-router/includes/class-language-router.php:1574
 msgid "This is the source page. Footnotes are edited directly in the block editor."
 msgstr ""
 
-#: language-router/includes/class-language-router.php:1468
+#: language-router/includes/class-language-router.php:1582
 msgid "No source page linked yet."
 msgstr ""
 
-#: language-router/includes/class-language-router.php:1475
-#: language-router/includes/class-language-router.php:1482
+#: language-router/includes/class-language-router.php:1589
+#: language-router/includes/class-language-router.php:1596
 msgid "The source page has no footnotes."
 msgstr ""
 
-#: language-router/includes/class-language-router.php:1487
+#: language-router/includes/class-language-router.php:1601
 msgid "These footnotes come from the source page and are shown here for reference only. Add them to this page using the block editor."
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:451
-#: ai/assets/block-action.js:161
+#: language-router/includes/class-lsflr-link-fixer.php:80
+msgid "Scanning posts for broken language links…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:81
+msgid "Re-scanning…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:82
+msgid "Scan failed: "
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:83
+msgid "unknown error"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:84
+msgid "Scan request failed. Please try again."
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:85
+msgid "⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts have their Language meta set to <strong>{lang}</strong> in the Language metabox."
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:86
+msgid "✅ No broken links found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all internal links are already correct."
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:87
+msgid "<strong>{n}</strong> auto-fixable link(s)"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:88
+msgid "<strong>{n}</strong> link(s) needing manual review"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:89
+msgid "and"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:90
+msgid "Found {parts} across <strong>{total}</strong> of <strong>{scanned}</strong> scanned post(s) for <strong>{lang}</strong>."
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:91
+msgid "Post"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:92
+msgid "Links"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:93
+msgid "link(s)"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:94
+msgid "Fix"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:95
+msgid "Fixing…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:96
+msgid "✅ Fixed ({n})"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:97
+msgid "⚠ No changes — re-scan?"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:98
+msgid "⚠ No changes"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:99
+msgid "❌ Failed"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:100
+msgid "Done — {done} of {total} post(s) fixed."
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:101
+msgid "({skipped} had no replaceable links — re-scan to investigate)"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:102
+msgid "Fixing {n} / {total}…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:105
+msgid "URL could not be mapped to a post — check the link target exists"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:106
+msgid "No {lang} translation registered (TRID missing)"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:107
+msgid "Translation found but permalink could not be generated"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:528
+#: ai/assets/admin.js:183
+#: ai/assets/block-action.js:258
 #: ai/assets/editor-translate.js:189
 msgid "Close"
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:453
+#: language-router/includes/class-lsflr-link-fixer.php:530
 msgid "Internal Link Fixer"
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:461
+#: language-router/includes/class-lsflr-link-fixer.php:538
 msgid "Fix All"
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:464
+#: language-router/includes/class-lsflr-link-fixer.php:541
 msgid "Re-scan"
 msgstr ""
 
-#: meta-description/meta-description.php:33
-#: meta-description/meta-description.php:63
+#: meta-description/meta-description.php:62
+#: meta-description/meta-description.php:91
 msgid "Meta Description"
 msgstr ""
 
-#: meta-description/meta-description.php:68
+#: meta-description/meta-description.php:102
 msgid "Using custom meta description."
 msgstr ""
 
-#: meta-description/meta-description.php:70
+#: meta-description/meta-description.php:104
 msgid "Prefilled from excerpt. Edit to override."
 msgstr ""
 
-#: meta-description/meta-description.php:74
+#: meta-description/meta-description.php:109
 msgid "Aim for 120–160 characters. Leave empty to use the excerpt fallback."
 msgstr ""
 
-#: ai/assets/admin.js:82
+#: ai/assets/admin.js:83
 msgid "↺ Refreshing…"
 msgstr ""
 
-#: ai/assets/admin.js:108
-msgid "Applying…"
+#: ai/assets/admin.js:182
+msgid "Review translation before applying"
 msgstr ""
 
-#: ai/assets/admin.js:163
-#: ai/assets/admin.js:316
-#: ai/assets/block-action.js:486
-msgid "Applied ✓"
+#: ai/assets/admin.js:188
+msgid "Current title"
 msgstr ""
 
-#: ai/assets/admin.js:171
-msgid "Save the post to persist changes."
+#: ai/assets/admin.js:192
+msgid "Translated title"
 msgstr ""
 
-#: ai/assets/admin.js:178
-#: ai/assets/admin.js:431
-msgid "Apply to Editor"
+#: ai/assets/admin.js:199
+msgid "Current content (will be overwritten)"
 msgstr ""
 
-#: ai/assets/admin.js:180
-msgid "Apply failed — please try again."
+#: ai/assets/admin.js:203
+msgid "Translated content"
 msgstr ""
 
-#: ai/assets/admin.js:263
-#: ai/assets/admin.js:273
-#: ai/assets/block-action.js:246
-#: ai/assets/editor-translate.js:273
-#: ai/assets/toolbar-translate.js:85
-msgid "Copied ✓"
+#: ai/assets/admin.js:210
+msgid "Footnotes payload (advanced)"
 msgstr ""
 
-#: ai/assets/admin.js:265
-#: ai/assets/admin.js:275
-#: ai/assets/admin.js:432
-#: ai/assets/admin.js:471
-#: ai/assets/admin.js:515
-#: ai/assets/block-action.js:201
-#: ai/assets/block-action.js:247
-#: ai/assets/editor-translate.js:230
-#: ai/assets/editor-translate.js:274
-#: ai/assets/toolbar-translate.js:86
-#: ai/assets/toolbar-translate.js:196
-msgid "Copy"
+#: ai/assets/admin.js:217
+msgid "Cancel"
+msgstr ""
+
+#: ai/assets/admin.js:220
+#: ai/assets/admin.js:372
+msgid "Apply translation"
 msgstr ""
 
 #: ai/assets/admin.js:320
-#: ai/assets/admin.js:523
+msgid "Applying…"
+msgstr ""
+
+#: ai/assets/admin.js:345
+msgid "The editor did not accept the content — please try again."
+msgstr ""
+
+#: ai/assets/admin.js:352
+msgid "Classic editor element not found."
+msgstr ""
+
+#: ai/assets/admin.js:363
+#: ai/assets/admin.js:539
+#: ai/assets/block-action.js:938
+#: ai/assets/block-action.js:965
+#: ai/assets/block-action.js:990
+msgid "Applied ✓"
+msgstr ""
+
+#: ai/assets/admin.js:365
+msgid "Save the post to persist changes."
+msgstr ""
+
+#: ai/assets/admin.js:381
+msgid "Apply failed — please try again."
+msgstr ""
+
+#: ai/assets/admin.js:486
+#: ai/assets/admin.js:496
+#: ai/assets/block-action.js:404
+#: ai/assets/editor-translate.js:273
+#: ai/assets/toolbar-translate.js:87
+msgid "Copied ✓"
+msgstr ""
+
+#: ai/assets/admin.js:488
+#: ai/assets/admin.js:498
+#: ai/assets/admin.js:655
+#: ai/assets/admin.js:694
+#: ai/assets/admin.js:738
+#: ai/assets/block-action.js:335
+#: ai/assets/block-action.js:405
+#: ai/assets/editor-translate.js:230
+#: ai/assets/editor-translate.js:274
+#: ai/assets/toolbar-translate.js:88
+#: ai/assets/toolbar-translate.js:198
+msgid "Copy"
+msgstr ""
+
+#: ai/assets/admin.js:543
+#: ai/assets/admin.js:746
 msgid "Apply to Meta Description"
 msgstr ""
 
-#: ai/assets/admin.js:333
+#: ai/assets/admin.js:556
 msgid "Generating…"
 msgstr ""
 
-#: ai/assets/admin.js:353
+#: ai/assets/admin.js:576
 msgid "Generation failed."
 msgstr ""
 
-#: ai/assets/admin.js:373
+#: ai/assets/admin.js:596
 msgid "Request failed."
 msgstr ""
 
-#: ai/assets/admin.js:396
-#: ai/assets/admin.js:504
+#: ai/assets/admin.js:619
+#: ai/assets/admin.js:727
 msgid "cached"
 msgstr ""
 
-#: ai/assets/admin.js:404
-#: ai/assets/block-action.js:441
+#: ai/assets/admin.js:627
+#: ai/assets/block-action.js:685
+#: ai/assets/block-action.js:883
 #: ai/assets/editor-translate.js:447
-#: ai/assets/toolbar-translate.js:383
+#: ai/assets/toolbar-translate.js:385
 msgid "Translated to:"
 msgstr ""
 
-#: ai/assets/admin.js:410
+#: ai/assets/admin.js:633
 msgid "tone"
 msgstr ""
 
-#: ai/assets/admin.js:413
+#: ai/assets/admin.js:636
 msgid "Content generated"
 msgstr ""
 
-#: ai/assets/admin.js:417
+#: ai/assets/admin.js:640
 msgid "Content ready"
 msgstr ""
 
-#: ai/assets/admin.js:423
+#: ai/assets/admin.js:646
 msgid "footnote(s) translated — applied together with content."
 msgstr ""
 
-#: ai/assets/admin.js:467
+#: ai/assets/admin.js:654
+msgid "Apply to Editor"
+msgstr ""
+
+#: ai/assets/admin.js:690
 msgid "Chunk translated to:"
 msgstr ""
 
-#: ai/assets/admin.js:468
+#: ai/assets/admin.js:691
 msgid "Chunk translated"
 msgstr ""
 
-#: ai/assets/admin.js:470
+#: ai/assets/admin.js:693
 msgid "Copy the result and paste it wherever needed (e.g. directly into the footnote field)."
 msgstr ""
 
 #. translators: %d is replaced by the number of characters
-#: ai/assets/admin.js:558
+#: ai/assets/admin.js:781
 msgid "chars"
 msgstr ""
 
-#: ai/assets/admin.js:562
+#: ai/assets/admin.js:785
 msgid "✓ Good length"
 msgstr ""
 
-#: ai/assets/admin.js:567
+#: ai/assets/admin.js:790
 msgid "⚠ Borderline"
 msgstr ""
 
-#: ai/assets/admin.js:573
+#: ai/assets/admin.js:796
 msgid "✗ Too short"
 msgstr ""
 
-#: ai/assets/admin.js:574
+#: ai/assets/admin.js:797
 msgid "✗ Too long"
 msgstr ""
 
-#: ai/assets/admin.js:578
+#: ai/assets/admin.js:801
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr ""
 
-#: ai/assets/admin.js:585
+#: ai/assets/admin.js:808
 msgid "SEO character-count info"
 msgstr ""
 
-#: ai/assets/admin.js:600
+#: ai/assets/admin.js:823
 msgid "↺ Refresh"
 msgstr ""
 
-#: ai/assets/admin.js:601
+#: ai/assets/admin.js:824
 msgid "Re-generates and updates the cached result."
 msgstr ""
 
-#: ai/assets/block-action.js:64
+#: ai/assets/block-action.js:68
 msgid "Improve writing"
 msgstr ""
 
-#: ai/assets/block-action.js:65
-msgid "Make Formal"
+#: ai/assets/block-action.js:69
+msgid "Make formal"
 msgstr ""
 
-#: ai/assets/block-action.js:66
-msgid "Make Casual"
+#: ai/assets/block-action.js:70
+msgid "Make casual"
 msgstr ""
 
-#: ai/assets/block-action.js:67
-msgid "Make Concise"
+#: ai/assets/block-action.js:71
+msgid "Make concise"
 msgstr ""
 
-#: ai/assets/block-action.js:68
+#: ai/assets/block-action.js:72
 msgid "Expand"
 msgstr ""
 
-#: ai/assets/block-action.js:114
+#: ai/assets/block-action.js:73
+msgid "Bulletize (•-prefixed)"
+msgstr ""
+
+#: ai/assets/block-action.js:74
+msgid "Lead paragraph (≤60 w)"
+msgstr ""
+
+#: ai/assets/block-action.js:75
+msgid "Mark citations needed"
+msgstr ""
+
+#: ai/assets/block-action.js:76
+msgid "Plain language"
+msgstr ""
+
+#: ai/assets/block-action.js:153
+#: ai/assets/block-action.js:208
+#: ai/assets/block-action.js:217
 msgid "Translate / Revise"
 msgstr ""
 
-#: ai/assets/block-action.js:151
+#: ai/assets/block-action.js:246
 msgid "Translate / Revise block"
 msgstr ""
 
-#: ai/assets/block-action.js:159
+#: ai/assets/block-action.js:254
+#: ai/assets/block-action.js:298
 msgid "Revision"
 msgstr ""
 
-#: ai/assets/block-action.js:169
-#: ai/assets/block-action.js:183
+#: ai/assets/block-action.js:256
+msgid "Footnotes"
+msgstr ""
+
+#: ai/assets/block-action.js:266
+#: ai/assets/block-action.js:280
 msgid "Block Content"
 msgstr ""
 
-#: ai/assets/block-action.js:180
+#: ai/assets/block-action.js:277
+#: ai/assets/block-action.js:315
 msgid "Revision Type"
 msgstr ""
 
-#: ai/assets/block-action.js:188
+#: ai/assets/block-action.js:285
+#: ai/assets/block-action.js:321
 msgid "Revise"
 msgstr ""
 
-#: ai/assets/block-action.js:198
-#: ai/assets/block-action.js:487
+#: ai/assets/block-action.js:291
+msgid "Footnote"
+msgstr ""
+
+#: ai/assets/block-action.js:305
+#: ai/assets/block-action.js:317
+msgid "Footnote Content"
+msgstr ""
+
+#: ai/assets/block-action.js:332
+#: ai/assets/block-action.js:455
+#: ai/assets/block-action.js:698
+#: ai/assets/block-action.js:991
 msgid "Apply to Block"
 msgstr ""
 
-#: ai/assets/block-action.js:204
+#: ai/assets/block-action.js:338
 msgid "← Back"
 msgstr ""
 
-#: ai/assets/block-action.js:369
+#: ai/assets/block-action.js:555
+#: ai/assets/block-action.js:697
+#: ai/assets/block-action.js:966
+msgid "Apply"
+msgstr ""
+
+#: ai/assets/block-action.js:613
+#: ai/assets/block-action.js:768
 #: ai/assets/editor-translate.js:342
-#: ai/assets/toolbar-translate.js:247
+#: ai/assets/toolbar-translate.js:249
 msgid "↑ Detected from current post"
 msgstr ""
 
-#: ai/assets/block-action.js:406
+#: ai/assets/block-action.js:650
+#: ai/assets/block-action.js:851
 msgid "Processing…"
 msgstr ""
 
-#: ai/assets/block-action.js:452
+#: ai/assets/block-action.js:706
+#: ai/assets/block-action.js:895
 msgid "Failed. Please try again."
 msgstr ""
 
-#: ai/assets/block-action.js:460
+#: ai/assets/block-action.js:714
+#: ai/assets/block-action.js:903
 #: ai/assets/editor-translate.js:456
-#: ai/assets/toolbar-translate.js:391
+#: ai/assets/toolbar-translate.js:393
 msgid "Request failed. Check your connection."
+msgstr ""
+
+#: ai/assets/block-action.js:891
+#: ai/assets/block-action.js:939
+msgid "Apply to Footnote"
 msgstr ""
 
 #: ai/assets/editor-translate.js:153
 #: ai/assets/editor-translate.js:155
 #: ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:187
-#: ai/assets/toolbar-translate.js:137
-#: ai/assets/toolbar-translate.js:143
+#: ai/assets/toolbar-translate.js:139
+#: ai/assets/toolbar-translate.js:145
 msgid "Quick Translate"
 msgstr ""
 
@@ -738,24 +1525,24 @@ msgid "Paste text, or select text in the editor first…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:214
-#: ai/assets/toolbar-translate.js:181
+#: ai/assets/toolbar-translate.js:183
 msgid "Clear input"
 msgstr ""
 
 #: ai/assets/editor-translate.js:215
-#: ai/assets/toolbar-translate.js:182
+#: ai/assets/toolbar-translate.js:184
 msgid "Clear"
 msgstr ""
 
 #: ai/assets/editor-translate.js:233
-#: ai/assets/toolbar-translate.js:197
+#: ai/assets/toolbar-translate.js:199
 msgid "Clear All"
 msgstr ""
 
 #: ai/assets/editor-translate.js:422
 #: ai/assets/editor-translate.js:425
-#: ai/assets/toolbar-translate.js:352
 #: ai/assets/toolbar-translate.js:354
+#: ai/assets/toolbar-translate.js:356
 msgid "Translating…"
 msgstr ""
 
@@ -763,26 +1550,26 @@ msgstr ""
 msgid "Translation failed."
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:148
+#: ai/assets/toolbar-translate.js:150
 msgid "Close translate popover"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:170
+#: ai/assets/toolbar-translate.js:172
 msgid "Paste text, or select text on the page first…"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:193
+#: ai/assets/toolbar-translate.js:195
 msgid "Translation will appear here…"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:342
+#: ai/assets/toolbar-translate.js:344
 msgid "Please enter some text first…"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:378
+#: ai/assets/toolbar-translate.js:380
 msgid "Translation failed. Please try again."
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:384
+#: ai/assets/toolbar-translate.js:386
 msgid "Translation complete"
 msgstr ""

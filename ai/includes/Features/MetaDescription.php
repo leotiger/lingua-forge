@@ -7,6 +7,7 @@ use LinguaForge\AI\Providers\ProviderFactory;
 use LinguaForge\AI\Providers\WorkerConfig;
 use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\UsageRecorder;
 use LinguaForge\AI\Features\Translation;
 
 defined('ABSPATH') || exit;
@@ -29,11 +30,11 @@ class MetaDescription implements FeatureInterface {
      */
     public function get_worker_config(): WorkerConfig {
 
-        return new WorkerConfig(
+        return Config::apply_compliance(new WorkerConfig(
             model:       Config::model('light'),
             max_tokens:  384,
             temperature: 0.4,
-        );
+        ));
     }
 
     public function get_ui_fields(): array {
@@ -107,16 +108,10 @@ class MetaDescription implements FeatureInterface {
             $this->get_worker_config()
         );
 
-        $result = $provider->chat([
-            [
-                'role'    => 'system',
-                'content' => 'You are an SEO copywriter.',
-            ],
-            [
-                'role'    => 'user',
-                'content' => $prompt,
-            ],
-        ]);
+        $result = UsageRecorder::tracked( 'meta-description', static fn() => $provider->chat([
+            ['role' => 'system', 'content' => Config::apply_compliance_to_system('You are an SEO copywriter.')],
+            ['role' => 'user',   'content' => $prompt],
+        ]) );
 
         if ($result === null || $result === '') {
             return [

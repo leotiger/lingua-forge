@@ -1,14 +1,24 @@
 <?php
 /**
- * Class Language_Router
+ * Class LinguaForge\Router\Router (aliased as Language_Router for back-compat).
  *
  * Core routing, translation, and admin logic.
- * Singleton — access via Language_Router::get_instance().
+ * Singleton — access via Language_Router::get_instance() or
+ * \LinguaForge\Router\Router::get_instance().
+ *
+ * The unqualified `Language_Router` name remains available for one release
+ * via class_alias() at the bottom of this file so theme and third-party code
+ * that referenced the old global class keeps working unchanged.
  */
+
+namespace LinguaForge\Router;
+
+use WP_Query;
+use WP_Locale_Switcher;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class Language_Router {
+class Router {
 
 	// =========================================================
 	// SINGLETON
@@ -53,15 +63,30 @@ class Language_Router {
 		define( 'LF_LANG', $this->detect_lang_safe() );
 	}
 
+	/**
+	 * Register the hooks that need to fire on every request type.
+	 *
+	 * Anything that runs on the frontend (locale, rewrite, permalinks, SEO,
+	 * template_redirect, render_block) lives here, plus the handful of hooks
+	 * that fire on REST or AJAX flows where is_admin() returns false:
+	 *
+	 *   - wp_after_insert_post (handle_save_post, handle_cache_clear) —
+	 *     fires from REST `/wp/v2/posts/{id}` PUTs as well as admin saves.
+	 *   - block_editor_settings_all — the block editor pulls its settings
+	 *     via a REST request when loading on a post-edit screen.
+	 *
+	 * Admin-only hooks (post list columns, quick edit, meta boxes, admin JS,
+	 * admin AJAX, admin menu) are split into register_admin_hooks() and
+	 * registered only when is_admin() is true. That skips ~15 add_action /
+	 * add_filter calls on every anonymous frontend page render.
+	 */
 	private function register_hooks(): void {
 
 		// Meta
 		add_action( 'init', [ $this, 'register_meta' ] );
 
-		// Admin menu
-		add_action( 'admin_menu', [ $this, 'add_navigation_menu_page' ] );
-
-		// Block editor settings
+		// Block editor settings — fires from REST in the block editor's
+		// settings request, so we can't gate this on is_admin().
 		add_filter( 'block_editor_settings_all', [ $this, 'restrict_block_editor_settings' ], 10, 2 );
 
 		// Locale
@@ -89,9 +114,6 @@ class Language_Router {
 		// pre_get_posts
 		add_action( 'pre_get_posts', [ $this, 'handle_pre_get_posts' ] );
 
-		// Persist admin lang filter
-		add_action( 'load-edit.php', [ $this, 'persist_admin_lang_filter' ] );
-
 		// Template redirect
 		add_action( 'template_redirect', [ $this, 'handle_singular_redirect' ], 1 );
 		add_action( 'template_redirect', [ $this, 'handle_homepage_redirect' ] );
@@ -104,24 +126,75 @@ class Language_Router {
 		// Menu translation
 		add_filter( 'wp_nav_menu_objects', [ $this, 'translate_menu_items' ] );
 
-		// Permalink filters
+		// Permalink filters — called from both admin (e.g. building list-table
+		// links) and frontend (template rendering).
 		add_filter( 'post_link', [ $this, 'lang_permalink' ], 10, 2 );
 		add_filter( 'page_link', [ $this, 'lang_permalink' ], 10, 2 );
+
+		// get_pages filter — fires whenever get_pages() is called, including
+		// from the parent-selector in admin AND from front-end widgets/themes.
+		add_filter( 'get_pages', [ $this, 'filter_pages_by_lang' ], 10, 2 );
+
+		// Save handler — REST saves (e.g. block editor) hit this too.
+		add_action( 'wp_after_insert_post', [ $this, 'handle_save_post' ], 10, 2 );
+
+		// Cache clear on save
+		add_action( 'wp_after_insert_post', [ $this, 'handle_cache_clear' ], 20 );
+
+		// SEO / hreflang
+		add_action( 'wp_head', [ $this, 'print_hreflang_tags' ], 1 );
+		add_action( 'wp',      [ $this, 'remove_core_canonical' ] );
+		add_action( 'init',    [ $this, 'disable_seo_plugin_hreflang' ] );
+
+		// Search
+		add_filter( 'get_block_templates', [ $this, 'override_search_template' ], 10, 3 );
+		add_filter( 'render_block',        [ $this, 'fix_search_form' ], 20, 2 );
+		add_filter( 'posts_search',        [ $this, 'extend_posts_search' ], 20, 2 );
+		add_filter( 'posts_clauses',       [ $this, 'boost_title_in_search' ], 20, 2 );
+
+		// Frontend AJAX lang
+		add_action( 'wp_footer', [ $this, 'print_frontend_ajax_lang_js' ], 20 );
+
+		// DB version / index
+		add_action( 'plugins_loaded', [ $this, 'check_db_version' ], 1 );
+
+		// Debug
+		add_action( 'wp',   [ $this, 'debug_request_context' ] );
+		add_action( 'init', [ $this, 'debug_system_init' ] );
+
+		// Admin-only hooks — registered lazily to skip the ~15 add_* calls
+		// on every anonymous frontend page render.
+		if ( is_admin() ) {
+			$this->register_admin_hooks();
+		}
+	}
+
+	/**
+	 * Hooks that only matter inside wp-admin/* (including admin-ajax.php,
+	 * for which is_admin() returns true).
+	 *
+	 * Each hook here meets one of:
+	 *   - The action/filter is fired by WP only in admin context, so
+	 *     registering it on the frontend would be functionally a no-op but
+	 *     still costs an add_action() call.
+	 *   - The action handles a wp_ajax_* endpoint, which only routes through
+	 *     /wp-admin/admin-ajax.php.
+	 *
+	 * Split out per REVIEW.md §3.3.
+	 */
+	private function register_admin_hooks(): void {
+
+		// Admin menu
+		add_action( 'admin_menu', [ $this, 'add_navigation_menu_page' ] );
+
+		// Persist admin lang filter
+		add_action( 'load-edit.php', [ $this, 'persist_admin_lang_filter' ] );
 
 		// Admin meta boxes
 		add_action( 'add_meta_boxes', [ $this, 'add_language_meta_box' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_template_meta_box' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_translations_meta_box' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_source_footnotes_meta_box' ] );
-
-		// get_pages filter (parent selector in admin)
-		add_filter( 'get_pages', [ $this, 'filter_pages_by_lang' ], 10, 2 );
-
-		// Save handler
-		add_action( 'wp_after_insert_post', [ $this, 'handle_save_post' ], 10, 2 );
-
-		// Cache clear on save
-		add_action( 'wp_after_insert_post', [ $this, 'handle_cache_clear' ], 20 );
 
 		// AJAX
 		add_action( 'wp_ajax_lf_import_translation', [ $this, 'ajax_import_translation' ] );
@@ -142,27 +215,6 @@ class Language_Router {
 		// Admin filters (language + outdated dropdowns)
 		add_action( 'restrict_manage_posts', [ $this, 'render_lang_filter_dropdown' ] );
 		add_action( 'restrict_manage_posts', [ $this, 'render_outdated_filter_dropdown' ] );
-
-		// SEO / hreflang
-		add_action( 'wp_head', [ $this, 'print_hreflang_tags' ], 1 );
-		add_action( 'wp',      [ $this, 'remove_core_canonical' ] );
-		add_action( 'init',    [ $this, 'disable_seo_plugin_hreflang' ] );
-
-		// Search
-		add_filter( 'get_block_templates', [ $this, 'override_search_template' ], 10, 3 );
-		add_filter( 'render_block',        [ $this, 'fix_search_form' ], 20, 2 );
-		add_filter( 'posts_search',        [ $this, 'extend_posts_search' ], 20, 2 );
-		add_filter( 'posts_clauses',       [ $this, 'boost_title_in_search' ], 20, 2 );
-
-		// Frontend AJAX lang
-		add_action( 'wp_footer', [ $this, 'print_frontend_ajax_lang_js' ], 20 );
-
-		// DB version / index
-		add_action( 'plugins_loaded', [ $this, 'check_db_version' ], 1 );
-
-		// Debug on wp
-		add_action( 'wp',   [ $this, 'debug_request_context' ] );
-		add_action( 'init', [ $this, 'debug_system_init' ] );
 	}
 
 	// =========================================================
@@ -309,9 +361,27 @@ class Language_Router {
 	// =========================================================
 
 	public function restrict_block_editor_settings( array $settings, $context ): array {
-		$settings['canLockBlocks'] = false;
 
-		if ( ! empty( $context->post ) ) {
+		// Defaults preserve pre-1.4 behavior: both restrictions ON unless an
+		// admin explicitly opts out via Settings → LinguaForge AI → Behavior.
+		// The lf_block_editor_restrictions filter lets opinionated sites
+		// override programmatically (e.g. a custom MU plugin can enable block
+		// locking for a single user role).
+		$restrictions = [
+			// true  = WordPress default applies (feature available)
+			// false = LinguaForge restricts the feature
+			'canLockBlocks'         => ! (bool) get_option( 'linguaforge_block_editor_allow_lock_blocks', false ),
+			'supportsTemplateMode' => ! (bool) get_option( 'linguaforge_block_editor_allow_template_mode', false ),
+		];
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
+		$restrictions = (array) apply_filters( 'lf_block_editor_restrictions', $restrictions, $context );
+
+		if ( ! empty( $restrictions['canLockBlocks'] ) ) {
+			$settings['canLockBlocks'] = false;
+		}
+
+		if ( ! empty( $context->post ) && ! empty( $restrictions['supportsTemplateMode'] ) ) {
 			$settings['supportsTemplateMode'] = false;
 		}
 
@@ -781,6 +851,7 @@ class Language_Router {
 		$cached    = wp_cache_get( $cache_key, 'lf_translations' );
 		if ( $cached !== false ) return $cached;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Subquery across wp_postmeta to resolve translation groups by TRID; no WP API equivalent. $wpdb->postmeta is a server-defined table name; $trid bound via %s placeholder. Result cached immediately below via wp_cache_set.
 		$rows = $wpdb->get_results( $wpdb->prepare( "
 			SELECT post_id, meta_value lang
 			FROM $wpdb->postmeta
@@ -1155,10 +1226,21 @@ class Language_Router {
 		if ( wp_is_post_autosave( $post_id ) ) return;
 		if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
+		// Dedicated metabox nonces. Verified independently of WP core's
+		// edit_post nonce so a CSRF on an unrelated POST endpoint that ends
+		// up triggering save_post cannot rebind language or translation groups.
+		//
+		// Missing-or-invalid nonce means "the field wasn't submitted by our
+		// metabox" — we silently skip the corresponding block rather than
+		// aborting the handler, so REST saves and wp_insert_post() callers
+		// (which post no nonce) continue to work for everything else.
+		$has_lang_nonce  = isset( $_POST['lf_language_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_language_nonce'] ) ), 'lf_language_save' );
+		$has_trans_nonce = isset( $_POST['lf_translations_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_translations_nonce'] ) ), 'lf_translations_save' );
+
 		// Language
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
-		if ( isset( $_POST['lf_lang'] ) && $this->is_valid_lang( sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Language is set via a meta box field; the post save nonce (edit_post) is verified by WordPress core before save_post fires.
+		if ( $has_lang_nonce && isset( $_POST['lf_lang'] ) && $this->is_valid_lang( sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) ) ) {
 			$this->set_lang( $post_id, sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) );
 		}
 		if ( ! get_post_meta( $post_id, '_lang', true ) ) {
@@ -1170,11 +1252,23 @@ class Language_Router {
 		// Skip template/TRID/timestamp for non-page/post types
 		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
 
-		// Template auto-assignment on language change
+		// Template auto-assignment.
+		//
+		// Fires whenever the post's language has changed OR when this is the
+		// first save the post has ever seen ($previous_lang empty). The
+		// in-method guard inside assign_template_if_needed() leaves any
+		// explicit admin template choice intact — only acts when the
+		// current template is 'default' or empty — so this is safe to
+		// trigger more aggressively than the original "on change only" gate.
+		//
+		// Without the first-save branch, posts created programmatically (REST
+		// inserts, wp_insert_post calls, duplicated-from-source flows) with
+		// _lang already set would never get their language-specific template
+		// assigned, since there's no _lang_previous to compare against.
 		$previous_lang = get_post_meta( $post_id, '_lang_previous', true );
 		update_post_meta( $post_id, '_lang_previous', $lang );
 
-		if ( $previous_lang && $previous_lang !== $lang ) {
+		if ( ! $previous_lang || $previous_lang !== $lang ) {
 			$this->assign_template_if_needed( $post_id, $post, $lang );
 		}
 
@@ -1196,14 +1290,19 @@ class Language_Router {
 			$this->mark_translation_synced( $post_id );
 		}
 
-		// Group merge (collect submitted translations)
+		// Group merge (collect submitted translations).
+		// Only read lf_trans_* when the translations metabox nonce checks out;
+		// otherwise the post still gets its language/timestamp updates but the
+		// TRID translation group is untouched.
 		$group_ids = [ $post_id ];
 
-		foreach ( $this->languages() as $l ) {
-			if ( ! isset( $_POST['lf_trans_' . $l] ) ) continue;
-			$target_id = (int) $_POST['lf_trans_' . $l];
-			if ( ! $target_id || $target_id === $post_id ) continue;
-			$group_ids[] = $target_id;
+		if ( $has_trans_nonce ) {
+			foreach ( $this->languages() as $l ) {
+				if ( ! isset( $_POST['lf_trans_' . $l] ) ) continue;
+				$target_id = (int) $_POST['lf_trans_' . $l];
+				if ( ! $target_id || $target_id === $post_id ) continue;
+				$group_ids[] = $target_id;
+			}
 		}
 
 		// Expand translation group (graph completion)
@@ -1233,6 +1332,11 @@ class Language_Router {
 			$this->set_trid( $pid, $trid );
 
 			if ( $pid === $post_id ) continue;
+
+			// Language-binding on related posts is only safe when the
+			// translations metabox nonce verified — same gate as the group
+			// collection loop above.
+			if ( ! $has_trans_nonce ) continue;
 
 			foreach ( $this->languages() as $l ) {
 				if ( isset( $_POST['lf_trans_' . $l] ) && (int) $_POST['lf_trans_' . $l] === $pid ) {
@@ -1338,6 +1442,11 @@ class Language_Router {
 	}
 
 	public function render_language_meta_box( $post ): void {
+		// Dedicated nonce — verified in handle_save_post() before lf_lang is read.
+		// Independent of the post-edit nonce so CSRF on third-party POST endpoints
+		// can't rebind a post's language via a save_post side effect.
+		wp_nonce_field( 'lf_language_save', 'lf_language_nonce' );
+
 		$cur = $this->get_lang( $post->ID );
 		echo '<select name="lf_lang" class="lf-lr-lang" id="lf_lr_lang">';
 		foreach ( $this->languages() as $l ) {
@@ -1392,6 +1501,11 @@ class Language_Router {
 	}
 
 	public function render_translations_meta_box( $post ): void {
+		// Dedicated nonce — verified in handle_save_post() before any
+		// lf_trans_* post-id input is consumed. Prevents a forged save from
+		// rewriting a post's TRID translation group via cross-post side effects.
+		wp_nonce_field( 'lf_translations_save', 'lf_translations_nonce' );
+
 		$current_lang = $this->get_lang( $post->ID );
 		$translations = $this->get_translations( $post->ID );
 
@@ -1625,8 +1739,20 @@ class Language_Router {
 			foreach ( $translations as $lang => $id ) {
 				echo '<link rel="alternate" hreflang="' . esc_attr( $lang ) . '" href="' . esc_url( get_permalink( $id ) ) . '" />' . "\n";
 			}
+
+			// x-default — Google's spec says this should point at a page intended
+			// for users whose language preference matches none of the variants.
+			// We default to the source-language URL (preserves pre-1.4 behavior),
+			// but expose lf_hreflang_x_default so sites can swap in a dedicated
+			// /global/ landing page or the English version when available.
 			if ( ! empty( $translations[$this->source_language()] ) ) {
-				echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( get_permalink( $translations[$this->source_language()] ) ) . '" />' . "\n";
+				$x_default_url = get_permalink( $translations[$this->source_language()] );
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
+				$x_default_url = (string) apply_filters( 'lf_hreflang_x_default', $x_default_url, $post->ID, $translations );
+
+				if ( $x_default_url !== '' ) {
+					echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $x_default_url ) . '" />' . "\n";
+				}
 			}
 			return;
 		}
@@ -1818,6 +1944,7 @@ class Language_Router {
 		$table      = $wpdb->postmeta;
 		$index_name = 'idx_lang';
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- INFORMATION_SCHEMA query to detect the idx_lang index before creating it; no WP API equivalent. $table and $index_name are bound via %s placeholders in prepare().
 		$exists = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(1)
 			FROM INFORMATION_SCHEMA.STATISTICS
@@ -1828,7 +1955,7 @@ class Language_Router {
 
 		if ( $exists ) return true;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- DDL identifiers cannot use placeholders; values are escaped with esc_sql() and wrapped in backticks.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DDL CREATE INDEX on wp_postmeta; no WP API equivalent. Identifiers cannot use %s placeholders; escaped with esc_sql() and wrapped in backticks.
 		$result = $wpdb->query(
 			'CREATE INDEX `' . esc_sql( $index_name ) . '` ON `' . esc_sql( $table ) . '` (meta_key, meta_value(10))'
 		);
@@ -2010,7 +2137,7 @@ jQuery(function($){
 	public function debug_request_context(): void {
 		if ( is_admin() ) return;
 		if ( ! is_singular() && ! is_archive() && ! is_home() && ! is_search() ) return;
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 		$this->debug( 'Request context', [
 			'url'  => wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ),
 			'lang' => defined( 'LF_LANG' ) ? LF_LANG : null,
@@ -2021,5 +2148,16 @@ jQuery(function($){
 				'search'   => is_search(),
 			],
 		] );
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 }
+
+// =========================================================
+// BACK-COMPAT ALIAS
+//
+// The class lived in the global namespace as `Language_Router` before the
+// 1.4 refactor. Themes and third-party plugins continue to reference that
+// name — keep the alias for one release so the refactor is invisible to
+// callers. Will be removed in 1.5.
+// =========================================================
+\class_alias( \LinguaForge\Router\Router::class, 'Language_Router' );

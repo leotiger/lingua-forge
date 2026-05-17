@@ -1,18 +1,20 @@
 <?php
 /**
- * Class LSFLR_Switcher
+ * Class LinguaForge\Router\Switcher (aliased as LSFLR_Switcher for back-compat).
  *
  * Language Switcher block and renderer.
- * Depends on Language_Router for data resolution.
+ * Depends on LinguaForge\Router\Router for data resolution.
  */
+
+namespace LinguaForge\Router;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class LSFLR_Switcher {
+class Switcher {
 
-	private Language_Router $router;
+	private Router $router;
 
-	public function __construct( Language_Router $router ) {
+	public function __construct( Router $router ) {
 		$this->router = $router;
 		$this->register_hooks();
 	}
@@ -276,3 +278,5 @@ class LSFLR_Switcher {
 		] );
 	}
 }
+
+\class_alias( \LinguaForge\Router\Switcher::class, 'LSFLR_Switcher' );

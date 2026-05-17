@@ -2,9 +2,6 @@
 
 namespace LinguaForge\AI\Providers;
 
-use LinguaForge\AI\Contracts\AIProviderInterface;
-use LinguaForge\AI\Core\KeyStore;
-
 defined('ABSPATH') || exit;
 
 /**
@@ -15,22 +12,24 @@ defined('ABSPATH') || exit;
  *   - The assistant role is called "model" in Gemini's schema.
  *   - Generation parameters live inside a `generationConfig` key.
  *   - The API key is passed as a query parameter, not a header.
+ *   - Truncation marker: `candidates[0].finishReason === 'MAX_TOKENS'`.
+ *
+ * Everything else (HTTP retry/backoff, error logging, JSON parsing) is inherited
+ * from AbstractProvider.
  */
-class Gemini implements AIProviderInterface {
+class Gemini extends AbstractProvider {
 
     private const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
-    public function __construct(
-        private readonly WorkerConfig $config
-    ) {}
+    protected function key_slug(): string {
+        return 'gemini';
+    }
 
-    public function chat(array $messages): ?string {
+    protected function provider_label(): string {
+        return 'Gemini';
+    }
 
-        $api_key = KeyStore::get('gemini');
-
-        if (!$api_key) {
-            return null;
-        }
+    protected function build_request(array $messages, string $api_key): array {
 
         $system_instruction = null;
         $contents           = [];
@@ -67,56 +66,45 @@ class Gemini implements AIProviderInterface {
             $body['system_instruction'] = $system_instruction;
         }
 
-        $url = self::BASE_URL .
-               rawurlencode($this->config->model) .
-               ':generateContent?key=' . rawurlencode($api_key);
+        // Structured-output mode: Gemini constrains output to the schema and
+        // returns a string of valid JSON. Setting responseMimeType is required
+        // alongside responseSchema; without it the schema is ignored.
+        if ($this->config->response_schema !== null) {
+            $body['generationConfig']['responseMimeType'] = 'application/json';
+            $body['generationConfig']['responseSchema']   = $this->config->response_schema;
+        }
 
-        $response = wp_remote_post(
+        $url = self::BASE_URL
+            . rawurlencode($this->config->model)
+            . ':generateContent?key=' . rawurlencode($api_key);
+
+        return [
             $url,
             [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'body'    => wp_json_encode($body),
-                'timeout' => 120,
-            ]
-        );
+                'Content-Type' => 'application/json',
+            ],
+            $body,
+        ];
+    }
 
-        if (is_wp_error($response)) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
-            error_log('LinguaForge AI [Gemini] request failed: ' . $response->get_error_message());
+    protected function is_truncated(array $decoded): bool {
+        return ($decoded['candidates'][0]['finishReason'] ?? '') === 'MAX_TOKENS';
+    }
+
+    protected function extract_text(array $decoded): string {
+        return (string) ($decoded['candidates'][0]['content']['parts'][0]['text'] ?? '');
+    }
+
+    protected function extract_usage(array $decoded): ?array {
+
+        $usage = $decoded['usageMetadata'] ?? null;
+        if (!is_array($usage)) {
             return null;
         }
 
-        $http_code = (int) wp_remote_retrieve_response_code($response);
-
-        if ($http_code < 200 || $http_code >= 300) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unexpected HTTP responses from the Gemini API.
-            error_log(sprintf(
-                'LinguaForge AI [Gemini] unexpected HTTP %d: %s',
-                $http_code,
-                wp_remote_retrieve_body($response)
-            ));
-            return null;
-        }
-
-        $decoded = json_decode(
-            wp_remote_retrieve_body($response),
-            true
-        );
-
-        // Detect output truncation: 'MAX_TOKENS' means the model hit the token
-        // ceiling before finishing — the result would be a partial translation.
-        if (($decoded['candidates'][0]['finishReason'] ?? '') === 'MAX_TOKENS') {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for truncated AI responses; users are directed here by the plugin FAQ.
-            error_log('LinguaForge AI [Gemini] response truncated: finishReason=MAX_TOKENS. Raise max_tokens in WorkerConfig.');
-            return null;
-        }
-
-        $text = trim(
-            $decoded['candidates'][0]['content']['parts'][0]['text'] ?? ''
-        );
-
-        return $text !== '' ? $text : null;
+        return [
+            'input'  => (int) ($usage['promptTokenCount']     ?? 0),
+            'output' => (int) ($usage['candidatesTokenCount'] ?? 0),
+        ];
     }
 }

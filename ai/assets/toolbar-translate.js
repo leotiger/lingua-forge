@@ -15,6 +15,8 @@
    ───────────────────────────────────────────────────────────────────────────── */
 
 /* global wp */
+( function () {
+
 const { __ } = wp.i18n;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -419,3 +421,5 @@ function escAttr(value) {
         .replace(/</g,  '&lt;')
         .replace(/>/g,  '&gt;');
 }
+
+} )();

@@ -2,6 +2,7 @@
 
 namespace LinguaForge\AI\Admin;
 
+use LinguaForge\AI\Core\Config;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
 
@@ -48,6 +49,11 @@ class MetaBox {
         add_action(
             'admin_enqueue_scripts',
             [self::class, 'enqueue_block_action_for_site_editor']
+        );
+
+        add_action(
+            'save_post',
+            [self::class, 'save_preset']
         );
     }
 
@@ -161,6 +167,7 @@ class MetaBox {
 
     /**
      * Enqueue the block-toolbar Translate / Revise button and its popover.
+     * The Footnotes tab within the popover is handled by block-action.js itself.
      *
      * Depends on the WordPress block-editor packages so that wp.hooks,
      * wp.element, wp.components, and wp.blockEditor are available when
@@ -199,6 +206,7 @@ class MetaBox {
                 'postLanguage' => Translation::detect_post_language(),
             ]
         );
+
     }
 
     /**
@@ -216,6 +224,33 @@ class MetaBox {
         }
 
         self::enqueue_block_action();
+    }
+
+    /**
+     * Save the per-page preset override from the meta box select.
+     */
+    public static function save_preset(int $post_id): void {
+
+        if (!isset($_POST['_linguaforge_preset_nonce'])) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        if (!wp_verify_nonce(wp_unslash($_POST['_linguaforge_preset_nonce']), 'linguaforge_preset_save')) {
+            return;
+        }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (!current_user_can('edit_post', $post_id))    return;
+
+        $value = sanitize_key($_POST['_linguaforge_preset'] ?? '');
+        $valid = array_keys(Config::presets());
+
+        if ($value === '' || $value === 'global') {
+            delete_post_meta($post_id, '_linguaforge_preset');
+        } elseif (in_array($value, $valid, true)) {
+            update_post_meta($post_id, '_linguaforge_preset', $value);
+        }
     }
 
     public static function register(): void {
@@ -236,8 +271,38 @@ class MetaBox {
 
         $features = Registry::all();
 
+        $presets       = Config::presets();
+        $global_preset = Config::active_preset();
+        $page_preset   = (string) get_post_meta($post->ID, '_linguaforge_preset', true);
+
         ?>
         <div class="lingua-forge-panel">
+
+            <div class="lingua-forge-feature-group" style="border-bottom:1px solid #dcdcde;padding-bottom:12px;margin-bottom:4px;">
+                <?php wp_nonce_field('linguaforge_preset_save', '_linguaforge_preset_nonce'); ?>
+                <label class="lingua-forge-label" for="lf-page-preset">
+                    <?php esc_html_e('AI Behaviour Preset', 'lingua-forge'); ?>
+                </label>
+                <select id="lf-page-preset" name="_linguaforge_preset" class="lingua-forge-select" style="width:100%;margin-top:4px;">
+                    <option value="global" <?php selected($page_preset, ''); ?>>
+                        <?php
+                        printf(
+                            /* translators: %s: name of the globally configured preset */
+                            esc_html__('Global default (%s)', 'lingua-forge'),
+                            esc_html($presets[$global_preset]['label'] ?? $global_preset)
+                        );
+                        ?>
+                    </option>
+                    <?php foreach ($presets as $key => $meta): ?>
+                        <option value="<?php echo esc_attr($key); ?>" <?php selected($page_preset, $key); ?>>
+                            <?php echo esc_html($meta['label']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <p class="description" style="font-size:11px;color:#646970;margin-top:4px;">
+                    <?php esc_html_e('Applies to Translation and Content Generation on this page only. Other features use the global preset.', 'lingua-forge'); ?>
+                </p>
+            </div>
 
             <?php foreach ($features as $feature): ?>
 

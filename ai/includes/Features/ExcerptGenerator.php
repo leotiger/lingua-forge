@@ -7,6 +7,7 @@ use LinguaForge\AI\Providers\ProviderFactory;
 use LinguaForge\AI\Providers\WorkerConfig;
 use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\UsageRecorder;
 use LinguaForge\AI\Features\Translation;
 
 defined('ABSPATH') || exit;
@@ -29,11 +30,11 @@ class ExcerptGenerator implements FeatureInterface {
      */
     public function get_worker_config(): WorkerConfig {
 
-        return new WorkerConfig(
+        return Config::apply_compliance(new WorkerConfig(
             model:       Config::model('light'),
             max_tokens:  512,
             temperature: 0.4,
-        );
+        ));
     }
 
     public function get_ui_fields(): array {
@@ -85,10 +86,10 @@ class ExcerptGenerator implements FeatureInterface {
             $this->get_worker_config()
         );
 
-        $result = $provider->chat([
+        $result = UsageRecorder::tracked( 'excerpt', static fn() => $provider->chat([
             [
                 'role'    => 'system',
-                'content' => 'You write concise editorial excerpts.',
+                'content' => Config::apply_compliance_to_system('You write concise editorial excerpts.'),
             ],
             [
                 'role'    => 'user',
@@ -99,7 +100,7 @@ class ExcerptGenerator implements FeatureInterface {
                     "\n\n" .
                     $content,
             ],
-        ]);
+        ]) );
 
         if ($result === null || $result === '') {
             return [

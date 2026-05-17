@@ -2,9 +2,76 @@
 
 namespace LinguaForge\AI\Core;
 
+use LinguaForge\AI\Providers\WorkerConfig;
+
 defined('ABSPATH') || exit;
 
 class Config {
+
+    // ── Preset addendum defaults ───────────────────────────────────────────────
+
+    /** System-prompt addendum for the Legal / Compliance preset. */
+    public const LEGAL_ADDENDUM_DEFAULT =
+        "Strict-preservation mode is active. Apply these rules to every output:\n"
+        . "- Preserve all technical terms, regulatory citations, article numbers, percentages, currencies, dates, and unit symbols exactly as they appear.\n"
+        . "- Do not paraphrase legal or regulatory language. Match the source register precisely.\n"
+        . "- Preserve brand names, product names, and proper nouns verbatim.\n"
+        . "- Flag any term where the target language has no direct equivalent rather than guessing.";
+
+    /** @deprecated Use LEGAL_ADDENDUM_DEFAULT. Kept for backwards compatibility. */
+    public const COMPLIANCE_ADDENDUM_DEFAULT = self::LEGAL_ADDENDUM_DEFAULT;
+
+    /** System-prompt addendum for the Technical preset. */
+    public const TECHNICAL_ADDENDUM_DEFAULT =
+        "Technical-precision mode is active. Apply these rules to every output:\n"
+        . "- Preserve all technical terms, units of measurement, abbreviations, chemical names, model numbers, and specifications exactly as they appear.\n"
+        . "- Do not paraphrase technical descriptions or substitute synonyms for established terminology.\n"
+        . "- Maintain the source document's register and structural formatting.\n"
+        . "- Preserve brand names, product names, and proper nouns verbatim.";
+
+    /** System-prompt addendum for the Creative preset. */
+    public const CREATIVE_ADDENDUM_DEFAULT =
+        "Creative mode is active. Prioritise natural, expressive, and engaging output:\n"
+        . "- Adapt idioms and cultural references so they land naturally in the target language rather than translating them literally.\n"
+        . "- Favour vivid, varied vocabulary and sentence rhythm that matches the source's energy.\n"
+        . "- Preserve the author's voice and tone — conversational, lyrical, or playful as the source demands.";
+
+    /**
+     * Named presets — the authoritative list of available AI behaviour modes.
+     *
+     * Each preset defines:
+     *   temperature  (float|null) — null means "use the feature's own default".
+     *   addendum     (string)     — appended to the system prompt; '' means none.
+     *
+     * The global "Custom addendum" field in Settings overrides the preset's
+     * default addendum when non-empty, giving admins fine-grained control
+     * without having to touch the preset definitions here.
+     */
+    public static function presets(): array {
+
+        return [
+            'standard' => [
+                'label'       => __( 'Standard',            'lingua-forge' ),
+                'temperature' => null,
+                'addendum'    => '',
+            ],
+            'technical' => [
+                'label'       => __( 'Technical / Scientific', 'lingua-forge' ),
+                'temperature' => 0.2,
+                'addendum'    => self::TECHNICAL_ADDENDUM_DEFAULT,
+            ],
+            'legal' => [
+                'label'       => __( 'Legal / Compliance',  'lingua-forge' ),
+                'temperature' => 0.1,
+                'addendum'    => self::LEGAL_ADDENDUM_DEFAULT,
+            ],
+            'creative' => [
+                'label'       => __( 'Creative / Marketing', 'lingua-forge' ),
+                'temperature' => 0.7,
+                'addendum'    => self::CREATIVE_ADDENDUM_DEFAULT,
+            ],
+        ];
+    }
 
     private const OPT_PROVIDER = 'linguaforge_provider';
 
@@ -203,6 +270,27 @@ class Config {
         return $stored > 0 ? $stored : 6000;
     }
 
+    // ── Translation (full-page) tier ──────────────────────────────────────────
+
+    /**
+     * Model tier used by the full-page Translation worker.
+     *
+     * Resolution order:
+     *   1. linguaforge_translation_tier stored in wp_options ('light'|'quality')
+     *   2. Hard-coded default: 'quality'
+     *
+     * Full-page translation uses the Quality model by default (Sonnet / GPT-4o /
+     * Gemini Pro) for accurate, long-form output. Administrators can switch to
+     * Light in Settings → LinguaForge AI → Translation Limits if speed or cost
+     * is the priority and the content is short.
+     */
+    public static function translation_tier(): string {
+
+        $stored = (string) get_option('linguaforge_translation_tier', '');
+
+        return ($stored === 'light') ? 'light' : 'quality';
+    }
+
     // ── Quick Translation limits ───────────────────────────────────────────────
 
     /**
@@ -251,5 +339,121 @@ class Config {
         $stored = (int) get_option('linguaforge_quick_translate_max_input_chars', 0);
 
         return $stored > 0 ? $stored : 8000;
+    }
+
+    // ── Preset resolution ─────────────────────────────────────────────────────
+
+    /**
+     * Resolve the active preset for a given context.
+     *
+     * Resolution order:
+     *   1. Per-page meta `_linguaforge_preset` — only checked when $post_id > 0.
+     *      Only Translation and ContentGenerator pass a post_id; block-level
+     *      endpoints (translate-chunk, revise-block), MetaDescription, and
+     *      ExcerptGenerator all pass 0 and stay global.
+     *   2. Global setting `linguaforge_active_preset`.
+     *   3. Backwards-compat: old `linguaforge_compliance_mode_enabled` flag → 'legal'.
+     *   4. Default: 'standard'.
+     */
+    public static function active_preset(int $post_id = 0): string {
+
+        $valid = array_keys(self::presets());
+
+        if ($post_id > 0) {
+            $page = (string) get_post_meta($post_id, '_linguaforge_preset', true);
+            if ($page !== '' && in_array($page, $valid, true)) {
+                return $page;
+            }
+        }
+
+        $global = (string) get_option('linguaforge_active_preset', '');
+        if (in_array($global, $valid, true)) {
+            return $global;
+        }
+
+        // Backwards compat: migrate sites still running the old boolean toggle.
+        if (get_option('linguaforge_compliance_mode_enabled', false)) {
+            return 'legal';
+        }
+
+        return 'standard';
+    }
+
+    /**
+     * Return a WorkerConfig with the preset's temperature applied.
+     * When the active preset is 'standard' (or has no temperature override)
+     * the original config is returned unchanged.
+     *
+     * @param  WorkerConfig $config   The feature's base config.
+     * @param  int          $post_id  Pass the post ID to allow per-page override;
+     *                                0 (default) uses the global preset only.
+     */
+    public static function apply_compliance(WorkerConfig $config, int $post_id = 0): WorkerConfig {
+
+        $presets = self::presets();
+        $preset  = self::active_preset($post_id);
+        $temp    = $presets[$preset]['temperature'] ?? null;
+
+        if ($temp === null) {
+            return $config;
+        }
+
+        return new WorkerConfig(
+            model:           $config->model,
+            max_tokens:      $config->max_tokens,
+            temperature:     $temp,
+            response_schema: $config->response_schema,
+        );
+    }
+
+    /**
+     * Append the preset's system-prompt addendum to a feature's base prompt.
+     * Returns the base unchanged for the 'standard' preset or when no addendum
+     * is defined.
+     *
+     * A non-empty global "Custom addendum" option overrides the preset's
+     * built-in text, giving admins domain-specific control.
+     *
+     * @param  string $base_system_prompt  The feature's own system prompt.
+     * @param  int    $post_id             Pass post ID for per-page preset; 0 = global.
+     */
+    public static function apply_compliance_to_system(string $base_system_prompt, int $post_id = 0): string {
+
+        $presets = self::presets();
+        $preset  = self::active_preset($post_id);
+
+        if ($preset === 'standard') {
+            return $base_system_prompt;
+        }
+
+        // Admin-supplied custom addendum overrides the preset default when set.
+        $stored   = (string) get_option('linguaforge_compliance_addendum', '');
+        $addendum = $stored !== '' ? $stored : ( $presets[$preset]['addendum'] ?? '' );
+        $addendum = trim($addendum);
+
+        if ($addendum === '') {
+            return $base_system_prompt;
+        }
+
+        return trim($base_system_prompt) . "\n\n" . $addendum;
+    }
+
+    // ── Deprecated compliance helpers (kept for any external callers) ─────────
+
+    /** @deprecated Use active_preset() !== 'standard'. */
+    public static function compliance_enabled(): bool {
+        return self::active_preset() !== 'standard';
+    }
+
+    /** @deprecated Use presets()['legal']['temperature']. */
+    public static function compliance_temperature(): float {
+        $presets = self::presets();
+        return (float) ($presets[ self::active_preset() ]['temperature'] ?? 0.1);
+    }
+
+    /** @deprecated Use apply_compliance_to_system(). */
+    public static function compliance_addendum(): string {
+        $stored = (string) get_option('linguaforge_compliance_addendum', '');
+        return $stored !== '' ? $stored : self::LEGAL_ADDENDUM_DEFAULT;
     }
 }

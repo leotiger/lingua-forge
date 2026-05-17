@@ -3,7 +3,7 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, SEO meta tags, and AI content tools for WordPress. Combines language detection, URL routing, hreflang, meta descriptions, and AI-powered excerpt, meta, and translation features.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Author:            Uli Hake
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '1.1.0' );
+define( 'LINGUAFORGE_VERSION', '1.2.0' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION
@@ -111,6 +111,7 @@ add_action( 'init', function () {
         // Only migrate when the old key exists and the new one does not yet,
         // to avoid clobbering a value already entered in LinguaForge.
         if ( false !== get_option( $old ) && false === get_option( $new ) ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- One-time mu-plugin → plugin option key rename; no WP API equivalent for an UPDATE on option_name itself. Values bound via %s placeholders.
             $wpdb->update(
                 $wpdb->options,
                 [ 'option_name' => $new ],
@@ -127,6 +128,7 @@ add_action( 'init', function () {
     // ── User meta: language filter preference per editor ──────────────────────
     // my_lang_filter → lf_lang_filter  (affects all users; one bulk UPDATE).
     // Only runs when at least one row with the old key still exists.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- One-time check for legacy user-meta rows; $wpdb->usermeta is a server-defined table name; no caller-supplied data in the WHERE clause.
     $old_meta_exists = $wpdb->get_var(
         "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = 'my_lang_filter'"
     );
@@ -134,10 +136,12 @@ add_action( 'init', function () {
     if ( $old_meta_exists > 0 ) {
         // Collect affected user IDs before the bulk rename so we can
         // surgically invalidate only their usermeta cache entries.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Collect affected user IDs before bulk rename so cache entries can be invalidated surgically; $wpdb->usermeta is server-defined; no caller-supplied data.
         $affected_user_ids = $wpdb->get_col(
             "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'my_lang_filter'"
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- One-time bulk rename of user meta key; no WP API equivalent for UPDATE on meta_key itself. Values bound via %s placeholders.
         $wpdb->update(
             $wpdb->usermeta,
             [ 'meta_key' => 'lf_lang_filter' ],
@@ -187,3 +191,44 @@ require_once LINGUAFORGE_PATH . 'meta-description/meta-description.php';
 // =========================================================
 
 require_once LINGUAFORGE_PATH . 'ai/ai.php';
+
+// =========================================================
+// UPGRADE DETECTION — eagerly create / upgrade custom tables
+//
+// Each AI-module class with a custom table (CacheStore, UsageRecorder,
+// Glossary, TranslationMemory) already has an idempotent ensure_table()
+// that runs dbDelta on a version-option mismatch and is otherwise a single
+// get_option() call. The class-level guards mean lazy access is always
+// safe — but on zip-overwrite deploys, the WP plugin-activation hook
+// doesn't fire, so a newly-shipped table only materializes the first time
+// someone touches its feature.
+//
+// This hook fires on every admin request, but the version check makes the
+// body a no-op once tables are up to date. It runs eagerly on:
+//   - Fresh installs: option doesn't exist, all tables created on first
+//     admin request.
+//   - Zip-overwrite / rsync upgrades: option holds an old version, dbDelta
+//     re-runs for any schema bumps.
+//
+// Requires bumping LINGUAFORGE_VERSION (above) on each deploy that ships
+// a schema change. Asset cache busting is the same lever, so it's
+// good hygiene anyway.
+// =========================================================
+
+add_action( 'admin_init', function () {
+
+    if ( get_option( 'linguaforge_installed_version' ) === LINGUAFORGE_VERSION ) {
+        return;
+    }
+
+    // The classes are autoloaded by ai/ai.php's Autoloader::register(),
+    // which already ran during file load above. The dbDelta require is
+    // inside each ensure_table() call.
+    \LinguaForge\AI\Core\CacheStore::ensure_table();
+    \LinguaForge\AI\Core\UsageRecorder::ensure_table();
+    \LinguaForge\AI\Core\Glossary::ensure_table();
+    \LinguaForge\AI\Core\TranslationMemory::ensure_table();
+
+    update_option( 'linguaforge_installed_version', LINGUAFORGE_VERSION, false );
+
+}, 5 );

@@ -326,3 +326,210 @@
     float: none;
     margin: 0;
 }
+
+/* =========================================================================
+   §4.8 — Side-by-side diff modal shown before applying a translation.
+
+   Triggered by .lingua-forge-apply in the AI metabox; built lazily into
+   <body> by openApplyDiffModal() in admin.js. All identifiers are scoped
+   under .lingua-forge-diff-modal__ so they can't collide with WP-Admin
+   or block-editor styling.
+   ========================================================================= */
+
+.lingua-forge-diff-modal[hidden] {
+    display: none !important;
+}
+
+.lingua-forge-diff-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100050; /* Above the Gutenberg modal layer (100000) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lingua-forge-diff-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.lingua-forge-diff-modal__panel {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+    width: min(1200px, 95vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lingua-forge-diff-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f6f7f7;
+}
+
+.lingua-forge-diff-modal__header h2 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.lingua-forge-diff-modal__close {
+    background: none;
+    border: 0;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: #555;
+}
+
+.lingua-forge-diff-modal__close:hover {
+    color: #000;
+}
+
+/* ── Title + content rows: two equal columns, scrollable content panes ── */
+
+.lingua-forge-diff-modal__title-row,
+.lingua-forge-diff-modal__content-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #e0e0e0;
+}
+
+.lingua-forge-diff-modal__pane {
+    background: #fff;
+    padding: 14px 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.lingua-forge-diff-modal__pane--new {
+    background: #f7faf7; /* subtle green tint to distinguish "new" side */
+}
+
+.lingua-forge-diff-modal__label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #757575;
+    margin-bottom: 8px;
+}
+
+.lingua-forge-diff-modal__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    word-break: break-word;
+    min-height: 24px;
+}
+
+.lingua-forge-diff-modal__content-row {
+    flex: 1 1 auto;
+    min-height: 0; /* let grid item shrink so its child can scroll */
+}
+
+.lingua-forge-diff-modal__content-row .lingua-forge-diff-modal__pane {
+    min-height: 0; /* same — required for nested overflow:auto */
+}
+
+.lingua-forge-diff-modal__preview {
+    flex: 1 1 auto;
+    overflow: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 12px 14px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+    max-height: 50vh;
+}
+
+/* Apply some basic typography inside the rendered HTML so blocks look
+   close to how they'll appear in the editor / on the front-end. */
+.lingua-forge-diff-modal__preview h1,
+.lingua-forge-diff-modal__preview h2,
+.lingua-forge-diff-modal__preview h3 { margin: 0.6em 0 0.3em; }
+.lingua-forge-diff-modal__preview p  { margin: 0 0 0.8em; }
+.lingua-forge-diff-modal__preview ul,
+.lingua-forge-diff-modal__preview ol { margin: 0 0 0.8em 1.4em; }
+.lingua-forge-diff-modal__preview img { max-width: 100%; height: auto; }
+.lingua-forge-diff-modal__preview blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 12px;
+    color: #555;
+    margin: 0 0 0.8em;
+}
+
+/* ── Footnotes (advanced collapsible) ──────────────────────────────────── */
+
+.lingua-forge-diff-modal__footnotes {
+    padding: 10px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+    font-size: 12px;
+}
+
+.lingua-forge-diff-modal__footnotes summary {
+    cursor: pointer;
+    color: #444;
+}
+
+.lingua-forge-diff-modal__footnotes-json {
+    max-height: 200px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 8px 10px;
+    margin: 8px 0 0;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* ── Error bar (inline inside the modal) ───────────────────────────────── */
+
+.lingua-forge-diff-modal__error {
+    margin: 0 20px 12px;
+    padding: 10px 12px;
+    border-left: 4px solid #d63638;
+    background: #fcf0f1;
+    color: #b32d2e;
+    font-size: 13px;
+}
+
+/* ── Actions ───────────────────────────────────────────────────────────── */
+
+.lingua-forge-diff-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+}
+
+/* ── Narrow viewports — stack panes instead of two columns ─────────────── */
+
+@media (max-width: 800px) {
+    .lingua-forge-diff-modal__title-row,
+    .lingua-forge-diff-modal__content-row {
+        grid-template-columns: 1fr;
+    }
+    .lingua-forge-diff-modal__preview {
+        max-height: 35vh;
+    }
+}

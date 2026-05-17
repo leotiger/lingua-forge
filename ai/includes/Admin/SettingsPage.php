@@ -4,6 +4,15 @@ namespace LinguaForge\AI\Admin;
 
 use LinguaForge\AI\Core\KeyStore;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\CacheStore;
+use LinguaForge\AI\Core\Glossary;
+use LinguaForge\AI\Core\TranslationMemory;
+use LinguaForge\AI\Core\UsageRecorder;
+use LinguaForge\AI\Features\Translation;
+use LinguaForge\AI\Providers\Anthropic;
+use LinguaForge\AI\Providers\OpenAI;
+use LinguaForge\AI\Providers\Gemini;
+use LinguaForge\AI\Providers\WorkerConfig;
 
 defined('ABSPATH') || exit;
 
@@ -68,6 +77,398 @@ class SettingsPage {
         ];
     }
 
+    /**
+     * Whitelisted capability choices for the "Minimum role" Settings field.
+     *
+     * Maps the WP capability string (passed to current_user_can) to a
+     * human-readable label. The capability column is what gets stored;
+     * the label is only used to render the dropdown.
+     */
+    /**
+     * Render the Glossary tab — filter dropdown + entries list + add form.
+     *
+     * Read-write panel with two admin-post forms (add / delete). Filter by
+     * language pair via GET params source_lang / target_lang.
+     */
+    private static function render_glossary_tab(): void {
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET filter; no data is modified.
+        $filter_source = sanitize_key( wp_unslash( $_GET['glossary_source'] ?? '' ) );
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET filter; no data is modified.
+        $filter_target = sanitize_key( wp_unslash( $_GET['glossary_target'] ?? '' ) );
+
+        $criteria = [];
+        if ( $filter_source !== '' ) $criteria['source_lang'] = $filter_source;
+        if ( $filter_target !== '' ) $criteria['target_lang'] = $filter_target;
+
+        $entries  = Glossary::get_all( $criteria );
+        $base_url = admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
+
+        // Available languages for the dropdowns — same set Translation uses.
+        $languages = Translation::get_languages();
+
+        ?>
+        <h2><?php esc_html_e( 'Glossary', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php
+            esc_html_e(
+                'User-managed terminology table per language pair. Entries are appended to the translation system prompt so the AI uses preferred terms consistently — critical for domain vocabulary ("kWp", "PPA", "interconnection point"), brand names that must not translate, and standardised regulatory phrasing. Leaving "Source language" empty applies the entry to any source language (useful for brand names).',
+                'lingua-forge'
+            );
+            ?>
+        </p>
+
+        <?php
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect after add/delete.
+        if ( isset( $_GET['lf_glossary_added'] ) ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php esc_html_e( 'Glossary entry added.', 'lingua-forge' ); ?></p>
+            </div>
+        <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        elseif ( isset( $_GET['lf_glossary_deleted'] ) ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php esc_html_e( 'Glossary entry removed.', 'lingua-forge' ); ?></p>
+            </div>
+        <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        elseif ( isset( $_GET['lf_glossary_error'] ) ) : ?>
+            <div class="notice notice-error is-dismissible">
+                <p>
+                    <?php
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only.
+                    $code = sanitize_key( wp_unslash( $_GET['lf_glossary_error'] ?? '' ) );
+                    if ( $code === 'missing_fields' ) {
+                        esc_html_e( 'Could not add entry: source term, target term, and target language are all required.', 'lingua-forge' );
+                    } else {
+                        esc_html_e( 'Could not save the glossary entry.', 'lingua-forge' );
+                    }
+                    ?>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <!-- ── Filter form (GET) ─────────────────────────────────────── -->
+        <form method="get" action="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>" class="lingua-forge-glossary-filter">
+            <input type="hidden" name="page" value="<?php echo esc_attr( self::PAGE_SLUG ); ?>">
+
+            <label for="lf_glossary_filter_source">
+                <?php esc_html_e( 'Source language', 'lingua-forge' ); ?>
+            </label>
+            <select id="lf_glossary_filter_source" name="glossary_source">
+                <option value=""><?php esc_html_e( '— Any —', 'lingua-forge' ); ?></option>
+                <?php foreach ( $languages as $code => $label ) : ?>
+                    <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $filter_source, $code ); ?>>
+                        <?php echo esc_html( $label ); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="lf_glossary_filter_target">
+                <?php esc_html_e( 'Target language', 'lingua-forge' ); ?>
+            </label>
+            <select id="lf_glossary_filter_target" name="glossary_target">
+                <option value=""><?php esc_html_e( '— Any —', 'lingua-forge' ); ?></option>
+                <?php foreach ( $languages as $code => $label ) : ?>
+                    <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $filter_target, $code ); ?>>
+                        <?php echo esc_html( $label ); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <button type="submit" class="button"><?php esc_html_e( 'Filter', 'lingua-forge' ); ?></button>
+            <a class="button-link" href="<?php echo esc_url( $base_url ); ?>#glossary"><?php esc_html_e( 'Reset', 'lingua-forge' ); ?></a>
+        </form>
+
+        <!-- ── Entries table ─────────────────────────────────────────── -->
+        <?php if ( empty( $entries ) ) : ?>
+            <div class="lingua-forge-settings-note">
+                <p>
+                    <?php
+                    if ( $filter_source !== '' || $filter_target !== '' ) {
+                        esc_html_e( 'No glossary entries match the current filter. Clear the filter to see all entries, or add a new entry below.', 'lingua-forge' );
+                    } else {
+                        esc_html_e( 'No glossary entries yet. Add one below to start enforcing terminology in translations.', 'lingua-forge' );
+                    }
+                    ?>
+                </p>
+            </div>
+        <?php else : ?>
+            <table class="widefat striped lingua-forge-glossary-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e( 'Source term', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Target term', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Source lang', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Target lang', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Notes',       'lingua-forge' ); ?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $entries as $entry ) : ?>
+                        <tr>
+                            <td><strong><?php echo esc_html( $entry['source_term'] ); ?></strong></td>
+                            <td><strong><?php echo esc_html( $entry['target_term'] ); ?></strong></td>
+                            <td>
+                                <?php
+                                if ( $entry['source_lang'] === '' ) {
+                                    echo '<em>' . esc_html__( 'any', 'lingua-forge' ) . '</em>';
+                                } else {
+                                    echo '<code>' . esc_html( $entry['source_lang'] ) . '</code>';
+                                }
+                                ?>
+                            </td>
+                            <td><code><?php echo esc_html( $entry['target_lang'] ); ?></code></td>
+                            <td><?php echo esc_html( $entry['notes'] ); ?></td>
+                            <td>
+                                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
+                                    <input type="hidden" name="action"   value="linguaforge_glossary_delete">
+                                    <input type="hidden" name="entry_id" value="<?php echo esc_attr( $entry['id'] ); ?>">
+                                    <?php wp_nonce_field( 'linguaforge_glossary_delete', 'linguaforge_glossary_nonce' ); ?>
+                                    <button
+                                        type="submit"
+                                        class="button button-link-delete"
+                                        onclick="return confirm('<?php echo esc_js( __( 'Delete this glossary entry?', 'lingua-forge' ) ); ?>');"
+                                    >
+                                        <?php esc_html_e( 'Delete', 'lingua-forge' ); ?>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
+        <!-- ── Add-new form ──────────────────────────────────────────── -->
+        <h3><?php esc_html_e( 'Add new entry', 'lingua-forge' ); ?></h3>
+
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="lingua-forge-glossary-add">
+            <input type="hidden" name="action" value="linguaforge_glossary_add">
+            <?php wp_nonce_field( 'linguaforge_glossary_add', 'linguaforge_glossary_nonce' ); ?>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <label for="lf_g_source_term"><?php esc_html_e( 'Source term', 'lingua-forge' ); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="lf_g_source_term" name="source_term" class="regular-text" maxlength="255" required>
+                        <p class="description"><?php esc_html_e( 'The phrase as it appears in the source text.', 'lingua-forge' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="lf_g_target_term"><?php esc_html_e( 'Target term', 'lingua-forge' ); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="lf_g_target_term" name="target_term" class="regular-text" maxlength="255" required>
+                        <p class="description"><?php esc_html_e( 'How it should appear in the translation. Type the same value as the source term to instruct the AI to preserve it verbatim.', 'lingua-forge' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="lf_g_source_lang"><?php esc_html_e( 'Source language', 'lingua-forge' ); ?></label>
+                    </th>
+                    <td>
+                        <select id="lf_g_source_lang" name="source_lang">
+                            <option value=""><?php esc_html_e( '— Any source language —', 'lingua-forge' ); ?></option>
+                            <?php foreach ( $languages as $code => $label ) : ?>
+                                <option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $label ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description"><?php esc_html_e( 'Leave blank for brand names and language-agnostic terms that should be enforced regardless of which language we are translating from.', 'lingua-forge' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="lf_g_target_lang"><?php esc_html_e( 'Target language', 'lingua-forge' ); ?></label>
+                    </th>
+                    <td>
+                        <select id="lf_g_target_lang" name="target_lang" required>
+                            <?php foreach ( $languages as $code => $label ) : ?>
+                                <option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $label ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="lf_g_notes"><?php esc_html_e( 'Notes', 'lingua-forge' ); ?></label>
+                    </th>
+                    <td>
+                        <textarea id="lf_g_notes" name="notes" rows="2" class="large-text" maxlength="500"></textarea>
+                        <p class="description"><?php esc_html_e( 'Optional context for editors (e.g. "ASIC = Application-Specific Integrated Circuit; preserve in English in technical contexts").', 'lingua-forge' ); ?></p>
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button( __( 'Add entry', 'lingua-forge' ), 'primary', 'submit', false ); ?>
+        </form>
+        <?php
+    }
+
+    /**
+     * Date-range choices for the AI Usage tab.
+     *
+     * Maps the GET-param value to a label and to a "since" date (UTC) used by
+     * UsageRecorder::query(). All-time is represented by an empty since.
+     */
+    private static function usage_ranges(): array {
+
+        return [
+            'today' => [
+                'label' => __( 'Today', 'lingua-forge' ),
+                'since' => gmdate( 'Y-m-d' ),
+            ],
+            '7' => [
+                'label' => __( 'Last 7 days', 'lingua-forge' ),
+                'since' => gmdate( 'Y-m-d', strtotime( '-6 days' ) ),
+            ],
+            '30' => [
+                'label' => __( 'Last 30 days', 'lingua-forge' ),
+                'since' => gmdate( 'Y-m-d', strtotime( '-29 days' ) ),
+            ],
+            'all' => [
+                'label' => __( 'All time', 'lingua-forge' ),
+                'since' => '',
+            ],
+        ];
+    }
+
+    /**
+     * Render the AI Usage tab — date-range buttons + summary table.
+     *
+     * Read-only; no form submission. Date range is driven by the `range` GET
+     * param so each button is a regular link (bookmarkable and back/forward
+     * friendly). Default range is 30 days.
+     */
+    private static function render_ai_usage_tab(): void {
+
+        $ranges = self::usage_ranges();
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET param controlling the displayed date range; no data is modified.
+        $active_range = sanitize_key( wp_unslash( $_GET['range'] ?? '30' ) );
+        if ( ! array_key_exists( $active_range, $ranges ) ) {
+            $active_range = '30';
+        }
+
+        $criteria = [];
+        if ( $ranges[ $active_range ]['since'] !== '' ) {
+            $criteria['since'] = $ranges[ $active_range ]['since'];
+        }
+
+        $rows         = UsageRecorder::query( $criteria );
+        $total_inputs = array_sum( array_column( $rows, 'input_tokens' ) );
+        $total_outpts = array_sum( array_column( $rows, 'output_tokens' ) );
+        $total_total  = array_sum( array_column( $rows, 'total_tokens' ) );
+        $total_reqs   = array_sum( array_column( $rows, 'request_count' ) );
+
+        $base_url = admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
+
+        ?>
+        <h2><?php esc_html_e( 'AI Usage', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php
+            esc_html_e(
+                'Token consumption rolled up by feature, provider, and model. Recorded on every successful AI call; Test Connection pings are deliberately excluded so they don\'t skew the totals. The underlying table aggregates daily — pick a window below to view it.',
+                'lingua-forge'
+            );
+            ?>
+        </p>
+
+        <p class="lingua-forge-range-buttons">
+            <?php foreach ( $ranges as $range_key => $range ) :
+                $href      = add_query_arg( 'range', $range_key, $base_url ) . '#ai-usage';
+                $is_active = ( $range_key === $active_range );
+                ?>
+                <a
+                    href="<?php echo esc_url( $href ); ?>"
+                    class="button <?php echo $is_active ? 'button-primary' : 'button-secondary'; ?>"
+                ><?php echo esc_html( $range['label'] ); ?></a>
+            <?php endforeach; ?>
+        </p>
+
+        <?php if ( UsageRecorder::row_count() === 0 ) : ?>
+
+            <div class="lingua-forge-settings-note">
+                <p>
+                    <?php
+                    esc_html_e(
+                        'No AI usage recorded yet. Once an editor runs a translation, generates a meta description, or uses any other AI feature, totals will appear here.',
+                        'lingua-forge'
+                    );
+                    ?>
+                </p>
+            </div>
+
+        <?php elseif ( empty( $rows ) ) : ?>
+
+            <div class="lingua-forge-settings-note">
+                <p>
+                    <?php
+                    echo esc_html( sprintf(
+                        /* translators: %s is a date-range label like "Today" or "Last 7 days". */
+                        __( 'No AI usage recorded in the selected window (%s). Pick a wider range above.', 'lingua-forge' ),
+                        $ranges[ $active_range ]['label']
+                    ) );
+                    ?>
+                </p>
+            </div>
+
+        <?php else : ?>
+
+            <table class="widefat striped lingua-forge-usage-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e( 'Feature',  'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Provider', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Model',    'lingua-forge' ); ?></th>
+                        <th class="lingua-forge-num"><?php esc_html_e( 'Requests', 'lingua-forge' ); ?></th>
+                        <th class="lingua-forge-num"><?php esc_html_e( 'Input tokens',  'lingua-forge' ); ?></th>
+                        <th class="lingua-forge-num"><?php esc_html_e( 'Output tokens', 'lingua-forge' ); ?></th>
+                        <th class="lingua-forge-num"><?php esc_html_e( 'Total tokens',  'lingua-forge' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $rows as $row ) : ?>
+                        <tr>
+                            <td><code><?php echo esc_html( $row['feature_key'] ); ?></code></td>
+                            <td><?php echo esc_html( $row['provider'] ); ?></td>
+                            <td><code><?php echo esc_html( $row['model'] ); ?></code></td>
+                            <td class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $row['request_count'] ) ); ?></td>
+                            <td class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $row['input_tokens']  ) ); ?></td>
+                            <td class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $row['output_tokens'] ) ); ?></td>
+                            <td class="lingua-forge-num"><strong><?php echo esc_html( number_format_i18n( $row['total_tokens'] ) ); ?></strong></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3"><?php esc_html_e( 'Total', 'lingua-forge' ); ?></th>
+                        <th class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $total_reqs   ) ); ?></th>
+                        <th class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $total_inputs ) ); ?></th>
+                        <th class="lingua-forge-num"><?php echo esc_html( number_format_i18n( $total_outpts ) ); ?></th>
+                        <th class="lingua-forge-num"><strong><?php echo esc_html( number_format_i18n( $total_total ) ); ?></strong></th>
+                    </tr>
+                </tfoot>
+            </table>
+
+        <?php endif; ?>
+        <?php
+    }
+
+    private static function capability_choices(): array {
+
+        return [
+            'edit_published_posts' => __( 'Authors and above (edit_published_posts)', 'lingua-forge' ),
+            'edit_posts'           => __( 'Contributors and above — default (edit_posts)', 'lingua-forge' ),
+            'edit_others_posts'    => __( 'Editors and above (edit_others_posts)', 'lingua-forge' ),
+            'manage_options'       => __( 'Administrators only (manage_options)', 'lingua-forge' ),
+        ];
+    }
+
     // ── Initialisation ────────────────────────────────────────────────────────
 
     public static function init(): void {
@@ -78,13 +479,78 @@ class SettingsPage {
         // Language override file management
         add_action('admin_post_linguaforge_upload_i18n_override', [self::class, 'handle_upload_override']);
         add_action('admin_post_linguaforge_delete_i18n_override', [self::class, 'handle_delete_override']);
+
+        // AI cache maintenance
+        add_action('admin_post_linguaforge_clear_ai_cache',    [self::class, 'handle_clear_ai_cache']);
+        add_action('admin_post_linguaforge_clear_debug_files', [self::class, 'handle_clear_debug_files']);
+        add_action('admin_post_linguaforge_save_debug_setting', [self::class, 'handle_save_debug_setting']);
+
+        // Glossary management (§4.6)
+        add_action('admin_post_linguaforge_glossary_add',    [self::class, 'handle_glossary_add']);
+        add_action('admin_post_linguaforge_glossary_delete', [self::class, 'handle_glossary_delete']);
+
+        // Translation Memory maintenance (§4.5)
+        add_action('admin_post_linguaforge_clear_translation_memory', [self::class, 'handle_clear_translation_memory']);
+
+        // Test-connection AJAX endpoint — scoped to logged-in admins via the
+        // capability check inside the handler.
+        add_action('wp_ajax_linguaforge_test_provider', [self::class, 'ajax_test_provider']);
+
+        // Settings-screen-only asset enqueue for the Test Connection JS.
+        add_action('admin_enqueue_scripts', [self::class, 'enqueue_settings_assets']);
+    }
+
+    /**
+     * Enqueue the small JS file that powers the Test Connection buttons.
+     *
+     * Scoped to the Settings → LinguaForge AI screen only (matched via the
+     * $hook_suffix WordPress hands to admin_enqueue_scripts).
+     */
+    public static function enqueue_settings_assets(string $hook_suffix): void {
+
+        // Hook suffix for an options-page screen registered via add_options_page
+        // is "settings_page_{slug}".
+        if ($hook_suffix !== 'settings_page_' . self::PAGE_SLUG) {
+            return;
+        }
+
+        $version = defined('LINGUAFORGE_VERSION') ? LINGUAFORGE_VERSION : false;
+
+        wp_enqueue_script(
+            'linguaforge-settings-tabs',
+            LINGUAFORGE_AI_URL . '/assets/settings-tabs.js',
+            [],
+            $version,
+            true
+        );
+
+        wp_enqueue_script(
+            'linguaforge-test-connection',
+            LINGUAFORGE_AI_URL . '/assets/test-connection.js',
+            ['wp-i18n'],
+            $version,
+            true
+        );
+
+        wp_localize_script('linguaforge-test-connection', 'linguaForgeTestConnection', [
+            'ajaxUrl'   => admin_url('admin-ajax.php'),
+            'nonce'     => wp_create_nonce('linguaforge_test_provider'),
+            'strings'   => [
+                'testing'    => __( 'Testing…',          'lingua-forge' ),
+                'ok'         => __( '✓ Connection OK',   'lingua-forge' ),
+                'fail'       => __( '✗ Failed:',         'lingua-forge' ),
+                'noResponse' => __( 'No response from provider — check the error log for details.', 'lingua-forge' ),
+                'network'    => __( 'Network error — could not reach the WordPress AJAX endpoint.',  'lingua-forge' ),
+            ],
+        ]);
     }
 
     // ── i18n overrides directory ──────────────────────────────────────────────
 
     /**
      * Absolute path to the uploads-based i18n overrides directory.
-     * Matches the path used by Language_Router::i18n_overrides_dir().
+     * Matches the path used by \LinguaForge\Router\Router::i18n_overrides_dir()
+     * (aliased as Language_Router for back-compat).
      *
      * @return string  Trailing-slash path.
      */
@@ -144,6 +610,61 @@ class SettingsPage {
             // If the field was left blank, the existing key is preserved.
         }
 
+        // ── AI Limits & Security ──────────────────────────────────────────────
+        // Daily quota: 0 (or empty) = unlimited. Negative values are clamped.
+        $daily_quota = intval( wp_unslash( $_POST['linguaforge_ai_daily_quota'] ?? 0 ) );
+        update_option(
+            'linguaforge_ai_daily_quota',
+            max(0, $daily_quota),
+            false
+        );
+
+        // Required capability: must be one of the whitelisted choices.
+        // Defending against arbitrary capability strings here so a misclick
+        // in the dropdown can't lock everyone out via an unknown cap name.
+        $cap = sanitize_key( wp_unslash( $_POST['linguaforge_required_capability'] ?? 'edit_posts' ) );
+        $allowed_caps = array_keys(self::capability_choices());
+        if (!in_array($cap, $allowed_caps, true)) {
+            $cap = 'edit_posts';
+        }
+        update_option('linguaforge_required_capability', $cap, false);
+
+        // ── Behavior — Block Editor restrictions (§2.7) ───────────────────────
+        // Checkboxes: absent in $_POST = unchecked = restriction stays ON.
+        update_option(
+            'linguaforge_block_editor_allow_lock_blocks',
+            !empty($_POST['linguaforge_block_editor_allow_lock_blocks']) ? 1 : 0,
+            false
+        );
+        update_option(
+            'linguaforge_block_editor_allow_template_mode',
+            !empty($_POST['linguaforge_block_editor_allow_template_mode']) ? 1 : 0,
+            false
+        );
+
+        // ── Behavior — AI preset (replaces old compliance toggle) ────────────
+        $preset_raw   = sanitize_key($_POST['linguaforge_active_preset'] ?? '');
+        $valid_presets = array_keys(\LinguaForge\AI\Core\Config::presets());
+        update_option(
+            'linguaforge_active_preset',
+            in_array($preset_raw, $valid_presets, true) ? $preset_raw : 'standard',
+            false
+        );
+
+        // Addendum: free-form override appended to the active preset's system
+        // prompt. Empty string means "use the preset's built-in default".
+        $compliance_addendum = sanitize_textarea_field(
+            (string) wp_unslash($_POST['linguaforge_compliance_addendum'] ?? '')
+        );
+        update_option('linguaforge_compliance_addendum', $compliance_addendum, false);
+
+        // ── Behavior — Translation Memory (§4.5) ─────────────────────────────
+        update_option(
+            'linguaforge_translation_memory_enabled',
+            !empty($_POST['linguaforge_translation_memory_enabled']) ? 1 : 0,
+            false
+        );
+
         // ── Model overrides ───────────────────────────────────────────────────
         // Store whatever the admin submitted (even empty string).
         // Config::model() treats an empty stored value as "use built-in default",
@@ -164,14 +685,21 @@ class SettingsPage {
         // ── Translation limits ────────────────────────────────────────────────
         // Store as integers; 0 / empty means "use built-in default".
 
-        $max_tokens = (int) wp_unslash( $_POST['linguaforge_translation_max_tokens'] ?? 0 );
+        $translation_tier = sanitize_key($_POST['linguaforge_translation_tier'] ?? '');
+        update_option(
+            'linguaforge_translation_tier',
+            in_array($translation_tier, ['light', 'quality'], true) ? $translation_tier : '',
+            false
+        );
+
+        $max_tokens = intval( wp_unslash( $_POST['linguaforge_translation_max_tokens'] ?? 0 ) );
         update_option(
             'linguaforge_translation_max_tokens',
             $max_tokens > 0 ? $max_tokens : '',
             false
         );
 
-        $max_input = (int) wp_unslash( $_POST['linguaforge_translation_max_input_chars'] ?? 0 );
+        $max_input = intval( wp_unslash( $_POST['linguaforge_translation_max_input_chars'] ?? 0 ) );
         // 0 is a valid value here (means no limit), so store whatever was submitted.
         update_option(
             'linguaforge_translation_max_input_chars',
@@ -188,14 +716,14 @@ class SettingsPage {
             false
         );
 
-        $qt_tokens = (int) wp_unslash( $_POST['linguaforge_quick_translate_max_tokens'] ?? 0 );
+        $qt_tokens = intval( wp_unslash( $_POST['linguaforge_quick_translate_max_tokens'] ?? 0 ) );
         update_option(
             'linguaforge_quick_translate_max_tokens',
             $qt_tokens > 0 ? $qt_tokens : '',
             false
         );
 
-        $qt_input = (int) wp_unslash( $_POST['linguaforge_quick_translate_max_input_chars'] ?? 0 );
+        $qt_input = intval( wp_unslash( $_POST['linguaforge_quick_translate_max_input_chars'] ?? 0 ) );
         update_option(
             'linguaforge_quick_translate_max_input_chars',
             $qt_input > 0 ? $qt_input : '',
@@ -204,21 +732,21 @@ class SettingsPage {
 
         // ── Content Generator limits ──────────────────────────────────────────
 
-        $cg_tokens = (int) wp_unslash( $_POST['linguaforge_content_generator_max_tokens'] ?? 0 );
+        $cg_tokens = intval( wp_unslash( $_POST['linguaforge_content_generator_max_tokens'] ?? 0 ) );
         update_option(
             'linguaforge_content_generator_max_tokens',
             $cg_tokens > 0 ? $cg_tokens : '',
             false
         );
 
-        $cg_hints = (int) wp_unslash( $_POST['linguaforge_content_generator_max_hints_chars'] ?? 0 );
+        $cg_hints = intval( wp_unslash( $_POST['linguaforge_content_generator_max_hints_chars'] ?? 0 ) );
         update_option(
             'linguaforge_content_generator_max_hints_chars',
             $cg_hints > 0 ? $cg_hints : '',
             false
         );
 
-        $cg_context = (int) wp_unslash( $_POST['linguaforge_content_generator_max_context_chars'] ?? 0 );
+        $cg_context = intval( wp_unslash( $_POST['linguaforge_content_generator_max_context_chars'] ?? 0 ) );
         update_option(
             'linguaforge_content_generator_max_context_chars',
             $cg_context > 0 ? $cg_context : '',
@@ -300,6 +828,13 @@ class SettingsPage {
             exit;
         }
 
+        // A new .mo override may introduce a previously-unknown locale to
+        // Language_Router::languages(), which in turn feeds the rewrite rule
+        // set built on init. Mark the rules dirty so the init-priority-99 hook
+        // in lingua-forge.php picks the flush up on the next request — without
+        // this the new /xx/ URLs return 404 until Settings → Permalinks → Save.
+        update_option( 'linguaforge_flush_rewrite_rules', true );
+
         wp_safe_redirect(add_query_arg('lf_override_uploaded', '1', $redirect_base));
         exit;
     }
@@ -357,8 +892,283 @@ class SettingsPage {
             exit;
         }
 
+        // Deleting the last .mo for a discovered-only locale removes it from
+        // Language_Router::languages(), so the rewrite-rule set must rebuild.
+        // Same mechanism as on upload — defer to init-priority-99 in lingua-forge.php.
+        update_option( 'linguaforge_flush_rewrite_rules', true );
+
         wp_safe_redirect(add_query_arg('lf_override_deleted', '1', $redirect_base));
         exit;
+    }
+
+    // ── AI cache maintenance ──────────────────────────────────────────────────
+
+    /**
+     * Empty the wp_lingua_forge_ai_cache table (and any leftover pre-1.4
+     * post-meta cache rows) when an admin clicks the "Clear AI cache" button.
+     *
+     * The wipe is cheap — all cached entries regenerate on next use via a
+     * fresh API call. Useful when admins want to reclaim DB space, force a
+     * resync after switching providers or changing prompts, or troubleshoot
+     * a cache-related bug.
+     */
+    public static function handle_clear_ai_cache(): void {
+
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('Permission denied.', 'lingua-forge'), 403);
+        }
+
+        check_admin_referer('linguaforge_clear_ai_cache', 'linguaforge_clear_ai_cache_nonce');
+
+        $count = CacheStore::clear_all();
+
+        wp_safe_redirect(add_query_arg(
+            'lf_cache_cleared',
+            (int) $count,
+            admin_url('options-general.php?page=' . self::PAGE_SLUG)
+        ));
+        exit;
+    }
+
+    /**
+     * Empty the debug-file directory when an admin clicks the
+     * "Clear debug files" button in Maintenance → Debug Files.
+     *
+     * Configuration of WHERE the files live remains the filter's job
+     * (`linguaforge_debug_dir`); this handler only operates on the resolved
+     * directory and deletes every *.txt found there.
+     */
+    public static function handle_clear_debug_files(): void {
+
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('Permission denied.', 'lingua-forge'), 403);
+        }
+
+        check_admin_referer('linguaforge_clear_debug_files', 'linguaforge_clear_debug_files_nonce');
+
+        $count = Translation::clear_debug_files();
+
+        wp_safe_redirect(add_query_arg(
+            'lf_debug_cleared',
+            (int) $count,
+            admin_url('options-general.php?page=' . self::PAGE_SLUG)
+        ));
+        exit;
+    }
+
+    /**
+     * Persist the on/off state of the Settings → Maintenance debug toggle.
+     *
+     * Only writes the option. If the LINGUAFORGE_AI_DEBUG constant is defined
+     * in wp-config.php, Translation::debug_enabled() still resolves to the
+     * constant value regardless of what the option says — so this handler
+     * doesn't fight the constant, it just records the admin's preference for
+     * sites that don't use the constant.
+     */
+    /**
+     * Empty the Translation Memory table from the Maintenance tab.
+     */
+    public static function handle_clear_translation_memory(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_clear_translation_memory', 'linguaforge_clear_tm_nonce' );
+
+        $count = TranslationMemory::clear_all();
+
+        wp_safe_redirect( add_query_arg(
+            'lf_tm_cleared',
+            (int) $count,
+            admin_url( 'options-general.php?page=' . self::PAGE_SLUG )
+        ) . '#maintenance' );
+        exit;
+    }
+
+    /**
+     * Add a new glossary entry.
+     *
+     * Validates the three required fields (source term, target term, target
+     * language), inserts via Glossary::insert(), redirects back to the
+     * Glossary tab with a feedback query arg. Cap-protected + nonce-verified.
+     */
+    public static function handle_glossary_add(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_glossary_add', 'linguaforge_glossary_nonce' );
+
+        $source_term = trim( sanitize_text_field( wp_unslash( $_POST['source_term'] ?? '' ) ) );
+        $target_term = trim( sanitize_text_field( wp_unslash( $_POST['target_term'] ?? '' ) ) );
+        $source_lang = sanitize_key( wp_unslash( $_POST['source_lang'] ?? '' ) );
+        $target_lang = sanitize_key( wp_unslash( $_POST['target_lang'] ?? '' ) );
+        $notes       = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
+
+        $base = admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
+
+        if ( $source_term === '' || $target_term === '' || $target_lang === '' ) {
+            wp_safe_redirect( add_query_arg( 'lf_glossary_error', 'missing_fields', $base ) . '#glossary' );
+            exit;
+        }
+
+        $id = Glossary::insert( $source_term, $target_term, $source_lang, $target_lang, $notes );
+
+        if ( $id <= 0 ) {
+            wp_safe_redirect( add_query_arg( 'lf_glossary_error', 'insert_failed', $base ) . '#glossary' );
+            exit;
+        }
+
+        wp_safe_redirect( add_query_arg( 'lf_glossary_added', '1', $base ) . '#glossary' );
+        exit;
+    }
+
+    /**
+     * Delete a glossary entry by ID.
+     */
+    public static function handle_glossary_delete(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_glossary_delete', 'linguaforge_glossary_nonce' );
+
+        $entry_id = absint( $_POST['entry_id'] ?? 0 );
+
+        if ( $entry_id > 0 ) {
+            Glossary::delete( $entry_id );
+        }
+
+        wp_safe_redirect( add_query_arg(
+            'lf_glossary_deleted',
+            '1',
+            admin_url( 'options-general.php?page=' . self::PAGE_SLUG )
+        ) . '#glossary' );
+        exit;
+    }
+
+    public static function handle_save_debug_setting(): void {
+
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('Permission denied.', 'lingua-forge'), 403);
+        }
+
+        check_admin_referer('linguaforge_save_debug_setting', 'linguaforge_save_debug_setting_nonce');
+
+        $enabled = !empty($_POST['linguaforge_ai_debug_enabled']);
+
+        update_option('linguaforge_ai_debug_enabled', $enabled ? 1 : 0, false);
+
+        wp_safe_redirect(add_query_arg(
+            'lf_debug_setting_saved',
+            $enabled ? '1' : '0',
+            admin_url('options-general.php?page=' . self::PAGE_SLUG)
+        ));
+        exit;
+    }
+
+    // ── Test Connection (AJAX) ───────────────────────────────────────────────
+
+    /**
+     * Run a minimal "ping" chat call against a single provider and report
+     * back as JSON. Wired to wp_ajax_linguaforge_test_provider.
+     *
+     * Why per-provider rather than always-active-provider: admins frequently
+     * configure multiple keys and want to validate each one independently
+     * before flipping the active provider in Settings → Active Provider.
+     *
+     * Response payload (always JSON, status 200 so the JS client can read it):
+     *   {
+     *     success: bool,
+     *     provider: 'anthropic'|'openai'|'gemini',
+     *     message?: string,  // present on failure
+     *     reply?:  string,   // present on success (truncated provider text)
+     *   }
+     */
+    public static function ajax_test_provider(): void {
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json([
+                'success' => false,
+                'message' => __('Permission denied.', 'lingua-forge'),
+            ]);
+        }
+
+        check_ajax_referer('linguaforge_test_provider', 'nonce');
+
+        $provider_slug = sanitize_key(wp_unslash($_POST['provider'] ?? ''));
+        $providers     = self::providers();
+
+        if (!array_key_exists($provider_slug, $providers)) {
+            wp_send_json([
+                'success'  => false,
+                'provider' => $provider_slug,
+                'message'  => __('Unknown provider.', 'lingua-forge'),
+            ]);
+        }
+
+        if (!KeyStore::get($provider_slug)) {
+            wp_send_json([
+                'success'  => false,
+                'provider' => $provider_slug,
+                'message'  => __('No API key configured for this provider.', 'lingua-forge'),
+            ]);
+        }
+
+        // Build a low-cost WorkerConfig for the ping — light tier, tight token
+        // budget so an accidental verbose model can't run up much cost.
+        // Config::model() always uses the active provider, so we resolve the
+        // light-tier model for the requested provider here: stored override
+        // first, fall back to the hard-coded default.
+        $model_option = (string) get_option("linguaforge_model_{$provider_slug}_light", '');
+        $model        = $model_option !== ''
+            ? $model_option
+            : Config::default_model($provider_slug, 'light');
+
+        $config = new WorkerConfig(
+            model:       $model,
+            max_tokens:  16,
+            temperature: 0.0,
+        );
+
+        $provider_instance = match ($provider_slug) {
+            'anthropic' => new Anthropic($config),
+            'openai'    => new OpenAI($config),
+            'gemini'    => new Gemini($config),
+            default     => null,
+        };
+
+        if ($provider_instance === null) {
+            wp_send_json([
+                'success'  => false,
+                'provider' => $provider_slug,
+                'message'  => __('Could not instantiate the provider.', 'lingua-forge'),
+            ]);
+        }
+
+        $reply = $provider_instance->chat([
+            [
+                'role'    => 'user',
+                'content' => 'Reply with the single word: ping',
+            ],
+        ]);
+
+        if ($reply === null || $reply === '') {
+            wp_send_json([
+                'success'  => false,
+                'provider' => $provider_slug,
+                'message'  => __('Provider returned no text. Check the WordPress error log for the detailed failure reason.', 'lingua-forge'),
+            ]);
+        }
+
+        wp_send_json([
+            'success'  => true,
+            'provider' => $provider_slug,
+            'reply'    => mb_substr((string) $reply, 0, 200),
+        ]);
     }
 
     // ── Page renderer ─────────────────────────────────────────────────────────
@@ -386,6 +1196,17 @@ class SettingsPage {
                 </div>
             <?php endif; ?>
 
+            <!-- ── Tab navigation ──────────────────────────────────────── -->
+            <h2 class="nav-tab-wrapper lingua-forge-tabs" role="tablist">
+                <a href="#general"     class="nav-tab nav-tab-active" data-lf-tab="general"><?php     esc_html_e('General',     'lingua-forge'); ?></a>
+                <a href="#api-keys"    class="nav-tab"                data-lf-tab="api-keys"><?php    esc_html_e('API Keys',    'lingua-forge'); ?></a>
+                <a href="#limits"      class="nav-tab"                data-lf-tab="limits"><?php      esc_html_e('Limits',      'lingua-forge'); ?></a>
+                <a href="#behavior"    class="nav-tab"                data-lf-tab="behavior"><?php    esc_html_e('Behavior',    'lingua-forge'); ?></a>
+                <a href="#glossary"    class="nav-tab"                data-lf-tab="glossary"><?php    esc_html_e('Glossary',    'lingua-forge'); ?></a>
+                <a href="#ai-usage"    class="nav-tab"                data-lf-tab="ai-usage"><?php    esc_html_e('AI Usage',    'lingua-forge'); ?></a>
+                <a href="#maintenance" class="nav-tab"                data-lf-tab="maintenance"><?php esc_html_e('Maintenance', 'lingua-forge'); ?></a>
+            </h2>
+
             <form
                 method="post"
                 action="<?php echo esc_url(admin_url('admin-post.php')); ?>"
@@ -397,6 +1218,9 @@ class SettingsPage {
                 >
 
                 <?php wp_nonce_field(self::NONCE_ACTION, self::NONCE_FIELD); ?>
+
+                <!-- ───── Tab: General ───── -->
+                <div class="lingua-forge-tab-panel is-active" data-lf-panel="general">
 
                 <!-- ── Provider ──────────────────────────────────────────── -->
                 <h2><?php esc_html_e('Active Provider', 'lingua-forge'); ?></h2>
@@ -525,6 +1349,11 @@ class SettingsPage {
                     ?>
                 </p>
 
+                </div><!-- /lingua-forge-tab-panel: general -->
+
+                <!-- ───── Tab: API Keys ───── -->
+                <div class="lingua-forge-tab-panel" data-lf-panel="api-keys">
+
                 <!-- ── API Keys ──────────────────────────────────────────── -->
                 <h2><?php esc_html_e('API Keys', 'lingua-forge'); ?></h2>
 
@@ -580,6 +1409,21 @@ class SettingsPage {
                                     <?php endif; ?>
                                 </span>
 
+                                <?php if ($configured): ?>
+                                    <button
+                                        type="button"
+                                        class="button button-secondary lingua-forge-test-key"
+                                        data-provider="<?php echo esc_attr($slug); ?>"
+                                    >
+                                        <?php esc_html_e( 'Test connection', 'lingua-forge' ); ?>
+                                    </button>
+                                    <span
+                                        class="lingua-forge-test-result"
+                                        data-for="<?php echo esc_attr($slug); ?>"
+                                        aria-live="polite"
+                                    ></span>
+                                <?php endif; ?>
+
                                 <p class="description">
                                     <?php
                                     esc_html_e(
@@ -624,6 +1468,98 @@ class SettingsPage {
 
                 </table>
 
+                <!-- ── Server-side key sources ──────────────────────── -->
+                <div class="lingua-forge-settings-note">
+                    <p>
+                        <strong><?php esc_html_e('Alternative (server-side):', 'lingua-forge'); ?></strong>
+                        <?php
+                        esc_html_e( 'You can also define keys as constants or environment variables (e.g. in wp-config.php). Those sources are used automatically as a fallback when no database key is stored.', 'lingua-forge' );
+                        ?>
+                    </p>
+                    <pre class="lingua-forge-code-sample">define( 'ANTHROPIC_API_KEY', 'sk-ant-…' );
+define( 'OPENAI_API_KEY',    'sk-…' );</pre>
+                    <p>
+                        <?php
+                        esc_html_e(
+                            'To use a custom encryption secret (instead of the derived wp_salt value), add this to wp-config.php:',
+                            'lingua-forge'
+                        );
+                        ?>
+                    </p>
+                    <pre class="lingua-forge-code-sample">define( 'LINGUAFORGE_SECRET', 'your-random-secret' );</pre>
+                </div>
+
+                </div><!-- /lingua-forge-tab-panel: api-keys -->
+
+                <!-- ───── Tab: Limits ───── -->
+                <div class="lingua-forge-tab-panel" data-lf-panel="limits">
+
+                <!-- ── AI Limits & Security ─────────────────────────────── -->
+                <h2><?php esc_html_e('AI Limits & Security', 'lingua-forge'); ?></h2>
+
+                <p>
+                    <?php
+                    esc_html_e( 'Cap how much AI usage the site can generate and restrict which user roles may trigger paid AI calls. Sits on top of the per-user rate limit (30 requests / minute, hardcoded) that already protects against single-user runaway loops.', 'lingua-forge' );
+                    ?>
+                </p>
+
+                <table class="form-table" role="presentation">
+
+                    <tr>
+                        <th scope="row">
+                            <label for="linguaforge_ai_daily_quota">
+                                <?php esc_html_e( 'Daily request limit', 'lingua-forge' ); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <input
+                                type="number"
+                                id="linguaforge_ai_daily_quota"
+                                name="linguaforge_ai_daily_quota"
+                                value="<?php echo esc_attr( (string) (int) get_option( 'linguaforge_ai_daily_quota', 0 ) ); ?>"
+                                min="0"
+                                step="1"
+                                class="small-text"
+                            >
+                            <p class="description">
+                                <?php
+                                esc_html_e( 'Site-wide ceiling on AI requests per UTC day (counts both Toolbar translations and block revisions). Counter resets at UTC midnight. Set to 0 to disable the cap.', 'lingua-forge' );
+                                ?>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <label for="linguaforge_required_capability">
+                                <?php esc_html_e( 'Minimum role', 'lingua-forge' ); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <?php $current_cap = (string) get_option( 'linguaforge_required_capability', 'edit_posts' ); ?>
+                            <select
+                                id="linguaforge_required_capability"
+                                name="linguaforge_required_capability"
+                            >
+                                <?php foreach ( self::capability_choices() as $cap_value => $cap_label ) : ?>
+                                    <option
+                                        value="<?php echo esc_attr( $cap_value ); ?>"
+                                        <?php selected( $current_cap, $cap_value ); ?>
+                                    >
+                                        <?php echo esc_html( $cap_label ); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="description">
+                                <?php
+                                esc_html_e( 'Lowest WordPress capability allowed to trigger AI features. Tightening this on multi-author sites prevents Contributors or trial accounts from running paid AI calls. Override per-feature via the linguaforge_required_capability filter.', 'lingua-forge' );
+                                ?>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
                 <!-- ── Translation limits ───────────────────────────────── -->
                 <h2><?php esc_html_e('Translation Limits', 'lingua-forge'); ?></h2>
 
@@ -634,6 +1570,35 @@ class SettingsPage {
                 </p>
 
                 <table class="form-table" role="presentation">
+
+                    <tr>
+                        <th scope="row">
+                            <label for="linguaforge_translation_tier">
+                                <?php esc_html_e('Model tier', 'lingua-forge'); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <?php
+                            $translation_tier = Config::translation_tier();
+                            ?>
+                            <select
+                                id="linguaforge_translation_tier"
+                                name="linguaforge_translation_tier"
+                            >
+                                <option value="quality" <?php selected($translation_tier, 'quality'); ?>>
+                                    <?php esc_html_e('Quality (default — Sonnet / GPT-4o / Gemini Pro)', 'lingua-forge'); ?>
+                                </option>
+                                <option value="light" <?php selected($translation_tier, 'light'); ?>>
+                                    <?php esc_html_e('Light (fast and cost-effective — Haiku / Flash)', 'lingua-forge'); ?>
+                                </option>
+                            </select>
+                            <p class="description">
+                                <?php
+                                esc_html_e( 'Which model tier to use for full-page translation. Quality uses the model configured in the Models table above and is recommended for accurate, long-form translation. Switch to Light only if speed or cost is the priority and the content is short.', 'lingua-forge' );
+                                ?>
+                            </p>
+                        </td>
+                    </tr>
 
                     <tr>
                         <th scope="row">
@@ -718,7 +1683,7 @@ class SettingsPage {
                                     <?php esc_html_e('Light (default — fast and cost-effective)', 'lingua-forge'); ?>
                                 </option>
                                 <option value="quality" <?php selected($qt_tier, 'quality'); ?>>
-                                    <?php esc_html_e('Quality (same model as full-page translation)', 'lingua-forge'); ?>
+                                    <?php esc_html_e('Quality (Sonnet / GPT-4o / Gemini Pro)', 'lingua-forge'); ?>
                                 </option>
                             </select>
                             <p class="description">
@@ -864,30 +1829,174 @@ class SettingsPage {
 
                 </table>
 
-                <!-- ── Security note ─────────────────────────────────────── -->
-                <div class="lingua-forge-settings-note">
-                    <p>
-                        <strong><?php esc_html_e('Alternative (server-side):', 'lingua-forge'); ?></strong>
-                        <?php
-                        esc_html_e( 'You can also define keys as constants or environment variables (e.g. in wp-config.php). Those sources are used automatically as a fallback when no database key is stored.', 'lingua-forge' );
-                        ?>
-                    </p>
-                    <pre class="lingua-forge-code-sample">define( 'ANTHROPIC_API_KEY', 'sk-ant-…' );
-define( 'OPENAI_API_KEY',    'sk-…' );</pre>
-                    <p>
-                        <?php
-                        esc_html_e(
-                            'To use a custom encryption secret (instead of the derived wp_salt value), add this to wp-config.php:',
-                            'lingua-forge'
-                        );
-                        ?>
-                    </p>
-                    <pre class="lingua-forge-code-sample">define( 'LINGUAFORGE_SECRET', 'your-random-secret' );</pre>
-                </div>
+                </div><!-- /lingua-forge-tab-panel: limits -->
+
+                <!-- ───── Tab: Behavior ───── -->
+                <div class="lingua-forge-tab-panel" data-lf-panel="behavior">
+
+                <!-- ── Block Editor (§2.7) ─────────────────────────────── -->
+                <h2><?php esc_html_e('Block Editor', 'lingua-forge'); ?></h2>
+
+                <p>
+                    <?php
+                    esc_html_e( 'LinguaForge restricts two Gutenberg features by default to keep editorial behavior consistent across languages. Opt in here when you need full Gutenberg / FSE capabilities.', 'lingua-forge' );
+                    ?>
+                </p>
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e('Block locking', 'lingua-forge'); ?>
+                        </th>
+                        <td>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="linguaforge_block_editor_allow_lock_blocks"
+                                    value="1"
+                                    <?php checked( (bool) get_option('linguaforge_block_editor_allow_lock_blocks', false) ); ?>
+                                >
+                                <?php esc_html_e('Allow editors to lock individual blocks', 'lingua-forge'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Re-enables Gutenberg\'s canLockBlocks. Useful for editorial templates that need to prevent contributors from moving or deleting specific blocks.', 'lingua-forge'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e('Template mode', 'lingua-forge'); ?>
+                        </th>
+                        <td>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="linguaforge_block_editor_allow_template_mode"
+                                    value="1"
+                                    <?php checked( (bool) get_option('linguaforge_block_editor_allow_template_mode', false) ); ?>
+                                >
+                                <?php esc_html_e('Allow Gutenberg template-editing mode on post screens', 'lingua-forge'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where post-level template overrides are intentional.', 'lingua-forge'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- ── Compliance Preset (§2.8) ────────────────────────── -->
+                <h2><?php esc_html_e('Compliance Preset', 'lingua-forge'); ?></h2>
+
+                <p>
+                    <?php
+                    esc_html_e( 'Strict-preservation mode for legal, regulatory, medical, or technical content. When on, every AI feature uses a low sampling temperature and appends the addendum below to its system prompt — terminology, article numbers, units, brand names, and regulatory language are preserved verbatim rather than paraphrased.', 'lingua-forge' );
+                    ?>
+                </p>
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row">
+                            <label for="linguaforge_active_preset">
+                                <?php esc_html_e('Global AI preset', 'lingua-forge'); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <?php
+                            $presets        = \LinguaForge\AI\Core\Config::presets();
+                            $current_preset = \LinguaForge\AI\Core\Config::active_preset();
+                            ?>
+                            <select id="linguaforge_active_preset" name="linguaforge_active_preset">
+                                <?php foreach ($presets as $key => $meta): ?>
+                                    <option value="<?php echo esc_attr($key); ?>" <?php selected($current_preset, $key); ?>>
+                                        <?php echo esc_html($meta['label']); ?>
+                                        <?php if ($meta['temperature'] !== null): ?>
+                                            (<?php
+                                            /* translators: %s: sampling temperature value, e.g. 0.2 */
+                                            printf( esc_html__( 'T=%s', 'lingua-forge' ), esc_html( (string) $meta['temperature'] ) );
+                                        ?>)
+                                        <?php endif; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="description">
+                                <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the LinguaForge AI meta box.', 'lingua-forge'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="linguaforge_compliance_addendum">
+                                <?php esc_html_e('Custom system-prompt addendum', 'lingua-forge'); ?>
+                            </label>
+                        </th>
+                        <td>
+                            <textarea
+                                id="linguaforge_compliance_addendum"
+                                name="linguaforge_compliance_addendum"
+                                rows="6"
+                                class="large-text code"
+                                placeholder="<?php esc_attr_e('Leave blank to use the preset\'s built-in instructions.', 'lingua-forge'); ?>"
+                            ><?php echo esc_textarea( (string) get_option('linguaforge_compliance_addendum', '') ); ?></textarea>
+                            <p class="description">
+                                <?php esc_html_e('When non-empty, this text replaces the active preset\'s built-in system-prompt addendum. Use it to add domain-specific instructions (e.g. renewable-energy abbreviations, proprietary brand names, regulatory citation formats). Leave blank to use the preset default.', 'lingua-forge'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- ── Translation Memory (§4.5) ────────────────────────── -->
+                <h2><?php esc_html_e('Translation Memory', 'lingua-forge'); ?></h2>
+
+                <p>
+                    <?php
+                    esc_html_e( 'Cache translated equivalents at the block level so reusable content (shared footers, sidebars, accordions, boilerplate-heavy legal sections) does not pay an API call every time. When enabled, the translation flow parses each post into blocks, looks each block up in the cache, and sends only uncached blocks to the AI in a single batched request. Glossary edits and Compliance preset changes automatically invalidate affected cached translations. View statistics and clear the cache under Maintenance.', 'lingua-forge' );
+                    ?>
+                </p>
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e('Translation Memory', 'lingua-forge'); ?>
+                        </th>
+                        <td>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="linguaforge_translation_memory_enabled"
+                                    value="1"
+                                    <?php checked( (bool) get_option('linguaforge_translation_memory_enabled', false) ); ?>
+                                >
+                                <?php esc_html_e('Enable block-level translation cache reuse across posts', 'lingua-forge'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Currently skipped for posts that use block-comment attribute placeholders (wp:details summary fields, etc.) — they fall through to the existing single-call translation path.', 'lingua-forge'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                </div><!-- /lingua-forge-tab-panel: behavior -->
 
                 <?php submit_button( __( 'Save Settings', 'lingua-forge' ) ); ?>
 
             </form>
+
+            <!-- ───── Tab: Glossary ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="glossary">
+
+            <?php self::render_glossary_tab(); ?>
+
+            </div><!-- /lingua-forge-tab-panel: glossary -->
+
+            <!-- ───── Tab: AI Usage ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="ai-usage">
+
+            <?php self::render_ai_usage_tab(); ?>
+
+            </div><!-- /lingua-forge-tab-panel: ai-usage -->
+
+            <!-- ───── Tab: Maintenance ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="maintenance">
 
             <!-- ── Language Overrides ──────────────────────────────────── -->
             <hr>
@@ -922,7 +2031,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                     'invalid_file' => __('Invalid filename.', 'lingua-forge'),
                     'invalid_path' => __('Security check failed — file path is not permitted.', 'lingua-forge'),
                 ];
-                $error_key = sanitize_key( wp_unslash( $_GET['lf_override_error'] ) );
+                $error_key = sanitize_key( wp_unslash( $_GET['lf_override_error'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- value is used only as a lookup key in a hardcoded error-message map; no nonce is meaningful for a redirect-back GET param.
                 $error_msg = $error_map[$error_key] ?? __('An unknown error occurred.', 'lingua-forge');
                 ?>
                 <div class="notice notice-error is-dismissible">
@@ -1035,9 +2144,388 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
 
             </form>
 
+            <!-- ── AI Cache ─────────────────────────────────────────────── -->
+            <hr>
+
+            <h2><?php esc_html_e( 'AI Cache', 'lingua-forge' ); ?></h2>
+
+            <p>
+                <?php
+                esc_html_e(
+                    'LinguaForge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+
+            <?php
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after the clear action; no data is modified here.
+            if ( isset( $_GET['lf_cache_cleared'] ) ) :
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only GET flag; absint() bounds it.
+                $linguaforge_cleared_count = absint( $_GET['lf_cache_cleared'] );
+                ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>
+                        <?php
+                        echo esc_html( sprintf(
+                            /* translators: %d is the number of cleared cache entries. */
+                            _n(
+                                'AI cache cleared. %d entry was removed.',
+                                'AI cache cleared. %d entries were removed.',
+                                $linguaforge_cleared_count,
+                                'lingua-forge'
+                            ),
+                            $linguaforge_cleared_count
+                        ) );
+                        ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                onsubmit="return confirm('<?php echo esc_js( __( 'Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds.', 'lingua-forge' ) ); ?>');"
+            >
+                <input type="hidden" name="action" value="linguaforge_clear_ai_cache">
+                <?php wp_nonce_field( 'linguaforge_clear_ai_cache', 'linguaforge_clear_ai_cache_nonce' ); ?>
+
+                <?php submit_button(
+                    __( 'Clear AI Cache', 'lingua-forge' ),
+                    'secondary',
+                    'submit',
+                    false
+                ); ?>
+            </form>
+
+            <!-- ── Debug Files ─────────────────────────────────────────── -->
+            <hr>
+
+            <h2><?php esc_html_e( 'Debug Files', 'lingua-forge' ); ?></h2>
+
+            <p>
+                <?php
+                esc_html_e(
+                    'When LINGUAFORGE_AI_DEBUG is defined in wp-config.php, the Translation feature writes its raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+
+            <?php
+            $linguaforge_debug_enabled       = Translation::debug_enabled();
+            $linguaforge_debug_dir           = Translation::debug_dir();
+            $linguaforge_debug_count         = Translation::debug_file_count();
+            $linguaforge_debug_const_defined = Translation::debug_constant_defined();
+            $linguaforge_debug_const_value   = Translation::debug_constant_value();
+            $linguaforge_debug_option_state  = (bool) get_option('linguaforge_ai_debug_enabled', false);
+            ?>
+
+            <?php
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after the clear action.
+            if ( isset( $_GET['lf_debug_cleared'] ) ) :
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag; absint() bounds it.
+                $linguaforge_debug_removed = absint( $_GET['lf_debug_cleared'] );
+                ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>
+                        <?php
+                        echo esc_html( sprintf(
+                            /* translators: %d is the number of removed debug files. */
+                            _n(
+                                'Debug files cleared. %d file was removed.',
+                                'Debug files cleared. %d files were removed.',
+                                $linguaforge_debug_removed,
+                                'lingua-forge'
+                            ),
+                            $linguaforge_debug_removed
+                        ) );
+                        ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <?php
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after the toggle save action.
+            if ( isset( $_GET['lf_debug_setting_saved'] ) ) : ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>
+                        <?php
+                        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag.
+                        if ( $_GET['lf_debug_setting_saved'] === '1' ) {
+                            esc_html_e( 'Debug logging enabled.', 'lingua-forge' );
+                        } else {
+                            esc_html_e( 'Debug logging disabled.', 'lingua-forge' );
+                        }
+                        ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+            >
+                <input type="hidden" name="action" value="linguaforge_save_debug_setting">
+                <?php wp_nonce_field( 'linguaforge_save_debug_setting', 'linguaforge_save_debug_setting_nonce' ); ?>
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Debug logging', 'lingua-forge' ); ?></th>
+                        <td>
+                            <?php if ( $linguaforge_debug_const_defined ) : ?>
+
+                                <?php // Constant in wp-config.php overrides — show the locked state. ?>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        disabled
+                                        <?php checked( (bool) $linguaforge_debug_const_value ); ?>
+                                    >
+                                    <?php esc_html_e( 'Write AI prompts and responses to disk for troubleshooting', 'lingua-forge' ); ?>
+                                </label>
+                                <p class="description">
+                                    <?php
+                                    if ( $linguaforge_debug_const_value ) {
+                                        esc_html_e( 'Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here.', 'lingua-forge' );
+                                    } else {
+                                        esc_html_e( 'Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here.', 'lingua-forge' );
+                                    }
+                                    ?>
+                                </p>
+
+                            <?php else : ?>
+
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="linguaforge_ai_debug_enabled"
+                                        value="1"
+                                        <?php checked( $linguaforge_debug_option_state ); ?>
+                                    >
+                                    <?php esc_html_e( 'Write AI prompts and responses to disk for troubleshooting', 'lingua-forge' ); ?>
+                                </label>
+                                <p class="description">
+                                    <?php
+                                    esc_html_e( 'Files land in the directory below. Useful for diagnosing translation issues — turn off once you have what you need so the files do not accumulate. You can also force this from wp-config.php with `define( \'LINGUAFORGE_AI_DEBUG\', true );` which overrides the toggle.', 'lingua-forge' );
+                                    ?>
+                                </p>
+
+                            <?php endif; ?>
+
+                            <p>
+                                <strong><?php esc_html_e( 'Currently:', 'lingua-forge' ); ?></strong>
+                                <?php if ( $linguaforge_debug_enabled ) : ?>
+                                    <span class="lingua-forge-key-badge lingua-forge-badge--ok">
+                                        <?php esc_html_e( '✓ Enabled', 'lingua-forge' ); ?>
+                                    </span>
+                                <?php else : ?>
+                                    <span class="lingua-forge-key-badge lingua-forge-badge--missing">
+                                        <?php esc_html_e( '✗ Disabled', 'lingua-forge' ); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Directory', 'lingua-forge' ); ?></th>
+                        <td>
+                            <code><?php echo esc_html( $linguaforge_debug_dir ); ?></code>
+                            <p class="description">
+                                <?php esc_html_e( 'Filter with linguaforge_debug_dir to redirect debug output to a non-public location.', 'lingua-forge' ); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Files', 'lingua-forge' ); ?></th>
+                        <td>
+                            <strong><?php echo esc_html( number_format_i18n( $linguaforge_debug_count ) ); ?></strong>
+                            <?php esc_html_e( '.txt file(s) in the directory', 'lingua-forge' ); ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <?php if ( ! $linguaforge_debug_const_defined ) : ?>
+                    <?php submit_button(
+                        __( 'Save Debug Setting', 'lingua-forge' ),
+                        'secondary',
+                        'submit',
+                        false
+                    ); ?>
+                <?php endif; ?>
+            </form>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                onsubmit="return confirm('<?php echo esc_js( __( 'Delete all .txt files in the debug directory? The directory itself will remain so future debug writes still land cleanly.', 'lingua-forge' ) ); ?>');"
+            >
+                <input type="hidden" name="action" value="linguaforge_clear_debug_files">
+                <?php wp_nonce_field( 'linguaforge_clear_debug_files', 'linguaforge_clear_debug_files_nonce' ); ?>
+
+                <?php submit_button(
+                    __( 'Clear Debug Files', 'lingua-forge' ),
+                    'secondary',
+                    'submit',
+                    false,
+                    $linguaforge_debug_count > 0 ? [] : ['disabled' => 'disabled']
+                ); ?>
+            </form>
+
+            <!-- ── Translation Memory ──────────────────────────────────── -->
+            <hr>
+
+            <h2><?php esc_html_e( 'Translation Memory', 'lingua-forge' ); ?></h2>
+
+            <p>
+                <?php
+                esc_html_e(
+                    'Per-block translation cache shared across posts. Configure on/off in Settings → Behavior. Stats below show what is currently cached; clearing forces every block to be re-translated on next request (useful after upgrading models or to recover database space).',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+
+            <?php
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect after the clear action.
+            if ( isset( $_GET['lf_tm_cleared'] ) ) :
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag; absint() bounds it.
+                $linguaforge_tm_removed = absint( $_GET['lf_tm_cleared'] );
+                ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>
+                        <?php
+                        echo esc_html( sprintf(
+                            /* translators: %d is the number of removed cached blocks. */
+                            _n(
+                                'Translation Memory cleared. %d cached block was removed.',
+                                'Translation Memory cleared. %d cached blocks were removed.',
+                                $linguaforge_tm_removed,
+                                'lingua-forge'
+                            ),
+                            $linguaforge_tm_removed
+                        ) );
+                        ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <?php
+            $linguaforge_tm_enabled = (bool) get_option( 'linguaforge_translation_memory_enabled', false );
+            $linguaforge_tm_stats   = TranslationMemory::stats();
+            ?>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><?php esc_html_e( 'Status', 'lingua-forge' ); ?></th>
+                    <td>
+                        <?php if ( $linguaforge_tm_enabled ) : ?>
+                            <span class="lingua-forge-key-badge lingua-forge-badge--ok">
+                                <?php esc_html_e( '✓ Enabled', 'lingua-forge' ); ?>
+                            </span>
+                        <?php else : ?>
+                            <span class="lingua-forge-key-badge lingua-forge-badge--missing">
+                                <?php esc_html_e( '✗ Disabled', 'lingua-forge' ); ?>
+                            </span>
+                            <?php esc_html_e( '— toggle in Settings → Behavior.', 'lingua-forge' ); ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php esc_html_e( 'Cached blocks', 'lingua-forge' ); ?></th>
+                    <td>
+                        <strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['rows'] ) ); ?></strong>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php esc_html_e( 'Cumulative cache hits', 'lingua-forge' ); ?></th>
+                    <td>
+                        <strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['total_hits'] ) ); ?></strong>
+                        <?php
+                        if ( $linguaforge_tm_stats['rows'] > 0 ) {
+                            $avg = $linguaforge_tm_stats['total_hits'] / $linguaforge_tm_stats['rows'];
+                            echo ' <span style="color:#646970">' . esc_html( sprintf(
+                                /* translators: %s is the average hits per cached block. */
+                                __( '(avg %.1f hits/block)', 'lingua-forge' ),
+                                $avg
+                            ) ) . '</span>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <?php if ( $linguaforge_tm_stats['oldest'] !== '' ) : ?>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Oldest entry', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_tm_stats['oldest'] ); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Newest entry', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_tm_stats['newest'] ); ?></td>
+                    </tr>
+                <?php endif; ?>
+                <tr>
+                    <th scope="row"><?php esc_html_e( 'Approximate size', 'lingua-forge' ); ?></th>
+                    <td>
+                        <?php
+                        echo esc_html( size_format( $linguaforge_tm_stats['bytes_estimate'] ) ?: '0 B' );
+                        ?>
+                    </td>
+                </tr>
+            </table>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                onsubmit="return confirm('<?php echo esc_js( __( 'Clear the entire Translation Memory? Future translations will rebuild the cache as they run.', 'lingua-forge' ) ); ?>');"
+            >
+                <input type="hidden" name="action" value="linguaforge_clear_translation_memory">
+                <?php wp_nonce_field( 'linguaforge_clear_translation_memory', 'linguaforge_clear_tm_nonce' ); ?>
+
+                <?php submit_button(
+                    __( 'Clear Translation Memory', 'lingua-forge' ),
+                    'secondary',
+                    'submit',
+                    false,
+                    $linguaforge_tm_stats['rows'] > 0 ? [] : ['disabled' => 'disabled']
+                ); ?>
+            </form>
+
+            </div><!-- /lingua-forge-tab-panel: maintenance -->
+
         </div>
 
         <style>
+            /* ── Tab panels ─────────────────────────────────────────────── */
+            .lingua-forge-tabs { margin-bottom: 1.2em; }
+            .lingua-forge-tab-panel { display: none; }
+            .lingua-forge-tab-panel.is-active { display: block; }
+
+            /* ── Glossary ──────────────────────────────────────────────── */
+            .lingua-forge-glossary-filter {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin: 12px 0 18px;
+                flex-wrap: wrap;
+            }
+            .lingua-forge-glossary-filter label {
+                font-weight: 600;
+            }
+            .lingua-forge-glossary-table th,
+            .lingua-forge-glossary-table td {
+                vertical-align: middle;
+            }
+            .lingua-forge-glossary-table code { font-size: 12px; }
+
+            /* ── AI Usage ───────────────────────────────────────────────── */
+            .lingua-forge-range-buttons .button { margin-right: 4px; }
+            .lingua-forge-usage-table .lingua-forge-num {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+            }
+            .lingua-forge-usage-table tfoot th { background: #f6f7f7; }
+
             /* ── Key status badges ─────────────────────────────────────── */
             .lingua-forge-key-badge {
                 display: inline-block;
@@ -1052,6 +2540,21 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                 font-weight: 400;
                 color: #646970;
             }
+
+            /* ── Test Connection inline result ────────────────────────── */
+            .lingua-forge-test-key {
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+            .lingua-forge-test-result {
+                margin-left: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                vertical-align: middle;
+            }
+            .lingua-forge-test-result--pending { color: #646970; font-weight: 400; }
+            .lingua-forge-test-result--ok      { color: #46b450; }
+            .lingua-forge-test-result--fail    { color: #dc3232; }
 
             /* ── Models table ──────────────────────────────────────────── */
             .lingua-forge-models-table {

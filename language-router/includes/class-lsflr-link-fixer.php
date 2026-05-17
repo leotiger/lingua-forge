@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LSFLR_Link_Fixer
+ * Class LinguaForge\Router\LinkFixer (aliased as LSFLR_Link_Fixer for back-compat).
  *
  * Scans translated posts/pages for internal links that still point to the
  * source-language version of a page and rewrites them to the correct
@@ -13,13 +13,15 @@
  * Singleton of the admin concern — instantiated once from language-router.php.
  */
 
+namespace LinguaForge\Router;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class LSFLR_Link_Fixer {
+class LinkFixer {
 
-	private Language_Router $router;
+	private Router $router;
 
-	public function __construct( Language_Router $router ) {
+	public function __construct( Router $router ) {
 		$this->router = $router;
 		$this->register_hooks();
 	}
@@ -30,9 +32,81 @@ class LSFLR_Link_Fixer {
 
 	private function register_hooks(): void {
 		add_action( 'restrict_manage_posts',      [ $this, 'render_fix_links_button' ] );
+		add_action( 'admin_enqueue_scripts',      [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_footer',               [ $this, 'render_modal' ] );
 		add_action( 'wp_ajax_lsflr_scan_links',   [ $this, 'ajax_scan' ] );
 		add_action( 'wp_ajax_lsflr_fix_post',     [ $this, 'ajax_fix_post' ] );
+	}
+
+	// =========================================================
+	// ADMIN UI: ASSET ENQUEUE
+	// =========================================================
+
+	/**
+	 * Enqueue modal CSS and JS, plus localized strings.
+	 *
+	 * Scoped to the post/page list screen (`edit.php`) with editor capability —
+	 * same guard set as render_modal() — so the assets don't load on screens
+	 * where the modal markup isn't even present.
+	 */
+	public function enqueue_assets( string $hook_suffix ): void {
+		if ( 'edit.php' !== $hook_suffix ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		$base_url = LINGUAFORGE_URL . 'language-router/assets/';
+		$version  = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
+
+		wp_enqueue_style(
+			'lsflr-link-fixer',
+			$base_url . 'link-fixer.css',
+			[],
+			$version
+		);
+
+		wp_enqueue_script(
+			'lsflr-link-fixer',
+			$base_url . 'link-fixer.js',
+			[ 'jquery' ],
+			$version,
+			true
+		);
+
+		wp_localize_script( 'lsflr-link-fixer', 'lsflrLinkFixer', [
+			'i18n' => [
+				'scanning'           => __( 'Scanning posts for broken language links…', 'lingua-forge' ),
+				'rescanning'         => __( 'Re-scanning…', 'lingua-forge' ),
+				'scanFailed'         => __( 'Scan failed: ', 'lingua-forge' ),
+				'unknownError'       => __( 'unknown error', 'lingua-forge' ),
+				'scanRequestFailed'  => __( 'Scan request failed. Please try again.', 'lingua-forge' ),
+				'noPostsFound'       => __( '⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts have their Language meta set to <strong>{lang}</strong> in the Language metabox.', 'lingua-forge' ),
+				'noBrokenLinks'      => __( '✅ No broken links found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all internal links are already correct.', 'lingua-forge' ),
+				'autoFixableCount'   => __( '<strong>{n}</strong> auto-fixable link(s)', 'lingua-forge' ),
+				'manualReviewCount'  => __( '<strong>{n}</strong> link(s) needing manual review', 'lingua-forge' ),
+				'and'                => __( 'and', 'lingua-forge' ),
+				'foundSummary'       => __( 'Found {parts} across <strong>{total}</strong> of <strong>{scanned}</strong> scanned post(s) for <strong>{lang}</strong>.', 'lingua-forge' ),
+				'colPost'            => __( 'Post', 'lingua-forge' ),
+				'colLinks'           => __( 'Links', 'lingua-forge' ),
+				'linksSuffix'        => __( 'link(s)', 'lingua-forge' ),
+				'btnFix'             => __( 'Fix', 'lingua-forge' ),
+				'btnFixing'          => __( 'Fixing…', 'lingua-forge' ),
+				'btnFixed'           => __( '✅ Fixed ({n})', 'lingua-forge' ),
+				'btnNoChangesRescan' => __( '⚠ No changes — re-scan?', 'lingua-forge' ),
+				'btnNoChanges'       => __( '⚠ No changes', 'lingua-forge' ),
+				'btnFailed'          => __( '❌ Failed', 'lingua-forge' ),
+				'allDone'            => __( 'Done — {done} of {total} post(s) fixed.', 'lingua-forge' ),
+				'skippedSuffix'      => __( '({skipped} had no replaceable links — re-scan to investigate)', 'lingua-forge' ),
+				'fixingProgress'     => __( 'Fixing {n} / {total}…', 'lingua-forge' ),
+			],
+			'reasonLabels' => [
+				'unresolved'      => __( 'URL could not be mapped to a post — check the link target exists', 'lingua-forge' ),
+				'no_translation' => __( 'No {lang} translation registered (TRID missing)', 'lingua-forge' ),
+				'permalink_error' => __( 'Translation found but permalink could not be generated', 'lingua-forge' ),
+			],
+		] );
 	}
 
 	// =========================================================
@@ -435,8 +509,11 @@ class LSFLR_Link_Fixer {
 	// =========================================================
 
 	/**
-	 * Output the modal markup, styles, and JavaScript.
-	 * Only injected on the post/page list screen.
+	 * Output the modal markup.
+	 *
+	 * Styles and JavaScript are enqueued separately via enqueue_assets() and
+	 * live in language-router/assets/link-fixer.{css,js}. Only injected on
+	 * the post/page list screen.
 	 */
 	public function render_modal(): void {
 		global $pagenow;
@@ -469,369 +546,6 @@ class LSFLR_Link_Fixer {
 			</div>
 		</div>
 
-		<style>
-		#lsflr-fixer-overlay {
-			position: fixed;
-			inset: 0;
-			background: rgba(0, 0, 0, .55);
-			z-index: 100000;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		#lsflr-fixer-modal {
-			position: relative;
-			background: #fff;
-			border-radius: 6px;
-			padding: 28px 32px;
-			width: min(860px, 92vw);
-			max-height: 82vh;
-			overflow-y: auto;
-			box-shadow: 0 8px 40px rgba(0, 0, 0, .25);
-		}
-		#lsflr-fixer-modal h2 { margin-top: 0; }
-
-		#lsflr-fixer-close {
-			position: absolute;
-			top: 12px;
-			right: 16px;
-			background: none;
-			border: none;
-			font-size: 20px;
-			line-height: 1;
-			cursor: pointer;
-			color: #666;
-			padding: 0;
-		}
-		#lsflr-fixer-close:hover { color: #000; }
-
-		/* ---- Results table ---- */
-		#lsflr-fixer-results table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 16px;
-			font-size: 13px;
-		}
-		#lsflr-fixer-results th {
-			background: #f6f7f7;
-			text-align: left;
-			padding: 8px 10px;
-			border-bottom: 2px solid #dcdcde;
-		}
-		#lsflr-fixer-results td {
-			padding: 8px 10px;
-			border-bottom: 1px solid #f0f0f1;
-			vertical-align: top;
-		}
-		#lsflr-fixer-results tr.lsflr-fixed  td { background: #edfaee; }
-		#lsflr-fixer-results tr.lsflr-failed td { background: #fdf0f0; }
-
-		/* ---- Link-pair display ---- */
-		.lsflr-fix-pair {
-			font-family: monospace;
-			font-size: 11px;
-			line-height: 1.6;
-			margin-bottom: 4px;
-			word-break: break-all;
-		}
-		.lsflr-fix-pair .lsflr-from { color: #c0392b; }
-		.lsflr-fix-pair .lsflr-to   { color: #27ae60; }
-
-		/* ---- Flagged (needs manual review) ---- */
-		.lsflr-fix-pair.lsflr-flagged { margin-top: 6px; }
-		.lsflr-flagged .lsflr-flag-url    { color: #b45309; }
-		.lsflr-flagged .lsflr-flag-reason { color: #92400e; font-family: sans-serif; font-size: 11px; }
-
-		/* ---- Actions bar ---- */
-		#lsflr-fixer-actions {
-			display: flex;
-			align-items: center;
-			gap: 14px;
-			margin-top: 22px;
-			padding-top: 16px;
-			border-top: 1px solid #f0f0f1;
-		}
-		#lsflr-fix-progress { color: #555; font-size: 13px; }
-
-		.lsflr-spinner {
-			display: inline-block;
-			width: 18px;
-			height: 18px;
-			border: 2px solid #ccc;
-			border-top-color: #2271b1;
-			border-radius: 50%;
-			animation: lsflr-spin .7s linear infinite;
-			vertical-align: middle;
-			margin-right: 6px;
-		}
-		@keyframes lsflr-spin { to { transform: rotate(360deg); } }
-		</style>
-
-		<script>
-		(function ($) {
-			'use strict';
-
-			var overlay    = $('#lsflr-fixer-overlay');
-			var status     = $('#lsflr-fixer-status');
-			var results    = $('#lsflr-fixer-results');
-			var actions    = $('#lsflr-fixer-actions');
-			var fixAllBtn  = $('#lsflr-fix-all');
-			var recheckBtn = $('#lsflr-recheck');
-			var progress   = $('#lsflr-fix-progress');
-
-			var scanData = null;   // last scan response
-			var activeLang  = '';
-			var activeNonce = '';
-
-			// ---- Open ----
-			$(document).on('click', '.lsflr-open-fixer', function () {
-				activeLang  = $(this).data('lang');
-				activeNonce = $(this).data('nonce');
-
-				// Reset state
-				scanData = null;
-				results.empty();
-				actions.hide();
-				fixAllBtn.show().prop('disabled', false);
-				progress.text('');
-
-				status.html('<span class="lsflr-spinner"></span> Scanning posts for broken language links…');
-				overlay.css('display', 'flex');
-
-				doScan();
-			});
-
-			// ---- Close: button or backdrop click ----
-			$(document).on('click', '#lsflr-fixer-close', function () {
-				overlay.hide();
-			});
-			overlay.on('click', function (e) {
-				if (e.target === this) overlay.hide();
-			});
-			$(document).on('keydown', function (e) {
-				if (e.key === 'Escape') overlay.hide();
-			});
-
-			// ---- Re-scan button ----
-			recheckBtn.on('click', function () {
-				scanData = null;
-				results.empty();
-				fixAllBtn.prop('disabled', false);
-				progress.text('');
-				status.html('<span class="lsflr-spinner"></span> Re-scanning…');
-				doScan();
-			});
-
-			// ---- Scan ----
-			function doScan() {
-				$.post(ajaxurl, {
-					action   : 'lsflr_scan_links',
-					lang     : activeLang,
-					nonce    : activeNonce,
-					_nocache : Date.now()   // prevent browser from returning a cached response
-				}, function (resp) {
-					if (!resp.success) {
-						status.text('Scan failed: ' + (resp.data || 'unknown error'));
-						actions.show();   // still show Re-scan so the user can retry
-						return;
-					}
-					scanData = resp.data;
-					renderResults(scanData);
-				}).fail(function () {
-					status.text('Scan request failed. Please try again.');
-					actions.show();
-				});
-			}
-
-			// ---- Render scan results ----
-			function renderResults(data) {
-				if (!data.results.length) {
-					if (!data.scanned) {
-						// No posts were found at all — likely a missing _lang meta
-						status.html(
-							'⚠ No <strong>' + esc(data.lang.toUpperCase()) + '</strong> posts found. '
-							+ 'Make sure all translated posts have their Language meta set to <strong>'
-							+ esc(data.lang.toUpperCase()) + '</strong> in the Language metabox.'
-						);
-					} else {
-						status.html(
-							'✅ No broken links found for <strong>' + esc(data.lang.toUpperCase()) + '</strong>. '
-							+ 'Scanned <strong>' + data.scanned + '</strong> post(s) — all internal links are already correct.'
-						);
-					}
-					actions.show();
-					fixAllBtn.hide();
-					return;
-				}
-
-				var totalFixes   = data.results.reduce(function(n, r){ return n + (r.fixes   ? r.fixes.length   : 0); }, 0);
-				var totalFlagged = data.results.reduce(function(n, r){ return n + (r.flagged ? r.flagged.length : 0); }, 0);
-
-				var statusParts = [];
-				if (totalFixes)   statusParts.push('<strong>' + totalFixes   + '</strong> auto-fixable link(s)');
-				if (totalFlagged) statusParts.push('<strong>' + totalFlagged + '</strong> link(s) needing manual review');
-				status.html(
-					'Found ' + statusParts.join(' and ') + ' across <strong>' + data.total
-					+ '</strong> of <strong>' + data.scanned + '</strong> scanned post(s) for <strong>'
-					+ esc(data.lang.toUpperCase()) + '</strong>.'
-				);
-
-				var reasonLabel = {
-					unresolved      : '⚠ URL could not be mapped to a post — check the link target exists',
-					no_translation  : '⚠ No ' + data.lang.toUpperCase() + ' translation registered (TRID missing)',
-					permalink_error : '⚠ Translation found but permalink could not be generated'
-				};
-
-				var html = '<table>'
-					+ '<thead><tr>'
-					+ '<th>Post</th>'
-					+ '<th>Links</th>'
-					+ '<th></th>'
-					+ '</tr></thead><tbody>';
-
-				data.results.forEach(function (item) {
-					var fixes   = item.fixes   || [];
-					var flagged = item.flagged || [];
-					var linkCount = fixes.length + flagged.length;
-
-					// Auto-fixable pairs (red → green)
-					var pairs = fixes.map(function (f) {
-						return '<div class="lsflr-fix-pair">'
-							+ '<span class="lsflr-from">↳ ' + esc(stripHost(f.from)) + '</span><br>'
-							+ '<span class="lsflr-to">→ '   + esc(stripHost(f.to))   + '</span>'
-							+ '</div>';
-					}).join('');
-
-					// Flagged links (orange — needs manual attention)
-					var flags = flagged.map(function (f) {
-						var label = reasonLabel[f.reason] || ('⚠ ' + esc(f.reason));
-						var detail = f.linked_post_title ? ' <em>(' + esc(f.linked_post_title) + ')</em>' : '';
-						return '<div class="lsflr-fix-pair lsflr-flagged">'
-							+ '<span class="lsflr-flag-url">⚑ ' + esc(stripHost(f.url)) + '</span><br>'
-							+ '<span class="lsflr-flag-reason">' + label + detail + '</span>'
-							+ '</div>';
-					}).join('');
-
-					var fixBtn = fixes.length
-						? '<button type="button" class="button lsflr-fix-single" data-post-id="' + item.post_id + '">Fix</button>'
-						: '';
-
-					html += '<tr id="lsflr-row-' + item.post_id + '">'
-						+ '<td><strong>' + esc(item.title) + '</strong><br>'
-						+ '<small style="color:#888">#' + item.post_id + ' &mdash; ' + linkCount + ' link(s)</small></td>'
-						+ '<td>' + pairs + flags + '</td>'
-						+ '<td style="white-space:nowrap">' + fixBtn + '</td>'
-						+ '</tr>';
-				});
-
-				html += '</tbody></table>';
-				results.html(html);
-
-				if (totalFixes) {
-					fixAllBtn.show();
-				} else {
-					fixAllBtn.hide();
-				}
-				actions.show();
-			}
-
-			// ---- Fix single post (row button) ----
-			$(document).on('click', '.lsflr-fix-single', function () {
-				var btn    = $(this);
-				var postId = btn.data('post-id');
-				btn.prop('disabled', true).text('Fixing…');
-				doFix(postId, function (ok, applied) {
-					var row = $('#lsflr-row-' + postId);
-					if (ok && applied > 0) {
-						row.addClass('lsflr-fixed');
-						btn.text('✅ Fixed (' + applied + ')');
-					} else if (ok && applied === 0) {
-						row.addClass('lsflr-failed');
-						btn.text('⚠ No changes — re-scan?').prop('disabled', false);
-					} else {
-						row.addClass('lsflr-failed');
-						btn.text('❌ Failed').prop('disabled', false);
-					}
-				});
-			});
-
-			// ---- Fix all (sequential to avoid DB contention) ----
-			fixAllBtn.on('click', function () {
-				if (!scanData || !scanData.results.length) return;
-				fixAllBtn.prop('disabled', true);
-
-				// Only queue posts that actually have auto-fixable links.
-				var queue   = scanData.results.filter(function(r){ return r.fixes && r.fixes.length; });
-				var done    = 0;
-				var skipped = 0;
-				var total   = queue.length;
-
-				function next() {
-					if (!queue.length) {
-						var msg = 'Done — ' + done + ' of ' + total + ' post(s) fixed.';
-						if (skipped) msg += ' (' + skipped + ' had no replaceable links — re-scan to investigate)';
-						progress.text(msg);
-						return;
-					}
-					var item = queue.shift();
-					progress.html('<span class="lsflr-spinner"></span> Fixing ' + (done + skipped + 1) + ' / ' + total + '…');
-
-					var rowBtn = $('#lsflr-row-' + item.post_id + ' .lsflr-fix-single');
-					rowBtn.prop('disabled', true).text('Fixing…');
-
-					doFix(item.post_id, function (ok, applied) {
-						var row = $('#lsflr-row-' + item.post_id);
-						if (ok && applied > 0) {
-							done++;
-							row.addClass('lsflr-fixed');
-							rowBtn.text('✅ Fixed (' + applied + ')');
-						} else if (ok && applied === 0) {
-							skipped++;
-							row.addClass('lsflr-failed');
-							rowBtn.text('⚠ No changes');
-						} else {
-							skipped++;
-							row.addClass('lsflr-failed');
-							rowBtn.text('❌ Failed');
-						}
-						next();
-					});
-				}
-
-				next();
-			});
-
-			// ---- AJAX helper — passes (ok, applied) to callback ----
-			function doFix(postId, cb) {
-				$.post(ajaxurl, {
-					action  : 'lsflr_fix_post',
-					post_id : postId,
-					lang    : activeLang,
-					nonce   : activeNonce
-				}, function (resp) {
-					var applied = (resp.success && resp.data) ? (resp.data.applied || 0) : 0;
-					cb(resp.success, applied);
-				}).fail(function () {
-					cb(false, 0);
-				});
-			}
-
-			// ---- Utilities ----
-			function stripHost(url) {
-				return url.replace(/^https?:\/\/[^/]+/, '');
-			}
-
-			function esc(s) {
-				return String(s)
-					.replace(/&/g, '&amp;')
-					.replace(/</g, '&lt;')
-					.replace(/>/g, '&gt;')
-					.replace(/"/g, '&quot;');
-			}
-
-		}(jQuery));
-		</script>
-
 		<?php
 	}
 
@@ -856,3 +570,5 @@ class LSFLR_Link_Fixer {
 		return ( $lang && $this->router->is_valid_lang( $lang ) ) ? $lang : '';
 	}
 }
+
+\class_alias( \LinguaForge\Router\LinkFixer::class, 'LSFLR_Link_Fixer' );

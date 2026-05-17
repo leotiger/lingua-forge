@@ -1,5 +1,6 @@
 /* LinguaForge AI – admin meta box interactions */
 /* global wp */
+( function () {
 
 const { __ } = wp.i18n;
 
@@ -87,9 +88,15 @@ document.addEventListener('click', async (event) => {
     // the re-render above, so no need to reset its state.
 });
 
-// ─── "Apply to Editor" button ────────────────────────────────────────────────
-
-document.addEventListener('click', async (event) => {
+// ─── "Apply to Editor" button — opens preview-and-apply modal (§4.8) ─────────
+//
+// The translated content used to land directly in the editor on click,
+// destructively overwriting whatever was there. The diff modal now sits in
+// between: it shows the current editor title + content side-by-side with the
+// translated title + content so the editor can verify before committing.
+// Only the "Apply translation" button inside the modal performs the actual
+// editPost dispatch.
+document.addEventListener('click', (event) => {
 
     const button = event.target.closest('.lingua-forge-apply');
 
@@ -99,60 +106,252 @@ document.addEventListener('click', async (event) => {
     const result          = button.closest('.lingua-forge-content-result');
     const textarea        = panel.querySelector('.lingua-forge-textarea');
     const translatedTitle = result?.dataset.translatedTitle || '';
+    const footnotesJson   = result?.dataset.footnotes       || '';
 
     if (!textarea) return;
 
-    // Clear any previous error and show an in-progress state.
     clearApplyError(button);
-    button.disabled    = true;
-    button.textContent = __( 'Applying…', 'lingua-forge' );
+
+    openApplyDiffModal({
+        button,
+        translatedContent: textarea.value,
+        translatedTitle,
+        footnotesJson,
+    });
+});
+
+/**
+ * Resolve the live editor store from whichever side of the meta-box iframe
+ * boundary the code is running on. Returns null on classic-editor screens.
+ */
+function getEditorStore() {
+
+    if (window.parent && window.parent !== window && window.parent.wp?.data) {
+        return window.parent.wp.data;
+    }
+    if (window.wp?.data) {
+        return window.wp.data;
+    }
+    return null;
+}
+
+/**
+ * Snapshot the current editor title + content as a {title, content} pair.
+ * Falls back to the classic-editor #title / #content fields when Gutenberg
+ * isn't available.
+ */
+function snapshotCurrentEditorState() {
+
+    const data = getEditorStore();
+
+    if (data) {
+        const sel = data.select('core/editor');
+        return {
+            title:   String(sel.getEditedPostAttribute('title')   ?? ''),
+            content: String(sel.getEditedPostAttribute('content') ?? ''),
+        };
+    }
+
+    return {
+        title:   document.querySelector('#title')?.value   ?? '',
+        content: document.querySelector('#content')?.value ?? '',
+    };
+}
+
+/**
+ * Build the modal DOM lazily on first use and append it to <body>. Subsequent
+ * opens reuse the same node; the panes' innerHTML is repainted each time.
+ */
+function ensureDiffModal() {
+
+    let modal = document.getElementById('lingua-forge-diff-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'lingua-forge-diff-modal';
+    modal.className = 'lingua-forge-diff-modal';
+    modal.hidden = true;
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'lingua-forge-diff-title');
+
+    modal.innerHTML = `
+        <div class="lingua-forge-diff-modal__overlay" data-lf-action="cancel"></div>
+        <div class="lingua-forge-diff-modal__panel" role="document">
+            <header class="lingua-forge-diff-modal__header">
+                <h2 id="lingua-forge-diff-title">${ escHtml( __( 'Review translation before applying', 'lingua-forge' ) ) }</h2>
+                <button type="button" class="lingua-forge-diff-modal__close" data-lf-action="cancel" aria-label="${ escAttr( __( 'Close', 'lingua-forge' ) ) }">✕</button>
+            </header>
+
+            <section class="lingua-forge-diff-modal__title-row" data-lf-row="title" hidden>
+                <div class="lingua-forge-diff-modal__pane">
+                    <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Current title', 'lingua-forge' ) ) }</div>
+                    <div class="lingua-forge-diff-modal__title" data-lf-pane="current-title"></div>
+                </div>
+                <div class="lingua-forge-diff-modal__pane lingua-forge-diff-modal__pane--new">
+                    <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Translated title', 'lingua-forge' ) ) }</div>
+                    <div class="lingua-forge-diff-modal__title" data-lf-pane="new-title"></div>
+                </div>
+            </section>
+
+            <section class="lingua-forge-diff-modal__content-row">
+                <div class="lingua-forge-diff-modal__pane">
+                    <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Current content (will be overwritten)', 'lingua-forge' ) ) }</div>
+                    <div class="lingua-forge-diff-modal__preview" data-lf-pane="current-content"></div>
+                </div>
+                <div class="lingua-forge-diff-modal__pane lingua-forge-diff-modal__pane--new">
+                    <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Translated content', 'lingua-forge' ) ) }</div>
+                    <div class="lingua-forge-diff-modal__preview" data-lf-pane="new-content"></div>
+                </div>
+            </section>
+
+            <section class="lingua-forge-diff-modal__footnotes" data-lf-row="footnotes" hidden>
+                <details>
+                    <summary>${ escHtml( __( 'Footnotes payload (advanced)', 'lingua-forge' ) ) }</summary>
+                    <pre class="lingua-forge-diff-modal__footnotes-json" data-lf-pane="footnotes"></pre>
+                </details>
+            </section>
+
+            <footer class="lingua-forge-diff-modal__actions">
+                <button type="button" class="components-button is-secondary" data-lf-action="cancel">
+                    ${ escHtml( __( 'Cancel', 'lingua-forge' ) ) }
+                </button>
+                <button type="button" class="components-button is-primary lingua-forge-diff-modal__apply" data-lf-action="apply">
+                    ${ escHtml( __( 'Apply translation', 'lingua-forge' ) ) }
+                </button>
+            </footer>
+        </div>`;
+
+    document.body.appendChild(modal);
+    wireDiffModalEvents(modal);
+
+    return modal;
+}
+
+/**
+ * Per-modal event wiring. Click-on-overlay, Cancel, Close, Escape all close
+ * without applying. Apply triggers the actual editPost dispatch via the
+ * pending-apply context stored on the modal as a data property.
+ */
+function wireDiffModalEvents(modal) {
+
+    modal.addEventListener('click', (e) => {
+        const action = e.target.closest('[data-lf-action]')?.dataset.lfAction;
+        if (action === 'cancel') closeDiffModal(modal);
+        if (action === 'apply')  performApplyFromModal(modal);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) closeDiffModal(modal);
+    });
+}
+
+/**
+ * Populate the modal with the current/translated content+title and reveal it.
+ *
+ * The pending-apply context (button, translated payload) is stored on the
+ * modal node itself so the Apply handler can reach it without globals.
+ */
+function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson }) {
+
+    const modal   = ensureDiffModal();
+    const current = snapshotCurrentEditorState();
+
+    // Title row — show only when there's actually a translated title to apply.
+    const titleRow = modal.querySelector('[data-lf-row="title"]');
+    if (translatedTitle) {
+        modal.querySelector('[data-lf-pane="current-title"]').textContent = current.title;
+        modal.querySelector('[data-lf-pane="new-title"]').textContent     = translatedTitle;
+        titleRow.hidden = false;
+    } else {
+        titleRow.hidden = true;
+    }
+
+    // Content panes — rendered as HTML so block markup displays close to how
+    // it'll look post-apply. Block comments are HTML comments so they're
+    // invisible; the actual <p>, <h2>, <ul>, etc. structure renders.
+    //
+    // Trust model: both sides are admin-authored (current editor state) or
+    // admin-triggered (AI translation requested by an editor). Anyone who can
+    // edit a post can already inject HTML/JS via the regular editor, so the
+    // preview pane doesn't broaden attack surface. A future hardening pass
+    // could move these into sandbox="allow-same-origin" iframes.
+    modal.querySelector('[data-lf-pane="current-content"]').innerHTML = current.content;
+    modal.querySelector('[data-lf-pane="new-content"]').innerHTML     = translatedContent;
+
+    // Footnotes — collapsible JSON dump, only when the translation produced one.
+    const footnoteRow = modal.querySelector('[data-lf-row="footnotes"]');
+    if (footnotesJson) {
+        try {
+            const parsed = JSON.parse(footnotesJson);
+            modal.querySelector('[data-lf-pane="footnotes"]').textContent =
+                JSON.stringify(parsed, null, 2);
+        } catch (_) {
+            modal.querySelector('[data-lf-pane="footnotes"]').textContent = footnotesJson;
+        }
+        footnoteRow.hidden = false;
+    } else {
+        footnoteRow.hidden = true;
+    }
+
+    modal._lfPending = { button, translatedContent, translatedTitle, footnotesJson };
+    modal.hidden = false;
+}
+
+function closeDiffModal(modal) {
+
+    modal.hidden = true;
+    modal._lfPending = null;
+}
+
+/**
+ * The actual editor write. Same logic as the previous direct-apply path,
+ * lifted into its own function so it only runs when the user confirms.
+ */
+async function performApplyFromModal(modal) {
+
+    const ctx = modal._lfPending;
+    if (!ctx) return;
+
+    const { button, translatedContent, translatedTitle, footnotesJson } = ctx;
+
+    const applyBtn = modal.querySelector('.lingua-forge-diff-modal__apply');
+    applyBtn.disabled    = true;
+    applyBtn.textContent = __( 'Applying…', 'lingua-forge' );
 
     try {
 
-        const cleanContent = textarea.value;
+        const data = getEditorStore();
 
-        // Gutenberg loads meta boxes inside an iframe — wp.data lives in the
-        // parent window, not in this iframe context.  window.parent.wp.data
-        // is the live editor store; dispatching to window.wp.data (the iframe)
-        // is a no-op that leaves the editor unchanged.
-        if (window.parent.wp?.data) {
+        if (data) {
 
-            const payload = { content: cleanContent };
+            const payload = { content: translatedContent };
             if (translatedTitle) payload.title = translatedTitle;
+            if (footnotesJson)   payload.meta  = { footnotes: footnotesJson };
 
-            // Apply footnotes through the Gutenberg store so they are part of
-            // the same save cycle as the content.  Writing directly to the DB
-            // via a REST call would be overwritten the moment the user hits
-            // Save, because Gutenberg flushes its own meta.footnotes on save.
-            const footnotesJson = result?.dataset.footnotes || '';
-            if (footnotesJson) payload.meta = { footnotes: footnotesJson };
-
-            // Snapshot the editor's current content so we can verify the
-            // dispatch actually took effect after it resolves.
-            const editorSelect  = window.parent.wp.data.select('core/editor');
+            const editorSelect  = data.select('core/editor');
             const beforeContent = editorSelect.getEditedPostAttribute('content') ?? '';
 
-            await window.parent.wp.data
-                .dispatch('core/editor')
-                .editPost(payload);
+            await data.dispatch('core/editor').editPost(payload);
 
-            // Verify: the store must now hold different content, or content
-            // that already matched what we sent (idempotent re-apply).
-            const afterContent  = editorSelect.getEditedPostAttribute('content') ?? '';
+            // Verify the dispatch actually took effect — Gutenberg sometimes
+            // accepts the call but discards content if a block parse error
+            // happens upstream. Idempotent re-apply also counts as "applied".
+            const afterContent   = editorSelect.getEditedPostAttribute('content') ?? '';
             const contentChanged = afterContent !== beforeContent;
-            const contentMatches = afterContent.trim() === cleanContent.trim();
+            const contentMatches = afterContent.trim() === translatedContent.trim();
 
             if (!contentChanged && !contentMatches) {
-                throw new Error('The editor did not accept the content — please try again.');
+                throw new Error( __( 'The editor did not accept the content — please try again.', 'lingua-forge' ) );
             }
 
         } else {
 
-            // Classic editor: no iframe, #content and #title are in this document.
+            // Classic-editor fallback.
             const classicEditor = document.querySelector('#content');
-            if (!classicEditor) throw new Error('Classic editor element not found.');
+            if (!classicEditor) throw new Error( __( 'Classic editor element not found.', 'lingua-forge' ) );
 
-            classicEditor.value = cleanContent;
+            classicEditor.value = translatedContent;
 
             if (translatedTitle) {
                 const classicTitle = document.querySelector('#title');
@@ -160,26 +359,50 @@ document.addEventListener('click', async (event) => {
             }
         }
 
+        // Success — update the calling button's state and close the modal.
         button.textContent = __( 'Applied ✓', 'lingua-forge' );
-
-        // Show a persistent hint reminding the user to save.
-        // We do NOT call savePost() here: with meta boxes present Gutenberg's
-        // save flow is a two-step (REST + hidden iframe POST for meta box values)
-        // that cannot be triggered reliably from the iframe context.
-        // The content is already in the editor store and will save correctly
-        // when the user clicks Update / Save in the Gutenberg toolbar.
+        button.disabled    = true;
         showApplyHint(button, __( 'Save the post to persist changes.', 'lingua-forge' ));
 
-        // Leave disabled — re-applying the same content is a no-op and confusing.
+        closeDiffModal(modal);
 
     } catch (err) {
 
-        // Restore the button so the user can retry.
-        button.textContent = __( 'Apply to Editor', 'lingua-forge' );
-        button.disabled    = false;
-        showApplyError(button, err.message || __( 'Apply failed — please try again.', 'lingua-forge' ));
+        applyBtn.disabled    = false;
+        applyBtn.textContent = __( 'Apply translation', 'lingua-forge' );
+        // Inline error inside the modal so the user can read it without
+        // closing the preview.
+        let errBar = modal.querySelector('.lingua-forge-diff-modal__error');
+        if (!errBar) {
+            errBar = document.createElement('div');
+            errBar.className = 'lingua-forge-diff-modal__error';
+            modal.querySelector('.lingua-forge-diff-modal__actions').before(errBar);
+        }
+        errBar.textContent = err.message || __( 'Apply failed — please try again.', 'lingua-forge' );
     }
-});
+}
+
+/**
+ * HTML-escape for text content sent through innerHTML interpolation in the
+ * modal template. Same helper as elsewhere in admin.js.
+ */
+function escHtml(v) {
+    return String(v)
+        .replace(/&/g,  '&amp;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;')
+        .replace(/"/g,  '&quot;')
+        .replace(/'/g,  '&#39;');
+}
+
+function escAttr(v) {
+    return String(v)
+        .replace(/&/g,  '&amp;')
+        .replace(/"/g,  '&quot;')
+        .replace(/'/g,  '&#39;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;');
+}
 
 /**
  * Show an inline hint beneath the Apply button's row (e.g. "click Update to save").
@@ -698,3 +921,5 @@ function escapeHtml(value) {
         .replace(/"/g,  '&quot;')
         .replace(/'/g,  '&#39;');
 }
+
+} )();

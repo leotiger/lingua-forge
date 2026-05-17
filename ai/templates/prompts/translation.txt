@@ -2,6 +2,7 @@ Translate the following WordPress page content to {{language}}.
 
 Rules:
 - Automatically detect the source language of the content.
+- Every piece of visible text in the output MUST be in {{language}}. Do not output text in the source language or any other language — if a passage appears to be in a related language (e.g. Spanish mixed with Catalan source), still translate it into {{language}}.
 - Preserve all HTML tags, WordPress block comments (<!-- wp:... /-->),
   shortcodes, and element attributes exactly as they appear.
 - Only translate the visible text content between tags.
@@ -21,12 +22,12 @@ Rules:
 - Do not add any preamble, explanations, notes, or commentary.
 
 Output format:
-Begin your response with this exact line:
-===TITLE===
-Then output the translated post title on the very next line (no blank line).
-Then output the translated content body.{{extra_output}}
+Respond with a single JSON object matching the schema you were given. Field meanings:
+  - "title":   the translated post title (single line, no surrounding quotes or markup)
+  - "content": the translated content body, with every block comment, HTML tag,
+               placeholder, and _lfid preserved exactly as described above{{extra_output_doc}}
 
-Title: {{title}}
+Source title: {{title}}
 
-Content:
-{{content}}
+Source content:
+{{content}}{{extra_output}}

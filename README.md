@@ -33,7 +33,7 @@ Adds a meta description field to every public post type. Outputs `<meta name="de
 - Excerpt fallback is auto-generated from content if no manual excerpt exists
 - Only custom descriptions are output verbatim; fallback descriptions are auto-truncated at 190 characters
 
-> The `meta_description` post-meta key is intentionally neutral — themes and other plugins that already read this key will continue to work without any changes.
+> As of 1.2.0 the plugin writes meta descriptions to the prefixed key `_linguaforge_meta_description`. A one-time bulk migration copies any existing `meta_description` rows to the new key on the first admin request after upgrade — no manual steps required. The `meta_description` key is intentionally **not** deleted on uninstall because other plugins may use it.
 
 ### AI Content Tools (LinguaForge AI)
 
@@ -44,8 +44,14 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Content Translation** — full post and page translation preserving all Gutenberg block markup, block attribute strings (accordion summaries, image alt text, etc.), and footnotes. Chunk mode for translating individual snippets
 - **Content Generator** — drafts or rewrites post content from hints, tone, and output-type controls. Outputs native Gutenberg block markup
 - **Quick Translate** — available in the admin toolbar and inside the Gutenberg / FSE editor toolbar, for translating any text snippet on the fly without opening a specific post
-- SHA-256 hash-based result caching in post meta; per-language translation cache; force-refresh control
+- **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the LinguaForge AI metabox (Translation and Content Generator only)
+- **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Opt in from **Settings → Behavior**
+- **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
+- **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
+- **Footnote tab** in the Block Action popover — translate or revise individual footnotes without switching to chunk mode; translate button also appears in the footnote editing toolbar
+- SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
+- **WP-CLI support** — `wp linguaforge translate` and `wp linguaforge cache-clear` commands for scripted workflows
 
 ---
 
@@ -172,23 +178,26 @@ lingua-forge/
   language-router/
     language-router.php              ← Module entry: boots classes, defines LF_LANG, lf_* wrapper functions
     includes/
-      class-language-router.php      ← Core singleton: routing, translation, admin, SEO, search
-      class-lsflr-switcher.php       ← Language switcher block (injected dependency)
-      class-lsflr-link-fixer.php     ← Admin link fixer: scan & repair internal links per language
+      class-language-router.php      ← LinguaForge\Router\Router (aliased Language_Router)
+      class-lsflr-switcher.php       ← LinguaForge\Router\Switcher (aliased LSFLR_Switcher)
+      class-lsflr-link-fixer.php     ← LinguaForge\Router\LinkFixer (aliased LSFLR_Link_Fixer)
     assets/
       lsflr.css                      ← Switcher styles
     languages/                       ← LinguaForge own translation files (.pot / .po / .mo)
   meta-description/
-    meta-description.php             ← SEO meta box + <head> output (description / og / twitter)
+    meta-description.php             ← LinguaForge\MetaDescription\Module — SEO meta box + <head> output
   ai/
     ai.php                           ← Module entry: constants, autoloader, plugin boot
     includes/
       Core/
         Autoloader.php               ← PSR-4 class autoloader (namespace: LinguaForge\AI)
         Plugin.php                   ← Bootstrap: registers hooks, initialises features
-        Config.php                   ← Provider + model resolution (options → constant → default)
+        Config.php                   ← Provider + model + preset resolution
         KeyStore.php                 ← AES-256-CBC encrypted API key storage
-        CacheStore.php               ← SHA-256 hash-based result cache in post meta
+        CacheStore.php               ← SHA-256 hash-based result cache (custom table)
+        TranslationMemory.php        ← Block-level TM cache shared across posts
+        Glossary.php                 ← Per-language-pair terminology table
+        UsageRecorder.php            ← Per-call token usage telemetry
         BlockTextExtractor.php       ← Extracts / reinserts translatable block attribute strings
       Contracts/
         AIProviderInterface.php      ← Contract all providers must satisfy
@@ -207,12 +216,15 @@ lingua-forge/
         OpenAI.php
         Gemini.php
       Admin/
-        MetaBox.php                  ← Post editor metabox: AI panel in main column
+        MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
-        SettingsPage.php             ← Settings → LinguaForge AI
+        SettingsPage.php             ← Settings → LinguaForge AI (5-tab layout)
+      CLI/
+        Commands.php                 ← wp linguaforge translate / cache-clear
       REST/
         FeatureController.php        ← POST /lingua-forge/v1/feature/{key}/{post_id}
                                         POST /lingua-forge/v1/translate-chunk
+                                        POST /lingua-forge/v1/revise-block
     assets/
       admin.js / admin.css           ← Meta box UI
       toolbar-translate.js / .css    ← Admin bar Quick Translate popover
@@ -482,9 +494,30 @@ Available in two places:
 | **Max output tokens** | 2 000 | Maximum tokens per quick-translation response. Short snippets rarely exceed a few hundred tokens, but raise this for longer selections. |
 | **Max input characters** | 8 000 | Maximum characters accepted in the Quick Translate textarea before the text is truncated. |
 
+### AI Behavior Presets
+
+Four presets control the temperature and system-prompt addendum used by Translation and Content Generator:
+
+| Preset | Temperature | Addendum focus |
+|---|---|---|
+| **Standard** | 0.4 | Balanced; no extra directives |
+| **Technical / Scientific** | 0.2 | Preserve terminology, units, and formulas exactly |
+| **Legal / Compliance** | 0.1 | Preserve regulatory citations, article numbers, and legal phrasing verbatim |
+| **Creative / Marketing** | 0.7 | Vivid language, idiomatic translation, marketing tone |
+
+Set the site-wide default from **Settings → LinguaForge AI → Behavior**. Override it for a specific post from the **LinguaForge AI metabox** (a select at the top of the panel, available on Translation and Content Generator only). A custom addendum textarea below the preset selector overrides the preset's built-in addendum when non-empty.
+
+### Translation Memory
+
+When enabled from **Settings → Behavior**, Translation Memory caches individual Gutenberg blocks in a dedicated database table. On the next translation request for a post that shares blocks with a previously translated post, only the uncached blocks are sent to the API — potentially reducing token usage significantly on recurring content like navigation text, footers, or boilerplate paragraphs. The cache key includes the block markup, language pair, active glossary hash, and preset signature, so changing any of those automatically invalidates affected entries. Status and a Clear button appear in **Settings → Maintenance**.
+
+### Glossary
+
+Manage a terminology table per language pair from **Settings → Glossary**. Each entry specifies a source term, target term, source language (or wildcard `''` for brand names), and target language. All terms relevant to the current translation are injected into the system prompt as a formatted list. The glossary hash is folded into the Translation Memory cache key, so editing a glossary entry invalidates TM rows affected by that term on the next translation run.
+
 ### Result Caching
 
-Every feature caches its output in post meta using a SHA-256 hash of the inputs. The cache is invalidated automatically when any input changes — there is no TTL. A **cached** badge appears in the UI when a stored result is returned. A **↺ Refresh** link forces a new API call. Translation caches are keyed per language so multiple language versions can be cached independently.
+Every feature caches its output using a SHA-256 hash of the inputs in a dedicated plugin table. The cache is invalidated automatically when any input changes — there is no TTL. A **cached** badge appears in the UI when a stored result is returned. A **↺ Refresh** link forces a new API call. Translation caches are keyed per language so multiple language versions can be cached independently.
 
 ---
 
@@ -603,12 +636,15 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.1.0**
+**Current release — 1.2.0**
 
-- Public template functions renamed from `lf_*` to `linguaforge_*` for WordPress.org naming compliance
-- Fixes an uninstall bug that left an orphaned DB index after plugin deletion
-- Fixes a character-escaping bug in the Language Switcher custom label mode
-- Full WordPress.org Plugin Check compliance pass across all files
+- Four AI Behavior Presets (Standard / Technical / Legal / Creative) replace the binary compliance toggle; per-page preset override for Translation and Content Generator
+- Translation Memory — block-level cache shared across posts; Glossary — per-language-pair terminology injected into every prompt
+- Side-by-side diff preview before applying translations; footnotes tab + format toolbar translate button
+- All three Language Router classes now fully namespaced under `LinguaForge\Router` with back-compat aliases
+- Meta Description refactored to `LinguaForge\MetaDescription\Module` with automatic key migration
+- WP-CLI commands, provider retry/backoff, per-user rate limiting, daily quota, token usage telemetry
+- Full WordPress.org Plugin Check compliance including i18n coverage for all new strings
 
 ## License
 

@@ -2,75 +2,82 @@
 
 namespace LinguaForge\AI\Providers;
 
-use LinguaForge\AI\Contracts\AIProviderInterface;
-use LinguaForge\AI\Core\KeyStore;
-
 defined('ABSPATH') || exit;
 
-class OpenAI implements AIProviderInterface {
+/**
+ * OpenAI provider via the Chat Completions API.
+ *
+ * API specifics handled here:
+ *   - System messages stay inline in the messages array (no special handling).
+ *   - Auth via `Authorization: Bearer …` header.
+ *   - Truncation marker: `choices[0].finish_reason === 'length'`.
+ *   - Response text path: `choices[0].message.content`.
+ *
+ * Everything else (HTTP retry/backoff, error logging, JSON parsing) is inherited
+ * from AbstractProvider.
+ */
+class OpenAI extends AbstractProvider {
 
-    public function __construct(
-        private readonly WorkerConfig $config
-    ) {}
+    protected function key_slug(): string {
+        return 'openai';
+    }
 
-    public function chat(array $messages): ?string {
+    protected function provider_label(): string {
+        return 'OpenAI';
+    }
 
-        $api_key = KeyStore::get('openai');
+    protected function build_request(array $messages, string $api_key): array {
 
-        if (!$api_key) {
-            return null;
+        $body = [
+            'model'       => $this->config->model,
+            'messages'    => $messages,
+            'temperature' => $this->config->temperature,
+            'max_tokens'  => $this->config->max_tokens,
+        ];
+
+        // Structured-output mode: ask the API to constrain the response to a
+        // JSON object conforming to the supplied schema. OpenAI enforces this
+        // server-side, so a malformed or schema-violating response cannot reach
+        // the caller — invalid generations are retried by OpenAI internally.
+        if ($this->config->response_schema !== null) {
+            $body['response_format'] = [
+                'type'        => 'json_schema',
+                'json_schema' => [
+                    'name'   => 'lingua_forge_response',
+                    'strict' => true,
+                    'schema' => $this->config->response_schema,
+                ],
+            ];
         }
 
-        $response = wp_remote_post(
+        return [
             'https://api.openai.com/v1/chat/completions',
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type'  => 'application/json',
-                ],
-                'body' => wp_json_encode([
-                    'model'       => $this->config->model,
-                    'messages'    => $messages,
-                    'temperature' => $this->config->temperature,
-                    'max_tokens'  => $this->config->max_tokens,
-                ]),
-                'timeout' => 120,
-            ]
-        );
+                'Authorization' => 'Bearer ' . $api_key,
+                'Content-Type'  => 'application/json',
+            ],
+            $body,
+        ];
+    }
 
-        if (is_wp_error($response)) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
-            error_log('LinguaForge AI [OpenAI] request failed: ' . $response->get_error_message());
+    protected function is_truncated(array $decoded): bool {
+        return ($decoded['choices'][0]['finish_reason'] ?? '') === 'length';
+    }
+
+    protected function extract_text(array $decoded): string {
+        return (string) ($decoded['choices'][0]['message']['content'] ?? '');
+    }
+
+    protected function extract_usage(array $decoded): ?array {
+
+        $usage = $decoded['usage'] ?? null;
+        if (!is_array($usage)) {
             return null;
         }
 
-        $http_code = (int) wp_remote_retrieve_response_code($response);
-
-        if ($http_code < 200 || $http_code >= 300) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unexpected HTTP responses from the OpenAI API.
-            error_log(sprintf(
-                'LinguaForge AI [OpenAI] unexpected HTTP %d: %s',
-                $http_code,
-                wp_remote_retrieve_body($response)
-            ));
-            return null;
-        }
-
-        $body = json_decode(
-            wp_remote_retrieve_body($response),
-            true
-        );
-
-        // Detect output truncation: 'length' means the model hit max_tokens
-        // before finishing — the result would be a partial translation.
-        if (($body['choices'][0]['finish_reason'] ?? '') === 'length') {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for truncated AI responses; users are directed here by the plugin FAQ.
-            error_log('LinguaForge AI [OpenAI] response truncated: finish_reason=length. Raise max_tokens in WorkerConfig.');
-            return null;
-        }
-
-        $text = trim($body['choices'][0]['message']['content'] ?? '');
-
-        return $text !== '' ? $text : null;
+        return [
+            'input'  => (int) ($usage['prompt_tokens']     ?? 0),
+            'output' => (int) ($usage['completion_tokens'] ?? 0),
+        ];
     }
 }

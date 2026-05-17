@@ -4,6 +4,7 @@ namespace LinguaForge\AI\REST;
 
 use LinguaForge\AI\Core\BlockTextExtractor;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\UsageRecorder;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
 use LinguaForge\AI\Providers\ProviderFactory;
@@ -18,6 +19,21 @@ class FeatureController {
      * Key   → sent by JS as revision_type param.
      * label → human-readable label returned in the response.
      * instruction → injected into the prompt template.
+     */
+    /**
+     * Supported block revision types.
+     *
+     * IMPORTANT: instructions must produce INLINE-compatible output. The
+     * block-action JS writes the result back into a single block attribute
+     * (e.g. `core/paragraph`'s `content`), which only accepts inline HTML —
+     * <strong>, <em>, <a>, <br>, etc. Block-level elements like <ul>, <h2>,
+     * <blockquote> would break the block parser. The bulletize variant gets
+     * around this by emitting `<br>`-separated lines prefixed with the
+     * bullet character, which renders as a visual list inside a paragraph
+     * without leaving the block model.
+     *
+     * Key → JS dropdown key (must match the corresponding entry in
+     * block-action.js's REVISION_TYPES map).
      */
     private const REVISION_TYPES = [
         'improve' => [
@@ -39,6 +55,22 @@ class FeatureController {
         'expand'  => [
             'label'       => 'Expanded',
             'instruction' => 'Expand the text with more detail and elaboration. Develop the ideas further while maintaining the original meaning and direction.',
+        ],
+        'bulletize' => [
+            'label'       => 'Bulleted',
+            'instruction' => 'Rewrite the text as a vertical list of concise bullet points. Each point must start with the • bullet character followed by a space. Separate points with <br> tags (no <ul> or <li> markup — the output must stay inline-compatible with a paragraph block). Preserve every factual claim from the source; reorganise wording for clarity, do not invent new content.',
+        ],
+        'lead_paragraph' => [
+            'label'       => 'Lead paragraph',
+            'instruction' => 'Rewrite as a single tight lead paragraph of at most 60 words. Capture the most important point first, omit secondary details, and write in active voice. Output a single paragraph with no line breaks or list formatting — suitable as an article intro, mobile-first summary, or excerpt preview.',
+        ],
+        'cite' => [
+            'label'       => 'Citation prompts',
+            'instruction' => 'Identify factual claims, statistics, or assertions that would benefit from a citation, and append the marker [citation needed] immediately after each such claim (inside the same sentence, before the trailing punctuation). Do not remove, reword, or reorder any existing text. Do not add markers to opinions, definitions, or background context. If no claims warrant a citation, return the text unchanged.',
+        ],
+        'plain_language' => [
+            'label'       => 'Plain language',
+            'instruction' => 'Rewrite in plain, accessible language. Replace technical jargon, legal terminology, regulatory citations expressed as prose, and bureaucratic phrasing with everyday equivalents — but preserve article numbers, percentages, dates, currencies, brand names, and unit symbols exactly. Keep approximately the same paragraph length and structure. Target a general adult reader.',
         ],
     ];
 
@@ -70,8 +102,10 @@ class FeatureController {
             [
                 'methods'             => 'POST',
                 'callback'            => [self::class, 'run'],
-                'permission_callback' => function () {
-                    return current_user_can('edit_posts');
+                'permission_callback' => function (\WP_REST_Request $request) {
+                    return current_user_can(
+                        self::required_capability(sanitize_key((string) $request['feature']))
+                    );
                 },
             ]
         );
@@ -87,7 +121,7 @@ class FeatureController {
                 'methods'             => 'POST',
                 'callback'            => [self::class, 'run_translate_chunk'],
                 'permission_callback' => function () {
-                    return current_user_can('edit_posts');
+                    return current_user_can(self::required_capability('translate-chunk'));
                 },
             ]
         );
@@ -103,10 +137,38 @@ class FeatureController {
                 'methods'             => 'POST',
                 'callback'            => [self::class, 'run_revise_block'],
                 'permission_callback' => function () {
-                    return current_user_can('edit_posts');
+                    return current_user_can(self::required_capability('revise-block'));
                 },
             ]
         );
+    }
+
+    /**
+     * Resolve the WP capability required to use an AI endpoint or feature.
+     *
+     * Source of truth (lowest priority first):
+     *   wp_options['linguaforge_required_capability']   set by admin in Settings
+     *   apply_filters('linguaforge_required_capability', $cap, $context)
+     *
+     * Defaults to 'edit_posts' (the legacy gate from before this refactor).
+     * Common admin choices: 'edit_published_posts' (Authors), 'edit_others_posts'
+     * (Editors), 'manage_options' (Admins only).
+     *
+     * @param string $context Feature key (for /feature/{feature}/{id}) or
+     *                        endpoint slug ('translate-chunk', 'revise-block').
+     */
+    private static function required_capability(string $context): string {
+
+        $default = (string) get_option('linguaforge_required_capability', 'edit_posts');
+        if ($default === '') {
+            $default = 'edit_posts';
+        }
+
+        $cap = (string) apply_filters('linguaforge_required_capability', $default, $context);
+
+        // Final safety net — never let a misconfigured filter return an empty
+        // capability (which would resolve to "anyone can" in current_user_can).
+        return $cap !== '' ? $cap : 'edit_posts';
     }
 
     public static function run(
@@ -180,6 +242,20 @@ class FeatureController {
             );
         }
 
+        // Rate-limit check runs after structural validation (so bad-request
+        // calls don't burn the user's budget) but before the paid AI call.
+        $rate_error = self::enforce_rate_limit('translate-chunk');
+        if ($rate_error instanceof \WP_Error) {
+            return $rate_error;
+        }
+
+        // Site-wide daily ceiling — protects against the per-user limit being
+        // multiplied across many users on multi-author sites.
+        $quota_error = self::enforce_daily_quota('translate-chunk');
+        if ($quota_error instanceof \WP_Error) {
+            return $quota_error;
+        }
+
         return rest_ensure_response(
             $translation->run_chunk($language_name, $params)
         );
@@ -237,23 +313,48 @@ class FeatureController {
             );
         }
 
+        // Rate-limit check runs after structural validation (so bad-request
+        // calls don't burn the user's budget) but before the paid AI call.
+        $rate_error = self::enforce_rate_limit('revise-block');
+        if ($rate_error instanceof \WP_Error) {
+            return $rate_error;
+        }
+
+        // Site-wide daily ceiling — protects against the per-user limit being
+        // multiplied across many users on multi-author sites.
+        $quota_error = self::enforce_daily_quota('revise-block');
+        if ($quota_error instanceof \WP_Error) {
+            return $quota_error;
+        }
+
         $prompt = str_replace(
             ['{{instruction}}', '{{content}}'],
             [$type_config['instruction'], mb_substr(trim($chunk_text), 0, 8000)],
             file_get_contents($prompt_path)
         );
 
-        $provider = ProviderFactory::make(
+        $provider = ProviderFactory::make(Config::apply_compliance(
             new WorkerConfig(
                 model:       Config::model('quality'),
                 max_tokens:  2048,
                 temperature: 0.4,
             )
-        );
+        ));
 
-        $result = $provider->chat(
-            [['role' => 'user', 'content' => $prompt]]
-        );
+        // Block revisions ship without a base system prompt, so when compliance
+        // mode is on we prepend a system message whose entire content IS the
+        // strict-preservation addendum. Otherwise we keep the original
+        // user-only message shape to avoid surprising the model.
+        $messages = [];
+        if (Config::compliance_enabled()) {
+            $messages[] = [
+                'role'    => 'system',
+                'content' => Config::apply_compliance_to_system(''),
+            ];
+        }
+        $messages[] = ['role' => 'user', 'content' => $prompt];
+
+        $result = UsageRecorder::tracked( 'block-revision', static fn() => $provider->chat($messages) );
 
         if (empty($result)) {
             return new \WP_Error(
@@ -269,6 +370,172 @@ class FeatureController {
             'revision_label' => $type_config['label'],
             'revision_type'  => $revision_type,
         ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RATE LIMITING & QUOTA
+    //
+    // The translate-chunk and revise-block endpoints accept arbitrary text
+    // and make paid AI calls. Two layered defenses protect the API budget:
+    //
+    //   1. Per-user sliding 60s window (enforce_rate_limit)
+    //         Default 30 req/min per user per endpoint. Filterable via
+    //         apply_filters('linguaforge_ai_rate_limit', ...).
+    //
+    //   2. Per-site rolling daily ceiling (enforce_daily_quota)
+    //         Configured in Settings → AI Limits & Security. 0 = unlimited.
+    //         Filterable via apply_filters('linguaforge_ai_daily_quota', ...).
+    //
+    // Both fire before the AI call. Rate limit returns 429 with retry_after;
+    // the daily ceiling returns 429 with the human-readable date when the
+    // counter resets.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Enforce a per-user-per-endpoint rate limit.
+     *
+     * Returns null when the request is allowed (and records the call), or a
+     * WP_Error with HTTP 429 when the user has exceeded the threshold. The
+     * error payload includes a `retry_after` integer (seconds until the next
+     * quota slot frees up — i.e. when the oldest in-window event ages out).
+     *
+     * Implementation note: WordPress transients have no atomic increment, so
+     * we store an array of timestamps. A race between two concurrent requests
+     * may let one over-the-limit call slip through; that's acceptable for a
+     * budget-protection limiter (vs. a security limiter).
+     *
+     * @param string $endpoint Short identifier for the endpoint (used in the
+     *                         transient key so chunk/revise quotas are separate).
+     */
+    private static function enforce_rate_limit(string $endpoint): ?\WP_Error {
+
+        $policy = apply_filters(
+            'linguaforge_ai_rate_limit',
+            [
+                'window_seconds' => 60,
+                'max_requests'   => 30,
+            ],
+            $endpoint
+        );
+
+        $window = max(1, (int) ($policy['window_seconds'] ?? 60));
+        $limit  = max(1, (int) ($policy['max_requests']   ?? 30));
+
+        $user_id = get_current_user_id();
+
+        // Anonymous callers shouldn't reach this — the permission_callback
+        // requires edit_posts. If a future code path bypasses that, fail closed.
+        if ($user_id <= 0) {
+            return new \WP_Error(
+                'rate_limited',
+                'Rate limit unavailable for anonymous requests.',
+                ['status' => 429, 'retry_after' => $window]
+            );
+        }
+
+        $key = "linguaforge_rate_user_{$user_id}_{$endpoint}";
+
+        $now    = time();
+        $cutoff = $now - $window;
+
+        $events = get_transient($key);
+        $events = is_array($events)
+            ? array_values(array_filter(
+                $events,
+                static fn($t) => is_int($t) && $t >= $cutoff
+            ))
+            : [];
+
+        if (count($events) >= $limit) {
+
+            $oldest      = min($events);
+            $retry_after = max(1, ($oldest + $window) - $now);
+
+            return new \WP_Error(
+                'rate_limited',
+                sprintf(
+                    /* translators: %d is seconds until the next AI request is allowed. */
+                    __('Too many AI requests. Please retry in %d seconds.', 'lingua-forge'),
+                    $retry_after
+                ),
+                [
+                    'status'      => 429,
+                    'retry_after' => $retry_after,
+                ]
+            );
+        }
+
+        $events[] = $now;
+
+        // TTL slightly larger than the window so the array survives the full
+        // sliding span. Anything older than $cutoff is pruned on next read.
+        set_transient($key, $events, $window + 5);
+
+        return null;
+    }
+
+    /**
+     * Enforce a site-wide daily ceiling on AI calls.
+     *
+     * Counter lives in a transient keyed by UTC date (YYYYMMDD) with a TTL
+     * that lasts until UTC midnight. WordPress will auto-expire the entry
+     * the day after, so there's no cleanup to do.
+     *
+     * Returns null when the call is allowed (and increments the counter),
+     * or a WP_Error with HTTP 429 when the daily ceiling is reached. The
+     * `retry_after` field on the error payload is the seconds remaining
+     * until UTC midnight (when the counter resets).
+     *
+     * Quota source (lowest priority first):
+     *   wp_options['linguaforge_ai_daily_quota']   set by admin in Settings
+     *   apply_filters('linguaforge_ai_daily_quota', $option, $endpoint)
+     *
+     * A value of 0 means "unlimited" and short-circuits the helper.
+     */
+    private static function enforce_daily_quota(string $endpoint): ?\WP_Error {
+
+        $quota = (int) apply_filters(
+            'linguaforge_ai_daily_quota',
+            (int) get_option('linguaforge_ai_daily_quota', 0),
+            $endpoint
+        );
+
+        if ($quota <= 0) {
+            return null; // unlimited
+        }
+
+        // UTC keyed counter — same key across all users so the limit is site-wide.
+        $today = gmdate('Ymd');
+        $key   = "linguaforge_quota_daily_used_{$today}";
+
+        $used = (int) get_transient($key);
+
+        if ($used >= $quota) {
+
+            // Seconds until UTC midnight tomorrow.
+            $retry_after = max(1, (strtotime('tomorrow UTC') ?: (time() + 86400)) - time());
+
+            return new \WP_Error(
+                'daily_quota_exceeded',
+                sprintf(
+                    /* translators: 1: quota number, 2: reset time. */
+                    __('Daily AI quota reached (%1$d requests). Resets at %2$s UTC.', 'lingua-forge'),
+                    $quota,
+                    gmdate('H:i', strtotime('tomorrow UTC') ?: time() + 86400)
+                ),
+                [
+                    'status'      => 429,
+                    'retry_after' => $retry_after,
+                    'quota'       => $quota,
+                ]
+            );
+        }
+
+        // TTL to UTC midnight + small grace, so the transient evaporates with the day.
+        $ttl = max(60, (strtotime('tomorrow UTC') ?: (time() + 86400)) - time() + 30);
+        set_transient($key, $used + 1, $ttl);
+
+        return null;
     }
 
     /**

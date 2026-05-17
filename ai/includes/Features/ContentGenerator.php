@@ -8,6 +8,7 @@ use LinguaForge\AI\Providers\WorkerConfig;
 use LinguaForge\AI\Core\BlockTextExtractor;
 use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\UsageRecorder;
 
 defined('ABSPATH') || exit;
 
@@ -69,13 +70,13 @@ class ContentGenerator implements FeatureInterface {
      * max_tokens is read from Settings → LinguaForge AI → Content Generator.
      * Raise it there if generated articles are being cut off.
      */
-    public function get_worker_config(): WorkerConfig {
+    public function get_worker_config(int $post_id = 0): WorkerConfig {
 
-        return new WorkerConfig(
+        return Config::apply_compliance(new WorkerConfig(
             model:       Config::model('quality'),
             max_tokens:  Config::content_generator_max_tokens(),
             temperature: 0.6,
-        );
+        ), $post_id);
     }
 
     public function get_ui_fields(): array {
@@ -201,24 +202,22 @@ class ContentGenerator implements FeatureInterface {
         );
 
         // ── API call ──────────────────────────────────────────────────────────
-        $provider = ProviderFactory::make($this->get_worker_config());
+        $provider = ProviderFactory::make($this->get_worker_config($post_id));
 
-        $result = $provider->chat([
-            [
-                'role'    => 'system',
-                'content' =>
-                    'You are an expert WordPress content writer. ' .
-                    'Output clean WordPress block-editor (Gutenberg) markup. ' .
-                    'Use <!-- wp:paragraph -->, <!-- wp:heading -->, ' .
-                    '<!-- wp:list --> and similar block comments where appropriate. ' .
-                    'Do not include front-matter, meta-commentary, or explanations — ' .
-                    'output only the post body markup.',
-            ],
-            [
-                'role'    => 'user',
-                'content' => $prompt,
-            ],
-        ]);
+        $system_prompt = Config::apply_compliance_to_system(
+            'You are an expert WordPress content writer. ' .
+            'Output clean WordPress block-editor (Gutenberg) markup. ' .
+            'Use <!-- wp:paragraph -->, <!-- wp:heading -->, ' .
+            '<!-- wp:list --> and similar block comments where appropriate. ' .
+            'Do not include front-matter, meta-commentary, or explanations — ' .
+            'output only the post body markup.',
+            $post_id
+        );
+
+        $result = UsageRecorder::tracked( 'content-generator', static fn() => $provider->chat([
+            ['role' => 'system', 'content' => $system_prompt],
+            ['role' => 'user',   'content' => $prompt],
+        ]) );
 
         if (empty($result)) {
             return [
