@@ -31,11 +31,12 @@ class LinkFixer {
 	// =========================================================
 
 	private function register_hooks(): void {
-		add_action( 'restrict_manage_posts',      [ $this, 'render_fix_links_button' ] );
-		add_action( 'admin_enqueue_scripts',      [ $this, 'enqueue_assets' ] );
-		add_action( 'admin_footer',               [ $this, 'render_modal' ] );
-		add_action( 'wp_ajax_lsflr_scan_links',   [ $this, 'ajax_scan' ] );
-		add_action( 'wp_ajax_lsflr_fix_post',     [ $this, 'ajax_fix_post' ] );
+		add_action( 'restrict_manage_posts',       [ $this, 'render_fix_links_button' ] );
+		add_action( 'admin_enqueue_scripts',       [ $this, 'enqueue_assets' ] );
+		add_action( 'admin_footer',                [ $this, 'render_modal' ] );
+		add_action( 'wp_ajax_lsflr_scan_links',    [ $this, 'ajax_scan' ] );
+		add_action( 'wp_ajax_lsflr_fix_post',      [ $this, 'ajax_fix_post' ] );
+		add_action( 'wp_ajax_lsflr_fix_template',  [ $this, 'ajax_fix_template' ] );
 	}
 
 	// =========================================================
@@ -83,7 +84,7 @@ class LinkFixer {
 				'unknownError'       => __( 'unknown error', 'lingua-forge' ),
 				'scanRequestFailed'  => __( 'Scan request failed. Please try again.', 'lingua-forge' ),
 				'noPostsFound'       => __( '⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts have their Language meta set to <strong>{lang}</strong> in the Language metabox.', 'lingua-forge' ),
-				'noBrokenLinks'      => __( '✅ No broken links found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all internal links are already correct.', 'lingua-forge' ),
+				'noBrokenLinks'      => __( '✅ No broken links or template issues found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all checks passed.', 'lingua-forge' ),
 				'autoFixableCount'   => __( '<strong>{n}</strong> auto-fixable link(s)', 'lingua-forge' ),
 				'manualReviewCount'  => __( '<strong>{n}</strong> link(s) needing manual review', 'lingua-forge' ),
 				'and'                => __( 'and', 'lingua-forge' ),
@@ -103,8 +104,24 @@ class LinkFixer {
 			],
 			'reasonLabels' => [
 				'unresolved'      => __( 'URL could not be mapped to a post — check the link target exists', 'lingua-forge' ),
-				'no_translation' => __( 'No {lang} translation registered (TRID missing)', 'lingua-forge' ),
+				'no_translation'  => __( 'No {lang} translation registered (TRID missing)', 'lingua-forge' ),
 				'permalink_error' => __( 'Translation found but permalink could not be generated', 'lingua-forge' ),
+			],
+			'staleI18n' => [
+				'count'    => __( '<strong>{n}</strong> stale path(s)', 'lingua-forge' ),
+				'label'    => __( '📍 Stale path (page moved)', 'lingua-forge' ),
+				'suffix'   => __( '{n} stale path(s)', 'lingua-forge' ),
+			],
+			'templateI18n' => [
+				'issues'        => __( '<strong>{n}</strong> template issue(s)', 'lingua-forge' ),
+				'label'         => __( '📄 Wrong template', 'lingua-forge' ),
+				'expected'      => __( 'Expected: {expected}', 'lingua-forge' ),
+				'current'       => __( 'Current: {current}', 'lingua-forge' ),
+				'notFound'      => __( 'Template "{expected}" does not exist — create it in the Site Editor first.', 'lingua-forge' ),
+				'btnFix'        => __( 'Fix Template', 'lingua-forge' ),
+				'btnFixing'     => __( 'Fixing…', 'lingua-forge' ),
+				'btnFixed'      => __( '✅ Template fixed', 'lingua-forge' ),
+				'btnFailed'     => __( '❌ Failed', 'lingua-forge' ),
 			],
 		] );
 	}
@@ -227,11 +244,18 @@ class LinkFixer {
 	 *   no_translation  – post found but has no $target_lang translation in TRID
 	 *   permalink_error – target post found but get_permalink returned nothing useful
 	 *
+	 * stale_fixes contains links that already carry the correct language prefix but
+	 * whose path is outdated — typically because the target page was moved in the
+	 * hierarchy (e.g. /de/aprop/ became /de/casa/aprop/ after reparenting).
+	 * The data-id attribute is used as ground truth: if get_permalink(data-id) no
+	 * longer matches the stored href, the link is stale and can be auto-corrected.
+	 *
 	 * @return array{
-	 *   post_id: int,
-	 *   title:   string,
-	 *   fixes:   list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string, target_post_id: int }>,
-	 *   flagged: list<array{ url: string, reason: string, linked_post_id?: int, linked_post_title?: string }>
+	 *   post_id:     int,
+	 *   title:       string,
+	 *   fixes:       list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string, target_post_id: int }>,
+	 *   stale_fixes: list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string }>,
+	 *   flagged:     list<array{ url: string, reason: string, linked_post_id?: int, linked_post_title?: string }>
 	 * }
 	 */
 	public function scan_post( int $post_id, string $target_lang ): array {
@@ -247,13 +271,33 @@ class LinkFixer {
 
 		$target_prefix = trailingslashit( home_url() ) . $target_lang . '/';
 		$fixes         = [];
+		$stale_fixes   = [];
 		$flagged       = [];
 
 		foreach ( $this->extract_internal_links( $post->post_content ) as $link ) {
 			$url = $link['url'];
 
-			// ── Already correct: link already carries the target-language prefix ──
+			// ── Correct language prefix — verify the path hasn't gone stale ──────
+			// A page may have been moved in the hierarchy after the link was saved,
+			// changing its permalink without changing its language prefix. We use
+			// data-id as ground truth: if the current get_permalink() differs from
+			// the stored href (and the new permalink is still in the same language),
+			// the link is stale and can be auto-corrected.
 			if ( str_starts_with( $url, $target_prefix ) ) {
+				$linked_id = $this->resolve_to_post_id( $link['id'] );
+				if ( $linked_id ) {
+					$current_permalink = (string) get_permalink( $linked_id );
+					if ( $current_permalink
+						&& str_starts_with( $current_permalink, $target_prefix )
+						&& rtrim( $current_permalink, '/' ) !== rtrim( $url, '/' ) ) {
+						$stale_fixes[] = [
+							'from'              => $url,
+							'to'                => $current_permalink,
+							'linked_post_id'    => $linked_id,
+							'linked_post_title' => get_the_title( $linked_id ),
+						];
+					}
+				}
 				continue;
 			}
 
@@ -312,10 +356,11 @@ class LinkFixer {
 		}
 
 		return [
-			'post_id' => $post_id,
-			'title'   => $post->post_title,
-			'fixes'   => $fixes,
-			'flagged' => $flagged,
+			'post_id'     => $post_id,
+			'title'       => $post->post_title,
+			'fixes'       => $fixes,
+			'stale_fixes' => $stale_fixes,
+			'flagged'     => $flagged,
 		];
 	}
 
@@ -338,7 +383,10 @@ class LinkFixer {
 		$scan = $this->scan_post( $post_id, $target_lang );
 
 		// scan_post returns [] (no keys) when the post does not exist.
-		if ( empty( $scan ) || empty( $scan['fixes'] ) ) {
+		// Merge cross-language fixes and stale-path fixes — both use the same
+		// from→to href-replacement logic.
+		$all_fixes = array_merge( $scan['fixes'] ?? [], $scan['stale_fixes'] ?? [] );
+		if ( empty( $scan ) || empty( $all_fixes ) ) {
 			return [ 'applied' => 0 ];
 		}
 
@@ -352,7 +400,7 @@ class LinkFixer {
 
 		$home = untrailingslashit( home_url() ); // e.g. https://example.com
 
-		foreach ( $scan['fixes'] as $fix ) {
+		foreach ( $all_fixes as $fix ) {
 			$to_url = $fix['to'];
 			$count  = 0;
 
@@ -405,6 +453,102 @@ class LinkFixer {
 	}
 
 	// =========================================================
+	// CORE: TEMPLATE CHECK
+	// =========================================================
+
+	/**
+	 * Check whether a post is using the correct language-specific FSE template.
+	 *
+	 * Returns null when:
+	 *   - The post type has no expected language template (neither page nor post).
+	 *   - The current template already matches the expected one.
+	 *
+	 * Returns an array when a mismatch is found:
+	 *   'expected' => string  Slug of the correct template (e.g. 'page-de').
+	 *   'current'  => string  Slug currently stored in _wp_page_template ('default' when empty).
+	 *   'can_fix'  => bool    True when the expected template exists in the wp_template CPT;
+	 *                         false means the editor must create the template first.
+	 *
+	 * @return array{ expected: string, current: string, can_fix: bool }|null
+	 */
+	private function check_template( int $post_id, string $lang ): ?array {
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return null;
+		}
+
+		$expected = $this->router->resolve_template_for_lang( $post, $lang );
+		if ( ! $expected ) {
+			return null; // not a page or post — no language template defined
+		}
+
+		$current = (string) get_post_meta( $post_id, '_wp_page_template', true );
+		if ( ! $current ) {
+			$current = 'default';
+		}
+
+		if ( $current === $expected ) {
+			return null; // already correct
+		}
+
+		return [
+			'expected' => $expected,
+			'current'  => $current,
+			'can_fix'  => $this->router->template_exists( $expected ),
+		];
+	}
+
+	// =========================================================
+	// AJAX: FIX TEMPLATE
+	// =========================================================
+
+	/**
+	 * Apply the correct language-specific FSE template to a single post.
+	 *
+	 * Only succeeds when the expected template slug (e.g. 'page-de') already
+	 * exists in the wp_template CPT.  If the template does not exist yet the
+	 * editor must create it in the Site Editor first.
+	 */
+	public function ajax_fix_template(): void {
+		check_ajax_referer( 'lsflr_link_fixer_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( 'Permission denied' );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- absint() sanitizes to a non-negative integer.
+		$post_id = absint( $_POST['post_id'] ?? 0 );
+		$lang    = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
+
+		if ( ! $post_id || ! $this->router->is_valid_lang( $lang ) ) {
+			wp_send_json_error( 'Invalid parameters' );
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( 'Permission denied for this post' );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			wp_send_json_error( 'Post not found' );
+		}
+
+		$expected = $this->router->resolve_template_for_lang( $post, $lang );
+		if ( ! $expected ) {
+			wp_send_json_error( 'No language-specific template defined for this post type' );
+		}
+
+		if ( ! $this->router->template_exists( $expected ) ) {
+			wp_send_json_error( 'Template "' . $expected . '" does not exist — create it in the Site Editor first' );
+		}
+
+		update_post_meta( $post_id, '_wp_page_template', $expected );
+		clean_post_cache( $post_id );
+
+		wp_send_json_success( [ 'template' => $expected ] );
+	}
+
+	// =========================================================
 	// AJAX: SCAN (dry-run for a whole language)
 	// =========================================================
 
@@ -432,10 +576,13 @@ class LinkFixer {
 		$results = [];
 		foreach ( $query->posts as $post_id ) {
 			$scanned++;
-			$scan = $this->scan_post( (int) $post_id, $lang );
-			// Include the post if it has auto-fixable links OR flagged links
-			// that need manual review — surface everything that is wrong.
-			if ( ! empty( $scan['fixes'] ) || ! empty( $scan['flagged'] ) ) {
+			$scan                   = $this->scan_post( (int) $post_id, $lang );
+			$scan['template_issue'] = $this->check_template( (int) $post_id, $lang );
+
+			// Include the post when it has auto-fixable cross-language links,
+			// stale same-language links (hierarchy change), flagged links that
+			// need manual review, OR a template mismatch — surface everything wrong.
+			if ( ! empty( $scan['fixes'] ) || ! empty( $scan['stale_fixes'] ) || ! empty( $scan['flagged'] ) || ! empty( $scan['template_issue'] ) ) {
 				$results[] = $scan;
 			}
 		}

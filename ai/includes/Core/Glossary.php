@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  *     target_term  VARCHAR(255)     preferred translation (or the same string,
  *                                   when the rule is "do not translate")
  *     source_lang  VARCHAR(8)       ISO code; empty = "any source language"
- *     target_lang  VARCHAR(8)       ISO code; required
+ *     target_lang  VARCHAR(8)       ISO code; empty = "any target language"
  *     notes        TEXT             free-form editor note
  *     created_at   INT UNSIGNED
  *     updated_at   INT UNSIGNED
@@ -61,7 +61,9 @@ class Glossary {
         $target_term = trim($target_term);
         $target_lang = sanitize_key($target_lang);
 
-        if ($source_term === '' || $target_term === '' || $target_lang === '') {
+        // source_term and target_term are always required; both lang fields
+        // may be empty ('' = "any language" wildcard).
+        if ($source_term === '' || $target_term === '') {
             return 0;
         }
 
@@ -181,6 +183,8 @@ class Glossary {
         $source_lang = sanitize_key($source_lang);
         $target_lang = sanitize_key($target_lang);
 
+        // A blank $target_lang means the caller doesn't know the target yet;
+        // return an empty set so nothing is injected into the prompt.
         if ($target_lang === '') {
             return [];
         }
@@ -191,7 +195,7 @@ class Glossary {
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM " . self::table_name() . "
-                 WHERE target_lang = %s
+                 WHERE (target_lang = %s OR target_lang = '')
                    AND (source_lang = %s OR source_lang = '')
                  ORDER BY source_term ASC",
                 $target_lang,

@@ -918,8 +918,9 @@ class Translation implements FeatureInterface {
         );
 
         // Glossary injection (§4.6) — the post's `_lang` meta is the source.
-        // get_for_pair() also returns wildcard rows (source_lang='') so brand
-        // names and language-agnostic terms are always enforced.
+        // get_for_pair() returns wildcard rows: source_lang='' (any source)
+        // and target_lang='' (any target), so brand names and language-agnostic
+        // terms entered once are enforced across all language pairs.
         $glossary = Glossary::format_for_prompt( $source_lang, $target_language );
         if ( $glossary !== '' ) {
             $system_prompt .= "\n\n" . $glossary;

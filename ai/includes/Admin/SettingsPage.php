@@ -104,8 +104,18 @@ class SettingsPage {
         $entries  = Glossary::get_all( $criteria );
         $base_url = admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
 
-        // Available languages for the dropdowns — same set Translation uses.
-        $languages = Translation::get_languages();
+        // Available languages for the dropdowns — only the languages the
+        // router actively knows about (installed locale packs + primary
+        // language). Filtered through Translation::get_languages() for
+        // proper English labels; any router code not in that map falls back
+        // to its uppercase ISO code.
+        $all_labels   = Translation::get_languages();
+        $router_codes = \LinguaForge\Router\Router::get_instance()->languages();
+        $languages    = [];
+        foreach ( $router_codes as $code ) {
+            $languages[ $code ] = $all_labels[ $code ] ?? strtoupper( $code );
+        }
+        asort( $languages );
 
         ?>
         <h2><?php esc_html_e( 'Glossary', 'lingua-forge' ); ?></h2>
@@ -113,7 +123,7 @@ class SettingsPage {
         <p>
             <?php
             esc_html_e(
-                'User-managed terminology table per language pair. Entries are appended to the translation system prompt so the AI uses preferred terms consistently — critical for domain vocabulary ("kWp", "PPA", "interconnection point"), brand names that must not translate, and standardised regulatory phrasing. Leaving "Source language" empty applies the entry to any source language (useful for brand names).',
+                'User-managed terminology table per language pair. Entries are appended to the translation system prompt so the AI uses preferred terms consistently — critical for domain vocabulary ("kWp", "PPA", "interconnection point"), brand names that must not translate, and standardised regulatory phrasing. Both language fields are optional: leave "Source language" blank to apply the entry regardless of which language you are translating from; leave "Target language" blank to apply it to all target languages at once.',
                 'lingua-forge'
             );
             ?>
@@ -138,7 +148,7 @@ class SettingsPage {
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only.
                     $code = sanitize_key( wp_unslash( $_GET['lf_glossary_error'] ?? '' ) );
                     if ( $code === 'missing_fields' ) {
-                        esc_html_e( 'Could not add entry: source term, target term, and target language are all required.', 'lingua-forge' );
+                        esc_html_e( 'Could not add entry: source term and target term are required.', 'lingua-forge' );
                     } else {
                         esc_html_e( 'Could not save the glossary entry.', 'lingua-forge' );
                     }
@@ -167,7 +177,7 @@ class SettingsPage {
                 <?php esc_html_e( 'Target language', 'lingua-forge' ); ?>
             </label>
             <select id="lf_glossary_filter_target" name="glossary_target">
-                <option value=""><?php esc_html_e( '— Any —', 'lingua-forge' ); ?></option>
+                <option value=""><?php esc_html_e( '— Any target —', 'lingua-forge' ); ?></option>
                 <?php foreach ( $languages as $code => $label ) : ?>
                     <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $filter_target, $code ); ?>>
                         <?php echo esc_html( $label ); ?>
@@ -218,7 +228,15 @@ class SettingsPage {
                                 }
                                 ?>
                             </td>
-                            <td><code><?php echo esc_html( $entry['target_lang'] ); ?></code></td>
+                            <td>
+                                <?php
+                                if ( $entry['target_lang'] === '' ) {
+                                    echo '<em>' . esc_html__( 'any', 'lingua-forge' ) . '</em>';
+                                } else {
+                                    echo '<code>' . esc_html( $entry['target_lang'] ) . '</code>';
+                                }
+                                ?>
+                            </td>
                             <td><?php echo esc_html( $entry['notes'] ); ?></td>
                             <td>
                                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0">
@@ -285,11 +303,13 @@ class SettingsPage {
                         <label for="lf_g_target_lang"><?php esc_html_e( 'Target language', 'lingua-forge' ); ?></label>
                     </th>
                     <td>
-                        <select id="lf_g_target_lang" name="target_lang" required>
+                        <select id="lf_g_target_lang" name="target_lang">
+                            <option value=""><?php esc_html_e( '— Any target language —', 'lingua-forge' ); ?></option>
                             <?php foreach ( $languages as $code => $label ) : ?>
                                 <option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $label ); ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <p class="description"><?php esc_html_e( 'Leave blank to apply this entry to all target languages — ideal for brand names, abbreviations, and terms that must be preserved verbatim in every translation.', 'lingua-forge' ); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -492,6 +512,12 @@ class SettingsPage {
         // Translation Memory maintenance (§4.5)
         add_action('admin_post_linguaforge_clear_translation_memory', [self::class, 'handle_clear_translation_memory']);
 
+        // Language Router tab
+        add_action('admin_post_linguaforge_save_router_settings',     [self::class, 'handle_save_router_settings']);
+        add_action('admin_post_linguaforge_flush_permalinks',          [self::class, 'handle_flush_permalinks']);
+        add_action('wp_ajax_linguaforge_get_available_languages',      [self::class, 'ajax_get_available_languages']);
+        add_action('wp_ajax_linguaforge_install_language',             [self::class, 'ajax_install_language']);
+
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
         add_action('wp_ajax_linguaforge_test_provider', [self::class, 'ajax_test_provider']);
@@ -543,6 +569,199 @@ class SettingsPage {
                 'network'    => __( 'Network error — could not reach the WordPress AJAX endpoint.',  'lingua-forge' ),
             ],
         ]);
+
+        // Router tab — language fetch + install JS.
+        // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+        wp_register_script( 'linguaforge-router-tab', false, ['jquery'], $version, true );
+        wp_enqueue_script( 'linguaforge-router-tab' );
+        wp_add_inline_script(
+            'linguaforge-router-tab',
+            'var lfRouterTab = ' . wp_json_encode( [
+                'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+                'fetchNonce'   => wp_create_nonce( 'linguaforge_get_available_languages' ),
+                'installNonce' => wp_create_nonce( 'linguaforge_install_language' ),
+                'strings'      => [
+                    'loading'           => __( 'Loading…',                'lingua-forge' ),
+                    'installing'        => __( 'Installing…',             'lingua-forge' ),
+                    'installed'         => __( '✓ Language installed.',   'lingua-forge' ),
+                    'error'             => __( '✗ Error:',                'lingua-forge' ),
+                    'selectPlaceholder' => __( '— select a language —',   'lingua-forge' ),
+                    'noModify'          => __( 'Language installation is disabled on this server (DISALLOW_FILE_MODS is set).', 'lingua-forge' ),
+                ],
+            ] ) . ';',
+            'before'
+        );
+        wp_add_inline_script( 'linguaforge-router-tab', self::router_tab_js() );
+
+        // Preset preview — shows each preset's built-in addendum text when the
+        // Global AI Preset dropdown changes, so editors can see what the preset
+        // does and learn the format for writing their own custom instructions.
+        // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+        wp_register_script( 'linguaforge-preset-preview', false, [], $version, true );
+        wp_enqueue_script( 'linguaforge-preset-preview' );
+
+        $preset_addenda = [];
+        foreach ( Config::presets() as $key => $meta ) {
+            $preset_addenda[ $key ] = $meta['addendum'];
+        }
+
+        wp_add_inline_script(
+            'linguaforge-preset-preview',
+            'var lfPresetData = ' . wp_json_encode( [
+                'presets' => $preset_addenda,
+                'strings' => [
+                    'label'          => __( 'Built-in preset instructions:', 'lingua-forge' ),
+                    'noInstructions' => __( 'No built-in instructions — each AI feature uses its own tuned defaults. Fill in the Custom prompt instructions field below to add your own site-wide rules.', 'lingua-forge' ),
+                ],
+            ] ) . ';',
+            'before'
+        );
+        wp_add_inline_script( 'linguaforge-preset-preview', self::preset_preview_js() );
+
+        // Settings page styles — registered as a dummy handle so wp_add_inline_style
+        // can attach the CSS without requiring a separate external file.
+        wp_register_style( 'linguaforge-settings', false, [], $version ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+        wp_enqueue_style( 'linguaforge-settings' );
+        wp_add_inline_style( 'linguaforge-settings', self::settings_page_css() );
+    }
+
+    /**
+     * CSS for the settings page — tabs, glossary table, usage table, key badges,
+     * model table, and the API key security note.
+     *
+     * Returned as a string and attached via wp_add_inline_style() in
+     * enqueue_settings_assets() rather than output as a raw <style> tag.
+     */
+    private static function settings_page_css(): string {
+        return '
+            /* ── Tab panels ─────────────────────────────────────────────── */
+            .lingua-forge-tabs { margin-bottom: 1.2em; }
+            .lingua-forge-tab-panel { display: none; }
+            .lingua-forge-tab-panel.is-active { display: block; }
+
+            /* ── Glossary ──────────────────────────────────────────────── */
+            .lingua-forge-glossary-filter {
+                display: flex; align-items: center; gap: 8px;
+                margin: 12px 0 18px; flex-wrap: wrap;
+            }
+            .lingua-forge-glossary-filter label { font-weight: 600; }
+            .lingua-forge-glossary-table th,
+            .lingua-forge-glossary-table td { vertical-align: middle; }
+            .lingua-forge-glossary-table code { font-size: 12px; }
+
+            /* ── AI Usage ───────────────────────────────────────────────── */
+            .lingua-forge-range-buttons .button { margin-right: 4px; }
+            .lingua-forge-usage-table .lingua-forge-num {
+                text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;
+            }
+            .lingua-forge-usage-table tfoot th { background: #f6f7f7; }
+
+            /* ── Key status badges ─────────────────────────────────────── */
+            .lingua-forge-key-badge {
+                display: inline-block; margin-left: 8px;
+                font-size: 12px; font-weight: 600; vertical-align: middle;
+            }
+            .lingua-forge-badge--ok      { color: #46b450; }
+            .lingua-forge-badge--missing { color: #dc3232; }
+            .lingua-forge-key-source { font-weight: 400; color: #646970; }
+
+            /* ── Test Connection inline result ────────────────────────── */
+            .lingua-forge-test-key  { margin-left: 8px; vertical-align: middle; }
+            .lingua-forge-test-result {
+                margin-left: 6px; font-size: 12px; font-weight: 600; vertical-align: middle;
+            }
+            .lingua-forge-test-result--pending { color: #646970; font-weight: 400; }
+            .lingua-forge-test-result--ok      { color: #46b450; }
+            .lingua-forge-test-result--fail    { color: #dc3232; }
+
+            /* ── Models table ──────────────────────────────────────────── */
+            .lingua-forge-models-table { border-collapse: collapse; width: 100%; max-width: 860px; }
+            .lingua-forge-models-table thead th {
+                padding: 8px 10px; text-align: left; font-weight: 600;
+                border-bottom: 2px solid #dcdcde; vertical-align: bottom;
+            }
+            .lingua-forge-models-table tbody tr th,
+            .lingua-forge-models-table tbody tr td {
+                padding: 10px 10px; border-bottom: 1px solid #f0f0f1; vertical-align: middle;
+            }
+            .lingua-forge-active-provider-row { background: #f0f6fc; }
+            .lingua-forge-active-provider-row th { font-weight: 600; }
+            .lingua-forge-active-badge {
+                display: inline-block; margin-left: 6px; padding: 1px 7px;
+                border-radius: 10px; background: #0073aa; color: #fff;
+                font-size: 11px; font-weight: 600; letter-spacing: 0.03em; vertical-align: middle;
+            }
+            .lingua-forge-tier-used-by {
+                display: block; font-size: 11px; font-weight: 400;
+                color: #646970; margin-top: 2px;
+            }
+            .lingua-forge-model-input {
+                font-family: monospace; font-size: 12px; width: 100%; max-width: 340px;
+            }
+            .lingua-forge-model-override-badge {
+                display: inline-block; margin-left: 6px; padding: 1px 6px;
+                border-radius: 3px; background: #fff8e5; color: #996800;
+                border: 1px solid #f0c33c; font-size: 11px; font-weight: 600; vertical-align: middle;
+            }
+
+            /* ── Security note ─────────────────────────────────────────── */
+            .lingua-forge-settings-note {
+                background: #f6f7f7; border-left: 4px solid #c3c4c7;
+                padding: 12px 16px; margin: 20px 0; max-width: 600px;
+            }
+            .lingua-forge-settings-note p { margin: 6px 0; }
+            .lingua-forge-code-sample {
+                background: #fff; border: 1px solid #dcdcde;
+                padding: 8px 12px; font-size: 12px; margin: 6px 0 10px; overflow-x: auto;
+            }
+
+            /* ── Router tab: language installer ───────────────────────── */
+            .lf-installed-langs {
+                display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 20px;
+            }
+            .lf-installed-langs .lf-lang-chip {
+                display: inline-block; padding: 2px 10px; border-radius: 10px;
+                background: #e7f3ff; color: #0073aa; font-size: 12px;
+                font-weight: 600; font-family: monospace; border: 1px solid #b9d9f0;
+            }
+            #lf-lang-install-select {
+                min-width: 260px; max-width: 380px;
+            }
+            #lf-lang-install-result {
+                margin-left: 10px; font-size: 12px; font-weight: 600;
+                vertical-align: middle;
+            }
+            #lf-lang-install-result.lf-ok   { color: #46b450; }
+            #lf-lang-install-result.lf-fail { color: #dc3232; }
+
+            /* ── Preset preview panel ──────────────────────────────────────── */
+            .lf-preset-preview {
+                margin-top: 10px;
+                background: #f6f7f7;
+                border: 1px solid #dcdcde;
+                border-left: 3px solid #2271b1;
+                border-radius: 2px;
+                padding: 10px 14px;
+                max-width: 600px;
+            }
+            .lf-preset-preview .lf-preset-preview-label {
+                margin: 0 0 6px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: #646970;
+            }
+            .lf-preset-preview .lf-preset-preview-text {
+                margin: 0;
+                font-family: Consolas, "Courier New", monospace;
+                font-size: 12px;
+                line-height: 1.6;
+                color: #3c434a;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        ';
     }
 
     // ── i18n overrides directory ──────────────────────────────────────────────
@@ -986,11 +1205,386 @@ class SettingsPage {
         exit;
     }
 
+    // ── Language Router tab handlers ──────────────────────────────────────────
+
+    /**
+     * Save the primary language setting from the Router tab.
+     */
+    public static function handle_save_router_settings(): void {
+        check_admin_referer( 'linguaforge_save_router_settings', 'linguaforge_router_nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Forbidden', 'lingua-forge' ), 403 );
+        }
+
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_key() normalises to [a-z0-9_-] which is sufficient for a two-char language code.
+        $lang = sanitize_key( wp_unslash( $_POST['linguaforge_primary_language'] ?? 'ca' ) );
+        update_option( 'linguaforge_primary_language', $lang ?: 'ca', false );
+
+        wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . self::PAGE_SLUG . '&lf_router_saved=1#router' );
+        exit;
+    }
+
+    /**
+     * Flush WordPress rewrite rules from the Router tab.
+     */
+    public static function handle_flush_permalinks(): void {
+        check_admin_referer( 'linguaforge_flush_permalinks', 'linguaforge_flush_nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Forbidden', 'lingua-forge' ), 403 );
+        }
+
+        flush_rewrite_rules();
+
+        wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . self::PAGE_SLUG . '&lf_permalinks_flushed=1#router' );
+        exit;
+    }
+
+    /**
+     * Return the list of WordPress.org translations not yet installed locally.
+     *
+     * Called via wp_ajax_linguaforge_get_available_languages.
+     * Fetches from translate.wordpress.org; the result is cached in a transient
+     * (~12 h) by wp_get_available_translations() so only the first call is slow.
+     */
+    public static function ajax_get_available_languages(): void {
+        check_ajax_referer( 'linguaforge_get_available_languages', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Forbidden' );
+        }
+
+        if ( ! function_exists( 'wp_get_available_translations' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/translation-install.php';
+        }
+
+        $available  = wp_get_available_translations();
+        $installed  = get_available_languages();
+
+        // Build a set of installed two-char prefixes (e.g. 'de' from 'de_DE').
+        $installed_codes = [];
+        foreach ( $installed as $locale ) {
+            $installed_codes[ $locale ] = true;
+            // Also mark the two-char code so e.g. 'de_DE' suppresses 'de_DE' variants.
+        }
+
+        $options = [];
+        foreach ( $available as $locale => $meta ) {
+            if ( isset( $installed_codes[ $locale ] ) ) {
+                continue; // already installed
+            }
+            $options[] = [
+                'locale'       => esc_attr( $locale ),
+                'english_name' => esc_html( $meta['english_name'] ?? $locale ),
+                'native_name'  => esc_html( $meta['native_name']  ?? '' ),
+            ];
+        }
+
+        // Sort by English name for readability.
+        usort( $options, fn( $a, $b ) => strcmp( $a['english_name'], $b['english_name'] ) );
+
+        wp_send_json_success( [ 'languages' => $options ] );
+    }
+
+    /**
+     * Download and install a WordPress core language pack.
+     *
+     * Called via wp_ajax_linguaforge_install_language.
+     * Uses wp_download_language_pack() — requires file modifications to be
+     * allowed (DISALLOW_FILE_MODS must not be set).
+     */
+    public static function ajax_install_language(): void {
+        check_ajax_referer( 'linguaforge_install_language', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'Permission denied.', 'lingua-forge' ) );
+        }
+
+        if ( ! wp_is_file_mod_allowed( 'download_language_pack' ) ) {
+            wp_send_json_error( __( 'Language installation is disabled on this server (DISALLOW_FILE_MODS is set).', 'lingua-forge' ) );
+        }
+
+        $locale = sanitize_text_field( wp_unslash( $_POST['locale'] ?? '' ) );
+        if ( ! $locale || ! preg_match( '/^[a-z]{2,3}(?:_[A-Z]{2,4})?$/', $locale ) ) {
+            wp_send_json_error( __( 'Invalid locale code.', 'lingua-forge' ) );
+        }
+
+        if ( ! function_exists( 'wp_download_language_pack' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/translation-install.php';
+        }
+        if ( ! class_exists( 'Language_Pack_Upgrader' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        }
+
+        ob_start();
+        $result = wp_download_language_pack( $locale );
+        ob_end_clean();
+
+        if ( $result ) {
+            wp_send_json_success( [
+                'locale'  => $result,
+                /* translators: %s: locale code such as de_DE */
+                'message' => sprintf( __( 'Language %s installed successfully.', 'lingua-forge' ), esc_html( $result ) ),
+            ] );
+        } else {
+            wp_send_json_error( __( 'Language pack installation failed. The language may already be installed, the locale code may be incorrect, or your server may block file writes.', 'lingua-forge' ) );
+        }
+    }
+
+    /**
+     * Render the Router settings tab.
+     *
+     * Sections:
+     *   1. Primary Language — sets linguaforge_primary_language option.
+     *   2. Flush Permalinks — calls flush_rewrite_rules().
+     *   3. Active Languages — read-only list of installed locales.
+     *   4. Install Language — AJAX-driven install of additional WP core language packs.
+     */
+    private static function render_router_tab(): void {
+
+        $router          = \LinguaForge\Router\Router::get_instance();
+        $primary_stored  = (string) get_option( 'linguaforge_primary_language', 'ca' );
+        $router_langs    = $router->languages();
+        $installed_locales = get_available_languages();
+        ?>
+
+        <?php
+        // ── Feedback notices ─────────────────────────────────────────────────
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flags set by wp_safe_redirect() after router actions; no data is modified here.
+        if ( ! empty( $_GET['lf_router_saved'] ) ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php esc_html_e( 'Primary language saved.', 'lingua-forge' ); ?></p>
+            </div>
+        <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        elseif ( ! empty( $_GET['lf_permalinks_flushed'] ) ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php esc_html_e( 'Permalink rules flushed successfully.', 'lingua-forge' ); ?></p>
+            </div>
+        <?php endif; ?>
+
+        <!-- ── Primary Language ────────────────────────────────────────────── -->
+        <h2><?php esc_html_e( 'Primary Language', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'The primary language is served at the root of your site (no URL prefix) and uses the default WordPress FSE templates (page, single, etc.). All other languages get a /lang/ URL prefix and are expected to use language-specific templates such as page-de or single-de.', 'lingua-forge' ); ?>
+        </p>
+
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+            <input type="hidden" name="action" value="linguaforge_save_router_settings">
+            <?php wp_nonce_field( 'linguaforge_save_router_settings', 'linguaforge_router_nonce' ); ?>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <label for="linguaforge_primary_language">
+                            <?php esc_html_e( 'Primary language', 'lingua-forge' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <select id="linguaforge_primary_language" name="linguaforge_primary_language">
+                            <?php foreach ( $router_langs as $code ) : ?>
+                                <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $primary_stored, $code ); ?>>
+                                    <?php echo esc_html( strtoupper( $code ) ); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="description">
+                            <?php esc_html_e( 'After changing the primary language, flush permalinks (section below) for the URL routing to update.', 'lingua-forge' ); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button( __( 'Save Primary Language', 'lingua-forge' ), 'secondary' ); ?>
+        </form>
+
+        <!-- ── Flush Permalinks ─────────────────────────────────────────────── -->
+        <h2><?php esc_html_e( 'Flush Permalinks', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs, and archive rewrites are all in sync. Necessary after changing the primary language or adding new language support.', 'lingua-forge' ); ?>
+        </p>
+
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+            <input type="hidden" name="action" value="linguaforge_flush_permalinks">
+            <?php wp_nonce_field( 'linguaforge_flush_permalinks', 'linguaforge_flush_nonce' ); ?>
+            <?php submit_button( __( 'Flush Permalink Rules', 'lingua-forge' ), 'secondary', 'submit', false ); ?>
+        </form>
+
+        <!-- ── Active Languages ─────────────────────────────────────────────── -->
+        <h2><?php esc_html_e( 'Active Languages', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Languages currently known to the router (derived from installed WordPress locale packs plus the primary language). Install additional language packs in the section below to make more languages available for routing and translation.', 'lingua-forge' ); ?>
+        </p>
+
+        <div class="lf-installed-langs">
+            <?php foreach ( $router_langs as $code ) : ?>
+                <span class="lf-lang-chip"><?php echo esc_html( $code ); ?></span>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ( ! empty( $installed_locales ) ) : ?>
+            <p class="description">
+                <?php
+                echo esc_html( sprintf(
+                    /* translators: %d: count of installed locale packs */
+                    _n( '%d locale pack installed.', '%d locale packs installed.', count( $installed_locales ), 'lingua-forge' ),
+                    count( $installed_locales )
+                ) );
+                ?>
+            </p>
+        <?php endif; ?>
+
+        <!-- ── Install Language ─────────────────────────────────────────────── -->
+        <h2><?php esc_html_e( 'Install a Language', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Download and install a WordPress core language pack directly from WordPress.org. Once installed, the locale becomes available for URL routing and the AI translation workflow. The list of available languages is fetched on demand — click the button below to load it.', 'lingua-forge' ); ?>
+        </p>
+
+        <?php if ( ! wp_is_file_mod_allowed( 'download_language_pack' ) ) : ?>
+            <div class="notice notice-warning inline">
+                <p><?php esc_html_e( 'Language installation is disabled on this server. The DISALLOW_FILE_MODS constant is set in wp-config.php. Install language packs manually via WP-CLI: wp language core install de_DE', 'lingua-forge' ); ?></p>
+            </div>
+        <?php else : ?>
+            <p>
+                <button type="button" id="lf-load-langs-btn" class="button">
+                    <?php esc_html_e( 'Load available languages', 'lingua-forge' ); ?>
+                </button>
+            </p>
+
+            <p id="lf-lang-install-row" style="display:none;">
+                <select id="lf-lang-install-select" disabled>
+                    <option value=""><?php esc_html_e( '— select a language —', 'lingua-forge' ); ?></option>
+                </select>
+                <button type="button" id="lf-install-lang-btn" class="button button-primary" disabled>
+                    <?php esc_html_e( 'Install', 'lingua-forge' ); ?>
+                </button>
+                <span id="lf-lang-install-result"></span>
+            </p>
+        <?php endif; ?>
+
+        <?php
+    }
+
+    /**
+     * Inline JS for the Global AI Preset preview panel.
+     * Reads lfPresetData (injected before this script) and updates a read-only
+     * <pre> block below the preset dropdown whenever the selection changes,
+     * showing the preset's built-in system-prompt addendum so editors can see
+     * what each preset does and learn the format for custom instructions.
+     */
+    private static function preset_preview_js(): string {
+        return <<<'JS'
+(function () {
+    var select = document.getElementById('linguaforge_active_preset');
+    var wrap   = document.getElementById('lf-preset-preview');
+    if (!select || !wrap || typeof lfPresetData === 'undefined') return;
+
+    var label = wrap.querySelector('.lf-preset-preview-label');
+    var pre   = wrap.querySelector('.lf-preset-preview-text');
+
+    function update() {
+        var key      = select.value;
+        var addendum = (lfPresetData.presets[key] || '').trim();
+        if (addendum) {
+            label.textContent = lfPresetData.strings.label;
+            pre.textContent   = addendum;
+        } else {
+            label.textContent = '';
+            pre.textContent   = lfPresetData.strings.noInstructions;
+        }
+        wrap.hidden = false;
+    }
+
+    select.addEventListener('change', update);
+    update();
+}());
+JS;
+    }
+
+    /**
+     * Inline JS for the Router tab — language list fetch and install interactions.
+     * Returned as a string and attached via wp_add_inline_script().
+     */
+    private static function router_tab_js(): string {
+        return <<<'JS'
+(function ($) {
+    'use strict';
+
+    var L          = window.lfRouterTab || {};
+    var ajaxUrl    = L.ajaxUrl    || '';
+    var fetchNonce = L.fetchNonce || '';
+    var instNonce  = L.installNonce || '';
+    var s          = L.strings   || {};
+
+    var $loadBtn   = $('#lf-load-langs-btn');
+    var $row       = $('#lf-lang-install-row');
+    var $select    = $('#lf-lang-install-select');
+    var $installBtn = $('#lf-install-lang-btn');
+    var $result    = $('#lf-lang-install-result');
+
+    if (!$loadBtn.length) return;
+
+    $loadBtn.on('click', function () {
+        $loadBtn.prop('disabled', true).text(s.loading || 'Loading…');
+        $.post(ajaxUrl, {
+            action: 'linguaforge_get_available_languages',
+            nonce:  fetchNonce
+        }, function (resp) {
+            $loadBtn.hide();
+            if (!resp.success || !resp.data.languages.length) {
+                $result.addClass('lf-fail').text('Could not load language list.');
+                $row.show();
+                return;
+            }
+            resp.data.languages.forEach(function (lang) {
+                var label = lang.english_name + (lang.native_name && lang.native_name !== lang.english_name ? ' — ' + lang.native_name : '') + ' (' + lang.locale + ')';
+                $select.append($('<option>', { value: lang.locale, text: label }));
+            });
+            $select.prop('disabled', false);
+            $installBtn.prop('disabled', false);
+            $row.show();
+        }).fail(function () {
+            $loadBtn.prop('disabled', false).text('Load available languages');
+            $result.addClass('lf-fail').text('Network error. Please try again.');
+            $row.show();
+        });
+    });
+
+    $installBtn.on('click', function () {
+        var locale = $select.val();
+        if (!locale) return;
+        $installBtn.prop('disabled', true).text(s.installing || 'Installing…');
+        $result.removeClass('lf-ok lf-fail').text('');
+        $.post(ajaxUrl, {
+            action: 'linguaforge_install_language',
+            nonce:  instNonce,
+            locale: locale
+        }, function (resp) {
+            $installBtn.prop('disabled', false).text('Install');
+            if (resp.success) {
+                $result.addClass('lf-ok').text(resp.data.message || s.installed);
+                // Remove the installed locale from the dropdown.
+                $select.find('option[value="' + resp.data.locale + '"]').remove();
+                $select.val('');
+            } else {
+                $result.addClass('lf-fail').text((s.error || '✗') + ' ' + (resp.data || 'Unknown error'));
+            }
+        }).fail(function () {
+            $installBtn.prop('disabled', false).text('Install');
+            $result.addClass('lf-fail').text('Network error. Please try again.');
+        });
+    });
+
+}(jQuery));
+JS;
+    }
+
     /**
      * Add a new glossary entry.
      *
-     * Validates the three required fields (source term, target term, target
-     * language), inserts via Glossary::insert(), redirects back to the
+     * Source term and target term are required. Both language fields are
+     * optional: empty source_lang = "any source", empty target_lang = "any
+     * target". Inserts via Glossary::insert(), redirects back to the
      * Glossary tab with a feedback query arg. Cap-protected + nonce-verified.
      */
     public static function handle_glossary_add(): void {
@@ -1009,7 +1603,7 @@ class SettingsPage {
 
         $base = admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
 
-        if ( $source_term === '' || $target_term === '' || $target_lang === '' ) {
+        if ( $source_term === '' || $target_term === '' ) {
             wp_safe_redirect( add_query_arg( 'lf_glossary_error', 'missing_fields', $base ) . '#glossary' );
             exit;
         }
@@ -1202,6 +1796,7 @@ class SettingsPage {
                 <a href="#api-keys"    class="nav-tab"                data-lf-tab="api-keys"><?php    esc_html_e('API Keys',    'lingua-forge'); ?></a>
                 <a href="#limits"      class="nav-tab"                data-lf-tab="limits"><?php      esc_html_e('Limits',      'lingua-forge'); ?></a>
                 <a href="#behavior"    class="nav-tab"                data-lf-tab="behavior"><?php    esc_html_e('Behavior',    'lingua-forge'); ?></a>
+                <a href="#router"      class="nav-tab"                data-lf-tab="router"><?php      esc_html_e('Router',      'lingua-forge'); ?></a>
                 <a href="#glossary"    class="nav-tab"                data-lf-tab="glossary"><?php    esc_html_e('Glossary',    'lingua-forge'); ?></a>
                 <a href="#ai-usage"    class="nav-tab"                data-lf-tab="ai-usage"><?php    esc_html_e('AI Usage',    'lingua-forge'); ?></a>
                 <a href="#maintenance" class="nav-tab"                data-lf-tab="maintenance"><?php esc_html_e('Maintenance', 'lingua-forge'); ?></a>
@@ -1914,31 +2509,49 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                                             /* translators: %s: sampling temperature value, e.g. 0.2 */
                                             printf( esc_html__( 'T=%s', 'lingua-forge' ), esc_html( (string) $meta['temperature'] ) );
                                         ?>)
+                                        <?php else: ?>
+                                            (<?php
+                                            /* translators: temperature range shown for the Standard preset, e.g. "T=0.2–0.6, per feature" */
+                                            esc_html_e( 'T=0.2–0.6, per feature', 'lingua-forge' );
+                                        ?>)
                                         <?php endif; ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                             <p class="description">
                                 <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the Lingua Forge AI meta box.', 'lingua-forge'); ?>
+                                <?php esc_html_e('Standard uses each feature\'s own tuned temperature: Translation T=0.2 (precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The other presets apply a single fixed temperature across all features.', 'lingua-forge'); ?>
                             </p>
+                            <div id="lf-preset-preview" class="lf-preset-preview" hidden>
+                                <p class="lf-preset-preview-label"></p>
+                                <pre class="lf-preset-preview-text"></pre>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
                             <label for="linguaforge_compliance_addendum">
-                                <?php esc_html_e('Custom system-prompt addendum', 'lingua-forge'); ?>
+                                <?php esc_html_e('Custom prompt instructions', 'lingua-forge'); ?>
                             </label>
                         </th>
                         <td>
+                            <?php
+                            $stored_addendum = (string) get_option('linguaforge_compliance_addendum', '');
+                            ?>
                             <textarea
                                 id="linguaforge_compliance_addendum"
                                 name="linguaforge_compliance_addendum"
-                                rows="6"
+                                rows="7"
                                 class="large-text code"
-                                placeholder="<?php esc_attr_e('Leave blank to use the preset\'s built-in instructions.', 'lingua-forge'); ?>"
-                            ><?php echo esc_textarea( (string) get_option('linguaforge_compliance_addendum', '') ); ?></textarea>
+                                placeholder="<?php echo esc_attr__( "Leave blank to use the selected preset's built-in instructions.\n\nExample — domain-specific overrides:\n- Preserve \"kWp\", \"PPA\", \"BESS\", \"self-consumption\" verbatim in all target languages.\n- Do not translate project or company names.\n- Use formal register throughout.\n- Flag any term with no direct equivalent rather than guessing.", 'lingua-forge' ); ?>"
+                            ><?php echo esc_textarea( $stored_addendum ); ?></textarea>
                             <p class="description">
-                                <?php esc_html_e('When non-empty, this text replaces the active preset\'s built-in system-prompt addendum. Use it to add domain-specific instructions (e.g. renewable-energy abbreviations, proprietary brand names, regulatory citation formats). Leave blank to use the preset default.', 'lingua-forge'); ?>
+                                <?php if ( trim($stored_addendum) !== '' ): ?>
+                                    <strong><?php esc_html_e('Active — these instructions are appended to every AI system prompt, overriding the selected preset\'s built-in rules.', 'lingua-forge'); ?></strong>
+                                    <?php esc_html_e('Clear the field to fall back to the preset\'s default instructions.', 'lingua-forge'); ?>
+                                <?php else: ?>
+                                    <?php esc_html_e('Leave blank to use the selected preset\'s built-in instructions (Technical, Legal, or Creative rules are applied automatically). When you fill this in, it replaces the preset\'s instructions entirely — use it for domain-specific rules that apply to your whole site, such as preserving abbreviations, brand names, or citation formats. Works with all presets, including Standard.', 'lingua-forge'); ?>
+                                <?php endif; ?>
                             </p>
                         </td>
                     </tr>
@@ -1980,6 +2593,13 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                 <?php submit_button( __( 'Save Settings', 'lingua-forge' ) ); ?>
 
             </form>
+
+            <!-- ───── Tab: Router ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="router">
+
+            <?php self::render_router_tab(); ?>
+
+            </div><!-- /lingua-forge-tab-panel: router -->
 
             <!-- ───── Tab: Glossary ───── -->
             <div class="lingua-forge-tab-panel" data-lf-panel="glossary">
@@ -2251,8 +2871,8 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                 <div class="notice notice-success is-dismissible">
                     <p>
                         <?php
-                        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag.
-                        if ( $_GET['lf_debug_setting_saved'] === '1' ) {
+                        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only redirect flag from settings save handler; no data is modified.
+                        if ( sanitize_key( wp_unslash( $_GET['lf_debug_setting_saved'] ) ) === '1' ) {
                             esc_html_e( 'Debug logging enabled.', 'lingua-forge' );
                         } else {
                             esc_html_e( 'Debug logging disabled.', 'lingua-forge' );
@@ -2494,151 +3114,6 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
 
         </div>
 
-        <style>
-            /* ── Tab panels ─────────────────────────────────────────────── */
-            .lingua-forge-tabs { margin-bottom: 1.2em; }
-            .lingua-forge-tab-panel { display: none; }
-            .lingua-forge-tab-panel.is-active { display: block; }
-
-            /* ── Glossary ──────────────────────────────────────────────── */
-            .lingua-forge-glossary-filter {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin: 12px 0 18px;
-                flex-wrap: wrap;
-            }
-            .lingua-forge-glossary-filter label {
-                font-weight: 600;
-            }
-            .lingua-forge-glossary-table th,
-            .lingua-forge-glossary-table td {
-                vertical-align: middle;
-            }
-            .lingua-forge-glossary-table code { font-size: 12px; }
-
-            /* ── AI Usage ───────────────────────────────────────────────── */
-            .lingua-forge-range-buttons .button { margin-right: 4px; }
-            .lingua-forge-usage-table .lingua-forge-num {
-                text-align: right;
-                font-variant-numeric: tabular-nums;
-                white-space: nowrap;
-            }
-            .lingua-forge-usage-table tfoot th { background: #f6f7f7; }
-
-            /* ── Key status badges ─────────────────────────────────────── */
-            .lingua-forge-key-badge {
-                display: inline-block;
-                margin-left: 8px;
-                font-size: 12px;
-                font-weight: 600;
-                vertical-align: middle;
-            }
-            .lingua-forge-badge--ok      { color: #46b450; }
-            .lingua-forge-badge--missing { color: #dc3232; }
-            .lingua-forge-key-source {
-                font-weight: 400;
-                color: #646970;
-            }
-
-            /* ── Test Connection inline result ────────────────────────── */
-            .lingua-forge-test-key {
-                margin-left: 8px;
-                vertical-align: middle;
-            }
-            .lingua-forge-test-result {
-                margin-left: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                vertical-align: middle;
-            }
-            .lingua-forge-test-result--pending { color: #646970; font-weight: 400; }
-            .lingua-forge-test-result--ok      { color: #46b450; }
-            .lingua-forge-test-result--fail    { color: #dc3232; }
-
-            /* ── Models table ──────────────────────────────────────────── */
-            .lingua-forge-models-table {
-                border-collapse: collapse;
-                width: 100%;
-                max-width: 860px;
-            }
-            .lingua-forge-models-table thead th {
-                padding: 8px 10px;
-                text-align: left;
-                font-weight: 600;
-                border-bottom: 2px solid #dcdcde;
-                vertical-align: bottom;
-            }
-            .lingua-forge-models-table tbody tr th,
-            .lingua-forge-models-table tbody tr td {
-                padding: 10px 10px;
-                border-bottom: 1px solid #f0f0f1;
-                vertical-align: middle;
-            }
-            .lingua-forge-active-provider-row {
-                background: #f0f6fc;
-            }
-            .lingua-forge-active-provider-row th {
-                font-weight: 600;
-            }
-            .lingua-forge-active-badge {
-                display: inline-block;
-                margin-left: 6px;
-                padding: 1px 7px;
-                border-radius: 10px;
-                background: #0073aa;
-                color: #fff;
-                font-size: 11px;
-                font-weight: 600;
-                letter-spacing: 0.03em;
-                vertical-align: middle;
-            }
-            .lingua-forge-tier-used-by {
-                display: block;
-                font-size: 11px;
-                font-weight: 400;
-                color: #646970;
-                margin-top: 2px;
-            }
-            .lingua-forge-model-input {
-                font-family: monospace;
-                font-size: 12px;
-                width: 100%;
-                max-width: 340px;
-            }
-            .lingua-forge-model-override-badge {
-                display: inline-block;
-                margin-left: 6px;
-                padding: 1px 6px;
-                border-radius: 3px;
-                background: #fff8e5;
-                color: #996800;
-                border: 1px solid #f0c33c;
-                font-size: 11px;
-                font-weight: 600;
-                vertical-align: middle;
-            }
-
-            /* ── Security note ─────────────────────────────────────────── */
-            .lingua-forge-settings-note {
-                background: #f6f7f7;
-                border-left: 4px solid #c3c4c7;
-                padding: 12px 16px;
-                margin: 20px 0;
-                max-width: 600px;
-            }
-            .lingua-forge-settings-note p {
-                margin: 6px 0;
-            }
-            .lingua-forge-code-sample {
-                background: #fff;
-                border: 1px solid #dcdcde;
-                padding: 8px 12px;
-                font-size: 12px;
-                margin: 6px 0 10px;
-                overflow-x: auto;
-            }
-        </style>
         <?php
     }
 }

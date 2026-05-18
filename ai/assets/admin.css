@@ -533,3 +533,183 @@
         max-height: 35vh;
     }
 }
+
+/* =========================================================================
+   §4.9 — Content Generator overlay (single-column, with refinement loop).
+
+   Triggered by openContentGenOverlay() in admin.js after a successful
+   content-generator run.  Single-column design (no diff panes) with a
+   scrollable preview area and a refinement section below.
+   ========================================================================= */
+
+.lf-cg-modal[hidden] {
+    display: none !important;
+}
+
+.lf-cg-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lf-cg-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    cursor: pointer;
+}
+
+.lf-cg-modal__panel {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+    width: min(820px, 95vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.lf-cg-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f6f7f7;
+    gap: 12px;
+}
+
+.lf-cg-modal__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.lf-cg-modal__header-text h2 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.lf-cg-modal__meta {
+    margin: 0;
+    font-size: 11px;
+    color: #757575;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lf-cg-modal__close {
+    background: none;
+    border: 0;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.lf-cg-modal__close:hover {
+    color: #000;
+}
+
+/* ── Body / preview ──────────────────────────────────────────────────────── */
+
+.lf-cg-modal__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 20px;
+}
+
+.lf-cg-modal__preview {
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+/* Basic typography for Gutenberg block markup rendered in the preview */
+.lf-cg-modal__preview h1,
+.lf-cg-modal__preview h2,
+.lf-cg-modal__preview h3 { margin: 0.6em 0 0.3em; }
+.lf-cg-modal__preview p  { margin: 0 0 0.8em; }
+.lf-cg-modal__preview ul,
+.lf-cg-modal__preview ol { margin: 0 0 0.8em 1.4em; }
+.lf-cg-modal__preview img { max-width: 100%; height: auto; }
+.lf-cg-modal__preview blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 12px;
+    color: #555;
+    margin: 0 0 0.8em;
+}
+
+/* ── Refinement section ───────────────────────────────────────────────────── */
+
+.lf-cg-modal__refine {
+    padding: 12px 20px 14px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lf-cg-modal__refine-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #50575e;
+}
+
+.lf-cg-modal__refine-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.lf-cg-modal__refine-input {
+    flex: 1 1 auto;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    min-height: 60px;
+    box-sizing: border-box;
+}
+
+.lf-cg-modal__refine-btn {
+    flex-shrink: 0;
+    align-self: flex-end;
+}
+
+.lf-cg-modal__refine-status {
+    margin: 0;
+    font-size: 12px;
+    color: #646970;
+    font-style: italic;
+}
+
+.lf-cg-modal__refine-status--error {
+    color: #d63638;
+    font-style: normal;
+}
+
+/* ── Footer actions ───────────────────────────────────────────────────────── */
+
+.lf-cg-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+}

@@ -152,8 +152,9 @@ class Router {
 		add_filter( 'posts_search',        [ $this, 'extend_posts_search' ], 20, 2 );
 		add_filter( 'posts_clauses',       [ $this, 'boost_title_in_search' ], 20, 2 );
 
-		// Frontend AJAX lang
-		add_action( 'wp_footer', [ $this, 'print_frontend_ajax_lang_js' ], 20 );
+		// Frontend AJAX lang — appends current language to every jQuery AJAX request.
+		// Hooked to wp_enqueue_scripts (fires after template_redirect so LF_LANG is defined).
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_lang_script' ], 20 );
 
 		// DB version / index
 		add_action( 'plugins_loaded', [ $this, 'check_db_version' ], 1 );
@@ -199,9 +200,8 @@ class Router {
 		// AJAX
 		add_action( 'wp_ajax_lf_import_translation', [ $this, 'ajax_import_translation' ] );
 
-		// Admin JS
-		add_action( 'admin_footer', [ $this, 'print_admin_js' ] );
-		add_action( 'admin_footer', [ $this, 'print_quick_edit_js' ] );
+		// Admin JS — enqueued via wp_add_inline_script so no hardcoded <script> tags.
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_lang_scripts' ] );
 
 		// Admin columns
 		add_filter( 'manage_posts_columns', [ $this, 'add_lang_column' ] );
@@ -223,8 +223,9 @@ class Router {
 
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
+		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', 'ca' ) );
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
-		return $this->cached_source_language = apply_filters( 'lf_primary_language', 'ca' );
+		return $this->cached_source_language = apply_filters( 'lf_primary_language', $stored ?: 'ca' );
 	}
 
 	public function languages(): array {
@@ -1188,6 +1189,10 @@ class Router {
 	public function resolve_template_for_lang( $post, string $lang ): ?string {
 		if ( ! $post || ! $lang ) return null;
 
+		// Primary language uses WordPress's default template hierarchy
+		// (page, single, etc.) — no language suffix is expected.
+		if ( $lang === $this->source_language() ) return null;
+
 		$type = $post->post_type;
 
 		if ( $type === 'page' )      $base = 'page';
@@ -1299,7 +1304,7 @@ class Router {
 		if ( $has_trans_nonce ) {
 			foreach ( $this->languages() as $l ) {
 				if ( ! isset( $_POST['lf_trans_' . $l] ) ) continue;
-				$target_id = (int) $_POST['lf_trans_' . $l];
+				$target_id = absint( wp_unslash( $_POST['lf_trans_' . $l] ) );
 				if ( ! $target_id || $target_id === $post_id ) continue;
 				$group_ids[] = $target_id;
 			}
@@ -1339,7 +1344,7 @@ class Router {
 			if ( ! $has_trans_nonce ) continue;
 
 			foreach ( $this->languages() as $l ) {
-				if ( isset( $_POST['lf_trans_' . $l] ) && (int) $_POST['lf_trans_' . $l] === $pid ) {
+				if ( isset( $_POST['lf_trans_' . $l] ) && absint( wp_unslash( $_POST['lf_trans_' . $l] ) ) === $pid ) {
 					$this->set_lang( $pid, $l );
 				}
 			}
@@ -1364,7 +1369,7 @@ class Router {
 	public function ajax_import_translation(): void {
 		check_ajax_referer( 'lf_import_translation_nonce', 'nonce' );
 
-		$target_id = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
+		$target_id = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
 
 		if ( ! current_user_can( 'edit_post', $target_id ) ) {
 			wp_send_json_error( 'Permission denied' );
@@ -1976,19 +1981,58 @@ class Router {
 	}
 
 	// =========================================================
-	// ADMIN JS
+	// ADMIN JS — enqueued via wp_add_inline_script (no hardcoded <script> tags)
 	// =========================================================
 
-	public function print_admin_js(): void {
-		$nonce = wp_create_nonce( 'lf_import_translation_nonce' );
-		?>
-<script>
+	/**
+	 * Enqueue admin JavaScript for the language metabox and quick-edit row.
+	 *
+	 * Uses wp_register_script( $handle, false ) + wp_add_inline_script() so that
+	 * the scripts go through the proper enqueue system without requiring an
+	 * external file.  Dynamic values (nonce) are passed as a localised data
+	 * object prepended before the main script body.
+	 */
+	public function enqueue_admin_lang_scripts( string $hook_suffix ): void {
+
+		// Import-translation button + language-change select: post edit screens only.
+		if ( in_array( $hook_suffix, [ 'post.php', 'post-new.php' ], true ) ) {
+			$nonce   = wp_create_nonce( 'lf_import_translation_nonce' );
+			$version = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
+
+			wp_register_script( 'lf-admin-metabox', false, [ 'jquery' ], $version, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+			wp_enqueue_script( 'lf-admin-metabox' );
+
+			// Pass nonce as a JS data object so no PHP is embedded in the script body.
+			wp_add_inline_script(
+				'lf-admin-metabox',
+				'var lfAdminMetabox = ' . wp_json_encode( [ 'importNonce' => $nonce ] ) . ';',
+				'before'
+			);
+			wp_add_inline_script( 'lf-admin-metabox', $this->admin_metabox_js() );
+		}
+
+		// Quick-edit row: list screens only.
+		if ( 'edit.php' === $hook_suffix ) {
+			$version = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
+			wp_register_script( 'lf-quick-edit', false, [ 'jquery' ], $version, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+			wp_enqueue_script( 'lf-quick-edit' );
+			wp_add_inline_script( 'lf-quick-edit', $this->quick_edit_js() );
+		}
+	}
+
+	/**
+	 * JavaScript for the language metabox: import-translation click handler and
+	 * language/translation-group change handlers.  Nonce is read from the
+	 * lfAdminMetabox JS object set by enqueue_admin_lang_scripts().
+	 */
+	private function admin_metabox_js(): string {
+		return <<<'JS'
 document.addEventListener('click', function(e){
 	if(!e.target.classList.contains('lf-import')) return;
 	if(!confirm('Override content from desired language?')) return;
 
-	let post_id = document.getElementById('post_ID').value;
-	let lang = e.target.dataset.lang;
+	var post_id = document.getElementById('post_ID').value;
+	var lang = e.target.dataset.lang;
 
 	fetch(ajaxurl,{
 		method:'POST',
@@ -1997,56 +2041,42 @@ document.addEventListener('click', function(e){
 			action:'lf_import_translation',
 			post_id:post_id,
 			lang:lang,
-			nonce:'<?php echo esc_js( $nonce ); ?>'
+			nonce:lfAdminMetabox.importNonce
 		})
 	})
-	.then(r=>r.json())
+	.then(function(r){ return r.json(); })
 	.then(function(data){
-		if(!data.success){
-			alert('Import failed: ' + (data.data || 'unknown error'));
-			return;
-		}
+		if(!data.success){ alert('Import failed: ' + (data.data || 'unknown error')); return; }
 		location.reload();
 	})
-	.catch(function(err){
-		alert('Import request failed: ' + err);
-	});
+	.catch(function(err){ alert('Import request failed: ' + err); });
 });
 
 document.addEventListener('change', function(e){
-	const isLangSelect = e.target.classList.contains('lf-lr-lang');
-	const isInsideTrans = e.target.closest('#lf_trans');
-
+	var isLangSelect = e.target.classList.contains('lf-lr-lang');
+	var isInsideTrans = e.target.closest && e.target.closest('#lf_trans');
 	if (!isLangSelect && !isInsideTrans) return;
-
 	if(typeof wp === 'undefined' || !wp.data) { location.reload(); return; }
-
-	const editor = wp.data.dispatch('core/editor');
-	const select = wp.data.select('core/editor');
-
+	var editor = wp.data.dispatch('core/editor');
+	var select  = wp.data.select('core/editor');
 	if (!confirm('Change language or relationship? The page will reload.')) return;
-
 	editor.savePost();
-
-	const check = setInterval(function(){
+	var check = setInterval(function(){
 		if (!select.isSavingPost() && !select.isAutosavingPost()) {
-			clearInterval(check);
-			location.reload();
+			clearInterval(check); location.reload();
 		}
 	}, 300);
 });
 
 (function(){
 	if(typeof wp === 'undefined' || !wp.data) return;
-	let lastLang = null;
-
+	var lastLang = null;
 	document.addEventListener('change', function(e){
 		if(e.target.name !== 'lf_lang') return;
-		let newLang = e.target.value;
+		var newLang = e.target.value;
 		if(newLang === lastLang) return;
 		lastLang = newLang;
-
-		let isNew = wp.data.select('core/editor').isEditedPostNew();
+		var isNew = wp.data.select('core/editor').isEditedPostNew();
 		if (isNew) {
 			wp.data.dispatch('core/notices').createNotice(
 				'info',
@@ -2055,23 +2085,24 @@ document.addEventListener('change', function(e){
 			);
 			return;
 		}
-
-		const permalink = document.querySelector('.editor-post-permalink');
-		if(permalink){ permalink.style.opacity = '0.99'; setTimeout(()=> permalink.style.opacity = '', 50); }
+		var permalink = document.querySelector('.editor-post-permalink');
+		if(permalink){ permalink.style.opacity = '0.99'; setTimeout(function(){ permalink.style.opacity = ''; }, 50); }
 	});
 })();
-</script>
-		<?php
+JS;
 	}
 
-	public function print_quick_edit_js(): void {
-		?>
-<script>
+	/**
+	 * JavaScript for the quick-edit row: populates the language select when an
+	 * editor expands the inline edit panel.
+	 */
+	private function quick_edit_js(): string {
+		return <<<'JS'
 jQuery(function($){
 	$(document).on('click', '.editinline', function(){
 		var postId = $(this).closest('tr').attr('id').replace('post-','');
 		setTimeout(function(){
-			var row = $('#post-' + postId);
+			var row     = $('#post-' + postId);
 			var editRow = $('#edit-' + postId);
 			if(!editRow.length) return;
 			var lang = row.find('td.column-lang strong').data('lang');
@@ -2079,35 +2110,60 @@ jQuery(function($){
 		}, 200);
 	});
 });
-</script>
-		<?php
+JS;
 	}
 
 	// =========================================================
-	// FRONTEND AJAX LANG
+	// FRONTEND AJAX LANG — enqueued via wp_add_inline_script
 	// =========================================================
 
-	public function print_frontend_ajax_lang_js(): void {
-		if ( is_admin() ) return;
-		?>
-<script>
+	/**
+	 * Enqueue the inline script that appends the current language code to every
+	 * jQuery AJAX request sent from the frontend.
+	 *
+	 * Hooked to wp_enqueue_scripts (priority 20) so that LF_LANG is already
+	 * defined by the template_redirect language-detection pass.
+	 */
+	public function enqueue_frontend_lang_script(): void {
+		if ( ! defined( 'LF_LANG' ) ) {
+			return;
+		}
+
+		$version = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
+		wp_register_script( 'lf-frontend-lang', false, [ 'jquery' ], $version, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
+		wp_enqueue_script( 'lf-frontend-lang' );
+
+		// Embed the current language as a JS constant so the script body stays
+		// free of PHP — avoids caching issues with opcode or full-page caches.
+		wp_add_inline_script(
+			'lf-frontend-lang',
+			'var lfFrontendLang = ' . wp_json_encode( [ 'lang' => LF_LANG ] ) . ';',
+			'before'
+		);
+		wp_add_inline_script( 'lf-frontend-lang', $this->frontend_lang_js() );
+	}
+
+	/**
+	 * JavaScript that appends the current language to every jQuery AJAX request.
+	 * The language value is read from the lfFrontendLang JS object to keep all
+	 * PHP interpolation out of the script body.
+	 */
+	private function frontend_lang_js(): string {
+		return <<<'JS'
 jQuery(function($){
-	const lang = "<?php echo esc_js( LF_LANG ); ?>";
+	var lang = (typeof lfFrontendLang !== 'undefined') ? lfFrontendLang.lang : '';
+	if (!lang) return;
 
 	$(document).ajaxSend(function(event, xhr, settings){
 		if (typeof settings.data === 'string' && settings.data.includes('lang=')) return;
-
 		if (settings.data instanceof FormData) { settings.data.append('lang', lang); return; }
-
 		if (typeof settings.data === 'string' && settings.data.length) {
 			settings.data += '&lang=' + lang; return;
 		}
-
 		if (!settings.data) { settings.data = 'lang=' + lang; }
 	});
 });
-</script>
-		<?php
+JS;
 	}
 
 	// =========================================================

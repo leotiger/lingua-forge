@@ -1,9 +1,9 @@
 === Lingua Forge ===
-Contributors: ulihake
+Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.2.3
+Stable tag: 1.2.13
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,44 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.2.13 =
+* Added: Content Generator now opens in its own dedicated overlay instead of the side-by-side diff modal. After initial generation an inline **Refine** section lets you submit additional instructions (tone, structure, expansion, etc.) as follow-up turns in the same API conversation — the model receives its previous draft and rewrites from there. Refinements can be repeated any number of times; each iteration is labelled `· Refinement #N` in the overlay header. Apply to Editor inserts the current draft directly without a diff step.
+* Added: `ContentGenerator::run()` multi-turn backend — detects `refine_hint` + `previous_output` params and assembles a four-message conversation array so all three providers (Anthropic, OpenAI, Gemini) handle refinement consistently. Refinements bypass the cache on both read and write, preventing iterative drafts from overwriting the cached initial generation.
+
+= 1.2.12 =
+* Added: `--with-meta-description` flag on `translate`, `retranslate`, and `fill-translations` — generates and saves `_linguaforge_meta_description` for each translated post in its target language immediately after writing its content. Skipped on `--dry-run`. Result visible in the `detail` column as `+ meta` or `+ meta (error: …)`.
+
+= 1.2.11 =
+* Added: WP-CLI `wp linguaforge missing-translations <lang> <post_type>` — scans all posts of a given type and source language, lists every post missing one or more router-language translations, sorted by missing count. Pairs with `fill-translations` for bulk translation workflows.
+* Fixed: Custom prompt instructions were silently ignored when the Standard AI preset was active. They now always apply regardless of preset selection.
+* Changed: Settings → Behavior now shows a live read-only preview of each preset's built-in instructions when the dropdown changes; "Custom system-prompt addendum" renamed to "Custom prompt instructions" with a realistic placeholder example; Standard preset shows its temperature range in the dropdown.
+
+= 1.2.10 =
+* Added: WP-CLI `wp linguaforge fill-translations <post_id>` command — identifies all active router languages without a translation for the given post and creates them in one pass. Supports `--check-only` (report only, no API calls), `--exclude` (skip specific locales), `--draft`, `--dry-run`, `--format`, and all provider/model/token override flags.
+
+= 1.2.9 =
+* Changed: Glossary language dropdowns now show only languages the Language Router actively knows about, not the full 100+ language AI translation list.
+* Added: "Any target language" option in the Glossary "Add entry" form — select it to apply a term (brand name, abbreviation, do-not-translate rule) to all target languages at once. Displayed as *any* in the entries table.
+* Fixed: `Glossary::get_for_pair()` now includes any-target-language entries (target_lang = '') in the translation prompt.
+
+= 1.2.8 =
+* Added: New **Router** tab in Settings with dedicated Language Router configuration. Includes a Primary Language selector (moved from Behavior tab), a one-click Flush Permalinks button, an Active Languages chip list, and an Install Language section that downloads WordPress core language packs from wordpress.org directly from the settings page.
+
+= 1.2.7 =
+* Added: Primary Language selector in Settings → Behavior → Language Router. The language served without a URL prefix is now configurable from the admin UI (stored in `linguaforge_primary_language`). Previously it was hardcoded to `ca`. Changing it requires flushing permalinks.
+* Fixed: Link Fixer template checker no longer flags primary-language posts for missing a language-suffixed template (e.g. `page-ca`). Primary-language posts use WordPress's default templates and are now correctly excluded from the template check.
+
+= 1.2.6 =
+* Fixed: All inline `<script>` and `<style>` output replaced with the canonical `wp_register_script` / `wp_add_inline_script` and `wp_register_style` / `wp_add_inline_style` pattern — no more raw print callbacks on `admin_footer`, `wp_footer`, or appended style blocks in template output. Addresses WordPress.org Plugin Check `wp_enqueue` requirement.
+* Fixed: `(int) $_POST[…]` casts without `wp_unslash()` corrected to `absint(wp_unslash(…))` in the Language Router. `sanitize_key(wp_unslash(…))` applied to a `$_GET` read in the AI Settings page. Addresses WordPress.org Plugin Check sanitization requirement.
+* Fixed: Admin meta-box inline JS no longer embeds a PHP-interpolated nonce as a literal string; nonce is now passed via a `wp_add_inline_script` data object.
+
+= 1.2.5 =
+* Added: Admin Link Fixer now detects stale same-language links caused by pages being moved in the hierarchy. When a page's URL changes (e.g. after reparenting), any other page that linked to it will show a "📍 Stale path (page moved)" entry with the old and new URLs. Fixed automatically by the existing Fix / Fix All buttons — no new workflow required.
+
+= 1.2.4 =
+* Added: Admin Link Fixer now also checks each translated post's FSE block template. Posts using `default` or a mismatched template (e.g. a German page not using `page-de`) appear in the scan results with the expected and current values. A per-row "Fix Template" button corrects it immediately; "Fix All" handles both links and templates together. When the target template doesn't exist yet, a message directs the editor to create it in the Site Editor first.
+
 = 1.2.3 =
 * Fixed: German (and other verbose-language) translations failing with a generic "unparseable response" error when Claude 4 returns a truncated JSON envelope without signalling `max_tokens`. Both the main translation path and the Translation Memory path now detect likely truncation (response starts with `{` but does not end with `}`) and return a specific message pointing to the Max output tokens setting or the `--max-tokens` CLI flag.
 
@@ -203,6 +241,36 @@ Used when the active provider is set to Google Gemini.
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.2.13 =
+Content Generator redesign: dedicated overlay with iterative multi-turn refinement. No database changes; no migration required.
+
+= 1.2.12 =
+Adds `--with-meta-description` to all translation CLI commands. No database changes; no migration required.
+
+= 1.2.11 =
+Adds `wp linguaforge missing-translations` scan command; fixes custom prompt instructions being ignored on Standard preset; Settings Behavior tab improvements. No database changes; no migration required.
+
+= 1.2.10 =
+Adds `wp linguaforge fill-translations` WP-CLI command. No database changes; no migration required.
+
+= 1.2.9 =
+Glossary language dropdowns now only list active router languages. "Any target language" option added — one entry covers all translations. No database migration required; existing entries are unaffected.
+
+= 1.2.8 =
+Adds a dedicated Router tab in Settings with permalink flush, active language list, and an in-admin language pack installer. No database changes; no migration required.
+
+= 1.2.7 =
+Primary language is now configurable in Settings → Behavior → Language Router. No database migration required — existing sites default to `ca`. Link Fixer no longer false-positives on primary-language template checks.
+
+= 1.2.6 =
+WordPress.org Plugin Check compliance pass: all inline scripts and styles now go through `wp_enqueue` APIs, and all POST/GET reads are properly unslashed and sanitized. No database changes; no migration required.
+
+= 1.2.5 =
+Adds stale-path detection to the Link Fixer: pages moved in the hierarchy now surface broken same-language links and auto-fix them alongside cross-language link corrections.
+
+= 1.2.4 =
+Admin Link Fixer now also detects and corrects wrong or missing FSE block templates on translated posts. No database changes; no migration required.
 
 = 1.2.2 =
 WP-CLI translate and retranslate commands now auto-create missing target posts as drafts and link them into the TRID translation group, rather than skipping languages with no linked post.

@@ -86,6 +86,25 @@
 .lsflr-flagged .lsflr-flag-url    { color: #b45309; }
 .lsflr-flagged .lsflr-flag-reason { color: #92400e; font-family: sans-serif; font-size: 11px; }
 
+/* ---- Stale path (page moved in hierarchy) ---- */
+.lsflr-fix-pair.lsflr-stale {
+	margin-top: 6px;
+}
+.lsflr-stale .lsflr-stale-label { color: #92400e; font-family: sans-serif; font-size: 11px; font-weight: 600; }
+.lsflr-stale .lsflr-stale-from  { color: #b45309; font-family: monospace; font-size: 11px; }
+.lsflr-stale .lsflr-stale-to    { color: #27ae60; font-family: monospace; font-size: 11px; }
+
+/* ---- Template issue ---- */
+.lsflr-fix-pair.lsflr-tpl-issue {
+	margin-top: 8px;
+	padding-top: 6px;
+	border-top: 1px dashed #e0e0e0;
+}
+.lsflr-tpl-issue .lsflr-tpl-label { color: #1d4ed8; font-family: sans-serif; font-size: 11px; font-weight: 600; }
+.lsflr-tpl-issue .lsflr-from { color: #15803d; }  /* expected = green */
+.lsflr-tpl-issue .lsflr-to   { color: #9ca3af; }  /* current  = grey  */
+.lsflr-tpl-issue .lsflr-flag-reason { color: #92400e; font-family: sans-serif; font-size: 11px; }
+
 /* ---- Actions bar ---- */
 #lsflr-fixer-actions {
 	display: flex;

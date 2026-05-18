@@ -147,7 +147,18 @@ class ContentGenerator implements FeatureInterface {
         // If no hints, fall back to existing post content as context.
         $hints = mb_substr(trim(sanitize_textarea_field($params['hints'] ?? '')), 0, Config::content_generator_max_hints_chars());
 
-        // ── Cache check ───────────────────────────────────────────────────────
+        // ── Iterative refinement detection ────────────────────────────────────
+        // When the JS overlay sends back the previous AI output together with a
+        // refinement instruction, we build a multi-turn conversation so the model
+        // can improve its own prior draft rather than starting from scratch.
+        // Refinements are never stored in the cache: they are unique one-off
+        // transformations of a previous draft and caching them under the base
+        // content hash would corrupt the initial-generation cache entry.
+        $refine_hint     = mb_substr( trim( sanitize_textarea_field( $params['refine_hint'] ?? '' ) ), 0, 2000 );
+        $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
+        $is_refinement   = $refine_hint !== '' && $previous_output !== '';
+
+        // ── Cache check (skip for refinements) ───────────────────────────────
         // Cache is keyed per tone + content_type combination.
         $cache_key = $this->get_key() . '_' . $tone . '_' . $content_type;
         $hash      = CacheStore::hash([
@@ -158,7 +169,7 @@ class ContentGenerator implements FeatureInterface {
             $hints,
         ]);
 
-        $cached = empty($params['force_refresh'])
+        $cached = (!$is_refinement && empty($params['force_refresh']))
             ? CacheStore::get($post_id, $cache_key, $hash)
             : null;
 
@@ -214,10 +225,27 @@ class ContentGenerator implements FeatureInterface {
             $post_id
         );
 
-        $result = UsageRecorder::tracked( 'content-generator', static fn() => $provider->chat([
-            ['role' => 'system', 'content' => $system_prompt],
-            ['role' => 'user',   'content' => $prompt],
-        ]) );
+        // ── Build messages (single-turn or multi-turn refinement) ─────────────
+        if ( $is_refinement ) {
+            // Multi-turn: supply the original prompt + prior draft as assistant
+            // turn, then the refinement instruction as the next user turn.  The
+            // model improves its own output rather than starting from scratch.
+            $messages = [
+                [ 'role' => 'system',    'content' => $system_prompt ],
+                [ 'role' => 'user',      'content' => $prompt ],
+                [ 'role' => 'assistant', 'content' => $previous_output ],
+                [ 'role' => 'user',      'content' =>
+                    "Please refine the content above based on these additional instructions:\n\n" .
+                    $refine_hint ],
+            ];
+        } else {
+            $messages = [
+                [ 'role' => 'system', 'content' => $system_prompt ],
+                [ 'role' => 'user',   'content' => $prompt ],
+            ];
+        }
+
+        $result = UsageRecorder::tracked( 'content-generator', static fn() => $provider->chat( $messages ) );
 
         if (empty($result)) {
             return [
@@ -239,7 +267,10 @@ class ContentGenerator implements FeatureInterface {
             'content_type' => $content_type_label,
         ];
 
-        CacheStore::set($post_id, $cache_key, $hash, $payload);
+        // Only cache the initial generation — refinements are unique per-session.
+        if ( ! $is_refinement ) {
+            CacheStore::set($post_id, $cache_key, $hash, $payload);
+        }
 
         return array_merge(['success' => true], $payload);
     }

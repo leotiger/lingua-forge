@@ -72,7 +72,7 @@ class AdminToolbar {
 
         wp_localize_script(
             'lingua-forge-toolbar',
-            'Lingua ForgeAIToolbar',
+            'LinguaForgeAIToolbar',
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),

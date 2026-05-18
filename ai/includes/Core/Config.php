@@ -421,17 +421,21 @@ class Config {
 
         $presets = self::presets();
         $preset  = self::active_preset($post_id);
+        $stored  = trim( (string) get_option('linguaforge_compliance_addendum', '') );
 
-        if ($preset === 'standard') {
+        if ( $stored !== '' ) {
+            // An explicit custom addendum always applies, even with the Standard
+            // preset — the user chose to write it, so it must reach the model.
+            $addendum = $stored;
+        } elseif ( $preset === 'standard' ) {
+            // Standard + no custom addendum: leave the system prompt untouched.
             return $base_system_prompt;
+        } else {
+            // Non-standard preset with no custom override: use the preset default.
+            $addendum = trim( $presets[$preset]['addendum'] ?? '' );
         }
 
-        // Admin-supplied custom addendum overrides the preset default when set.
-        $stored   = (string) get_option('linguaforge_compliance_addendum', '');
-        $addendum = $stored !== '' ? $stored : ( $presets[$preset]['addendum'] ?? '' );
-        $addendum = trim($addendum);
-
-        if ($addendum === '') {
+        if ( $addendum === '' ) {
             return $base_system_prompt;
         }
 
