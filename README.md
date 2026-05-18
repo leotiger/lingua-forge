@@ -18,11 +18,11 @@ Everything ships as a single installable plugin. No external services beyond an 
 
 ## How does it compare to WPML and Polylang?
 
-The short version: LinguaForge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups — while adding a deeper AI editorial layer that neither ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
+The short version: Lingua Forge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups — while adding a deeper AI editorial layer that neither ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
 
 Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included.
 
-→ [Full competitive analysis — LinguaForge vs WPML vs Polylang](COMPETITIVE-ANALYSIS.md)
+→ [Full competitive analysis — Lingua Forge vs WPML vs Polylang](COMPETITIVE-ANALYSIS.md)
 
 ## The story behind Lingua Forge
 
@@ -44,7 +44,7 @@ If you want to understand where this plugin came from and why it exists as a fre
 - hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
 - Language switcher block (LSFLR Switcher) rendered as dropdown or dropup
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
-- Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → LinguaForge AI → Language Overrides** or drop them in directly via FTP/SFTP.
+- Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge AI → Language Overrides** or drop them in directly via FTP/SFTP.
 - DB index on `wp_postmeta (meta_key, meta_value)` created on activation for fast `_lang` queries
 
 ### Meta Description
@@ -59,7 +59,7 @@ Adds a meta description field to every public post type. Outputs `<meta name="de
 
 > As of 1.2.0 the plugin writes meta descriptions to the prefixed key `_linguaforge_meta_description`. A one-time bulk migration copies any existing `meta_description` rows to the new key on the first admin request after upgrade — no manual steps required. The `meta_description` key is intentionally **not** deleted on uninstall because other plugins may use it.
 
-### AI Content Tools (LinguaForge AI)
+### AI Content Tools (Lingua Forge AI)
 
 Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangeable backends. All results appear in a review panel — nothing is applied automatically.
 
@@ -68,7 +68,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Content Translation** — full post and page translation preserving all Gutenberg block markup, block attribute strings (accordion summaries, image alt text, etc.), and footnotes. Chunk mode for translating individual snippets
 - **Content Generator** — drafts or rewrites post content from hints, tone, and output-type controls. Outputs native Gutenberg block markup
 - **Quick Translate** — available in the admin toolbar and inside the Gutenberg / FSE editor toolbar, for translating any text snippet on the fly without opening a specific post
-- **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the LinguaForge AI metabox (Translation and Content Generator only)
+- **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the Lingua Forge AI metabox (Translation and Content Generator only)
 - **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Opt in from **Settings → Behavior**
 - **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
 - **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
@@ -92,9 +92,9 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 ## Installation
 
 1. Copy the `lingua-forge/` folder to `wp-content/plugins/`
-2. Activate **LinguaForge** from the WordPress admin (Plugins → Installed Plugins)
+2. Activate **Lingua Forge** from the WordPress admin (Plugins → Installed Plugins)
 3. Go to **Settings → Permalinks** and click **Save Changes** — this flushes the rewrite rules for the language URL prefixes
-4. Go to **Settings → LinguaForge AI**, select a provider, and enter your API key
+4. Go to **Settings → Lingua Forge AI**, select a provider, and enter your API key
 
 ```
 wp-content/
@@ -106,7 +106,7 @@ wp-content/
       ai/                    ← AI content tools module
 ```
 
-> If you are migrating from the mu-plugin versions of these tools, deactivate or remove `wp-content/mu-plugins/language-router/`, `wp-content/mu-plugins/meta-description/`, and `wp-content/mu-plugins/wpenhance-ai/` (or `wpai/`) before activating LinguaForge to avoid duplicate hooks.
+> If you are migrating from the mu-plugin versions of these tools, deactivate or remove `wp-content/mu-plugins/language-router/`, `wp-content/mu-plugins/meta-description/`, and `wp-content/mu-plugins/wpenhance-ai/` (or `wpai/`) before activating Lingua Forge to avoid duplicate hooks.
 
 ---
 
@@ -161,7 +161,7 @@ A practical example: the site admin works in `en_US`, but the primary content is
 
 #### Choosing a provider
 
-Navigate to **Settings → LinguaForge AI** and select the active provider from the dropdown, or define the constant in `wp-config.php`:
+Navigate to **Settings → Lingua Forge AI** and select the active provider from the dropdown, or define the constant in `wp-config.php`:
 
 ```php
 define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini'
@@ -169,7 +169,7 @@ define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini
 
 #### API keys
 
-Enter keys directly from **Settings → LinguaForge AI**. Keys are stored encrypted in `wp_options` using AES-256-CBC derived from WordPress's own auth salts — plaintext keys never touch the database.
+Enter keys directly from **Settings → Lingua Forge AI**. Keys are stored encrypted in `wp_options` using AES-256-CBC derived from WordPress's own auth salts — plaintext keys never touch the database.
 
 **Fallback resolution order** (highest to lowest priority):
 1. Encrypted value in `wp_options` (set via the Settings page)
@@ -178,7 +178,7 @@ Enter keys directly from **Settings → LinguaForge AI**. Keys are stored encryp
 
 #### Models
 
-Navigate to **Settings → LinguaForge AI → Models** to override the model string for any provider and tier:
+Navigate to **Settings → Lingua Forge AI → Models** to override the model string for any provider and tier:
 
 | Tier | Default (Anthropic) | Used by |
 |---|---|---|
@@ -208,7 +208,7 @@ lingua-forge/
       class-lsflr-link-fixer.php     ← LinguaForge\Router\LinkFixer (aliased LSFLR_Link_Fixer)
     assets/
       lsflr.css                      ← Switcher styles
-    languages/                       ← LinguaForge own translation files (.pot / .po / .mo)
+    languages/                       ← Lingua Forge own translation files (.pot / .po / .mo)
   meta-description/
     meta-description.php             ← LinguaForge\MetaDescription\Module — SEO meta box + <head> output
   ai/
@@ -243,7 +243,7 @@ lingua-forge/
       Admin/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
-        SettingsPage.php             ← Settings → LinguaForge AI (5-tab layout)
+        SettingsPage.php             ← Settings → Lingua Forge AI (5-tab layout)
       CLI/
         Commands.php                 ← wp linguaforge translate / cache-clear
       REST/
@@ -451,7 +451,7 @@ Translates full post or page content while preserving all WordPress block commen
 
 **Footnote limitation** — WordPress footnotes are tightly coupled to post-specific UUIDs shared between `post_content` and the `footnotes` post meta. Full-post translation attempts to translate footnotes in the same API call, but this is fragile on long posts. The recommended workflow is chunk mode for footnotes: copy each footnote from the block editor's footnote panel, switch to *Translate chunk*, translate, and paste back.
 
-**Translation Limits** — configurable from **Settings → LinguaForge AI → Translation Limits**:
+**Translation Limits** — configurable from **Settings → Lingua Forge AI → Translation Limits**:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -496,7 +496,7 @@ Drafts or rewrites post content from three controls: **Hints** (key points or ro
 
 Uses the **Quality** model tier (default: `claude-sonnet-4-6`, temperature 0.6).
 
-**Content Generator limits** — configurable from **Settings → LinguaForge AI → Content Generator**:
+**Content Generator limits** — configurable from **Settings → Lingua Forge AI → Content Generator**:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -511,7 +511,7 @@ Available in two places:
 - **Admin Toolbar** — the ⇌ icon in the WordPress admin bar opens a popover with a language selector, textarea, Translate, and Copy buttons. Works on any admin page, no post required.
 - **Editor Toolbar** — the same popover is injected into the Gutenberg / FSE editor's pinned-items bar. Always available in canvas-edit mode where the admin bar is hidden.
 
-**Quick Translation limits** — configurable from **Settings → LinguaForge AI → Quick Translation**:
+**Quick Translation limits** — configurable from **Settings → Lingua Forge AI → Quick Translation**:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -530,7 +530,7 @@ Four presets control the temperature and system-prompt addendum used by Translat
 | **Legal / Compliance** | 0.1 | Preserve regulatory citations, article numbers, and legal phrasing verbatim |
 | **Creative / Marketing** | 0.7 | Vivid language, idiomatic translation, marketing tone |
 
-Set the site-wide default from **Settings → LinguaForge AI → Behavior**. Override it for a specific post from the **LinguaForge AI metabox** (a select at the top of the panel, available on Translation and Content Generator only). A custom addendum textarea below the preset selector overrides the preset's built-in addendum when non-empty.
+Set the site-wide default from **Settings → Lingua Forge AI → Behavior**. Override it for a specific post from the **Lingua Forge AI metabox** (a select at the top of the panel, available on Translation and Content Generator only). A custom addendum textarea below the preset selector overrides the preset's built-in addendum when non-empty.
 
 ### Translation Memory
 
@@ -546,7 +546,7 @@ Every feature caches its output using a SHA-256 hash of the inputs in a dedicate
 
 ### AI Usage
 
-Every successful AI call is recorded in a dedicated database table, grouped by feature, provider, model, and calendar date. Go to **Settings → LinguaForge AI → AI Usage** to see a summary table for any date range:
+Every successful AI call is recorded in a dedicated database table, grouped by feature, provider, model, and calendar date. Go to **Settings → Lingua Forge AI → AI Usage** to see a summary table for any date range:
 
 | Column | Description |
 |---|---|
@@ -590,7 +590,7 @@ wp linguaforge cache-clear --feature=translation --post-id=123
 
 **Symptom:** Generating a translation or content for a large post fails silently, returns a white screen, or produces a PHP fatal error in the log along the lines of `Maximum execution time of 30 seconds exceeded`.
 
-**Root cause:** Managed hosting plans commonly cap `max_execution_time` at 30–60 seconds. LinguaForge uses a 120-second HTTP timeout for AI API calls, but PHP will kill the process first if the server limit is lower.
+**Root cause:** Managed hosting plans commonly cap `max_execution_time` at 30–60 seconds. Lingua Forge uses a 120-second HTTP timeout for AI API calls, but PHP will kill the process first if the server limit is lower.
 
 **Fix options (in order of preference):**
 1. Raise the limit for the request in `wp-config.php` or a must-use plugin:
@@ -611,7 +611,7 @@ wp linguaforge cache-clear --feature=translation --post-id=123
 
 **Root cause:** The most common causes are an invalid or expired API key, the provider's rate limit being hit, or the provider's API being temporarily unavailable.
 
-**Fix:** Check the PHP error log — LinguaForge logs the raw HTTP response code and body whenever a provider call fails. Also verify the API key in **Settings → LinguaForge AI → API Keys** and test it directly in the provider's dashboard.
+**Fix:** Check the PHP error log — Lingua Forge logs the raw HTTP response code and body whenever a provider call fails. Also verify the API key in **Settings → Lingua Forge AI → API Keys** and test it directly in the provider's dashboard.
 
 ### Translation is cut off at the end of a long page
 
@@ -619,7 +619,7 @@ wp linguaforge cache-clear --feature=translation --post-id=123
 
 **Root cause:** The AI provider hit its output token limit before finishing the response.
 
-**Fix:** Go to **Settings → LinguaForge AI → Translation Limits** and increase **Max output tokens** (default: 16 000). Use **↺ Refresh** in the result panel to re-run without the cached truncated result.
+**Fix:** Go to **Settings → Lingua Forge AI → Translation Limits** and increase **Max output tokens** (default: 16 000). Use **↺ Refresh** in the result panel to re-run without the cached truncated result.
 
 ### Editor toolbar Quick Translate button does not appear on first load
 
@@ -649,7 +649,7 @@ wp linguaforge cache-clear --feature=translation --post-id=123
 
 ## Language Overrides
 
-Third-party plugins sometimes use terminology that doesn't fit your site — for example, VikBooking uses "room" but an apartment rental site needs "apartment". LinguaForge loads custom `.mo` files from an uploads-based directory so you can ship corrected translations without patching the third-party plugin.
+Third-party plugins sometimes use terminology that doesn't fit your site — for example, VikBooking uses "room" but an apartment rental site needs "apartment". Lingua Forge loads custom `.mo` files from an uploads-based directory so you can ship corrected translations without patching the third-party plugin.
 
 **Storage location:** `wp-content/uploads/lingua-forge/i18n-overrides/`
 
@@ -657,7 +657,7 @@ The folder is created automatically on plugin activation. Files placed here surv
 
 **File naming** follows the standard WordPress convention: `{textdomain}-{locale}.mo` (e.g. `vikbooking-ca.mo`, `vikbooking-es_ES.mo`). No code changes are needed when adding a new plugin or locale — the router discovers and loads all matching files automatically on every request.
 
-**Managing files** — go to **Settings → LinguaForge AI → Language Overrides**:
+**Managing files** — go to **Settings → Lingua Forge AI → Language Overrides**:
 
 - The table lists every `.mo` and `.po` file currently in the directory, with file size.
 - Use the **Upload Override** form to upload a compiled `.mo` file directly from the browser.
@@ -687,7 +687,7 @@ VikBooking locale compatibility is handled via the `lf_lang_force_locale` filter
 
 ## Performance
 
-On activation and version bump, LinguaForge creates a composite index on `wp_postmeta (meta_key, meta_value(10))` to speed up `_lang` queries across large sites. Translation lookups are wrapped in WordPress object cache and invalidated on post save. AI result caches are stored in post meta with `autoload = false`.
+On activation and version bump, Lingua Forge creates a composite index on `wp_postmeta (meta_key, meta_value(10))` to speed up `_lang` queries across large sites. Translation lookups are wrapped in WordPress object cache and invalidated on post save. AI result caches are stored in post meta with `autoload = false`.
 
 ---
 

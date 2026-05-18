@@ -1,4 +1,4 @@
-# Changelog — LinguaForge
+# Changelog — Lingua Forge
 
 ---
 
@@ -6,7 +6,7 @@
 
 ### Fixed
 
-- German (and other verbose-language) translations failing silently with "unparseable response": Claude 4 with system-prompt JSON enforcement can return `stop_reason: "end_turn"` even when the generated JSON is truncated mid-string, bypassing the `is_truncated()` guard in `AbstractProvider`. Both the main translation path and the Translation Memory path now apply a heuristic — if the response starts with `{` but does not end with `}`, it is flagged as a likely truncation. The error returned to the user now reads "Translation output truncated — raise Max output tokens in Settings → LinguaForge AI → Translation Limits or pass --max-tokens=20000 on the CLI" instead of the generic "unparseable response" message. The PHP error log entry also notes the truncation suspicion.
+- German (and other verbose-language) translations failing silently with "unparseable response": Claude 4 with system-prompt JSON enforcement can return `stop_reason: "end_turn"` even when the generated JSON is truncated mid-string, bypassing the `is_truncated()` guard in `AbstractProvider`. Both the main translation path and the Translation Memory path now apply a heuristic — if the response starts with `{` but does not end with `}`, it is flagged as a likely truncation. The error returned to the user now reads "Translation output truncated — raise Max output tokens in Settings → Lingua Forge AI → Translation Limits or pass --max-tokens=20000 on the CLI" instead of the generic "unparseable response" message. The PHP error log entry also notes the truncation suspicion.
 
 ---
 
@@ -30,8 +30,8 @@
 
 ### Added
 
-- **AI Behavior Presets** — four named presets replace the binary compliance toggle: Standard (temperature 0.4), Technical / Scientific (0.2, precise terminology directives), Legal / Compliance (0.1, strict preservation of regulatory citations and units), Creative / Marketing (0.7, encourages vivid language). Each preset ships with a tuned system-prompt addendum. A custom addendum field overrides the preset default when non-empty. Managed from **Settings → LinguaForge AI → Behavior**.
-- **Per-page preset override** — Translation and Content Generator now respect a per-post preset chosen from the LinguaForge AI metabox (new select at the top of the panel). When set to anything other than "Global default", the page-level preset takes priority over the site-wide setting. Useful for legal pages that need strict mode while the rest of the site uses Standard. (Meta Description, Excerpt Generator, and Quick Translate intentionally use the global preset only.)
+- **AI Behavior Presets** — four named presets replace the binary compliance toggle: Standard (temperature 0.4), Technical / Scientific (0.2, precise terminology directives), Legal / Compliance (0.1, strict preservation of regulatory citations and units), Creative / Marketing (0.7, encourages vivid language). Each preset ships with a tuned system-prompt addendum. A custom addendum field overrides the preset default when non-empty. Managed from **Settings → Lingua Forge AI → Behavior**.
+- **Per-page preset override** — Translation and Content Generator now respect a per-post preset chosen from the Lingua Forge AI metabox (new select at the top of the panel). When set to anything other than "Global default", the page-level preset takes priority over the site-wide setting. Useful for legal pages that need strict mode while the rest of the site uses Standard. (Meta Description, Excerpt Generator, and Quick Translate intentionally use the global preset only.)
 - **Footnotes tab in the Block Action popover** — editors can translate or revise individual footnotes directly from the AI panel without switching to chunk mode. The tab shows all footnotes attached to the current block as a select list; picking one loads its text into sub-panels for Translate and Revise. The Apply button writes the result back into the post's `footnotes` meta via `dispatch('core/editor').editPost`.
 - **Translate button in the format / footnote editing toolbar** — registers as a native WordPress rich-text format type (`lingua-forge/translate`) via `wp.richText.registerFormatType` so the inline globe icon appears in both the block selection toolbar and the footnote editing popover. Clicking it opens the Block Action popover pre-loaded with the selected text. Uses an inline SVG icon compatible with the block editor environment.
 - **Side-by-side diff preview before applying translations** — "Apply to Editor" now opens a two-column modal overlay showing the current editor content (left) vs the translated content (right) before anything is written. Apply fires only when the editor explicitly clicks "Apply translation" inside the modal; all cancel paths (overlay click, ✕, Cancel, Escape) dismiss without changes. Content panes render HTML so block markup reads close to the final post appearance. Footnotes are shown as a collapsible reference below. Layout stacks to a single column below 800 px viewport.
@@ -86,7 +86,7 @@
 
 ### Added
 
-- **Language Overrides UI** — new section in **Settings → LinguaForge AI** to upload, list, and
+- **Language Overrides UI** — new section in **Settings → Lingua Forge AI** to upload, list, and
   delete `.mo` override files for third-party plugins (e.g. VikBooking terminology customisation).
   Each row shows both `.mo` and `.po` presence; Delete removes both files together.
 - **Language overrides in uploads** — override `.mo` files are now stored in
@@ -99,9 +99,9 @@
 - **"Save the post to persist changes" hint** — shown for 6 seconds after applying a translation
   or meta description to the editor, since programmatic auto-save is not reliable with meta boxes.
 - **Content Generator limits** — max output tokens, max hints characters, and max context
-  characters are now configurable from Settings → LinguaForge AI → Content Generator.
+  characters are now configurable from Settings → Lingua Forge AI → Content Generator.
 - **Quick Translation limits** — model tier (Light/Quality), max output tokens, and max input
-  characters are now configurable from Settings → LinguaForge AI → Quick Translation.
+  characters are now configurable from Settings → Lingua Forge AI → Quick Translation.
 - **`linguaforge_translation_languages` filter** — the 38-language translation target list is now
   filterable; add, remove, or replace languages without modifying plugin files.
 - **38 languages** supported out of the box for AI translation (up from 13), grouped by region.
@@ -146,7 +146,7 @@
 
 ## [1.0.0] — 2026-05-16
 
-First release of **LinguaForge** — a combined WordPress plugin merging the previously separate
+First release of **Lingua Forge** — a combined WordPress plugin merging the previously separate
 **Language Router** (v1.3.4), **Meta Description** (v1.1.0), and **WPEnhance AI** (v1.1.6)
 must-use plugins into a single installable plugin.
 
@@ -198,7 +198,7 @@ namespace. Sites running the original mu-plugin versions will need to update any
 
 ## Component history
 
-The entries below preserve the full release history of each module prior to the LinguaForge
+The entries below preserve the full release history of each module prior to the Lingua Forge
 merge. New entries from this point forward will appear in the section above.
 
 ---

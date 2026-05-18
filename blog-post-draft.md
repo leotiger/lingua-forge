@@ -1,4 +1,4 @@
-# From a Handful of Messy Files to a Plugin Anyone Can Use — The Story Behind LinguaForge
+# From a Handful of Messy Files to a Plugin Anyone Can Use — The Story Behind Lingua Forge
 
 *A personal note about why this plugin exists, what it actually cost us, and why we think it matters beyond the code.*
 
@@ -36,13 +36,13 @@ But here is what it cannot do, or at least cannot do yet, reliably: *create some
 
 What the AI does is process vast amounts of data at a scale no individual human could match, and compress that into something that looks like knowledge. What it produces still needs someone who understands what they actually want, who can tell the difference between a solution and a solution to the wrong problem, and who knows when to push back. The human counterpart in this collaboration was not a passive prompter. The human was the one who kept the thing on course.
 
-AI proposes. Humans dispose. That is also, not coincidentally, exactly the philosophy baked into LinguaForge itself: nothing is applied automatically, every AI result sits in a review panel, and you decide what goes into your content.
+AI proposes. Humans dispose. That is also, not coincidentally, exactly the philosophy baked into Lingua Forge itself: nothing is applied automatically, every AI result sits in a review panel, and you decide what goes into your content.
 
 ---
 
 ## What was actually built
 
-LinguaForge 1.2.0 is a single WordPress plugin that handles the three concerns that always end up tangled together on a multilingual site:
+Lingua Forge 1.2.0 is a single WordPress plugin that handles the three concerns that always end up tangled together on a multilingual site:
 
 **Getting visitors to the right language.** URL prefixes like `/de/` or `/fr/`, hreflang tags for search engines, a language switcher block for the modern block editor, and a panel that warns you when a translation has fallen behind its source post. There is also a tool that scans translated pages for internal links pointing to the wrong language version and fixes them in bulk — a quiet feature that saves hours of manual checking.
 
@@ -60,11 +60,11 @@ Multilingual websites are not exotic. They are the daily reality of small busine
 
 The existing tools for this — and they are good tools, built by serious people — arrived with annual license fees that compound quietly over years. A small site paying €99 to €199 per year for multilingual infrastructure, on top of hosting and everything else, is not an abstract number. It is a decision that some operators simply cannot make, which means their content stays in one language, which means fewer people can read it. That is a loss, and it is a structural one produced by the way the market decided to price something that should arguably be considered infrastructure.
 
-There is also a second layer: the AI translation features in those tools were delivered through proprietary credit systems that stood between the operator and the AI provider. You paid for credits, the credits bought words, the rate was set by the intermediary. LinguaForge removes that layer entirely. Your API key, your provider, the rate they publish, nothing in between.
+There is also a second layer: the AI translation features in those tools were delivered through proprietary credit systems that stood between the operator and the AI provider. You paid for credits, the credits bought words, the rate was set by the intermediary. Lingua Forge removes that layer entirely. Your API key, your provider, the rate they publish, nothing in between.
 
 We are not naive about economics. Software takes time to build and money to maintain. But there is a point at which the number of intermediaries between a person with something to say and the people they want to say it to stops being a business model and starts being a problem. Open-source software exists precisely to push that point back — to insist that some things belong to everyone.
 
-LinguaForge is our contribution to that. The code is GPL-2.0 or higher. It will remain free.
+Lingua Forge is our contribution to that. The code is GPL-2.0 or higher. It will remain free.
 
 ---
 
@@ -72,7 +72,7 @@ LinguaForge is our contribution to that. The code is GPL-2.0 or higher. It will 
 
 If the references to PHP namespaces, WP-CLI commands, and plugin review rules left you somewhere between confused and indifferent, that is entirely fine — none of that is your concern. Your concern is: you have a website, you want it to speak more than one language, and you would rather not pay a subscription indefinitely for the privilege of doing so.
 
-LinguaForge installs like any other WordPress plugin. You activate it, go to Settings, pick your languages, and start working. The AI features are there when you want them and completely invisible when you do not. Everything was designed so that the complexity stays out of your way and the editor experience stays simple.
+Lingua Forge installs like any other WordPress plugin. You activate it, go to Settings, pick your languages, and start working. The AI features are there when you want them and completely invisible when you do not. Everything was designed so that the complexity stays out of your way and the editor experience stays simple.
 
 [Cal Talaia](https://cal-talaia.cat) is still being built — it is a working site, not a showcase, which means it reflects the real state of things rather than a curated demo. That felt appropriate. The plugin was built in the same spirit: for real use, on a real site, under real constraints, by people who needed it to work.
 
@@ -80,4 +80,4 @@ That is the only origin story that produces something genuinely useful.
 
 ---
 
-*LinguaForge is free and open-source. Source code and issue tracker: [github.com/leotiger/lingua-forge](https://github.com/leotiger/lingua-forge)*
+*Lingua Forge is free and open-source. Source code and issue tracker: [github.com/leotiger/lingua-forge](https://github.com/leotiger/lingua-forge)*

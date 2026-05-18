@@ -1,14 +1,14 @@
-# Contributing to LinguaForge
+# Contributing to Lingua Forge
 
 This document covers the conventions you need to know before adding to or
-modifying the LinguaForge plugin. The most-asked question is **"which
+modifying the Lingua Forge plugin. The most-asked question is **"which
 prefix do I use for this thing?"** — that's at the top.
 
 ---
 
 ## Prefix policy
 
-LinguaForge uses **five** distinct prefixes. Each has a specific scope.
+Lingua Forge uses **five** distinct prefixes. Each has a specific scope.
 Pick the right one when introducing a new option, hook, constant, class,
 or DOM element — the prefix communicates *what kind of thing this is and
 who owns it* at a glance.
@@ -25,7 +25,7 @@ who owns it* at a glance.
 
 ### `linguaforge_*` — long lowercase
 
-Use for any identifier that should clearly belong to LinguaForge from
+Use for any identifier that should clearly belong to Lingua Forge from
 outside the plugin namespace.
 
 - **`wp_options` keys.** Examples: `linguaforge_provider`,
@@ -116,7 +116,7 @@ displays a "forced by constant" indicator when the constant is defined.
 ### `lsflr_*` / `LSFLR_*` — legacy
 
 Originates from the standalone mu-plugin
-"LanguageSwitcher-ForLanguageRouter" that was folded into LinguaForge in
+"LanguageSwitcher-ForLanguageRouter" that was folded into Lingua Forge in
 v1.0. As of 1.2.0 the classes are namespaced (`LinguaForge\Router\Switcher`
 / `LinguaForge\Router\LinkFixer`) with `class_alias` back-compat; the prefix
 survives in the public-facing identifiers below:
@@ -242,7 +242,7 @@ when adding new code.
 
 ## Settings page layout
 
-The Settings page (`Settings → LinguaForge AI`) uses a five-tab layout
+The Settings page (`Settings → Lingua Forge AI`) uses a five-tab layout
 (General / API Keys / Limits / Behavior / Maintenance). All four
 "settings" tabs live inside a single `<form>` so one Save Settings click
 persists every value. The Maintenance tab is outside the main form
