@@ -85,7 +85,7 @@ class Config {
      *             Generator where accuracy and longer context matter.
      *
      * These are the fallback values when no override has been saved via the
-     * Settings page.  To update a model site-wide, go to Settings → LinguaForge AI
+     * Settings page.  To update a model site-wide, go to Settings → Lingua Forge AI
      * and enter the new model string in the Models section.
      *
      * @var array<string, array<string, string>>
@@ -137,7 +137,7 @@ class Config {
      *
      * Resolution order:
      *   1. Value stored in wp_options as linguaforge_model_{provider}_{tier}
-     *      (set via Settings → LinguaForge AI → Models)
+     *      (set via Settings → Lingua Forge AI → Models)
      *   2. Hard-coded default from MODEL_DEFAULTS above
      *
      * Clearing the stored value (empty string) falls back to the default,
@@ -281,7 +281,7 @@ class Config {
      *
      * Full-page translation uses the Quality model by default (Sonnet / GPT-4o /
      * Gemini Pro) for accurate, long-form output. Administrators can switch to
-     * Light in Settings → LinguaForge AI → Translation Limits if speed or cost
+     * Light in Settings → Lingua Forge AI → Translation Limits if speed or cost
      * is the priority and the content is short.
      */
     public static function translation_tier(): string {

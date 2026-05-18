@@ -1,6 +1,6 @@
 <?php
 /**
- * LinguaForge – Meta Description sub-module
+ * Lingua Forge – Meta Description sub-module
  *
  * Adds a meta box for custom meta descriptions and outputs
  * <meta name="description">, og:description, and twitter:description.

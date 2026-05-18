@@ -40,7 +40,7 @@ class AdminToolbar {
             'href'  => '#',
             'meta'  => [
                 'class' => 'lingua-forge-toolbar-item',
-                'title' => __( 'LinguaForge AI — Quick Translate', 'lingua-forge' ),
+                'title' => __( 'Lingua Forge AI — Quick Translate', 'lingua-forge' ),
             ],
         ]);
     }
@@ -72,7 +72,7 @@ class AdminToolbar {
 
         wp_localize_script(
             'lingua-forge-toolbar',
-            'LinguaForgeAIToolbar',
+            'Lingua ForgeAIToolbar',
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),

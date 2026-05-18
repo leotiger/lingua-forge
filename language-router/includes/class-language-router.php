@@ -363,13 +363,13 @@ class Router {
 	public function restrict_block_editor_settings( array $settings, $context ): array {
 
 		// Defaults preserve pre-1.4 behavior: both restrictions ON unless an
-		// admin explicitly opts out via Settings → LinguaForge AI → Behavior.
+		// admin explicitly opts out via Settings → Lingua Forge AI → Behavior.
 		// The lf_block_editor_restrictions filter lets opinionated sites
 		// override programmatically (e.g. a custom MU plugin can enable block
 		// locking for a single user role).
 		$restrictions = [
 			// true  = WordPress default applies (feature available)
-			// false = LinguaForge restricts the feature
+			// false = Lingua Forge restricts the feature
 			'canLockBlocks'         => ! (bool) get_option( 'linguaforge_block_editor_allow_lock_blocks', false ),
 			'supportsTemplateMode' => ! (bool) get_option( 'linguaforge_block_editor_allow_template_mode', false ),
 		];
@@ -605,7 +605,7 @@ class Router {
 		// Auto-load any {textdomain}-{locale}.mo file from the uploads-based
 		// override directory (wp-content/uploads/lingua-forge/i18n-overrides/).
 		// Files here survive plugin updates and are never part of the codebase.
-		// LinguaForge's own translations live in languages/ (standard WP location).
+		// Lingua Forge's own translations live in languages/ (standard WP location).
 		$dir    = $this->i18n_overrides_dir();
 		$suffix = '-' . $locale . '.mo';
 

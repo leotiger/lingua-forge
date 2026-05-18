@@ -51,9 +51,9 @@ class KeyStore {
             if ($decrypted !== null && $decrypted !== '') {
                 return $decrypted;
             }
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for a silent decryption failure, most likely caused by wp_salt('auth') changing after the key was stored. The fix is to re-save the API key in Settings → LinguaForge AI.
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for a silent decryption failure, most likely caused by wp_salt('auth') changing after the key was stored. The fix is to re-save the API key in Settings → Lingua Forge AI.
             error_log(sprintf(
-                'LinguaForge AI [KeyStore] decryption failed for provider "%s" — the stored key could not be decrypted (wp_salt may have changed). Re-save the API key in Settings → LinguaForge AI.',
+                'Lingua Forge AI [KeyStore] decryption failed for provider "%s" — the stored key could not be decrypted (wp_salt may have changed). Re-save the API key in Settings → Lingua Forge AI.',
                 $provider
             ));
         }
@@ -169,7 +169,7 @@ class KeyStore {
             $iv = random_bytes($iv_len);
         } catch (\Exception $e) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for a cryptographic failure that would silently prevent API key storage.
-            error_log('LinguaForge AI [KeyStore] could not generate IV: ' . $e->getMessage());
+            error_log('Lingua Forge AI [KeyStore] could not generate IV: ' . $e->getMessage());
             return '';
         }
 

@@ -38,7 +38,7 @@ abstract class AbstractProvider implements AIProviderInterface {
         $api_key = KeyStore::get($this->key_slug());
 
         if (!$api_key) {
-            $this->log_error('no API key found — check Settings → LinguaForge AI or set the ' . strtoupper($this->key_slug()) . '_API_KEY environment variable');
+            $this->log_error('no API key found — check Settings → Lingua Forge AI or set the ' . strtoupper($this->key_slug()) . '_API_KEY environment variable');
             return null;
         }
 
@@ -80,7 +80,7 @@ abstract class AbstractProvider implements AIProviderInterface {
         $text = trim($this->extract_text($decoded));
 
         if ($text === '') {
-            $this->log_error('provider returned a successful response with empty text content — check model configuration in Settings → LinguaForge AI');
+            $this->log_error('provider returned a successful response with empty text content — check model configuration in Settings → Lingua Forge AI');
             return null;
         }
 
@@ -232,7 +232,7 @@ abstract class AbstractProvider implements AIProviderInterface {
 
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for AI request retries; same channel as request failures.
         error_log(sprintf(
-            'LinguaForge AI [%s] retry %d/%d after %s',
+            'Lingua Forge AI [%s] retry %d/%d after %s',
             $this->provider_label(),
             $attempt_number,
             $total_attempts - 1,
@@ -251,7 +251,7 @@ abstract class AbstractProvider implements AIProviderInterface {
     protected function log_error(string $message): void {
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
         error_log(sprintf(
-            'LinguaForge AI [%s] %s',
+            'Lingua Forge AI [%s] %s',
             $this->provider_label(),
             $message
         ));

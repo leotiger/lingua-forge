@@ -17,7 +17,7 @@ use LinguaForge\AI\Providers\WorkerConfig;
 defined('ABSPATH') || exit;
 
 /**
- * Settings → LinguaForge AI
+ * Settings → Lingua Forge AI
  *
  * Provides a standard WordPress settings page where administrators can:
  *   - Choose the active AI provider (Anthropic / OpenAI / Gemini)
@@ -503,7 +503,7 @@ class SettingsPage {
     /**
      * Enqueue the small JS file that powers the Test Connection buttons.
      *
-     * Scoped to the Settings → LinguaForge AI screen only (matched via the
+     * Scoped to the Settings → Lingua Forge AI screen only (matched via the
      * $hook_suffix WordPress hands to admin_enqueue_scripts).
      */
     public static function enqueue_settings_assets(string $hook_suffix): void {
@@ -563,8 +563,8 @@ class SettingsPage {
     public static function register_menu(): void {
 
         add_options_page(
-            'LinguaForge AI',
-            'LinguaForge AI',
+            'Lingua Forge AI',
+            'Lingua Forge AI',
             'manage_options',
             self::PAGE_SLUG,
             [self::class, 'render']
@@ -1187,7 +1187,7 @@ class SettingsPage {
         ?>
         <div class="wrap">
 
-            <h1><?php esc_html_e('LinguaForge AI — Settings', 'lingua-forge'); ?></h1>
+            <h1><?php esc_html_e('Lingua Forge AI — Settings', 'lingua-forge'); ?></h1>
 
             <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after a successful save; no data is processed here.
             if (!empty($_GET['linguaforge_saved'])): ?>
@@ -1839,7 +1839,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
 
                 <p>
                     <?php
-                    esc_html_e( 'LinguaForge restricts two Gutenberg features by default to keep editorial behavior consistent across languages. Opt in here when you need full Gutenberg / FSE capabilities.', 'lingua-forge' );
+                    esc_html_e( 'Lingua Forge restricts two Gutenberg features by default to keep editorial behavior consistent across languages. Opt in here when you need full Gutenberg / FSE capabilities.', 'lingua-forge' );
                     ?>
                 </p>
 
@@ -1919,7 +1919,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
                                 <?php endforeach; ?>
                             </select>
                             <p class="description">
-                                <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the LinguaForge AI meta box.', 'lingua-forge'); ?>
+                                <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the Lingua Forge AI meta box.', 'lingua-forge'); ?>
                             </p>
                         </td>
                     </tr>
@@ -2152,7 +2152,7 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
             <p>
                 <?php
                 esc_html_e(
-                    'LinguaForge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue.',
+                    'Lingua Forge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue.',
                     'lingua-forge'
                 );
                 ?>

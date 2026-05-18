@@ -1,6 +1,6 @@
 <?php
 /**
- * LinguaForge — Uninstall handler
+ * Lingua Forge — Uninstall handler
  *
  * Runs automatically when an administrator deletes the plugin from
  * Plugins → Installed Plugins → Delete.  WordPress calls this file
@@ -23,7 +23,7 @@
  *
  * NOTE: _lang, _trid, and related keys are intentionally generic so other
  * plugins can read them.  If you want to keep this data after removing
- * LinguaForge, comment out the post meta section below before deleting.
+ * Lingua Forge, comment out the post meta section below before deleting.
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;

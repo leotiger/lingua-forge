@@ -209,7 +209,7 @@ class Translation implements FeatureInterface {
     }
 
     /**
-     * The model tier (Quality or Light) is read from Settings → LinguaForge AI
+     * The model tier (Quality or Light) is read from Settings → Lingua Forge AI
      * → Translation Limits (default: Quality — Sonnet / GPT-4o / Gemini Pro).
      *
      * max_tokens is read from the same settings section (default: 16 000).
@@ -502,7 +502,7 @@ class Translation implements FeatureInterface {
             $looks_truncated  = str_starts_with( $trimmed, '{' ) && ! str_ends_with( $trimmed, '}' );
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unparseable TM response.
             error_log( sprintf(
-                'LinguaForge AI [Translation/TM] post %d: response was not valid JSON%s. Falling back to non-TM flow. First 200 chars: %s',
+                'Lingua Forge AI [Translation/TM] post %d: response was not valid JSON%s. Falling back to non-TM flow. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
                 mb_substr( (string) $result, 0, 200 )
@@ -522,7 +522,7 @@ class Translation implements FeatureInterface {
         if ( $needs_blocks && count( $translated_blocks ) !== count( $queue_markups ) ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for shape mismatch.
             error_log( sprintf(
-                'LinguaForge AI [Translation/TM] post %d: expected %d translated blocks, got %d. Falling back.',
+                'Lingua Forge AI [Translation/TM] post %d: expected %d translated blocks, got %d. Falling back.',
                 $post_id,
                 count( $queue_markups ),
                 count( $translated_blocks )
@@ -818,7 +818,7 @@ class Translation implements FeatureInterface {
             $content_to_translate = mb_substr($placeholder_content, 0, $max_input);
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations are cut off.
             error_log(sprintf(
-                'LinguaForge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
+                'Lingua Forge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
                 $post_id,
                 $max_input
             ));
@@ -962,7 +962,7 @@ class Translation implements FeatureInterface {
 
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations fail.
             error_log(sprintf(
-                'LinguaForge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
+                'Lingua Forge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
                 mb_substr((string) $result, 0, 200)
@@ -972,7 +972,7 @@ class Translation implements FeatureInterface {
                 'success' => false,
                 'error'   => $looks_truncated
                     ? 'Translation output truncated — the translated content exceeded the output token limit. '
-                      . 'Raise "Max output tokens" in Settings → LinguaForge AI → Translation Limits, '
+                      . 'Raise "Max output tokens" in Settings → Lingua Forge AI → Translation Limits, '
                       . 'or pass --max-tokens=20000 on the CLI.'
                     : 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
             ];
@@ -985,7 +985,7 @@ class Translation implements FeatureInterface {
         if ($translated_content === '') {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for empty content in an otherwise valid envelope.
             error_log(sprintf(
-                'LinguaForge AI [Translation] post %d: JSON envelope decoded but "content" was empty.',
+                'Lingua Forge AI [Translation] post %d: JSON envelope decoded but "content" was empty.',
                 $post_id
             ));
 

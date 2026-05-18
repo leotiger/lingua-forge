@@ -1,6 +1,6 @@
 <?php
 /**
- * LinguaForge — Language Router sub-module.
+ * Lingua Forge — Language Router sub-module.
  * Author: Uli Hake
  * Version: 1.3.4
  * Requires PHP: 8.0

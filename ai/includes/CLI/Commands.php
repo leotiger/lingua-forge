@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
  *
  * Run `wp linguaforge <subcommand> --help` for full options and examples.
  *
- * @package LinguaForge
+ * @package Lingua Forge
  */
 class Commands {
 

@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Config::provider().  Each feature supplies its own WorkerConfig to select
  * the model tier ('light' or 'quality') and generation parameters for that
  * specific task.  Model strings are resolved by Config::model() at runtime,
- * so they can be updated from Settings → LinguaForge AI without code changes.
+ * so they can be updated from Settings → Lingua Forge AI without code changes.
  *
  * When called without a config (rare fallback path) the 'light' model for
  * the active provider is used — the same default as Meta Description and

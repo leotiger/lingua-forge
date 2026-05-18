@@ -78,7 +78,7 @@ class MetaBox {
 
         wp_localize_script(
             'lingua-forge-admin',
-            'LinguaForgeAI',
+            'Lingua ForgeAI',
             [
                 'restUrl' => rest_url('lingua-forge/v1'),
                 'nonce'   => wp_create_nonce('wp_rest'),
@@ -131,7 +131,7 @@ class MetaBox {
 
         wp_localize_script(
             'lingua-forge-editor',
-            'LinguaForgeAIEditor',
+            'Lingua ForgeAIEditor',
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),
@@ -198,7 +198,7 @@ class MetaBox {
 
         wp_localize_script(
             'lingua-forge-block-action',
-            'LinguaForgeAIBlockAction',
+            'Lingua ForgeAIBlockAction',
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),
@@ -257,7 +257,7 @@ class MetaBox {
 
         add_meta_box(
             'lingua-forge-ai',
-            'LinguaForge AI',
+            'Lingua Forge AI',
             [self::class, 'render'],
             ['post', 'page'],
             'normal',

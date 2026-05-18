@@ -109,7 +109,7 @@ add_action( 'init', function () {
 
     foreach ( $renames as $old => $new ) {
         // Only migrate when the old key exists and the new one does not yet,
-        // to avoid clobbering a value already entered in LinguaForge.
+        // to avoid clobbering a value already entered in Lingua Forge.
         if ( false !== get_option( $old ) && false === get_option( $new ) ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- One-time mu-plugin → plugin option key rename; no WP API equivalent for an UPDATE on option_name itself. Values bound via %s placeholders.
             $wpdb->update(
