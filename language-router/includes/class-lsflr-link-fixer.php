@@ -420,7 +420,7 @@ class LinkFixer {
 			wp_send_json_error( 'Invalid language' );
 		}
 
-		$query = new WP_Query( [
+		$query = new \WP_Query( [
 			'post_type'      => [ 'post', 'page' ],
 			'post_status'    => 'publish',
 			'posts_per_page' => -1,

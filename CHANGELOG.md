@@ -2,6 +2,14 @@
 
 ---
 
+## [1.2.1] — 2026-05-18
+
+### Fixed
+
+- Fatal 500 on Admin Link Fixer scan: `WP_Query` inside the namespaced `LinguaForge\Router\LinkFixer` class was not prefixed with `\`, causing PHP to look for `LinguaForge\Router\WP_Query` and fail. Every scan request from the Pages list had been returning a 500 since the 1.2.0 namespace migration.
+
+---
+
 ## [1.2.0] — 2026-05-17
 
 ### Added

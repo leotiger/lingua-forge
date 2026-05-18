@@ -3,7 +3,7 @@ Contributors: ulihake
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,9 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixed: Fatal 500 on Admin Link Fixer scan — `WP_Query` inside the namespaced `LinguaForge\Router\LinkFixer` class was missing the global-namespace prefix `\`, causing every scan request from the Pages list to fail with a 500 Internal Server Error since the 1.2.0 namespace migration.
+
 = 1.2.0 =
 * Added: `wp linguaforge retranslate` WP-CLI command — force-retranslates a post into one or more target languages, wipes the prior translation cache, and marks the translation synced. Accepts `--to`, `--temperature`, `--max-tokens`, `--model`, `--dry-run`, and `--format` flags.
 * Added: AI Behavior Presets — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing) with tuned temperature and system-prompt addenda. Set a site-wide default from **Settings → Behavior** or override per post from the LinguaForge AI metabox.
@@ -194,6 +197,9 @@ Used when the active provider is set to Google Gemini.
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Fixes a fatal 500 error on the Admin Link Fixer scan introduced by the 1.2.0 namespace migration. Update immediately if you use the Link Fixer in the Pages or Posts list.
 
 = 1.2.0 =
 Language Router classes are now namespaced; back-compat aliases remain active. Meta descriptions migrate automatically to the new `_linguaforge_meta_description` key — no manual steps required. Adds WP-CLI retranslate command, AI Usage tracking, Behavior Presets, Translation Memory, and Glossary.
