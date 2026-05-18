@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Features;
 
 use LinguaForge\AI\Features\Contracts\FeatureInterface;
+use LinguaForge\AI\Features\MetaDescription;
 use LinguaForge\AI\Providers\ProviderFactory;
 use LinguaForge\AI\Providers\WorkerConfig;
 use LinguaForge\AI\Core\BlockTextExtractor;
@@ -270,6 +271,20 @@ class ContentGenerator implements FeatureInterface {
         // Only cache the initial generation — refinements are unique per-session.
         if ( ! $is_refinement ) {
             CacheStore::set($post_id, $cache_key, $hash, $payload);
+        }
+
+        // ── Chain meta description ────────────────────────────────────────────
+        // Generate a meta description from the produced content so the editor
+        // gets both outputs in one round-trip.  Passed content is used directly
+        // (no second full-content request); MetaDescription skips the cache for
+        // passed-content calls.  Soft failure: if the meta description request
+        // fails we still return the generated content.
+        $md = (new MetaDescription())->run($post_id, [
+            'content' => $output,
+            'title'   => $post->post_title,
+        ]);
+        if (!empty($md['success']) && !empty($md['output'])) {
+            $payload['meta_description'] = $md['output'];
         }
 
         return array_merge(['success' => true], $payload);

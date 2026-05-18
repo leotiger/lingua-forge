@@ -157,7 +157,12 @@ abstract class AbstractProvider implements AIProviderInterface {
      *       'delay_ms'       => 1500,         // base delay before each retry
      *       'jitter_ms'      => 500,          // random 0..jitter added per retry
      *       'retry_statuses' => [429, 500, 502, 503, 504],
+     *       'timeout'        => 300,          // wp_remote_post timeout in seconds
      *   ], $provider_label);
+     *
+     * Raise 'timeout' for very long translations or content generation on large
+     * posts — the default 300 s covers most cases, but extremely large posts
+     * requesting 30 000+ output tokens can take longer.
      */
     private function post_with_retry(string $url, array $headers, array $body): array|\WP_Error {
 
@@ -168,19 +173,21 @@ abstract class AbstractProvider implements AIProviderInterface {
                 'delay_ms'       => 1500,
                 'jitter_ms'      => 500,
                 'retry_statuses' => [429, 500, 502, 503, 504],
+                'timeout'        => 300,
             ],
             $this->provider_label()
         );
 
-        $attempts        = max(1, (int) ($policy['attempts']       ?? 2));
-        $delay_ms        = max(0, (int) ($policy['delay_ms']       ?? 1500));
-        $jitter_ms       = max(0, (int) ($policy['jitter_ms']      ?? 500));
-        $retry_statuses  = (array)        ($policy['retry_statuses'] ?? [429, 500, 502, 503, 504]);
+        $attempts        = max(1,   (int)   ($policy['attempts']       ?? 2));
+        $delay_ms        = max(0,   (int)   ($policy['delay_ms']       ?? 1500));
+        $jitter_ms       = max(0,   (int)   ($policy['jitter_ms']      ?? 500));
+        $retry_statuses  = (array)          ($policy['retry_statuses'] ?? [429, 500, 502, 503, 504]);
+        $timeout         = max(30,  (int)   ($policy['timeout']        ?? 300));
 
         $args = [
             'headers' => $headers,
             'body'    => wp_json_encode($body),
-            'timeout' => 120,
+            'timeout' => $timeout,
         ];
 
         $response = null;
@@ -230,14 +237,17 @@ abstract class AbstractProvider implements AIProviderInterface {
             ? $response->get_error_message()
             : 'HTTP ' . (int) wp_remote_retrieve_response_code($response);
 
-        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for AI request retries; same channel as request failures.
-        error_log(sprintf(
+        $line = sprintf(
             'Lingua Forge AI [%s] retry %d/%d after %s',
             $this->provider_label(),
             $attempt_number,
             $total_attempts - 1,
             $reason
-        ));
+        );
+
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for AI request retries; same channel as request failures.
+        error_log( $line );
+        $this->maybe_wpcli_log( $line );
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -247,13 +257,33 @@ abstract class AbstractProvider implements AIProviderInterface {
     /**
      * Write a diagnostic line in the format the plugin FAQ already documents.
      * Subclasses can call this if they need extra context-specific logging.
+     *
+     * When running under WP-CLI, the same line is also emitted to the terminal
+     * so errors are visible without tailing a log file.
      */
     protected function log_error(string $message): void {
-        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
-        error_log(sprintf(
+
+        $line = sprintf(
             'Lingua Forge AI [%s] %s',
             $this->provider_label(),
             $message
-        ));
+        );
+
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
+        error_log( $line );
+        $this->maybe_wpcli_log( $line );
+    }
+
+    /**
+     * Emit $line to the WP-CLI terminal when running as a CLI command.
+     *
+     * No-op on web requests. Checked with the WP_CLI constant rather than a
+     * class_exists guard so the call is safe even if WP-CLI is not installed.
+     */
+    private function maybe_wpcli_log( string $line ): void {
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions -- WP-CLI context only; output is intentional.
+            \WP_CLI::log( '[LF debug] ' . $line );
+        }
     }
 }

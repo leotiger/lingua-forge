@@ -22,13 +22,27 @@ The short version: Lingua Forge covers the full multilingual workflow that the p
 
 Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included.
 
-→ [Full competitive analysis — Lingua Forge vs WPML vs Polylang](COMPETITIVE-ANALYSIS.md)
+→ [Full competitive analysis — Lingua Forge vs WPML vs Polylang vs TranslatePress vs Weglot vs MultilingualPress](COMPETITIVE-ANALYSIS.md)
 
 ## The story behind Lingua Forge
 
 If you want to understand where this plugin came from and why it exists as a free, open-source project rather than another subscription product, the blog post below covers the full picture in plain language — the necessity that started it, the weeks of intense work, the real website ([cal-talaia.cat](https://cal-talaia.cat)) that served as the test environment, the honest account of building an AI plugin with AI assistance (including the tokens spent and the many corrections along the way), and the social argument for why multilingual tools should belong to everyone.
 
 → [From a handful of messy files to a plugin anyone can use](blog-post-draft.md)
+
+## On building with AI — and what it means
+
+Working on a plugin like this for months — long sessions, real problems, accumulated context — eventually raises a question that has nothing to do with code.
+
+*Does the AI evaluate you? Are you being judged? And what exactly is the relationship between a user and the system they're using?*
+
+Those questions came up naturally mid-session, and the answers turned out to be more interesting than expected. AI doesn't score you or track you personally. But it does use conversations — aggregated and dissolved into the training process — to shape future versions of itself. Which means users are simultaneously customers and unpaid contributors to the system's improvement. It's what search engines started, pushed significantly further: richer signals, more creative contribution, deeper opacity, larger asymmetry between what users give and who captures the value.
+
+There's also a distinction worth drawing around *how* you use these tools. Asking AI to write something on your behalf tends to produce something recognisably generic — smooth, competent, not really yours. Even refining an AI draft keeps you inside a frame you didn't set. Long sessions with memory and accumulated context are a different thing: the output carries your fingerprints because you shaped what the AI knew before it wrote a word. The collaboration becomes real rather than transactional.
+
+This blog post grew directly out of a Lingua Forge coding session. It wasn't prompted. It emerged.
+
+→ [You're Teaching the Machine — Whether You Know It or Not](blog-ai-who-is-learning.md)
 
 ---
 
@@ -737,13 +751,14 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.2.13**
+**Current release — 1.3.0**
 
-- Content Generator redesigned with a dedicated single-column overlay and iterative multi-turn refinement — submit additional instructions to improve a draft without starting over; each pass builds on the previous one
-- WP-CLI `fill-translations` and `missing-translations` commands for bulk translation auditing and automation; `--with-meta-description` flag on all translation commands generates and saves AI meta descriptions in the same pass
-- Settings Behavior tab: live preset preview panel, renamed Custom prompt instructions field with placeholder example, Standard preset temperature hint in the dropdown
-- Custom prompt instructions now always apply regardless of active preset (previously ignored on Standard)
-- `LinguaForgeAIBlockAction` / `LinguaForgeAIEditor` JS variable name fixes (space in `wp_localize_script` object name caused console syntax error in block action and editor toolbar)
+- Content Generator overlay with iterative multi-turn refinement — chat with the model to improve its own draft; each pass builds on the previous one
+- Automatic meta description chaining after every content generation and every refinement iteration — one server-side request, no second API round-trip
+- Translation "Also generate meta description" checkbox — chains a meta description in the same request using already-translated content
+- WP-CLI `--debug` flag on all translation commands — forces debug-file writes and prints source prompt and raw API response inline in the terminal; provider errors (timeouts, HTTP failures, truncation) now surface in WP-CLI output unconditionally
+- HTTP timeout raised from 120 s to 300 s; configurable via `linguaforge_ai_retry_policy` filter
+- WP-CLI `fill-translations` and `missing-translations` commands; `--with-meta-description` on all translation commands
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

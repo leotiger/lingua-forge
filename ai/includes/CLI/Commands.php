@@ -92,6 +92,14 @@ class Commands {
      *   had clicked "Generate Meta Description" in the post metabox. Skipped
      *   on --dry-run (no target post exists to write to).
      *
+     * [--debug]
+     * : Enable translation debug logging for this run. Forces debug-file writes
+     *   to wp-content/uploads/lingua-forge-debug/ regardless of the Settings
+     *   toggle, and prints the source prompt and raw API response for each
+     *   language directly in the terminal after the call returns. Provider errors
+     *   (timeouts, HTTP failures, truncation) are also echoed inline. Useful for
+     *   diagnosing a specific post without enabling debug site-wide.
+     *
      * [--format=<format>]
      * : Output format for the per-language results table.
      *   ---
@@ -163,6 +171,12 @@ class Commands {
         $force            = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'force',                 false );
         $force_draft      = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'draft',                 false );
         $with_meta_desc   = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'with-meta-description', false );
+        $debug            = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'debug',                 false );
+
+        if ( $debug ) {
+            Translation::force_debug( true );
+            \WP_CLI::log( '[LF debug] Debug mode ON — prompts and responses will be shown inline and written to ' . Translation::debug_dir() );
+        }
 
         $overrides = $this->collect_worker_config_overrides( $assoc_args );
 
@@ -204,6 +218,10 @@ class Commands {
             ];
 
             $result = $translation->run( $post_id, $params );
+
+            if ( $debug ) {
+                $this->dump_debug_files( $post_id, $lang );
+            }
 
             if ( empty( $result['success'] ) ) {
                 $results[] = [
@@ -540,6 +558,13 @@ class Commands {
      *   description for that post in its target language. Stored under
      *   _linguaforge_meta_description. Skipped on --dry-run.
      *
+     * [--debug]
+     * : Enable translation debug logging for this run. Forces debug-file writes
+     *   to wp-content/uploads/lingua-forge-debug/ regardless of the Settings
+     *   toggle, and prints the source prompt and raw API response for each
+     *   language directly in the terminal after the call returns. Provider errors
+     *   are also echoed inline.
+     *
      * [--format=<format>]
      * : Output format for the per-language results table.
      *   ---
@@ -610,6 +635,12 @@ class Commands {
         $dry_run        = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run',               false );
         $force_draft    = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'draft',                 false );
         $with_meta_desc = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'with-meta-description', false );
+        $debug          = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'debug',                 false );
+
+        if ( $debug ) {
+            Translation::force_debug( true );
+            \WP_CLI::log( '[LF debug] Debug mode ON — prompts and responses will be shown inline and written to ' . Translation::debug_dir() );
+        }
 
         $overrides = $this->collect_worker_config_overrides( $assoc_args );
 
@@ -655,6 +686,10 @@ class Commands {
             ];
 
             $result = $translation->run( $post_id, $params );
+
+            if ( $debug ) {
+                $this->dump_debug_files( $post_id, $lang );
+            }
 
             if ( empty( $result['success'] ) ) {
                 $results[] = [
@@ -760,6 +795,13 @@ class Commands {
      *   description for that post in its target language. Stored under
      *   _linguaforge_meta_description. Skipped on --dry-run and --check-only.
      *
+     * [--debug]
+     * : Enable translation debug logging for this run. Forces debug-file writes
+     *   to wp-content/uploads/lingua-forge-debug/ regardless of the Settings
+     *   toggle, and prints the source prompt and raw API response for each
+     *   language directly in the terminal. Provider errors are also echoed inline.
+     *   Ignored when --check-only is set (no API call is made).
+     *
      * ## EXAMPLES
      *
      *   # See which translations are missing for post 123.
@@ -835,7 +877,13 @@ class Commands {
         $dry_run        = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run',               false );
         $force_draft    = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'draft',                 false );
         $with_meta_desc = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'with-meta-description', false );
+        $debug          = ( ! $check_only ) && (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'debug', false );
         $format         = (string) ( $assoc_args['format'] ?? 'table' );
+
+        if ( $debug ) {
+            Translation::force_debug( true );
+            \WP_CLI::log( '[LF debug] Debug mode ON — prompts and responses will be shown inline and written to ' . Translation::debug_dir() );
+        }
 
         // ── Existing TRID-linked posts ────────────────────────────────────
         $translations = function_exists( 'linguaforge_get_translations' )
@@ -946,6 +994,10 @@ class Commands {
 
             $result = $translation->run( $post_id, $params );
 
+            if ( $debug ) {
+                $this->dump_debug_files( $post_id, $lang );
+            }
+
             if ( empty( $result['success'] ) ) {
                 $results[] = [
                     'lang'      => $lang,
@@ -1035,6 +1087,55 @@ class Commands {
         }
 
         return $overrides;
+    }
+
+    /**
+     * Print the most recently written debug files for a given post + language
+     * to the WP-CLI terminal.
+     *
+     * Called immediately after Translation::run() when --debug is active.
+     * Finds the newest {post_id}-{lang}-*-source.txt and
+     * {post_id}-{lang}-*-response.txt files in the debug directory and echoes
+     * their contents with clear section headers so the prompt and raw API
+     * response are visible inline without tailing a log file.
+     *
+     * @param int    $post_id  Source post ID.
+     * @param string $lang     Target language code.
+     */
+    private function dump_debug_files( int $post_id, string $lang ): void {
+
+        $debug_dir = Translation::debug_dir();
+
+        foreach ( [ 'source', 'response', 'tm-source', 'tm-response' ] as $suffix ) {
+
+            $pattern = $debug_dir . '/' . $post_id . '-' . $lang . '-*-' . $suffix . '.txt';
+            $files   = glob( $pattern );
+
+            if ( empty( $files ) ) {
+                continue;
+            }
+
+            // Sort by modification time descending; take the newest.
+            usort( $files, static fn( string $a, string $b ): int => filemtime( $b ) <=> filemtime( $a ) );
+            $file = $files[0];
+
+            // Only dump files written in the last 60 seconds (this run).
+            if ( time() - filemtime( $file ) > 60 ) {
+                continue;
+            }
+
+            $content = (string) file_get_contents( $file );
+
+            \WP_CLI::log( '' );
+            \WP_CLI::log( sprintf(
+                '[LF debug] ── %s (%s → %s) ──────────────',
+                strtoupper( $suffix ),
+                $post_id,
+                strtoupper( $lang )
+            ) );
+            \WP_CLI::log( $content );
+            \WP_CLI::log( '[LF debug] ────────────────────────────────────' );
+        }
     }
 
     /**

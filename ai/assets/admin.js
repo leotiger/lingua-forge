@@ -105,8 +105,9 @@ document.addEventListener('click', (event) => {
     const panel           = button.closest('.lingua-forge-panel');
     const result          = button.closest('.lingua-forge-content-result');
     const textarea        = panel.querySelector('.lingua-forge-textarea');
-    const translatedTitle = result?.dataset.translatedTitle || '';
-    const footnotesJson   = result?.dataset.footnotes       || '';
+    const translatedTitle = result?.dataset.translatedTitle  || '';
+    const footnotesJson   = result?.dataset.footnotes        || '';
+    const metaDescription = result?.dataset.metaDescription  || '';
 
     if (!textarea) return;
 
@@ -117,6 +118,7 @@ document.addEventListener('click', (event) => {
         translatedContent: textarea.value,
         translatedTitle,
         footnotesJson,
+        metaDescription,
     });
 });
 
@@ -212,6 +214,12 @@ function ensureDiffModal() {
                 </details>
             </section>
 
+            <section class="lingua-forge-diff-modal__meta-desc" data-lf-row="meta-desc" hidden>
+                <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Generated meta description', 'lingua-forge' ) ) }</div>
+                <p class="lingua-forge-diff-modal__meta-desc-text" data-lf-pane="meta-desc"></p>
+                <p class="lingua-forge-diff-modal__meta-desc-note">${ escHtml( __( 'Saved to the meta description field when you apply.', 'lingua-forge' ) ) }</p>
+            </section>
+
             <footer class="lingua-forge-diff-modal__actions">
                 <button type="button" class="components-button is-secondary" data-lf-action="cancel">
                     ${ escHtml( __( 'Cancel', 'lingua-forge' ) ) }
@@ -252,7 +260,7 @@ function wireDiffModalEvents(modal) {
  * The pending-apply context (button, translated payload) is stored on the
  * modal node itself so the Apply handler can reach it without globals.
  */
-function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson }) {
+function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson, metaDescription = '' }) {
 
     const modal   = ensureDiffModal();
     const current = snapshotCurrentEditorState();
@@ -294,7 +302,16 @@ function openApplyDiffModal({ button, translatedContent, translatedTitle, footno
         footnoteRow.hidden = true;
     }
 
-    modal._lfPending = { button, translatedContent, translatedTitle, footnotesJson };
+    // Meta description — shown when Translation chained a meta description.
+    const metaDescRow = modal.querySelector('[data-lf-row="meta-desc"]');
+    if (metaDescription) {
+        modal.querySelector('[data-lf-pane="meta-desc"]').textContent = metaDescription;
+        metaDescRow.hidden = false;
+    } else {
+        metaDescRow.hidden = true;
+    }
+
+    modal._lfPending = { button, translatedContent, translatedTitle, footnotesJson, metaDescription };
     modal.hidden = false;
 }
 
@@ -347,6 +364,11 @@ function ensureContentGenOverlay() {
             <div class="lf-cg-modal__body">
                 <div class="lf-cg-modal__preview" data-lf-cg="preview"></div>
             </div>
+
+            <section class="lf-cg-modal__meta-desc" data-lf-cg="meta-desc-section" hidden>
+                <div class="lf-cg-modal__meta-desc-label">${ escHtml( __( 'Generated meta description', 'lingua-forge' ) ) }</div>
+                <p class="lf-cg-modal__meta-desc-text" data-lf-cg="meta-desc"></p>
+            </section>
 
             <section class="lf-cg-modal__refine">
                 <label class="lf-cg-modal__refine-label" for="lf-cg-refine-input">
@@ -404,6 +426,15 @@ function openContentGenOverlay(data, params, postId) {
     // Render content as HTML so block markup displays naturally in the preview.
     modal.querySelector('[data-lf-cg="preview"]').innerHTML = data.output;
 
+    // Meta description — shown when the server chained one from the generation.
+    const metaDescSection = modal.querySelector('[data-lf-cg="meta-desc-section"]');
+    if (data.meta_description) {
+        modal.querySelector('[data-lf-cg="meta-desc"]').textContent = data.meta_description;
+        metaDescSection.hidden = false;
+    } else {
+        metaDescSection.hidden = true;
+    }
+
     // Reset refinement UI.
     const refineInput = modal.querySelector('.lf-cg-modal__refine-input');
     const statusEl    = modal.querySelector('[data-lf-cg="refine-status"]');
@@ -420,9 +451,10 @@ function openContentGenOverlay(data, params, postId) {
     // Store state for refinement and apply.
     modal._lfCgState = {
         postId,
-        params:        { ...params },
-        currentOutput: data.output,
-        generation:    0,
+        params:                { ...params },
+        currentOutput:         data.output,
+        currentMetaDescription: data.meta_description || '',
+        generation:            0,
     };
 
     modal.hidden = false;
@@ -485,7 +517,8 @@ function closeContentGenOverlay(modal) {
  */
 function applyContentGenToEditor(modal) {
 
-    const output = modal._lfCgState?.currentOutput ?? '';
+    const output   = modal._lfCgState?.currentOutput          ?? '';
+    const metaDesc = modal._lfCgState?.currentMetaDescription ?? '';
     if (!output) return;
 
     const applyBtn = modal.querySelector('[data-lf-cg="apply"]');
@@ -499,6 +532,12 @@ function applyContentGenToEditor(modal) {
     } else {
         const el = document.querySelector('#content');
         if (el) el.value = output;
+    }
+
+    // Write meta description to the Classic metabox field when present.
+    if (metaDesc) {
+        const metaEl = document.querySelector('#meta-description');
+        if (metaEl) metaEl.value = metaDesc;
     }
 
     applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
@@ -567,6 +606,14 @@ async function runContentGenRefinement(modal) {
             // Update preview with the refined content.
             preview.innerHTML = data.output;
 
+            // Update meta description alongside the preview.
+            const metaDescSection = modal.querySelector('[data-lf-cg="meta-desc-section"]');
+            if (data.meta_description) {
+                modal.querySelector('[data-lf-cg="meta-desc"]').textContent = data.meta_description;
+                metaDescSection.hidden = false;
+                state.currentMetaDescription = data.meta_description;
+            }
+
             // Update meta line with refinement counter.
             const parts = [];
             if (data.content_type) parts.push(data.content_type);
@@ -602,7 +649,7 @@ async function performApplyFromModal(modal) {
     const ctx = modal._lfPending;
     if (!ctx) return;
 
-    const { button, translatedContent, translatedTitle, footnotesJson } = ctx;
+    const { button, translatedContent, translatedTitle, footnotesJson, metaDescription } = ctx;
 
     const applyBtn = modal.querySelector('.lingua-forge-diff-modal__apply');
     applyBtn.disabled    = true;
@@ -646,6 +693,14 @@ async function performApplyFromModal(modal) {
                 const classicTitle = document.querySelector('#title');
                 if (classicTitle) classicTitle.value = translatedTitle;
             }
+        }
+
+        // If the translation was accompanied by a generated meta description,
+        // write it to the meta description textarea in the Classic metabox so
+        // the editor sees the result immediately without a second click.
+        if (metaDescription) {
+            const metaEl = document.querySelector('#meta-description');
+            if (metaEl) metaEl.value = metaDescription;
         }
 
         // Success — update the calling button's state and close the modal.
@@ -912,6 +967,10 @@ function renderContentResult(container, data, featureKey, postId) {
         ? ` data-translated-title="${escapeAttr(data.translated_title)}"`
         : '';
 
+    const metaDescAttr = data.meta_description
+        ? ` data-meta-description="${escapeAttr(data.meta_description)}"`
+        : '';
+
     const cachedBadge = data.cached
         ? ` <span class="lingua-forge-cached-badge">${ __( 'cached', 'lingua-forge' ) }</span>`
         : '';
@@ -952,7 +1011,7 @@ function renderContentResult(container, data, featureKey, postId) {
     const copyLabel  = __( 'Copy',            'lingua-forge' );
 
     container.innerHTML = `
-        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}>
+        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}${metaDescAttr}>
             <p class="lingua-forge-result-meta">
                 ${metaSummary}${cachedBadge}
             </p>
@@ -1151,10 +1210,13 @@ function collectParams(panel, featureKey) {
     panel
         .querySelectorAll(
             `.lingua-forge-select[data-feature-ref="${featureKey}"],` +
-            `.lingua-forge-input-textarea[data-feature-ref="${featureKey}"]`
+            `.lingua-forge-input-textarea[data-feature-ref="${featureKey}"],` +
+            `.lingua-forge-checkbox[data-feature-ref="${featureKey}"]`
         )
         .forEach((field) => {
-            params[field.dataset.field] = field.value;
+            params[field.dataset.field] = field.type === 'checkbox'
+                ? (field.checked ? '1' : '')
+                : field.value;
         });
 
     // Pull footnotes from the live editor meta store so translation always

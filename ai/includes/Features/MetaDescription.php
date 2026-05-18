@@ -61,10 +61,32 @@ class MetaDescription implements FeatureInterface {
             return ['success' => false];
         }
 
-        $content = wp_strip_all_tags($post->post_content);
+        // ── Direct-content override ───────────────────────────────────────────
+        // When called from Translation::run() after a successful translation,
+        // the already-translated content is passed directly so we don't need
+        // to re-send the full content in a separate API round-trip.
+        $passed_content = isset($params['content']) ? trim((string) $params['content']) : '';
+        $use_passed     = $passed_content !== '';
 
-        $locale = get_post_meta($post_id, '_lang', true)
-            ?: determine_locale();
+        $content = $use_passed
+            ? wp_strip_all_tags($passed_content)
+            : wp_strip_all_tags($post->post_content);
+
+        // When chaining from Translation, honour the explicit target-language
+        // code so the description is generated in the target language.
+        $locale = '';
+        if ($use_passed && isset($params['lang']) && (string) $params['lang'] !== '') {
+            $locale = sanitize_text_field($params['lang']);
+        }
+        if ($locale === '') {
+            $locale = (string) get_post_meta($post_id, '_lang', true)
+                ?: determine_locale();
+        }
+
+        // Use the translated title when chaining from Translation.
+        $title = isset($params['title']) && (string) $params['title'] !== ''
+            ? sanitize_text_field($params['title'])
+            : $post->post_title;
 
         // Convert WordPress locale (e.g. 'it_IT') or short code (e.g. 'it')
         // to a human-readable name the model can reliably act on.
@@ -72,8 +94,11 @@ class MetaDescription implements FeatureInterface {
         $language  = Translation::get_languages()[$lang_code] ?? $locale;
 
         // ── Cache check ───────────────────────────────────────────────────────
+        // Skip the cache entirely when content is passed directly — the
+        // description corresponds to content not yet saved to the DB, so a
+        // DB-keyed cache entry would be wrong.  Also skip writing to cache.
         $hash   = CacheStore::hash([$post->post_content, $post->post_title, $locale]);
-        $cached = empty($params['force_refresh'])
+        $cached = (!$use_passed && empty($params['force_refresh']))
             ? CacheStore::get($post_id, $this->get_key(), $hash)
             : null;
 
@@ -98,7 +123,7 @@ class MetaDescription implements FeatureInterface {
             ['{{language}}', '{{title}}', '{{content}}'],
             [
                 $language,
-                $post->post_title,
+                $title,
                 mb_substr($content, 0, 5000),
             ],
             $prompt
@@ -124,7 +149,11 @@ class MetaDescription implements FeatureInterface {
 
         $payload = ['output' => $result, 'type' => 'text'];
 
-        CacheStore::set($post_id, $this->get_key(), $hash, $payload);
+        // Only cache when working from saved DB content — passed content is
+        // ephemeral (the translation hasn't been applied to the post yet).
+        if (!$use_passed) {
+            CacheStore::set($post_id, $this->get_key(), $hash, $payload);
+        }
 
         return array_merge(['success' => true], $payload);
     }

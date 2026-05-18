@@ -368,6 +368,20 @@ class MetaBox {
                                     </label>
                                 <?php endif; ?>
 
+                                <?php if ($field['type'] === 'checkbox'): ?>
+                                    <label class="lingua-forge-label lingua-forge-label--inline">
+                                        <input
+                                            type="checkbox"
+                                            class="lingua-forge-checkbox"
+                                            data-field="<?php echo esc_attr($field['name']); ?>"
+                                            data-feature-ref="<?php echo esc_attr($feature->get_key()); ?>"
+                                            value="1"
+                                            <?php checked(!empty($defaults[$field['name']])); ?>
+                                        />
+                                        <?php echo esc_html($field['label']); ?>
+                                    </label>
+                                <?php endif; ?>
+
                                 </div><!-- .lingua-forge-field-wrapper -->
 
                             <?php endforeach; ?>

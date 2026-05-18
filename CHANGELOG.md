@@ -2,6 +2,73 @@
 
 ---
 
+## [1.3.0] — 2026-05-18
+
+Version milestone. No breaking changes; no database migrations required. Consolidates the full 1.2.x series into a named stable release.
+
+### Summary of what shipped across 1.2.x
+
+- **Content Generator overlay** — dedicated single-column overlay with iterative multi-turn refinement (chat with the model to improve its own draft) and automatic meta description generation chained server-side after every generation and every refinement iteration.
+- **Translation meta description chaining** — optional "Also generate meta description" checkbox in the Translation metabox generates a meta description in the same server-side request using the already-translated content, with no second API round-trip.
+- **`MetaDescription::run()` direct-content override** — accepts `content`, `title`, and `lang` params so any feature can chain a meta description from in-memory content without re-reading the post from the database.
+- **WP-CLI `--debug` flag** — available on `translate`, `retranslate`, and `fill-translations`. Forces debug-file writes for that run and echoes the source prompt and raw API response inline in the terminal. Provider errors surface in WP-CLI output regardless of `--debug`.
+- **`Translation::force_debug(bool)`** — runtime debug activation without touching the database option or wp-config.php; used by the CLI flag, also available for custom scripts.
+- **HTTP timeout raised to 300 s** — was hardcoded at 120 s; now 300 s by default and configurable via the `linguaforge_ai_retry_policy` filter (`timeout` key) for very large posts.
+- **WP-CLI `fill-translations` and `missing-translations` commands** — bulk-fill missing router-language translations for a post in one pass; scan all posts of a given type for missing translations.
+- **WP-CLI `--with-meta-description`** — available on `translate`, `retranslate`, and `fill-translations`; generates and saves a meta description for each translated post immediately after writing its content.
+- **Settings → Behavior** — Global AI Preset live preview, renamed Custom prompt instructions field with realistic placeholder, Standard preset temperature hint in dropdown.
+- **Settings → Router tab** — Primary Language selector, Flush Permalinks button, Active Languages chip list, Install Language pack section.
+- **Glossary "any target language" entries** — apply a term to all target languages at once.
+- **Custom prompt instructions honoured on Standard preset** — previously silently discarded; now always applied when saved.
+
+---
+
+## [1.2.17] — 2026-05-18
+
+### Added
+
+- **WP-CLI `--debug` flag on `translate`, `retranslate`, and `fill-translations`** — forces translation debug-file writes for that single run (no need to enable debug site-wide or touch `wp-config.php`), and immediately echoes the source prompt and raw API response for each language to the terminal inline after the call returns. Provider errors — timeouts, HTTP failures, truncation, bad JSON — are also printed inline via the same channel. This makes it possible to inspect exactly what was sent and what came back for a specific failing post without tailing any log file:
+  ```
+  wp linguaforge translate 42 --to=fr --debug
+  wp linguaforge retranslate 42 --to=fr --debug
+  wp linguaforge fill-translations 42 --debug
+  ```
+- **Provider errors now surface in WP-CLI terminal** — `AbstractProvider::log_error()` and `log_retry()` now also call `WP_CLI::log()` when running under WP-CLI, so HTTP failures, truncation warnings, and retry events are visible without checking the PHP error log or WordPress debug.log.
+- **`Translation::force_debug(bool)`** — new public static method that activates debug-file writes for the current process without touching the database option or requiring a `LINGUAFORGE_AI_DEBUG` constant. Used by the CLI `--debug` flag; also available for custom scripts and mu-plugins.
+
+---
+
+## [1.2.16] — 2026-05-18
+
+### Fixed
+
+- **HTTP timeout raised from 120 s to 300 s** — the `wp_remote_post` timeout used for all AI provider calls was hardcoded at 120 seconds. Very large posts requesting 16 000–32 000 output tokens can take longer than that to generate, causing the request to time out and the translation (or content generation) to report failure even though the provider would have succeeded. The default is now 300 seconds. The timeout is now also part of the `linguaforge_ai_retry_policy` filter (`'timeout'` key) so it can be raised further in `wp-config.php` or a must-use plugin for exceptionally large posts without a code change:
+  ```php
+  add_filter( 'linguaforge_ai_retry_policy', function ( $policy ) {
+      $policy['timeout'] = 600;
+      return $policy;
+  } );
+  ```
+
+---
+
+## [1.2.15] — 2026-05-18
+
+### Added
+
+- **Content Generator — automatic meta description** — every content generation (initial and every refinement iteration) now chains a `MetaDescription::run()` call server-side immediately after the content is produced, using the just-generated text directly without a second API round-trip for the full post body. The generated description appears in a blue-tinted panel inside the Content Generator overlay. Clicking Apply to Editor writes both the generated content and the meta description to the editor in one step. The meta description is never stored in the content cache — it reflects the draft content, not the saved post — matching the cache-isolation approach introduced for translation chaining in 1.2.14.
+
+---
+
+## [1.2.14] — 2026-05-18
+
+### Added
+
+- **Translation → "Also generate meta description" checkbox** — when checked, a meta description is generated in the same server-side request immediately after the translated content is produced. The description is derived from the already-translated content already in memory — the full post body is not re-sent to the API a second time. The result appears in a dedicated blue-tinted section inside the diff modal. Clicking Apply writes the translated content **and** the meta description to the editor in one step. Implemented on both the main translation path and the Translation Memory path.
+- **`MetaDescription::run()` — direct content override** — the method now accepts `content`, `title`, and `lang` params. When `content` is provided it is used instead of reading `post_content` from the database, and the result is not written to the translation cache (the content is ephemeral until the post is saved). This enables the translation chaining above and makes the feature composable for future server-side orchestration.
+
+---
+
 ## [1.2.13] — 2026-05-18
 
 ### Added

@@ -73,6 +73,19 @@
     max-width: 100%;
 }
 
+/* Checkbox fields render as a single inline row (label beside the box). */
+.lingua-forge-label--inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.lingua-forge-checkbox {
+    flex-shrink: 0;
+    margin: 0;
+}
+
 /* ── Chunk input textarea ────────────────────────────────────────────────── */
 
 .lingua-forge-input-textarea {
@@ -474,6 +487,28 @@
     margin: 0 0 0.8em;
 }
 
+/* ── Chained meta description (shown when translation produces one) ─────── */
+
+.lingua-forge-diff-modal__meta-desc {
+    padding: 10px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #f0f6fc;
+    font-size: 13px;
+}
+
+.lingua-forge-diff-modal__meta-desc-text {
+    margin: 4px 0 2px;
+    font-style: italic;
+    color: #1d2327;
+    line-height: 1.5;
+}
+
+.lingua-forge-diff-modal__meta-desc-note {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #646970;
+}
+
 /* ── Footnotes (advanced collapsible) ──────────────────────────────────── */
 
 .lingua-forge-diff-modal__footnotes {
@@ -652,6 +687,31 @@
     padding-left: 12px;
     color: #555;
     margin: 0 0 0.8em;
+}
+
+/* ── Generated meta description section ─────────────────────────────────── */
+
+.lf-cg-modal__meta-desc {
+    padding: 10px 20px 12px;
+    border-top: 1px solid #c8dcf0;
+    background: #f0f6fc;
+}
+
+.lf-cg-modal__meta-desc-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #2271b1;
+    margin-bottom: 4px;
+}
+
+.lf-cg-modal__meta-desc-text {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #2c3338;
+    font-style: italic;
 }
 
 /* ── Refinement section ───────────────────────────────────────────────────── */

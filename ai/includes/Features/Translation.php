@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Features;
 
 use LinguaForge\AI\Features\Contracts\FeatureInterface;
+use LinguaForge\AI\Features\MetaDescription;
 use LinguaForge\AI\Providers\ProviderFactory;
 use LinguaForge\AI\Providers\WorkerConfig;
 use LinguaForge\AI\Core\BlockTextExtractor;
@@ -653,6 +654,12 @@ class Translation implements FeatureInterface {
                 'rows'        => 6,
                 'condition'   => ['translate_mode' => 'chunk'],
             ],
+            [
+                'name'      => 'with_meta_description',
+                'type'      => 'checkbox',
+                'label'     => __( 'Also generate meta description', 'lingua-forge' ),
+                'condition' => ['translate_mode' => 'full'],
+            ],
         ];
     }
 
@@ -868,6 +875,9 @@ class Translation implements FeatureInterface {
             );
 
             if (is_array($tm_result)) {
+                if (!empty($params['with_meta_description'])) {
+                    $tm_result = $this->chain_meta_description($tm_result, $post_id, $target_language);
+                }
                 return $tm_result;
             }
             // null return — TM failed gracefully; fall through to existing flow.
@@ -1038,9 +1048,55 @@ class Translation implements FeatureInterface {
             $payload['footnotes'] = $translated_footnotes;
         }
 
+        // Cache the translation payload before chaining meta description —
+        // the meta description is ephemeral (content not yet saved to DB)
+        // and must not be stored in the translation cache entry.
         CacheStore::set($post_id, $cache_key, $hash, $payload);
 
-        return array_merge(['success' => true], $payload);
+        $return_payload = array_merge(['success' => true], $payload);
+
+        if (!empty($params['with_meta_description'])) {
+            $return_payload = $this->chain_meta_description($return_payload, $post_id, $target_language);
+        }
+
+        return $return_payload;
+    }
+
+    // ── Meta description chaining ─────────────────────────────────────────────
+
+    /**
+     * Generate a meta description from the already-translated content and
+     * merge it into the result payload.
+     *
+     * By passing the translated content directly to MetaDescription::run()
+     * we avoid a second content round-trip: the full post body was already
+     * sent to the translation provider, and now the meta description is
+     * derived from the in-memory result rather than re-reading from the DB.
+     * MetaDescription::run() skips its cache in this mode and does not write
+     * a new cache entry (the content hasn't been saved to the post yet).
+     *
+     * @param  array  $result           Already-merged success payload.
+     * @param  int    $post_id          Post being translated.
+     * @param  string $target_language  Two-letter target language code.
+     * @return array  $result augmented with 'meta_description' on success.
+     */
+    private function chain_meta_description(
+        array  $result,
+        int    $post_id,
+        string $target_language
+    ): array {
+
+        $md = (new MetaDescription())->run($post_id, [
+            'content' => $result['output']           ?? '',
+            'title'   => $result['translated_title'] ?? '',
+            'lang'    => $target_language,
+        ]);
+
+        if (!empty($md['success']) && !empty($md['output'])) {
+            $result['meta_description'] = $md['output'];
+        }
+
+        return $result;
     }
 
     // ── Chunk translation ─────────────────────────────────────────────────────
@@ -1164,15 +1220,36 @@ class Translation implements FeatureInterface {
     }
 
     /**
+     * Runtime debug override — set by WP-CLI's --debug flag so debug files
+     * are written for that run without touching the DB option or wp-config.php.
+     */
+    private static bool $debug_override = false;
+
+    /**
+     * Force debug on (or off) for the remainder of the current process.
+     *
+     * Called by WP-CLI commands when --debug is passed. Has no effect on
+     * web requests because the flag is not persisted anywhere.
+     */
+    public static function force_debug( bool $value ): void {
+        self::$debug_override = $value;
+    }
+
+    /**
      * Whether debug logging is currently enabled.
      *
      * Resolution order (constant wins, same pattern WP uses for WP_DEBUG):
-     *   1. LINGUAFORGE_AI_DEBUG constant defined in wp-config.php — value is
+     *   1. Runtime override set via force_debug() — WP-CLI --debug flag.
+     *   2. LINGUAFORGE_AI_DEBUG constant defined in wp-config.php — value is
      *      returned verbatim, regardless of any option setting.
-     *   2. linguaforge_ai_debug_enabled option set via Settings → Maintenance.
-     *   3. Off by default.
+     *   3. linguaforge_ai_debug_enabled option set via Settings → Maintenance.
+     *   4. Off by default.
      */
     public static function debug_enabled(): bool {
+
+        if ( self::$debug_override ) {
+            return true;
+        }
 
         if (defined('LINGUAFORGE_AI_DEBUG')) {
             return (bool) LINGUAFORGE_AI_DEBUG;

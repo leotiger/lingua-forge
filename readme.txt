@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.2.13
+Stable tag: 1.3.0
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,21 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.3.0 =
+Version milestone consolidating the full 1.2.x series. Key additions: Content Generator overlay with iterative multi-turn refinement; automatic meta description chaining after content generation and translation; WP-CLI --debug flag with inline prompt/response output; HTTP timeout raised to 300 s; fill-translations and missing-translations CLI commands; --with-meta-description on all translation commands. No breaking changes; no database migration required.
+
+= 1.2.17 =
+* Added: `--debug` flag on `translate`, `retranslate`, and `fill-translations` — activates debug-file writes for that run and prints source prompt + raw API response inline in the terminal. Provider errors (timeouts, truncation, HTTP failures) are also echoed to WP-CLI output regardless of `--debug`.
+
+= 1.2.16 =
+* Fixed: HTTP timeout for AI provider requests raised from 120 s to 300 s. Very large posts requesting high max_tokens were silently timing out before the provider finished generating. The timeout is now also exposed via the `linguaforge_ai_retry_policy` filter (`'timeout'` key) for sites that need to go higher.
+
+= 1.2.15 =
+* Added: Content Generator now always chains a meta description after every generation and every refinement iteration. The description is generated server-side in the same request using the just-produced content — no second API round-trip. A blue-tinted panel in the overlay shows the result; Apply to Editor writes both the content and the meta description to the editor in one step. The meta description is never stored in the content cache.
+
+= 1.2.14 =
+* Added: Translation metabox now has an "Also generate meta description" checkbox. When checked, the meta description is generated server-side in the same request using the already-translated content — no second round-trip. The result appears in the diff modal and is written to the meta description field when you click Apply.
+
 = 1.2.13 =
 * Added: Content Generator now opens in its own dedicated overlay instead of the side-by-side diff modal. After initial generation an inline **Refine** section lets you submit additional instructions (tone, structure, expansion, etc.) as follow-up turns in the same API conversation — the model receives its previous draft and rewrites from there. Refinements can be repeated any number of times; each iteration is labelled `· Refinement #N` in the overlay header. Apply to Editor inserts the current draft directly without a diff step.
 * Added: `ContentGenerator::run()` multi-turn backend — detects `refine_hint` + `previous_output` params and assembles a four-message conversation array so all three providers (Anthropic, OpenAI, Gemini) handle refinement consistently. Refinements bypass the cache on both read and write, preventing iterative drafts from overwriting the cached initial generation.
@@ -241,6 +256,21 @@ Used when the active provider is set to Google Gemini.
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.3.0 =
+Stable milestone release. No breaking changes; no database migration required. Safe to update from any 1.2.x version.
+
+= 1.2.17 =
+Adds `--debug` flag to all translation CLI commands. No database changes; no migration required.
+
+= 1.2.16 =
+Fixes silent timeout failures on large posts. No database changes; no migration required.
+
+= 1.2.15 =
+Content Generator now always produces a meta description alongside generated content. No database changes; no migration required.
+
+= 1.2.14 =
+Adds chained meta description generation to the translation workflow. No database changes; no migration required.
 
 = 1.2.13 =
 Content Generator redesign: dedicated overlay with iterative multi-turn refinement. No database changes; no migration required.
