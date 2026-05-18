@@ -76,7 +76,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A usage summary (requests, input tokens, output tokens) is available in **Settings → AI Usage** for any date range
 - SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
-- **WP-CLI support** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` commands for scripted and automated workflows
+- **WP-CLI support** — five commands for scripted and automated workflows: `translate`, `retranslate`, `fill-translations`, `missing-translations`, and `cache-clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
 
 ---
 
@@ -245,7 +245,7 @@ lingua-forge/
         AdminToolbar.php             ← Admin bar Quick Translate node
         SettingsPage.php             ← Settings → Lingua Forge AI (5-tab layout)
       CLI/
-        Commands.php                 ← wp linguaforge translate / cache-clear
+        Commands.php                 ← wp linguaforge translate / retranslate / fill-translations / missing-translations / cache-clear
       REST/
         FeatureController.php        ← POST /lingua-forge/v1/feature/{key}/{post_id}
                                         POST /lingua-forge/v1/translate-chunk
@@ -496,6 +496,24 @@ Drafts or rewrites post content from three controls: **Hints** (key points or ro
 
 Uses the **Quality** model tier (default: `claude-sonnet-4-6`, temperature 0.6).
 
+#### Dedicated overlay
+
+After generation completes the result opens in a full-screen single-column overlay — not the side-by-side diff modal used for translation, since there is no "before" version to compare against. The overlay shows a rendered HTML preview of the generated markup with basic Gutenberg typography applied so headings, lists, and blockquotes look close to their final on-screen appearance.
+
+Footer actions: **Cancel** (discard and close), **Copy markup** (copies raw block markup to the clipboard for manual paste), **Apply to Editor** (writes the content directly to the post and closes — no diff step).
+
+#### Iterative refinement
+
+The overlay includes a **Refine** section below the preview. After reviewing the initial draft, write additional instructions in the text field and click **Refine**:
+
+- The request is sent back to the same API endpoint with the full previous draft included as an assistant turn in the conversation.
+- The model receives a four-message thread — `system → user (original prompt) → assistant (previous draft) → user (refine instructions)` — and rewrites from that context rather than starting from scratch.
+- The overlay updates in place with the new draft. Each iteration appends `· Refinement #1`, `· Refinement #2`, etc. to the header meta line so you can track how many passes have run.
+- Refinements can be repeated any number of times. Each pass replaces the preview with the latest draft.
+- Refinements are never written to the result cache, so re-clicking Generate from the metabox always returns the original cached generation, not a refinement.
+
+**Apply to Editor** at any point writes the current draft — whether the initial generation or any refinement — directly to the post.
+
 **Content Generator limits** — configurable from **Settings → Lingua Forge AI → Content Generator**:
 
 | Setting | Default | Description |
@@ -563,23 +581,43 @@ Test Connection pings (from the API Keys tab) are deliberately excluded from usa
 
 ### WP-CLI
 
-Three commands are available for scripted and automated workflows:
+Five commands are available for scripted and automated workflows.
 
-**`wp linguaforge translate <post_id> --to=<langs>`** — translate a post into one or more target languages using the full feature pipeline (cache lookup, Translation Memory, Glossary, Behavior preset). Writes the result into the TRID-linked target-language post. Options: `--force` (skip cache), `--dry-run` (generate but don't write), `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--format=<table|json|csv|yaml>`.
+**`wp linguaforge translate <post_id> --to=<langs>`** — translate a post into one or more target languages using the full feature pipeline (cache lookup, Translation Memory, Glossary, Behavior preset). Writes the result into the TRID-linked target-language post. Options: `--force` (skip cache), `--dry-run` (generate but don't write), `--with-meta-description` (generate and save an AI meta description for each target post immediately after writing the translation), `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--format=<table|json|csv|yaml>`.
 
-**`wp linguaforge retranslate <post_id> --to=<langs>`** — designed for the "source page was edited, retranslate now" workflow. Always bypasses the cache (no `--force` needed), clears the previous cached translation before running, and marks the target post as synced after a successful write so the ⚠ outdated indicator clears. The `--temperature` flag is front-and-centre here because preset tuning is the most common reason to retranslate manually (e.g. `--temperature=0.1` for a legal page). Options: `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--dry-run`, `--format=<table|json|csv|yaml>`.
+**`wp linguaforge retranslate <post_id> --to=<langs>`** — designed for the "source page was edited, retranslate now" workflow. Always bypasses the cache (no `--force` needed), clears the previous cached translation before running, and marks the target post as synced after a successful write so the ⚠ outdated indicator clears. Options: `--with-meta-description`, `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--dry-run`, `--format=<table|json|csv|yaml>`.
+
+**`wp linguaforge fill-translations <post_id>`** — checks which active router languages are missing a translation for the given post and creates them all in one pass. Useful after adding a new language to the router or after bulk-importing source content. Options: `--check-only` (report missing languages, no API calls), `--exclude=<langs>` (comma-separated codes to skip), `--draft` (save targets as draft instead of the source post's status), `--with-meta-description`, `--dry-run`, `--format=<table|json|csv|yaml>`, plus all provider/model/token override flags.
+
+**`wp linguaforge missing-translations <lang> <post_type>`** — scans every post of `<post_type>` whose `_lang` meta matches `<lang>` and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending. Options: `--exclude=<langs>`, `--status=<any|publish|draft|…>` (default `publish`), `--format=<table|json|csv|yaml>`. Pairs directly with `fill-translations`: the warning footer shows the exact command to run on each incomplete post.
 
 **`wp linguaforge cache-clear`** — wipes AI-result cache entries. Bare command truncates the entire table (prompts for confirmation unless `--yes` is passed). Scope with `--feature=translation` or `--post-id=<id>` to target a subset.
 
+#### Common workflows
+
 ```bash
-# Retranslate a legal page in French with strict temperature
+# Find all Catalan pages that are missing translations
+wp linguaforge missing-translations ca page
+
+# Fill every missing translation for a post, including meta descriptions
+wp linguaforge fill-translations 42 --with-meta-description
+
+# Retranslate an edited legal page into French with strict temperature
 wp linguaforge retranslate 123 --to=fr --temperature=0.1
 
-# Translate into three languages at once
-wp linguaforge translate 456 --to=fr,de,es
+# Translate a post into three languages at once, generate meta descriptions too
+wp linguaforge translate 456 --to=fr,de,es --with-meta-description
+
+# Check what fill-translations would do without writing anything
+wp linguaforge fill-translations 42 --check-only
 
 # Clear all cached translations for one post
 wp linguaforge cache-clear --feature=translation --post-id=123
+
+# Pipeline: collect IDs of all incomplete posts and fill them
+wp linguaforge missing-translations ca page --format=json \
+  | jq -r '.[].post_id' \
+  | xargs -I{} wp linguaforge fill-translations {} --with-meta-description
 ```
 
 ---
@@ -699,15 +737,15 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.2.0**
+**Current release — 1.2.13**
 
-- Four AI Behavior Presets (Standard / Technical / Legal / Creative) replace the binary compliance toggle; per-page preset override for Translation and Content Generator
-- Translation Memory — block-level cache shared across posts; Glossary — per-language-pair terminology injected into every prompt
-- Side-by-side diff preview before applying translations; footnotes tab + format toolbar translate button
-- All three Language Router classes now fully namespaced under `LinguaForge\Router` with back-compat aliases
-- Meta Description refactored to `LinguaForge\MetaDescription\Module` with automatic key migration
-- WP-CLI commands, provider retry/backoff, per-user rate limiting, daily quota, token usage telemetry
-- Full WordPress.org Plugin Check compliance including i18n coverage for all new strings
+- Content Generator redesigned with a dedicated single-column overlay and iterative multi-turn refinement — submit additional instructions to improve a draft without starting over; each pass builds on the previous one
+- WP-CLI `fill-translations` and `missing-translations` commands for bulk translation auditing and automation; `--with-meta-description` flag on all translation commands generates and saves AI meta descriptions in the same pass
+- Settings Behavior tab: live preset preview panel, renamed Custom prompt instructions field with placeholder example, Standard preset temperature hint in the dropdown
+- Custom prompt instructions now always apply regardless of active preset (previously ignored on Standard)
+- `LinguaForgeAIBlockAction` / `LinguaForgeAIEditor` JS variable name fixes (space in `wp_localize_script` object name caused console syntax error in block action and editor toolbar)
+
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ## License
 
