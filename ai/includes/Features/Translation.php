@@ -498,10 +498,13 @@ class Translation implements FeatureInterface {
 
         $envelope = json_decode( trim( $result ), true );
         if ( ! is_array( $envelope ) ) {
+            $trimmed          = trim( (string) $result );
+            $looks_truncated  = str_starts_with( $trimmed, '{' ) && ! str_ends_with( $trimmed, '}' );
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unparseable TM response.
             error_log( sprintf(
-                'LinguaForge AI [Translation/TM] post %d: response was not valid JSON. Falling back to non-TM flow. First 200 chars: %s',
+                'LinguaForge AI [Translation/TM] post %d: response was not valid JSON%s. Falling back to non-TM flow. First 200 chars: %s',
                 $post_id,
+                $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
                 mb_substr( (string) $result, 0, 200 )
             ) );
             return null;
@@ -954,16 +957,24 @@ class Translation implements FeatureInterface {
         $envelope = json_decode(trim($result), true);
 
         if (!is_array($envelope)) {
+            $trimmed         = trim((string) $result);
+            $looks_truncated = str_starts_with($trimmed, '{') && !str_ends_with($trimmed, '}');
+
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations fail.
             error_log(sprintf(
-                'LinguaForge AI [Translation] post %d: response was not valid JSON. First 200 chars: %s',
+                'LinguaForge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
                 $post_id,
+                $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
                 mb_substr((string) $result, 0, 200)
             ));
 
             return [
                 'success' => false,
-                'error'   => 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
+                'error'   => $looks_truncated
+                    ? 'Translation output truncated — the translated content exceeded the output token limit. '
+                      . 'Raise "Max output tokens" in Settings → LinguaForge AI → Translation Limits, '
+                      . 'or pass --max-tokens=20000 on the CLI.'
+                    : 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
             ];
         }
 

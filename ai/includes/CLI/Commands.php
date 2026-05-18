@@ -10,17 +10,22 @@ use LinguaForge\AI\Providers\WorkerConfig;
 defined('ABSPATH') || exit;
 
 /**
- * WP-CLI commands for LinguaForge AI.
+ * Translate, retranslate, and manage AI cache for multilingual posts.
  *
- * Registered from ai/ai.php when WP_CLI is defined. Each public method below
- * maps to a sub-command:
+ * ## SUBCOMMANDS
  *
- *   wp linguaforge translate     →  translate()
- *   wp linguaforge retranslate   →  retranslate()
- *   wp linguaforge cache-clear   →  cache_clear()  (underscore → hyphen)
+ *   translate      Translate a post into one or more target languages.
+ *                  Creates missing TRID-linked target posts automatically.
  *
- * The class itself is autoloaded the first time WP-CLI dispatches one of its
- * methods, so command registration cost on every WP-CLI invocation is zero.
+ *   retranslate    Force a fresh retranslation, wiping the prior cache first
+ *                  and marking the translation synced afterwards.
+ *
+ *   cache-clear    Clear AI-result cache entries (whole table, by feature,
+ *                  or by post ID).
+ *
+ * Run `wp linguaforge <subcommand> --help` for full options and examples.
+ *
+ * @package LinguaForge
  */
 class Commands {
 
@@ -51,6 +56,13 @@ class Commands {
      * : Skip the cache. Forces a fresh API call even when an unchanged-input
      *   cache entry exists.
      *
+     * [--draft]
+     * : When a new target post must be created (no TRID-linked post exists yet),
+     *   always create it as 'draft' regardless of the source post's status.
+     *   Without this flag the new post inherits the source status, so a published
+     *   source produces a published translation. Has no effect when a target post
+     *   already exists (wp_update_post never changes post_status).
+     *
      * [--temperature=<float>]
      * : Override the worker temperature (0.0–1.0). Clamped to that range.
      *   When omitted, the feature default (0.2) plus any active Compliance
@@ -78,6 +90,9 @@ class Commands {
      *
      *   # Translate post 123 into French and German, applying to linked posts.
      *   $ wp linguaforge translate 123 --to=fr,de
+     *
+     *   # Translate and force new posts to draft for editorial review first.
+     *   $ wp linguaforge translate 123 --to=fr,de --draft
      *
      *   # Dry-run with a stricter temperature to inspect quality.
      *   $ wp linguaforge translate 123 --to=fr --dry-run --temperature=0.1
@@ -127,8 +142,9 @@ class Commands {
         }
 
         // ── Mode flags + WorkerConfig overrides ───────────────────────────
-        $dry_run = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
-        $force   = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'force', false );
+        $dry_run    = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
+        $force      = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'force',   false );
+        $force_draft = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'draft',  false );
 
         $overrides = $this->collect_worker_config_overrides( $assoc_args );
 
@@ -193,8 +209,8 @@ class Commands {
                 continue;
             }
 
-            // Apply mode — write to the TRID-linked target post.
-            $applied = $this->apply_translation( $post_id, $lang, $result );
+            // Apply mode — write to the TRID-linked target post (create if missing).
+            $applied = $this->apply_translation( $post_id, $lang, $result, $force_draft );
             $applied['lang'] = $lang;
             $results[] = $applied;
         }
@@ -316,6 +332,12 @@ class Commands {
      * [--model=<name>]
      * : Override the worker model string (e.g. 'claude-opus-4-6').
      *
+     * [--draft]
+     * : When a new target post must be created (no TRID-linked post exists yet),
+     *   always create it as 'draft' regardless of the source post's status.
+     *   Without this flag the new post inherits the source status. Has no effect
+     *   when a target post already exists.
+     *
      * [--dry-run]
      * : Generate the translation but don't write to the target post.
      *   Cache is still cleared and a fresh API call is still issued.
@@ -387,7 +409,8 @@ class Commands {
         }
 
         // ── Mode flags + WorkerConfig overrides ───────────────────────────
-        $dry_run = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
+        $dry_run     = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
+        $force_draft = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'draft',   false );
 
         $overrides = $this->collect_worker_config_overrides( $assoc_args );
 
@@ -454,8 +477,8 @@ class Commands {
                 continue;
             }
 
-            // Apply to the TRID-linked target post.
-            $applied         = $this->apply_translation( $post_id, $lang, $result );
+            // Apply to the TRID-linked target post (create if missing).
+            $applied         = $this->apply_translation( $post_id, $lang, $result, $force_draft );
             $applied['lang'] = $lang;
 
             // Mark the target as synced so the ⚠ outdated indicator clears.
@@ -525,20 +548,117 @@ class Commands {
     }
 
     /**
+     * Create a new draft post linked into the source post's TRID translation
+     * group, pre-populated with the translated content and title.
+     *
+     * Called by apply_translation() when no TRID-linked post exists yet for
+     * the target language. The new post inherits the source's post_type,
+     * post_author, and post_status — so a published source produces a published
+     * translation — unless $force_draft is true, in which case it is always
+     * created as 'draft' for editorial review before publishing.
+     *
+     * Only 'publish', 'private', and 'draft' are inherited. Any other source
+     * status (e.g. 'trash', 'auto-draft', 'pending') falls back to 'draft'.
+     *
+     * TRID handling:
+     *   - If the source already has a _trid UUID, the new post shares it.
+     *   - If the source has no _trid yet (edge case for posts created outside
+     *     the Language Router UI), a fresh UUID is generated and assigned to
+     *     both the source and the new post.
+     *
+     * @param int    $source_post_id Post translated FROM.
+     * @param string $target_lang    Target language code (e.g. 'fr').
+     * @param array  $result         Payload from Translation::run().
+     * @param bool   $force_draft    Always create as 'draft', ignoring source status.
+     * @return int New post ID on success, 0 on failure.
+     */
+    private function create_trid_linked_post( int $source_post_id, string $target_lang, array $result, bool $force_draft = false ): int {
+
+        $source = get_post( $source_post_id );
+        if ( ! $source instanceof \WP_Post ) {
+            return 0;
+        }
+
+        // ── TRID — get or create ──────────────────────────────────────────
+        $trid = (string) get_post_meta( $source_post_id, '_trid', true );
+        if ( $trid === '' ) {
+            $trid = wp_generate_uuid4();
+            update_post_meta( $source_post_id, '_trid', $trid );
+        }
+
+        // ── Determine title ───────────────────────────────────────────────
+        $title = ! empty( $result['translated_title'] )
+            ? (string) $result['translated_title']
+            : $source->post_title . ' [' . strtoupper( $target_lang ) . ']';
+
+        // ── Resolve target post_status ────────────────────────────────────
+        // Mirror source status so a published source yields a published
+        // translation. Restrict to safe inheritable values; anything else
+        // (trash, auto-draft, pending, …) falls back to draft.
+        $allowed_statuses = [ 'publish', 'private', 'draft' ];
+        $target_status    = $force_draft
+            ? 'draft'
+            : ( in_array( $source->post_status, $allowed_statuses, true )
+                ? $source->post_status
+                : 'draft' );
+
+        // ── Create the post, bypassing our own save hook ──────────────────
+        $router = \LinguaForge\Router\Router::get_instance();
+        remove_action( 'wp_after_insert_post', [ $router, 'handle_save_post' ],  10 );
+        remove_action( 'wp_after_insert_post', [ $router, 'handle_cache_clear' ], 20 );
+
+        $new_id = wp_insert_post( [
+            'post_title'   => $title,
+            'post_content' => (string) ( $result['output'] ?? '' ),
+            'post_status'  => $target_status,
+            'post_type'    => $source->post_type,
+            'post_author'  => $source->post_author,
+        ], true );
+
+        add_action( 'wp_after_insert_post', [ $router, 'handle_save_post' ],  10, 2 );
+        add_action( 'wp_after_insert_post', [ $router, 'handle_cache_clear' ], 20 );
+
+        if ( is_wp_error( $new_id ) || ! $new_id ) {
+            if ( is_wp_error( $new_id ) ) {
+                \WP_CLI::warning( sprintf(
+                    'wp_insert_post failed for %s: %s',
+                    strtoupper( $target_lang ),
+                    $new_id->get_error_message()
+                ) );
+            }
+            return 0;
+        }
+
+        // ── Link into TRID group ──────────────────────────────────────────
+        update_post_meta( $new_id, '_trid', $trid );
+        update_post_meta( $new_id, '_lang', $target_lang );
+
+        // ── Footnotes ─────────────────────────────────────────────────────
+        if ( ! empty( $result['footnotes'] ) ) {
+            update_post_meta( $new_id, 'footnotes', (string) $result['footnotes'] );
+        }
+
+        return (int) $new_id;
+    }
+
+    /**
      * Write a successful translation result into the TRID-linked target-lang
      * post (post_content + optional post_title), and persist the footnotes
      * meta if the result carries it.
      *
-     * Skips with status 'skipped' when no linked post exists — matches the
-     * editor flow's invariant of never auto-creating posts (that's the
-     * translate-missing command's future job).
+     * When no TRID-linked post exists for the target language, a new post of the
+     * same post_type is created, linked into the source's TRID group, and the
+     * translated content is written into it immediately. The new post inherits
+     * the source's post_status unless $force_draft is true, in which case it is
+     * always created as 'draft' for editorial review.
      *
      * @param int    $source_post_id Post we translated FROM.
      * @param string $target_lang    Target language code (e.g. 'fr').
      * @param array  $result         Payload returned by Translation::run().
+     * @param bool   $force_draft    When true, always create missing posts as 'draft'.
      * @return array{status:string,target_id:int,detail:string}
      */
-    private function apply_translation( int $source_post_id, string $target_lang, array $result ): array {
+    private function apply_translation( int $source_post_id, string $target_lang, array $result, bool $force_draft = false ): array {
 
         // linguaforge_get_translations() is the procedural wrapper around
         // Router::get_translations() — works regardless of whether the
@@ -548,10 +668,35 @@ class Commands {
             : [];
 
         if ( empty( $translations[ $target_lang ] ) ) {
+            // No TRID-linked post yet — create one.
+            $target_id = $this->create_trid_linked_post( $source_post_id, $target_lang, $result, $force_draft );
+
+            if ( ! $target_id ) {
+                return [
+                    'status'    => 'error',
+                    'target_id' => 0,
+                    'detail'    => 'could not create target post — check wp_insert_post error log',
+                ];
+            }
+
+            // Assign a language-specific FSE template when one exists.
+            $target_post = get_post( $target_id );
+            if ( $target_post instanceof \WP_Post ) {
+                \LinguaForge\Router\Router::get_instance()->assign_template_if_needed( $target_id, $target_post, $target_lang );
+            }
+
+            $created_post   = get_post( $target_id );
+            $created_status = $created_post instanceof \WP_Post ? $created_post->post_status : 'unknown';
+
             return [
-                'status'    => 'skipped',
-                'target_id' => 0,
-                'detail'    => 'no TRID-linked target post (run translate-missing to create one — coming later)',
+                'status'    => 'created',
+                'target_id' => $target_id,
+                'detail'    => sprintf(
+                    'created %s post %d (%s)',
+                    $created_status,
+                    $target_id,
+                    ! empty( $result['cached'] ) ? 'from cache' : 'fresh translation'
+                ),
             ];
         }
 

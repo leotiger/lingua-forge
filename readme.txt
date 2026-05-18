@@ -3,7 +3,7 @@ Contributors: ulihake
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.2.1
+Stable tag: 1.2.3
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,12 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+= 1.2.3 =
+* Fixed: German (and other verbose-language) translations failing with a generic "unparseable response" error when Claude 4 returns a truncated JSON envelope without signalling `max_tokens`. Both the main translation path and the Translation Memory path now detect likely truncation (response starts with `{` but does not end with `}`) and return a specific message pointing to the Max output tokens setting or the `--max-tokens` CLI flag.
+
+= 1.2.2 =
+* Fixed: WP-CLI `wp linguaforge translate` and `wp linguaforge retranslate` were silently skipping target languages that had no TRID-linked post instead of creating one. Both commands now create a new draft of the correct post type, link it into the translation group, populate it with the translated content and title, and assign a language-specific FSE template if one exists.
+
 = 1.2.1 =
 * Fixed: Fatal 500 on Admin Link Fixer scan — `WP_Query` inside the namespaced `LinguaForge\Router\LinkFixer` class was missing the global-namespace prefix `\`, causing every scan request from the Pages list to fail with a 500 Internal Server Error since the 1.2.0 namespace migration.
 
@@ -197,6 +203,9 @@ Used when the active provider is set to Google Gemini.
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.2.2 =
+WP-CLI translate and retranslate commands now auto-create missing target posts as drafts and link them into the TRID translation group, rather than skipping languages with no linked post.
 
 = 1.2.1 =
 Fixes a fatal 500 error on the Admin Link Fixer scan introduced by the 1.2.0 namespace migration. Update immediately if you use the Link Fixer in the Pages or Posts list.
