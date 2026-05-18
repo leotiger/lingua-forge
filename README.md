@@ -2,7 +2,7 @@
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 
-LinguaForge is a WordPress plugin for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
+Lingua Forge is a WordPress plugin for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
 
 At its core it does three things that always end up intertwined on multilingual sites:
 
@@ -24,7 +24,7 @@ Current gaps worth knowing: WooCommerce multilingual support and a general-purpo
 
 → [Full competitive analysis — LinguaForge vs WPML vs Polylang](COMPETITIVE-ANALYSIS.md)
 
-## The story behind LinguaForge
+## The story behind Lingua Forge
 
 If you want to understand where this plugin came from and why it exists as a free, open-source project rather than another subscription product, the blog post below covers the full picture in plain language — the necessity that started it, the weeks of intense work, the real website ([cal-talaia.cat](https://cal-talaia.cat)) that served as the test environment, the honest account of building an AI plugin with AI assistance (including the tokens spent and the many corrections along the way), and the social argument for why multilingual tools should belong to everyone.
 
