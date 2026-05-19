@@ -271,9 +271,10 @@ class MetaBox {
 
         $features = Registry::all();
 
-        $presets       = Config::presets();
-        $global_preset = Config::active_preset();
-        $page_preset   = (string) get_post_meta($post->ID, '_linguaforge_preset', true);
+        $presets          = Config::presets();
+        $global_preset    = Config::active_preset();
+        $page_preset      = (string) get_post_meta($post->ID, '_linguaforge_preset', true);
+        $has_custom_addendum = trim( (string) get_option('linguaforge_compliance_addendum', '') ) !== '';
 
         ?>
         <div class="lingua-forge-panel">
@@ -286,11 +287,23 @@ class MetaBox {
                 <select id="lf-page-preset" name="_linguaforge_preset" class="lingua-forge-select" style="width:100%;margin-top:4px;">
                     <option value="global" <?php selected($page_preset, ''); ?>>
                         <?php
-                        printf(
-                            /* translators: %s: name of the globally configured preset */
-                            esc_html__('Global default (%s)', 'lingua-forge'),
-                            esc_html($presets[$global_preset]['label'] ?? $global_preset)
-                        );
+                        // Build the "Global default (…)" label.
+                        // When site-wide custom prompt instructions are saved they always
+                        // apply on top of (or instead of) the preset's built-in addendum,
+                        // so surface that fact in the option text.
+                        // When site-wide custom prompt instructions are saved, they
+                        // always override or supplement the preset addendum (see
+                        // Config::apply_compliance_to_system). Surface this as
+                        // "Custom" so editors understand the link to Settings → Behavior.
+                        // Without custom instructions, show the active preset name.
+                        if ( $has_custom_addendum ) {
+                            // translators: %s: the word "Custom" referring to site-wide custom prompt instructions configured in Settings → Behavior
+                            echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html__( 'Custom', 'lingua-forge' ) );
+                        } else {
+                            $global_label = $presets[$global_preset]['label'] ?? $global_preset;
+                            // translators: %s: name of the globally configured preset
+                            echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html( $global_label ) );
+                        }
                         ?>
                     </option>
                     <?php foreach ($presets as $key => $meta): ?>
@@ -300,7 +313,21 @@ class MetaBox {
                     <?php endforeach; ?>
                 </select>
                 <p class="description" style="font-size:11px;color:#646970;margin-top:4px;">
-                    <?php esc_html_e('Applies to Translation and Content Generation on this page only. Other features use the global preset.', 'lingua-forge'); ?>
+                    <?php
+                    if ( $has_custom_addendum ) {
+                        // Custom addendum is always applied by the server regardless of
+                        // which preset is active here — surface that clearly.
+                        esc_html_e(
+                            'Overrides the AI preset for Translation and Content Generation on this page. Site-wide custom prompt instructions (Settings → Behavior) are always appended to every request regardless of this selection.',
+                            'lingua-forge'
+                        );
+                    } else {
+                        esc_html_e(
+                            'Overrides the AI preset for Translation and Content Generation on this page. All other features always use the global preset.',
+                            'lingua-forge'
+                        );
+                    }
+                    ?>
                 </p>
             </div>
 

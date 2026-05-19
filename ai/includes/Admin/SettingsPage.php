@@ -1220,6 +1220,8 @@ class SettingsPage {
         $lang = sanitize_key( wp_unslash( $_POST['linguaforge_primary_language'] ?? 'ca' ) );
         update_option( 'linguaforge_primary_language', $lang ?: 'ca', false );
 
+        update_option( 'lf_browser_redirect', ! empty( $_POST['lf_browser_redirect'] ), false );
+
         wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . self::PAGE_SLUG . '&lf_router_saved=1#router' );
         exit;
     }
@@ -1390,9 +1392,28 @@ class SettingsPage {
                         </p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Browser language redirect', 'lingua-forge' ); ?>
+                    </th>
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="lf_browser_redirect"
+                                value="1"
+                                <?php checked( get_option( 'lf_browser_redirect', false ) ); ?>
+                            />
+                            <?php esc_html_e( 'Redirect visitors to their preferred language based on the browser\'s Accept-Language header', 'lingua-forge' ); ?>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'When enabled, first-time visitors with no language cookie and no language prefix in the URL are redirected to the closest matching language version. The redirect is skipped if the browser\'s preferred language is not among the active router languages. Once a visitor selects a language via the switcher, the cookie takes priority and the browser header is ignored on all future visits.', 'lingua-forge' ); ?>
+                        </p>
+                    </td>
+                </tr>
             </table>
 
-            <?php submit_button( __( 'Save Primary Language', 'lingua-forge' ), 'secondary' ); ?>
+            <?php submit_button( __( 'Save Router Settings', 'lingua-forge' ), 'secondary' ); ?>
         </form>
 
         <!-- ── Flush Permalinks ─────────────────────────────────────────────── -->

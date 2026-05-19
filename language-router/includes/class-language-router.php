@@ -199,6 +199,7 @@ class Router {
 
 		// AJAX
 		add_action( 'wp_ajax_lf_import_translation', [ $this, 'ajax_import_translation' ] );
+		add_action( 'wp_ajax_lf_set_language',       [ $this, 'ajax_set_language' ] );
 
 		// Admin JS — enqueued via wp_add_inline_script so no hardcoded <script> tags.
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_lang_scripts' ] );
@@ -506,6 +507,18 @@ class Router {
 			if ( in_array( $cookie_lang, $langs, true ) ) return $cookie_lang;
 		}
 
+		// 4. Browser Accept-Language header (opt-in, homepage visits only).
+		// Only reachable when URL has no language prefix, no ?lang= param, and
+		// no lf_lang cookie — i.e. the genuine first visit of a new visitor.
+		// The existing redirect handlers (handle_homepage_redirect etc.) pick up
+		// the LF_LANG value set here and issue the actual redirect; no extra
+		// redirect code is needed. Once the visitor switches language via the
+		// switcher, set_lang_cookie() fires and step 3 wins on all future visits.
+		if ( get_option( 'lf_browser_redirect', false ) ) {
+			$browser_lang = $this->detect_browser_lang( $langs );
+			if ( $browser_lang !== '' ) return $browser_lang;
+		}
+
 		return $default;
 	}
 
@@ -533,7 +546,74 @@ class Router {
 			if ( in_array( $cookie_lang, $langs, true ) ) return $cookie_lang;
 		}
 
+		// 3. Browser Accept-Language header (opt-in).
+		if ( get_option( 'lf_browser_redirect', false ) ) {
+			$browser_lang = $this->detect_browser_lang( $langs );
+			if ( $browser_lang !== '' ) return $browser_lang;
+		}
+
 		return $default;
+	}
+
+	/**
+	 * Parse the HTTP Accept-Language header and return the best matching
+	 * router-known language code, or an empty string when no match is found.
+	 *
+	 * The header value is already sanitized via sanitize_text_field() before
+	 * parsing. Quality values default to 1.0 when absent (RFC 4647). Both
+	 * exact two-char codes ('de') and regional tags ('de-DE', 'de-AT') are
+	 * matched against the router's known two-char language list.
+	 *
+	 * @param  array<string> $langs  Known router language codes (e.g. ['ca','de','en']).
+	 * @return string                Matched two-char language code, or '' on no match.
+	 */
+	private function detect_browser_lang( array $langs ): string {
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized immediately via sanitize_text_field() below; value used only for string parsing against a whitelist.
+		$raw_header = isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] )
+			? sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) )
+			: '';
+
+		if ( $raw_header === '' ) {
+			return '';
+		}
+
+		// Parse "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7,ca;q=0.6".
+		$entries = [];
+		foreach ( array_map( 'trim', explode( ',', $raw_header ) ) as $entry ) {
+			$parts   = explode( ';', $entry );
+			$tag     = strtolower( trim( $parts[0] ) );
+			$quality = 1.0;
+			if ( isset( $parts[1] ) ) {
+				$qstr = trim( $parts[1] );
+				if ( str_starts_with( $qstr, 'q=' ) ) {
+					$quality = (float) substr( $qstr, 2 );
+				}
+			}
+			$entries[] = [ 'tag' => $tag, 'q' => $quality ];
+		}
+
+		// Sort highest quality first.
+		usort( $entries, static fn( array $a, array $b ): int => $b['q'] <=> $a['q'] );
+
+		foreach ( $entries as $entry ) {
+			$tag = $entry['tag'];
+
+			// Exact two-char match (e.g. 'de').
+			if ( strlen( $tag ) === 2 && in_array( $tag, $langs, true ) ) {
+				return $tag;
+			}
+
+			// Prefix match for regional tags (e.g. 'de-de' → 'de', 'de-at' → 'de').
+			if ( strlen( $tag ) > 2 && $tag[2] === '-' ) {
+				$prefix = substr( $tag, 0, 2 );
+				if ( in_array( $prefix, $langs, true ) ) {
+					return $prefix;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	// =========================================================
@@ -1203,22 +1283,170 @@ class Router {
 	}
 
 	public function template_exists( string $slug ): bool {
-		$tpl = get_page_by_path( $slug, OBJECT, 'wp_template' );
-		return ! empty( $tpl );
+		// ── 1. Direct filesystem check (most reliable) ────────────────────────
+		// File-based FSE templates live at {theme}/templates/{slug}.html.
+		// They have NO wp_template DB row until the user edits them in the
+		// Site Editor, so any API-only approach misses them entirely.
+		// Check the child theme first, then the parent theme.
+		foreach ( [ get_stylesheet_directory(), get_template_directory() ] as $theme_dir ) {
+			if ( file_exists( $theme_dir . '/templates/' . $slug . '.html' ) ) {
+				return true;
+			}
+		}
+
+		// ── 2. Block-template API (covers DB-stored / customised templates) ───
+		if ( function_exists( 'get_block_templates' ) ) {
+			return ! empty( get_block_templates( [ 'slug__in' => [ $slug ] ] ) );
+		}
+
+		// ── 3. Fallback for WordPress < 5.8 ──────────────────────────────────
+		return ! empty( get_page_by_path( $slug, OBJECT, 'wp_template' ) );
+	}
+
+	/**
+	 * Unconditionally assigns the language-specific FSE template when the
+	 * user explicitly changes the Language metabox (nonce-verified POST).
+	 * No existence check, no user-chosen-template guard — the user said
+	 * "this post is in language X" and we honour that immediately.
+	 *
+	 * Reverting to the source language clears any auto-assigned template.
+	 */
+	private function force_lang_template( int $post_id, $post, string $lang ): void {
+		if ( ! in_array( $post->post_type, [ 'post', 'page' ] ) ) return;
+
+		$template_slug = $this->resolve_template_for_lang( $post, $lang );
+
+		if ( $template_slug ) {
+			update_post_meta( $post_id, '_wp_page_template', $template_slug );
+			update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+			$this->debug( 'Template forced by explicit language change', [
+				'post_id'  => $post_id,
+				'template' => $template_slug,
+				'lang'     => $lang,
+			] );
+		} else {
+			// Source language — revert to default if we auto-assigned the template.
+			$auto_prev = (string) get_post_meta( $post_id, '_lf_auto_template', true );
+			if ( $auto_prev ) {
+				update_post_meta( $post_id, '_wp_page_template', 'default' );
+				delete_post_meta( $post_id, '_lf_auto_template' );
+				$this->debug( 'Template reverted to default on source language', [
+					'post_id' => $post_id,
+					'was'     => $auto_prev,
+				] );
+			}
+		}
+	}
+
+	/**
+	 * AJAX handler: atomically set language + assign template.
+	 *
+	 * Called by the JS language-change handler via fetch() BEFORE location.reload(),
+	 * guaranteeing the DB writes are committed when the reload's GET fires.
+	 * This eliminates the race between Gutenberg's isSavingPost() becoming false
+	 * (which triggers the reload) and the metabox form POST completing.
+	 *
+	 * Action:  wp_ajax_lf_set_language
+	 * POST:    nonce, post_id, lang
+	 * Returns: {success:true, data:{lang, template}} on success.
+	 */
+	public function ajax_set_language(): void {
+		check_ajax_referer( 'lf_set_language_nonce', 'nonce' );
+
+		$post_id = intval( wp_unslash( $_POST['post_id'] ?? 0 ) );
+		$lang    = sanitize_key( wp_unslash( $_POST['lang'] ?? '' ) );
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( 'Permission denied', 403 );
+		}
+
+		// Allow the source language through (empty string maps to source)
+		// but reject anything that isn't in our languages list.
+		if ( $lang !== '' && ! $this->is_valid_lang( $lang ) ) {
+			wp_send_json_error( 'Invalid language', 400 );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			wp_send_json_error( 'Post not found', 404 );
+		}
+
+		// If lang is empty string, treat as source language.
+		if ( $lang === '' ) {
+			$lang = $this->source_language();
+		}
+
+		$this->set_lang( $post_id, $lang );
+		$this->force_lang_template( $post_id, $post, $lang );
+
+		wp_send_json_success( [
+			'lang'     => $lang,
+			'template' => (string) ( get_post_meta( $post_id, '_wp_page_template', true ) ?: 'default' ),
+		] );
 	}
 
 	public function assign_template_if_needed( int $post_id, $post, string $lang ): void {
 		if ( ! in_array( $post->post_type, [ 'post', 'page' ] ) ) return;
 
 		$template_slug = $this->resolve_template_for_lang( $post, $lang );
-		if ( ! $template_slug ) return;
-		if ( ! $this->template_exists( $template_slug ) ) return;
+		$auto_prev     = (string) get_post_meta( $post_id, '_lf_auto_template', true );
+		$current       = (string) ( get_post_meta( $post_id, '_wp_page_template', true ) ?: '' );
 
-		$current = get_post_meta( $post_id, '_wp_page_template', true );
-		if ( ! empty( $current ) && $current !== 'default' ) return;
+		// Back-compat / migration: _lf_auto_template is new in 1.3.3.
+		// If it has not been recorded yet but the current template matches the
+		// {base}-{lang} naming convention for any active language, treat it as
+		// a previously auto-assigned template so a language change can replace it.
+		if ( empty( $auto_prev ) && ! empty( $current ) && $current !== 'default' ) {
+			$base = $post->post_type === 'page' ? 'page' : 'single';
+			foreach ( $this->languages() as $l ) {
+				if ( $current === $base . '-' . $l ) {
+					$auto_prev = $current;
+					break;
+				}
+			}
+		}
+
+		// Changing to the source language: revert _wp_page_template to 'default'
+		// only when the current template was auto-assigned by us — never touch a
+		// template the editor chose explicitly.
+		if ( ! $template_slug ) {
+			if ( $auto_prev && $current === $auto_prev ) {
+				update_post_meta( $post_id, '_wp_page_template', 'default' );
+				delete_post_meta( $post_id, '_lf_auto_template' );
+				$this->debug( 'Template reverted to default (source language)', [ 'post_id' => $post_id, 'was' => $current ] );
+			}
+			return;
+		}
+
+		// No template_exists() guard here.  WordPress silently falls through to
+		// its normal template hierarchy when _wp_page_template holds a slug
+		// that is not registered, so assigning an as-yet-uncreated slug is
+		// harmless: the correct template will be used as soon as the theme
+		// file exists.  Any existence check that runs in the wp_after_insert_post
+		// context (file_exists, get_block_templates) can silently return false
+		// and leave the meta unset, which is the exact bug we are fixing.
+
+		// If the slug is already set to what we'd assign, just ensure the
+		// tracking key is recorded and return — avoids a redundant meta write.
+		if ( $current === $template_slug ) {
+			update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+			return;
+		}
+
+		// Protect only explicitly user-chosen templates — i.e. non-empty,
+		// non-default, and NOT one we previously auto-assigned.  A previous
+		// auto-assignment (tracked in _lf_auto_template, or matching the
+		// {base}-{lang} naming convention for back-compat) is always replaceable
+		// when the language changes.
+		if ( ! empty( $current ) && $current !== 'default' && $current !== $auto_prev ) return;
 
 		update_post_meta( $post_id, '_wp_page_template', $template_slug );
-		$this->debug( 'Template auto-assigned', [ 'post_id' => $post_id, 'template' => $template_slug ] );
+		update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+		$this->debug( 'Template auto-assigned', [
+			'post_id'  => $post_id,
+			'template' => $template_slug,
+			'previous' => $current ?: 'default',
+		] );
 	}
 
 	// =========================================================
@@ -1270,10 +1498,28 @@ class Router {
 		// inserts, wp_insert_post calls, duplicated-from-source flows) with
 		// _lang already set would never get their language-specific template
 		// assigned, since there's no _lang_previous to compare against.
+		// Template auto-assignment runs on every save — not just on language
+		// changes — so that posts saved before templates existed, or posts whose
+		// tracking meta was cleared, also get the correct template on the next
+		// ordinary update.  assign_template_if_needed() is idempotent and
+		// protects user-chosen templates via its internal guard, so calling it
+		// unconditionally is safe.
 		$previous_lang = get_post_meta( $post_id, '_lang_previous', true );
 		update_post_meta( $post_id, '_lang_previous', $lang );
 
-		if ( ! $previous_lang || $previous_lang !== $lang ) {
+		// Two paths for template assignment:
+		//
+		// • $has_lang_nonce  → explicit user action via the Language metabox.
+		//   The metabox POST fires after the REST PATCH (Gutenberg's save order),
+		//   so this is the authoritative, last-write.  Skip every guard and force
+		//   the template that matches the new language.
+		//
+		// • no nonce         → REST save, autosave, or programmatic insert.
+		//   Use the conservative assign_template_if_needed() which respects the
+		//   user-chosen-template guard and the _lf_auto_template tracking key.
+		if ( $has_lang_nonce ) {
+			$this->force_lang_template( $post_id, $post, $lang );
+		} else {
 			$this->assign_template_if_needed( $post_id, $post, $lang );
 		}
 
@@ -2002,10 +2248,17 @@ class Router {
 			wp_register_script( 'lf-admin-metabox', false, [ 'jquery' ], $version, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via $version.
 			wp_enqueue_script( 'lf-admin-metabox' );
 
-			// Pass nonce as a JS data object so no PHP is embedded in the script body.
+			// Pass nonce + source language.  Template staging in JS uses the
+			// source language to decide whether to clear or set the template slug.
+			// No availableTemplates list — the slug is computed from language +
+			// post type and staged unconditionally; PHP handles the meta write.
 			wp_add_inline_script(
 				'lf-admin-metabox',
-				'var lfAdminMetabox = ' . wp_json_encode( [ 'importNonce' => $nonce ] ) . ';',
+				'var lfAdminMetabox = ' . wp_json_encode( [
+					'importNonce'    => $nonce,
+					'langNonce'      => wp_create_nonce( 'lf_set_language_nonce' ),
+					'sourceLanguage' => $this->source_language(),
+				] ) . ';',
 				'before'
 			);
 			wp_add_inline_script( 'lf-admin-metabox', $this->admin_metabox_js() );
@@ -2053,42 +2306,60 @@ document.addEventListener('click', function(e){
 });
 
 document.addEventListener('change', function(e){
-	var isLangSelect = e.target.classList.contains('lf-lr-lang');
+	var isLangSelect  = e.target.classList.contains('lf-lr-lang');
 	var isInsideTrans = e.target.closest && e.target.closest('#lf_trans');
 	if (!isLangSelect && !isInsideTrans) return;
-	if(typeof wp === 'undefined' || !wp.data) { location.reload(); return; }
-	var editor = wp.data.dispatch('core/editor');
-	var select  = wp.data.select('core/editor');
-	if (!confirm('Change language or relationship? The page will reload.')) return;
-	editor.savePost();
-	var check = setInterval(function(){
-		if (!select.isSavingPost() && !select.isAutosavingPost()) {
-			clearInterval(check); location.reload();
-		}
-	}, 300);
-});
 
-(function(){
-	if(typeof wp === 'undefined' || !wp.data) return;
-	var lastLang = null;
-	document.addEventListener('change', function(e){
-		if(e.target.name !== 'lf_lang') return;
-		var newLang = e.target.value;
-		if(newLang === lastLang) return;
-		lastLang = newLang;
-		var isNew = wp.data.select('core/editor').isEditedPostNew();
-		if (isNew) {
-			wp.data.dispatch('core/notices').createNotice(
-				'info',
-				'Language change has to be applied after saving new posts and pages first.\nPlease do a full reload after changing page language.',
-				{ type: 'snackbar', isDismissible: true }
-			);
+	// Classic editor or no block-editor API: fall back to a plain reload.
+	if (typeof wp === 'undefined' || !wp.data) { location.reload(); return; }
+
+	var dispatch = wp.data.dispatch;
+	var sel      = wp.data.select;
+
+	// ── Translation-group change ─────────────────────────────────────────────
+	// Linked posts change, so a full reload is still required after save.
+	if (isInsideTrans) {
+		if (!confirm('Change relationship? The page will reload after saving.')) return;
+		dispatch('core/editor').savePost();
+		var check = setInterval(function(){
+			if (!sel('core/editor').isSavingPost() && !sel('core/editor').isAutosavingPost()) {
+				clearInterval(check); location.reload();
+			}
+		}, 300);
+		return;
+	}
+
+	// ── Language change ──────────────────────────────────────────────────────
+	// Call lf_set_language AJAX endpoint, which atomically writes _lang and
+	// _wp_page_template on the server (force_lang_template).  Only after the
+	// server confirms the writes are committed do we reload.  This eliminates
+	// the race where location.reload() could fire before the metabox POST
+	// (and force_lang_template) had finished — causing the editor to load
+	// stale _wp_page_template from the DB.
+	var post_id = document.getElementById('post_ID') ? document.getElementById('post_ID').value : 0;
+	var newLang = e.target.value;
+
+	fetch(ajaxurl, {
+		method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: new URLSearchParams({
+			action:  'lf_set_language',
+			nonce:   lfAdminMetabox.langNonce,
+			post_id: post_id,
+			lang:    newLang
+		})
+	})
+	.then(function(r){ return r.json(); })
+	.then(function(data){
+		if (!data.success) {
+			alert('Language update failed: ' + (data.data || 'unknown error'));
 			return;
 		}
-		var permalink = document.querySelector('.editor-post-permalink');
-		if(permalink){ permalink.style.opacity = '0.99'; setTimeout(function(){ permalink.style.opacity = ''; }, 50); }
-	});
-})();
+		// Server has committed; safe to reload — the GET will see the new template.
+		location.reload();
+	})
+	.catch(function(err){ alert('Language update request failed: ' + err); });
+});
 JS;
 	}
 

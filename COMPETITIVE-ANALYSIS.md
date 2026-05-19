@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 1.2.13
+**Date:** May 2026 · Lingua Forge 1.3.6
 
 ---
 
@@ -78,7 +78,7 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 | Translation groups (linked posts) | ✅ TRID / UUID | ✅ | ✅ | N/A (string-based) | N/A (cloud-based) | ✅ (cross-site relationships) |
 | Outdated translation tracking | ✅ ⚠ indicator | ✅ dashboard | ✅ Pro | ✅ (visual indicator) | ❌ | ❌ |
 | Cookie / query-param detection | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Browser auto-redirect | ❌ | ✅ | ✅ Pro | ✅ Business | ✅ | ✅ |
+| Browser auto-redirect | ✅ opt-in (Accept-Language header) | ✅ | ✅ Pro | ✅ Business | ✅ | ✅ |
 | Language Switcher block (FSE) | ✅ | ✅ (add-on) | ✅ Pro | ✅ | ✅ (widget/block) | ✅ |
 | Language-specific FSE templates | ✅ (`page-de`, `single-fr`) | ❌ (classic-theme approach) | ✅ Pro | ❌ | ❌ | ❌ |
 | Admin link fixer (repairs cross-language internal links) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -96,9 +96,9 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 | `<meta name="description">` + OG + Twitter | ✅ native | Via SEO plugin | Via SEO plugin | ✅ SEO Pack | ✅ | Via SEO plugin |
 | Character counter with colour guidance | ✅ | Via SEO plugin | Via SEO plugin | Via SEO plugin | ❌ | Via SEO plugin |
 | AI meta description generator | ✅ language-aware | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Translated slugs / permalinks | ❌ | ✅ | ✅ Pro | ✅ | ✅ | ✅ |
+| Translated slugs / permalinks | ✅ partial (CLI + Gutenberg apply; ¹) | ✅ | ✅ Pro | ✅ | ✅ | ✅ |
 
-> **Translated slugs** are a meaningful gap for Lingua Forge: a German page at `/de/our-services` rather than `/de/our-services-untranslated` is important for local SEO. WPML, Polylang Pro, TranslatePress, Weglot, and MultilingualPress all handle this. It is on the Lingua Forge roadmap.
+> ¹ **Translated slugs — current state:** the URL slug is now kept in sync with the translated title in two paths: (a) all WP-CLI translation commands (`translate`, `retranslate`, `fill-translations`) derive `post_name` from the translated title via `sanitize_title()`; (b) the admin "Apply translation" modal dispatches a `slug` update to the Gutenberg block editor, which WordPress sanitizes on save. Classic-editor fallback does not update the slug client-side, but a subsequent CLI retranslation corrects it. Permalink segments in block content (e.g. breadcrumbs with hard-coded URLs) are not rewritten automatically — that remains on the roadmap.
 
 ---
 
@@ -227,9 +227,11 @@ Translation content lives in standard WordPress posts and postmeta — exactly w
 
 No WooCommerce support. For any ecommerce site, this is a blocker today. TranslatePress, Weglot, WPML, and MultilingualPress all handle WooCommerce.
 
-### Translated URL slugs
+### Translated URL slugs — partially resolved
 
-Lingua Forge does not translate the URL slug component. `/de/our-services` stays `/de/our-services` rather than becoming `/de/unsere-leistungen`. All five competitors support slug translation. For multilingual SEO targeting country-specific search queries, this matters.
+As of 1.3.6, Lingua Forge translates the URL slug in two paths: WP-CLI translation commands now derive `post_name` from the translated title automatically, and the admin "Apply translation" modal updates the slug in the Gutenberg block editor on apply. New translated posts have always received correct slugs (WordPress auto-derives `post_name` from `post_title` on insert).
+
+What remains: the classic-editor admin path does not update the slug client-side (a CLI retranslation corrects it); and permalink segments embedded inside block content (e.g. hard-coded breadcrumb links, internal anchor hrefs) are not rewritten automatically. All five competitors handle slug translation more completely, and the gap is now narrower rather than absent.
 
 ### Visual / front-end translation editor
 
@@ -263,6 +265,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 - **WP-CLI automation** is needed — bulk translation, retranslation cron jobs, CI/CD pipeline.
 - **Terminology consistency** across languages is important (Glossary + Translation Memory).
 - **Vendor lock-in** is a concern — all translation data stays in standard WP posts.
+- **Browser language redirect** is needed — first-time visitors are routed to their preferred language based on the Accept-Language header, with cookie taking over on subsequent visits.
 
 ### Choose WPML when:
 - Your site depends on plugins that have already integrated with **WPML's public API** (`icl_object_id`, `wpml_get_language_information`, etc.).
@@ -300,15 +303,15 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 
 | Plugin | Best fit | Core strength | Core limitation |
 |---|---|---|---|
-| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects | Zero cost + AI editorial depth + WP-CLI + FSE-native | No WooCommerce, no visual editor, no slug translation |
+| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects | Zero cost + AI editorial depth + WP-CLI + FSE-native + browser redirect | No WooCommerce, no visual editor, slug translation partial |
 | **WPML** | Plugin-ecosystem-dependent sites, agencies, WooCommerce at scale | Market leader, widest compatibility, agency/CAT workflows | High cost, plugin bloat, metered AI credits |
 | **Polylang** | Budget post-based sites where Lingua Forge is overkill | Lightweight, clean, widely understood | Free tier severely limited; Pro still needs DeepL separately |
 | **TranslatePress** | Teams where visual front-end editing is priority | Front-end editor UX, transparent WooCommerce, predictable pricing | Render-time overhead, no FSE template support, string-match brittleness |
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.2.13 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.3.6 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in and a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches.**
 
-WooCommerce support and slug translation are the two gaps most likely to affect real adoption decisions. Everything else in the competitive surface — routing, hreflang, FSE templates, AI translation and generation, SEO meta output, WP-CLI — is fully covered at 1.2.13.
+WooCommerce support is the remaining gap most likely to affect real adoption decisions. Browser-based language redirect (Accept-Language header, opt-in) and slug translation (CLI + Gutenberg apply) have shipped as of 1.3.x. Everything else in the competitive surface — routing, hreflang, FSE templates, AI translation and generation, SEO meta output, WP-CLI — is fully covered at 1.3.6.

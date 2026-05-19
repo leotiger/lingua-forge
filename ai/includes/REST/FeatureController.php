@@ -285,6 +285,10 @@ class FeatureController {
         // so the AI can see and honour the markup.  sanitize_textarea_field would
         // strip all tags — destroying the block's HTML structure.
         $chunk_text    = wp_kses_post($params['chunk_text'] ?? '');
+        // Optional free-form instructions supplied by the editor alongside the
+        // predefined revision type. Appended to the type's instruction string so
+        // the AI honours both the structural revision goal and the extra guidance.
+        $custom_instruction = sanitize_textarea_field(wp_unslash($params['custom_instruction'] ?? ''));
 
         if (!array_key_exists($revision_type, self::REVISION_TYPES)) {
             return new \WP_Error(
@@ -303,6 +307,14 @@ class FeatureController {
         }
 
         $type_config  = self::REVISION_TYPES[$revision_type];
+        $instruction  = $type_config['instruction'];
+
+        // Append editor-supplied instructions when present, preserving the
+        // type's structural guidance as the leading sentence.
+        if ($custom_instruction !== '') {
+            $instruction .= "\nAdditional instructions from the editor: " . $custom_instruction;
+        }
+
         $prompt_path  = LINGUAFORGE_AI_PATH . '/templates/prompts/block-revision.txt';
 
         if (!file_exists($prompt_path)) {
@@ -329,7 +341,7 @@ class FeatureController {
 
         $prompt = str_replace(
             ['{{instruction}}', '{{content}}'],
-            [$type_config['instruction'], mb_substr(trim($chunk_text), 0, 8000)],
+            [$instruction, mb_substr(trim($chunk_text), 0, 8000)],
             file_get_contents($prompt_path)
         );
 

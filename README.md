@@ -16,11 +16,15 @@ Everything ships as a single installable plugin. No external services beyond an 
 
 ---
 
-## How does it compare to WPML and Polylang?
+## How does it compare to WPML, Polylang, TranslatePress, Weglot, and MultilingualPress?
 
-The short version: Lingua Forge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups — while adding a deeper AI editorial layer that neither ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
+The short version: Lingua Forge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups, browser language redirect, translated slugs — while adding a deeper AI editorial layer that no competitor ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
 
-Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included.
+The competitive landscape splits into three architectural camps. **Post-based plugins** (WPML, Polylang, MultilingualPress, Lingua Forge) create a distinct post record per language — the same approach Lingua Forge uses. **String-replacement plugins** (TranslatePress) intercept page output at render time and swap strings in place; no separate posts, but adds render overhead and can be brittle in complex block-template contexts. **Cloud-proxy SaaS** (Weglot) stores translations externally and serves them via CDN — fast setup, but your content lives in their infrastructure and pricing scales with word count.
+
+Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
+
+Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included. Slug translation is partially covered — CLI commands and the Gutenberg apply path update the slug; the classic-editor path requires a CLI retranslation.
 
 → [Full competitive analysis — Lingua Forge vs WPML vs Polylang vs TranslatePress vs Weglot vs MultilingualPress](COMPETITIVE-ANALYSIS.md)
 
@@ -205,7 +209,7 @@ Token budgets and input limits for Translation are configured separately under *
 
 #### Provider timeouts
 
-All provider API calls use a 120-second timeout. If your host caps `max_execution_time` below this (common on managed hosts at 30–60 s), long translations may fail at the PHP level before the HTTP request completes.
+All provider API calls use a 300-second HTTP timeout by default. This can be overridden via the `linguaforge_ai_retry_policy` filter — add a `'timeout'` key to the returned array (minimum 30 s). If your host caps `max_execution_time` below the timeout value (common on managed hosts at 30–60 s), long translations may fail at the PHP level before the HTTP request completes.
 
 ---
 
@@ -298,9 +302,10 @@ Detection runs in priority order:
 1. **URL segment** — `/de/` at the start of the path is the strongest signal
 2. **`?lang=` query param** — used for search requests (`/?lang=de&s=query`)
 3. **Cookie** — `lf_lang` persists the last detected language across requests
-4. **Fallback** — the configured source language
+4. **Browser `Accept-Language` header** — opt-in; enabled from **Settings → Router → Browser language redirect**. Parses the header in quality order, matches both exact two-char codes (`de`) and regional tags (`de-DE`, `de-AT`) against the active language list. Only fires when steps 1–3 yield no result — i.e. a genuine first visit with no prior preference recorded. Once the visitor picks a language via the switcher, `set_lang_cookie()` fires and the cookie wins on all future visits
+5. **Fallback** — the configured source language
 
-`detect_lang()` uses URL + cookie. `detect_lang_safe()` additionally checks `$_GET['lang']` (safe to call before WP is fully loaded). The result is stored in the `LF_LANG` constant.
+`detect_lang()` uses URL + cookie (+ browser header when the opt-in is enabled). `detect_lang_safe()` additionally checks `$_GET['lang']` (safe to call before WP is fully loaded). The result is stored in the `LF_LANG` constant.
 
 ### Translation model
 
@@ -642,7 +647,7 @@ wp linguaforge missing-translations ca page --format=json \
 
 **Symptom:** Generating a translation or content for a large post fails silently, returns a white screen, or produces a PHP fatal error in the log along the lines of `Maximum execution time of 30 seconds exceeded`.
 
-**Root cause:** Managed hosting plans commonly cap `max_execution_time` at 30–60 seconds. Lingua Forge uses a 120-second HTTP timeout for AI API calls, but PHP will kill the process first if the server limit is lower.
+**Root cause:** Managed hosting plans commonly cap `max_execution_time` at 30–60 seconds. Lingua Forge uses a 300-second HTTP timeout for AI API calls (configurable via the `linguaforge_ai_retry_policy` filter), but PHP will kill the process first if the server limit is lower.
 
 **Fix options (in order of preference):**
 1. Raise the limit for the request in `wp-config.php` or a must-use plugin:
@@ -751,14 +756,18 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.3.0**
+**Current release — 1.3.6**
 
+- **Duplicate toolbar icons fixed** (1.3.6) — Quick Translate no longer appears twice in the main editor toolbar; the block toolbar AI button is now rendered by a single code path after `registerFormatType` was removed
+- **CLI translation resilience for footnoted posts** (1.3.6) — direct-speech quotation marks in translated prose (e.g. `"como"`) are now repaired before JSON decoding; system prompts also include an explicit escaping rule so the failure is avoided at the source
+- **Block Revision instructions** (1.3.5) — free-form instructions textarea in the Revision tab lets editors add per-use tone or style guidance on top of the preset revision type
+- **Meta description apply fixed** (1.3.5) — applying a translation or generated content now writes the meta description to both the Gutenberg store and the Classic metabox textarea in one step; persists on the normal Update save
+- **Browser language redirect** (1.3.1) — opt-in setting in **Settings → Router**; first-time visitors routed to their preferred language via `Accept-Language` header; cookie wins on all subsequent visits
+- **Slug translation** (1.3.2) — WP-CLI translation commands now keep `post_name` in sync with the translated title; the Gutenberg "Apply translation" modal dispatches a `slug` update so the permalink panel reflects the translated title immediately
 - Content Generator overlay with iterative multi-turn refinement — chat with the model to improve its own draft; each pass builds on the previous one
-- Automatic meta description chaining after every content generation and every refinement iteration — one server-side request, no second API round-trip
-- Translation "Also generate meta description" checkbox — chains a meta description in the same request using already-translated content
-- WP-CLI `--debug` flag on all translation commands — forces debug-file writes and prints source prompt and raw API response inline in the terminal; provider errors (timeouts, HTTP failures, truncation) now surface in WP-CLI output unconditionally
+- Automatic meta description chaining after every content generation and refinement — one server-side request, no second API round-trip
+- WP-CLI `--debug` flag on all translation commands with inline prompt/response output
 - HTTP timeout raised from 120 s to 300 s; configurable via `linguaforge_ai_retry_policy` filter
-- WP-CLI `fill-translations` and `missing-translations` commands; `--with-meta-description` on all translation commands
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

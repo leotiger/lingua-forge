@@ -1334,6 +1334,10 @@ class Commands {
 
         if ( ! empty( $result['translated_title'] ) ) {
             $update_args['post_title'] = (string) $result['translated_title'];
+            // wp_update_post() does NOT auto-regenerate post_name when post_title
+            // changes, so we derive it explicitly here — matching the behaviour of
+            // wp_insert_post() used in create_trid_linked_post() for new posts.
+            $update_args['post_name']  = sanitize_title( (string) $result['translated_title'] );
         }
 
         // Bypass our own save-post handler so this content-only update doesn't

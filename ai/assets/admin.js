@@ -138,6 +138,30 @@ function getEditorStore() {
 }
 
 /**
+ * Find an element by ID inside any accessible <iframe> on the page.
+ *
+ * Used as a fallback when code runs in the main-window context but the
+ * target element (e.g. lf_meta_description_field) lives inside the
+ * Gutenberg classic-metabox iframe.  Same-origin only — cross-origin
+ * iframes will throw and are silently skipped.
+ *
+ * @param  {string}      id  Element ID to look for.
+ * @return {Element|null}    First matching element, or null.
+ */
+function findInIframes(id) {
+
+    for (const frame of document.querySelectorAll('iframe')) {
+        try {
+            const el = frame.contentDocument?.getElementById(id);
+            if (el) return el;
+        } catch (_) {
+            // Cross-origin iframe — skip silently.
+        }
+    }
+    return null;
+}
+
+/**
  * Snapshot the current editor title + content as a {title, content} pair.
  * Falls back to the classic-editor #title / #content fields when Gutenberg
  * isn't available.
@@ -534,10 +558,23 @@ function applyContentGenToEditor(modal) {
         if (el) el.value = output;
     }
 
-    // Write meta description to the Classic metabox field when present.
+    // Write meta description to the Gutenberg store and the Classic metabox
+    // textarea so it is persisted and visible before the user hits Update.
     if (metaDesc) {
-        const metaEl = document.querySelector('#meta-description');
-        if (metaEl) metaEl.value = metaDesc;
+
+        // Stage in the editor store — same meta key used by the REST endpoint.
+        if (data) {
+            data.dispatch('core/editor')
+                ?.editPost({ meta: { _linguaforge_meta_description: metaDesc } });
+        }
+
+        // Update the Classic metabox textarea with fallback for cross-frame access.
+        const metaField = document.getElementById('lf_meta_description_field')
+            || findInIframes('lf_meta_description_field');
+        if (metaField) {
+            metaField.value = metaDesc;
+            metaField.dispatchEvent(new Event('input'));
+        }
     }
 
     applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
@@ -641,6 +678,27 @@ async function runContentGenRefinement(modal) {
 }
 
 /**
+ * Convert a translated title into a URL-safe slug for the Gutenberg editor's
+ * slug field.  Latin Extended A/B characters (accented letters used in
+ * Spanish, Catalan, French, German, etc.) are preserved so WordPress can
+ * transliterate them correctly server-side.  The server always runs the value
+ * through sanitize_title() + wp_unique_post_slug(), so this is a best-effort
+ * pre-clean to avoid the permalink panel showing raw text with spaces.
+ *
+ * @param  {string} str  Translated post title.
+ * @return {string}      Slug-safe string.
+ */
+function lfSlugify(str) {
+    return str
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_]+/g, '-')             // spaces / underscores → hyphens
+        .replace(/[^\wÀ-ɏ-]/g, '') // keep ASCII word chars, Latin Extended A-B, hyphens
+        .replace(/-{2,}/g, '-')              // collapse consecutive hyphens
+        .replace(/^-+|-+$/g, '');            // trim leading / trailing hyphens
+}
+
+/**
  * The actual editor write. Same logic as the previous direct-apply path,
  * lifted into its own function so it only runs when the user confirms.
  */
@@ -662,7 +720,14 @@ async function performApplyFromModal(modal) {
         if (data) {
 
             const payload = { content: translatedContent };
-            if (translatedTitle) payload.title = translatedTitle;
+            if (translatedTitle) {
+                payload.title = translatedTitle;
+                // wp_update_post() does not auto-regenerate post_name when
+                // post_title changes.  Passing `slug` here sets the pending
+                // slug in the editor; WordPress sanitizes it via
+                // sanitize_title() + wp_unique_post_slug() on save.
+                payload.slug  = lfSlugify(translatedTitle);
+            }
             if (footnotesJson)   payload.meta  = { footnotes: footnotesJson };
 
             const editorSelect  = data.select('core/editor');
@@ -699,8 +764,27 @@ async function performApplyFromModal(modal) {
         // write it to the meta description textarea in the Classic metabox so
         // the editor sees the result immediately without a second click.
         if (metaDescription) {
-            const metaEl = document.querySelector('#meta-description');
-            if (metaEl) metaEl.value = metaDescription;
+
+            // Stage the value in the Gutenberg editor store so the REST PATCH
+            // on Save includes the new meta description alongside the content.
+            // Re-use the already-resolved `data` store rather than reaching
+            // for window.parent.wp.data again — they are the same reference.
+            if (data) {
+                data.dispatch('core/editor')
+                    ?.editPost({ meta: { _linguaforge_meta_description: metaDescription } });
+            }
+
+            // Update the Classic metabox textarea so the editor can see and
+            // optionally tweak the value before hitting Update.
+            // getElementById works when this code runs inside the classic-metabox
+            // iframe; findInIframes() covers the main-window execution context.
+            const metaField = document.getElementById('lf_meta_description_field')
+                || findInIframes('lf_meta_description_field');
+            if (metaField) {
+                metaField.value = metaDescription;
+                // Fire 'input' so any character counter updates live.
+                metaField.dispatchEvent(new Event('input'));
+            }
         }
 
         // Success — update the calling button's state and close the modal.
@@ -873,10 +957,12 @@ document.addEventListener('click', (event) => {
     // ── Write to the Gutenberg editor store ───────────────────────────────────
     // Keeps the value in sync so the block editor doesn't overwrite it with
     // the stale DB value when the user clicks Update.
-    if (window.parent.wp?.data) {
-        window.parent.wp.data
-            .dispatch('core/editor')
-            ?.editPost({ meta: { meta_description: value } });
+    // Must use the REST-registered meta key (_linguaforge_meta_description),
+    // not the legacy key (meta_description) which is not exposed to the store.
+    const store = getEditorStore();
+    if (store) {
+        store.dispatch('core/editor')
+            ?.editPost({ meta: { _linguaforge_meta_description: value } });
     }
 
     // ── Feedback ──────────────────────────────────────────────────────────────

@@ -34,6 +34,11 @@
 ( function () {
     'use strict';
 
+    // Guard against double-execution (script enqueued via two separate hooks
+    // or loaded twice in any other edge case).
+    if ( window.linguaForgeEditorTranslateInit ) return;
+    window.linguaForgeEditorTranslateInit = true;
+
     if ( typeof LinguaForgeAIEditor === 'undefined' ) return;
 
     /* global wp */

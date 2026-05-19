@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.0
+Stable tag: 1.3.6
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,33 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+
+= 1.3.6 =
+* Fixed: Duplicate Quick Translate icon in the main Gutenberg editor toolbar. A global sentinel (window.linguaForgeEditorTranslateInit) now prevents the script from initialising more than once if it is enqueued via two hooks or loaded twice.
+* Fixed: Duplicate AI action icon in the block toolbar. registerFormatType / BlockFormatControls was rendering a second button alongside the existing addFilter / BlockControls button. Removed the registerFormatType path entirely; footnote editing continues to work via the existing Footnotes tab in the addFilter popover.
+* Fixed: CLI translation failure (wp linguaforge fill_translations) for posts that contain footnotes. Translated prose containing direct-speech quotation marks or technical terms in quotes (e.g. "como") was returned by the AI as bare " characters inside JSON string values, making the response structurally invalid and causing json_decode to return null. A new repair_unescaped_quotes() step in normalise_json_response() now detects and escapes these characters as \" before decoding. System prompts for the translation and TM flows were also hardened with an explicit JSON escaping rule.
+* Fixed: MetaBox.php — translators: comments on esc_html__() calls with placeholders now use the echo sprintf() inline pattern so PHPCS can resolve the comment-to-call association correctly.
+
+= 1.3.5 =
+* Added: Block Revision — optional Instructions textarea in the Revision tab (and Footnotes → Revision sub-tab) of the block toolbar popover. Free-form guidance typed there is appended to the server-side revision prompt, letting editors supply per-use tone, style, or audience hints on top of the preset revision type. Cleared on every new open.
+* Changed: Translation "Also generate meta description" checkbox is now checked by default.
+* Fixed: Applying a translation or generated content now also writes the generated meta description to both the Gutenberg editor store and the Classic metabox textarea in one step. The value is visible and editable before saving, and persists on the normal Update save.
+* Fixed: "Apply to Meta Description" standalone button was dispatching to the wrong Gutenberg store key (meta_description instead of _linguaforge_meta_description), causing the value to be silently overwritten on save. Fixed.
+* Fixed: Added findInIframes() helper for robust meta description field lookup when code runs in the main-window context rather than inside the classic-metabox iframe.
+
+= 1.3.4 =
+* Changed: Language change in the block editor no longer triggers an immediate save and full page reload. The correct FSE template (page-XX / single-XX) is now staged directly in the Gutenberg editor state when the language select changes. The user's normal "Update" click commits both the language and the template in one go. Translation-group changes still save and reload (they affect linked posts). Reverting to the source language clears the staged language template.
+
+= 1.3.3 =
+* Fixed: FSE template auto-assignment on language change. Changing language from one non-source language to another (e.g. DE → FR) now correctly assigns the new language's template (page-fr) instead of leaving the old one (page-de) in place. A new _lf_auto_template tracking key distinguishes auto-assigned templates from explicit editor choices so user-selected templates are still protected. Changing back to the source language now also resets _wp_page_template to 'default' when the template was auto-assigned.
+
+= 1.3.2 =
+* Fixed: URL slug not updated on retranslation. WP-CLI translate / retranslate / fill-translations now explicitly set post_name from the translated title (via sanitize_title) when updating an existing translated post. Previously the slug stayed anchored to the original source-language title on all re-runs.
+* Fixed: Admin "Apply translation" modal now passes a slug derived from the translated title to Gutenberg's editPost dispatch. WordPress sanitizes and deduplicates it on save. The permalink panel in the block editor now reflects the translated title immediately after applying.
+
+= 1.3.1 =
+* Added: Browser language redirect — opt-in toggle in Settings → Router. First-time visitors with no language cookie and no URL prefix are redirected to the closest matching active language based on the browser's Accept-Language header. Cookie wins on all subsequent visits after a language is selected.
+
 = 1.3.0 =
 Version milestone consolidating the full 1.2.x series. Key additions: Content Generator overlay with iterative multi-turn refinement; automatic meta description chaining after content generation and translation; WP-CLI --debug flag with inline prompt/response output; HTTP timeout raised to 300 s; fill-translations and missing-translations CLI commands; --with-meta-description on all translation commands. No breaking changes; no database migration required.
 
@@ -256,6 +283,9 @@ Version milestone consolidating the full 1.2.x series. Key additions: Content Ge
 * Initial release. Merges Language Router, Meta Description, and WPEnhance AI into a single plugin with shared constants, a unified settings page, and a common migration path from mu-plugin installations.
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+Adds opt-in browser language redirect. Off by default; enable in Settings → Router. No database migrations required.
 
 = 1.3.0 =
 Stable milestone release. No breaking changes; no database migration required. Safe to update from any 1.2.x version.

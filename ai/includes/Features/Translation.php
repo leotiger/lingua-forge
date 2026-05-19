@@ -471,7 +471,10 @@ class Translation implements FeatureInterface {
             'Only translate the visible text content. ' .
             'Do NOT add any new HTML tags — especially not <br> or <br/> — ' .
             'that are not already present in the source. ' .
-            'You will receive an array of blocks; return their translations as an array of the same length and order.',
+            'You will receive an array of blocks; return their translations as an array of the same length and order. ' .
+            'CRITICAL JSON RULE: within every JSON string value, any double-quote character " ' .
+            '(used for direct speech, technical terms, or any other purpose) ' .
+            'MUST be escaped as \" — bare " inside a string breaks the JSON.',
             $post_id
         );
         $glossary_section = Glossary::format_for_prompt( $source_lang, $target_language );
@@ -497,16 +500,16 @@ class Translation implements FeatureInterface {
             return null;
         }
 
-        $envelope = json_decode( trim( $result ), true );
+        $normalised_tm    = self::normalise_json_response( (string) $result );
+        $envelope = json_decode( $normalised_tm, true );
         if ( ! is_array( $envelope ) ) {
-            $trimmed          = trim( (string) $result );
-            $looks_truncated  = str_starts_with( $trimmed, '{' ) && ! str_ends_with( $trimmed, '}' );
+            $looks_truncated  = str_starts_with( $normalised_tm, '{' ) && ! str_ends_with( $normalised_tm, '}' );
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for unparseable TM response.
             error_log( sprintf(
                 'Lingua Forge AI [Translation/TM] post %d: response was not valid JSON%s. Falling back to non-TM flow. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
-                mb_substr( (string) $result, 0, 200 )
+                mb_substr( $normalised_tm, 0, 200 )
             ) );
             return null;
         }
@@ -670,13 +673,19 @@ class Translation implements FeatureInterface {
      */
     public function get_field_defaults(int $post_id): array {
 
+        $defaults = [
+            // "Also generate meta description" is on by default so editors
+            // immediately get a translated meta description without a second step.
+            'with_meta_description' => '1',
+        ];
+
         $lang = (string) get_post_meta($post_id, '_lang', true);
 
         if ($lang !== '' && array_key_exists($lang, self::get_languages())) {
-            return ['target_language' => $lang];
+            $defaults['target_language'] = $lang;
         }
 
-        return [];
+        return $defaults;
     }
 
     public function supports(int $post_id): bool {
@@ -923,7 +932,10 @@ class Translation implements FeatureInterface {
             'and attributes exactly as they appear. ' .
             'Only translate the visible text content. ' .
             'Do NOT add any new HTML tags — especially not <br> or <br/> — ' .
-            'that are not already present in the source.',
+            'that are not already present in the source. ' .
+            'CRITICAL JSON RULE: within every JSON string value, any double-quote character " ' .
+            '(used for direct speech, technical terms, or any other purpose) ' .
+            'MUST be escaped as \" — bare " inside a string breaks the JSON.',
             $post_id
         );
 
@@ -965,18 +977,22 @@ class Translation implements FeatureInterface {
         // ===ATTRS=== sentinel-marker format that was REVIEW §2.2's headline
         // fragility complaint. OpenAI and Gemini enforce the schema server-
         // side; Anthropic produces it via prefill + system directive.
-        $envelope = json_decode(trim($result), true);
+        //
+        // normalise_json_response() strips any Markdown code fences that the
+        // model may wrap around the JSON despite instructions — this is the
+        // most common cause of an "unparseable response" error with footnotes.
+        $normalised    = self::normalise_json_response((string) $result);
+        $envelope = json_decode($normalised, true);
 
         if (!is_array($envelope)) {
-            $trimmed         = trim((string) $result);
-            $looks_truncated = str_starts_with($trimmed, '{') && !str_ends_with($trimmed, '}');
+            $looks_truncated = str_starts_with($normalised, '{') && !str_ends_with($normalised, '}');
 
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations fail.
             error_log(sprintf(
                 'Lingua Forge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
-                mb_substr((string) $result, 0, 200)
+                mb_substr($normalised, 0, 200)
             ));
 
             return [
@@ -1188,6 +1204,135 @@ class Translation implements FeatureInterface {
             'type'     => 'chunk',
             'language' => $language_name,
         ];
+    }
+
+    // ── JSON response normalisation ───────────────────────────────────────────
+
+    /**
+     * Strip Markdown code fences and leading prose that models occasionally
+     * emit despite instructions to output bare JSON.
+     *
+     * Claude (and other models) sometimes wraps its JSON response in
+     * ```json…``` fences for complex structured requests — typically when the
+     * schema includes nested arrays such as footnotes.  The system prompt and
+     * user prompt both forbid this, but it still happens.
+     *
+     * Strategy (applied in order):
+     *   1. Trim surrounding whitespace.
+     *   2. If the string starts with ``` (Markdown fence), strip the opening
+     *      ``` / ```json line and the closing ``` trailer, then trim again.
+     *   3. If the result still doesn't start with `{`, try to extract the
+     *      first `{ … }` block from the string — catches the rare case where
+     *      the model prepends a sentence before the JSON object.
+     *
+     * @param  string $text  Raw text returned by the AI provider.
+     * @return string        Best-effort JSON string ready for json_decode().
+     */
+    private static function normalise_json_response(string $text): string {
+
+        $text = trim($text);
+
+        // Step 2 — strip Markdown code fences.
+        if (str_starts_with($text, '`')) {
+            $text = (string) preg_replace('/^```(?:json)?\s*/i', '', $text);
+            $text = (string) preg_replace('/\s*```\s*$/', '', $text);
+            $text = trim($text);
+        }
+
+        // Step 3 — extract first JSON object when preamble precedes it.
+        if (!str_starts_with($text, '{') && !str_starts_with($text, '[')) {
+            if (preg_match('/(\{[\s\S]*\})/u', $text, $matches)) {
+                $text = $matches[1];
+            }
+        }
+
+        // Step 4 — repair unescaped double-quote characters inside string values.
+        // Translated text may contain direct-speech quotes ("he said "no"") or
+        // technical terms in quotes that the model emits as bare " without \-escaping,
+        // producing structurally invalid JSON that json_decode() cannot recover from.
+        // Only run the repair when the fast path already failed, to keep overhead zero
+        // for the vast majority of responses that are already valid JSON.
+        if (json_decode($text) === null) {
+            $text = self::repair_unescaped_quotes($text);
+        }
+
+        return $text;
+    }
+
+    /**
+     * Attempt to fix JSON that contains unescaped double-quote characters inside
+     * string values.
+     *
+     * Scans the JSON byte-by-byte, tracking whether we are inside a string.
+     * When a " is encountered inside a string, a peek-ahead decides its role:
+     *
+     *   - If the next non-whitespace character is a JSON structural token
+     *     (: , } ]) the quote closes the string — treat it as a terminator.
+     *   - Otherwise the quote is content and is escaped to \".
+     *
+     * The heuristic works correctly for quoted direct speech embedded in HTML
+     * or prose (the common AI failure mode). It can mis-classify a content
+     * quote that is immediately followed by , } or ] with no intervening text,
+     * but that is extremely rare in practice and the worst outcome is a second
+     * json_decode failure that the caller already handles gracefully.
+     *
+     * @param  string $json  Fence-stripped candidate JSON string.
+     * @return string        Best-effort repaired JSON string.
+     */
+    private static function repair_unescaped_quotes(string $json): string {
+
+        $out       = '';
+        $len       = strlen($json);   // scan by byte — JSON structural chars are all ASCII
+        $in_string = false;
+        $escape    = false;
+
+        for ($i = 0; $i < $len; $i++) {
+            $c = $json[$i];
+
+            if ($escape) {
+                $out   .= $c;
+                $escape = false;
+                continue;
+            }
+
+            if ($c === '\\') {
+                $out   .= $c;
+                $escape = true;
+                continue;
+            }
+
+            if ($c === '"') {
+                if (!$in_string) {
+                    // Opening a new JSON string.
+                    $in_string = true;
+                    $out      .= $c;
+                    continue;
+                }
+
+                // We are inside a string. Decide: terminator or content quote?
+                // Peek at the next non-whitespace byte.
+                $j = $i + 1;
+                while ($j < $len && ($json[$j] === ' ' || $json[$j] === "\t"
+                        || $json[$j] === "\n" || $json[$j] === "\r")) {
+                    $j++;
+                }
+                $next = $j < $len ? $json[$j] : '';
+
+                if ($next === ':' || $next === ',' || $next === '}' || $next === ']' || $next === '') {
+                    // Looks like a string terminator.
+                    $in_string = false;
+                    $out      .= $c;
+                } else {
+                    // Content quote — escape it.
+                    $out .= '\\"';
+                }
+                continue;
+            }
+
+            $out .= $c;
+        }
+
+        return $out;
     }
 
     // ── Debug helpers ─────────────────────────────────────────────────────────

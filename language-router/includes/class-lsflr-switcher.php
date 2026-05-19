@@ -33,7 +33,7 @@ class Switcher {
 			'lsflr',
 			plugin_dir_url( dirname( __FILE__ ) ) . 'assets/lsflr.css',
 			[],
-			'1.1.9'
+			defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false
 		);
 	}
 
@@ -190,7 +190,7 @@ class Switcher {
 			'lsflr-switcher-editor',
 			'',
 			[ 'wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor' ],
-			'1.1.9',
+			defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via LINGUAFORGE_VERSION.
 			true
 		);
 

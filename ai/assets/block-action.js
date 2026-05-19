@@ -33,10 +33,9 @@
 
     const { addFilter }                                = wp.hooks       || {};
     const { createElement: el, Fragment }              = wp.element     || {};
-    const { ToolbarGroup, ToolbarButton, Button }      = wp.components  || {};
-    const { BlockControls, BlockFormatControls }       = wp.blockEditor || {};
+    const { ToolbarGroup, ToolbarButton }              = wp.components  || {};
+    const { BlockControls }                            = wp.blockEditor || {};
     const { select, dispatch }                         = wp.data        || {};
-    const { registerFormatType }                       = wp.richText    || {};
 
     if ( !addFilter || !el || !BlockControls || !select || !dispatch ) return;
 
@@ -108,21 +107,8 @@
      * Controls what "Apply" does:
      *   'block'    — updateBlockAttributes (default)
      *   'footnote' — editPost({ meta: { footnotes: … } })
-     *   'format'   — formatOnChange( wp.richText.create({ html }) )
      */
     let applyMode = 'block';
-
-    /**
-     * The mode set when the popover was opened — either 'block' or 'format'.
-     * Used to restore applyMode after a footnote action inside a block popover.
-     */
-    let openMode = 'block';
-
-    /**
-     * The RichText onChange callback captured from registerFormatType's edit()
-     * props.  Used by applyToFormat() to write results back.
-     */
-    let formatOnChange = null;
 
     /* ── Build and attach the popover (once) ───────────────────────────────── */
 
@@ -173,13 +159,8 @@
         }
     );
 
-    /* ── Format-toolbar button (fires in blocks AND footnote popovers) ──────── */
+    /* ── Translate icon SVG ────────────────────────────────────────────────── */
 
-    /**
-     * Shared translate icon SVG — same glyph used in the block toolbar button.
-     * Defined once here and referenced by both the ToolbarButton and the
-     * registerFormatType Button below.
-     */
     const translateIconSvg = el(
         'svg',
         {
@@ -195,34 +176,6 @@
             d: 'M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17A15.5 15.5 0 0 1 9 11.35 15.06 15.06 0 0 1 6.69 8H4.68A17.1 17.1 0 0 0 9 13.56l-5.09 5.02L5.5 20l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7 1.62-4.33L19.12 17h-3.24z',
         } )
     );
-
-    if ( registerFormatType && BlockFormatControls && Button ) {
-
-        /**
-         * Phantom format type — the tagName/className are never actually toggled
-         * onto content.  The sole purpose is to inject a Button into the format
-         * toolbar via BlockFormatControls, which renders in BOTH the inline
-         * selection toolbar (block editor) and the footnote editing popover.
-         */
-        registerFormatType( 'lingua-forge/translate', {
-            title:     __( 'Translate / Revise', 'lingua-forge' ),
-            tagName:   'span',
-            className: 'lingua-forge-ft',
-            edit: function ( props ) {
-                return el(
-                    BlockFormatControls,
-                    {},
-                    el( Button, {
-                        icon:  translateIconSvg,
-                        label: __( 'Translate / Revise', 'lingua-forge' ),
-                        onClick: ( event ) => {
-                            openFormatPopover( popoverEl, props, event.currentTarget );
-                        },
-                    } )
-                );
-            },
-        } );
-    }
 
     /* ── Build popover DOM ─────────────────────────────────────────────────── */
 
@@ -340,6 +293,55 @@
                 </div>
             </div>`;
 
+        // ── Programmatic insertion of Instructions textareas ──────────────────
+        //
+        // HTML parsers treat <textarea> content as raw text: once the parser
+        // enters a textarea it consumes everything until </textarea>, which
+        // means sibling elements written in the template literal after the first
+        // textarea (the Block Content one in the translate panel) can silently
+        // vanish from the DOM even though the source looks correct.
+        //
+        // Creating these elements via the DOM API bypasses the parser entirely
+        // and guarantees they always appear between the revision-type select and
+        // the Block Content label regardless of browser or parsing quirks.
+
+        // Revise panel — instructions field (between type select and content textarea).
+        const rvSelect = wrap.querySelector( '#wpai-ba-revision-type' );
+        if ( rvSelect ) {
+            const rvInstrLabel       = document.createElement( 'label' );
+            rvInstrLabel.className   = 'lingua-forge-ba__label';
+            rvInstrLabel.htmlFor     = 'wpai-ba-rv-instructions';
+            rvInstrLabel.textContent = __( 'Instructions (optional)', 'lingua-forge' );
+
+            const rvInstrArea       = document.createElement( 'textarea' );
+            rvInstrArea.id          = 'wpai-ba-rv-instructions';
+            rvInstrArea.className   = 'lingua-forge-ba__textarea lingua-forge-ba__textarea--instructions';
+            rvInstrArea.rows        = 2;
+            rvInstrArea.placeholder = __( 'Extra guidance — tone, style, constraints, target audience…', 'lingua-forge' );
+
+            rvSelect.insertAdjacentElement( 'afterend', rvInstrLabel );
+            rvInstrLabel.insertAdjacentElement( 'afterend', rvInstrArea );
+        }
+
+        // Footnote Revision sub-panel — same field between type select and content textarea.
+        const fnRvSelect = wrap.querySelector( '#wpai-ba-fn-revision-type' );
+        if ( fnRvSelect ) {
+            const fnInstrLabel       = document.createElement( 'label' );
+            fnInstrLabel.className   = 'lingua-forge-ba__label';
+            fnInstrLabel.style.marginTop = '6px';
+            fnInstrLabel.htmlFor     = 'wpai-ba-fn-rv-instructions';
+            fnInstrLabel.textContent = __( 'Instructions (optional)', 'lingua-forge' );
+
+            const fnInstrArea       = document.createElement( 'textarea' );
+            fnInstrArea.id          = 'wpai-ba-fn-rv-instructions';
+            fnInstrArea.className   = 'lingua-forge-ba__textarea lingua-forge-ba__textarea--instructions';
+            fnInstrArea.rows        = 2;
+            fnInstrArea.placeholder = __( 'Extra guidance — tone, style, constraints…', 'lingua-forge' );
+
+            fnRvSelect.insertAdjacentElement( 'afterend', fnInstrLabel );
+            fnInstrLabel.insertAdjacentElement( 'afterend', fnInstrArea );
+        }
+
         return wrap;
     }
 
@@ -382,8 +384,6 @@
             .addEventListener( 'click', () => {
                 if ( applyMode === 'footnote' ) {
                     applyToFootnote( popover );
-                } else if ( applyMode === 'format' ) {
-                    applyToFormat( popover );
                 } else {
                     applyToBlock( popover );
                 }
@@ -449,11 +449,15 @@
         popover.querySelector( '#wpai-ba-tr-input' ).value = content;
         popover.querySelector( '#wpai-ba-rv-input' ).value = content;
 
+        // Clear the instructions textarea on every open so guidance typed for one
+        // block doesn't silently carry over to the next block revision.
+        const rvInstructions = popover.querySelector( '#wpai-ba-rv-instructions' );
+        if ( rvInstructions ) rvInstructions.value = '';
+
         // Reset result panel and apply button text.
         popover.querySelector( '.lingua-forge-ba__result' ).hidden = true;
         const applyBtn = popover.querySelector( '.lingua-forge-ba__apply' );
         if ( applyBtn ) applyBtn.textContent = __( 'Apply to Block', 'lingua-forge' );
-        openMode  = 'block';
         applyMode = 'block';
 
         // Apply language preference on first open (detection + localStorage).
@@ -500,8 +504,6 @@
         activeFootnoteItems = [];
         activeFootnoteId    = null;
         applyMode           = 'block';
-        openMode            = 'block';
-        formatOnChange      = null;
     }
 
     function positionPopover( popover, anchorEl ) {
@@ -517,57 +519,6 @@
 
         popover.style.top  = ( rect.bottom + 6 ) + 'px';
         popover.style.left = left + 'px';
-    }
-
-    /**
-     * Open the popover in "format" mode — triggered by the registerFormatType
-     * button in the inline format toolbar or the footnote editing popover.
-     *
-     * In this mode, Apply calls formatOnChange( wp.richText.create({ html }) )
-     * which writes the result directly back into the RichText being edited
-     * (works for both block text and footnote content).
-     *
-     * @param {HTMLElement} popover    The shared popover element.
-     * @param {Object}      formatProps  props from the format type edit() function
-     *                                   ({ value, onChange, … }).
-     * @param {HTMLElement} anchorEl   The clicked button DOM node for positioning.
-     */
-    function openFormatPopover( popover, formatProps, anchorEl ) {
-
-        if ( popover._armSkip ) popover._armSkip();
-
-        // Store the RichText onChange for later use by applyToFormat.
-        formatOnChange = formatProps.onChange;
-        openMode       = 'format';
-        applyMode      = 'format';
-
-        // Convert current RichTextValue → HTML for the input textareas.
-        const content = ( wp.richText && wp.richText.toHTMLString )
-            ? wp.richText.toHTMLString( { value: formatProps.value } )
-            : ( formatProps.value.text || '' );
-
-        popover.querySelector( '#wpai-ba-tr-input' ).value = content;
-        popover.querySelector( '#wpai-ba-rv-input' ).value = content;
-
-        popover.querySelector( '.lingua-forge-ba__result' ).hidden = true;
-
-        const applyBtn = popover.querySelector( '.lingua-forge-ba__apply' );
-        if ( applyBtn ) applyBtn.textContent = __( 'Apply', 'lingua-forge' );
-
-        // Footnotes tab is not relevant in this context.
-        activeFootnoteItems = [];
-        activeFootnoteId    = null;
-        const fnTab = popover.querySelector( '.lingua-forge-ba__tab--footnotes' );
-        if ( fnTab ) fnTab.hidden = true;
-
-        if ( !popover.dataset.langInitialised ) {
-            initLanguageSelect( popover );
-            popover.dataset.langInitialised = '1';
-        }
-
-        switchTab( popover, 'translate' );
-        positionPopover( popover, anchorEl );
-        popover.hidden = false;
     }
 
     /* ── Tab switching ─────────────────────────────────────────────────────── */
@@ -663,9 +614,11 @@
 
             } else {
 
-                const revisionType = popover.querySelector( '#wpai-ba-revision-type' )?.value || 'improve';
+                const revisionType      = popover.querySelector( '#wpai-ba-revision-type' )?.value || 'improve';
+                const customInstruction = popover.querySelector( '#wpai-ba-rv-instructions' )?.value.trim() || '';
                 url  = `${ LinguaForgeAIBlockAction.restUrl }/revise-block`;
                 body = { revision_type: revisionType, chunk_text: chunkText };
+                if ( customInstruction ) body.custom_instruction = customInstruction;
             }
 
             const res  = await fetch( url, {
@@ -688,14 +641,12 @@
                 resultMeta.innerHTML = `<span class="lingua-forge-ba__ok">${ label }</span>`;
                 outputArea.value     = data.output;
 
-                // Restore apply mode to whatever opened this popover (undoes any
-                // footnote action that may have set applyMode = 'footnote').
-                applyMode = openMode;
+                // Restore apply mode to 'block' (undoes any footnote action
+                // that may have set applyMode = 'footnote').
+                applyMode = 'block';
                 const applyBtnEl = popover.querySelector( '.lingua-forge-ba__apply' );
                 if ( applyBtnEl ) {
-                    applyBtnEl.textContent = openMode === 'format'
-                        ? __( 'Apply', 'lingua-forge' )
-                        : __( 'Apply to Block', 'lingua-forge' );
+                    applyBtnEl.textContent = __( 'Apply to Block', 'lingua-forge' );
                 }
 
             } else {
@@ -861,9 +812,11 @@
                 url  = `${ LinguaForgeAIBlockAction.restUrl }/translate-chunk`;
                 body = { target_language: lang, chunk_text: chunkText };
             } else {
-                const revisionType = popover.querySelector( '#wpai-ba-fn-revision-type' )?.value || 'improve';
+                const revisionType      = popover.querySelector( '#wpai-ba-fn-revision-type' )?.value || 'improve';
+                const customInstruction = popover.querySelector( '#wpai-ba-fn-rv-instructions' )?.value.trim() || '';
                 url  = `${ LinguaForgeAIBlockAction.restUrl }/revise-block`;
                 body = { revision_type: revisionType, chunk_text: chunkText };
+                if ( customInstruction ) body.custom_instruction = customInstruction;
             }
 
             const res  = await fetch( url, {
@@ -937,33 +890,6 @@
         if ( applyBtn ) {
             applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
             setTimeout( () => { applyBtn.textContent = __( 'Apply to Footnote', 'lingua-forge' ); }, 2000 );
-        }
-    }
-
-    /**
-     * Apply the output textarea's content back into the RichText that was being
-     * edited when the format-toolbar button was clicked.
-     *
-     * Works for both regular block text and footnote content — the distinction
-     * is handled by WordPress through the RichText onChange passed by the
-     * format type's edit() props.
-     */
-    function applyToFormat( popover ) {
-
-        if ( !formatOnChange ) return;
-
-        const outputArea = popover.querySelector( '.lingua-forge-ba__textarea--output' );
-        const newContent = outputArea?.value || '';
-        if ( !newContent ) return;
-
-        try {
-            formatOnChange( wp.richText.create( { html: newContent } ) );
-        } catch ( _ ) { return; }
-
-        const applyBtn = popover.querySelector( '.lingua-forge-ba__apply' );
-        if ( applyBtn ) {
-            applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
-            setTimeout( () => { applyBtn.textContent = __( 'Apply', 'lingua-forge' ); }, 2000 );
         }
     }
 
