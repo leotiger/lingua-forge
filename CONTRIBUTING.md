@@ -117,11 +117,11 @@ displays a "forced by constant" indicator when the constant is defined.
 
 Originates from the standalone mu-plugin
 "LanguageSwitcher-ForLanguageRouter" that was folded into Lingua Forge in
-v1.0. As of 1.2.0 the classes are namespaced (`LinguaForge\Router\Switcher`
-/ `LinguaForge\Router\LinkFixer`) with `class_alias` back-compat; the prefix
-survives in the public-facing identifiers below:
+v1.0. Classes are fully namespaced (`LinguaForge\Router\Switcher`,
+`LinguaForge\Router\LinkFixer`); no back-compat aliases remain. The prefix
+survives only in the public-facing identifiers below — these are stable API
+and must not be renamed without a deprecation cycle:
 
-- Back-compat aliases: `LSFLR_Switcher`, `LSFLR_Link_Fixer` (removal target: 1.5).
 - Template-callable functions: `linguaforge_lsflr_render_switcher()`,
   `linguaforge_lsflr_get_languages()`,
   `linguaforge_lsflr_translate_current_url()`.
@@ -745,36 +745,6 @@ live PHP execution test before going to production.
 
 ---
 
-## `class_alias` — the back-compat pattern
-
-When a class is moved into a namespace for the first time, add a
-`\class_alias()` call **at the bottom of the file** (after the closing
-`}` of the class) so existing code that refers to the old global name
-continues to work without changes:
-
-```php
-namespace LinguaForge\Router;
-
-class Switcher {
-    // …
-}
-
-\class_alias( \LinguaForge\Router\Switcher::class, 'LSFLR_Switcher' );
-```
-
-The leading `\` on `class_alias` is required because the call is inside
-a namespace declaration; without it PHP looks for `LinguaForge\Router\class_alias`
-and fatals.
-
-`class_alias` makes the alias a fully-equivalent name: `instanceof`,
-`new`, `static`, and `::class` all resolve correctly. The boot file
-(`language-router.php`) can continue to use the old names without any
-edits.
-
-When the alias is ready for removal (after one release cycle), remove:
-1. The `class_alias` line at the bottom of the class file.
-2. Any surviving references to the old name in the boot file / wrappers.
-
 ---
 
 ## Internationalization — all user-facing strings must be localizable
@@ -857,10 +827,9 @@ A short checklist:
    `__()` with the `lingua-forge` text domain. Add a `/* translators: */`
    comment immediately above any call whose string contains a `%s` / `%d`
    placeholder. See the Internationalization section above.
-7. **If you're moving a class into a namespace**, add a `\class_alias()`
-   at the bottom of the file, run the global-class-reference audit, and
-   note the alias's planned removal version in the docblock. See the
-   `class_alias` section above.
+7. **If you're moving a class into a namespace**, run the
+   global-class-reference audit (grep for the old bare class name across
+   all PHP files) and update every call site before the PR lands.
 8. **If it's a new post-meta key**, check whether it should be in the
    uninstall list and whether the generic unprefixed variant (if any)
    is safe to delete — keys like `meta_description` may be shared with
