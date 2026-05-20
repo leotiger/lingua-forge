@@ -242,12 +242,12 @@ when adding new code.
 
 ## Settings page layout
 
-The Settings page (`Settings → Lingua Forge AI`) uses a five-tab layout
-(General / API Keys / Limits / Behavior / Maintenance). All four
-"settings" tabs live inside a single `<form>` so one Save Settings click
-persists every value. The Maintenance tab is outside the main form
-because its entries are operational forms (override upload, cache clear,
-debug-files clear) each with their own admin-post action.
+The Settings page (`Settings → Lingua Forge AI`) uses an eight-tab layout
+(General / API Keys / Limits / Behavior / Router / Glossary / AI Usage /
+Maintenance). The first four tabs (General, API Keys, Limits, Behavior)
+live inside a single `<form>` so one Save Settings click persists every
+value. The remaining four tabs (Router, Glossary, AI Usage, Maintenance)
+are outside that form — each uses its own dedicated admin-post actions.
 
 When adding a new setting, decide which tab it belongs in:
 
@@ -257,8 +257,17 @@ When adding a new setting, decide which tab it belongs in:
   character caps.
 - **Behavior** — toggles that change *how* the AI features act (block
   editor restrictions, AI behavior preset — Standard / Technical / Legal / Creative).
+- **Router** — Language Router settings (active languages, browser
+  redirect, slug handling). Has its own admin-post save action
+  (`linguaforge_save_router_settings`) and a Flush Permalinks action.
+- **Glossary** — per-language-pair terminology table. Has its own
+  admin-post actions (`linguaforge_glossary_add`,
+  `linguaforge_glossary_delete`).
+- **AI Usage** — read-only usage log (requests, input/output tokens by
+  feature, provider, model, and date). No save action.
 - **Maintenance** — operational forms (cache, debug files, language
-  overrides).
+  overrides, translation memory). Each entry has its own admin-post
+  action.
 
 Tab state is preserved across the save-redirect cycle via
 `sessionStorage`. Each tab is deep-linkable via URL hash (`#behavior`,
@@ -451,9 +460,13 @@ under control; the ignore directive is what makes WPCS tolerate it.
   `LinguaForge\AI\Core\CacheStore`; the public API is `get($post_id,
   $feature, $hash)` / `set(…)` / `delete($post_id, $feature)` /
   `clear_all(): int` plus the `hash($inputs): string` helper.
-- **API keys** are AES-256-CBC-encrypted in `wp_options` rows named
-  `linguaforge_key_{provider}`. Encryption secret derives from
-  `wp_salt('auth')` unless `LINGUAFORGE_SECRET` is defined.
+- **API keys** are AES-256-GCM-encrypted in `wp_options` rows named
+  `linguaforge_key_{provider}`. The provider slug is bound as Additional
+  Authenticated Data (AAD) so cross-provider ciphertext swaps fail the
+  tag check. Encryption secret derives from `wp_salt('auth')` unless
+  `LINGUAFORGE_SECRET` is defined. Legacy v1 (AES-256-CBC) values are
+  decrypted transparently and re-encrypted as v2 on the first successful
+  read (lazy migration).
 - **Translation cache key** is `translation_{lang}` (e.g.
   `translation_fr`) so a single post can hold many language caches
   without collision.
@@ -669,7 +682,15 @@ Run every command from `~/Github/lingua-forge-dev/`:
 - **ESLint / Prettier / Stylelint** use the
   `@wordpress/eslint-plugin/recommended`,
   `@wordpress/stylelint-config/scss`, and `@wordpress/prettier-config`
-  presets out of the box. The npm scripts in
+  presets as the base. Stylelint has four rule overrides in
+  `lingua-forge-dev/.stylelintrc.json`: a BEM-aware
+  `selector-class-pattern` (allows `block__element--modifier` with
+  all-lowercase-hyphenated segments), `camelCaseSvgKeywords: true` to
+  permit the conventional `currentColor` casing, and both
+  `rule-empty-line-before` and `comment-empty-line-before` nulled
+  (the project style does not require blank lines between every rule or
+  before inline comments). New CSS must use proper BEM modifier names
+  (`.block--modifier`, not `.--modifier`). The npm scripts in
   `lingua-forge-dev/package.json` glob over `../lingua-forge/**/*.{js,css}`.
 
 ### Recommended pre-deploy sequence
