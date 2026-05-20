@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -71,13 +71,31 @@ Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
 == Frequently Asked Questions ==
 
+= Can I use Lingua Forge without an AI subscription? =
+
+Yes. The Language Router (URL-based language routing, hreflang injection, language switcher block, FSE template routing) and the Link Fixer work with no API key at all. The AI features — translation, meta description generation, and content generation — are optional enhancements. Simply leave the API key fields empty and the plugin will function as a pure language-routing and multilingual management tool.
+
+= What happens to my content if I deactivate or uninstall the plugin? =
+
+**Deactivating** stops routing and AI features but leaves all data intact — your posts, settings, and meta fields are untouched. Reactivating picks up where you left off.
+
+**Uninstalling (deleting)** always removes plugin settings, API keys, transients, and the AI result cache. By default, language assignments (`_lang`), translation relationships (`_trid`), meta descriptions, the AI glossary, and Translation Memory are **kept** — so a reinstall can pick up where it left off without losing any editorial work. To also remove that data, enable **Settings → Maintenance → Delete content data on uninstall** before deleting the plugin. The translated posts themselves are ordinary WordPress posts and are never deleted regardless of this setting.
+
+= Does this work with classic (non-block) themes? =
+
+Most features work with any theme. Language routing, hreflang injection, the AI meta box, and meta description generation are theme-agnostic. The Language Switcher block requires a block theme or a block-ready widget area. For classic themes, use the `[linguaforge_switcher]` shortcode or call `lsflr_language_switcher()` directly in a template file.
+
+= Can I use Lingua Forge alongside WPML or Polylang? =
+
+Not recommended — all three handle language routing at the URL and content level, and running them in parallel will produce conflicts. Lingua Forge is a replacement, not an add-on. If you are migrating, disable WPML or Polylang before activating Lingua Forge. Post relationships from those plugins are not auto-imported; use the Translation meta box in the post editor to re-link translated posts after migrating.
+
 = Which AI providers are supported? =
 
 Anthropic Claude, OpenAI (GPT), and Google Gemini. You only need an API key for the provider you want to use. The active provider is selected from **Settings → Lingua Forge AI**.
 
 = Where are API keys stored? =
 
-Keys are encrypted with AES-256-CBC using a secret derived from your WordPress auth salts and stored in `wp_options`. Plaintext keys never touch the database. As a fallback, the plugin also reads keys from server environment variables or PHP constants in `wp-config.php`.
+Keys are encrypted with AES-256-GCM (authenticated encryption with provider slug as additional data) using a secret derived from your WordPress auth salts and stored in `wp_options`. Plaintext keys never touch the database. As a fallback, the plugin also reads keys from server environment variables or PHP constants in `wp-config.php`.
 
 = Does this work with FSE / block themes? =
 
@@ -134,6 +152,30 @@ Yes. Language URL prefixes (`/de/`, `/fr/`, etc.) require WordPress to use prett
 7. Translation meta box in the post editor — linked translations per language with Override control.
 8. Admin Link Fixer — dry-run table with per-row Fix and Fix All actions.
 
+== Privacy Policy ==
+
+= Cookie =
+
+The Language Router sets a functional cookie named `lf_lang` to remember the visitor's chosen language (e.g. `ca`, `es`, `de`). The cookie is HttpOnly, lasts 30 days, and contains only a language code. Its value is never stored in the database, never logged, and never sent to any external service. It is read on each request solely to route the visitor to the correct language version of the site.
+
+This is a strictly functional cookie. It does not track behaviour, identify individuals, or serve any analytics purpose.
+
+= AI features and content data =
+
+When an administrator uses the AI translation, generation, or revision features, the relevant post content is sent to the configured third-party AI provider. See the External Services section below for details on which providers are used and what data is transmitted. No content is sent automatically or without administrator action.
+
+= Data stored on your server =
+
+The plugin stores the following data in your WordPress database:
+
+* Encrypted API keys in `wp_options`.
+* AI cache entries (post content hashes and translated output) in a custom table. Cleared via Settings → Maintenance → Clear AI Cache or on plugin uninstall.
+* Translation Memory entries (block-level translated content) in a custom table. Cleared via Settings → Maintenance or on uninstall.
+* AI usage statistics (token counts per date, user, feature, provider) in a custom table. No personally identifiable information beyond the WordPress user ID. Dropped on uninstall.
+* Language metadata (`_lang`, `_trid`, `_lf_trans_*`) stored as post meta on multilingual posts.
+
+All custom tables and plugin-specific options are removed on uninstall.
+
 == External Services ==
 
 This plugin connects to third-party AI APIs to generate and translate content. Connections are only made when an administrator has configured an API key and a user explicitly triggers an AI feature (Generate, Translate, etc.). No data is sent automatically or in the background.
@@ -159,8 +201,15 @@ Used when the active provider is set to Google Gemini.
 * Terms of Service: https://ai.google.dev/gemini-api/terms
 * Privacy Policy: https://policies.google.com/privacy
 
+== Developers ==
+
+The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), passes PHPStan level 5 with WordPress stubs, and is verified clean by the official WordPress Plugin Check tool. JavaScript and CSS are linted via ESLint and Stylelint (@wordpress/scripts). A PHPUnit test suite (unit + integration) ships alongside the source. Source code and contributing guide at https://github.com/leotiger/lingua-forge.
+
 == Changelog ==
 
+
+= 1.4.1 =
+* Changed: Uninstall behaviour — language assignments, translation relationships, meta descriptions, the AI glossary, and Translation Memory are now kept by default when the plugin is deleted. A new toggle in Settings → Maintenance → Uninstall Behaviour allows administrators to opt in to full data removal before uninstalling.
 
 = 1.4.0 =
 * Fixed: Footnotes tab in the Block Action popover is now hidden when the popover is opened from a regular block. It only appears when triggered from inside the WordPress footnote editing UI, which is the context it was designed for.

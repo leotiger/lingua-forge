@@ -108,6 +108,9 @@ class SettingsPage {
         // Translation Memory maintenance (§4.5)
         add_action('admin_post_linguaforge_clear_translation_memory', [MaintenanceTab::class, 'handle_clear_translation_memory']);
 
+        // Uninstall behaviour toggle
+        add_action('admin_post_linguaforge_save_uninstall_setting',   [MaintenanceTab::class, 'handle_save_uninstall_setting']);
+
         // Language Router tab
         add_action('admin_post_linguaforge_save_router_settings',    [RouterTab::class, 'handle_save_router_settings']);
         add_action('admin_post_linguaforge_flush_permalinks',         [RouterTab::class, 'handle_flush_permalinks']);

@@ -6,7 +6,7 @@
  * Plugins → Installed Plugins → Delete.  WordPress calls this file
  * only when the plugin is deleted (not on deactivation).
  *
- * Cleans up:
+ * Always removed:
  *   - All linguaforge_* and lf_* plugin options from wp_options
  *   - Encrypted API key options (linguaforge_key_*)
  *   - Model override options (linguaforge_model_*)
@@ -14,20 +14,30 @@
  *   - Language Router version flag
  *   - AI preset options (linguaforge_active_preset)
  *   - AI result caches stored in post meta (_linguaforge_cache_*)
- *   - Language Router post meta (_lang, _trid, _source_updated_at, etc.)
- *   - Meta description post meta (_linguaforge_meta_description only — the legacy
- *     unprefixed key meta_description is not deleted as it may be used by other plugins)
- *   - Per-page AI preset override (_linguaforge_preset)
+ *   - Derived/regenerable post meta (_search_content)
+ *   - AI cache and usage custom tables
  *   - Per-user language filter preference (lf_lang_filter)
+ *   - The idx_lang composite index on wp_postmeta
  *
- * NOTE: _lang, _trid, and related keys are intentionally generic so other
- * plugins can read them.  If you want to keep this data after removing
- * Lingua Forge, comment out the post meta section below before deleting.
+ * Removed only when Settings → Maintenance → "Delete content data on uninstall"
+ * is explicitly enabled (default: OFF):
+ *   - Language Router post meta (_lang, _lang_previous, _trid,
+ *     _source_updated_at, _translation_source_updated_at)
+ *   - Meta description post meta (_linguaforge_meta_description)
+ *   - Per-page AI preset override (_linguaforge_preset)
+ *   - AI glossary and Translation Memory custom tables
+ *
+ * The legacy unprefixed key meta_description is never deleted — it may be
+ * used by other plugins or themes.
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 global $wpdb;
+
+// Read the content-removal preference BEFORE deleting options — once the
+// options table is cleared this value is gone.
+$linguaforge_remove_content = (bool) get_option( 'linguaforge_remove_content_on_uninstall', false );
 
 // ── wp_options — named keys ───────────────────────────────────────────────────
 
@@ -54,6 +64,8 @@ $linguaforge_named_options = [
     'linguaforge_active_preset',
     // Debug logging toggle (§3.7)
     'linguaforge_ai_debug_enabled',
+    // Uninstall behaviour toggle
+    'linguaforge_remove_content_on_uninstall',
 ];
 
 foreach ( $linguaforge_named_options as $linguaforge_option ) {
@@ -109,55 +121,78 @@ $wpdb->query(
     )
 );
 
-// ── Post meta ─────────────────────────────────────────────────────────────────
+// ── Post meta — always delete (regenerable / derived) ────────────────────────
 
-$linguaforge_post_meta_keys = [
-    // AI result caches — safe to bulk-delete; keyed by pattern below
-    // Language Router
-    '_lang',
-    '_lang_previous',
-    '_trid',
-    '_source_updated_at',
-    '_translation_source_updated_at',
+$linguaforge_always_meta_keys = [
+    // Derived search index — rebuilt on next language assignment save.
     '_search_content',
-    // Meta Description — prefixed key written by this plugin.
-    // The legacy unprefixed key `meta_description` is intentionally NOT deleted
-    // here: it is a generic key that other plugins or themes may also use,
-    // and removing it on uninstall could destroy data that isn't ours.
-    '_linguaforge_meta_description',
-    // Per-page AI preset override
-    '_linguaforge_preset',
 ];
 
-foreach ( $linguaforge_post_meta_keys as $linguaforge_key ) {
-    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- One-shot cleanup on plugin uninstall; not a hot path. The slow-query warning applies to runtime queries, not removal sweeps.
+foreach ( $linguaforge_always_meta_keys as $linguaforge_key ) {
+    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- One-shot cleanup on plugin uninstall; not a hot path.
     $wpdb->delete( $wpdb->postmeta, [ 'meta_key' => $linguaforge_key ] );
 }
 
+// ── Post meta — conditional (content relationships, default: keep) ────────────
+//
+// Deleted only when the administrator has explicitly enabled
+// "Delete content data on uninstall" in Settings → Maintenance.
+// Default is OFF to protect against accidental data loss — language
+// assignments and translation links (_lang, _trid) represent editorial
+// work that cannot be reconstructed automatically.
 
-// ── Custom AI cache table ────────────────────────────────────────────────────
-// Created on first use by CacheStore::ensure_table(). DROP IF EXISTS so this
-// no-ops on installs that never ran the AI module.
+if ( $linguaforge_remove_content ) {
 
+    $linguaforge_content_meta_keys = [
+        // Language Router — routing and relationship data
+        '_lang',
+        '_lang_previous',
+        '_trid',
+        '_source_updated_at',
+        '_translation_source_updated_at',
+        // Meta Description — prefixed key written by this plugin.
+        // The legacy unprefixed key `meta_description` is intentionally NOT
+        // deleted: it is a generic key that other plugins or themes may also
+        // use, and removing it on uninstall could destroy data that isn't ours.
+        '_linguaforge_meta_description',
+        // Per-page AI preset override
+        '_linguaforge_preset',
+    ];
+
+    foreach ( $linguaforge_content_meta_keys as $linguaforge_key ) {
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- One-shot cleanup on plugin uninstall; not a hot path.
+        $wpdb->delete( $wpdb->postmeta, [ 'meta_key' => $linguaforge_key ] );
+    }
+}
+
+
+// ── Custom tables — always drop (pure cache / diagnostic data) ───────────────
+
+// AI result cache — regenerable on demand.
+// Created on first use by CacheStore::ensure_table().
 $linguaforge_ai_cache_table = $wpdb->prefix . 'lingua_forge_ai_cache';
 
-// ── Custom AI usage table ────────────────────────────────────────────────────
+// AI usage / cost tracking — diagnostic data, no editorial value.
 // Created on first successful AI call by UsageRecorder::ensure_table().
-// DROP IF EXISTS so this no-ops on installs that never ran the AI module.
-
 $linguaforge_ai_usage_table = $wpdb->prefix . 'lingua_forge_ai_usage';
-
-// ── Glossary table (§4.6) ──────────────────────────────────────────────
-$linguaforge_ai_glossary_table = $wpdb->prefix . 'lingua_forge_ai_glossary';
-
-// ── Translation Memory table (§4.5) ────────────────────────────────────
-$linguaforge_ai_tm_table = $wpdb->prefix . 'lingua_forge_ai_tm';
 
 // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DROP TABLE on plugin-owned tables; names are $wpdb->prefix + hardcoded suffix, no caller-supplied data. DirectQuery/NoCaching already suppressed by the outer phpcs:disable above.
 $wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_cache_table}" );
 $wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_usage_table}" );
-$wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_glossary_table}" );
-$wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_tm_table}" );
+
+// ── Custom tables — conditional (user-built content, default: keep) ──────────
+
+if ( $linguaforge_remove_content ) {
+
+    // Glossary — user-curated terminology; loss is not automatically recoverable.
+    $linguaforge_ai_glossary_table = $wpdb->prefix . 'lingua_forge_ai_glossary';
+
+    // Translation Memory — accumulated from real translation work.
+    $linguaforge_ai_tm_table = $wpdb->prefix . 'lingua_forge_ai_tm';
+
+    $wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_glossary_table}" );
+    $wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_tm_table}" );
+}
 // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 // ── User meta ─────────────────────────────────────────────────────────────────

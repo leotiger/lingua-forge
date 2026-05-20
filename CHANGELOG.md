@@ -2,6 +2,14 @@
 
 ---
 
+## [1.4.1] — 2026-05-20
+
+### Changed
+
+- **Uninstall behaviour — safe default** — language assignments (`_lang`), translation relationships (`_trid`), meta descriptions, the AI glossary, and Translation Memory are now **kept** when the plugin is deleted. Only settings, API keys, transients, and the AI result cache are removed automatically. A new toggle in **Settings → Maintenance → Uninstall Behaviour** lets administrators opt in to full data removal before uninstalling, preventing accidental loss of editorial content structure.
+
+---
+
 ## [1.4.0] — 2026-05-20
 
 ### Fixed
