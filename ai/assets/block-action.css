@@ -142,7 +142,7 @@
     border:        1px solid #8c8f94;
     border-radius: 3px;
     font-size:     12px;
-    font-family:   ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono",
+    font-family:   ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
                    Menlo, monospace;
     color:         #1d2327;
     resize:        vertical;
@@ -199,6 +199,24 @@
 
 .lingua-forge-ba__error {
     color: #d63638;
+}
+
+/* ── Footnote editor AI button ───────────────────────────────────────────── */
+
+/*
+ * Button injected into the WordPress footnote editing popover toolbar.
+ * The .components-button.has-icon classes supply the base WP toolbar button
+ * styles; this rule adds a left separator line so it visually groups after
+ * the native format buttons (bold, italic, link, etc.).
+ */
+.lingua-forge-fn-ai-btn {
+    border-left:  1px solid rgba(0, 0, 0, 0.1) !important;
+    margin-left:  4px !important;
+    padding-left: 8px !important;
+}
+
+.lingua-forge-fn-ai-btn svg {
+    fill: currentColor;
 }
 
 /* ── Responsive: narrow viewports ───────────────────────────────────────── */

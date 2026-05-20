@@ -82,7 +82,7 @@ class BlockTextExtractor {
         foreach ($translations as $placeholder => $translated) {
 
             $json_escaped = substr(
-                (string) json_encode((string) $translated, JSON_UNESCAPED_UNICODE),
+                (string) wp_json_encode((string) $translated, JSON_UNESCAPED_UNICODE),
                 1,
                 -1
             );
@@ -121,10 +121,8 @@ class BlockTextExtractor {
 
             if ($i % 2 === 1) {
                 $strip = (bool) preg_match('/<!--\s*\/wp:|\/-->/i', $part);
-            } else {
-                if ($strip) {
-                    $part = preg_replace('/<br[\s\/]*>/i', '', $part);
-                }
+            } elseif ($strip) {
+                $part = preg_replace('/<br[\s\/]*>/i', '', $part);
             }
         }
         unset($part);

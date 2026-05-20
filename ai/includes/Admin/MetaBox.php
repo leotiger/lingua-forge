@@ -40,15 +40,13 @@ class MetaBox {
             [self::class, 'enqueue_editor_plugin_for_site_editor']
         );
 
-        // Block toolbar Translate / Revise button — loaded alongside the editor
-        // plugin so it is available in both the post editor and the FSE editor.
+        // Block toolbar Translate / Revise button.
+        // enqueue_block_editor_assets fires at the right moment in both the
+        // post editor and the FSE site editor (WP 5.8+), so a single hook is
+        // sufficient — no admin_enqueue_scripts fallback needed here.
         add_action(
             'enqueue_block_editor_assets',
             [self::class, 'enqueue_block_action']
-        );
-        add_action(
-            'admin_enqueue_scripts',
-            [self::class, 'enqueue_block_action_for_site_editor']
         );
 
         add_action(
@@ -189,7 +187,7 @@ class MetaBox {
         wp_enqueue_script(
             'lingua-forge-block-action',
             LINGUAFORGE_AI_URL . '/assets/block-action.js',
-            ['wp-hooks', 'wp-element', 'wp-components', 'wp-block-editor', 'wp-data', 'wp-i18n'],
+            ['wp-rich-text', 'wp-element', 'wp-components', 'wp-block-editor', 'wp-data', 'wp-i18n'],
             LINGUAFORGE_VERSION,
             true
         );
@@ -419,7 +417,7 @@ class MetaBox {
                         type="button"
                         class="button button-secondary lingua-forge-action"
                         data-feature="<?php echo esc_attr($feature->get_key()); ?>"
-                        data-post-id="<?php echo esc_attr($post->ID); ?>"
+                        data-post-id="<?php echo esc_attr( (string) $post->ID ); ?>"
                     >
                         <?php echo esc_html($feature->get_label()); ?>
                     </button>

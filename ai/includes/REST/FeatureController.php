@@ -358,7 +358,7 @@ class FeatureController {
         // strict-preservation addendum. Otherwise we keep the original
         // user-only message shape to avoid surprising the model.
         $messages = [];
-        if (Config::compliance_enabled()) {
+        if (Config::active_preset() !== 'standard') {
             $messages[] = [
                 'role'    => 'system',
                 'content' => Config::apply_compliance_to_system(''),

@@ -1,0 +1,79 @@
+<?php
+/**
+ * Class LinguaForge\Router\Admin\Columns
+ *
+ * Adds a "Lang" column to the Posts and Pages list screens and provides the
+ * quick-edit language dropdown.
+ */
+
+namespace LinguaForge\Router\Admin;
+
+use LinguaForge\Router\Router;
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+class Columns {
+
+	private Router $router;
+
+	public function __construct( Router $router ) {
+		$this->router = $router;
+	}
+
+	// =========================================================
+	// HOOK REGISTRATION
+	// =========================================================
+
+	public function register_hooks(): void {
+		add_filter( 'manage_posts_columns',          [ $this, 'add_lang_column' ] );
+		add_filter( 'manage_pages_columns',          [ $this, 'add_lang_column' ] );
+		add_action( 'manage_posts_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
+		add_action( 'manage_pages_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
+		add_action( 'quick_edit_custom_box',         [ $this, 'render_quick_edit_box' ], 10, 2 );
+	}
+
+	// =========================================================
+	// LANG COLUMN
+	// =========================================================
+
+	public function add_lang_column( array $cols ): array {
+		$cols['lang'] = 'Lang';
+		return $cols;
+	}
+
+	public function render_lang_column( string $col, $id ): void {
+		$id = (int) $id;
+		if ( $col !== 'lang' ) return;
+
+		$lang = $this->router->trid_group->get_lang( $id );
+		echo '<strong data-lang="' . esc_attr( $lang ) . '">' . esc_html( strtoupper( $lang ) ) . '</strong>';
+
+		if ( $this->router->sync->is_outdated( $id ) ) echo ' ⚠';
+
+		$missing = $this->router->trid_group->get_missing_languages( $id );
+		if ( ! empty( $missing ) ) {
+			echo ' ⭕ ' . esc_html( implode( ',', array_map( 'strtoupper', $missing ) ) );
+		}
+	}
+
+	// =========================================================
+	// QUICK EDIT
+	// =========================================================
+
+	public function render_quick_edit_box( string $column_name, string $post_type ): void {
+		if ( $column_name !== 'lang' ) return;
+		if ( ! in_array( $post_type, [ 'post', 'page', 'wp_navigation' ] ) ) return;
+		?>
+		<fieldset class="inline-edit-col">
+			<label>
+				<span class="title">Language</span>
+				<select name="lf_lang">
+					<?php foreach ( $this->router->context->languages() as $l ) : ?>
+						<option value="<?php echo esc_attr( $l ); ?>"><?php echo esc_html( strtoupper( $l ) ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+		</fieldset>
+		<?php
+	}
+}

@@ -1,0 +1,123 @@
+<?php
+/**
+ * PHPUnit bootstrap for Lingua Forge.
+ *
+ * Two paths through this file:
+ *
+ *  • Unit suite ( --testsuite=unit )
+ *      WP_TESTS_DIR is not present. We load the Composer autoloader plus
+ *      the Yoast polyfills and stop — unit tests can `use` plugin classes
+ *      that don't touch WordPress. Classes that DO touch WordPress (most
+ *      of them) belong in the integration suite, not here.
+ *
+ *  • Integration suite ( --testsuite=integration )
+ *      Run inside wp-env (or any environment that exposes the WordPress
+ *      PHPUnit framework via $WP_TESTS_DIR). We load the WP test bootstrap,
+ *      hook the plugin onto muplugins_loaded so it boots inside the test
+ *      WordPress install, and finally include the WP includes/bootstrap.php.
+ *
+ * @package LinguaForge\Tests
+ */
+
+declare(strict_types=1);
+
+// ── Resolve WP_TESTS_DIR ─────────────────────────────────────────────────────
+$wp_tests_dir = getenv( 'WP_TESTS_DIR' );
+
+if ( ! $wp_tests_dir ) {
+    $wp_phpunit = getenv( 'WP_PHPUNIT__DIR' );
+    if ( $wp_phpunit ) {
+        $wp_tests_dir = $wp_phpunit;
+    }
+}
+
+// Composer autoload — required for both unit and integration paths
+// (PHPUnit itself, Yoast polyfills, dev libraries).
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if ( file_exists( $autoload ) ) {
+    require_once $autoload;
+}
+
+// Yoast PHPUnit polyfills — provides PHPUnit 9-compatible assertions on
+// older WordPress test suites. The Autoload class is an spl_autoload
+// callback for non-Composer setups; when PHPUnit is run from lingua-forge-dev
+// the Composer autoloader already loaded by PHPUnit covers the polyfill
+// traits, so no manual registration is needed here.
+
+// ── Unit suite path ──────────────────────────────────────────────────────────
+// No WP test framework available, or we're being run for the unit suite
+// only. Stop here — unit tests are not allowed to touch WordPress.
+if ( ! $wp_tests_dir || ! file_exists( $wp_tests_dir . '/includes/functions.php' ) ) {
+
+    // Define the bare minimum constants so plugin source files that exit
+    // on `! defined( 'ABSPATH' )` can still be require'd by unit tests
+    // that exercise pure-function utilities.
+    if ( ! defined( 'ABSPATH' ) ) {
+        define( 'ABSPATH', dirname( __DIR__ ) . '/' );
+    }
+
+    // Plugin constants — mirror the ones lingua-forge.php would define on
+    // a real WP boot. Unit tests should not depend on these, but a few
+    // helper classes reference LINGUAFORGE_PATH for include resolution.
+    if ( ! defined( 'LINGUAFORGE_FILE' ) ) {
+        define( 'LINGUAFORGE_FILE', dirname( __DIR__ ) . '/lingua-forge.php' );
+    }
+    if ( ! defined( 'LINGUAFORGE_PATH' ) ) {
+        define( 'LINGUAFORGE_PATH', dirname( __DIR__ ) . '/' );
+    }
+    if ( ! defined( 'LINGUAFORGE_URL' ) ) {
+        define( 'LINGUAFORGE_URL', 'http://example.org/wp-content/plugins/lingua-forge/' );
+    }
+    if ( ! defined( 'LINGUAFORGE_VERSION' ) ) {
+        define( 'LINGUAFORGE_VERSION', '0.0.0-test' );
+    }
+    if ( ! defined( 'LINGUAFORGE_AI_PATH' ) ) {
+        define( 'LINGUAFORGE_AI_PATH', LINGUAFORGE_PATH . 'ai' );
+    }
+    if ( ! defined( 'LINGUAFORGE_AI_URL' ) ) {
+        define( 'LINGUAFORGE_AI_URL', LINGUAFORGE_URL . 'ai' );
+    }
+
+    // Minimal polyfills for WordPress functions used by pure-function
+    // utilities that we still want to exercise from the unit suite.
+    // Each polyfill matches WordPress's own signature and observable
+    // behaviour for the parameters our code passes — they're not
+    // general-purpose replacements.
+    if ( ! function_exists( 'wp_json_encode' ) ) {
+        /**
+         * Polyfill — see wp-includes/functions.php. The real
+         * wp_json_encode() has filter hooks and depth-overflow
+         * handling we don't need under unit-test conditions; for the
+         * shapes our code passes (string + JSON_UNESCAPED_UNICODE),
+         * json_encode is identical.
+         */
+        function wp_json_encode( $data, $options = 0, $depth = 512 ) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- This IS the polyfill for wp_json_encode. The sniff's "use wp_json_encode instead" recommendation is what this function provides; calling json_encode here is the implementation.
+            return json_encode( $data, $options, $depth );
+        }
+    }
+
+    return; // ← unit suite stops here.
+}
+
+// ── Integration suite path ───────────────────────────────────────────────────
+// Load WP test framework function helpers (tests_add_filter, …).
+require_once $wp_tests_dir . '/includes/functions.php';
+
+/**
+ * Boot the plugin inside the test WordPress install.
+ *
+ * tests_add_filter hooks onto muplugins_loaded which runs before the
+ * WordPress test bootstrap installs the test DB — that's the canonical
+ * point to require the plugin's main file.
+ */
+tests_add_filter(
+    'muplugins_loaded',
+    static function (): void {
+        require dirname( __DIR__ ) . '/lingua-forge.php';
+    }
+);
+
+// Start the WordPress test framework. After this point, WP_UnitTestCase,
+// the factory APIs, and the full WordPress runtime are available.
+require $wp_tests_dir . '/includes/bootstrap.php';

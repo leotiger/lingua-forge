@@ -1,0 +1,366 @@
+<?php
+/**
+ * Class LinguaForge\Router\Translation\Sync
+ *
+ * Tracks source-vs-translation freshness (the "outdated" flag), handles FSE
+ * template auto-assignment based on language, and owns the wp_after_insert_post
+ * save handler that ties it all together.
+ */
+
+namespace LinguaForge\Router\Translation;
+
+use LinguaForge\Router\Router;
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+class Sync {
+
+	private Router $router;
+
+	public function __construct( Router $router ) {
+		$this->router = $router;
+	}
+
+	// =========================================================
+	// HOOK REGISTRATION
+	// =========================================================
+
+	public function register_hooks(): void {
+		// Priority 10 — fires before the cache-clear hook at 20.
+		add_action( 'wp_after_insert_post', [ $this, 'handle_save_post' ], 10, 2 );
+	}
+
+	// =========================================================
+	// OUTDATED TRACKING
+	// =========================================================
+
+	public function mark_source_updated( int $post_id ): void {
+		update_post_meta( $post_id, '_source_updated_at', time() );
+	}
+
+	public function mark_translation_synced( int $post_id ): void {
+		$translations = $this->router->trid_group->get_translations( $post_id );
+		$source_id    = $translations[$this->router->context->source_language()] ?? 0;
+		if ( ! $source_id ) return;
+
+		$source_time = get_post_meta( $source_id, '_source_updated_at', true );
+		update_post_meta( $post_id, '_translation_source_updated_at', $source_time );
+	}
+
+	public function is_outdated( int $post_id ): bool {
+		$lang = $this->router->trid_group->get_lang( $post_id );
+		if ( $lang === $this->router->context->source_language() ) return false;
+
+		$source = get_post_meta( $post_id, '_source_updated_at', true );
+		$trans  = get_post_meta( $post_id, '_translation_source_updated_at', true );
+
+		if ( ! $source ) return false;
+		if ( ! $trans  ) return true;
+
+		return (int) $trans < (int) $source;
+	}
+
+	// =========================================================
+	// TEMPLATE HANDLING
+	// =========================================================
+
+	public function resolve_template_for_lang( $post, string $lang ): ?string {
+		if ( ! $post || ! $lang ) return null;
+
+		// Primary language uses WordPress's default template hierarchy
+		// (page, single, etc.) — no language suffix is expected.
+		if ( $lang === $this->router->context->source_language() ) return null;
+
+		$type = $post->post_type;
+
+		if ( $type === 'page' )      $base = 'page';
+		elseif ( $type === 'post' )  $base = 'single';
+		else                         return null;
+
+		return $base . '-' . $lang;
+	}
+
+	public function template_exists( string $slug ): bool {
+		// ── 1. Direct filesystem check (most reliable) ────────────────────────
+		// File-based FSE templates live at {theme}/templates/{slug}.html.
+		// They have NO wp_template DB row until the user edits them in the
+		// Site Editor, so any API-only approach misses them entirely.
+		// Check the child theme first, then the parent theme.
+		foreach ( [ get_stylesheet_directory(), get_template_directory() ] as $theme_dir ) {
+			if ( file_exists( $theme_dir . '/templates/' . $slug . '.html' ) ) {
+				return true;
+			}
+		}
+
+		// ── 2. Block-template API (covers DB-stored / customised templates) ───
+		if ( function_exists( 'get_block_templates' ) ) {
+			return ! empty( get_block_templates( [ 'slug__in' => [ $slug ] ] ) );
+		}
+
+		// ── 3. Fallback for WordPress < 5.8 ──────────────────────────────────
+		return ! empty( get_page_by_path( $slug, OBJECT, 'wp_template' ) );
+	}
+
+	/**
+	 * Unconditionally assigns the language-specific FSE template when the
+	 * user explicitly changes the Language metabox (nonce-verified POST).
+	 * No existence check, no user-chosen-template guard — the user said
+	 * "this post is in language X" and we honour that immediately.
+	 *
+	 * Reverting to the source language clears any auto-assigned template.
+	 */
+	public function force_lang_template( int $post_id, $post, string $lang ): void {
+		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
+
+		$template_slug = $this->resolve_template_for_lang( $post, $lang );
+
+		if ( $template_slug ) {
+			update_post_meta( $post_id, '_wp_page_template', $template_slug );
+			update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+			$this->router->debug( 'Template forced by explicit language change', [
+				'post_id'  => $post_id,
+				'template' => $template_slug,
+				'lang'     => $lang,
+			] );
+		} else {
+			// Source language — revert to default if we auto-assigned the template.
+			$auto_prev = (string) get_post_meta( $post_id, '_lf_auto_template', true );
+			if ( $auto_prev ) {
+				update_post_meta( $post_id, '_wp_page_template', 'default' );
+				delete_post_meta( $post_id, '_lf_auto_template' );
+				$this->router->debug( 'Template reverted to default on source language', [
+					'post_id' => $post_id,
+					'was'     => $auto_prev,
+				] );
+			}
+		}
+	}
+
+	public function assign_template_if_needed( int $post_id, $post, string $lang ): void {
+		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
+
+		$template_slug = $this->resolve_template_for_lang( $post, $lang );
+		$auto_prev     = (string) get_post_meta( $post_id, '_lf_auto_template', true );
+		$current       = (string) ( get_post_meta( $post_id, '_wp_page_template', true ) ?: '' );
+
+		// Back-compat / migration: _lf_auto_template is new in 1.3.3.
+		// If it has not been recorded yet but the current template matches the
+		// {base}-{lang} naming convention for any active language, treat it as
+		// a previously auto-assigned template so a language change can replace it.
+		if ( empty( $auto_prev ) && ! empty( $current ) && $current !== 'default' ) {
+			$base = $post->post_type === 'page' ? 'page' : 'single';
+			foreach ( $this->router->context->languages() as $l ) {
+				if ( $current === $base . '-' . $l ) {
+					$auto_prev = $current;
+					break;
+				}
+			}
+		}
+
+		// Changing to the source language: revert _wp_page_template to 'default'
+		// only when the current template was auto-assigned by us — never touch a
+		// template the editor chose explicitly.
+		if ( ! $template_slug ) {
+			if ( $auto_prev && $current === $auto_prev ) {
+				update_post_meta( $post_id, '_wp_page_template', 'default' );
+				delete_post_meta( $post_id, '_lf_auto_template' );
+				$this->router->debug( 'Template reverted to default (source language)', [ 'post_id' => $post_id, 'was' => $current ] );
+			}
+			return;
+		}
+
+		// No template_exists() guard here.  WordPress silently falls through to
+		// its normal template hierarchy when _wp_page_template holds a slug
+		// that is not registered, so assigning an as-yet-uncreated slug is
+		// harmless: the correct template will be used as soon as the theme
+		// file exists.  Any existence check that runs in the wp_after_insert_post
+		// context (file_exists, get_block_templates) can silently return false
+		// and leave the meta unset, which is the exact bug we are fixing.
+
+		// If the slug is already set to what we'd assign, just ensure the
+		// tracking key is recorded and return — avoids a redundant meta write.
+		if ( $current === $template_slug ) {
+			update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+			return;
+		}
+
+		// Protect only explicitly user-chosen templates — i.e. non-empty,
+		// non-default, and NOT one we previously auto-assigned.  A previous
+		// auto-assignment (tracked in _lf_auto_template, or matching the
+		// {base}-{lang} naming convention for back-compat) is always replaceable
+		// when the language changes.
+		if ( ! empty( $current ) && $current !== 'default' && $current !== $auto_prev ) return;
+
+		update_post_meta( $post_id, '_wp_page_template', $template_slug );
+		update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+		$this->router->debug( 'Template auto-assigned', [
+			'post_id'  => $post_id,
+			'template' => $template_slug,
+			'previous' => $current ?: 'default',
+		] );
+	}
+
+	// =========================================================
+	// SAVE HANDLER
+	// =========================================================
+
+	public function handle_save_post( int $post_id, $post ): void {
+		if ( ! in_array( $post->post_type, [ 'post', 'page', 'wp_navigation' ], true ) ) return;
+		if ( wp_is_post_revision( $post_id ) ) return;
+		if ( wp_is_post_autosave( $post_id ) ) return;
+		if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+		// Dedicated metabox nonces. Verified independently of WP core's
+		// edit_post nonce so a CSRF on an unrelated POST endpoint that ends
+		// up triggering save_post cannot rebind language or translation groups.
+		//
+		// Missing-or-invalid nonce means "the field wasn't submitted by our
+		// metabox" — we silently skip the corresponding block rather than
+		// aborting the handler, so REST saves and wp_insert_post() callers
+		// (which post no nonce) continue to work for everything else.
+		$has_lang_nonce  = isset( $_POST['lf_language_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_language_nonce'] ) ), 'lf_language_save' );
+		$has_trans_nonce = isset( $_POST['lf_translations_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_translations_nonce'] ) ), 'lf_translations_save' );
+
+		$trid_group = $this->router->trid_group;
+		$context    = $this->router->context;
+
+		// Language
+		if ( $has_lang_nonce && isset( $_POST['lf_lang'] ) && $context->is_valid_lang( sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) ) ) {
+			$trid_group->set_lang( $post_id, sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) );
+		}
+		if ( ! get_post_meta( $post_id, '_lang', true ) ) {
+			$trid_group->set_lang( $post_id, $context->source_language() );
+		}
+
+		$lang = $trid_group->get_lang( $post_id );
+
+		// Skip template/TRID/timestamp for non-page/post types
+		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
+
+		// Template auto-assignment.
+		//
+		// Fires whenever the post's language has changed OR when this is the
+		// first save the post has ever seen ($previous_lang empty). The
+		// in-method guard inside assign_template_if_needed() leaves any
+		// explicit admin template choice intact — only acts when the
+		// current template is 'default' or empty — so this is safe to
+		// trigger more aggressively than the original "on change only" gate.
+		//
+		// Without the first-save branch, posts created programmatically (REST
+		// inserts, wp_insert_post calls, duplicated-from-source flows) with
+		// _lang already set would never get their language-specific template
+		// assigned, since there's no _lang_previous to compare against.
+		// Template auto-assignment runs on every save — not just on language
+		// changes — so that posts saved before templates existed, or posts whose
+		// tracking meta was cleared, also get the correct template on the next
+		// ordinary update.  assign_template_if_needed() is idempotent and
+		// protects user-chosen templates via its internal guard, so calling it
+		// unconditionally is safe.
+		$previous_lang = get_post_meta( $post_id, '_lang_previous', true );
+		update_post_meta( $post_id, '_lang_previous', $lang );
+
+		// Two paths for template assignment:
+		//
+		// • $has_lang_nonce  → explicit user action via the Language metabox.
+		//   The metabox POST fires after the REST PATCH (Gutenberg's save order),
+		//   so this is the authoritative, last-write.  Skip every guard and force
+		//   the template that matches the new language.
+		//
+		// • no nonce         → REST save, autosave, or programmatic insert.
+		//   Use the conservative assign_template_if_needed() which respects the
+		//   user-chosen-template guard and the _lf_auto_template tracking key.
+		if ( $has_lang_nonce ) {
+			$this->force_lang_template( $post_id, $post, $lang );
+		} else {
+			$this->assign_template_if_needed( $post_id, $post, $lang );
+		}
+
+		// TRID
+		$trid = $trid_group->get_trid( $post_id );
+		if ( ! $trid ) {
+			$trid = wp_generate_uuid4();
+			$trid_group->set_trid( $post_id, $trid );
+		}
+
+		// Timestamps
+		if ( $lang === $context->source_language() ) {
+			$this->mark_source_updated( $post_id );
+			$translations = $trid_group->get_translations( $post_id );
+			foreach ( $translations as $t ) {
+				update_post_meta( $t, '_translation_source_updated_at', 0 );
+			}
+		} else {
+			$this->mark_translation_synced( $post_id );
+		}
+
+		// Group merge (collect submitted translations).
+		// Only read lf_trans_* when the translations metabox nonce checks out;
+		// otherwise the post still gets its language/timestamp updates but the
+		// TRID translation group is untouched.
+		$group_ids = [ $post_id ];
+
+		if ( $has_trans_nonce ) {
+			foreach ( $context->languages() as $l ) {
+				if ( ! isset( $_POST['lf_trans_' . $l] ) ) continue;
+				$target_id = absint( wp_unslash( $_POST['lf_trans_' . $l] ) );
+				if ( ! $target_id || $target_id === $post_id ) continue;
+				$group_ids[] = $target_id;
+			}
+		}
+
+		// Expand translation group (graph completion)
+		$expanded_ids = $group_ids;
+
+		foreach ( $group_ids as $pid ) {
+			$existing = $trid_group->get_translations( $pid );
+			if ( empty( $existing ) ) continue;
+			foreach ( $existing as $existing_id ) {
+				if ( ! in_array( $existing_id, $expanded_ids, true ) ) {
+					$expanded_ids[] = $existing_id;
+				}
+			}
+		}
+
+		$group_ids = array_unique( $expanded_ids );
+
+		// Resolve shared TRID
+		$trid = null;
+		foreach ( $group_ids as $pid ) {
+			$existing = $trid_group->get_trid( $pid );
+			if ( $existing ) { $trid = $existing; break; }
+		}
+		if ( ! $trid ) $trid = wp_generate_uuid4();
+
+		foreach ( $group_ids as $pid ) {
+			$trid_group->set_trid( $pid, $trid );
+
+			if ( $pid === $post_id ) continue;
+
+			// Language-binding on related posts is only safe when the
+			// translations metabox nonce verified — same gate as the group
+			// collection loop above.
+			if ( ! $has_trans_nonce ) continue;
+
+			foreach ( $context->languages() as $l ) {
+				if ( isset( $_POST['lf_trans_' . $l] ) && absint( wp_unslash( $_POST['lf_trans_' . $l] ) ) === $pid ) {
+					$trid_group->set_lang( $pid, $l );
+				}
+			}
+		}
+
+		// Search index
+		$this->router->search_index->build_search_content( $post_id );
+
+		// Template selection (manual)
+		if ( ! isset( $_POST['lf_template_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_template_nonce'] ) ), 'lf_template_save' ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['lf_page_template'] ) ) return;
+
+		$template = sanitize_text_field( wp_unslash( $_POST['lf_page_template'] ) );
+		update_post_meta( $post_id, '_wp_page_template', $template );
+	}
+}

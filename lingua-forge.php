@@ -3,9 +3,9 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, SEO meta tags, and AI content tools for WordPress. Combines language detection, URL routing, hreflang, meta descriptions, and AI-powered excerpt, meta, and translation features.
- * Version:           1.3.6
+ * Version:           1.4.0
  * Requires at least: 6.4
- * Requires PHP:      8.0
+ * Requires PHP:      8.1
  * Author:            Uli Hake
  * Author URI:        https://cal-talaia.cat
  * License:           GPL-2.0-or-later
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '1.3.6' );
+define( 'LINGUAFORGE_VERSION', '1.4.0' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION
@@ -39,17 +39,63 @@ register_activation_hook( __FILE__, function () {
     // Setting this option triggers a flush on the next request.
     update_option( 'linguaforge_flush_rewrite_rules', true );
 
-    // Create the uploads-based i18n overrides directory so it exists
-    // immediately after activation.  Drop {textdomain}-{locale}.mo files
-    // here to override third-party plugin strings without touching the
+    // Create the uploads-based i18n overrides directory and drop an
+    // index.html placeholder so the directory cannot be enumerated via
+    // a directory listing.  Drop {textdomain}-{locale}.mo files here
+    // to override third-party plugin strings without touching the
     // plugin codebase.  Files survive plugin updates.
-    $upload  = wp_upload_dir();
-    $dir     = trailingslashit( $upload['basedir'] ) . 'lingua-forge/i18n-overrides';
+    linguaforge_bootstrap_overrides_dir();
+} );
+
+/**
+ * Idempotent bootstrap for the i18n-overrides directory.
+ *
+ * Ensures the directory exists and contains a no-op index.html placeholder
+ * so direct directory listing is blocked on every server type — including
+ * nginx and IIS, which ignore the Apache `.htaccess` "Deny from all" pattern
+ * the AI module uses for the debug directory.  `.mo` / `.po` files are
+ * non-executable, so the goal here is preventing *enumeration* of the
+ * installed override files rather than blocking individual file fetches.
+ *
+ * Called from:
+ *   - register_activation_hook — covers fresh installs and Deactivate→Reactivate.
+ *   - admin_init (one-shot, guarded by `linguaforge_overrides_hardened_v1`
+ *     option) — covers SFTP / rsync upgrades where the activation hook
+ *     does not fire.
+ *
+ * Both file operations are guarded by `is_dir()` / `file_exists()` so the
+ * function is safe to call any number of times.
+ */
+function linguaforge_bootstrap_overrides_dir(): void {
+
+    $upload = wp_upload_dir();
+    $dir    = trailingslashit( $upload['basedir'] ) . 'lingua-forge/i18n-overrides';
 
     if ( ! is_dir( $dir ) ) {
         wp_mkdir_p( $dir );
     }
-} );
+
+    $index_path = trailingslashit( $dir ) . 'index.html';
+    if ( is_dir( $dir ) && ! file_exists( $index_path ) ) {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- One-shot directory-listing guard inside the plugin's own uploads subdir. WP_Filesystem would require admin FTP credentials, inappropriate for a hardening write that must run silently on activation.
+        file_put_contents( $index_path, "<!-- Silence is golden. -->\n" );
+    }
+}
+
+// One-shot hardening for installs that pre-date the index.html placeholder
+// (i.e. were activated before this code shipped, or were deployed via
+// SFTP / rsync so register_activation_hook never fired).  The option flag
+// is bumped to `_v2` etc. if future hardening (a web.config / robots block)
+// needs a separate trigger.
+add_action( 'admin_init', function () {
+
+    if ( get_option( 'linguaforge_overrides_hardened_v1' ) ) {
+        return;
+    }
+
+    linguaforge_bootstrap_overrides_dir();
+    update_option( 'linguaforge_overrides_hardened_v1', 1, false );
+}, 1 );
 
 register_deactivation_hook( __FILE__, function () {
     flush_rewrite_rules();
@@ -62,105 +108,6 @@ add_action( 'init', function () {
     }
 }, 99 );
 
-// =========================================================
-// ONE-TIME MIGRATION FROM MU-PLUGIN VERSIONS
-//
-// Runs once on the first init after activation (or first
-// load after manual mu-plugin removal). Renames wp_options
-// keys written by the old standalone mu-plugins so that all
-// AI settings (provider, encrypted API keys, model overrides)
-// and the language-router version marker carry over without
-// any manual SQL or re-entry.
-//
-// The encrypted API key values are fully portable: both the
-// old and new KeyStore derive the AES-256 secret from the
-// same wp_salt('auth'), so the ciphertext decrypts correctly
-// under the new option names.
-//
-// Safe to run on a clean install — UPDATE WHERE is a no-op
-// when the old row does not exist.
-// =========================================================
-
-add_action( 'init', function () {
-
-    if ( get_option( 'linguaforge_mu_migration_done' ) ) {
-        return;
-    }
-
-    global $wpdb;
-
-    $renames = [
-        // AI provider selection
-        'wpenhance_ai_provider'              => 'linguaforge_provider',
-        // Encrypted API keys
-        'wpenhance_ai_key_anthropic'         => 'linguaforge_key_anthropic',
-        'wpenhance_ai_key_openai'            => 'linguaforge_key_openai',
-        'wpenhance_ai_key_gemini'            => 'linguaforge_key_gemini',
-        // Model overrides
-        'wpenhance_ai_model_anthropic_light'   => 'linguaforge_model_anthropic_light',
-        'wpenhance_ai_model_anthropic_quality' => 'linguaforge_model_anthropic_quality',
-        'wpenhance_ai_model_openai_light'      => 'linguaforge_model_openai_light',
-        'wpenhance_ai_model_openai_quality'    => 'linguaforge_model_openai_quality',
-        'wpenhance_ai_model_gemini_light'      => 'linguaforge_model_gemini_light',
-        'wpenhance_ai_model_gemini_quality'    => 'linguaforge_model_gemini_quality',
-        // Language router version marker
-        'my_lang_router_version'             => 'lf_lang_router_version',
-    ];
-
-    foreach ( $renames as $old => $new ) {
-        // Only migrate when the old key exists and the new one does not yet,
-        // to avoid clobbering a value already entered in Lingua Forge.
-        if ( false !== get_option( $old ) && false === get_option( $new ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- One-time mu-plugin → plugin option key rename; no WP API equivalent for an UPDATE on option_name itself. Values bound via %s placeholders.
-            $wpdb->update(
-                $wpdb->options,
-                [ 'option_name' => $new ],
-                [ 'option_name' => $old ],
-                [ '%s' ],
-                [ '%s' ]
-            );
-            // Bust WP's in-memory options cache for both names.
-            wp_cache_delete( $old, 'options' );
-            wp_cache_delete( $new, 'options' );
-        }
-    }
-
-    // ── User meta: language filter preference per editor ──────────────────────
-    // my_lang_filter → lf_lang_filter  (affects all users; one bulk UPDATE).
-    // Only runs when at least one row with the old key still exists.
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- One-time check for legacy user-meta rows; $wpdb->usermeta is a server-defined table name; no caller-supplied data in the WHERE clause.
-    $old_meta_exists = $wpdb->get_var(
-        "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = 'my_lang_filter'"
-    );
-
-    if ( $old_meta_exists > 0 ) {
-        // Collect affected user IDs before the bulk rename so we can
-        // surgically invalidate only their usermeta cache entries.
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Collect affected user IDs before bulk rename so cache entries can be invalidated surgically; $wpdb->usermeta is server-defined; no caller-supplied data.
-        $affected_user_ids = $wpdb->get_col(
-            "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'my_lang_filter'"
-        );
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- One-time bulk rename of user meta key; no WP API equivalent for UPDATE on meta_key itself. Values bound via %s placeholders.
-        $wpdb->update(
-            $wpdb->usermeta,
-            [ 'meta_key' => 'lf_lang_filter' ],
-            [ 'meta_key' => 'my_lang_filter' ],
-            [ '%s' ],
-            [ '%s' ]
-        );
-
-        // Invalidate only the cache entries we touched.
-        // wp_cache_flush() would nuke the entire object cache (Redis/Memcached)
-        // which is far too aggressive for a per-user meta key rename.
-        foreach ( $affected_user_ids as $user_id ) {
-            wp_cache_delete( (int) $user_id, 'user_meta' );
-        }
-    }
-
-    update_option( 'linguaforge_mu_migration_done', LINGUAFORGE_VERSION, false );
-
-}, 1 );
 
 // =========================================================
 // BOOT LANGUAGE ROUTER
@@ -230,5 +177,4 @@ add_action( 'admin_init', function () {
     \LinguaForge\AI\Core\TranslationMemory::ensure_table();
 
     update_option( 'linguaforge_installed_version', LINGUAFORGE_VERSION, false );
-
 }, 5 );

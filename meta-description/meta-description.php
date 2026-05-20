@@ -6,11 +6,7 @@
  * <meta name="description">, og:description, and twitter:description.
  * Fallback chain: custom field → excerpt → site description.
  *
- * Post-meta key: `_linguaforge_meta_description` (prefixed to avoid collisions
- * with other plugins that also use a generic `meta_description` key).
- *
- * Backwards-compat: the old unprefixed key `meta_description` is read on first
- * save and migrated automatically so existing data is never lost.
+ * Post-meta key: `_linguaforge_meta_description`.
  */
 
 namespace LinguaForge\MetaDescription;
@@ -20,23 +16,30 @@ defined( 'ABSPATH' ) || exit;
 class Module {
 
 	const META_KEY     = '_linguaforge_meta_description';
-	const LEGACY_KEY   = 'meta_description';
 	const NONCE_ACTION = 'lf_meta_description_save';
 	const NONCE_FIELD  = 'lf_meta_description_nonce';
 	const INPUT_FIELD  = 'lf_meta_description_field';
 
-	/**
-	 * Option flag written once the bulk key migration has completed.
-	 * Incrementing this value forces a re-run after future key renames.
-	 */
-	const MIGRATION_FLAG = 'lf_meta_key_migrated_v1';
-
 	public static function init(): void {
-		add_action( 'init',           [ self::class, 'register_meta'     ] );
-		add_action( 'add_meta_boxes', [ self::class, 'register_meta_box' ] );
-		add_action( 'save_post',      [ self::class, 'save'              ] );
-		add_action( 'wp_head',        [ self::class, 'output_tags'       ], 1 );
-		add_action( 'admin_init',     [ self::class, 'maybe_migrate'     ] );
+		add_action( 'init',                   [ self::class, 'register_meta'     ] );
+		add_action( 'add_meta_boxes',         [ self::class, 'register_meta_box' ] );
+		add_action( 'save_post',              [ self::class, 'save'              ] );
+		add_action( 'wp_head',                [ self::class, 'output_tags'       ], 1 );
+		add_action( 'admin_enqueue_scripts',  [ self::class, 'enqueue_assets'    ] );
+	}
+
+	public static function enqueue_assets( string $hook_suffix ): void {
+		if ( ! in_array( $hook_suffix, [ 'post.php', 'post-new.php' ], true ) ) {
+			return;
+		}
+		$version = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
+		wp_enqueue_script(
+			'linguaforge-meta-description',
+			LINGUAFORGE_URL . 'meta-description/assets/meta-description.js',
+			[],
+			$version,
+			true
+		);
 	}
 
 	// ── REST / block-editor registration ─────────────────────────────────────
@@ -108,25 +111,6 @@ class Module {
 		echo '<p style="font-size:11px;color:#999;margin-top:0;">'
 			. esc_html__( 'Aim for 120–160 characters. Leave empty to use the excerpt fallback.', 'lingua-forge' )
 			. '</p>';
-
-		?>
-		<script>
-		( function () {
-			var ta      = document.getElementById( '<?php echo esc_js( self::INPUT_FIELD ); ?>' );
-			var counter = document.getElementById( 'lf_meta_desc_counter' );
-			function update() {
-				var len   = ta.value.length;
-				var color = ( len >= 120 && len <= 160 ) ? '#00a32a'
-				          : ( len > 160 && len <= 200 )  ? '#dba617'
-				          :                                 '#cc1818';
-				counter.textContent = len + ' chars';
-				counter.style.color = color;
-			}
-			ta.addEventListener( 'input', update );
-			update();
-		} )();
-		</script>
-		<?php
 	}
 
 	// ── Save ─────────────────────────────────────────────────────────────────
@@ -137,8 +121,7 @@ class Module {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		if ( ! wp_verify_nonce( wp_unslash( $_POST[ self::NONCE_FIELD ] ), self::NONCE_ACTION ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST[ self::NONCE_FIELD ] ) ), self::NONCE_ACTION ) ) {
 			return;
 		}
 
@@ -155,8 +138,6 @@ class Module {
 			delete_post_meta( $post_id, self::META_KEY );
 		} else {
 			update_post_meta( $post_id, self::META_KEY, $value );
-			// Remove any legacy unprefixed entry now that it is migrated.
-			delete_post_meta( $post_id, self::LEGACY_KEY );
 		}
 	}
 
@@ -208,64 +189,12 @@ class Module {
 		echo '<meta name="twitter:description" content="' . esc_attr( $description ) . '">' . "\n";
 	}
 
-	// ── One-time bulk migration ───────────────────────────────────────────────
-
-	/**
-	 * Run once per site: copy every post's legacy `meta_description` value to
-	 * `_linguaforge_meta_description`, then delete the old key.
-	 *
-	 * Guarded by a DB option flag so subsequent requests are a single
-	 * get_option() lookup and exit immediately.
-	 */
-	public static function maybe_migrate(): void {
-
-		if ( get_option( self::MIGRATION_FLAG ) ) {
-			return;
-		}
-
-		global $wpdb;
-
-		// Find all rows that have the old key but not yet the new one.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-				 WHERE meta_key = %s
-				   AND post_id NOT IN (
-				       SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s
-				   )",
-				self::LEGACY_KEY,
-				self::META_KEY
-			)
-		);
-
-		if ( ! empty( $rows ) ) {
-			foreach ( $rows as $row ) {
-				update_post_meta( (int) $row->post_id, self::META_KEY, $row->meta_value );
-				delete_post_meta( (int) $row->post_id, self::LEGACY_KEY );
-			}
-		}
-
-		update_option( self::MIGRATION_FLAG, '1', false );
-	}
-
 	// ── Helpers ───────────────────────────────────────────────────────────────
 
-	/**
-	 * Read the stored meta description for a post.
-	 * Falls back to the legacy unprefixed key so old data is visible
-	 * immediately without requiring a manual resave.
-	 */
+	/** Read the stored meta description for a post. */
 	public static function get( int $post_id ): string {
 
 		$value = get_post_meta( $post_id, self::META_KEY, true );
-
-		if ( $value === '' || $value === false ) {
-			// Transparent legacy migration: surface old value in the UI;
-			// it will be written to the new key on the next save.
-			$value = get_post_meta( $post_id, self::LEGACY_KEY, true );
-		}
-
 		return is_string( $value ) ? $value : '';
 	}
 }

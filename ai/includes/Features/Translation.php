@@ -10,6 +10,8 @@ use LinguaForge\AI\Core\BlockTextExtractor;
 use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
 use LinguaForge\AI\Core\Glossary;
+use LinguaForge\AI\Core\JsonRepair;
+use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Core\TranslationMemory;
 use LinguaForge\AI\Core\UsageRecorder;
 
@@ -155,13 +157,9 @@ class Translation implements FeatureInterface {
                     $post_id = (int) $post->ID;
                 }
             }
-
-        } else {
-
+        } elseif ( is_singular() ) {
             // Front-end admin bar: use the singular queried object.
-            if ( is_singular() ) {
-                $post_id = (int) get_queried_object_id();
-            }
+            $post_id = (int) get_queried_object_id();
         }
 
         if ( ! $post_id ) {
@@ -483,8 +481,8 @@ class Translation implements FeatureInterface {
         }
 
         // ── Debug log of the source payload (TM mode) ─────────────────────
-        if ( self::debug_enabled() ) {
-            self::debug_write( $post_id, $target_language, 'tm-source', $tm_user_message );
+        if ( TranslationDebug::debug_enabled() ) {
+            TranslationDebug::debug_write( $post_id, $target_language, 'tm-source', $tm_user_message );
         }
 
         $result = UsageRecorder::tracked( 'translation', static fn() => $tm_provider->chat( [
@@ -492,15 +490,15 @@ class Translation implements FeatureInterface {
             [ 'role' => 'user',   'content' => $tm_user_message ],
         ] ) );
 
-        if ( self::debug_enabled() ) {
-            self::debug_write( $post_id, $target_language, 'tm-response', (string) $result );
+        if ( TranslationDebug::debug_enabled() ) {
+            TranslationDebug::debug_write( $post_id, $target_language, 'tm-response', (string) $result );
         }
 
         if ( empty( $result ) ) {
             return null;
         }
 
-        $normalised_tm    = self::normalise_json_response( (string) $result );
+        $normalised_tm    = JsonRepair::normalise_json_response( (string) $result );
         $envelope = json_decode( $normalised_tm, true );
         if ( ! is_array( $envelope ) ) {
             $looks_truncated  = str_starts_with( $normalised_tm, '{' ) && ! str_ends_with( $normalised_tm, '}' );
@@ -624,10 +622,15 @@ class Translation implements FeatureInterface {
      */
     private static function compute_compliance_signature(): string {
 
+        $preset   = Config::active_preset();
+        $presets  = Config::presets();
+        $stored   = (string) get_option( 'linguaforge_compliance_addendum', '' );
+        $addendum = $stored !== '' ? $stored : Config::LEGAL_ADDENDUM_DEFAULT;
+
         return substr( hash( 'sha256',
-            ( Config::compliance_enabled() ? '1' : '0' )
-            . '|' . Config::compliance_temperature()
-            . '|' . md5( Config::compliance_addendum() )
+            ( $preset !== 'standard' ? '1' : '0' )
+            . '|' . (string) ( $presets[ $preset ]['temperature'] ?? 0.1 )
+            . '|' . md5( $addendum )
         ), 0, 16 );
     }
 
@@ -732,7 +735,8 @@ class Translation implements FeatureInterface {
 
         // ── Cache check ───────────────────────────────────────────────────────
         // Cache key is per-language so multiple translations of the same post
-        // can coexist (e.g. _linguaforge_cache_translation_fr, …_ca, …_de).
+        // can coexist (e.g. feature_key column = translation_fr, …_ca, …_de
+        // in the wp_lingua_forge_ai_cache table).
         //
         // Prefer the footnotes value forwarded by the JS client from the live
         // Gutenberg meta store — this captures unsaved footnotes that have not
@@ -749,7 +753,7 @@ class Translation implements FeatureInterface {
         $hash          = CacheStore::hash([$post->post_title, $post->post_content, $footnotes_raw, $target_language]);
         // When debug mode is active, skip the cache so every click triggers a
         // live API call and the source/response files are always written.
-        $force = !empty($params['force_refresh']) || self::debug_enabled();
+        $force = !empty($params['force_refresh']) || TranslationDebug::debug_enabled();
         $cached = $force
             ? null
             : CacheStore::get($post_id, $cache_key, $hash);
@@ -769,6 +773,7 @@ class Translation implements FeatureInterface {
         );
 
         // ── Build prompt ──────────────────────────────────────────────────────
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL. The sniff's wp_remote_get() suggestion only applies to HTTP fetches.
         $prompt = file_get_contents(
             LINGUAFORGE_AI_PATH .
             '/templates/prompts/translation.txt'
@@ -916,8 +921,8 @@ class Translation implements FeatureInterface {
         $provider = ProviderFactory::make($worker_config);
 
         // ── Debug: log source sent to AI ──────────────────────────────────────
-        if (self::debug_enabled()) {
-            self::debug_write(
+        if (TranslationDebug::debug_enabled()) {
+            TranslationDebug::debug_write(
                 $post_id,
                 $target_language,
                 'source',
@@ -954,8 +959,8 @@ class Translation implements FeatureInterface {
         ]) );
 
         // ── Debug: log raw AI response ────────────────────────────────────────
-        if (self::debug_enabled()) {
-            self::debug_write(
+        if (TranslationDebug::debug_enabled()) {
+            TranslationDebug::debug_write(
                 $post_id,
                 $target_language,
                 'response',
@@ -978,10 +983,10 @@ class Translation implements FeatureInterface {
         // fragility complaint. OpenAI and Gemini enforce the schema server-
         // side; Anthropic produces it via prefill + system directive.
         //
-        // normalise_json_response() strips any Markdown code fences that the
-        // model may wrap around the JSON despite instructions — this is the
-        // most common cause of an "unparseable response" error with footnotes.
-        $normalised    = self::normalise_json_response((string) $result);
+        // JsonRepair::normalise_json_response() strips any Markdown code fences
+        // that the model may wrap around the JSON despite instructions — this is
+        // the most common cause of an "unparseable response" error with footnotes.
+        $normalised    = JsonRepair::normalise_json_response((string) $result);
         $envelope = json_decode($normalised, true);
 
         if (!is_array($envelope)) {
@@ -1143,6 +1148,7 @@ class Translation implements FeatureInterface {
             ];
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL.
         $prompt_template = file_get_contents(
             LINGUAFORGE_AI_PATH . '/templates/prompts/translation_chunk.txt'
         );
@@ -1177,7 +1183,10 @@ class Translation implements FeatureInterface {
         // language-agnostic abbreviations like "kWp".
         $target_code = '';
         foreach ( self::get_languages() as $code => $label ) {
-            if ( $label === $language_name ) { $target_code = $code; break; }
+            if ( $label === $language_name ) {
+                $target_code = $code;
+                break;
+            }
         }
         if ( $target_code !== '' ) {
             $glossary = Glossary::format_for_prompt( '', $target_code );
@@ -1206,319 +1215,4 @@ class Translation implements FeatureInterface {
         ];
     }
 
-    // ── JSON response normalisation ───────────────────────────────────────────
-
-    /**
-     * Strip Markdown code fences and leading prose that models occasionally
-     * emit despite instructions to output bare JSON.
-     *
-     * Claude (and other models) sometimes wraps its JSON response in
-     * ```json…``` fences for complex structured requests — typically when the
-     * schema includes nested arrays such as footnotes.  The system prompt and
-     * user prompt both forbid this, but it still happens.
-     *
-     * Strategy (applied in order):
-     *   1. Trim surrounding whitespace.
-     *   2. If the string starts with ``` (Markdown fence), strip the opening
-     *      ``` / ```json line and the closing ``` trailer, then trim again.
-     *   3. If the result still doesn't start with `{`, try to extract the
-     *      first `{ … }` block from the string — catches the rare case where
-     *      the model prepends a sentence before the JSON object.
-     *
-     * @param  string $text  Raw text returned by the AI provider.
-     * @return string        Best-effort JSON string ready for json_decode().
-     */
-    private static function normalise_json_response(string $text): string {
-
-        $text = trim($text);
-
-        // Step 2 — strip Markdown code fences.
-        if (str_starts_with($text, '`')) {
-            $text = (string) preg_replace('/^```(?:json)?\s*/i', '', $text);
-            $text = (string) preg_replace('/\s*```\s*$/', '', $text);
-            $text = trim($text);
-        }
-
-        // Step 3 — extract first JSON object when preamble precedes it.
-        if (!str_starts_with($text, '{') && !str_starts_with($text, '[')) {
-            if (preg_match('/(\{[\s\S]*\})/u', $text, $matches)) {
-                $text = $matches[1];
-            }
-        }
-
-        // Step 4 — repair unescaped double-quote characters inside string values.
-        // Translated text may contain direct-speech quotes ("he said "no"") or
-        // technical terms in quotes that the model emits as bare " without \-escaping,
-        // producing structurally invalid JSON that json_decode() cannot recover from.
-        // Only run the repair when the fast path already failed, to keep overhead zero
-        // for the vast majority of responses that are already valid JSON.
-        if (json_decode($text) === null) {
-            $text = self::repair_unescaped_quotes($text);
-        }
-
-        return $text;
-    }
-
-    /**
-     * Attempt to fix JSON that contains unescaped double-quote characters inside
-     * string values.
-     *
-     * Scans the JSON byte-by-byte, tracking whether we are inside a string.
-     * When a " is encountered inside a string, a peek-ahead decides its role:
-     *
-     *   - If the next non-whitespace character is a JSON structural token
-     *     (: , } ]) the quote closes the string — treat it as a terminator.
-     *   - Otherwise the quote is content and is escaped to \".
-     *
-     * The heuristic works correctly for quoted direct speech embedded in HTML
-     * or prose (the common AI failure mode). It can mis-classify a content
-     * quote that is immediately followed by , } or ] with no intervening text,
-     * but that is extremely rare in practice and the worst outcome is a second
-     * json_decode failure that the caller already handles gracefully.
-     *
-     * @param  string $json  Fence-stripped candidate JSON string.
-     * @return string        Best-effort repaired JSON string.
-     */
-    private static function repair_unescaped_quotes(string $json): string {
-
-        $out       = '';
-        $len       = strlen($json);   // scan by byte — JSON structural chars are all ASCII
-        $in_string = false;
-        $escape    = false;
-
-        for ($i = 0; $i < $len; $i++) {
-            $c = $json[$i];
-
-            if ($escape) {
-                $out   .= $c;
-                $escape = false;
-                continue;
-            }
-
-            if ($c === '\\') {
-                $out   .= $c;
-                $escape = true;
-                continue;
-            }
-
-            if ($c === '"') {
-                if (!$in_string) {
-                    // Opening a new JSON string.
-                    $in_string = true;
-                    $out      .= $c;
-                    continue;
-                }
-
-                // We are inside a string. Decide: terminator or content quote?
-                // Peek at the next non-whitespace byte.
-                $j = $i + 1;
-                while ($j < $len && ($json[$j] === ' ' || $json[$j] === "\t"
-                        || $json[$j] === "\n" || $json[$j] === "\r")) {
-                    $j++;
-                }
-                $next = $j < $len ? $json[$j] : '';
-
-                if ($next === ':' || $next === ',' || $next === '}' || $next === ']' || $next === '') {
-                    // Looks like a string terminator.
-                    $in_string = false;
-                    $out      .= $c;
-                } else {
-                    // Content quote — escape it.
-                    $out .= '\\"';
-                }
-                continue;
-            }
-
-            $out .= $c;
-        }
-
-        return $out;
-    }
-
-    // ── Debug helpers ─────────────────────────────────────────────────────────
-
-    /**
-     * Resolve the absolute filesystem path of the debug directory.
-     *
-     * Default: wp-content/uploads/lingua-forge-debug
-     *
-     * Filterable via `linguaforge_debug_dir` so security-tight sites can
-     * redirect debug output to a non-public location outside `/uploads/`.
-     * A filter return of empty / non-string falls back to the default so
-     * debug-writes (and the Maintenance UI) never silently disappear.
-     *
-     * Returns the path WITHOUT a trailing slash — callers concatenate
-     * `/{filename}` themselves.
-     */
-    public static function debug_dir(): string {
-
-        $upload_dir  = wp_upload_dir();
-        $default_dir = trailingslashit($upload_dir['basedir']) . 'lingua-forge-debug';
-
-        $debug_dir = (string) apply_filters('linguaforge_debug_dir', $default_dir);
-
-        if ($debug_dir === '') {
-            $debug_dir = $default_dir;
-        }
-
-        return untrailingslashit($debug_dir);
-    }
-
-    /**
-     * Runtime debug override — set by WP-CLI's --debug flag so debug files
-     * are written for that run without touching the DB option or wp-config.php.
-     */
-    private static bool $debug_override = false;
-
-    /**
-     * Force debug on (or off) for the remainder of the current process.
-     *
-     * Called by WP-CLI commands when --debug is passed. Has no effect on
-     * web requests because the flag is not persisted anywhere.
-     */
-    public static function force_debug( bool $value ): void {
-        self::$debug_override = $value;
-    }
-
-    /**
-     * Whether debug logging is currently enabled.
-     *
-     * Resolution order (constant wins, same pattern WP uses for WP_DEBUG):
-     *   1. Runtime override set via force_debug() — WP-CLI --debug flag.
-     *   2. LINGUAFORGE_AI_DEBUG constant defined in wp-config.php — value is
-     *      returned verbatim, regardless of any option setting.
-     *   3. linguaforge_ai_debug_enabled option set via Settings → Maintenance.
-     *   4. Off by default.
-     */
-    public static function debug_enabled(): bool {
-
-        if ( self::$debug_override ) {
-            return true;
-        }
-
-        if (defined('LINGUAFORGE_AI_DEBUG')) {
-            return (bool) LINGUAFORGE_AI_DEBUG;
-        }
-
-        return (bool) get_option('linguaforge_ai_debug_enabled', false);
-    }
-
-    /**
-     * Whether the wp-config.php constant currently overrides the UI toggle.
-     *
-     * Used by the Settings → Maintenance → Debug Files panel to disable the
-     * checkbox (and explain why) when the constant is in force.
-     */
-    public static function debug_constant_defined(): bool {
-
-        return defined('LINGUAFORGE_AI_DEBUG');
-    }
-
-    /**
-     * The literal value the LINGUAFORGE_AI_DEBUG constant currently holds.
-     *
-     * Returns null when the constant isn't defined. Used by the Maintenance
-     * UI to render an accurate "forced on / forced off" message.
-     */
-    public static function debug_constant_value(): ?bool {
-
-        return defined('LINGUAFORGE_AI_DEBUG') ? (bool) LINGUAFORGE_AI_DEBUG : null;
-    }
-
-    /**
-     * Count the *.txt files currently in the debug directory.
-     *
-     * Returns 0 when the directory doesn't exist yet (e.g. nobody has run an
-     * AI feature since debug was enabled). Glob is wrapped in a defensive
-     * `is_dir()` check so we don't fire a PHP warning on missing paths.
-     */
-    public static function debug_file_count(): int {
-
-        $dir = self::debug_dir();
-
-        if (!is_dir($dir)) {
-            return 0;
-        }
-
-        $files = glob($dir . '/*.txt');
-        return is_array($files) ? count($files) : 0;
-    }
-
-    /**
-     * Delete every *.txt file in the debug directory.
-     *
-     * Returns the number of files actually removed. Leaves the directory
-     * itself (and its .htaccess block) in place so subsequent debug writes
-     * still land cleanly.
-     */
-    public static function clear_debug_files(): int {
-
-        $dir = self::debug_dir();
-
-        if (!is_dir($dir)) {
-            return 0;
-        }
-
-        $files = glob($dir . '/*.txt');
-        if (!is_array($files) || empty($files)) {
-            return 0;
-        }
-
-        // Defensive: only delete *.txt entries whose resolved path is still
-        // inside the debug directory. Guards against a hostile symlink that
-        // glob might surface (paranoia, but the cost is one realpath() per file).
-        $real_dir = realpath($dir);
-        if ($real_dir === false) {
-            return 0;
-        }
-
-        $removed = 0;
-        foreach ($files as $path) {
-            $real = realpath($path);
-            if ($real === false) continue;
-            if (strpos($real, $real_dir . DIRECTORY_SEPARATOR) !== 0) continue;
-
-            // wp_delete_file is the WP wrapper around unlink() with proper
-            // filter coverage (other plugins can hook in to e.g. archive the
-            // file before deletion).
-            wp_delete_file($path);
-            $removed++;
-        }
-
-        return $removed;
-    }
-
-    /**
-     * Write a debug file to the configured debug directory.
-     *
-     * Enabled only when LINGUAFORGE_AI_DEBUG is defined in wp-config.php.
-     * Files are named: {post_id}-{lang}-{timestamp}-{suffix}.txt
-     *
-     * @param  int    $post_id   Post being translated.
-     * @param  string $lang      Target language code.
-     * @param  string $suffix    'source' or 'response'.
-     * @param  string $content   Content to write.
-     */
-    private static function debug_write(int $post_id, string $lang, string $suffix, string $content): void {
-
-        $debug_dir = self::debug_dir();
-
-        if (!is_dir($debug_dir)) {
-            wp_mkdir_p($debug_dir);
-
-            // Drop an .htaccess to block direct browser access.
-            file_put_contents(
-                $debug_dir . '/.htaccess',
-                "Deny from all\n"
-            );
-        }
-
-        $timestamp = gmdate('Ymd-His');
-        $filename  = "{$post_id}-{$lang}-{$timestamp}-{$suffix}.txt";
-
-        file_put_contents(
-            $debug_dir . '/' . $filename,
-            $content
-        );
-    }
 }

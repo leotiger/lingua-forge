@@ -1,0 +1,134 @@
+/**
+ * Lingua Forge AI — Settings page styles
+ *
+ * Enqueued by SettingsPage::enqueue_settings_assets() on the plugin's
+ * Settings screen only.
+ */
+
+/* ── Tab panels ─────────────────────────────────────────────── */
+.lingua-forge-tabs { margin-bottom: 1.2em; }
+.lingua-forge-tab-panel { display: none; }
+.lingua-forge-tab-panel.is-active { display: block; }
+
+/* ── Glossary ──────────────────────────────────────────────── */
+.lingua-forge-glossary-filter {
+    display: flex; align-items: center; gap: 8px;
+    margin: 12px 0 18px; flex-wrap: wrap;
+}
+.lingua-forge-glossary-filter label { font-weight: 600; }
+.lingua-forge-glossary-table th,
+.lingua-forge-glossary-table td { vertical-align: middle; }
+.lingua-forge-glossary-table code { font-size: 12px; }
+
+/* ── AI Usage ───────────────────────────────────────────────── */
+.lingua-forge-range-buttons .button { margin-right: 4px; }
+.lingua-forge-usage-table .lingua-forge-num {
+    text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.lingua-forge-active-provider-row th { font-weight: 600; }
+.lingua-forge-usage-table tfoot th { background: #f6f7f7; }
+
+/* ── Key status badges ─────────────────────────────────────── */
+.lingua-forge-key-badge {
+    display: inline-block; margin-left: 8px;
+    font-size: 12px; font-weight: 600; vertical-align: middle;
+}
+.lingua-forge-badge--ok      { color: #46b450; }
+.lingua-forge-badge--missing { color: #dc3232; }
+.lingua-forge-key-source { font-weight: 400; color: #646970; }
+
+/* ── Test Connection inline result ────────────────────────── */
+.lingua-forge-test-key  { margin-left: 8px; vertical-align: middle; }
+.lingua-forge-test-result {
+    margin-left: 6px; font-size: 12px; font-weight: 600; vertical-align: middle;
+}
+.lingua-forge-test-result--pending { color: #646970; font-weight: 400; }
+.lingua-forge-test-result--ok      { color: #46b450; }
+.lingua-forge-test-result--fail    { color: #dc3232; }
+
+/* ── Models table ──────────────────────────────────────────── */
+.lingua-forge-models-table { border-collapse: collapse; width: 100%; max-width: 860px; }
+.lingua-forge-models-table thead th {
+    padding: 8px 10px; text-align: left; font-weight: 600;
+    border-bottom: 2px solid #dcdcde; vertical-align: bottom;
+}
+.lingua-forge-models-table tbody tr th,
+.lingua-forge-models-table tbody tr td {
+    padding: 10px 10px; border-bottom: 1px solid #f0f0f1; vertical-align: middle;
+}
+.lingua-forge-active-provider-row { background: #f0f6fc; }
+.lingua-forge-active-badge {
+    display: inline-block; margin-left: 6px; padding: 1px 7px;
+    border-radius: 10px; background: #0073aa; color: #fff;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.03em; vertical-align: middle;
+}
+.lingua-forge-tier-used-by {
+    display: block; font-size: 11px; font-weight: 400;
+    color: #646970; margin-top: 2px;
+}
+.lingua-forge-model-input {
+    font-family: monospace; font-size: 12px; width: 100%; max-width: 340px;
+}
+.lingua-forge-model-override-badge {
+    display: inline-block; margin-left: 6px; padding: 1px 6px;
+    border-radius: 3px; background: #fff8e5; color: #996800;
+    border: 1px solid #f0c33c; font-size: 11px; font-weight: 600; vertical-align: middle;
+}
+
+/* ── Security note ─────────────────────────────────────────── */
+.lingua-forge-settings-note {
+    background: #f6f7f7; border-left: 4px solid #c3c4c7;
+    padding: 12px 16px; margin: 20px 0; max-width: 600px;
+}
+.lingua-forge-settings-note p { margin: 6px 0; }
+.lingua-forge-code-sample {
+    background: #fff; border: 1px solid #dcdcde;
+    padding: 8px 12px; font-size: 12px; margin: 6px 0 10px; overflow-x: auto;
+}
+
+/* ── Router tab: language installer ───────────────────────── */
+.lf-installed-langs {
+    display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 20px;
+}
+.lf-installed-langs .lf-lang-chip {
+    display: inline-block; padding: 2px 10px; border-radius: 10px;
+    background: #e7f3ff; color: #0073aa; font-size: 12px;
+    font-weight: 600; font-family: monospace; border: 1px solid #b9d9f0;
+}
+#lf-lang-install-select {
+    min-width: 260px; max-width: 380px;
+}
+#lf-lang-install-result {
+    margin-left: 10px; font-size: 12px; font-weight: 600;
+    vertical-align: middle;
+}
+#lf-lang-install-result.lf-ok   { color: #46b450; }
+#lf-lang-install-result.lf-fail { color: #dc3232; }
+
+/* ── Preset preview panel ──────────────────────────────────────── */
+.lf-preset-preview {
+    margin-top: 10px;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-left: 3px solid #2271b1;
+    border-radius: 2px;
+    padding: 10px 14px;
+    max-width: 600px;
+}
+.lf-preset-preview .lf-preset-preview-label {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #646970;
+}
+.lf-preset-preview .lf-preset-preview-text {
+    margin: 0;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #3c434a;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

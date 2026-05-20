@@ -3,8 +3,8 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.3.6
-Requires PHP: 8.0
+Stable tag: 1.4.0
+Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,7 +56,7 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **Language Overrides** — upload custom `.mo` files to override third-party plugin strings per locale (e.g. replace "room" with "apartment" in VikBooking). Files are stored in the uploads folder and survive plugin updates. Managed from **Settings → Lingua Forge AI → Language Overrides**
 * **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` for scripted and automated workflows
 
-API keys are stored encrypted (AES-256-CBC, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
+API keys are stored encrypted (AES-256-GCM with provider slug as authenticated data, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
 
 Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
@@ -111,9 +111,9 @@ Managed hosting plans often cap PHP execution time at 30–60 seconds. Lingua Fo
 
 Check the PHP error log — Lingua Forge writes the raw provider response there whenever a call fails. The most common causes are an invalid or expired API key, hitting the provider's rate limit, or a temporary provider outage. Verify your key in **Settings → Lingua Forge AI → API Keys** and test it in the provider's own dashboard.
 
-= The Quick Translate button doesn't appear in the editor on first load. =
+= The Quick Translate button appears twice in the editor toolbar. =
 
-This is a known issue. A single page reload (F5) makes it appear consistently. The Admin Toolbar Quick Translate is unaffected and is always available as a fallback.
+This intermittent duplication was fixed in 1.4.0. The button injection logic now removes any stale buttons from lower-priority containers before inserting into the winning container, so at most one icon is ever shown. If you see duplication on an older version, a single page reload (F5) clears it. The Admin Toolbar Quick Translate is separate and unaffected.
 
 = The meta description generator uses the old content after I apply a translation. =
 
@@ -161,6 +161,12 @@ Used when the active provider is set to Google Gemini.
 
 == Changelog ==
 
+
+= 1.4.0 =
+* Fixed: Footnotes tab in the Block Action popover is now hidden when the popover is opened from a regular block. It only appears when triggered from inside the WordPress footnote editing UI, which is the context it was designed for.
+* Fixed: Footnote selector (dropdown) inside the Footnotes panel is now hidden when a block has only one footnote reference. The element is retained and shown only when a block carries more than one footnote.
+* Fixed: Intermittent duplicate Quick Translate icon in the Gutenberg editor toolbar. The injection logic now sweeps stale buttons from lower-priority containers before inserting into the winning container, so at most one icon is ever visible.
+* Changed: CSS lint — stylelint now passes cleanly across all AI module and language-router CSS files. BEM modifier class names in `admin.css` corrected (`--good`, `--warn`, `--bad`); matching fix in `admin.js`; specificity-order fixes in `admin.css` and `settings.css`; font-family quote removed in `block-action.css`; duplicate rule block merged in `lsflr.css`.
 
 = 1.3.6 =
 * Fixed: Duplicate Quick Translate icon in the main Gutenberg editor toolbar. A global sentinel (window.linguaForgeEditorTranslateInit) now prevents the script from initialising more than once if it is enqueued via two hooks or loaded twice.

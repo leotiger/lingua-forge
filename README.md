@@ -90,7 +90,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Opt in from **Settings → Behavior**
 - **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
 - **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
-- **Footnote tab** in the Block Action popover — translate or revise individual footnotes without switching to chunk mode; translate button also appears in the footnote editing toolbar
+- **Footnote tab** in the Block Action popover — translate or revise individual footnotes without switching to chunk mode; only visible when the popover is opened from inside the WordPress footnote editing UI (not from the main block toolbar)
 - **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A usage summary (requests, input tokens, output tokens) is available in **Settings → AI Usage** for any date range
 - SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
@@ -101,7 +101,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 ## Requirements
 
 - WordPress 6.4 or later (block theme / FSE recommended)
-- PHP 8.0 or later
+- PHP 8.1 or later
 - Permalink structure set to anything other than Plain
 - An API key for at least one supported AI provider (Anthropic, OpenAI, or Gemini)
 
@@ -187,7 +187,7 @@ define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini
 
 #### API keys
 
-Enter keys directly from **Settings → Lingua Forge AI**. Keys are stored encrypted in `wp_options` using AES-256-CBC derived from WordPress's own auth salts — plaintext keys never touch the database.
+Enter keys directly from **Settings → Lingua Forge AI**. Keys are stored encrypted in `wp_options` using AES-256-GCM (with the provider slug as authenticated data) derived from WordPress's own auth salts — plaintext keys never touch the database.
 
 **Fallback resolution order** (highest to lowest priority):
 1. Encrypted value in `wp_options` (set via the Settings page)
@@ -236,7 +236,7 @@ lingua-forge/
         Autoloader.php               ← PSR-4 class autoloader (namespace: LinguaForge\AI)
         Plugin.php                   ← Bootstrap: registers hooks, initialises features
         Config.php                   ← Provider + model + preset resolution
-        KeyStore.php                 ← AES-256-CBC encrypted API key storage
+        KeyStore.php                 ← AES-256-GCM encrypted API key storage
         CacheStore.php               ← SHA-256 hash-based result cache (custom table)
         TranslationMemory.php        ← Block-level TM cache shared across posts
         Glossary.php                 ← Per-language-pair terminology table
@@ -374,29 +374,29 @@ $router->debug( $message, $context ): void
 All procedural wrappers delegate to `Language_Router::get_instance()`. Use these in theme `functions.php` or template files to avoid depending on the singleton directly:
 
 ```php
-lf_source_language()                          lf_get_lang( $post_id )
-lf_languages()                                lf_set_lang( $post_id, $v )
-lf_is_valid_lang( $lang )                     lf_get_translations( $post_id )
-lf_locale_from_lang( $lang )                  lf_clear_translation_cache( $post_id )
-lf_language_label( $lang )                    lf_mark_source_updated( $post_id )
-lf_detect_lang()                              lf_mark_translation_synced( $post_id )
-lf_detect_lang_safe()                         lf_is_outdated( $post_id )
-lf_get_trid( $post_id )                       lf_get_missing_languages( $post_id )
-lf_set_trid( $post_id, $v )                   lf_query( $args )
-lf_query_fallback( $args )                    lf_get_posts( $args, $fallback )
-lf_safe_query_args( $url )                    lf_is_system_request()
-lf_set_lang_cookie( $lang )                   lf_hreflang_mode()
-lf_build_search_content( $post_id )           lf_ensure_lang_index()
-lf_debug( $message, $context )                lf_lang_permalink( $url, $post )
-lf_lsflr_render_switcher( $atts )             lf_lsflr_get_languages()
-lf_lsflr_translate_current_url( $target_lang, $post_id )
+linguaforge_source_language()                linguaforge_get_lang( $post_id )
+linguaforge_languages()                      linguaforge_set_lang( $post_id, $v )
+linguaforge_is_valid_lang( $lang )           linguaforge_get_translations( $post_id )
+linguaforge_locale_from_lang( $lang )        linguaforge_clear_translation_cache( $post_id )
+linguaforge_language_label( $lang )          linguaforge_mark_source_updated( $post_id )
+linguaforge_detect_lang()                    linguaforge_mark_translation_synced( $post_id )
+linguaforge_detect_lang_safe()               linguaforge_is_outdated( $post_id )
+linguaforge_get_trid( $post_id )             linguaforge_get_missing_languages( $post_id )
+linguaforge_set_trid( $post_id, $v )         linguaforge_query( $args )
+linguaforge_query_fallback( $args )          linguaforge_get_posts( $args, $fallback )
+linguaforge_safe_query_args( $url )          linguaforge_is_system_request()
+linguaforge_set_lang_cookie( $lang )         linguaforge_hreflang_mode()
+linguaforge_build_search_content( $post_id ) linguaforge_ensure_lang_index()
+linguaforge_debug( $message, $context )      linguaforge_lang_permalink( $url, $post )
+linguaforge_lsflr_render_switcher( $atts )   linguaforge_lsflr_get_languages()
+linguaforge_lsflr_translate_current_url( $target_lang, $post_id )
 ```
 
 ### Language Switcher (LSFLR)
 
 **From PHP / shortcode:**
 ```php
-echo lf_lsflr_render_switcher([
+echo linguaforge_lsflr_render_switcher([
     'direction'   => 'down',       // 'down' | 'up'
     'show'        => 'label',      // 'label' | 'custom' | 'icon' | 'icon-label'
     'customLabel' => 'Language',

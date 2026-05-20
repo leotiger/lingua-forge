@@ -18,9 +18,6 @@ class Config {
         . "- Preserve brand names, product names, and proper nouns verbatim.\n"
         . "- Flag any term where the target language has no direct equivalent rather than guessing.";
 
-    /** @deprecated Use LEGAL_ADDENDUM_DEFAULT. Kept for backwards compatibility. */
-    public const COMPLIANCE_ADDENDUM_DEFAULT = self::LEGAL_ADDENDUM_DEFAULT;
-
     /** System-prompt addendum for the Technical preset. */
     public const TECHNICAL_ADDENDUM_DEFAULT =
         "Technical-precision mode is active. Apply these rules to every output:\n"
@@ -371,11 +368,6 @@ class Config {
             return $global;
         }
 
-        // Backwards compat: migrate sites still running the old boolean toggle.
-        if (get_option('linguaforge_compliance_mode_enabled', false)) {
-            return 'legal';
-        }
-
         return 'standard';
     }
 
@@ -442,22 +434,4 @@ class Config {
         return trim($base_system_prompt) . "\n\n" . $addendum;
     }
 
-    // ── Deprecated compliance helpers (kept for any external callers) ─────────
-
-    /** @deprecated Use active_preset() !== 'standard'. */
-    public static function compliance_enabled(): bool {
-        return self::active_preset() !== 'standard';
-    }
-
-    /** @deprecated Use presets()['legal']['temperature']. */
-    public static function compliance_temperature(): float {
-        $presets = self::presets();
-        return (float) ($presets[ self::active_preset() ]['temperature'] ?? 0.1);
-    }
-
-    /** @deprecated Use apply_compliance_to_system(). */
-    public static function compliance_addendum(): string {
-        $stored = (string) get_option('linguaforge_compliance_addendum', '');
-        return $stored !== '' ? $stored : self::LEGAL_ADDENDUM_DEFAULT;
-    }
 }

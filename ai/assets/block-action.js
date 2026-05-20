@@ -5,11 +5,11 @@
  * supported text block (paragraph, heading, list-item, quote, etc.).
  *
  * ── How it works ──────────────────────────────────────────────────────────────
- * Uses wp.hooks.addFilter('editor.BlockEdit', …) to wrap each block's Edit
- * component with a BlockControls slot that renders our ToolbarButton.
- * The button reads the block's content attribute, pre-fills a popover, and on
- * completion writes the result back via wp.data.dispatch('core/block-editor')
- * .updateBlockAttributes().
+ * Uses wp.richText.registerFormatType so the button's edit() callback fires
+ * for every RichText instance — block toolbar and footnote-editor popover alike.
+ * BlockFormatControls fills the format-controls slot in both contexts with no
+ * MutationObserver needed.  On completion the result is written back via
+ * wp.data.dispatch('core/block-editor').updateBlockAttributes().
  *
  * ── Tabs ──────────────────────────────────────────────────────────────────────
  * Translate — language select (with post-language auto-detection + localStorage
@@ -31,13 +31,12 @@
 
     /* ── WordPress API aliases ─────────────────────────────────────────────── */
 
-    const { addFilter }                                = wp.hooks       || {};
-    const { createElement: el, Fragment }              = wp.element     || {};
-    const { ToolbarGroup, ToolbarButton }              = wp.components  || {};
-    const { BlockControls }                            = wp.blockEditor || {};
+    const { registerFormatType }                       = wp.richText    || {};
+    const { createElement: el }                         = wp.element     || {};
+    const { BlockFormatControls }                      = wp.blockEditor || {};
     const { select, dispatch }                         = wp.data        || {};
 
-    if ( !addFilter || !el || !BlockControls || !select || !dispatch ) return;
+    if ( !registerFormatType || !el || !BlockFormatControls || !select || !dispatch ) return;
 
     const { __ } = wp.i18n;
 
@@ -93,7 +92,7 @@
     /**
      * Footnotes that belong to the currently open block.
      * Each entry: { id: string, content: string }.
-     * Populated in the addFilter onClick; empty when block has no footnotes.
+     * Populated in the registerFormatType onClick; empty when block has no footnotes.
      */
     let activeFootnoteItems = [];
 
@@ -116,49 +115,6 @@
     document.body.appendChild( popoverEl );
     wirePopoverEvents( popoverEl );
 
-    /* ── Register block toolbar button via addFilter ───────────────────────── */
-
-    addFilter(
-        'editor.BlockEdit',
-        'lingua-forge/block-actions',
-        function ( BlockEdit ) {
-
-            return function ( props ) {
-
-                const contentAttr = CONTENT_MAP[ props.name ];
-
-                const toolbar = contentAttr
-                    ? el(
-                          BlockControls,
-                          { group: 'other' },
-                          el(
-                              ToolbarGroup,
-                              null,
-                              el( ToolbarButton, {
-                                  icon: translateIconSvg,
-                                  label:   __( 'Translate / Revise', 'lingua-forge' ),
-                                  onClick: ( event ) => {
-                                      activeClientId  = props.clientId;
-                                      activeBlockName = props.name;
-
-                                      const content = props.attributes[ contentAttr ] || '';
-
-                                      // Extract any footnote references from the block content
-                                      // so the Footnotes tab can be populated.
-                                      activeFootnoteItems = extractBlockFootnotes( content );
-
-                                      openPopover( popoverEl, event.currentTarget, content );
-                                  },
-                              } )
-                          )
-                      )
-                    : null;
-
-                return el( Fragment, null, el( BlockEdit, props ), toolbar );
-            };
-        }
-    );
-
     /* ── Translate icon SVG ────────────────────────────────────────────────── */
 
     const translateIconSvg = el(
@@ -176,6 +132,88 @@
             d: 'M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17A15.5 15.5 0 0 1 9 11.35 15.06 15.06 0 0 1 6.69 8H4.68A17.1 17.1 0 0 0 9 13.56l-5.09 5.02L5.5 20l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7 1.62-4.33L19.12 17h-3.24z',
         } )
     );
+
+    /* ── Register toolbar button via registerFormatType ───────────────────── */
+    //
+    // Using registerFormatType rather than addFilter('editor.BlockEdit') so that
+    // the button's edit() callback is invoked for every RichText instance —
+    // including the WordPress footnote editing popover — without any
+    // MutationObserver hackery.  BlockFormatControls fills the format-controls
+    // slot that Gutenberg renders in both the block toolbar and the footnote
+    // popover toolbar automatically.
+
+    registerFormatType( 'lingua-forge/translate', {
+        title:     __( 'Translate / Revise', 'lingua-forge' ),
+        tagName:   'span',
+        className: 'lf-ai-tr',   // sentinel; never persisted in saved content
+
+        // Always render — same pattern as the reference plugin (gutenberg-enhancements.php).
+        // Context detection uses props.value.text: every registerFormatType edit()
+        // receives a value object whose .text is the plain-text content of exactly
+        // the RichText instance it is running inside.  For a footnote editor that is
+        // the footnote text; for a block it is the block's content.  Checking whether
+        // that text matches a footnote in post meta is iframe-safe and DOM-free.
+        edit: function ( props ) {
+
+            const { value } = props;
+
+            return el(
+                BlockFormatControls,
+                {},
+                el( 'button', {
+                    type:         'button',
+                    className:    'components-button has-icon lingua-forge-ba__trigger',
+                    'aria-label': __( 'Translate / Revise', 'lingua-forge' ),
+                    title:        __( 'Translate / Revise', 'lingua-forge' ),
+
+                    // Prevent focus-steal so getSelectedBlock() is still valid in onClick.
+                    onMouseDown: ( e ) => e.preventDefault(),
+
+                    onClick: ( event ) => {
+
+                        // value.text is the plain-text content of this RichText instance.
+                        // If it matches a footnote stored in post meta we are inside the
+                        // footnote editor; otherwise treat as a regular block.
+                        const currentText = ( ( value && value.text ) || '' ).trim();
+                        const meta        = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
+                        const allFn       = JSON.parse( ( meta && meta.footnotes ) || '[]' );
+                        const matchedFn   = Array.isArray( allFn ) && currentText
+                            ? allFn.find( ( f ) =>
+                                ( f.content || '' ).replace( /<[^>]*>/g, '' ).trim() === currentText
+                              )
+                            : null;
+
+                        if ( matchedFn ) {
+                            // ── Footnote mode ────────────────────────────────
+                            activeFootnoteItems = [ matchedFn ];
+                            activeFootnoteId    = matchedFn.id;
+                            activeClientId      = null;
+                            activeBlockName     = null;
+                            applyMode           = 'footnote';
+
+                            openPopover( popoverEl, event.currentTarget, '', 'footnotes' );
+
+                        } else {
+                            // ── Block mode ───────────────────────────────────
+                            const block       = select( 'core/block-editor' ).getSelectedBlock();
+                            const contentAttr = block ? CONTENT_MAP[ block.name ] : null;
+
+                            if ( ! contentAttr ) return; // unsupported block
+
+                            const content = block.attributes[ contentAttr ] || '';
+
+                            activeClientId      = block.clientId;
+                            activeBlockName     = block.name;
+                            activeFootnoteItems = extractBlockFootnotes( content );
+                            applyMode           = 'block';
+
+                            openPopover( popoverEl, event.currentTarget, content );
+                        }
+                    },
+                }, translateIconSvg )
+            );
+        },
+    } );
 
     /* ── Build popover DOM ─────────────────────────────────────────────────── */
 
@@ -241,8 +279,7 @@
             </div>
 
             <div class="lingua-forge-ba__panel" data-panel="footnotes" hidden>
-                <label class="lingua-forge-ba__label" for="wpai-ba-fn-select">${ __( 'Footnote', 'lingua-forge' ) }</label>
-                <select id="wpai-ba-fn-select" class="lingua-forge-ba__select"></select>
+                <select id="wpai-ba-fn-select" class="lingua-forge-ba__select" hidden></select>
 
                 <div class="lingua-forge-ba__tabs lingua-forge-ba__fn-subtabs" role="tablist" style="margin-top:8px;border-bottom:1px solid #dcdcde;">
                     <button type="button" role="tab" class="lingua-forge-ba__tab lingua-forge-ba__tab--active lingua-forge-ba__fn-subtab"
@@ -353,8 +390,11 @@
         popover.querySelector( '.lingua-forge-ba__close' )
             .addEventListener( 'click', () => closePopover( popover ) );
 
-        // Top-level tab switching (Translate / Revision / Footnotes)
-        popover.querySelectorAll( '.lingua-forge-ba__tab' ).forEach( ( tab ) => {
+        // Top-level tab switching (Translate / Revision / Footnotes).
+        // Exclude fn-subtab buttons — they share the class but must not trigger
+        // switchTab (they have data-subtab, not data-tab, so the call would be
+        // switchTab(popover, undefined) which hides all panels).
+        popover.querySelectorAll( '.lingua-forge-ba__tab:not(.lingua-forge-ba__fn-subtab)' ).forEach( ( tab ) => {
             tab.addEventListener( 'click', () => switchTab( popover, tab.dataset.tab ) );
         } );
 
@@ -439,7 +479,7 @@
 
     /* ── Open / close ──────────────────────────────────────────────────────── */
 
-    function openPopover( popover, anchorEl, content ) {
+    function openPopover( popover, anchorEl, content, initialTab ) {
 
         // Arm the outside-click guard so the triggering click doesn't
         // immediately close the popover.
@@ -455,10 +495,11 @@
         if ( rvInstructions ) rvInstructions.value = '';
 
         // Reset result panel and apply button text.
+        // Note: applyMode is already set by the caller ('block' or 'footnote') —
+        // don't override it here.
         popover.querySelector( '.lingua-forge-ba__result' ).hidden = true;
         const applyBtn = popover.querySelector( '.lingua-forge-ba__apply' );
         if ( applyBtn ) applyBtn.textContent = __( 'Apply to Block', 'lingua-forge' );
-        applyMode = 'block';
 
         // Apply language preference on first open (detection + localStorage).
         if ( !popover.dataset.langInitialised ) {
@@ -466,19 +507,36 @@
             popover.dataset.langInitialised = '1';
         }
 
-        // Footnotes tab — show only when this block has footnote references.
+        // In footnote-only mode (opened from the footnote editor toolbar) the
+        // top-level Translate and Revision tabs operate on block content and are
+        // irrelevant — hide them so only the Footnotes tab is visible.
+        // In block mode they must be restored in case the popover was previously
+        // opened from a footnote.
+        const footnoteOnly = ( initialTab === 'footnotes' );
+        const trTab = popover.querySelector( '[data-tab="translate"]' );
+        const rvTab = popover.querySelector( '[data-tab="revise"]' );
+        if ( trTab ) trTab.hidden = footnoteOnly;
+        if ( rvTab ) rvTab.hidden = footnoteOnly;
+
+        // Footnotes tab — show only when this block has footnote references,
+        // or always when opened directly from the footnote editor toolbar.
         const fnTab    = popover.querySelector( '.lingua-forge-ba__tab--footnotes' );
         const fnSelect = popover.querySelector( '#wpai-ba-fn-select' );
 
         if ( activeFootnoteItems.length && fnTab && fnSelect ) {
 
-            fnTab.hidden = false;
+            // Show the Footnotes tab only when opened directly from the footnote
+            // editor toolbar — not when a regular block happens to reference footnotes.
+            fnTab.hidden = ( initialTab !== 'footnotes' );
 
             // Rebuild the footnote <select> from the current block's footnotes.
             fnSelect.innerHTML = activeFootnoteItems.map( ( fn, i ) => {
                 const preview = stripHtml( fn.content || '' ).slice( 0, 60 );
                 return `<option value="${ esc( fn.id ) }">${ escHtml( preview || `Footnote ${ i + 1 }` ) }</option>`;
             } ).join( '' );
+
+            // Show selector only when block has multiple footnotes.
+            fnSelect.hidden = activeFootnoteItems.length <= 1;
 
             // Pre-fill footnote textareas with the first footnote and init lang.
             activeFootnoteId = activeFootnoteItems[ 0 ].id;
@@ -490,8 +548,8 @@
             fnTab.hidden = true;
         }
 
-        // Always open on the Translate tab.
-        switchTab( popover, 'translate' );
+        // Open on the requested tab, defaulting to Translate.
+        switchTab( popover, initialTab || 'translate' );
 
         positionPopover( popover, anchorEl );
         popover.hidden = false;

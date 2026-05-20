@@ -177,11 +177,6 @@
     text-align: center;
 }
 
-/* Chunk result: Copy button should not stretch to full width */
-.lingua-forge-chunk-result .lingua-forge-btn-row .button {
-    flex: 0 0 auto;
-}
-
 /* ── Apply-to-editor error / hint notices ────────────────────────────────── */
 
 .lingua-forge-apply-error {
@@ -218,6 +213,11 @@
 .lingua-forge-result-bar .button {
     flex:  0 0 auto;
     width: auto;
+}
+
+/* Chunk result: Copy button should not stretch to full width */
+.lingua-forge-chunk-result .lingua-forge-btn-row .button {
+    flex: 0 0 auto;
 }
 
 /* ── ⓘ info button + overlay ─────────────────────────────────────────────── */
@@ -283,17 +283,17 @@
 }
 
 /* Quality text colours */
-.lingua-forge-info-quality.--good {
+.lingua-forge-info-quality--good {
     color:       #00a32a;
     font-weight: 600;
 }
 
-.lingua-forge-info-quality.--warn {
+.lingua-forge-info-quality--warn {
     color:       #dba617;
     font-weight: 600;
 }
 
-.lingua-forge-info-quality.--bad {
+.lingua-forge-info-quality--bad {
     color:       #d63638;
     font-weight: 600;
 }

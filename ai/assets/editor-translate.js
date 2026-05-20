@@ -66,6 +66,7 @@
     /* ── Language data ─────────────────────────────────────────────────────── */
 
     const LANG_ENTRIES = Object.entries( LinguaForgeAIEditor.languages || {} );
+    // eslint-disable-next-line no-unused-vars -- Reserved for future "default to first available language" behaviour.
     const DEFAULT_LANG = LANG_ENTRIES.length ? LANG_ENTRIES[ 0 ][ 0 ] : 'en';
 
     /* ── Boot ──────────────────────────────────────────────────────────────── */
@@ -123,6 +124,13 @@
 
             const container = document.querySelector( sel );
             if ( !container ) continue;
+
+            // Remove any buttons that ended up in lower-priority containers from
+            // a previous tryInject call — happens when a fallback container was
+            // used before the preferred one appeared in the DOM.
+            document.querySelectorAll( '.' + BTN_CLASS ).forEach( ( btn ) => {
+                if ( !container.contains( btn ) ) btn.remove();
+            } );
 
             // Inject our button if it isn't already there.
             if ( !container.querySelector( '.' + BTN_CLASS ) ) {

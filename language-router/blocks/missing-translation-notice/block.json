@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "lingua-forge/missing-translation-notice",
+    "version": "1.0.0",
+    "title": "Missing Translation Notice",
+    "category": "theme",
+    "icon": "translation",
+    "description": "Renders a polite notice when the current page is being shown in its source language because no translation exists for the visitor's language. Driven by the Lingua Forge router's LINGUAFORGE_LANG_FALLBACK_ACTIVE signal — emits nothing when a translation exists for the request locale.",
+    "keywords": [ "language", "translation", "fallback", "i18n", "linguaforge" ],
+    "textdomain": "lingua-forge",
+    "supports": {
+        "html": false,
+        "align": [ "wide", "full" ],
+        "color": {
+            "background": true,
+            "text": true,
+            "link": true
+        },
+        "spacing": {
+            "padding": true,
+            "margin": true,
+            "blockGap": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        }
+    },
+    "attributes": {
+        "messageText": {
+            "type": "string",
+            "default": "This page is shown in its original language because a translation isn't available yet."
+        },
+        "showHomeLink": {
+            "type": "boolean",
+            "default": true
+        },
+        "homeLinkText": {
+            "type": "string",
+            "default": "Browse content in your language"
+        }
+    },
+    "example": {
+        "attributes": {
+            "messageText": "This page is shown in its original language because a translation isn't available yet.",
+            "showHomeLink": true,
+            "homeLinkText": "Browse content in your language"
+        }
+    },
+    "render": "file:./render.php"
+}

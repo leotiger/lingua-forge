@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LinguaForge\Router\LinkFixer (aliased as LSFLR_Link_Fixer for back-compat).
+ * Class LinguaForge\Router\LinkFixer
  *
  * Scans translated posts/pages for internal links that still point to the
  * source-language version of a page and rewrites them to the correct
@@ -253,7 +253,7 @@ class LinkFixer {
 	 * @return array{
 	 *   post_id:     int,
 	 *   title:       string,
-	 *   fixes:       list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string, target_post_id: int }>,
+	 *   fixes:       list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string, target_post_id: int, from_data_id?: int, to_data_id?: int }>,
 	 *   stale_fixes: list<array{ from: string, to: string, linked_post_id: int, linked_post_title: string }>,
 	 *   flagged:     list<array{ url: string, reason: string, linked_post_id?: int, linked_post_title?: string }>
 	 * }
@@ -266,7 +266,13 @@ class LinkFixer {
 
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			return [];
+			return [
+				'post_id'     => 0,
+				'title'       => '',
+				'fixes'       => [],
+				'stale_fixes' => [],
+				'flagged'     => [],
+			];
 		}
 
 		$target_prefix = trailingslashit( home_url() ) . $target_lang . '/';
@@ -283,19 +289,52 @@ class LinkFixer {
 			// data-id as ground truth: if the current get_permalink() differs from
 			// the stored href (and the new permalink is still in the same language),
 			// the link is stale and can be auto-corrected.
+			//
+			// A second case arises when content was translated by copying source-
+			// language blocks: the href is updated to the target language prefix
+			// but data-id still references the source-language post (e.g. data-id
+			// points to the Catalan post while href shows /pt/).  In that case
+			// get_permalink(data-id) returns a non-target URL and the standard
+			// stale check silently skips the link.  We detect this by looking up
+			// the TRID translation of the source-language data-id post and
+			// comparing its current permalink to the stored href.
 			if ( str_starts_with( $url, $target_prefix ) ) {
 				$linked_id = $this->resolve_to_post_id( $link['id'] );
 				if ( $linked_id ) {
 					$current_permalink = (string) get_permalink( $linked_id );
-					if ( $current_permalink
-						&& str_starts_with( $current_permalink, $target_prefix )
-						&& rtrim( $current_permalink, '/' ) !== rtrim( $url, '/' ) ) {
-						$stale_fixes[] = [
-							'from'              => $url,
-							'to'                => $current_permalink,
-							'linked_post_id'    => $linked_id,
-							'linked_post_title' => get_the_title( $linked_id ),
-						];
+
+					if ( $current_permalink && str_starts_with( $current_permalink, $target_prefix ) ) {
+						// data-id resolves to a target-language post — standard stale check.
+						if ( rtrim( $current_permalink, '/' ) !== rtrim( $url, '/' ) ) {
+							$stale_fixes[] = [
+								'from'              => $url,
+								'to'                => $current_permalink,
+								'linked_post_id'    => $linked_id,
+								'linked_post_title' => get_the_title( $linked_id ),
+							];
+						}
+					} else {
+						// data-id resolves to a different-language post (source-language
+						// data-id left over from a copy-translated block).  Look up the
+						// target-language translation via TRID and use its permalink.
+						$translations = $this->router->get_translations( $linked_id );
+						if ( ! empty( $translations[ $target_lang ] ) ) {
+							$target_id        = (int) $translations[ $target_lang ];
+							$target_permalink = (string) get_permalink( $target_id );
+							if ( $target_permalink
+								&& rtrim( $target_permalink, '/' ) !== rtrim( $url, '/' ) ) {
+								// href is stale AND data-id points to the wrong language.
+								// Record both the href replacement and the data-id correction.
+								$stale_fixes[] = [
+									'from'              => $url,
+									'to'                => $target_permalink,
+									'linked_post_id'    => $target_id,
+									'linked_post_title' => get_the_title( $target_id ),
+									'from_data_id'      => $linked_id,
+									'to_data_id'        => $target_id,
+								];
+							}
+						}
 					}
 				}
 				continue;
@@ -433,23 +472,87 @@ class LinkFixer {
 			$applied += $count;
 		}
 
+		// ── Fix data-id attributes left pointing to the wrong-language post ───
+		// When stale-fix detection found that data-id references a source-language
+		// post instead of the target-language equivalent, correct the attribute in
+		// the (already href-updated) content so future scans work reliably.
+		foreach ( $all_fixes as $fix ) {
+			if ( empty( $fix['from_data_id'] ) || empty( $fix['to_data_id'] ) ) {
+				continue;
+			}
+			$content = $this->fix_data_id_attr(
+				$content,
+				$fix['to'],
+				(int) $fix['from_data_id'],
+				(int) $fix['to_data_id']
+			);
+		}
+
 		if ( $applied > 0 ) {
 			// Temporarily unhook handle_save_post so that this content-only update
 			// does not corrupt translation metadata: TRID assignments, language
 			// timestamps, and the outdated flag must remain exactly as they were.
-			remove_action( 'wp_after_insert_post', [ $this->router, 'handle_save_post' ], 10 );
-			remove_action( 'wp_after_insert_post', [ $this->router, 'handle_cache_clear' ], 20 );
+			// After §2.2 Router split: handle_save_post is on Sync, handle_cache_clear on TridGroup.
+			remove_action( 'wp_after_insert_post', [ $this->router->sync,       'handle_save_post'  ], 10 );
+			remove_action( 'wp_after_insert_post', [ $this->router->trid_group, 'handle_cache_clear' ], 20 );
 
 			wp_update_post( [
 				'ID'           => $post_id,
 				'post_content' => $content,
 			] );
 
-			add_action( 'wp_after_insert_post', [ $this->router, 'handle_save_post' ], 10, 2 );
-			add_action( 'wp_after_insert_post', [ $this->router, 'handle_cache_clear' ], 20 );
+			add_action( 'wp_after_insert_post', [ $this->router->sync,       'handle_save_post'  ], 10, 2 );
+			add_action( 'wp_after_insert_post', [ $this->router->trid_group, 'handle_cache_clear' ], 20 );
 		}
 
 		return [ 'applied' => $applied ];
+	}
+
+	// =========================================================
+	// HELPERS: CONTENT PATCHING
+	// =========================================================
+
+	/**
+	 * Replace data-id="$old_id" with data-id="$new_id" inside every <a> opening
+	 * tag whose href attribute matches $href exactly (double or single quotes).
+	 *
+	 * Using href as a scope guard means we never touch unrelated links that
+	 * happen to carry the same data-id value (e.g. an image or block anchor).
+	 *
+	 * Called by fix_post() after the href replacement loop, so $href is the
+	 * already-updated (new) permalink, not the old one.
+	 */
+	private function fix_data_id_attr(
+		string $content,
+		string $href,
+		int    $old_id,
+		int    $new_id
+	): string {
+		$href_pattern   = preg_quote( $href, '/' );
+		$old_id_pattern = preg_quote( (string) $old_id, '/' );
+
+		return preg_replace_callback(
+			'/<a\s([^>]*)>/i',
+			static function ( array $m ) use ( $href_pattern, $old_id_pattern, $new_id ): string {
+				$attrs = $m[1];
+
+				// Only touch tags that carry the specific updated href.
+				if ( ! preg_match( '/\bhref=["\']' . $href_pattern . '["\']/', $attrs ) ) {
+					return $m[0];
+				}
+
+				// Replace the data-id attribute value (double quotes only — Gutenberg
+				// always serialises attribute values in double quotes).
+				$new_attrs = preg_replace(
+					'/\bdata-id="' . $old_id_pattern . '"/',
+					'data-id="' . $new_id . '"',
+					$attrs
+				);
+
+				return '<a ' . $new_attrs . '>';
+			},
+			$content
+		);
 	}
 
 	// =========================================================
@@ -564,11 +667,13 @@ class LinkFixer {
 			wp_send_json_error( 'Invalid language' );
 		}
 
+		// Admin-only path: gated by current_user_can('edit_posts') and only fires when an admin clicks "Scan Links". Bounded to post/page + published. The slow-query warning is documented; this isn't a hot frontend path. (phpcs:ignore directive on the meta_query line itself, where the sniff actually fires.)
 		$query = new \WP_Query( [
 			'post_type'      => [ 'post', 'page' ],
 			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- see comment above the $query assignment.
 			'meta_query'     => [ [ 'key' => '_lang', 'value' => $lang ] ],
 		] );
 
@@ -718,4 +823,3 @@ class LinkFixer {
 	}
 }
 
-\class_alias( \LinguaForge\Router\LinkFixer::class, 'LSFLR_Link_Fixer' );

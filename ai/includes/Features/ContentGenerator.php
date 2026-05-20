@@ -179,6 +179,7 @@ class ContentGenerator implements FeatureInterface {
         }
 
         // ── Build prompt ──────────────────────────────────────────────────────
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL.
         $prompt_tpl = file_get_contents(
             LINGUAFORGE_AI_PATH . '/templates/prompts/content-generator.txt'
         );

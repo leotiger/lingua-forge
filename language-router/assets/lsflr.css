@@ -3,7 +3,7 @@
 ========================================= */
 
 /* =========================================
-   Variables (theme-friendly)
+   Variables + Container
 ========================================= */
 .lsflr-switcher {
     --lsflr-bg: #fff;
@@ -13,17 +13,11 @@
     --lsflr-shadow: 0 10px 26px rgba(0,0,0,0.14);
     --lsflr-radius: 8px;
     --lsflr-speed: 0.18s;
-    --lsflr-delay: 0.04s;	
-}
-
-/* =========================================
-   Container
-========================================= */
-.lsflr-switcher {
+    --lsflr-delay: 0.04s;
     position: relative;
     display: inline-block;
     font-size: 1.3rem;
-	font-family: var(--wp--preset--font-family--base-hand);	
+	font-family: var(--wp--preset--font-family--base-hand);
     color: var(--lsflr-color);
 	color-scheme: light;
 	margin-block-start: 0;
@@ -52,9 +46,19 @@
     transition: transform var(--lsflr-speed) ease;
 }
 
+.lsflr-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.lsflr-icon svg {
+    width: 1em;
+    height: 1em;
+}
+
 .lsflr-toggle .lsflr-current img, .lsflr-toggle .lsflr-current svg {
 	height: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);
-	width: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);	
+	width: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);
 }
 
 .lsflr-toggle .lsflr-current svg {
@@ -114,6 +118,7 @@
 /* =========================================
    AUTO EDGE DETECTION (CSS trick)
 ========================================= */
+
 /* If near right edge, add this class in block wrapper */
 .lsflr-auto-right .lsflr-submenu {
     left: auto;
@@ -184,19 +189,6 @@
 .lsflr-lang-ca::before { content: "🏴"; } /* Catalan alt */
 .lsflr-lang-fr::before { content: "🇫🇷"; }
 .lsflr-lang-de::before { content: "🇩🇪"; }
-
-/* =========================================
-   Icon block support
-========================================= */
-.lsflr-icon {
-    display: inline-flex;
-    align-items: center;
-}
-
-.lsflr-icon svg {
-    width: 1em;
-    height: 1em;
-}
 
 /* =========================================
    Accessibility

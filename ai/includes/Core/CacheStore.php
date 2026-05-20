@@ -33,12 +33,6 @@ defined('ABSPATH') || exit;
 class CacheStore {
 
     /**
-     * Old post-meta key prefix (kept for the lazy-migration fallback in get()
-     * and the cleanup pass in clear_all() / delete()).
-     */
-    private const META_PREFIX = '_linguaforge_cache_';
-
-    /**
      * Schema version. Bump when the CREATE TABLE shape changes; ensure_table()
      * compares this to the linguaforge_ai_cache_db_version option and re-runs
      * dbDelta on a mismatch.
@@ -49,6 +43,8 @@ class CacheStore {
     /**
      * Static guard so ensure_table() is at most a one-time check per request,
      * even when get()/set() are called many times in the same page load.
+     *
+     * @var bool
      */
     private static bool $table_ensured = false;
 
@@ -56,11 +52,6 @@ class CacheStore {
 
     /**
      * Return the cached payload if the stored hash matches, or null on miss.
-     *
-     * If nothing is found in the new table, this also reads the legacy
-     * post-meta entry for backward compatibility: on a hit it copies the data
-     * forward and deletes the old row, so caches built before v1.4 keep
-     * working and migrate themselves on first touch.
      *
      * @return array<string, mixed>|null
      */
@@ -88,43 +79,23 @@ class CacheStore {
             ARRAY_A
         );
 
-        if (is_array($row)) {
-
-            if ($row['hash'] !== $hash) {
-                return null; // inputs changed — stale cache, will be overwritten on next set()
-            }
-
-            $payload = json_decode((string) $row['payload'], true);
-            return is_array($payload) ? $payload : null;
-        }
-
-        // ── Lazy migration from the pre-1.4 post-meta cache ────────────────
-        // First request after the upgrade falls through to the old store;
-        // on a hash-match we copy the entry into the table and delete the
-        // post-meta row so this read path runs at most once per (post,feature).
-        $legacy = get_post_meta($post_id, self::legacy_meta_key($feature), true);
-
-        if (!is_array($legacy)) {
+        if (!is_array($row)) {
             return null;
         }
 
-        // Stale legacy entry — clean it up while we're here.
-        if (($legacy['hash'] ?? '') !== $hash || !is_array($legacy['payload'] ?? null)) {
-            delete_post_meta($post_id, self::legacy_meta_key($feature));
-            return null;
+        if ($row['hash'] !== $hash) {
+            return null; // inputs changed — stale cache, will be overwritten on next set()
         }
 
-        // Hit. Migrate forward.
-        self::write_row($post_id, $feature_key, $hash, $legacy['payload'], (int) ($legacy['cached_at'] ?? time()));
-        delete_post_meta($post_id, self::legacy_meta_key($feature));
-
-        return $legacy['payload'];
+        $payload = json_decode((string) $row['payload'], true);
+        return is_array($payload) ? $payload : null;
     }
 
     /**
-     * Persist a feature result payload alongside the input hash.
-     *
-     * @param array<string, mixed> $payload
+     * Persist a feature result payload alongside the input hash. The
+     * combination of $post_id + $feature is the row's composite key;
+     * $hash identifies the input set that produced this $payload (used
+     * by get() to detect stale cache entries).
      */
     public static function set(
         int    $post_id,
@@ -144,12 +115,7 @@ class CacheStore {
         );
     }
 
-    /**
-     * Remove the cache entry for a specific feature on a post.
-     *
-     * Also deletes the legacy post-meta entry, if any, so an in-flight
-     * migration doesn't leave orphaned data behind.
-     */
+    /** Remove the cache entry for a specific feature on a post. */
     public static function delete(
         int    $post_id,
         string $feature
@@ -168,16 +134,11 @@ class CacheStore {
             ],
             ['%d', '%s']
         );
-
-        delete_post_meta($post_id, self::legacy_meta_key($feature));
     }
 
     /**
-     * Empty the cache table and clean up any lingering legacy post-meta rows.
-     *
-     * Returns the number of entries that were in the table before clearing.
-     * Convenience wrapper around clear() with no filter criteria — the legacy
-     * post-meta cleanup runs alongside the table truncation.
+     * Empty the cache table. Returns the number of entries that were in the
+     * table before clearing. Convenience wrapper around clear() with no criteria.
      */
     public static function clear_all(): int {
 
@@ -192,11 +153,9 @@ class CacheStore {
      *   - feature_prefix: only delete entries whose feature_key starts with
      *     this string (e.g. 'translation' matches translation_fr, translation_de,
      *     while 'meta-description' is a literal full-key match).
-     *   With no criteria, clears the whole table (and legacy post-meta rows).
+     *   With no criteria, clears the whole table.
      *
-     * @return int Number of cache table rows deleted (legacy post-meta rows
-     *             not counted — they're swept up alongside but their count
-     *             isn't useful for the caller).
+     * @return int Number of cache table rows deleted.
      */
     public static function clear(array $criteria = []): int {
 
@@ -228,16 +187,6 @@ class CacheStore {
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- TRUNCATE on the plugin's own table; admin-initiated, no equivalent WP API.
             $wpdb->query("TRUNCATE TABLE {$table}");
-
-            // Legacy post-meta sweep — only when clearing everything; for
-            // scoped clears the user explicitly asked for a subset.
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- LIKE-based bulk DELETE on plugin-owned meta keys; no WP API equivalent.
-            $wpdb->query(
-                $wpdb->prepare(
-                    "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
-                    $wpdb->esc_like(self::META_PREFIX) . '%'
-                )
-            );
 
             return $count;
         }
@@ -316,8 +265,8 @@ class CacheStore {
 
     /**
      * Atomic upsert (REPLACE on the composite primary key). Centralises the
-     * JSON encoding and the wpdb format strings so set() and the lazy-migration
-     * path in get() share exactly one write codepath.
+     * JSON encoding and the wpdb format strings so every write path through
+     * set() goes through exactly one codepath.
      */
     private static function write_row(
         int    $post_id,
@@ -353,10 +302,5 @@ class CacheStore {
 
         // sanitize_key gives [a-z0-9_\-]; the feature column is VARCHAR(64).
         return substr(sanitize_key($feature), 0, 64);
-    }
-
-    private static function legacy_meta_key(string $feature): string {
-
-        return self::META_PREFIX . sanitize_key($feature);
     }
 }

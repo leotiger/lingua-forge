@@ -11,9 +11,8 @@
  *   - Encrypted API key options (linguaforge_key_*)
  *   - Model override options (linguaforge_model_*)
  *   - Translation Limits options
- *   - Language Router version / migration flags
- *   - AI preset options (linguaforge_active_preset, legacy compliance options)
- *   - Meta Description migration flag (lf_meta_key_migrated_v1)
+ *   - Language Router version flag
+ *   - AI preset options (linguaforge_active_preset)
  *   - AI result caches stored in post meta (_linguaforge_cache_*)
  *   - Language Router post meta (_lang, _trid, _source_updated_at, etc.)
  *   - Meta description post meta (_linguaforge_meta_description only — the legacy
@@ -35,7 +34,6 @@ global $wpdb;
 $linguaforge_named_options = [
     // Core
     'linguaforge_flush_rewrite_rules',
-    'linguaforge_mu_migration_done',
     'linguaforge_provider',
     'lf_lang_router_version',
     'linguaforge_ai_cache_db_version',
@@ -44,20 +42,16 @@ $linguaforge_named_options = [
     'linguaforge_ai_tm_db_version',
     'linguaforge_translation_memory_enabled',
     'linguaforge_installed_version',
+    'linguaforge_overrides_hardened_v1',
     // AI Limits & Security
     'linguaforge_ai_daily_quota',
     'linguaforge_required_capability',
     // Behavior — Block Editor (§2.7)
     'linguaforge_block_editor_allow_lock_blocks',
     'linguaforge_block_editor_allow_template_mode',
-    // Behavior — AI preset (§2.8)
-    // Old boolean toggle + temperature field kept here to clean up legacy installs.
-    'linguaforge_compliance_mode_enabled',
-    'linguaforge_compliance_temperature',
+    // Behavior — AI preset
     'linguaforge_compliance_addendum',
     'linguaforge_active_preset',
-    // Meta Description migration flag
-    'lf_meta_key_migrated_v1',
     // Debug logging toggle (§3.7)
     'linguaforge_ai_debug_enabled',
 ];
@@ -102,6 +96,19 @@ foreach ( $linguaforge_prefixes as $linguaforge_like ) {
     );
 }
 
+// ── Legacy AI cache postmeta sweep ───────────────────────────────────────────
+// Pre-1.4 installs stored AI feature results in wp_postmeta under
+// `_linguaforge_cache_<feature>_<lang>` keys. The custom-table CacheStore
+// replaced this in 1.4 and the lazy postmeta fallback in get() has since
+// been removed, so any rows remaining are unreachable cruft. Sweep them on
+// uninstall so the docblock at the top of this file is honest.
+$wpdb->query(
+    $wpdb->prepare(
+        "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
+        '\_linguaforge\_cache\_%'
+    )
+);
+
 // ── Post meta ─────────────────────────────────────────────────────────────────
 
 $linguaforge_post_meta_keys = [
@@ -123,20 +130,10 @@ $linguaforge_post_meta_keys = [
 ];
 
 foreach ( $linguaforge_post_meta_keys as $linguaforge_key ) {
+    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- One-shot cleanup on plugin uninstall; not a hot path. The slow-query warning applies to runtime queries, not removal sweeps.
     $wpdb->delete( $wpdb->postmeta, [ 'meta_key' => $linguaforge_key ] );
 }
 
-// AI caches use a prefix (_linguaforge_cache_*) — delete with LIKE.
-// These rows only exist on installations that upgraded from pre-1.4 and never
-// touched a cached feature again (the lazy migration in CacheStore::get()
-// migrates rows forward on first read). Cleaning them up here is harmless on
-// fresh installs (no matching rows) and tidy on long-lived sites.
-$wpdb->query(
-    $wpdb->prepare(
-        "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
-        '\_linguaforge\_cache\_%'
-    )
-);
 
 // ── Custom AI cache table ────────────────────────────────────────────────────
 // Created on first use by CacheStore::ensure_table(). DROP IF EXISTS so this
@@ -165,8 +162,8 @@ $wpdb->query( "DROP TABLE IF EXISTS {$linguaforge_ai_tm_table}" );
 
 // ── User meta ─────────────────────────────────────────────────────────────────
 
+// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- One-shot cleanup on plugin uninstall; not a hot path.
 $wpdb->delete( $wpdb->usermeta, [ 'meta_key' => 'lf_lang_filter' ] );
-$wpdb->delete( $wpdb->usermeta, [ 'meta_key' => 'my_lang_filter' ] );
 
 // ── DB index created on activation ───────────────────────────────────────────
 // The plugin adds a composite index on wp_postmeta for fast _lang queries.

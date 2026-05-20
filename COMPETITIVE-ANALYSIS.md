@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 1.3.6
+**Date:** May 2026 · Lingua Forge 1.4.0
 
 ---
 
@@ -310,8 +310,8 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.3.6 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.4.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in and a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches.**
 
-WooCommerce support is the remaining gap most likely to affect real adoption decisions. Browser-based language redirect (Accept-Language header, opt-in) and slug translation (CLI + Gutenberg apply) have shipped as of 1.3.x. Everything else in the competitive surface — routing, hreflang, FSE templates, AI translation and generation, SEO meta output, WP-CLI — is fully covered at 1.3.6.
+WooCommerce support is the remaining gap most likely to affect real adoption decisions. Browser-based language redirect (Accept-Language header, opt-in) and slug translation (CLI + Gutenberg apply) have shipped as of 1.3.x. Everything else in the competitive surface — routing, hreflang, FSE templates, AI translation and generation, SEO meta output, WP-CLI — is fully covered at 1.4.0.

@@ -1,13 +1,25 @@
 # Files excluded from the WordPress.org SVN deployment / plugin ZIP.
 # Any path listed here is kept in the GitHub repo but not pushed to SVN
 # (compatible with wp-env, wp-scripts, and manual deploy scripts).
+#
+# Dev tooling — Composer, npm, PHPCS, PHPStan, PHPUnit, wp-env, ESLint —
+# lives in the sibling ../lingua-forge-dev/ folder. It is physically
+# outside the plugin tree, so most of it can never reach the deploy ZIP
+# in the first place. The entries below cover the only thing that lives
+# *inside* this folder (tests/) plus belt-and-braces guards in case
+# someone ever copies a config in for ad-hoc tweaking.
 
 # Developer / project documentation
-CLAUDE.md
 CONTRIBUTING.md
-REVIEW.md
 COMPETITIVE-ANALYSIS.md
 blog-post-draft.md
+blog-ai-who-is-learning.md
+
+# Belt-and-braces — internal docs that normally live in
+# ../lingua-forge-audit/ but might drift back here by accident.
+CLAUDE.md
+REVIEW.md
+AUDIT-*.md
 
 # Git
 .git
@@ -18,15 +30,35 @@ blog-post-draft.md
 .editorconfig
 .vscode/
 .idea/
+.DS_Store
 
-# Node / build tooling (if added in future)
+# Tests — the suite lives in this folder (it's plugin source we want
+# under version control), but we don't ship it to .org.
+tests/
+build/
+coverage/
+
+# Belt-and-braces — if anyone ever copies a dev-tooling config back
+# into the plugin folder, the deploy ZIP must still exclude it.
 node_modules/
 package.json
 package-lock.json
-
-# PHP tooling
+.eslintrc.json
+.prettierrc.json
+.stylelintrc.json
+.wp-env.json
+.wp-env.override.json
+.wp-env/
+composer.json
+composer.lock
+vendor/
 phpcs.xml
 phpcs.xml.dist
 .phpcs.xml
+.phpcs.cache
 phpunit.xml
 phpunit.xml.dist
+.phpunit.result.cache
+phpstan.neon
+phpstan.neon.dist
+.phpstan.cache

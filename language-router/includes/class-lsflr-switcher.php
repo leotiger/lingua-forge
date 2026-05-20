@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LinguaForge\Router\Switcher (aliased as LSFLR_Switcher for back-compat).
+ * Class LinguaForge\Router\Switcher
  *
  * Language Switcher block and renderer.
  * Depends on LinguaForge\Router\Router for data resolution.
@@ -31,7 +31,7 @@ class Switcher {
 	public function enqueue_styles(): void {
 		wp_enqueue_style(
 			'lsflr',
-			plugin_dir_url( dirname( __FILE__ ) ) . 'assets/lsflr.css',
+			plugin_dir_url( __DIR__ ) . 'assets/lsflr.css',
 			[],
 			defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false
 		);
@@ -76,7 +76,7 @@ class Switcher {
 		$query   = isset( $parsed['query'] ) ? '?' . $parsed['query'] : '';
 
 		$segments = explode( '/', $path );
-		if ( ! empty( $segments[0] ) && in_array( $segments[0], $langs ) ) {
+		if ( ! empty( $segments[0] ) && in_array( $segments[0], $langs, true ) ) {
 			array_shift( $segments );
 		}
 
@@ -85,7 +85,7 @@ class Switcher {
 		// Search
 		if ( is_search() ) {
 			$s = get_query_var( 's' );
-			return home_url( '/?lang=' . $target_lang . '&s=' . urlencode( $s ) );
+			return home_url( '/?lang=' . $target_lang . '&s=' . rawurlencode( $s ) );
 		}
 
 		// Singular
@@ -188,89 +188,11 @@ class Switcher {
 	public function register_block(): void {
 		wp_register_script(
 			'lsflr-switcher-editor',
-			'',
+			LINGUAFORGE_URL . 'language-router/assets/editor-switcher.js',
 			[ 'wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor' ],
-			defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Version supplied via LINGUAFORGE_VERSION.
+			defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false,
 			true
 		);
-
-		wp_add_inline_script( 'lsflr-switcher-editor', "
-			(function(wp){
-				const { registerBlockType } = wp.blocks;
-				const { createElement: el } = wp.element;
-				const { InspectorControls } = wp.blockEditor;
-				const { PanelBody, SelectControl, TextControl } = wp.components;
-
-				registerBlockType('custom/lsflr-switcher', {
-					apiVersion: 3,
-					title: 'LSFLR Switcher',
-					icon: 'translation',
-					category: 'widgets',
-
-					attributes: {
-						direction:   { type: 'string', default: 'down' },
-						show:        { type: 'string', default: 'label' },
-						customLabel: { type: 'string', default: 'Language' },
-						iconHtml:    { type: 'string', default: '🌐' }
-					},
-
-					edit: function(props) {
-						const { attributes, setAttributes } = props;
-						const blockProps = wp.blockEditor.useBlockProps({
-							style:{
-								padding:'10px',
-								border:'1px dashed #ccc',
-								background:'#f9f9f9',
-								cursor:'pointer'
-							}
-						});
-
-						return el('div', blockProps,
-							el(InspectorControls, {},
-								el(PanelBody, { title: 'Settings' },
-									el(SelectControl, {
-										label: 'Direction',
-										value: attributes.direction,
-										options: [
-											{ label: 'Dropdown', value: 'down' },
-											{ label: 'Dropup',   value: 'up' }
-										],
-										onChange: function(v){ setAttributes({ direction: v }); }
-									}),
-									el(SelectControl, {
-										label: 'Toggle Display',
-										value: attributes.show,
-										options: [
-											{ label: 'Current language', value: 'label' },
-											{ label: 'Custom label',     value: 'custom' },
-											{ label: 'Icon only',        value: 'icon' },
-											{ label: 'Icon + language',  value: 'icon-label' }
-										],
-										onChange: function(v){ setAttributes({ show: v }); }
-									}),
-									attributes.show === 'custom' &&
-									el(TextControl, {
-										label: 'Custom label',
-										value: attributes.customLabel,
-										onChange: function(v){ setAttributes({ customLabel: v }); }
-									}),
-									(attributes.show === 'icon' || attributes.show === 'icon-label') &&
-									el(TextControl, {
-										label: 'Icon (emoji or SVG)',
-										value: attributes.iconHtml,
-										onChange: function(v){ setAttributes({ iconHtml: v }); }
-									})
-								)
-							),
-							el('div', {}, 'LSFLR Switcher')
-						);
-					},
-
-					save: function(){ return null; }
-				});
-
-			})(window.wp);
-		" );
 
 		register_block_type( 'custom/lsflr-switcher', [
 			'editor_script'   => 'lsflr-switcher-editor',
@@ -279,4 +201,3 @@ class Switcher {
 	}
 }
 
-\class_alias( \LinguaForge\Router\Switcher::class, 'LSFLR_Switcher' );

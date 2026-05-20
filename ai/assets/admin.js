@@ -858,6 +858,7 @@ function showApplyHint(button, message) {
 /**
  * Show an inline error message beneath the Apply button's row.
  */
+// eslint-disable-next-line no-unused-vars -- Reserved for future error-display wiring; pairs with clearApplyError below. Currently unused after an earlier refactor removed the call site.
 function showApplyError(button, message) {
 
     const btnRow = button.closest('.lingua-forge-btn-row');
@@ -1225,19 +1226,19 @@ function buildMetaInfoOverlay(charCount) {
     if (charCount >= 140 && charCount <= 160) {
 
         quality      = `${ __( '✓ Good length', 'lingua-forge' ) } (${charCount} ${charsLabel})`;
-        qualityClass = '--good';
+        qualityClass = 'lingua-forge-info-quality--good';
 
     } else if (charCount >= 120 && charCount <= 180) {
 
         quality      = `${ __( '⚠ Borderline', 'lingua-forge' ) } (${charCount} ${charsLabel})`;
-        qualityClass = '--warn';
+        qualityClass = 'lingua-forge-info-quality--warn';
 
     } else {
 
         quality      = charCount < 120
             ? `${ __( '✗ Too short', 'lingua-forge' ) } (${charCount} ${charsLabel})`
             : `${ __( '✗ Too long',  'lingua-forge' ) } (${charCount} ${charsLabel})`;
-        qualityClass = '--bad';
+        qualityClass = 'lingua-forge-info-quality--bad';
     }
 
     const targetHint = __( 'Target: 140–160 chars for optimal SERP display', 'lingua-forge' );

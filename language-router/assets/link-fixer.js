@@ -267,7 +267,7 @@
 		var btn    = $(this);
 		var postId = btn.data('post-id');
 		btn.prop('disabled', true).text(tplI18n.btnFixing || 'Fixing…');
-		doFixTemplate(postId, function (ok, template) {
+		doFixTemplate(postId, function (ok, _template) {
 			var row = $('#lsflr-row-' + postId);
 			if (ok) {
 				btn.text(tplI18n.btnFixed || '✅ Template fixed');

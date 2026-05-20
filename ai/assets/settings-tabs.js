@@ -36,6 +36,7 @@
 			// rather than failing silently. Only fires on the Settings page —
 			// elsewhere the script either isn't enqueued or returns immediately.
 			if (document.querySelector('.lingua-forge-tabs')) {
+				// eslint-disable-next-line no-console -- Intentional deploy-diagnostic warning; only fires when settings-tabs.js loads but its target DOM is absent, which usually indicates a partial deploy.
 				console.warn('[LinguaForge] settings-tabs.js loaded but no .lingua-forge-tab-panel elements found. Did SettingsPage.php deploy correctly?');
 			}
 			return;

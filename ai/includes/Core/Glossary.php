@@ -174,7 +174,16 @@ class Glossary {
      * $target_lang. Includes wildcard rows (source_lang = '') so brand names
      * and language-agnostic terms are always picked up.
      *
-     * @return list<array{...}>
+     * @return list<array{
+     *     id:           int,
+     *     source_term:  string,
+     *     target_term:  string,
+     *     source_lang:  string,
+     *     target_lang:  string,
+     *     notes:        string,
+     *     created_at:   int,
+     *     updated_at:   int
+     * }>
      */
     public static function get_for_pair(string $source_lang, string $target_lang): array {
 

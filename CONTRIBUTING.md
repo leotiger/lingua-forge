@@ -213,10 +213,10 @@ when adding new code.
 
 ## Coding conventions
 
-- **PHP 8.0+ syntax** is fine — the plugin requires PHP 8.0 (declared in
+- **PHP 8.1+ syntax** is fine — the plugin requires PHP 8.1 (declared in
   the header). Constructor property promotion, named arguments,
-  `match` expressions, `readonly` properties, union return types are all
-  in use.
+  `match` expressions, `readonly` properties, enums, never return type,
+  union return types are all in use.
 - **WordPress Coding Standards** are tracked via `phpcs`; the codebase
   is clean against the WordPress.org standard with documented
   `phpcs:ignore` for every justified exception.
@@ -270,8 +270,32 @@ Tab state is preserved across the save-redirect cycle via
 
 The plugin registers a `linguaforge` WP-CLI command namespace when
 `WP_CLI` is defined. Registration happens eagerly at AI sub-module load
-time (`ai/ai.php`); the command class itself (`LinguaForge\AI\CLI\Commands`)
+time (`ai/ai.php`); the facade class (`LinguaForge\AI\CLI\Commands`)
 is autoloaded on the first method dispatch.
+
+The CLI namespace under `ai/includes/CLI/` is split into:
+
+- `Commands.php` — thin facade. Holds one public method per subcommand
+  plus the WP-CLI docblocks (`## OPTIONS` / `## EXAMPLES` / `@when`).
+  Each method is a one-line forwarder into a dedicated command class.
+  Why the docblocks live here: WP-CLI introspects the class registered
+  via `WP_CLI::add_command()` and reads its method docblocks to build
+  `wp linguaforge <sub> --help`. Keeping the docblocks on the facade
+  means the help output stays byte-stable regardless of how the
+  implementation is structured underneath.
+- `AbstractTranslateCommand.php` — shared base for the three commands
+  that drive `Translation::run()` (translate, retranslate,
+  fill-translations). Provides the validators (`validate_post_id`,
+  `validate_target_langs`), the worker-overrides filter installer, the
+  debug-mode helper, the `apply_translation` / `create_trid_linked_post`
+  / `generate_and_save_meta_description` pipeline, and the
+  `dump_debug_files` echo helper. Subclasses only implement
+  `execute(array $args, array $assoc_args): void`.
+- `TranslateCommand.php`, `RetranslateCommand.php`,
+  `FillTranslationsCommand.php` — each extends `AbstractTranslateCommand`.
+- `MissingTranslationsCommand.php`, `CacheClearCommand.php` — standalone
+  classes (no translation pipeline involvement), each with an
+  `execute(array $args, array $assoc_args): void`.
 
 Currently shipped:
 
@@ -292,9 +316,21 @@ Currently shipped:
   to feature-key prefix; `--post-id=N` scopes to a single post; both
   combine. Bare-truncate prompts unless `--yes` is passed.
 
-When adding a new command, add a public method to
-`LinguaForge\AI\CLI\Commands` with a WP-CLI-flavored docblock (the
-`## OPTIONS` / `## EXAMPLES` blocks render as the `wp help` output).
+When adding a new command:
+
+1. Create a new class `LinguaForge\AI\CLI\FooBarCommand` in
+   `ai/includes/CLI/FooBarCommand.php`. If it runs the translation
+   pipeline, extend `AbstractTranslateCommand`; otherwise it stands
+   alone. Implement `public function execute(array $args, array
+   $assoc_args): void`.
+2. Add a public method `foo_bar` to `LinguaForge\AI\CLI\Commands` whose
+   docblock contains the WP-CLI-flavored `## OPTIONS` / `## EXAMPLES`
+   (these render as `wp linguaforge foo-bar --help`). The method body
+   is a one-liner: `( new FooBarCommand() )->execute( $args, $assoc_args );`.
+3. Mention the new subcommand in the class-level `## SUBCOMMANDS`
+   docblock at the top of `Commands.php` so `wp linguaforge --help`
+   lists it.
+
 WP-CLI's snake_case-to-hyphen mapping turns `public function foo_bar()`
 into `wp linguaforge foo-bar`.
 
@@ -414,9 +450,7 @@ under control; the ignore directive is what makes WPCS tolerate it.
   `post_id` + `feature_key`, `payload LONGTEXT` JSON-encoded). Managed by
   `LinguaForge\AI\Core\CacheStore`; the public API is `get($post_id,
   $feature, $hash)` / `set(…)` / `delete($post_id, $feature)` /
-  `clear_all(): int` plus the `hash($inputs): string` helper. Lazy
-  migration in `get()` reads pre-1.4 entries from `wp_postmeta` and
-  copies them forward.
+  `clear_all(): int` plus the `hash($inputs): string` helper.
 - **API keys** are AES-256-CBC-encrypted in `wp_options` rows named
   `linguaforge_key_{provider}`. Encryption secret derives from
   `wp_salt('auth')` unless `LINGUAFORGE_SECRET` is defined.
@@ -525,6 +559,139 @@ If you're not sure whether OPcache is the culprit, the quick test is:
 add a marker line to a known-loaded file (e.g. `error_log('alive');` at
 the top of `lingua-forge.php`) and hit a page. If the marker doesn't
 appear in the error log, OPcache is serving the old file.
+
+---
+
+## Local development environment
+
+The plugin itself ships with **zero runtime dependencies** — that policy
+is non-negotiable for WordPress.org submission. Every piece of dev
+tooling (PHPUnit, PHPCS / WPCS, PHPStan, wp-env, ESLint, Prettier,
+Plugin Check) lives in a **sibling folder** rather than inside this
+plugin directory:
+
+```
+~/Github/
+├── lingua-forge/             ← this folder — plugin source, ships to .org
+└── lingua-forge-dev/         ← sibling workshop — vendor/, node_modules/, configs
+```
+
+Keeping the tooling next door rather than in-tree means
+`~/Github/lingua-forge/` stays free of the ~1 GB of `vendor/` +
+`node_modules/` that the toolchain installs, and there's no risk of
+ever shipping a dev artifact to .org by accident.
+
+See [`../lingua-forge-dev/README.md`](../lingua-forge-dev/README.md)
+for the full layout and command reference.
+
+> **Note — TBD: contributor / CI distribution.** The sibling-folder
+> layout above is the *maintainer's local* workflow. How the dev
+> tooling reaches outside contributors and CI is not yet decided. The
+> preferred future direction is the WordPress.org-style approach:
+> move the dev tooling back into the plugin repo (e.g. under a `dev/`
+> subdirectory), filter it out of the SVN deploy via `.distignore`,
+> and let contributors get everything from a single `git clone`.
+> Until that's wired up, only the maintainer can run the QA suite
+> locally; pull requests are validated manually post-merge.
+
+### Prerequisites
+
+- PHP 8.1+ (PHP 8.2 recommended, matches Plugin Check's target).
+- Composer 2.x.
+- Node 20+ and npm 10+.
+- Docker — required by `@wordpress/env` for integration tests and the
+  Plugin Check wrapper.
+
+### One-time install
+
+```bash
+cd ~/Github/lingua-forge-dev
+composer install
+npm install
+```
+
+After this, `~/Github/lingua-forge/` is untouched — no `vendor/`, no
+`node_modules/`, no caches.
+
+### Day-to-day commands
+
+Run every command from `~/Github/lingua-forge-dev/`:
+
+| Goal                               | Command                       |
+| ---------------------------------- | ----------------------------- |
+| PHPCS — full lint                  | `composer lint`               |
+| PHPCS — auto-fix what `phpcbf` can | `composer lint:fix`           |
+| PHPStan — static analysis          | `composer analyse`            |
+| PHPUnit — full suite               | `composer test`               |
+| PHPUnit — unit only (fast, no WP)  | `composer test:unit`          |
+| PHPUnit — integration only         | `composer test:integration`   |
+| All of the above                   | `composer qa`                 |
+| Start wp-env (Docker WP install)   | `npm run env:start`           |
+| Stop wp-env                        | `npm run env:stop`            |
+| Run WP-CLI inside wp-env           | `npm run env:cli -- <args>`   |
+| Plugin Check (official WP.org)     | `composer plugin-check`       |
+| ESLint                             | `npm run lint:js`             |
+| Stylelint                          | `npm run lint:css`            |
+| Prettier — format everything       | `npm run format`              |
+
+### What ruleset each tool uses
+
+- **PHPCS (`lingua-forge-dev/phpcs.xml.dist`)** loads `WordPress` +
+  `WordPress-Extra` + `WordPress-Docs` + `PHPCompatibilityWP`, targets
+  WP 6.4 and PHP 8.1, and pre-configures the prefix list
+  (`linguaforge_`, `LINGUAFORGE_`, `Linguaforge`, `LinguaForge`,
+  `lf_`, `LF_`) so the `PrefixAllGlobals` sniff knows about them. The
+  file-name sniff (`WordPress.Files.FileName`) is disabled — this
+  codebase intentionally mixes PSR-4 PascalCase
+  (`ai/includes/Core/Plugin.php`) with the WP `class-foo.php`
+  convention (`language-router/includes/class-context.php`). All
+  `<file>` paths in the config use `../lingua-forge/...`.
+- **PHPStan (`lingua-forge-dev/phpstan.neon.dist`)** runs at level 5
+  with `szepeviktor/phpstan-wordpress` as the WP stub source. Level 6+
+  starts flagging type imprecision in WP core itself — not worth the
+  noise. `paths:` references `../lingua-forge/`.
+- **PHPUnit (`lingua-forge-dev/phpunit.xml.dist`)** defines two suites.
+  The **unit** suite is the fast path: no WordPress, only pure-function
+  utilities. The **integration** suite expects `WP_TESTS_DIR` to point
+  at the WP PHPUnit framework (wp-env exposes this automatically). The
+  test files themselves live in `lingua-forge/tests/` — they're plugin
+  source, just `.distignore`'d out of the .org build.
+- **wp-env (`lingua-forge-dev/.wp-env.json`)** boots WordPress 6.4 on
+  PHP 8.1 with `../lingua-forge` mounted at
+  `wp-content/plugins/lingua-forge`. `WP_DEBUG` is on in both the
+  development and test environments.
+- **Plugin Check** runs inside the wp-env CLI container via
+  `composer plugin-check`. This is the same checker WordPress.org uses
+  on submission, so passing it locally is a strong signal that a
+  release is .org-ready. It also catches the 5th DirectDB rule
+  documented below (`PluginCheck.Security.DirectDB.UnescapedDBParameter`)
+  that the WPCS-only run misses.
+- **ESLint / Prettier / Stylelint** use the
+  `@wordpress/eslint-plugin/recommended`,
+  `@wordpress/stylelint-config/scss`, and `@wordpress/prettier-config`
+  presets out of the box. The npm scripts in
+  `lingua-forge-dev/package.json` glob over `../lingua-forge/**/*.{js,css}`.
+
+### Recommended pre-deploy sequence
+
+```bash
+cd ~/Github/lingua-forge-dev
+composer qa                  # lint + analyse + test
+composer plugin-check        # the .org checker
+npm run lint:js && npm run lint:css
+```
+
+If all four are green, the plugin folder is ready to push via SFTP /
+rsync. Nothing in the dev folder reaches the deploy target — it's
+physically outside the plugin tree, and the plugin's own `.distignore`
+guards against accidental in-tree drift too.
+
+### When the tooling disagrees with itself
+
+PHPCS and Plugin Check overlap on direct-DB queries — that's the "five
+linter rules per ignore directive" pattern documented below in *Direct
+SQL and phpcs:ignore conventions*. Run **both** before you ship; PHPCS
+gives you four of the five rules, Plugin Check gives you the fifth.
 
 ---
 
