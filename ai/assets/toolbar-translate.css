@@ -8,7 +8,7 @@
 /* ── Toolbar node icon alignment ─────────────────────────────────────────── */
 
 #wp-admin-bar-lingua-forge-translate .ab-icon.dashicons-translation {
-    font-family: dashicons;
+    font-family: dashicons; /* stylelint-disable-line font-family-no-missing-generic-family-keyword -- icon font, no generic fallback applies */
     font-size:   18px;
     line-height: 32px;
     float:       left;
