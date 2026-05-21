@@ -283,6 +283,8 @@ WPML integrates with translation agencies and CAT tools via XLIFF export. Polyla
 
 WPML String Translation provides a searchable UI for translating theme strings, widget text, and plugin strings. TranslatePress and Weglot catch these automatically via string interception or cloud rendering. Lingua Forge's Language Overrides feature covers the `.mo`-file use case (replacing specific plugin strings per locale) but is not a general-purpose string translation manager.
 
+**Closing this gap:** [Loco Translate](https://wordpress.org/plugins/loco-translate/) is a well-maintained free GPL plugin that provides exactly this — in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools. It integrates cleanly alongside Lingua Forge with no conflicts. For sites that need to translate theme or plugin strings today, Loco Translate is the recommended companion. A native string translation UI is on Lingua Forge's roadmap; verified Loco Translate compatibility and a settings-level recommendation are the planned first steps before any native feature work.
+
 ### Community and ecosystem maturity
 
 WPML (2008) and Polylang (2012) have large user bases, extensive third-party documentation, verified compatibility lists covering hundreds of themes and plugins, and wide community support. Lingua Forge is younger. Sites running unusual plugin stacks may encounter untested edge cases, and fewer tutorial resources exist.
