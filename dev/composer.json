@@ -1,0 +1,60 @@
+{
+    "name": "leotiger/lingua-forge-dev",
+    "description": "Dev tooling for the Lingua Forge WordPress plugin. The plugin source lives in the parent ../  directory and ships with zero runtime Composer dependencies — this dev/ folder holds vendor/, and every linter/test config. Nothing here ever reaches WordPress.org.",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/leotiger/lingua-forge",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpcsstandards/phpcsextra": "^1.2",
+        "phpcsstandards/phpcsutils": "^1.0",
+        "php-stubs/wp-cli-stubs": "^2.10",
+        "phpstan/phpstan": "^1.11",
+        "phpunit/phpunit": "^9.6",
+        "squizlabs/php_codesniffer": "^3.10",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "wp-coding-standards/wpcs": "^3.1",
+        "yoast/phpunit-polyfills": "^2.0"
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite=unit",
+        "test:integration": "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration'",
+        "plugin-check": [
+            "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
+            "./node_modules/.bin/wp-env run cli wp plugin install plugin-check --activate || true",
+            "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge"
+        ],
+        "qa": [
+            "@lint",
+            "@analyse",
+            "@test:unit"
+        ]
+    },
+    "scripts-descriptions": {
+        "lint": "Run PHPCS against ../ using WordPress Coding Standards.",
+        "lint:fix": "Auto-fix the subset of PHPCS issues phpcbf can fix.",
+        "analyse": "Run PHPStan with the WordPress stub set against ../.",
+        "test": "Run the full PHPUnit suite (unit + integration).",
+        "test:unit": "Run only the unit suite (no WordPress required).",
+        "test:integration": "Run only the integration suite (requires wp-env running).",
+        "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
+        "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration."
+    }
+}

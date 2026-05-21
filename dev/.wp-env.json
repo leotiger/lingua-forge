@@ -1,0 +1,26 @@
+{
+    "core": "WordPress/WordPress#6.4",
+    "phpVersion": "8.1",
+    "plugins": [
+        ".."
+    ],
+    "config": {
+        "WP_DEBUG": true,
+        "WP_DEBUG_LOG": true,
+        "WP_DEBUG_DISPLAY": false,
+        "SCRIPT_DEBUG": true,
+        "WP_ENVIRONMENT_TYPE": "local"
+    },
+    "mappings": {
+        "wp-content/plugins/lingua-forge": "..",
+        "dev-tools": "."
+    },
+    "env": {
+        "tests": {
+            "config": {
+                "WP_DEBUG": true,
+                "SCRIPT_DEBUG": true
+            }
+        }
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "extends": [
+        "plugin:@wordpress/eslint-plugin/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "script"
+    },
+    "env": {
+        "browser": true,
+        "jquery": true,
+        "es2022": true
+    },
+    "globals": {
+        "lf": "readonly",
+        "linguaforge": "readonly",
+        "LinguaForge": "readonly",
+        "LinguaForgeAI": "readonly",
+        "LinguaForgeAIBlockAction": "readonly",
+        "LinguaForgeAIEditor": "readonly",
+        "LinguaForgeAIToolbar": "readonly",
+        "lfPresetData": "readonly",
+        "lfAdminMetabox": "readonly",
+        "lfFrontendLang": "readonly",
+        "ajaxurl": "readonly"
+    },
+    "rules": {
+        "@wordpress/i18n-text-domain": [
+            "error",
+            {
+                "allowedTextDomain": "lingua-forge"
+            }
+        ],
+        "camelcase": "off",
+        "curly": "off",
+        "no-alert": "off",
+        "no-nested-ternary": "off",
+        "no-unused-vars": [
+            "error",
+            { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+        ],
+        "no-var": "off",
+        "object-shorthand": "off",
+        "@wordpress/no-unused-vars-before-return": "off",
+        "@wordpress/no-global-get-selection": "off",
+        "no-redeclare": ["error", { "builtinGlobals": false }],
+        "no-unused-expressions": [
+            "error",
+            { "allowShortCircuit": true, "allowTernary": true }
+        ],
+        "prettier/prettier": "off",
+        "jsdoc/check-alignment": "off",
+        "jsdoc/check-line-alignment": "off",
+        "jsdoc/check-tag-names": "off",
+        "jsdoc/check-types": "off",
+        "jsdoc/no-undefined-types": "off",
+        "jsdoc/require-jsdoc": "off",
+        "jsdoc/require-param": "off",
+        "jsdoc/require-param-description": "off",
+        "jsdoc/require-param-name": "off",
+        "jsdoc/require-param-type": "off",
+        "jsdoc/require-property": "off",
+        "jsdoc/require-property-description": "off",
+        "jsdoc/require-property-name": "off",
+        "jsdoc/require-property-type": "off",
+        "jsdoc/require-returns": "off",
+        "jsdoc/require-returns-check": "off",
+        "jsdoc/require-returns-description": "off",
+        "jsdoc/require-returns-type": "off",
+        "jsdoc/tag-lines": "off",
+        "jsdoc/valid-types": "off"
+    },
+    "ignorePatterns": [
+        "vendor/",
+        "node_modules/",
+        "build/",
+        "coverage/",
+        "**/*.min.js"
+    ]
+}

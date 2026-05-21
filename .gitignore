@@ -9,10 +9,10 @@ REVIEW.md
 CLAUDE.md
 AUDIT-*.md
 
-# Dev tooling lives in the sibling ../lingua-forge-dev/ folder.
-# The entries below are belt-and-braces — if someone ever runs
-# composer install / npm install inside this folder by mistake, git
-# still won't pick up the artifacts.
+# Dev tooling lives in dev/. The heavy install artifacts (vendor/,
+# node_modules/, caches) are ignored by dev/.gitignore. The entries
+# below are belt-and-braces in case anyone ever runs composer install
+# or npm install directly in the plugin root by mistake.
 
 /vendor/
 /node_modules/
@@ -24,19 +24,3 @@ AUDIT-*.md
 /.wp-env/
 composer.lock
 package-lock.json
-
-# Local overrides (if you copy a config in for ad-hoc tweaking)
-composer.json
-package.json
-phpcs.xml
-phpcs.xml.dist
-.phpcs.xml
-phpunit.xml
-phpunit.xml.dist
-phpstan.neon
-phpstan.neon.dist
-.wp-env.json
-.wp-env.override.json
-.eslintrc.json
-.prettierrc.json
-.stylelintrc.json

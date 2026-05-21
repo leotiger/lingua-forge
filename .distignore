@@ -3,11 +3,9 @@
 # (compatible with wp-env, wp-scripts, and manual deploy scripts).
 #
 # Dev tooling — Composer, npm, PHPCS, PHPStan, PHPUnit, wp-env, ESLint —
-# lives in the sibling ../lingua-forge-dev/ folder. It is physically
-# outside the plugin tree, so most of it can never reach the deploy ZIP
-# in the first place. The entries below cover the only thing that lives
-# *inside* this folder (tests/) plus belt-and-braces guards in case
-# someone ever copies a config in for ad-hoc tweaking.
+# lives in dev/. It is excluded as a whole below; the belt-and-braces
+# entries further down catch any stray copies of individual config files
+# that might appear in the root.
 
 # Developer / project documentation
 CONTRIBUTING.md
@@ -31,6 +29,9 @@ AUDIT-*.md
 .vscode/
 .idea/
 .DS_Store
+
+# Dev tooling — all tooling lives here; never ships to .org.
+dev/
 
 # Tests — the suite lives in this folder (it's plugin source we want
 # under version control), but we don't ship it to .org.

@@ -1,0 +1,22 @@
+{
+    "extends": [
+        "@wordpress/stylelint-config/scss"
+    ],
+    "rules": {
+        "rule-empty-line-before": null,
+        "comment-empty-line-before": null,
+        "value-keyword-case": ["lower", { "camelCaseSvgKeywords": true }],
+        "selector-class-pattern": [
+            "^([a-z][a-z0-9]*)(-[a-z0-9]+)*(__[a-z][a-z0-9]*(-[a-z0-9]+)*)?(--[a-z][a-z0-9]*(-[a-z0-9]+)*)?$",
+            {
+                "message": "Expected BEM-style class (block__element--modifier, all lowercase with hyphens)"
+            }
+        ]
+    },
+    "ignoreFiles": [
+        "vendor/**",
+        "node_modules/**",
+        "build/**",
+        "**/*.min.css"
+    ]
+}

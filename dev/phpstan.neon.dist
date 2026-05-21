@@ -1,0 +1,48 @@
+parameters:
+    level: 5
+    phpVersion: 80100
+
+    paths:
+        - ../lingua-forge.php
+        - ../uninstall.php
+        - ../language-router
+        - ../ai
+        - ../meta-description
+
+    excludePaths:
+        analyseAndScan:
+            - vendor/*
+            - node_modules/*
+            - ../tests/*
+            - ../languages/*
+            - ../build/*
+            - ../coverage/*
+
+    bootstrapFiles:
+        - ../tests/phpstan-bootstrap.php
+
+    # Scan WP-CLI stubs so PHPStan recognises `\WP_CLI::log()`,
+    # `\WP_CLI\Utils\get_flag_value()`, etc. The plugin's WP-CLI
+    # commands depend on these being loaded only at runtime via
+    # WordPress's WP-CLI environment, but PHPStan needs symbol
+    # definitions at analysis time.
+    scanFiles:
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
+
+    # Plugin-level constants defined at runtime; declare them dynamic so
+    # PHPStan doesn't flag the constant-comparison branches.
+    dynamicConstantNames:
+        - LINGUAFORGE_FILE
+        - LINGUAFORGE_PATH
+        - LINGUAFORGE_URL
+        - LINGUAFORGE_VERSION
+        - LINGUAFORGE_AI_PATH
+        - LINGUAFORGE_AI_URL
+        - LF_LANG
+
+    treatPhpDocTypesAsCertain: false
+
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon

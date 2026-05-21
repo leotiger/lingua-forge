@@ -1,0 +1,25 @@
+{
+    "name": "lingua-forge-dev",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Dev-only Node tooling for the Lingua Forge plugin. The plugin source lives at ../ (parent directory). Nothing in this folder is shipped to WordPress.org.",
+    "homepage": "https://github.com/leotiger/lingua-forge",
+    "license": "GPL-2.0-or-later",
+    "author": "Uli Hake",
+    "scripts": {
+        "env:start": "wp-env start",
+        "env:stop": "wp-env stop",
+        "env:destroy": "wp-env destroy",
+        "env:cli": "wp-env run cli wp",
+        "lint:js": "wp-scripts lint-js --no-eslintrc --config .eslintrc.json --resolve-plugins-relative-to . \"../language-router/assets/**/*.js\" \"../ai/assets/**/*.js\" \"../meta-description/assets/**/*.js\"",
+        "lint:js:fix": "wp-scripts lint-js --no-eslintrc --config .eslintrc.json --resolve-plugins-relative-to . --fix \"../language-router/assets/**/*.js\" \"../ai/assets/**/*.js\" \"../meta-description/assets/**/*.js\"",
+        "lint:css": "wp-scripts lint-style --config .stylelintrc.json \"../language-router/assets/**/*.css\" \"../ai/assets/**/*.css\" \"../meta-description/assets/**/*.css\"",
+        "lint:css:fix": "wp-scripts lint-style --config .stylelintrc.json --fix \"../language-router/assets/**/*.css\" \"../ai/assets/**/*.css\" \"../meta-description/assets/**/*.css\"",
+        "format": "wp-scripts format \"../**/*.{js,css,json,md}\"",
+        "test:e2e": "wp-scripts test-e2e"
+    },
+    "devDependencies": {
+        "@wordpress/env": "^10.0.0",
+        "@wordpress/scripts": "^30.0.0"
+    }
+}

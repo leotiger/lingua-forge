@@ -1,0 +1,712 @@
+<?xml version="1.0"?>
+<ruleset name="Lingua Forge">
+    <description>WordPress Coding Standards for Lingua Forge. The plugin source lives in the parent ../ directory; this ruleset is invoked from dev/ (lingua-forge/dev/).</description>
+
+    <!--
+        Run only against the plugin source. Anything not listed here is
+        ignored even if passed on the command line.
+    -->
+    <file>../lingua-forge.php</file>
+    <file>../uninstall.php</file>
+    <file>../language-router</file>
+    <file>../ai</file>
+    <file>../meta-description</file>
+    <file>../tests</file>
+
+    <!-- Exclude generated / vendored / non-PHP trees. -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/build/*</exclude-pattern>
+    <exclude-pattern>*/coverage/*</exclude-pattern>
+    <exclude-pattern>*/languages/*</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*.css</exclude-pattern>
+    <exclude-pattern>*.min.*</exclude-pattern>
+
+    <!-- Arguments -->
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="cache" value=".phpcs.cache"/>
+    <arg name="parallel" value="8"/>
+    <arg value="ps"/>
+
+    <!-- Show progress, show sniff names. -->
+    <arg name="report" value="full"/>
+
+    <!--
+        Target compatibility — matches the plugin header:
+            Requires at least: WP 6.4
+            Requires PHP:      8.1
+    -->
+    <config name="minimum_wp_version" value="6.4"/>
+    <config name="testVersion" value="8.1-"/>
+
+    <!-- WordPress rules: standard + extra + docs. -->
+    <rule ref="WordPress">
+        <!--
+            The codebase has historical splits (tabs vs spaces, 4 vs tabs)
+            documented in CLAUDE.md. We don't fight it on a per-file basis,
+            so disable the whitespace sniffs that would churn through every
+            file.
+        -->
+        <exclude name="Generic.WhiteSpace.ScopeIndent"/>
+        <!--
+            WPCS 3.0 removed `WordPress.WhiteSpace.PrecisionAlignment`
+            (the equivalent now lives in PHPCSExtra as
+            `Universal.WhiteSpace.PrecisionAlignment`). If the
+            PHPCSExtra version starts flagging this codebase, add an
+            exclude line for the new name here.
+        -->
+
+        <!--
+            Yoda conditions: we don't enforce them.
+        -->
+        <exclude name="WordPress.PHP.YodaConditions"/>
+
+        <!--
+            File naming: codebase mixes PSR-4 PascalCase
+            (ai/includes/Core/Plugin.php) with WP class-foo.php style
+            (language-router/includes/class-context.php). Both are
+            intentional; turn off the file-name sniff.
+        -->
+        <exclude name="WordPress.Files.FileName"/>
+
+        <!--
+            Modern short array syntax `[]` is used consistently throughout
+            the codebase. WPCS 3.x itself accepts both syntaxes, but the
+            PHPCSExtra `Universal` standard that WordPress-Extra pulls in
+            still flags short arrays. Excluding here keeps `[ … ]`.
+        -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+
+        <!--
+            Hook registration blocks and similar code paths use deliberate
+            column alignment (extra spaces after commas so the next column
+            of arguments lines up). This is documentation, not laziness.
+            Don't collapse it.
+        -->
+        <exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
+
+        <!--
+            Array `=>` alignment is inconsistent across the codebase by
+            design — some files align, some don't. Per CLAUDE.md "match
+            each file's local style"; don't impose a global alignment.
+        -->
+        <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
+
+        <!--
+            PEAR-style multi-line function-call signatures (one arg per
+            line, opening paren alone on its line) are not the WordPress
+            convention this codebase uses.
+        -->
+        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+
+        <!--
+            Inline control structures: `if ( ! defined('ABSPATH') ) exit;`
+            is the documented WordPress plugin-file guard idiom. Rewriting
+            it to a braced form on every file is pure churn.
+        -->
+        <exclude name="Generic.ControlStructures.InlineControlStructure"/>
+
+        <!--
+            WordPress-Docs is too aggressive for this codebase. We keep
+            the useful sub-sniffs (FunctionComment.WrongStyle catches `//`
+            in place of `/** */`, MissingParamTag catches docblocks that
+            lack @param coverage) but turn off the blanket
+            "every-class-needs-a-docblock" / "every-property-needs-a-
+            docblock" / "every-function-needs-a-docblock" requirements.
+            File-level @package tags are also boilerplate and excluded.
+        -->
+        <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+
+        <!--
+            Tabs-vs-spaces split is documented in CLAUDE.md as a
+            historical inconsistency that isn't worth fighting. The
+            `ScopeIndent` sniff that enforces a particular indent unit
+            is already excluded above; `DisallowSpaceIndent` is the
+            companion sniff that explicitly forbids spaces — also out.
+        -->
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+
+        <!--
+            Function-call / function-declaration parenthesis spacing:
+            WP convention is `func( $arg )` with inner spaces, but this
+            codebase uses `func($arg)` consistently. Per CLAUDE.md
+            "match local style", don't impose the WP default.
+        -->
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose"/>
+
+        <!--
+            Array key spacing: WPCS default wants `$arr[ 'key' ]` with
+            inner spaces; codebase uses tighter `$arr['key']`. Same
+            local-style rationale as the paren spacing above.
+        -->
+        <exclude name="WordPress.Arrays.ArrayKeySpacingRestrictions"/>
+
+        <!--
+            @param tags: codebase uses PHP 8 typed parameters + prose
+            docblocks describing what a function does, not @param-per-
+            argument boilerplate. PHPStan and modern IDEs read typed
+            params directly; maintaining a parallel @param set is busy-
+            work that goes stale. (Function-level WrongStyle is still
+            enforced — the comment style itself matters; the per-param
+            tags don't.)
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+
+        <!--
+            Operator alignment: codebase aligns `=`, `??`, `=>` etc.
+            across sibling statements for readability. Same family of
+            exclusions as TooMuchSpaceAfterComma above.
+        -->
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.SpacingBefore"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+        <!--
+            "//end foreach" / "//end if" closing-comment idiom from the
+            Squiz standard. Not used in modern PHP; pure noise. Whole
+            sniff excluded (catches .Missing, .Invalid, .SpacingBefore,
+            and future sub-codes).
+        -->
+        <exclude name="Squiz.Commenting.LongConditionClosingComment"/>
+
+        <!--
+            Array brace spacing — whole sniff. Codebase uses extra
+            spaces before `]` and after `[` to align sibling arrays
+            vertically (single-line variants) AND uses non-PSR
+            multi-line array shapes for chat() message arrays etc.
+            Replaces the earlier sub-code exclusions; also catches
+            the multi-line variants (SpaceAfterArrayOpenerMultiLine,
+            SpaceBeforeArrayCloserMultiLine) and future sub-codes.
+        -->
+        <exclude name="NormalizedArrays.Arrays.ArrayBraceSpacing"/>
+
+        <!--
+            Control-structure inner-paren spacing: WPCS default wants
+            `if ( $foo )` with inner spaces; codebase uses `if ($foo)`
+            consistently. Same convention as the function-call paren
+            spacing excluded above (PEAR.Functions.FunctionCallSignature).
+            Also: codebase column-aligns one-line guard clauses like
+            `if ( ! defined( 'ABSPATH' ) )          { exit; }` — extra
+            spaces between `)` and `{` are deliberate alignment.
+        -->
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.ExtraSpaceAfterCloseParenthesis"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseParenthesis"/>
+
+        <!--
+            `!` operator spacing: WPCS wants `! $foo` with surrounding
+            spaces; codebase uses `!$foo` (no spaces) consistently.
+        -->
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceBefore"/>
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceAfter"/>
+
+        <!--
+            Inline comment text spacing: codebase uses extra spaces after
+            `//` for vertical alignment between sibling comments. Same
+            alignment-rejection family as the others.
+        -->
+        <exclude name="Squiz.Commenting.InlineComment.SpacingBefore"/>
+
+        <!--
+            Inline comment terminal punctuation and post-statement
+            comments: codebase doesn't terminate inline comments with
+            `.` / `!` / `?` and uses `$foo = bar; // explanation`
+            trailing-comment style. Modern style guides don't enforce
+            either.
+        -->
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.Commenting.PostStatementComment.Found"/>
+
+        <!--
+            Array declaration spacing — whole sniff. Codebase mixes
+            single-line and multi-line associative arrays based on
+            context (small literals → single line, big config → multi)
+            and uses deliberate column alignment in both forms.
+            Replaces the earlier .AssociativeArrayFound exclusion;
+            also catches .ArrayItemNoNewLine and future sub-codes.
+        -->
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
+
+        <!--
+            Function-declaration argument spacing — type-hint vs name:
+            codebase aligns parameter columns (`int    $old_id, int    $new_id`).
+            Same alignment family as the other spacing exclusions.
+        -->
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterHint"/>
+
+        <!--
+            Standalone post-increment (`$x++` vs `++$x`): modern PHP
+            engines optimize both equivalently. Micro-style preference,
+            no real benefit. Codebase uses `$x++`.
+        -->
+        <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
+
+        <!--
+            FunctionComment.WrongStyle: this sniff misinterprets the
+            codebase's section-header pattern (e.g. `// ====\n// AJAX:
+            SCAN\n// ====\n\npublic function ajax_scan() { ... }`) as a
+            malformed function docblock. The section headers are visual
+            separators, not docblocks. Excluding for now; revisit if a
+            dedicated docblock-completion pass is ever undertaken.
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
+
+        <!--
+            Cast-structure spacing: WPCS wants a space before the `(` of
+            a type cast (e.g. `substr( (string) $foo, …)`). Codebase
+            uses tight `substr((string) $foo, …)`. Same convention as
+            the other inner-paren-spacing exclusions.
+        -->
+        <exclude name="WordPress.WhiteSpace.CastStructureSpacing.NoSpaceBeforeOpenParenthesis"/>
+
+        <!--
+            DisallowMultipleAssignments fires as a side-effect of the
+            inline-if pattern (`if (X) $a = ...; else $b = ...;`) which
+            we already accommodate via the InlineControlStructure
+            exclusion above. The sniff is reading the if-else as one
+            "line" with two assignments — but they're functionally
+            separate statements.
+        -->
+        <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+
+        <!--
+            Anonymous-function declaration spacing: codebase writes
+            `function( $x ): ...` (no space after the `function`
+            keyword). Same tight-spacing convention as the rest.
+        -->
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction"/>
+
+        <!--
+            Inline PHP in HTML templates: codebase uses
+            `<div><?php echo esc_html($foo); ?></div>` for compact
+            inline output. Squiz's EmbeddedPhp sniffs want each `<?php`
+            / `?>` on its own line, which would bloat every template
+            snippet. Standard WP templating allows the compact form.
+        -->
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentAfterOpen"/>
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen"/>
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd"/>
+
+        <!--
+            Array indentation: when an array literal sits inside an
+            HTML template (between `<?php` and `?>`), the indentation
+            of its items is dictated by the surrounding HTML, not by
+            the array opener. WPCS wants array-opener-relative
+            indentation, which conflicts with template-relative
+            alignment. Exclude the whole sniff (multiple sub-codes).
+        -->
+        <exclude name="WordPress.Arrays.ArrayIndentation"/>
+
+        <!--
+            PEAR multi-line call indent: another sub-code in the
+            FunctionCallSignature family. Same rationale as the others.
+        -->
+        <exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
+
+        <!--
+            Docblock prose-style sniffs: codebase has plenty of
+            docblocks that don't strictly start with capital letters or
+            include a "short description" header. Specifically:
+            KeyStore.php has `v1 envelope cipher` / `v2 envelope cipher`
+            constant docblocks that match the literal cryptographic
+            envelope-version prefix (`v2|...`); capitalising them would
+            create a documentation/code mismatch. Same family as the
+            other docblock-content exclusions.
+        -->
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.Commenting.DocComment.LongNotCapital"/>
+        <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
+
+        <!--
+            String quote convention: codebase uses double-quoted strings
+            consistently even when no interpolation is needed. Forcing
+            single quotes everywhere is style preference, not
+            correctness.
+        -->
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.NotRequired"/>
+
+        <!--
+            Arbitrary-parens spacing: WPCS wants spaces inside non-call
+            parentheses (e.g. `( $a + $b )`); codebase uses `($a + $b)`.
+            Same tight-paren convention as the FunctionCallSignature
+            and ControlStructureSpacing exclusions above.
+        -->
+        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen"/>
+        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose"/>
+
+        <!--
+            Blank lines after `}` of a control structure: codebase
+            uses blank lines as visual logical-block separators. Same
+            family as the other style-alignment exclusions.
+        -->
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd"/>
+
+        <!--
+            Universal.WhiteSpace.PrecisionAlignment: the PHPCSExtra
+            replacement for the WPCS-2.x WordPress.WhiteSpace.PrecisionAlignment
+            sniff that was removed in WPCS 3.0. Same tabs-vs-spaces
+            historical-split rationale as DisallowSpaceIndent above —
+            we don't enforce a single indentation unit codebase-wide.
+        -->
+        <exclude name="Universal.WhiteSpace.PrecisionAlignment"/>
+
+        <!--
+            PSR-2 class close brace: codebase allows a blank line
+            between the last method body and the class closing brace
+            as a visual separator. PSR-2 strict version wants the
+            close brace immediately after the body.
+        -->
+        <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+
+        <!--
+            Column-aligned `use Foo as F` statements: codebase aligns
+            the `as` keyword across multiple use statements for visual
+            readability. Same alignment family as the other exclusions.
+        -->
+        <exclude name="Universal.UseStatements.KeywordSpacing.SpaceBeforeAs"/>
+
+        <!--
+            Property docblocks using `//` style: codebase uses inline
+            `// @var Foo $bar` comments above properties rather than
+            `/** @var Foo */` blocks. Mirrors FunctionComment.WrongStyle
+            which we already exclude.
+        -->
+        <exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
+
+        <!--
+            Property type-vs-name spacing: codebase column-aligns
+            property names — `private Foo         $foo;` /
+            `private BarBaz      $bar;`. Same alignment-rejection
+            family as the other type/spacing exclusions.
+        -->
+        <exclude name="PSR2.Classes.PropertyDeclaration.SpacingAfterType"/>
+
+        <!--
+            One-liner facade methods: classes like LanguageRouter (a
+            thin orchestrator) declare many `public function getX(): T
+            { return $this->sub->getX(); }` lines, all column-aligned
+            for readability. Squiz / Generic / PEAR all want each
+            function brace on its own line — incompatible with this
+            very intentional pattern.
+        -->
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace"/>
+        <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.SpaceBeforeBrace"/>
+        <exclude name="Generic.Formatting.DisallowMultipleStatements.SameLine"/>
+
+        <!--
+            Comma spacing: codebase pads commas with extra spaces to
+            column-align argument lists and array values. Same
+            alignment family as the others.
+        -->
+        <exclude name="Universal.WhiteSpace.CommaSpacing.TooMuchSpaceAfter"/>
+
+        <!--
+            Trailing-comma / closer-position rules: codebase doesn't
+            mandate a trailing comma before the multi-line closer
+            (style varies per file). Same family.
+        -->
+        <exclude name="NormalizedArrays.Arrays.CommaAfterLast"/>
+
+        <!--
+            Param-description full-stop punctuation: codebase doesn't
+            terminate @param descriptions with `.`. Same family as the
+            other docblock-prose sniffs (DocComment.LongNotCapital,
+            InlineComment.InvalidEndChar, etc.).
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+
+        <!--
+            Short ternary `?:` is the right tool for glob/false-fallback
+            patterns like `foreach ( glob(...) ?: [] as $x ) { ... }`.
+            `??` doesn't substitute here because glob() returns `false`
+            (not null) on error; `??` would let `false` flow through
+            into `foreach`, producing a fatal. The codebase uses `?:`
+            specifically for falsy fallback (where `??`'s null-only
+            check is too narrow); this is the documented PHP idiom for
+            the pattern.
+        -->
+        <exclude name="Universal.Operators.DisallowShortTernary.Found"/>
+
+        <!--
+            Control-structure signature spacing: codebase column-aligns
+            `if … / elseif … / else …` chains for readability:
+                if ( $type === 'page' )     $base = 'page';
+                elseif ( $type === 'post' ) $base = 'single';
+                else                        return null;
+            Sniffs that want single-space-after-keyword or newline-
+            after-`{` collide with the one-liner if/elseif/else pattern
+            used here and in similar dispatch blocks.
+        -->
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
+
+        <!--
+            base64 encode/decode: WPCS warns because base64 is sometimes
+            abused to hide malicious code (typically paired with eval()).
+            In this codebase, base64 appears only in KeyStore.php (and
+            KeyStoreEnvelopeTest.php) for encoding the binary AES-GCM
+            envelope into ASCII for wp_options storage — the textbook
+            legitimate use case. Plugin Check's own
+            `PluginCheck.CodeAnalysis.NoEval` and related sniffs are
+            the actual obfuscation signal; the WPCS one is too broad
+            for plugins that legitimately handle binary cryptographic
+            data.
+        -->
+        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode"/>
+        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode"/>
+
+        <!--
+            Docblock @param-comment-per-argument requirement: codebase
+            docblocks describe the function as a whole in prose rather
+            than annotating each parameter individually. The valuable
+            sniff (FunctionComment.ParamNameNoMatch — catches stale
+            docblocks where the @param name doesn't match the actual
+            parameter) stays active.
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+
+        <!--
+            Docblock type-hint strictness: PHPCS rejects more-specific
+            docblock types like `array<string, mixed>` or `list<string>`
+            when the PHP type hint is just `array`. But that's the
+            whole point of richer docblock types — they convey
+            information PHP's runtime type system can't express, and
+            PHPStan / Psalm read them correctly. This sniff is too
+            strict for modern static-analysis-friendly codebases.
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+
+        <!--
+            file_get_contents: WPCS warns because the function blocks
+            on remote URLs (where wp_remote_get is the right tool).
+            In this codebase, every call site reads a LOCAL file —
+            the AI prompt templates under LINGUAFORGE_AI_PATH/templates/
+            (Translation, MetaDescription, ContentGenerator,
+            FeatureController) and a glob-resolved debug-file path
+            (AbstractTranslateCommand). No remote fetches anywhere.
+            Existing inline `phpcs:ignore` directives at three sites
+            stay as in-source documentation of the legitimacy of each
+            use; PHPCS treats them as no-ops once the sniff is excluded.
+        -->
+        <exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
+
+        <!--
+            `$class` as a parameter name: this is the canonical
+            autoloader callback parameter name per PHP docs and PSR-4
+            convention. PHP's tokenizer distinguishes between the
+            `class` keyword and `$class` variable; they can't
+            syntactically conflict. The sniff is overly strict —
+            renaming to `$class_name` would diverge from documented
+            convention for a non-existent risk.
+        -->
+        <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames.classFound"/>
+
+        <!--
+            Space-after-cast: codebase column-aligns cast statements
+            with extra spaces — e.g. `max(1, (int)   ($policy['x'] ?? 2))`
+            in a block of similar lines. Same alignment-rejection
+            family as comma-spacing, operator-spacing, type-hint
+            spacing exclusions above.
+        -->
+        <exclude name="Generic.Formatting.SpaceAfterCast.TooMuchSpace"/>
+
+        <!--
+            @param type-to-name spacing inside docblocks: Squiz wants
+            specific alignment between @param types and names across
+            all params in a docblock. Codebase doesn't enforce this
+            alignment (different docblocks use different conventions
+            depending on whether names align better with their types
+            or with sibling docblocks). Same family as other alignment
+            exclusions.
+        -->
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <!--
+            Concatenation operator (`.`) padding: codebase aligns
+            sibling concat-chain lines vertically — three meta-tag
+            output lines line up the `.` columns. Same alignment-
+            rejection family as comma/operator/=> exclusions.
+        -->
+        <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
+        <exclude name="Generic.WhiteSpace.LanguageConstructSpacing.IncorrectSingle"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceBeforeEquals"/>
+    </rule>
+
+    <rule ref="WordPress-Extra">
+        <exclude name="Generic.WhiteSpace.ScopeIndent"/>
+        <exclude name="WordPress.PHP.YodaConditions"/>
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
+        <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+        <exclude name="Generic.ControlStructures.InlineControlStructure"/>
+        <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose"/>
+        <exclude name="WordPress.Arrays.ArrayKeySpacingRestrictions"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.SpacingBefore"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+        <exclude name="Squiz.Commenting.LongConditionClosingComment"/>
+        <exclude name="NormalizedArrays.Arrays.ArrayBraceSpacing"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.ExtraSpaceAfterCloseParenthesis"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseParenthesis"/>
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceBefore"/>
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceAfter"/>
+        <exclude name="Squiz.Commenting.InlineComment.SpacingBefore"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.Commenting.PostStatementComment.Found"/>
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterHint"/>
+        <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
+        <exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
+        <exclude name="WordPress.WhiteSpace.CastStructureSpacing.NoSpaceBeforeOpenParenthesis"/>
+        <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction"/>
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentAfterOpen"/>
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen"/>
+        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd"/>
+        <exclude name="WordPress.Arrays.ArrayIndentation"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.Commenting.DocComment.LongNotCapital"/>
+        <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.NotRequired"/>
+        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen"/>
+        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose"/>
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd"/>
+        <exclude name="Universal.WhiteSpace.PrecisionAlignment"/>
+        <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+        <exclude name="Universal.UseStatements.KeywordSpacing.SpaceBeforeAs"/>
+        <exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
+        <exclude name="PSR2.Classes.PropertyDeclaration.SpacingAfterType"/>
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace"/>
+        <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.SpaceBeforeBrace"/>
+        <exclude name="Generic.Formatting.DisallowMultipleStatements.SameLine"/>
+        <exclude name="Universal.WhiteSpace.CommaSpacing.TooMuchSpaceAfter"/>
+        <exclude name="NormalizedArrays.Arrays.CommaAfterLast"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+        <exclude name="Universal.Operators.DisallowShortTernary.Found"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
+        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode"/>
+        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+        <exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
+        <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames.classFound"/>
+        <exclude name="Generic.Formatting.SpaceAfterCast.TooMuchSpace"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <!--
+            Concatenation operator (`.`) padding: codebase aligns
+            sibling concat-chain lines vertically — three meta-tag
+            output lines line up the `.` columns. Same alignment-
+            rejection family as comma/operator/=> exclusions.
+        -->
+        <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
+        <exclude name="Generic.WhiteSpace.LanguageConstructSpacing.IncorrectSingle"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceBeforeEquals"/>
+    </rule>
+
+    <rule ref="WordPress-Docs"/>
+
+    <!-- PHP cross-version compatibility — uses PHPCompatibilityWP. -->
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!--
+        Prefix policy (CONTRIBUTING.md → "Prefix policy"):
+        every global symbol must start with one of these prefixes.
+    -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <!--
+                    WPCS does its own underscore-boundary matching, so
+                    `LF` matches `LF_LANG`, `LF_FOO`, …; `lf` matches
+                    `lf_filter_hook`, `lf_something`. Don't include the
+                    trailing underscore here — WPCS strips it and the
+                    match still works.
+
+                    Note: `lf` and `LF` are 2 chars, which is below the
+                    3-char minimum WPCS recommends. The ShortPrefixPassed
+                    sub-code is excluded below — the plugin has shipped
+                    with `lf_` since v1.0 without name collisions, and
+                    renaming hundreds of identifiers to satisfy a
+                    recommendation isn't justified.
+                -->
+                <element value="linguaforge"/>
+                <element value="LINGUAFORGE"/>
+                <element value="Linguaforge"/>
+                <element value="LinguaForge"/>
+                <element value="lf"/>
+                <element value="LF"/>
+            </property>
+        </properties>
+        <!--
+            Short-prefix warning: covered in the prefix-list comment
+            above. `lf` / `LF` are below WPCS's 3-char minimum but the
+            codebase has shipped without collisions.
+        -->
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+    </rule>
+
+    <!-- Text-domain enforcement — only the plugin's own slug is allowed. -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="lingua-forge"/>
+                <element value="default"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!--
+        Tests get a looser ruleset: no docblocks, no prefix-all-globals,
+        no nonce sniffs.
+
+        Block render templates (`blocks/*/render.php`) also bypass
+        PrefixAllGlobals: WordPress's block runtime wraps these files
+        in a closure when invoking them via the `render: "file:..."`
+        directive in block.json, so the file-scope variables in each
+        template are local to that closure invocation — they never
+        reach the global scope. PHPCS can't see the wrapping closure
+        and would otherwise raise `NonPrefixedVariableFound` for every
+        local in every render.php.
+    -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+        <exclude-pattern>*/blocks/*/render.php</exclude-pattern>
+    </rule>
+    <rule ref="WordPress-Docs">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.Security.NonceVerification">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.Commenting">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+</ruleset>

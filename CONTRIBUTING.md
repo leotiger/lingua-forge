@@ -680,32 +680,31 @@ appear in the error log, OPcache is serving the old file.
 The plugin itself ships with **zero runtime dependencies** — that policy
 is non-negotiable for WordPress.org submission. Every piece of dev
 tooling (PHPUnit, PHPCS / WPCS, PHPStan, wp-env, ESLint, Prettier,
-Plugin Check) lives in a **sibling folder** rather than inside this
-plugin directory:
+Plugin Check) lives in the **`dev/` subdirectory** of this repo:
 
 ```
-~/Github/
-├── lingua-forge/             ← this folder — plugin source, ships to .org
-└── lingua-forge-dev/         ← sibling workshop — vendor/, node_modules/, configs
+lingua-forge/
+├── ai/
+├── language-router/
+├── meta-description/
+├── tests/                ← plugin source (not shipped to .org)
+├── lingua-forge.php
+└── dev/                  ← tooling only — excluded from .org build via .distignore
+    ├── composer.json
+    ├── package.json
+    ├── phpcs.xml.dist
+    ├── phpunit.xml.dist
+    ├── phpstan.neon.dist
+    ├── .wp-env.json
+    ├── vendor/           ← Composer installs here (gitignored, ~200 MB)
+    └── node_modules/     ← npm installs here (gitignored, ~700 MB)
 ```
 
-Keeping the tooling next door rather than in-tree means
-`~/Github/lingua-forge/` stays free of the ~1 GB of `vendor/` +
-`node_modules/` that the toolchain installs, and there's no risk of
-ever shipping a dev artifact to .org by accident.
+`dev/` is excluded from every `.org` build via `.distignore`, so the
+~1 GB of tooling dependencies never reaches the deploy ZIP.
 
-See [`../lingua-forge-dev/README.md`](../lingua-forge-dev/README.md)
-for the full layout and command reference.
-
-> **Note — TBD: contributor / CI distribution.** The sibling-folder
-> layout above is the *maintainer's local* workflow. How the dev
-> tooling reaches outside contributors and CI is not yet decided. The
-> preferred future direction is the WordPress.org-style approach:
-> move the dev tooling back into the plugin repo (e.g. under a `dev/`
-> subdirectory), filter it out of the SVN deploy via `.distignore`,
-> and let contributors get everything from a single `git clone`.
-> Until that's wired up, only the maintainer can run the QA suite
-> locally; pull requests are validated manually post-merge.
+See [`dev/README.md`](dev/README.md) for the full layout and command
+reference.
 
 ### Prerequisites
 
@@ -718,17 +717,17 @@ for the full layout and command reference.
 ### One-time install
 
 ```bash
-cd ~/Github/lingua-forge-dev
+cd dev/
 composer install
 npm install
 ```
 
-After this, `~/Github/lingua-forge/` is untouched — no `vendor/`, no
-`node_modules/`, no caches.
+After this, the plugin root is untouched — no `vendor/`, no
+`node_modules/`, no caches in the folder that ships to .org.
 
 ### Day-to-day commands
 
-Run every command from `~/Github/lingua-forge-dev/`:
+Run every command from the `dev/` directory:
 
 | Goal                               | Command                       |
 | ---------------------------------- | ----------------------------- |
@@ -749,30 +748,28 @@ Run every command from `~/Github/lingua-forge-dev/`:
 
 ### What ruleset each tool uses
 
-- **PHPCS (`lingua-forge-dev/phpcs.xml.dist`)** loads `WordPress` +
-  `WordPress-Extra` + `WordPress-Docs` + `PHPCompatibilityWP`, targets
-  WP 6.4 and PHP 8.1, and pre-configures the prefix list
-  (`linguaforge_`, `LINGUAFORGE_`, `Linguaforge`, `LinguaForge`,
-  `lf_`, `LF_`) so the `PrefixAllGlobals` sniff knows about them. The
-  file-name sniff (`WordPress.Files.FileName`) is disabled — this
-  codebase intentionally mixes PSR-4 PascalCase
-  (`ai/includes/Core/Plugin.php`) with the WP `class-foo.php`
-  convention (`language-router/includes/class-context.php`). All
-  `<file>` paths in the config use `../lingua-forge/...`.
-- **PHPStan (`lingua-forge-dev/phpstan.neon.dist`)** runs at level 5
-  with `szepeviktor/phpstan-wordpress` as the WP stub source. Level 6+
-  starts flagging type imprecision in WP core itself — not worth the
-  noise. `paths:` references `../lingua-forge/`.
-- **PHPUnit (`lingua-forge-dev/phpunit.xml.dist`)** defines two suites.
-  The **unit** suite is the fast path: no WordPress, only pure-function
-  utilities. The **integration** suite expects `WP_TESTS_DIR` to point
-  at the WP PHPUnit framework (wp-env exposes this automatically). The
-  test files themselves live in `lingua-forge/tests/` — they're plugin
-  source, just `.distignore`'d out of the .org build.
-- **wp-env (`lingua-forge-dev/.wp-env.json`)** boots WordPress 6.4 on
-  PHP 8.1 with `../lingua-forge` mounted at
-  `wp-content/plugins/lingua-forge`. `WP_DEBUG` is on in both the
-  development and test environments.
+- **PHPCS (`dev/phpcs.xml.dist`)** loads `WordPress` + `WordPress-Extra`
+  + `WordPress-Docs` + `PHPCompatibilityWP`, targets WP 6.4 and PHP 8.1,
+  and pre-configures the prefix list (`linguaforge_`, `LINGUAFORGE_`,
+  `Linguaforge`, `LinguaForge`, `lf_`, `LF_`) so the `PrefixAllGlobals`
+  sniff knows about them. The file-name sniff (`WordPress.Files.FileName`)
+  is disabled — this codebase intentionally mixes PSR-4 PascalCase
+  (`ai/includes/Core/Plugin.php`) with the WP `class-foo.php` convention
+  (`language-router/includes/class-context.php`). All `<file>` paths in
+  the config use `../` (parent plugin root).
+- **PHPStan (`dev/phpstan.neon.dist`)** runs at level 5 with
+  `szepeviktor/phpstan-wordpress` as the WP stub source. Level 6+ starts
+  flagging type imprecision in WP core itself — not worth the noise.
+  `paths:` references `../` (parent plugin root).
+- **PHPUnit (`dev/phpunit.xml.dist`)** defines two suites. The **unit**
+  suite is the fast path: no WordPress, only pure-function utilities.
+  The **integration** suite expects `WP_TESTS_DIR` to point at the WP
+  PHPUnit framework (wp-env exposes this automatically). The test files
+  themselves live in `tests/` — they're plugin source, just
+  `.distignore`'d out of the .org build.
+- **wp-env (`dev/.wp-env.json`)** boots WordPress 6.4 on PHP 8.1 with
+  `..` (plugin root) mounted at `wp-content/plugins/lingua-forge`.
+  `WP_DEBUG` is on in both the development and test environments.
 - **Plugin Check** runs inside the wp-env CLI container via
   `composer plugin-check`. This is the same checker WordPress.org uses
   on submission, so passing it locally is a strong signal that a
@@ -783,29 +780,27 @@ Run every command from `~/Github/lingua-forge-dev/`:
   `@wordpress/eslint-plugin/recommended`,
   `@wordpress/stylelint-config/scss`, and `@wordpress/prettier-config`
   presets as the base. Stylelint has four rule overrides in
-  `lingua-forge-dev/.stylelintrc.json`: a BEM-aware
-  `selector-class-pattern` (allows `block__element--modifier` with
-  all-lowercase-hyphenated segments), `camelCaseSvgKeywords: true` to
-  permit the conventional `currentColor` casing, and both
-  `rule-empty-line-before` and `comment-empty-line-before` nulled
-  (the project style does not require blank lines between every rule or
-  before inline comments). New CSS must use proper BEM modifier names
-  (`.block--modifier`, not `.--modifier`). The npm scripts in
-  `lingua-forge-dev/package.json` glob over `../lingua-forge/**/*.{js,css}`.
+  `dev/.stylelintrc.json`: a BEM-aware `selector-class-pattern` (allows
+  `block__element--modifier` with all-lowercase-hyphenated segments),
+  `camelCaseSvgKeywords: true` to permit the conventional `currentColor`
+  casing, and both `rule-empty-line-before` and `comment-empty-line-before`
+  nulled (the project style does not require blank lines between every
+  rule or before inline comments). New CSS must use proper BEM modifier
+  names (`.block--modifier`, not `.--modifier`). The npm scripts in
+  `dev/package.json` glob over `../**/*.{js,css}`.
 
 ### Recommended pre-deploy sequence
 
 ```bash
-cd ~/Github/lingua-forge-dev
+cd dev/
 composer qa                  # lint + analyse + test
 composer plugin-check        # the .org checker
 npm run lint:js && npm run lint:css
 ```
 
-If all four are green, the plugin folder is ready to push via SFTP /
-rsync. Nothing in the dev folder reaches the deploy target — it's
-physically outside the plugin tree, and the plugin's own `.distignore`
-guards against accidental in-tree drift too.
+If all four are green, the plugin is ready to push via SFTP / rsync.
+`dev/` is excluded from every deploy by `.distignore` — nothing in it
+ever reaches the server or a .org build ZIP.
 
 ### When the tooling disagrees with itself
 
