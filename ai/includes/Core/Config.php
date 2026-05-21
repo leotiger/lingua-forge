@@ -82,7 +82,7 @@ class Config {
      *             Generator where accuracy and longer context matter.
      *
      * These are the fallback values when no override has been saved via the
-     * Settings page.  To update a model site-wide, go to Settings → Lingua Forge AI
+     * Settings page.  To update a model site-wide, go to Settings → Lingua Forge
      * and enter the new model string in the Models section.
      *
      * @var array<string, array<string, string>>
@@ -134,7 +134,7 @@ class Config {
      *
      * Resolution order:
      *   1. Value stored in wp_options as linguaforge_model_{provider}_{tier}
-     *      (set via Settings → Lingua Forge AI → Models)
+     *      (set via Settings → Lingua Forge → Models)
      *   2. Hard-coded default from MODEL_DEFAULTS above
      *
      * Clearing the stored value (empty string) falls back to the default,
@@ -278,7 +278,7 @@ class Config {
      *
      * Full-page translation uses the Quality model by default (Sonnet / GPT-4o /
      * Gemini Pro) for accurate, long-form output. Administrators can switch to
-     * Light in Settings → Lingua Forge AI → Translation Limits if speed or cost
+     * Light in Settings → Lingua Forge → Translation Limits if speed or cost
      * is the priority and the content is short.
      */
     public static function translation_tier(): string {
@@ -336,6 +336,54 @@ class Config {
         $stored = (int) get_option('linguaforge_quick_translate_max_input_chars', 0);
 
         return $stored > 0 ? $stored : 8000;
+    }
+
+    // ── Per-preset addenda ────────────────────────────────────────────────────
+
+    /**
+     * wp_options key for a preset's stored addendum override.
+     */
+    private static function preset_addendum_option(string $preset): string {
+        return 'linguaforge_preset_addendum_' . $preset;
+    }
+
+    /**
+     * Return the effective system-prompt addendum for a given preset.
+     *
+     * Resolution order:
+     *   1. linguaforge_preset_addendum_{preset} stored in wp_options — set when
+     *      the admin has edited the preset's text in Settings → Behavior.
+     *   2. Hard-coded *_DEFAULT constant for that preset.
+     *   3. '' — Standard and any unknown preset have no addendum.
+     *
+     * Clearing the stored value (empty string) resets to the built-in default,
+     * consistent with how Config::model() treats empty model overrides.
+     */
+    public static function preset_addendum(string $preset): string {
+
+        $stored = trim( (string) get_option( self::preset_addendum_option( $preset ), '' ) );
+
+        if ( $stored !== '' ) {
+            return $stored;
+        }
+
+        return self::default_preset_addendum( $preset );
+    }
+
+    /**
+     * Return the hard-coded default addendum for a preset.
+     *
+     * Used by the Settings page to display placeholder / preview text and
+     * as the reset target when the stored override is cleared.
+     */
+    public static function default_preset_addendum(string $preset): string {
+
+        return match ( $preset ) {
+            'technical' => self::TECHNICAL_ADDENDUM_DEFAULT,
+            'legal'     => self::LEGAL_ADDENDUM_DEFAULT,
+            'creative'  => self::CREATIVE_ADDENDUM_DEFAULT,
+            default     => '',
+        };
     }
 
     // ── Preset resolution ─────────────────────────────────────────────────────
@@ -411,21 +459,13 @@ class Config {
      */
     public static function apply_compliance_to_system(string $base_system_prompt, int $post_id = 0): string {
 
-        $presets = self::presets();
-        $preset  = self::active_preset($post_id);
-        $stored  = trim( (string) get_option('linguaforge_compliance_addendum', '') );
+        $preset = self::active_preset($post_id);
 
-        if ( $stored !== '' ) {
-            // An explicit custom addendum always applies, even with the Standard
-            // preset — the user chose to write it, so it must reach the model.
-            $addendum = $stored;
-        } elseif ( $preset === 'standard' ) {
-            // Standard + no custom addendum: leave the system prompt untouched.
+        if ( $preset === 'standard' ) {
             return $base_system_prompt;
-        } else {
-            // Non-standard preset with no custom override: use the preset default.
-            $addendum = trim( $presets[$preset]['addendum'] ?? '' );
         }
+
+        $addendum = self::preset_addendum($preset);
 
         if ( $addendum === '' ) {
             return $base_system_prompt;

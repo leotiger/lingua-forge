@@ -10,7 +10,7 @@
  * a language filter is active. Clicking it opens a modal overlay that shows
  * a dry-run scan, then lets the editor fix posts individually or all at once.
  *
- * Singleton of the admin concern — instantiated once from language-router.php.
+ * Instantiated by the Router constructor as a sub-object ($router->link_fixer).
  */
 
 namespace LinguaForge\Router;

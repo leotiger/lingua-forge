@@ -62,7 +62,7 @@ This blog post grew directly out of a Lingua Forge coding session. It wasn't pro
 - hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
 - Language switcher block (LSFLR Switcher) rendered as dropdown or dropup
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
-- Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge AI → Language Overrides** or drop them in directly via FTP/SFTP.
+- Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge → Language Overrides** or drop them in directly via FTP/SFTP.
 - DB index on `wp_postmeta (meta_key, meta_value)` created on activation for fast `_lang` queries
 
 ### Meta Description
@@ -77,7 +77,7 @@ Adds a meta description field to every public post type. Outputs `<meta name="de
 
 > As of 1.2.0 the plugin writes meta descriptions to the prefixed key `_linguaforge_meta_description`. A one-time bulk migration copies any existing `meta_description` rows to the new key on the first admin request after upgrade — no manual steps required. The `meta_description` key is intentionally **not** deleted on uninstall because other plugins may use it.
 
-### AI Content Tools (Lingua Forge AI)
+### AI Content Tools
 
 Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangeable backends. All results appear in a review panel — nothing is applied automatically.
 
@@ -85,8 +85,8 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Excerpt Generator** — concise editorial excerpt up to 240 characters, language-aware
 - **Content Translation** — full post and page translation preserving all Gutenberg block markup, block attribute strings (accordion summaries, image alt text, etc.), and footnotes. Chunk mode for translating individual snippets
 - **Content Generator** — drafts or rewrites post content from hints, tone, and output-type controls. Outputs native Gutenberg block markup
-- **Quick Translate** — available in the admin toolbar and inside the Gutenberg / FSE editor toolbar, for translating any text snippet on the fly without opening a specific post
-- **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the Lingua Forge AI metabox (Translation and Content Generator only)
+- **Quick Translate** — admin toolbar popover with three modes: **Translate** any text snippet into a chosen language, **Create** new content from hints and tone, and **Refine** any result iteratively with additional instructions. Also available inside the Gutenberg / FSE editor toolbar
+- **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the Lingua Forge metabox (Translation and Content Generator only)
 - **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Opt in from **Settings → Behavior**
 - **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
 - **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
@@ -112,7 +112,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 1. Copy the `lingua-forge/` folder to `wp-content/plugins/`
 2. Activate **Lingua Forge** from the WordPress admin (Plugins → Installed Plugins)
 3. Go to **Settings → Permalinks** and click **Save Changes** — this flushes the rewrite rules for the language URL prefixes
-4. Go to **Settings → Lingua Forge AI**, select a provider, and enter your API key
+4. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
 
 ```
 wp-content/
@@ -179,7 +179,7 @@ A practical example: the site admin works in `en_US`, but the primary content is
 
 #### Choosing a provider
 
-Navigate to **Settings → Lingua Forge AI** and select the active provider from the dropdown, or define the constant in `wp-config.php`:
+Navigate to **Settings → Lingua Forge** and select the active provider from the dropdown, or define the constant in `wp-config.php`:
 
 ```php
 define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini'
@@ -187,7 +187,7 @@ define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini
 
 #### API keys
 
-Enter keys directly from **Settings → Lingua Forge AI**. Keys are stored encrypted in `wp_options` using AES-256-GCM (with the provider slug as authenticated data) derived from WordPress's own auth salts — plaintext keys never touch the database.
+Enter keys directly from **Settings → Lingua Forge**. Keys are stored encrypted in `wp_options` using AES-256-GCM (with the provider slug as authenticated data) derived from WordPress's own auth salts — plaintext keys never touch the database.
 
 **Fallback resolution order** (highest to lowest priority):
 1. Encrypted value in `wp_options` (set via the Settings page)
@@ -196,7 +196,7 @@ Enter keys directly from **Settings → Lingua Forge AI**. Keys are stored encry
 
 #### Models
 
-Navigate to **Settings → Lingua Forge AI → Models** to override the model string for any provider and tier:
+Navigate to **Settings → Lingua Forge → Models** to override the model string for any provider and tier:
 
 | Tier | Default (Anthropic) | Used by |
 |---|---|---|
@@ -261,12 +261,13 @@ lingua-forge/
       Admin/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
-        SettingsPage.php             ← Settings → Lingua Forge AI (5-tab layout)
+        SettingsPage.php             ← Settings → Lingua Forge (5-tab layout)
       CLI/
         Commands.php                 ← wp linguaforge translate / retranslate / fill-translations / missing-translations / cache-clear
       REST/
         FeatureController.php        ← POST /lingua-forge/v1/feature/{key}/{post_id}
                                         POST /lingua-forge/v1/translate-chunk
+                                        POST /lingua-forge/v1/create-chunk
                                         POST /lingua-forge/v1/revise-block
     assets/
       admin.js / admin.css           ← Meta box UI
@@ -470,7 +471,7 @@ Translates full post or page content while preserving all WordPress block commen
 
 **Footnote limitation** — WordPress footnotes are tightly coupled to post-specific UUIDs shared between `post_content` and the `footnotes` post meta. Full-post translation attempts to translate footnotes in the same API call, but this is fragile on long posts. The recommended workflow is chunk mode for footnotes: copy each footnote from the block editor's footnote panel, switch to *Translate chunk*, translate, and paste back.
 
-**Translation Limits** — configurable from **Settings → Lingua Forge AI → Translation Limits**:
+**Translation Limits** — configurable from **Settings → Lingua Forge → Translation Limits**:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -533,7 +534,7 @@ The overlay includes a **Refine** section below the preview. After reviewing the
 
 **Apply to Editor** at any point writes the current draft — whether the initial generation or any refinement — directly to the post.
 
-**Content Generator limits** — configurable from **Settings → Lingua Forge AI → Content Generator**:
+**Content Generator limits** — configurable from **Settings → Lingua Forge → Content Generator**:
 
 | Setting | Default | Description |
 |---|---|---|
@@ -545,16 +546,36 @@ The overlay includes a **Refine** section below the preview. After reviewing the
 
 Available in two places:
 
-- **Admin Toolbar** — the ⇌ icon in the WordPress admin bar opens a popover with a language selector, textarea, Translate, and Copy buttons. Works on any admin page, no post required.
-- **Editor Toolbar** — the same popover is injected into the Gutenberg / FSE editor's pinned-items bar. Always available in canvas-edit mode where the admin bar is hidden.
+- **Admin Toolbar** — the ⇌ icon in the WordPress admin bar opens a popover with three tabs. Works on any admin page, no post required.
+- **Editor Toolbar** — injected into the Gutenberg / FSE editor's pinned-items bar. Always available in canvas-edit mode where the admin bar is hidden (Translate mode only).
 
-**Quick Translation limits** — configurable from **Settings → Lingua Forge AI → Quick Translation**:
+#### Translate tab
+
+Select a target language, paste text (or select text on the page before opening), and click Translate. Works on any text regardless of length up to the configured character limit.
+
+#### Create tab
+
+Enter instructions and key points, choose a writing tone, and optionally specify a target language. Click Generate to produce new content from scratch — no existing post required. Uses the quality model tier.
+
+| Tone | Best for |
+|---|---|
+| **Informative** | Factual articles, documentation, how-to content |
+| **Persuasive** | Landing pages, calls to action, opinion pieces |
+| **Storytelling** | Narratives, case studies, brand stories |
+| **Technical** | Developer docs, specs, in-depth guides |
+| **Conversational** | Blog posts, social copy, friendly explainers |
+
+#### Refine
+
+After any Translate or Create result, an inline **Refine** row appears below the output. Type an improvement instruction (e.g. "make it 30% shorter", "switch to passive voice", "add a call to action") and click ↺ Refine. The model receives the original request and the prior draft as context and returns an improved version. Each refinement is labelled (Refinement #1, #2…) and replaces the previous result in-place.
+
+**Quick Translation limits** — configurable from **Settings → Lingua Forge → Quick Translation**:
 
 | Setting | Default | Description |
 |---|---|---|
-| **Model tier** | Light | Model tier used for chunk translations. Light (Haiku/Flash) is fast and cost-effective for short snippets; switch to Quality for higher accuracy. |
-| **Max output tokens** | 2 000 | Maximum tokens per quick-translation response. Short snippets rarely exceed a few hundred tokens, but raise this for longer selections. |
-| **Max input characters** | 8 000 | Maximum characters accepted in the Quick Translate textarea before the text is truncated. |
+| **Model tier** | Light | Model tier used for Translate. Light (Haiku/Flash) is fast and cost-effective for short snippets; switch to Quality for higher accuracy. Create always uses the quality tier. |
+| **Max output tokens** | 2 000 | Maximum tokens per response. Applies to Translate, Create, and Refine. |
+| **Max input characters** | 8 000 | Maximum characters accepted in the Translate textarea before truncation. |
 
 ### AI Behavior Presets
 
@@ -567,7 +588,7 @@ Four presets control the temperature and system-prompt addendum used by Translat
 | **Legal / Compliance** | 0.1 | Preserve regulatory citations, article numbers, and legal phrasing verbatim |
 | **Creative / Marketing** | 0.7 | Vivid language, idiomatic translation, marketing tone |
 
-Set the site-wide default from **Settings → Lingua Forge AI → Behavior**. Override it for a specific post from the **Lingua Forge AI metabox** (a select at the top of the panel, available on Translation and Content Generator only). A custom addendum textarea below the preset selector overrides the preset's built-in addendum when non-empty.
+Set the site-wide default from **Settings → Lingua Forge → Behavior**. Override it for a specific post from the **Lingua Forge metabox** (a select at the top of the panel, available on Translation and Content Generator only). Each non-standard preset has its own editable instructions field in Settings → Behavior — leave it blank to use the built-in default, or type custom rules to override. A built-in default preview is shown inline. Clearing a saved override restores the default on next save.
 
 ### Translation Memory
 
@@ -583,7 +604,7 @@ Every feature caches its output using a SHA-256 hash of the inputs in a dedicate
 
 ### AI Usage
 
-Every successful AI call is recorded in a dedicated database table, grouped by feature, provider, model, and calendar date. Go to **Settings → Lingua Forge AI → AI Usage** to see a summary table for any date range:
+Every successful AI call is recorded in a dedicated database table, grouped by feature, provider, model, and calendar date. Go to **Settings → Lingua Forge → AI Usage** to see a summary table for any date range:
 
 | Column | Description |
 |---|---|
@@ -668,7 +689,7 @@ wp linguaforge missing-translations ca page --format=json \
 
 **Root cause:** The most common causes are an invalid or expired API key, the provider's rate limit being hit, or the provider's API being temporarily unavailable.
 
-**Fix:** Check the PHP error log — Lingua Forge logs the raw HTTP response code and body whenever a provider call fails. Also verify the API key in **Settings → Lingua Forge AI → API Keys** and test it directly in the provider's dashboard.
+**Fix:** Check the PHP error log — Lingua Forge logs the raw HTTP response code and body whenever a provider call fails. Also verify the API key in **Settings → Lingua Forge → API Keys** and test it directly in the provider's dashboard.
 
 ### Translation is cut off at the end of a long page
 
@@ -676,7 +697,7 @@ wp linguaforge missing-translations ca page --format=json \
 
 **Root cause:** The AI provider hit its output token limit before finishing the response.
 
-**Fix:** Go to **Settings → Lingua Forge AI → Translation Limits** and increase **Max output tokens** (default: 16 000). Use **↺ Refresh** in the result panel to re-run without the cached truncated result.
+**Fix:** Go to **Settings → Lingua Forge → Translation Limits** and increase **Max output tokens** (default: 16 000). Use **↺ Refresh** in the result panel to re-run without the cached truncated result.
 
 ### Editor toolbar Quick Translate button does not appear on first load
 
@@ -714,7 +735,7 @@ The folder is created automatically on plugin activation. Files placed here surv
 
 **File naming** follows the standard WordPress convention: `{textdomain}-{locale}.mo` (e.g. `vikbooking-ca.mo`, `vikbooking-es_ES.mo`). No code changes are needed when adding a new plugin or locale — the router discovers and loads all matching files automatically on every request.
 
-**Managing files** — go to **Settings → Lingua Forge AI → Language Overrides**:
+**Managing files** — go to **Settings → Lingua Forge → Language Overrides**:
 
 - The table lists every `.mo` and `.po` file currently in the directory, with file size.
 - Use the **Upload Override** form to upload a compiled `.mo` file directly from the browser.
@@ -756,18 +777,13 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.3.6**
+**Current release — 1.5.0**
 
-- **Duplicate toolbar icons fixed** (1.3.6) — Quick Translate no longer appears twice in the main editor toolbar; the block toolbar AI button is now rendered by a single code path after `registerFormatType` was removed
-- **CLI translation resilience for footnoted posts** (1.3.6) — direct-speech quotation marks in translated prose (e.g. `"como"`) are now repaired before JSON decoding; system prompts also include an explicit escaping rule so the failure is avoided at the source
-- **Block Revision instructions** (1.3.5) — free-form instructions textarea in the Revision tab lets editors add per-use tone or style guidance on top of the preset revision type
-- **Meta description apply fixed** (1.3.5) — applying a translation or generated content now writes the meta description to both the Gutenberg store and the Classic metabox textarea in one step; persists on the normal Update save
-- **Browser language redirect** (1.3.1) — opt-in setting in **Settings → Router**; first-time visitors routed to their preferred language via `Accept-Language` header; cookie wins on all subsequent visits
-- **Slug translation** (1.3.2) — WP-CLI translation commands now keep `post_name` in sync with the translated title; the Gutenberg "Apply translation" modal dispatches a `slug` update so the permalink panel reflects the translated title immediately
-- Content Generator overlay with iterative multi-turn refinement — chat with the model to improve its own draft; each pass builds on the previous one
-- Automatic meta description chaining after every content generation and refinement — one server-side request, no second API round-trip
-- WP-CLI `--debug` flag on all translation commands with inline prompt/response output
-- HTTP timeout raised from 120 s to 300 s; configurable via `linguaforge_ai_retry_policy` filter
+- **Quick Translate — Create tab** — the Admin Toolbar popover gains a second tab for generating new content from scratch. Enter instructions and key points, choose a writing tone (Informative, Persuasive, Storytelling, Technical, Conversational), and optionally select a target language.
+- **Quick Translate — Refine** — after any Translate or Create result, an inline Refine row lets you iteratively improve the output with additional instructions. The model receives the original request and prior draft as context.
+- **Per-preset editable addenda** — the single global "Custom prompt instructions" field is replaced by three separate editable fields in Settings → Behavior, one per non-standard preset. Leave blank to use the built-in default; existing custom addenda are migrated automatically.
+- **PHP Fatal fix** — namespace declaration order corrected in `class-language-router.php`; the ABSPATH guard is now placed after the `namespace` line as required by PHP 8.1+.
+- **Quick Translate tab pane fix** — Translate and Create panels no longer both render visible simultaneously; author-level `[hidden]` override added to the CSS.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

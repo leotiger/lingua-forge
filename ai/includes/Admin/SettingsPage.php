@@ -16,7 +16,7 @@ use LinguaForge\AI\Core\Config;
 defined('ABSPATH') || exit;
 
 /**
- * Settings → Lingua Forge AI
+ * Settings → Lingua Forge
  *
  * Bootstrap class: registers the admin menu, enqueues assets, dispatches
  * the settings-form save, and delegates every tab's render and standalone
@@ -92,6 +92,12 @@ class SettingsPage {
         add_action('admin_menu',                    [self::class, 'register_menu']);
         add_action('admin_post_' . self::PAGE_SLUG, [self::class, 'handle_save']);
 
+        // "Settings" link on the Plugins overview page (wp-admin/plugins.php).
+        add_filter(
+            'plugin_action_links_' . plugin_basename( LINGUAFORGE_FILE ),
+            [ self::class, 'add_action_links' ]
+        );
+
         // Language override file management
         add_action('admin_post_linguaforge_upload_i18n_override', [MaintenanceTab::class, 'handle_upload_override']);
         add_action('admin_post_linguaforge_delete_i18n_override', [MaintenanceTab::class, 'handle_delete_override']);
@@ -128,7 +134,7 @@ class SettingsPage {
     /**
      * Enqueue scripts and styles used exclusively on the Settings page.
      *
-     * Scoped to the Settings → Lingua Forge AI screen only (matched via the
+     * Scoped to the Settings → Lingua Forge screen only (matched via the
      * $hook_suffix WordPress hands to admin_enqueue_scripts).
      */
     public static function enqueue_settings_assets(string $hook_suffix): void {
@@ -207,8 +213,8 @@ class SettingsPage {
         );
 
         $preset_addenda = [];
-        foreach ( Config::presets() as $key => $meta ) {
-            $preset_addenda[ $key ] = $meta['addendum'];
+        foreach ( array_keys( Config::presets() ) as $key ) {
+            $preset_addenda[ $key ] = Config::default_preset_addendum( $key );
         }
 
         wp_add_inline_script(
@@ -235,12 +241,28 @@ class SettingsPage {
     public static function register_menu(): void {
 
         add_options_page(
-            'Lingua Forge AI',
-            'Lingua Forge AI',
+            'Lingua Forge',
+            'Lingua Forge',
             'manage_options',
             self::PAGE_SLUG,
             [self::class, 'render']
         );
+    }
+
+    /**
+     * Prepend a "Settings" action link on the Plugins overview page.
+     *
+     * @param array<int|string, string> $links Existing action links.
+     * @return array<int|string, string>
+     */
+    public static function add_action_links( array $links ): array {
+        $settings_link = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url( admin_url( 'options-general.php?page=' . self::PAGE_SLUG ) ),
+            esc_html__( 'Settings', 'lingua-forge' )
+        );
+        array_unshift( $links, $settings_link );
+        return $links;
     }
 
     // ── Form handler ──────────────────────────────────────────────────────────
@@ -323,12 +345,15 @@ class SettingsPage {
             false
         );
 
-        // Addendum: free-form override appended to the active preset's system
-        // prompt. Empty string means "use the preset's built-in default".
-        $compliance_addendum = sanitize_textarea_field(
-            (string) wp_unslash($_POST['linguaforge_compliance_addendum'] ?? '')
-        );
-        update_option('linguaforge_compliance_addendum', $compliance_addendum, false);
+        // Per-preset addenda: editable system-prompt instructions for each
+        // non-standard preset.  Empty string = use the built-in PHP default.
+        foreach ( ['technical', 'legal', 'creative'] as $preset_key ) {
+            $opt_key  = 'linguaforge_preset_addendum_' . $preset_key;
+            $addendum = sanitize_textarea_field(
+                (string) wp_unslash( $_POST[ $opt_key ] ?? '' )
+            );
+            update_option( $opt_key, $addendum, false );
+        }
 
         // ── Behavior — Translation Memory (§4.5) ─────────────────────────────
         update_option(
@@ -446,7 +471,7 @@ class SettingsPage {
         ?>
         <div class="wrap">
 
-            <h1><?php esc_html_e('Lingua Forge AI — Settings', 'lingua-forge'); ?></h1>
+            <h1><?php esc_html_e('Lingua Forge — Settings', 'lingua-forge'); ?></h1>
 
             <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect() after a successful save; no data is processed here.
             if (!empty($_GET['linguaforge_saved'])): ?>

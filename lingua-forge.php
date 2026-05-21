@@ -3,7 +3,7 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, SEO meta tags, and AI content tools for WordPress. Combines language detection, URL routing, hreflang, meta descriptions, and AI-powered excerpt, meta, and translation features.
- * Version:           1.4.3
+ * Version:           1.5.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Uli Hake
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '1.4.3' );
+define( 'LINGUAFORGE_VERSION', '1.5.0' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION
@@ -178,3 +178,44 @@ add_action( 'admin_init', function () {
 
     update_option( 'linguaforge_installed_version', LINGUAFORGE_VERSION, false );
 }, 5 );
+
+// =========================================================
+// ONE-SHOT MIGRATION — per-preset addenda (shipped in 1.5.0)
+//
+// Copies the old single `linguaforge_compliance_addendum` option to
+// the active preset's new per-preset option so sites that customised
+// the global addendum field don't lose their text after the upgrade.
+//
+// Guard flag `linguaforge_preset_addendum_migrated_v1` ensures this
+// runs exactly once.  Kept here (not inside the version-gate block
+// above) so it also fires on SFTP/rsync deploys where the activation
+// hook never runs, without waiting for a LINGUAFORGE_VERSION change.
+// =========================================================
+
+add_action( 'admin_init', function () {
+
+    if ( get_option( 'linguaforge_preset_addendum_migrated_v1' ) ) {
+        return;
+    }
+
+    $old_value = trim( (string) get_option( 'linguaforge_compliance_addendum', '' ) );
+
+    if ( $old_value !== '' ) {
+
+        // Identify which per-preset slot to copy into.  Prefer the
+        // currently-active preset; fall back to 'legal' (the most common
+        // use-case for a custom compliance addendum).
+        $active_preset = (string) get_option( 'linguaforge_active_preset', '' );
+        $target        = in_array( $active_preset, [ 'technical', 'legal', 'creative' ], true )
+            ? $active_preset
+            : 'legal';
+
+        // Only copy if the target slot hasn't been set already.
+        $target_key = 'linguaforge_preset_addendum_' . $target;
+        if ( trim( (string) get_option( $target_key, '' ) ) === '' ) {
+            update_option( $target_key, $old_value, false );
+        }
+    }
+
+    update_option( 'linguaforge_preset_addendum_migrated_v1', 1, false );
+}, 10 );

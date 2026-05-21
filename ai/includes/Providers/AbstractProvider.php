@@ -38,7 +38,7 @@ abstract class AbstractProvider implements AIProviderInterface {
         $api_key = KeyStore::get($this->key_slug());
 
         if (!$api_key) {
-            $this->log_error('no API key found — check Settings → Lingua Forge AI or set the ' . strtoupper($this->key_slug()) . '_API_KEY environment variable');
+            $this->log_error('no API key found — check Settings → Lingua Forge or set the ' . strtoupper($this->key_slug()) . '_API_KEY environment variable');
             return null;
         }
 
@@ -80,7 +80,7 @@ abstract class AbstractProvider implements AIProviderInterface {
         $text = trim($this->extract_text($decoded));
 
         if ($text === '') {
-            $this->log_error('provider returned a successful response with empty text content — check model configuration in Settings → Lingua Forge AI');
+            $this->log_error('provider returned a successful response with empty text content — check model configuration in Settings → Lingua Forge');
             return null;
         }
 

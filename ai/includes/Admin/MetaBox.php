@@ -255,7 +255,7 @@ class MetaBox {
 
         add_meta_box(
             'lingua-forge-ai',
-            'Lingua Forge AI',
+            'Lingua Forge',
             [self::class, 'render'],
             ['post', 'page'],
             'normal',

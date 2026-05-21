@@ -208,7 +208,7 @@ class Translation implements FeatureInterface {
     }
 
     /**
-     * The model tier (Quality or Light) is read from Settings → Lingua Forge AI
+     * The model tier (Quality or Light) is read from Settings → Lingua Forge
      * → Translation Limits (default: Quality — Sonnet / GPT-4o / Gemini Pro).
      *
      * max_tokens is read from the same settings section (default: 16 000).
@@ -1004,7 +1004,7 @@ class Translation implements FeatureInterface {
                 'success' => false,
                 'error'   => $looks_truncated
                     ? 'Translation output truncated — the translated content exceeded the output token limit. '
-                      . 'Raise "Max output tokens" in Settings → Lingua Forge AI → Translation Limits, '
+                      . 'Raise "Max output tokens" in Settings → Lingua Forge → Translation Limits, '
                       . 'or pass --max-tokens=20000 on the CLI.'
                     : 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
             ];
@@ -1195,10 +1195,31 @@ class Translation implements FeatureInterface {
             }
         }
 
-        $result = UsageRecorder::tracked( 'translation-chunk', static fn() => $provider->chat([
-            ['role' => 'system', 'content' => $system_prompt],
-            ['role' => 'user',   'content' => $prompt],
-        ]) );
+        // ── Refinement detection ──────────────────────────────────────────────
+        // When the JS sends back the previous output + a refinement instruction
+        // we build a multi-turn conversation so the model improves its own prior
+        // translation rather than starting from scratch.
+        $refine_hint     = mb_substr( trim( sanitize_textarea_field( $params['refine_hint'] ?? '' ) ), 0, 2000 );
+        $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
+        $is_refinement   = $refine_hint !== '' && $previous_output !== '';
+
+        if ( $is_refinement ) {
+            $messages = [
+                [ 'role' => 'system',    'content' => $system_prompt ],
+                [ 'role' => 'user',      'content' => $prompt ],
+                [ 'role' => 'assistant', 'content' => $previous_output ],
+                [ 'role' => 'user',      'content' =>
+                    "Please refine the translation above based on these additional instructions:\n\n" .
+                    $refine_hint ],
+            ];
+        } else {
+            $messages = [
+                [ 'role' => 'system', 'content' => $system_prompt ],
+                [ 'role' => 'user',   'content' => $prompt ],
+            ];
+        }
+
+        $result = UsageRecorder::tracked( 'translation-chunk', static fn() => $provider->chat( $messages ) );
 
         if (empty($result)) {
             return [

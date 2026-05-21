@@ -1,5 +1,5 @@
 /**
- * Lingua Forge AI — Settings › Behavior tab — preset preview panel
+ * Lingua Forge — Settings › Behavior tab — preset preview panel
  *
  * Shows each preset's built-in addendum text when the Global AI Preset
  * dropdown changes, so editors can see what the preset does and learn

@@ -1,4 +1,4 @@
-/* WPEnhance AI — Admin Toolbar Quick Translate popover
+/* Lingua Forge — Admin Toolbar popover (Translate / Create / Refine)
    ─────────────────────────────────────────────────────
    Standalone stylesheet; independent from admin.css.
    Uses WP admin design tokens where possible (color palette,
@@ -21,7 +21,7 @@
 .lingua-forge-tp {
     position:         fixed;
     z-index:          99999;
-    width:            360px;
+    width:            450px;
     background:       #fff;
     border:           1px solid #c3c4c7;
     border-radius:    4px;
@@ -83,13 +83,50 @@
     color:      #1d2327;
 }
 
-/* ── Body ────────────────────────────────────────────────────────────────── */
+/* ── Tab bar ─────────────────────────────────────────────────────────────── */
 
-.lingua-forge-tp__body {
-    padding: 14px;
-    display: flex;
+.lingua-forge-tp__tabs {
+    display:       flex;
+    border-bottom: 1px solid #dcdcde;
+    background:    #f6f7f7;
+}
+
+.lingua-forge-tp__tab-btn {
+    flex:            1;
+    background:      none;
+    border:          none;
+    border-bottom:   2px solid transparent;
+    padding:         8px 12px;
+    font-size:       12px;
+    font-weight:     600;
+    color:           #646970;
+    cursor:          pointer;
+    transition:      color 0.1s, border-color 0.1s;
+    line-height:     1.4;
+}
+
+.lingua-forge-tp__tab-btn:hover {
+    color: #1d2327;
+}
+
+.lingua-forge-tp__tab-btn.is-active {
+    color:           #0073aa;
+    border-bottom-color: #0073aa;
+    background:      #fff;
+}
+
+/* ── Tab panes ───────────────────────────────────────────────────────────── */
+
+/* display:flex would beat the UA [hidden]{display:none} rule — override explicitly. */
+.lingua-forge-tp__tab-pane[hidden] {
+    display: none;
+}
+
+.lingua-forge-tp__tab-pane {
+    padding:        14px;
+    display:        flex;
     flex-direction: column;
-    gap: 8px;
+    gap:            8px;
 }
 
 .lingua-forge-tp__label {
@@ -143,14 +180,74 @@
     box-shadow:   0 0 0 1px #0073aa;
 }
 
-.lingua-forge-tp__btn-translate {
-    align-self:    flex-start;
-    margin-top:    4px;
+.lingua-forge-tp__pane-actions {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    margin-top:  4px;
 }
 
-.lingua-forge-tp__btn-translate:disabled {
+.lingua-forge-tp__btn-translate,
+.lingua-forge-tp__btn-generate {
+    align-self: flex-start;
+}
+
+.lingua-forge-tp__btn-translate:disabled,
+.lingua-forge-tp__btn-generate:disabled {
     opacity: 0.65;
     cursor:  not-allowed;
+}
+
+/* ── Create panel two-column row ─────────────────────────────────────────── */
+
+.lingua-forge-tp__create-row {
+    display: flex;
+    gap:     10px;
+}
+
+.lingua-forge-tp__create-field {
+    flex: 1;
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+}
+
+.lingua-forge-tp__tone,
+.lingua-forge-tp__create-lang {
+    width:         100%;
+    padding:       5px 8px;
+    border:        1px solid #8c8f94;
+    border-radius: 3px;
+    font-size:     12px;
+    color:         #1d2327;
+    background:    #fff;
+    cursor:        pointer;
+}
+
+.lingua-forge-tp__tone:focus,
+.lingua-forge-tp__create-lang:focus {
+    border-color: #0073aa;
+    outline:      none;
+    box-shadow:   0 0 0 1px #0073aa;
+}
+
+.lingua-forge-tp__hints {
+    width:         100%;
+    padding:       7px 9px;
+    border:        1px solid #8c8f94;
+    border-radius: 3px;
+    font-size:     13px;
+    font-family:   inherit;
+    color:         #1d2327;
+    resize:        vertical;
+    box-sizing:    border-box;
+    line-height:   1.5;
+}
+
+.lingua-forge-tp__hints:focus {
+    border-color: #0073aa;
+    outline:      none;
+    box-shadow:   0 0 0 1px #0073aa;
 }
 
 /* ── Result panel ────────────────────────────────────────────────────────── */
@@ -207,22 +304,72 @@
     line-height:   1.5;
 }
 
-.lingua-forge-tp__input-actions {
-    display:     flex;
-    align-items: center;
-    gap:         8px;
-    margin-top:  4px;
-}
-
 .lingua-forge-tp__result-actions {
     display:     flex;
     align-items: center;
     gap:         8px;
 }
 
+/* ── Refine section ──────────────────────────────────────────────────────── */
+
+.lingua-forge-tp__refine {
+    border-top:  1px solid #f0f0f1;
+    padding-top: 10px;
+    display:     flex;
+    flex-direction: column;
+    gap:         6px;
+}
+
+.lingua-forge-tp__refine-row {
+    display:   flex;
+    gap:       8px;
+    align-items: flex-start;
+}
+
+.lingua-forge-tp__refine-input {
+    flex:          1;
+    padding:       6px 8px;
+    border:        1px solid #8c8f94;
+    border-radius: 3px;
+    font-size:     12px;
+    font-family:   inherit;
+    color:         #1d2327;
+    resize:        vertical;
+    line-height:   1.5;
+    min-height:    48px;
+    box-sizing:    border-box;
+}
+
+.lingua-forge-tp__refine-input:focus {
+    border-color: #0073aa;
+    outline:      none;
+    box-shadow:   0 0 0 1px #0073aa;
+}
+
+.lingua-forge-tp__btn-refine {
+    white-space:  nowrap;
+    align-self:   flex-start;
+    margin-top:   1px;
+}
+
+.lingua-forge-tp__btn-refine:disabled {
+    opacity: 0.65;
+    cursor:  not-allowed;
+}
+
+.lingua-forge-tp__refine-status {
+    font-size:  11px;
+    color:      #646970;
+    margin:     0;
+}
+
+.lingua-forge-tp__refine-status.is-error {
+    color: #d63638;
+}
+
 /* ── Responsive: narrow viewports (mobile WP admin) ─────────────────────── */
 
-@media (max-width: 400px) {
+@media (max-width: 470px) {
     .lingua-forge-tp {
         width: calc(100vw - 16px);
         left: 8px !important;

@@ -21,7 +21,7 @@ who owns it* at a glance.
 | `lf_`           | lowercase   | Short-form identifiers: post/user-meta keys, form field names, nonce names, Language-Router filter hooks, GET-flag query args |
 | `LF_`           | UPPERCASE   | One runtime constant defined at file-load time (currently only `LF_LANG`) |
 | `LINGUAFORGE_`  | UPPERCASE   | Plugin-wide PHP constants — paths, URLs, version, and the wp-config-overridable behavior switches |
-| `lsflr_` / `LSFLR_` | mixed   | **Legacy** — the language-switcher / link-fixer module, kept for back-compat with theme code that adopted the old mu-plugin function names. Do not introduce new identifiers under this prefix |
+| `lsflr_` / `LSFLR_` | mixed   | Feature prefix for the Language Switcher / Link Fixer public API (wrapper functions, AJAX actions, DOM classes). Stable — do not rename existing identifiers. Do not extend this prefix for new features; use `lf_` or `linguaforge_` instead |
 
 ### `linguaforge_*` — long lowercase
 
@@ -128,14 +128,14 @@ When you add a new override constant, follow the WP_DEBUG pattern: the
 constant always wins over the database option, and the Settings UI
 displays a "forced by constant" indicator when the constant is defined.
 
-### `lsflr_*` / `LSFLR_*` — legacy
+### `lsflr_*` / `LSFLR_*` — Language Switcher / Link Fixer feature prefix
 
 Originates from the standalone mu-plugin
 "LanguageSwitcher-ForLanguageRouter" that was folded into Lingua Forge in
-v1.0. Classes are fully namespaced (`LinguaForge\Router\Switcher`,
-`LinguaForge\Router\LinkFixer`); no back-compat aliases remain. The prefix
-survives only in the public-facing identifiers below — these are stable API
-and must not be renamed without a deprecation cycle:
+v1.0. Classes are fully namespaced as `LinguaForge\Router\Switcher` and
+`LinguaForge\Router\LinkFixer` and integrated into the Router singleton as
+`$router->switcher` and `$router->link_fixer`. The prefix is the public
+identifier convention for this feature — stable API, not deprecated:
 
 - Template-callable functions: `linguaforge_lsflr_render_switcher()`,
   `linguaforge_lsflr_get_languages()`,
@@ -144,11 +144,10 @@ and must not be renamed without a deprecation cycle:
 - DOM element IDs / CSS classes inside the Link Fixer modal:
   `lsflr-fixer-*`, `lsflr-fix-*`.
 
-**Do not extend** this prefix in new code. New language-switcher /
-link-fixer features should land under `lf_` (filter hooks),
-`linguaforge_` (options / ajax actions), or namespaced class names
-inside `LinguaForge\Router\…`. The legacy identifiers stay only
-because theme code in the wild already calls them.
+**Do not extend** this prefix for new features. New Language Switcher /
+Link Fixer additions should use `lf_` (filter hooks) or `linguaforge_`
+(options / AJAX actions). The existing identifiers are stable and must
+not be renamed without a deprecation cycle.
 
 ### Public PHP API — `linguaforge_*` wrapper functions
 
@@ -328,7 +327,7 @@ when adding new code.
 
 ## Settings page layout
 
-The Settings page (`Settings → Lingua Forge AI`) uses an eight-tab layout
+The Settings page (`Settings → Lingua Forge`) uses an eight-tab layout
 (General / API Keys / Limits / Behavior / Router / Glossary / AI Usage /
 Maintenance). The first four tabs (General, API Keys, Limits, Behavior)
 live inside a single `<form>` so one Save Settings click persists every

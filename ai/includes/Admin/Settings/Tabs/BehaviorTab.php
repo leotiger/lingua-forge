@@ -115,7 +115,7 @@ class BehaviorTab extends Tab {
                         <?php endforeach; ?>
                     </select>
                     <p class="description">
-                        <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the Lingua Forge AI meta box.', 'lingua-forge'); ?>
+                        <?php esc_html_e('Sets the default AI behaviour for all features site-wide. Individual posts can override this for Translation and Content Generation via the Lingua Forge meta box.', 'lingua-forge'); ?>
                         <?php esc_html_e('Standard uses each feature\'s own tuned temperature: Translation T=0.2 (precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The other presets apply a single fixed temperature across all features.', 'lingua-forge'); ?>
                     </p>
                     <div id="lf-preset-preview" class="lf-preset-preview" hidden>
@@ -124,33 +124,42 @@ class BehaviorTab extends Tab {
                     </div>
                 </td>
             </tr>
+            <?php
+            $addendum_presets = [
+                'technical' => __( 'Technical / Scientific instructions', 'lingua-forge' ),
+                'legal'     => __( 'Legal / Compliance instructions',     'lingua-forge' ),
+                'creative'  => __( 'Creative / Marketing instructions',   'lingua-forge' ),
+            ];
+            foreach ( $addendum_presets as $preset_key => $preset_label ) :
+                $opt_key        = 'linguaforge_preset_addendum_' . $preset_key;
+                $field_id       = 'linguaforge_preset_addendum_' . $preset_key;
+                $stored_text    = (string) get_option( $opt_key, '' );
+                $default_text   = \LinguaForge\AI\Core\Config::default_preset_addendum( $preset_key );
+            ?>
             <tr>
                 <th scope="row">
-                    <label for="linguaforge_compliance_addendum">
-                        <?php esc_html_e('Custom prompt instructions', 'lingua-forge'); ?>
+                    <label for="<?php echo esc_attr( $field_id ); ?>">
+                        <?php echo esc_html( $preset_label ); ?>
                     </label>
                 </th>
                 <td>
-                    <?php
-                    $stored_addendum = (string) get_option('linguaforge_compliance_addendum', '');
-                    ?>
                     <textarea
-                        id="linguaforge_compliance_addendum"
-                        name="linguaforge_compliance_addendum"
-                        rows="7"
+                        id="<?php echo esc_attr( $field_id ); ?>"
+                        name="<?php echo esc_attr( $opt_key ); ?>"
+                        rows="6"
                         class="large-text code"
-                        placeholder="<?php echo esc_attr__( "Leave blank to use the selected preset's built-in instructions.\n\nExample — domain-specific overrides:\n- Preserve \"kWp\", \"PPA\", \"BESS\", \"self-consumption\" verbatim in all target languages.\n- Do not translate project or company names.\n- Use formal register throughout.\n- Flag any term with no direct equivalent rather than guessing.", 'lingua-forge' ); ?>"
-                    ><?php echo esc_textarea( $stored_addendum ); ?></textarea>
+                        placeholder="<?php echo esc_attr( $default_text ); ?>"
+                    ><?php echo esc_textarea( $stored_text ); ?></textarea>
                     <p class="description">
-                        <?php if ( trim($stored_addendum) !== '' ): ?>
-                            <strong><?php esc_html_e('Active — these instructions are appended to every AI system prompt, overriding the selected preset\'s built-in rules.', 'lingua-forge'); ?></strong>
-                            <?php esc_html_e('Clear the field to fall back to the preset\'s default instructions.', 'lingua-forge'); ?>
-                        <?php else: ?>
-                            <?php esc_html_e('Leave blank to use the selected preset\'s built-in instructions (Technical, Legal, or Creative rules are applied automatically). When you fill this in, it replaces the preset\'s instructions entirely — use it for domain-specific rules that apply to your whole site, such as preserving abbreviations, brand names, or citation formats. Works with all presets, including Standard.', 'lingua-forge'); ?>
-                        <?php endif; ?>
+                        <?php esc_html_e( 'Leave blank to use the built-in default. Clearing a saved override restores the default on next save.', 'lingua-forge' ); ?>
                     </p>
+                    <details style="margin-top:.4em">
+                        <summary style="cursor:pointer;color:#646970"><?php esc_html_e( 'View built-in default', 'lingua-forge' ); ?></summary>
+                        <pre style="margin:.5em 0 0;white-space:pre-wrap;font-size:12px;background:#f6f7f7;padding:.6em .8em;border-radius:3px"><?php echo esc_html( $default_text ); ?></pre>
+                    </details>
                 </td>
             </tr>
+            <?php endforeach; ?>
         </table>
 
         <!-- ── Translation Memory (§4.5) ────────────────────────── -->

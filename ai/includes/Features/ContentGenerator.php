@@ -68,7 +68,7 @@ class ContentGenerator implements FeatureInterface {
     /**
      * Sonnet for quality long-form generation.
      *
-     * max_tokens is read from Settings → Lingua Forge AI → Content Generator.
+     * max_tokens is read from Settings → Lingua Forge → Content Generator.
      * Raise it there if generated articles are being cut off.
      */
     public function get_worker_config(int $post_id = 0): WorkerConfig {

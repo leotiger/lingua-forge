@@ -126,6 +126,22 @@ class FeatureController {
             ]
         );
 
+        // ── Toolbar chunk-create endpoint ────────────────────────────────────
+        // Generates new free-form text from hints without requiring a post ID.
+        // Used by the "Create" tab in the Admin Toolbar popover. Also handles
+        // iterative refinement when `refine_hint` + `previous_output` are present.
+        register_rest_route(
+            'lingua-forge/v1',
+            '/create-chunk',
+            [
+                'methods'             => 'POST',
+                'callback'            => [self::class, 'run_create_chunk'],
+                'permission_callback' => function () {
+                    return current_user_can(self::required_capability('create-chunk'));
+                },
+            ]
+        );
+
         // ── Block revise endpoint ─────────────────────────────────────────────
         // Revises a single block's HTML content (improve, formal, casual,
         // concise, expand) without requiring a post ID.
@@ -259,6 +275,133 @@ class FeatureController {
         return rest_ensure_response(
             $translation->run_chunk($language_name, $params)
         );
+    }
+
+    /**
+     * Generate free-form text from hints via the Admin Toolbar popover.
+     *
+     * Accepts:
+     *   - hints           (string)  What to write — key points, topic, instructions
+     *   - tone            (string)  One of: informative, persuasive, storytelling, technical, conversational
+     *   - target_language (string)  Optional ISO language code; omit for same language as hints
+     *   - refine_hint     (string)  Optional — iterative improvement instruction
+     *   - previous_output (string)  Optional — prior draft to refine (required with refine_hint)
+     *
+     * Returns:
+     *   - success  (bool)
+     *   - output   (string)  Generated text
+     *   - tone     (string)  Effective tone key
+     *   - language (string)  Human-readable target language, or empty string
+     *
+     * @param  \WP_REST_Request $request
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public static function run_create_chunk(\WP_REST_Request $request) {
+
+        $params          = (array) ($request->get_json_params() ?? []);
+        $hints           = mb_substr( trim( sanitize_textarea_field( wp_unslash( $params['hints'] ?? '' ) ) ), 0, 3000 );
+        $tone            = sanitize_key( $params['tone'] ?? 'informative' );
+        $target_language = sanitize_text_field( $params['target_language'] ?? '' );
+        $refine_hint     = mb_substr( trim( sanitize_textarea_field( $params['refine_hint'] ?? '' ) ), 0, 2000 );
+        $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
+        $is_refinement   = $refine_hint !== '' && $previous_output !== '';
+
+        if ( $hints === '' && ! $is_refinement ) {
+            return new \WP_Error(
+                'missing_hints',
+                'Hints are required.',
+                ['status' => 400]
+            );
+        }
+
+        $valid_tones = ['informative', 'persuasive', 'storytelling', 'technical', 'conversational'];
+        if ( ! in_array( $tone, $valid_tones, true ) ) {
+            $tone = 'informative';
+        }
+
+        $rate_error = self::enforce_rate_limit('create-chunk');
+        if ($rate_error instanceof \WP_Error) {
+            return $rate_error;
+        }
+
+        $quota_error = self::enforce_daily_quota('create-chunk');
+        if ($quota_error instanceof \WP_Error) {
+            return $quota_error;
+        }
+
+        // ── Build prompt ──────────────────────────────────────────────────────
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL.
+        $prompt_tpl = file_get_contents( LINGUAFORGE_AI_PATH . '/templates/prompts/create-chunk.txt' );
+
+        if ( $prompt_tpl === false ) {
+            return new \WP_Error(
+                'missing_prompt',
+                'Prompt template not found.',
+                ['status' => 500]
+            );
+        }
+
+        $prompt = str_replace( ['{{tone}}', '{{hints}}'], [$tone, $hints], $prompt_tpl );
+
+        // ── Optional target language ──────────────────────────────────────────
+        $language_label = '';
+        if ( $target_language !== '' ) {
+            $languages = Translation::get_languages();
+            if ( isset( $languages[$target_language] ) ) {
+                $language_label = $languages[$target_language];
+                $prompt        .= "\n\nWrite the content in " . $language_label . '.';
+            }
+        }
+
+        // ── Provider ──────────────────────────────────────────────────────────
+        $max_tokens = Config::quick_translate_max_tokens();
+        if ( $max_tokens <= 0 ) {
+            $max_tokens = 2000;
+        }
+
+        $provider = ProviderFactory::make( Config::apply_compliance( new WorkerConfig(
+            model:       Config::model('quality'),
+            max_tokens:  $max_tokens,
+            temperature: 0.6,
+        ) ) );
+
+        $system_prompt = Config::apply_compliance_to_system(
+            'You are an expert content writer. ' .
+            'Output only the requested content — no commentary, no preamble, no meta-explanation.'
+        );
+
+        // ── Build messages (single-turn or multi-turn refinement) ─────────────
+        if ( $is_refinement ) {
+            $messages = [
+                [ 'role' => 'system',    'content' => $system_prompt ],
+                [ 'role' => 'user',      'content' => $prompt ],
+                [ 'role' => 'assistant', 'content' => $previous_output ],
+                [ 'role' => 'user',      'content' =>
+                    "Please refine the content above based on these additional instructions:\n\n" .
+                    $refine_hint ],
+            ];
+        } else {
+            $messages = [
+                [ 'role' => 'system', 'content' => $system_prompt ],
+                [ 'role' => 'user',   'content' => $prompt ],
+            ];
+        }
+
+        $result = UsageRecorder::tracked( 'create-chunk', static fn() => $provider->chat( $messages ) );
+
+        if ( empty( $result ) ) {
+            return rest_ensure_response([
+                'success' => false,
+                'error'   => 'Content creation failed. Please try again.',
+            ]);
+        }
+
+        return rest_ensure_response([
+            'success'  => true,
+            'output'   => trim( $result ),
+            'tone'     => $tone,
+            'language' => $language_label,
+        ]);
     }
 
     /**

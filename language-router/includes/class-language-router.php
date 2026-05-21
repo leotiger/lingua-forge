@@ -1,4 +1,9 @@
 <?php
+
+namespace LinguaForge\Router;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Class LinguaForge\Router\Router
  *
@@ -27,9 +32,9 @@
  *   Admin\Columns    – lang column, quick-edit box
  *   Admin\Filters    – admin list filter dropdowns, persist_admin_lang_filter
  *   Admin\Scripts    – enqueue admin + frontend scripts
+ *   Switcher         – Language Switcher block, renderer, URL translator
+ *   LinkFixer        – internal-link scanner and fixer for translated posts
  */
-
-namespace LinguaForge\Router;
 
 use LinguaForge\Router\I18n\Overrides      as I18nOverrides;
 use LinguaForge\Router\Rewrite\Manager     as RewriteManager;
@@ -46,6 +51,7 @@ use LinguaForge\Router\Admin\Columns;
 use LinguaForge\Router\Admin\Filters;
 use LinguaForge\Router\Admin\Scripts;
 use WP_Query;
+// Switcher and LinkFixer are in the root LinguaForge\Router namespace — no alias needed.
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -91,6 +97,8 @@ class Router {
 		$this->columns       = new Columns( $this );
 		$this->filters       = new Filters( $this );
 		$this->scripts       = new Scripts( $this );
+		$this->switcher      = new Switcher( $this );
+		$this->link_fixer    = new LinkFixer( $this );
 
 		$this->define_lang_constant();
 		$this->register_hooks();
@@ -131,6 +139,8 @@ class Router {
 	public Columns          $columns;
 	public Filters          $filters;
 	public Scripts          $scripts;
+	public Switcher         $switcher;
+	public LinkFixer        $link_fixer;
 
 	// =========================================================
 	// BOOTSTRAP
@@ -264,7 +274,7 @@ class Router {
 	public function restrict_block_editor_settings( array $settings, $context ): array {
 
 		// Defaults preserve pre-1.4 behavior: both restrictions ON unless an
-		// admin explicitly opts out via Settings → Lingua Forge AI → Behavior.
+		// admin explicitly opts out via Settings → Lingua Forge → Behavior.
 		// The lf_block_editor_restrictions filter lets opinionated sites
 		// override programmatically (e.g. a custom MU plugin can enable block
 		// locking for a single user role).

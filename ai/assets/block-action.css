@@ -9,7 +9,7 @@
 .lingua-forge-ba {
     position:      fixed;
     z-index:       99999;
-    width:         380px;
+    width:         450px;
     /* Cap height so the popover never overflows short viewports. */
     max-height:    calc(100vh - 120px);
     overflow-y:    auto;
@@ -221,7 +221,7 @@
 
 /* ── Responsive: narrow viewports ───────────────────────────────────────── */
 
-@media (max-width: 420px) {
+@media (max-width: 470px) {
     .lingua-forge-ba {
         width: calc(100vw - 16px);
         left:  8px !important;

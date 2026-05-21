@@ -1,6 +1,6 @@
 <?php
 /**
- * Lingua Forge AI — sub-module of Lingua Forge.
+ * Lingua Forge — AI sub-module.
  * Loaded by lingua-forge.php; not a standalone plugin.
  */
 

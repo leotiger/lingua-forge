@@ -1,5 +1,5 @@
 /**
- * Lingua Forge AI — Settings › Router tab
+ * Lingua Forge — Settings › Router tab
  *
  * Handles the "Load available languages" fetch and the per-locale install
  * button. Data (`lfRouterTab`) is injected by SettingsPage::enqueue_settings_assets()

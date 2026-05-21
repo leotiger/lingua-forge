@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 1.4.2
+**Date:** May 2026 · Lingua Forge 1.5.0
 
 ---
 

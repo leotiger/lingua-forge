@@ -94,9 +94,9 @@ class KeyStore {
 
                 return $decrypted;
             }
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for a silent decryption failure, most likely caused by wp_salt('auth') changing after the key was stored. The fix is to re-save the API key in Settings → Lingua Forge AI.
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for a silent decryption failure, most likely caused by wp_salt('auth') changing after the key was stored. The fix is to re-save the API key in Settings → Lingua Forge.
             error_log(sprintf(
-                'Lingua Forge AI [KeyStore] decryption failed for provider "%s" — the stored key could not be decrypted (wp_salt may have changed). Re-save the API key in Settings → Lingua Forge AI.',
+                'Lingua Forge AI [KeyStore] decryption failed for provider "%s" — the stored key could not be decrypted (wp_salt may have changed). Re-save the API key in Settings → Lingua Forge.',
                 $provider
             ));
         }

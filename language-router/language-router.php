@@ -36,10 +36,13 @@ require_once __DIR__ . '/includes/admin/class-columns.php';
 require_once __DIR__ . '/includes/admin/class-filters.php';
 require_once __DIR__ . '/includes/admin/class-scripts.php';
 
-// Router orchestrator — requires all sub-classes above.
-require_once __DIR__ . '/includes/class-language-router.php';
+// Language Switcher + Link Fixer — loaded before the Router class so the
+// Router constructor can instantiate them as sub-objects.
 require_once __DIR__ . '/includes/class-lsflr-switcher.php';
 require_once __DIR__ . '/includes/class-lsflr-link-fixer.php';
+
+// Router orchestrator — requires all sub-classes above.
+require_once __DIR__ . '/includes/class-language-router.php';
 
 // Frontend blocks (missing-translation-notice, and future siblings).
 // Self-bootstrapping — the file hooks register_block_type onto init.
@@ -47,11 +50,11 @@ require_once __DIR__ . '/blocks/blocks.php';
 
 // =========================================================
 // BOOT
-// Instantiation defines LF_LANG immediately (same timing as before)
+// Instantiation defines LF_LANG immediately (same timing as before).
+// Switcher and LinkFixer are now sub-objects of the Router singleton —
+// no separate globals needed.
 // =========================================================
-$linguaforge_language_router  = \LinguaForge\Router\Router::get_instance();
-$linguaforge_lsflr_switcher   = new \LinguaForge\Router\Switcher( $linguaforge_language_router );
-$linguaforge_lsflr_link_fixer = new \LinguaForge\Router\LinkFixer( $linguaforge_language_router );
+\LinguaForge\Router\Router::get_instance();
 
 // =========================================================
 // THEME / TEMPLATE WRAPPERS
@@ -175,25 +178,13 @@ function linguaforge_lang_permalink( string $url, $post ): string {
 
 // Language Switcher shortcuts
 function linguaforge_lsflr_render_switcher( array $atts = [] ): string {
-	global $linguaforge_lsflr_switcher;
-	if ( ! $linguaforge_lsflr_switcher instanceof \LinguaForge\Router\Switcher ) {
-		return '';
-	}
-	return $linguaforge_lsflr_switcher->render_switcher( $atts );
+	return \LinguaForge\Router\Router::get_instance()->switcher->render_switcher( $atts );
 }
 
 function linguaforge_lsflr_get_languages(): array {
-	global $linguaforge_lsflr_switcher;
-	if ( ! $linguaforge_lsflr_switcher instanceof \LinguaForge\Router\Switcher ) {
-		return [];
-	}
-	return $linguaforge_lsflr_switcher->get_languages();
+	return \LinguaForge\Router\Router::get_instance()->switcher->get_languages();
 }
 
 function linguaforge_lsflr_translate_current_url( string $target_lang, ?int $post_id = null ): string {
-	global $linguaforge_lsflr_switcher;
-	if ( ! $linguaforge_lsflr_switcher instanceof \LinguaForge\Router\Switcher ) {
-		return '';
-	}
-	return $linguaforge_lsflr_switcher->translate_current_url( $target_lang, $post_id );
+	return \LinguaForge\Router\Router::get_instance()->switcher->translate_current_url( $target_lang, $post_id );
 }

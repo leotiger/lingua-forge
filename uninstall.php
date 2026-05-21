@@ -12,7 +12,7 @@
  *   - Model override options (linguaforge_model_*)
  *   - Translation Limits options
  *   - Language Router version flag
- *   - AI preset options (linguaforge_active_preset)
+ *   - AI preset options (linguaforge_active_preset, linguaforge_preset_addendum_*)
  *   - AI result caches stored in post meta (_linguaforge_cache_*)
  *   - Derived/regenerable post meta (_lf_search_content)
  *   - AI cache and usage custom tables
@@ -60,8 +60,13 @@ $linguaforge_named_options = [
     'linguaforge_block_editor_allow_lock_blocks',
     'linguaforge_block_editor_allow_template_mode',
     // Behavior — AI preset
-    'linguaforge_compliance_addendum',
+    'linguaforge_compliance_addendum',          // legacy (pre-1.5.0) global addendum
     'linguaforge_active_preset',
+    // Per-preset addenda (1.5.0+)
+    'linguaforge_preset_addendum_technical',
+    'linguaforge_preset_addendum_legal',
+    'linguaforge_preset_addendum_creative',
+    'linguaforge_preset_addendum_migrated_v1',
     // Debug logging toggle (§3.7)
     'linguaforge_ai_debug_enabled',
     // Uninstall behaviour toggle

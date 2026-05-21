@@ -40,7 +40,7 @@ class AdminToolbar {
             'href'  => '#',
             'meta'  => [
                 'class' => 'lingua-forge-toolbar-item',
-                'title' => __( 'Lingua Forge AI — Quick Translate', 'lingua-forge' ),
+                'title' => __( 'Lingua Forge — Quick Translate', 'lingua-forge' ),
             ],
         ]);
     }
@@ -78,6 +78,13 @@ class AdminToolbar {
                 'nonce'        => wp_create_nonce('wp_rest'),
                 'languages'    => Translation::get_languages(),
                 'postLanguage' => Translation::detect_post_language(),
+                'tones'        => [
+                    'informative'    => __( 'Informative',    'lingua-forge' ),
+                    'persuasive'     => __( 'Persuasive',     'lingua-forge' ),
+                    'storytelling'   => __( 'Storytelling',   'lingua-forge' ),
+                    'technical'      => __( 'Technical',      'lingua-forge' ),
+                    'conversational' => __( 'Conversational', 'lingua-forge' ),
+                ],
             ]
         );
     }
