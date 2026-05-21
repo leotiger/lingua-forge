@@ -48,7 +48,7 @@ Run every command from inside this `dev/` folder:
 ```bash
 # PHP side
 composer lint                 # PHPCS against ../
-composer lint:fix             # phpcbf auto-fix
+composer lint:fix             # phpcbf auto-fix  ⚠️  see caution below
 composer analyse              # PHPStan, WP stubs
 composer test:unit            # PHPUnit unit suite — no Docker needed
 composer test:integration     # PHPUnit integration suite — wp-env up
@@ -66,6 +66,29 @@ npm run env:start
 npm run env:stop
 npm run env:cli -- option get blogname     # WP-CLI inside the dev container
 ```
+
+## ⚠️ `composer lint:fix` caution
+
+`phpcbf` rewrites files in place. Always run `git diff` (or stage with
+`git add -p`) after using it and read every hunk before committing.
+Things that need human review:
+
+- **`phpcs:ignore` / `phpcs:disable` pragmas** — `phpcbf` can silently
+  remove them when it fixes the surrounding code. Verify that any
+  intentional suppression (Direct-SQL, render-template globals) is still
+  present.
+- **Namespace and `use` import changes** — reordered or added imports
+  can introduce an unqualified global-class reference. Run
+  `composer analyse` after every `lint:fix` run to catch these.
+- **Mixed-indent files** — some files in this codebase are
+  space-indented for historical reasons. `phpcbf` normalises to tabs,
+  producing a large cosmetic diff. Reject those hunks unless you intend
+  to re-indent the file.
+- **Multi-line string reformatting** — SQL and HTML strings may be
+  reflowed in ways that are correct but noisy. Accept selectively.
+
+Safe fixes (whitespace, blank lines, brace alignment) are fine to accept
+in bulk. When in doubt, accept nothing and fix manually.
 
 ## Pre-deploy gate
 

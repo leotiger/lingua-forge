@@ -732,7 +732,7 @@ Run every command from the `dev/` directory:
 | Goal                               | Command                       |
 | ---------------------------------- | ----------------------------- |
 | PHPCS — full lint                  | `composer lint`               |
-| PHPCS — auto-fix what `phpcbf` can | `composer lint:fix`           |
+| PHPCS — auto-fix what `phpcbf` can | `composer lint:fix` ⚠️        |
 | PHPStan — static analysis          | `composer analyse`            |
 | PHPUnit — full suite               | `composer test`               |
 | PHPUnit — unit only (fast, no WP)  | `composer test:unit`          |
@@ -745,6 +745,36 @@ Run every command from the `dev/` directory:
 | ESLint                             | `npm run lint:js`             |
 | Stylelint                          | `npm run lint:css`            |
 | Prettier — format everything       | `npm run format`              |
+
+> ⚠️ **`composer lint:fix` — review every change before committing**
+>
+> `phpcbf` rewrites files in place. Most of what it touches is safe
+> (whitespace, blank lines, brace placement), but a few classes of fix
+> require human review before committing:
+>
+> - **`phpcs:ignore` / `phpcs:disable` pragmas** — `phpcbf` will
+>   sometimes remove them when it "fixes" the surrounding code. Check
+>   that any pragma you added intentionally (Direct-SQL suppression,
+>   render-template globals, etc.) is still present after the run.
+> - **Namespace and `use` import reordering** — if `phpcbf` adds or
+>   reorders `use` statements it can introduce a global-class reference
+>   that PHPStan will catch but that may not be obvious on a quick
+>   visual scan. Always run `composer analyse` after a `lint:fix` run.
+> - **String concatenation and alignment changes** — the
+>   `WordPress.WhiteSpace.OperatorSpacing` fixer sometimes reformats
+>   multi-line SQL or HTML strings in ways that are technically correct
+>   but harder to read. Prefer accepting those hunks selectively with
+>   `git add -p` rather than staging the whole file.
+> - **Files with mixed indent history** — some files in this codebase
+>   use tabs, others spaces. `phpcbf` will normalise to the ruleset
+>   default (tabs). That is a cosmetic-only change on tab files but
+>   can produce a large noisy diff on any file that was historically
+>   space-indented. Check the diff before committing.
+>
+> **Safe rule of thumb:** run `git diff` (or stage with `git add -p`)
+> after every `lint:fix` invocation and read every hunk. Reject any
+> fix that changes logic, removes a suppression pragma, or produces a
+> diff larger than the surrounding problem warrants.
 
 ### What ruleset each tool uses
 
