@@ -27,24 +27,25 @@ class AdminToolbar {
     // ── Language helper ───────────────────────────────────────────────────────
 
     /**
-     * Returns the language map filtered to languages active on this WP instance.
+     * Returns the AI-supported language map filtered to languages active on
+     * this WordPress instance.
      *
-     * Uses linguaforge_languages() (provided by the Language Router add-on) when
-     * available; falls back to the full supported list when the Router is inactive
-     * so the popover keeps working on single-language installs.
+     * linguaforge_languages() (defined in language-router/language-router.php,
+     * always loaded as part of the plugin) returns the 2-letter language codes
+     * that the Language Router recognises as valid for this install — derived
+     * from installed WP locale files, the site locale, plugin .mo files, and
+     * the configured source language.
      *
-     * @return array<string,string>  e.g. ['en' => 'English', 'es' => 'Español']
+     * The intersection ensures only languages that are BOTH understood by the
+     * AI and actually managed by this instance appear in the dropdown.
+     *
+     * @return array<string,string>  e.g. ['en' => 'English', 'es' => 'Spanish']
      */
     private static function instance_languages(): array {
-        $all = Translation::get_languages();
-        if (!function_exists('linguaforge_languages')) {
-            return $all;
-        }
-        $codes = linguaforge_languages();
-        if (empty($codes)) {
-            return $all;
-        }
-        return array_intersect_key($all, array_flip($codes));
+        return array_intersect_key(
+            Translation::get_languages(),
+            array_flip( linguaforge_languages() )
+        );
     }
 
     // ── Admin Bar node ────────────────────────────────────────────────────────
