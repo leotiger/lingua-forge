@@ -41,7 +41,9 @@ outside the plugin namespace.
   `linguaforge_ai_should_boot`, `linguaforge_ai_rate_limit`,
   `linguaforge_ai_daily_quota`, `linguaforge_translation_worker_config`
   (per-invocation model / temperature / max_tokens override for the
-  translation feature; receives `WorkerConfig`, `$post_id`, `$params`).
+  translation feature; receives `WorkerConfig`, `$post_id`, `$params`),
+  `linguaforge_translation_memory_enabled` (disable TM per-invocation;
+  receives `bool $enabled`, `int $post_id`).
 - **Transient name prefixes.** Examples:
   `linguaforge_rate_user_{id}_{endpoint}`,
   `linguaforge_quota_daily_used_{Ymd}`.
@@ -62,6 +64,16 @@ a short name is meaningfully more readable.
     `_search_content` meta keys are intentionally generic so other plugins
     can read them. They predate the prefix policy and are now part of the
     plugin's data contract — preserve them.
+  - **Plugin-owned AI module keys** (prefixed, not part of external API):
+    `_linguaforge_meta_description` (Meta Description module — stores the
+    per-post translated meta description; read by the CLI
+    `--with-meta-description` flag), `_linguaforge_preset` (per-page AI
+    behavior preset override set in the editor metabox; read by
+    `Config::active_preset()`).
+  - **Internal routing key:** `_lf_auto_template` (tracks which FSE
+    template was auto-assigned by the Language Router so it can be
+    retracted if the language setting changes; not in the uninstall list
+    because it is regenerated on the next save).
 - **`<input name="…">` form field names.** Examples: `lf_lang`,
   `lf_trans_{lang}`, `lf_page_template`.
 - **Nonce names and actions.** Examples: `lf_language_nonce` /
@@ -76,7 +88,9 @@ a short name is meaningfully more readable.
 - **GET-flag query args** set by `wp_safe_redirect()` after an
   admin-post handler so the success notice renders on the next request.
   Examples: `lf_override_uploaded`, `lf_cache_cleared`, `lf_debug_cleared`,
-  `lf_debug_setting_saved`.
+  `lf_debug_setting_saved`. Note: the main Settings form uses
+  `linguaforge_saved` (long prefix) rather than `lf_` because it is
+  dispatched from `SettingsPage` rather than the Language Router layer.
 
 Why two prefixes? `linguaforge_` reads cleanly when you're scanning
 `wp_options` or grep-ing PHP source. `lf_` is short enough to type into
@@ -125,7 +139,7 @@ and must not be renamed without a deprecation cycle:
 - Template-callable functions: `linguaforge_lsflr_render_switcher()`,
   `linguaforge_lsflr_get_languages()`,
   `linguaforge_lsflr_translate_current_url()`.
-- AJAX action names: `wp_ajax_lsflr_scan_links`, `wp_ajax_lsflr_fix_post`.
+- AJAX action names: `wp_ajax_lsflr_scan_links`, `wp_ajax_lsflr_fix_post`, `wp_ajax_lsflr_fix_template`.
 - DOM element IDs / CSS classes inside the Link Fixer modal:
   `lsflr-fixer-*`, `lsflr-fix-*`.
 
@@ -135,6 +149,76 @@ link-fixer features should land under `lf_` (filter hooks),
 inside `LinguaForge\Router\…`. The legacy identifiers stay only
 because theme code in the wild already calls them.
 
+### Public PHP API — `linguaforge_*` wrapper functions
+
+`language-router/language-router.php` defines a set of procedural
+wrapper functions that theme code and third-party plugins should use
+instead of reaching into the class instances directly. All are prefixed
+`linguaforge_` and delegate to `LinguaForge\Router\Router::get_instance()`.
+
+**Language config**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_source_language()` | `string` | The site's primary language code |
+| `linguaforge_languages()` | `string[]` | All active language codes |
+| `linguaforge_is_valid_lang( $lang )` | `bool` | Whether a code is in the active list |
+| `linguaforge_locale_from_lang( $lang )` | `string` | Resolve a language code to a WP locale |
+| `linguaforge_language_label( $lang )` | `string` | Human-readable label for a language code |
+
+**Current request**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_detect_lang()` | `string` | Active language for the current request |
+| `linguaforge_detect_lang_safe()` | `string` | Same, falls back to source language |
+| `linguaforge_set_lang_cookie( $lang )` | `void` | Write the language preference cookie |
+| `linguaforge_hreflang_mode()` | `string` | Current hreflang output mode (`custom` or `off`) |
+| `linguaforge_is_system_request()` | `bool` | True for cron / REST / CLI — skip frontend logic |
+
+**Post language and TRID**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_get_lang( $id )` | `string` | Language code stored on a post |
+| `linguaforge_set_lang( $id, $lang )` | `void` | Write the `_lang` meta |
+| `linguaforge_get_trid( $id )` | `string` | UUID linking a post to its translation group |
+| `linguaforge_set_trid( $id, $trid )` | `void` | Write the `_trid` meta |
+| `linguaforge_get_translations( $id )` | `array` | `[ lang => post_id ]` map for all variants |
+| `linguaforge_clear_translation_cache( $id )` | `void` | Bust the `wp_cache` entry for a TRID group |
+| `linguaforge_get_missing_languages( $id )` | `string[]` | Language codes that have no translation yet |
+
+**Outdated tracking**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_mark_source_updated( $id )` | `void` | Flag source post as changed (marks translations outdated) |
+| `linguaforge_mark_translation_synced( $id )` | `void` | Clear the outdated flag on a translation post |
+| `linguaforge_is_outdated( $id )` | `bool` | Whether a translation is behind its source |
+
+**Language-filtered queries**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_query( $args )` | `WP_Query` | `WP_Query` scoped to `LF_LANG` |
+| `linguaforge_query_fallback( $args )` | `WP_Query` | Same, falls back to source language if no translation |
+| `linguaforge_get_posts( $args, $fallback )` | `WP_Post[]` | Convenience wrapper around `linguaforge_query` |
+
+**URL and routing helpers**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_safe_query_args( $url )` | `string` | Strip language-routing internals from a URL |
+| `linguaforge_lang_permalink( $url, $post )` | `string` | Language-prefixed permalink (used as `post_link` filter) |
+
+**Developer / internal**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_build_search_content( $id )` | `void` | Rebuild the `_search_content` index for a post |
+| `linguaforge_ensure_lang_index()` | `bool` | Create the `idx_lang` postmeta index if missing |
+| `linguaforge_debug( $message, $context )` | `void` | Write a debug entry (no-op unless debug is on) |
+
 ---
 
 ## Namespaces and class layout
@@ -142,12 +226,13 @@ because theme code in the wild already calls them.
 Modern code lives under three namespaces:
 
 - `LinguaForge\Router\…` — the Language Router sub-module (file location:
-  `language-router/includes/`). All three classes are namespaced as of 1.2.0:
-  - `LinguaForge\Router\Router` (aliased `Language_Router`)
-  - `LinguaForge\Router\Switcher` (aliased `LSFLR_Switcher`)
-  - `LinguaForge\Router\LinkFixer` (aliased `LSFLR_Link_Fixer`)
-  Back-compat aliases are slated for removal in 1.5. New code in this
-  sub-module should go straight into the namespace using the canonical names.
+  `language-router/includes/`). All three classes are namespaced as of 1.2.0;
+  back-compat `class_alias` entries were removed in 1.4.0:
+  - `LinguaForge\Router\Router` (canonical — use this everywhere)
+  - `LinguaForge\Router\Switcher` (canonical)
+  - `LinguaForge\Router\LinkFixer` (canonical)
+  The old bare names `Language_Router`, `LSFLR_Switcher`, and `LSFLR_Link_Fixer`
+  no longer exist. New code in this sub-module must use the fully-qualified names.
 - `LinguaForge\AI\Core\…`, `LinguaForge\AI\Providers\…`,
   `LinguaForge\AI\Features\…`, `LinguaForge\AI\Admin\…`,
   `LinguaForge\AI\REST\…`, `LinguaForge\AI\Contracts\…` — the AI
@@ -319,6 +404,21 @@ Currently shipped:
   overrides: `--temperature=<float>`, `--max-tokens=<int>`,
   `--model=<name>`, `--force` (skip cache), `--dry-run` (generate but
   don't write).
+
+- **`wp linguaforge retranslate <post_id> --to=fr,de[,…]`** — same pipeline
+  as `translate` but ignores the AI result cache (`--force` implied), so
+  it always calls the provider. Use when content has changed and you want
+  a fresh translation without clearing the cache globally.
+
+- **`wp linguaforge fill-translations [--post-type=post] [--lang=fr]`** —
+  iterates over all posts of the given type (default: `post`, `page`) and
+  translates into any target languages where a TRID-linked post exists but
+  has no content yet. Safe to re-run; posts with existing content are
+  skipped unless `--force` is passed.
+
+- **`wp linguaforge missing-translations [--post-type=post]`** — reports
+  which posts are missing one or more language variants. No writes; pure
+  audit. Pairs with `fill-translations` as a detect-then-fill pipeline.
 
 - **`wp linguaforge cache-clear`** — wipes AI-result cache entries.
   Bare command truncates the whole table; `--feature=translation` scopes
@@ -745,8 +845,6 @@ live PHP execution test before going to production.
 
 ---
 
----
-
 ## Internationalization — all user-facing strings must be localizable
 
 Every string that a site administrator or editor might read — labels,
@@ -819,10 +917,10 @@ A short checklist:
 4. **If it's a new filter or action hook**, document its signature in a
    docblock on the function that calls `apply_filters()` / `do_action()`.
    Use the appropriate prefix.
-5. **If it's a Settings UI input**, decide which of the five tabs it
-   belongs in, render through a `form-table`, save in `handle_save()`,
-   and validate against a whitelist (especially for selects and
-   capability strings).
+5. **If it's a Settings UI input**, decide which of the eight tabs it
+   belongs in (see the Settings page layout section above), render through
+   a `form-table`, save in `handle_save()`, and validate against a
+   whitelist (especially for selects and capability strings).
 6. **If it's any user-facing string**, wrap it in `esc_html__()` /
    `__()` with the `lingua-forge` text domain. Add a `/* translators: */`
    comment immediately above any call whose string contains a `%s` / `%d`
