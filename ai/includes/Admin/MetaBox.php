@@ -161,6 +161,13 @@ class MetaBox {
                 'nonce'        => wp_create_nonce('wp_rest'),
                 'languages'    => self::instance_languages(),
                 'postLanguage' => Translation::detect_post_language(),
+                'tones'        => [
+                    'informative'    => __( 'Informative',    'lingua-forge' ),
+                    'persuasive'     => __( 'Persuasive',     'lingua-forge' ),
+                    'storytelling'   => __( 'Storytelling',   'lingua-forge' ),
+                    'technical'      => __( 'Technical',      'lingua-forge' ),
+                    'conversational' => __( 'Conversational', 'lingua-forge' ),
+                ],
             ]
         );
     }

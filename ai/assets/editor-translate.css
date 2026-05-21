@@ -91,6 +91,40 @@
     color:      #1d2327;
 }
 
+/* ── Tab bar ─────────────────────────────────────────────────────────────── */
+
+.lingua-forge-ep__tabs {
+    display:       flex;
+    border-bottom: 1px solid #dcdcde;
+    background:    #f6f7f7;
+}
+
+.lingua-forge-ep__tab {
+    background:    none;
+    border:        none;
+    border-bottom: 2px solid transparent;
+    cursor:        pointer;
+    font-size:     13px;
+    font-weight:   500;
+    color:         #646970;
+    padding:       10px 14px;
+    transition:    color 0.1s, border-color 0.1s;
+}
+
+.lingua-forge-ep__tab:hover {
+    color: #1d2327;
+}
+
+.lingua-forge-ep__tab--active {
+    color:         #0073aa;
+    border-bottom: 2px solid #0073aa;
+}
+
+/* Prevent display:flex on .lingua-forge-ep__body from beating [hidden]. */
+.lingua-forge-ep__body[hidden] {
+    display: none;
+}
+
 /* ── Body ────────────────────────────────────────────────────────────────── */
 
 .lingua-forge-ep__body {
@@ -199,6 +233,96 @@
     display:     flex;
     align-items: center;
     gap:         8px;
+}
+
+/* ── Create panel ────────────────────────────────────────────────────────── */
+
+.lingua-forge-ep__create-row {
+    display: flex;
+    gap:     10px;
+}
+
+.lingua-forge-ep__create-field {
+    flex:           1;
+    display:        flex;
+    flex-direction: column;
+    gap:            4px;
+}
+
+.lingua-forge-ep__tone,
+.lingua-forge-ep__create-lang {
+    width:         100%;
+    padding:       5px 8px;
+    border:        1px solid #8c8f94;
+    border-radius: 3px;
+    font-size:     12px;
+    color:         #1d2327;
+    background:    #fff;
+    cursor:        pointer;
+}
+
+.lingua-forge-ep__tone:focus,
+.lingua-forge-ep__create-lang:focus {
+    border-color: #0073aa;
+    outline:      none;
+    box-shadow:   0 0 0 1px #0073aa;
+}
+
+/* ── Refine row ──────────────────────────────────────────────────────────── */
+
+.lingua-forge-ep__refine {
+    border-top:  1px solid #f0f0f1;
+    padding-top: 10px;
+    display:     flex;
+    flex-direction: column;
+    gap:         6px;
+}
+
+.lingua-forge-ep__refine-row {
+    display:     flex;
+    gap:         8px;
+    align-items: flex-start;
+}
+
+.lingua-forge-ep__refine-input {
+    flex:          1;
+    padding:       6px 8px;
+    border:        1px solid #8c8f94;
+    border-radius: 3px;
+    font-size:     12px;
+    font-family:   inherit;
+    color:         #1d2327;
+    resize:        vertical;
+    line-height:   1.5;
+    min-height:    48px;
+    box-sizing:    border-box;
+}
+
+.lingua-forge-ep__refine-input:focus {
+    border-color: #0073aa;
+    outline:      none;
+    box-shadow:   0 0 0 1px #0073aa;
+}
+
+.lingua-forge-ep__btn-refine {
+    white-space: nowrap;
+    align-self:  flex-start;
+    margin-top:  1px;
+}
+
+.lingua-forge-ep__btn-refine:disabled {
+    opacity: 0.65;
+    cursor:  not-allowed;
+}
+
+.lingua-forge-ep__refine-status {
+    font-size:  11px;
+    color:      #646970;
+    margin:     0;
+}
+
+.lingua-forge-ep__refine-status.is-error {
+    color: #d63638;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */

@@ -21,14 +21,22 @@
  * 4. Clicking the button positions and toggles the popover (same pattern as
  *    the admin-bar toolbar-translate.js popover).
  *
+ * ── Two tabs ─────────────────────────────────────────────────────────────────
+ * Translate — translate free-form text to a chosen language
+ * Create    — generate new content from hints (optional tone + language)
+ * (shared)  — after any result, an inline Refine row lets the editor
+ *             iteratively improve the output with additional instructions
+ *
  * CSS class selectors are tried in priority order and cover multiple WP
  * versions.  New versions can be appended to HEADER_SELECTORS without touching
  * the rest of the code.
  *
  * Globals (LinguaForgeAIEditor, injected via wp_localize_script):
- *   .restUrl   — https://…/wp-json/lingua-forge/v1
- *   .nonce     — wp_rest nonce
- *   .languages — { code: "Label", … }
+ *   .restUrl      — https://…/wp-json/lingua-forge/v1
+ *   .nonce        — wp_rest nonce
+ *   .languages    — { code: "Label", … }
+ *   .tones        — { key: "Label", … }
+ *   .postLanguage — detected language code for current post, or null
  */
 
 ( function () {
@@ -43,6 +51,11 @@
 
     /* global wp */
     const { __ } = wp.i18n;
+
+    // ── Per-result state (reset on each new Translate / Create call) ──────────
+    let lastMode    = null;   // 'translate' | 'create'
+    let lastParams  = null;   // original request body, replayed for multi-turn refine
+    let refineCount = 0;      // number of refinements applied to the current result
 
     /* ── Header selectors (priority order, multiple WP version variants) ───── */
     // These target the RIGHT-HAND side of the editor header toolbar where
@@ -63,7 +76,7 @@
     const BTN_CLASS   = 'lingua-forge-editor-btn';
     const POPOVER_ID  = 'lingua-forge-editor-popover';
 
-    /* ── Language data ─────────────────────────────────────────────────────── */
+    /* ── Language / tone data ─────────────────────────────────────────────── */
 
     const LANG_ENTRIES = Object.entries( LinguaForgeAIEditor.languages || {} );
     // eslint-disable-next-line no-unused-vars -- Reserved for future "default to first available language" behaviour.
@@ -181,9 +194,15 @@
 
     function buildPopover() {
 
-        const options = LANG_ENTRIES.map(
+        const langOptions = LANG_ENTRIES.map(
             ( [ code, label ] ) =>
                 `<option value="${ escAttr( code ) }">${ escHtml( label ) }</option>`
+        ).join( '' );
+
+        const tones = LinguaForgeAIEditor.tones || {};
+        const toneOptions = Object.entries( tones ).map(
+            ( [ key, label ] ) =>
+                `<option value="${ escAttr( key ) }">${ escHtml( label ) }</option>`
         ).join( '' );
 
         const el    = document.createElement( 'div' );
@@ -192,6 +211,7 @@
         el.hidden   = true;
         el.setAttribute( 'role',       'dialog' );
         el.setAttribute( 'aria-label', __( 'Quick Translate', 'lingua-forge' ) );
+        el.dataset.activeTab = 'translate';
 
         el.innerHTML = `
             <div class="lingua-forge-ep__header">
@@ -202,12 +222,22 @@
                 <button type="button" class="lingua-forge-ep__close" aria-label="${ escAttr( __( 'Close', 'lingua-forge' ) ) }">✕</button>
             </div>
 
-            <div class="lingua-forge-ep__body">
+            <div class="lingua-forge-ep__tabs" role="tablist">
+                <button type="button" class="lingua-forge-ep__tab lingua-forge-ep__tab--active" data-tab="translate" role="tab" aria-selected="true">
+                    ${ __( 'Translate', 'lingua-forge' ) }
+                </button>
+                <button type="button" class="lingua-forge-ep__tab" data-tab="create" role="tab" aria-selected="false">
+                    ${ __( 'Create', 'lingua-forge' ) }
+                </button>
+            </div>
+
+            <!-- ── Translate panel ── -->
+            <div class="lingua-forge-ep__body" data-tab="translate" role="tabpanel">
 
                 <label class="lingua-forge-ep__label" for="wpai-ep-lang">
                     ${ __( 'Target Language', 'lingua-forge' ) }
                 </label>
-                <select id="wpai-ep-lang" class="lingua-forge-ep__lang">${ options }</select>
+                <select id="wpai-ep-lang" class="lingua-forge-ep__lang">${ langOptions }</select>
                 <span class="lingua-forge-ep__lang-hint" hidden></span>
 
                 <label class="lingua-forge-ep__label" for="wpai-ep-input">
@@ -231,13 +261,59 @@
 
             </div>
 
+            <!-- ── Create panel ── -->
+            <div class="lingua-forge-ep__body lingua-forge-ep__body--create" data-tab="create" role="tabpanel" hidden>
+
+                <label class="lingua-forge-ep__label" for="wpai-ep-hints">
+                    ${ __( 'Instructions / key points', 'lingua-forge' ) }
+                </label>
+                <textarea
+                    id="wpai-ep-hints"
+                    class="lingua-forge-ep__textarea lingua-forge-ep__hints"
+                    rows="4"
+                    placeholder="${ escAttr( __( 'Describe what to write — topic, key points, structure…', 'lingua-forge' ) ) }"
+                ></textarea>
+
+                <div class="lingua-forge-ep__create-row">
+                    <div class="lingua-forge-ep__create-field">
+                        <label class="lingua-forge-ep__label" for="wpai-ep-tone">
+                            ${ __( 'Tone', 'lingua-forge' ) }
+                        </label>
+                        <select id="wpai-ep-tone" class="lingua-forge-ep__tone">${ toneOptions }</select>
+                    </div>
+                    <div class="lingua-forge-ep__create-field">
+                        <label class="lingua-forge-ep__label" for="wpai-ep-create-lang">
+                            ${ __( 'Language (optional)', 'lingua-forge' ) }
+                        </label>
+                        <select id="wpai-ep-create-lang" class="lingua-forge-ep__create-lang">
+                            <option value="">${ escHtml( __( '— auto-detect —', 'lingua-forge' ) ) }</option>
+                            ${ langOptions }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="lingua-forge-ep__input-actions">
+                    <button type="button" class="components-button is-primary lingua-forge-ep__generate">
+                        ${ __( 'Generate', 'lingua-forge' ) }
+                    </button>
+                    <button type="button" class="components-button lingua-forge-ep__clear-create" aria-label="${ escAttr( __( 'Clear hints', 'lingua-forge' ) ) }">
+                        ${ __( 'Clear', 'lingua-forge' ) }
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- ── Shared result panel ── -->
             <div class="lingua-forge-ep__result" hidden>
+
                 <div class="lingua-forge-ep__result-meta"></div>
+
                 <textarea
                     class="lingua-forge-ep__textarea lingua-forge-ep__textarea--output"
                     rows="5"
                     readonly
                 ></textarea>
+
                 <div class="lingua-forge-ep__result-actions">
                     <button type="button" class="components-button is-secondary lingua-forge-ep__copy">
                         ${ __( 'Copy', 'lingua-forge' ) }
@@ -246,6 +322,22 @@
                         ${ __( 'Clear All', 'lingua-forge' ) }
                     </button>
                 </div>
+
+                <!-- Refine row — appears after any result -->
+                <div class="lingua-forge-ep__refine">
+                    <div class="lingua-forge-ep__refine-row">
+                        <textarea
+                            class="lingua-forge-ep__refine-input"
+                            rows="2"
+                            placeholder="${ escAttr( __( 'Refine further — e.g. "make it shorter" or "use a formal tone"…', 'lingua-forge' ) ) }"
+                        ></textarea>
+                        <button type="button" class="components-button lingua-forge-ep__btn-refine">
+                            ${ __( '↺ Refine', 'lingua-forge' ) }
+                        </button>
+                    </div>
+                    <p class="lingua-forge-ep__refine-status" hidden></p>
+                </div>
+
             </div>`;
 
         return el;
@@ -259,17 +351,22 @@
         popover.querySelector( '.lingua-forge-ep__close' )
             .addEventListener( 'click', () => closePopover( popover ) );
 
-        // Clear input button
-        popover.querySelector( '.lingua-forge-ep__clear-input' )
-            .addEventListener( 'click', () => {
-                const inputArea = popover.querySelector( '#wpai-ep-input' );
-                inputArea.value = '';
-                inputArea.focus();
-            } );
+        // Tab switching
+        popover.querySelectorAll( '.lingua-forge-ep__tab' ).forEach( ( tab ) => {
+            tab.addEventListener( 'click', () => switchTab( popover, tab.dataset.tab ) );
+        } );
 
         // Translate button
         popover.querySelector( '.lingua-forge-ep__translate' )
             .addEventListener( 'click', () => runTranslation( popover ) );
+
+        // Generate button (Create tab)
+        popover.querySelector( '.lingua-forge-ep__generate' )
+            .addEventListener( 'click', () => runCreate( popover ) );
+
+        // Refine button
+        popover.querySelector( '.lingua-forge-ep__btn-refine' )
+            .addEventListener( 'click', () => runRefine( popover ) );
 
         // Copy button
         popover.querySelector( '.lingua-forge-ep__copy' )
@@ -287,16 +384,37 @@
                 setTimeout( () => { btn.textContent = __( 'Copy', 'lingua-forge' ); }, 2000 );
             } );
 
-        // Clear all button
-        popover.querySelector( '.lingua-forge-ep__clear-all' )
+        // Clear input (translate tab)
+        popover.querySelector( '.lingua-forge-ep__clear-input' )
             .addEventListener( 'click', () => {
                 const inputArea = popover.querySelector( '#wpai-ep-input' );
-                const outputArea = popover.querySelector( '.lingua-forge-ep__textarea--output' );
-                const resultPanel = popover.querySelector( '.lingua-forge-ep__result' );
                 inputArea.value = '';
-                outputArea.value = '';
-                resultPanel.hidden = true;
                 inputArea.focus();
+            } );
+
+        // Clear hints (create tab)
+        popover.querySelector( '.lingua-forge-ep__clear-create' )
+            .addEventListener( 'click', () => {
+                const hintsArea = popover.querySelector( '#wpai-ep-hints' );
+                hintsArea.value = '';
+                hintsArea.focus();
+            } );
+
+        // Clear all (input + output)
+        popover.querySelector( '.lingua-forge-ep__clear-all' )
+            .addEventListener( 'click', () => {
+                const tab       = popover.dataset.activeTab || 'translate';
+                const inputArea = tab === 'create'
+                    ? popover.querySelector( '#wpai-ep-hints' )
+                    : popover.querySelector( '#wpai-ep-input' );
+                const outputArea  = popover.querySelector( '.lingua-forge-ep__textarea--output' );
+                const resultPanel = popover.querySelector( '.lingua-forge-ep__result' );
+
+                if ( inputArea )  inputArea.value  = '';
+                if ( outputArea ) outputArea.value = '';
+                resultPanel.hidden = true;
+                lastMode = null; lastParams = null; refineCount = 0;
+                if ( inputArea ) inputArea.focus();
             } );
 
         // Close on outside click
@@ -311,6 +429,35 @@
         document.addEventListener( 'keydown', ( e ) => {
             if ( e.key === 'Escape' && !popover.hidden ) closePopover( popover );
         } );
+    }
+
+    /* ── Tab switching ─────────────────────────────────────────────────────── */
+
+    function switchTab( popover, tab ) {
+
+        // Show / hide panels
+        popover.querySelectorAll( '.lingua-forge-ep__body' ).forEach( ( panel ) => {
+            panel.hidden = panel.dataset.tab !== tab;
+        } );
+
+        // Update tab button states
+        popover.querySelectorAll( '.lingua-forge-ep__tab' ).forEach( ( btn ) => {
+            const active = btn.dataset.tab === tab;
+            btn.classList.toggle( 'lingua-forge-ep__tab--active', active );
+            btn.setAttribute( 'aria-selected', active ? 'true' : 'false' );
+        } );
+
+        popover.dataset.activeTab = tab;
+
+        // Hide result + reset refine state when switching tabs
+        popover.querySelector( '.lingua-forge-ep__result' ).hidden = true;
+        lastMode = null; lastParams = null; refineCount = 0;
+
+        // Focus the primary input of the new tab
+        const focus = tab === 'create'
+            ? popover.querySelector( '#wpai-ep-hints' )
+            : popover.querySelector( '#wpai-ep-input' );
+        if ( focus ) focus.focus();
     }
 
     /* ── Language preference (detection + persistence) ────────────────────── */
@@ -378,9 +525,9 @@
             popover.dataset.langInitialised = '1';
         }
 
-        // Pre-fill with any selected text.
+        // Pre-fill with any selected text into the Translate input.
         const selection = window.getSelection ? window.getSelection().toString().trim() : '';
-        const textarea  = popover.querySelector( '.lingua-forge-ep__textarea:not(.lingua-forge-ep__textarea--output)' );
+        const textarea  = popover.querySelector( '#wpai-ep-input' );
         if ( selection && textarea && !textarea.value ) {
             textarea.value = selection;
         }
@@ -404,7 +551,7 @@
     function positionPopover( popover, anchorBtn ) {
 
         const rect    = anchorBtn.getBoundingClientRect();
-        const popW    = 360;
+        const popW    = 450;
         const margin  = 8;
         const vpWidth = window.innerWidth;
 
@@ -417,60 +564,180 @@
         popover.style.left = left + 'px';
     }
 
-    /* ── Translation fetch ─────────────────────────────────────────────────── */
+    /* ── Mode runners ──────────────────────────────────────────────────────── */
 
     async function runTranslation( popover ) {
 
-        const langEl       = popover.querySelector( '.lingua-forge-ep__lang' );
-        const inputEl      = popover.querySelector( '#wpai-ep-input' );
-        const resultEl     = popover.querySelector( '.lingua-forge-ep__result' );
-        const metaEl       = popover.querySelector( '.lingua-forge-ep__result-meta' );
-        const outputEl     = popover.querySelector( '.lingua-forge-ep__textarea--output' );
-        const translateBtn = popover.querySelector( '.lingua-forge-ep__translate' );
+        const langEl    = popover.querySelector( '.lingua-forge-ep__lang' );
+        const inputEl   = popover.querySelector( '#wpai-ep-input' );
+        const chunkText = inputEl.value.trim();
 
-        const text = inputEl.value.trim();
-        if ( !text ) { inputEl.focus(); return; }
+        if ( !chunkText ) {
+            inputEl.focus();
+            inputEl.placeholder = __( 'Please enter some text first…', 'lingua-forge' );
+            return;
+        }
 
-        resultEl.hidden        = false;
-        metaEl.innerHTML       = `<em style="color:#646970">${ __( 'Translating…', 'lingua-forge' ) }</em>`;
-        outputEl.value         = '';
-        translateBtn.disabled  = true;
-        translateBtn.textContent = __( 'Translating…', 'lingua-forge' );
+        const params = {
+            target_language: langEl.value,
+            chunk_text:      chunkText,
+        };
+
+        lastMode    = 'translate';
+        lastParams  = { ...params };
+        refineCount = 0;
+
+        await fetchResult( popover, '/translate-chunk', params, 'translate', 0 );
+    }
+
+    async function runCreate( popover ) {
+
+        const hintsEl    = popover.querySelector( '#wpai-ep-hints' );
+        const toneEl     = popover.querySelector( '#wpai-ep-tone' );
+        const langEl     = popover.querySelector( '#wpai-ep-create-lang' );
+        const hints      = hintsEl.value.trim();
+
+        if ( !hints ) {
+            hintsEl.focus();
+            hintsEl.placeholder = __( 'Please enter some instructions first…', 'lingua-forge' );
+            return;
+        }
+
+        const params = {
+            hints:           hints,
+            tone:            toneEl.value,
+            target_language: langEl.value,
+        };
+
+        lastMode    = 'create';
+        lastParams  = { ...params };
+        refineCount = 0;
+
+        await fetchResult( popover, '/create-chunk', params, 'create', 0 );
+    }
+
+    async function runRefine( popover ) {
+
+        if ( !lastMode || !lastParams ) return;
+
+        const refineInput = popover.querySelector( '.lingua-forge-ep__refine-input' );
+        const outputArea  = popover.querySelector( '.lingua-forge-ep__textarea--output' );
+        const statusEl    = popover.querySelector( '.lingua-forge-ep__refine-status' );
+        const refineHint  = refineInput.value.trim();
+
+        if ( !refineHint ) {
+            refineInput.focus();
+            return;
+        }
+
+        if ( statusEl ) { statusEl.hidden = true; statusEl.textContent = ''; }
+
+        const endpoint = lastMode === 'create' ? '/create-chunk' : '/translate-chunk';
+        const params   = {
+            ...lastParams,
+            refine_hint:     refineHint,
+            previous_output: outputArea.value,
+        };
+
+        refineCount++;
+        const thisRefinement = refineCount;
+
+        const refineBtn = popover.querySelector( '.lingua-forge-ep__btn-refine' );
+        refineBtn.disabled    = true;
+        refineBtn.textContent = __( 'Refining…', 'lingua-forge' );
+
+        await fetchResult( popover, endpoint, params, lastMode, thisRefinement );
+
+        if ( outputArea.value ) {
+            refineInput.value = '';
+        }
+
+        refineBtn.disabled    = false;
+        refineBtn.textContent = __( '↺ Refine', 'lingua-forge' );
+    }
+
+    /* ── Shared fetch + result update ──────────────────────────────────────── */
+
+    async function fetchResult( popover, endpointPath, bodyParams, mode, refinement ) {
+
+        const resultPanel = popover.querySelector( '.lingua-forge-ep__result' );
+        const metaEl      = popover.querySelector( '.lingua-forge-ep__result-meta' );
+        const outputEl    = popover.querySelector( '.lingua-forge-ep__textarea--output' );
+
+        const primaryBtn = mode === 'create'
+            ? popover.querySelector( '.lingua-forge-ep__generate' )
+            : popover.querySelector( '.lingua-forge-ep__translate' );
+
+        const loadingLabel = mode === 'create'
+            ? __( 'Generating…', 'lingua-forge' )
+            : __( 'Translating…', 'lingua-forge' );
+
+        resultPanel.hidden   = false;
+        metaEl.innerHTML     = `<em style="color:#646970">${ escHtml( loadingLabel ) }</em>`;
+        outputEl.value       = '';
+
+        if ( primaryBtn && refinement === 0 ) {
+            primaryBtn.disabled    = true;
+            primaryBtn.textContent = loadingLabel;
+        }
 
         try {
 
             const res  = await fetch(
-                `${ LinguaForgeAIEditor.restUrl }/translate-chunk`,
+                `${ LinguaForgeAIEditor.restUrl }${ endpointPath }`,
                 {
                     method:  'POST',
                     headers: {
                         'X-WP-Nonce':   LinguaForgeAIEditor.nonce,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify( {
-                        target_language: langEl.value,
-                        chunk_text:      text,
-                    } ),
+                    body: JSON.stringify( bodyParams ),
                 }
             );
 
             const data = await res.json();
 
-            if ( data.success && data.output ) {
-                metaEl.innerHTML = `${ __( 'Translated to:', 'lingua-forge' ) } <strong>${ escHtml( data.language || '' ) }</strong>`;
-                outputEl.value   = data.output;
+            if ( !data.success || !data.output ) {
+
+                const msg = data.error || __( 'Request failed. Please try again.', 'lingua-forge' );
+                metaEl.innerHTML = `<span style="color:#d63638">${ escHtml( msg ) }</span>`;
+                outputEl.value   = '';
+
             } else {
-                metaEl.innerHTML =
-                    `<span style="color:#d63638">${ escHtml( data.error || __( 'Translation failed.', 'lingua-forge' ) ) }</span>`;
+
+                const parts = [];
+
+                if ( mode === 'translate' && data.language ) {
+                    parts.push( __( 'Translated to:', 'lingua-forge' ) + ` <strong>${ escHtml( data.language ) }</strong>` );
+                }
+                if ( mode === 'create' ) {
+                    if ( data.tone )     parts.push( __( 'Tone:', 'lingua-forge' )     + ` <strong>${ escHtml( data.tone ) }</strong>` );
+                    if ( data.language ) parts.push( __( 'Language:', 'lingua-forge' ) + ` <strong>${ escHtml( data.language ) }</strong>` );
+                }
+                if ( refinement > 0 ) {
+                    parts.push( __( 'Refinement', 'lingua-forge' ) + ` #${ refinement }` );
+                }
+
+                const metaText = parts.length
+                    ? parts.join( ' &nbsp;·&nbsp; ' )
+                    : __( 'Done', 'lingua-forge' );
+
+                metaEl.innerHTML = metaText;
+                outputEl.value   = data.output;
             }
 
         } catch ( _ ) {
 
             metaEl.innerHTML = `<span style="color:#d63638">${ __( 'Request failed. Check your connection.', 'lingua-forge' ) }</span>`;
+            outputEl.value   = '';
         }
 
-        translateBtn.disabled    = false;
-        translateBtn.textContent = __( 'Translate', 'lingua-forge' );
+        if ( primaryBtn && refinement === 0 ) {
+            primaryBtn.disabled    = false;
+            primaryBtn.textContent = mode === 'create'
+                ? __( 'Generate', 'lingua-forge' )
+                : __( 'Translate', 'lingua-forge' );
+        }
     }
 
     /* ── Utilities ─────────────────────────────────────────────────────────── */
