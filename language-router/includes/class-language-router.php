@@ -64,6 +64,16 @@ class Router {
 		return self::$instance;
 	}
 
+	/**
+	 * Reset the singleton instance.
+	 *
+	 * Production code never calls this. It exists solely so PHPUnit tests
+	 * can tear down the router between test cases and avoid state bleed.
+	 */
+	public static function reset_instance(): void {
+		self::$instance = null;
+	}
+
 	private function __construct() {
 		$this->context       = new Context();
 		$this->locale        = new LocaleDetector( $this );

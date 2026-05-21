@@ -2,8 +2,8 @@
 Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
-Tested up to: 6.9
-Stable tag: 1.4.1
+Tested up to: 7.0
+Stable tag: 1.4.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -207,6 +207,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+
+= 1.4.2 =
+* Tested up to WordPress 7.0.
 
 = 1.4.1 =
 * Changed: Uninstall behaviour — language assignments, translation relationships, meta descriptions, the AI glossary, and Translation Memory are now kept by default when the plugin is deleted. A new toggle in Settings → Maintenance → Uninstall Behaviour allows administrators to opt in to full data removal before uninstalling.

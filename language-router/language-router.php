@@ -2,7 +2,6 @@
 /**
  * Lingua Forge — Language Router sub-module.
  * Author: Uli Hake
- * Version: 1.3.5
  * Requires PHP: 8.1
  *
  * Loaded by lingua-forge.php; not a standalone plugin.

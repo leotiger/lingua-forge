@@ -652,18 +652,29 @@ class MaintenanceTab extends Tab {
             return $dirs;
         };
 
-        add_filter( 'upload_dir', $upload_dir_cb );
+        // Register .mo as an allowed upload type so wp_handle_upload() can run
+        // its MIME-magic check (test_type: true, the default). Without this,
+        // WordPress would reject .mo as an unrecognised type. The check verifies
+        // that the uploaded bytes match application/octet-stream — a PHP file or
+        // image renamed to .mo would produce a different MIME and be rejected.
+        $upload_mimes_cb = static function ( $mimes ) {
+            $mimes['mo'] = 'application/octet-stream';
+            return $mimes;
+        };
+
+        add_filter( 'upload_mimes', $upload_mimes_cb );
+        add_filter( 'upload_dir',   $upload_dir_cb );
 
         $uploaded = wp_handle_upload(
             $file,
             [
                 'test_form'                => false, // nonce already verified via check_admin_referer
-                'test_type'                => false, // extension already validated above
                 'unique_filename_callback' => static fn( $d, $n, $e ) => $n, // keep exact name
             ]
         );
 
-        remove_filter( 'upload_dir', $upload_dir_cb );
+        remove_filter( 'upload_mimes', $upload_mimes_cb );
+        remove_filter( 'upload_dir',   $upload_dir_cb );
 
         if ( isset( $uploaded['error'] ) || empty( $uploaded['file'] ) ) {
             wp_safe_redirect(add_query_arg('lf_override_error', 'move_failed', $redirect_base));
