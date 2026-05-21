@@ -10,6 +10,31 @@ defined('ABSPATH') || exit;
 
 class MetaBox {
 
+    // ── Language helper ───────────────────────────────────────────────────────
+
+    /**
+     * Returns the language map filtered to languages active on this WP instance.
+     *
+     * Uses linguaforge_languages() (provided by the Language Router add-on) when
+     * available; falls back to the full supported list when the Router is inactive
+     * so the popovers keep working on single-language installs.
+     *
+     * @return array<string,string>  e.g. ['en' => 'English', 'es' => 'Español']
+     */
+    private static function instance_languages(): array {
+        $all = Translation::get_languages();
+        if (!function_exists('linguaforge_languages')) {
+            return $all;
+        }
+        $codes = linguaforge_languages();
+        if (empty($codes)) {
+            return $all;
+        }
+        return array_intersect_key($all, array_flip($codes));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
     public static function init(): void {
 
         add_action(
@@ -133,7 +158,7 @@ class MetaBox {
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),
-                'languages'    => Translation::get_languages(),
+                'languages'    => self::instance_languages(),
                 'postLanguage' => Translation::detect_post_language(),
             ]
         );
@@ -200,7 +225,7 @@ class MetaBox {
             [
                 'restUrl'      => rest_url('lingua-forge/v1'),
                 'nonce'        => wp_create_nonce('wp_rest'),
-                'languages'    => Translation::get_languages(),
+                'languages'    => self::instance_languages(),
                 'postLanguage' => Translation::detect_post_language(),
             ]
         );
