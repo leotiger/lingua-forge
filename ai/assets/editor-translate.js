@@ -483,18 +483,20 @@
      */
     function initLanguageSelect( popover ) {
 
-        const langSelect = popover.querySelector( '.lingua-forge-ep__lang' );
-        const langHint   = popover.querySelector( '.lingua-forge-ep__lang-hint' );
+        const langSelect     = popover.querySelector( '.lingua-forge-ep__lang' );
+        const langHint       = popover.querySelector( '.lingua-forge-ep__lang-hint' );
+        const createLangSel  = popover.querySelector( '#wpai-ep-create-lang' );
 
         if ( !langSelect ) return;
 
-        const hasOption = ( code ) =>
-            !!langSelect.querySelector( `option[value="${ escAttr( String( code ) ) }"]` );
+        const hasOption = ( select, code ) =>
+            !!select.querySelector( `option[value="${ escAttr( String( code ) ) }"]` );
 
         const detectedCode  = LinguaForgeAIEditor.postLanguage || null;
         const persistedCode = localStorage.getItem( LANG_STORAGE_KEY );
 
-        if ( detectedCode && hasOption( detectedCode ) ) {
+        // ── Translate tab language ────────────────────────────────────────────
+        if ( detectedCode && hasOption( langSelect, detectedCode ) ) {
 
             langSelect.value = detectedCode;
 
@@ -503,7 +505,7 @@
                 langHint.hidden      = false;
             }
 
-        } else if ( persistedCode && hasOption( persistedCode ) ) {
+        } else if ( persistedCode && hasOption( langSelect, persistedCode ) ) {
 
             langSelect.value = persistedCode;
         }
@@ -513,6 +515,13 @@
             localStorage.setItem( LANG_STORAGE_KEY, langSelect.value );
             if ( langHint ) langHint.hidden = true;
         } );
+
+        // ── Create tab language — pre-select detected post language ───────────
+        // The create selector has an "— auto-detect —" empty option as fallback;
+        // we only override it when a post language is positively identified.
+        if ( createLangSel && detectedCode && hasOption( createLangSel, detectedCode ) ) {
+            createLangSel.value = detectedCode;
+        }
     }
 
     /* ── Open / close helpers ──────────────────────────────────────────────── */
