@@ -3,7 +3,7 @@
  * Class LinguaForge\Router\Search\Index
  *
  * Builds and stores a plain-text search index for each post
- * (the _search_content post-meta) by recursively extracting text from
+ * (the _lf_search_content post-meta) by recursively extracting text from
  * block content at save time.
  */
 
@@ -28,7 +28,7 @@ class Index {
 			$text .= $this->extract_block_text( $block ) . ' ';
 		}
 
-		update_post_meta( $post_id, '_search_content', trim( $text ) );
+		update_post_meta( $post_id, '_lf_search_content', trim( $text ) );
 	}
 
 	public function extract_block_text( array $block ): string {

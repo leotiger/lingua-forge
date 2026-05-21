@@ -101,12 +101,15 @@ class Router {
 	// =========================================================
 
 	/**
-	 * Schema version for the idx_lang index on wp_postmeta.
-	 * Bump only when the index schema changes — never on a plugin-version bump.
-	 * Stored in option 'lf_lang_router_version'; triggers ensure_lang_index()
-	 * when the stored value differs.
+	 * Schema version for the Language Router's DB state.
+	 * Bump when the index schema or meta-key layout changes — never on a plugin-version bump.
+	 * Stored in option 'lf_lang_router_version'; Migrator::check_db_version() runs
+	 * pending migrations in order when the stored value is behind.
+	 *
+	 * 1.0 — idx_lang composite index on wp_postmeta (meta_key, meta_value(10)).
+	 * 1.1 — rename unprefixed meta keys (_lang, _trid, …) to _lf_ equivalents.
 	 */
-	const DB_VERSION = '1.0';
+	const DB_VERSION = '1.1';
 
 	// =========================================================
 	// SUB-OBJECTS (public so sub-objects can reach each other via $this->router->*)
@@ -225,28 +228,28 @@ class Router {
 	public function register_meta(): void {
 		$auth = function() { return current_user_can( 'edit_posts' ); };
 
-		register_post_meta( '', '_lang', [
+		register_post_meta( '', '_lf_lang', [
 			'type'          => 'string',
 			'single'        => true,
 			'show_in_rest'  => true,
 			'auth_callback' => $auth,
 		] );
 
-		register_post_meta( '', '_trid', [
+		register_post_meta( '', '_lf_trid', [
 			'type'          => 'string',
 			'single'        => true,
 			'show_in_rest'  => true,
 			'auth_callback' => $auth,
 		] );
 
-		register_post_meta( '', '_source_updated_at', [
+		register_post_meta( '', '_lf_source_updated_at', [
 			'type'          => 'number',
 			'single'        => true,
 			'show_in_rest'  => true,
 			'auth_callback' => $auth,
 		] );
 
-		register_post_meta( '', '_translation_source_updated_at', [
+		register_post_meta( '', '_lf_translation_source_updated_at', [
 			'type'          => 'number',
 			'single'        => true,
 			'show_in_rest'  => true,

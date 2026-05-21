@@ -14,15 +14,15 @@
  *   - Language Router version flag
  *   - AI preset options (linguaforge_active_preset)
  *   - AI result caches stored in post meta (_linguaforge_cache_*)
- *   - Derived/regenerable post meta (_search_content)
+ *   - Derived/regenerable post meta (_lf_search_content)
  *   - AI cache and usage custom tables
  *   - Per-user language filter preference (lf_lang_filter)
  *   - The idx_lang composite index on wp_postmeta
  *
  * Removed only when Settings → Maintenance → "Delete content data on uninstall"
  * is explicitly enabled (default: OFF):
- *   - Language Router post meta (_lang, _lang_previous, _trid,
- *     _source_updated_at, _translation_source_updated_at)
+ *   - Language Router post meta (_lf_lang, _lf_lang_previous, _lf_trid,
+ *     _lf_source_updated_at, _lf_translation_source_updated_at)
  *   - Meta description post meta (_linguaforge_meta_description)
  *   - Per-page AI preset override (_linguaforge_preset)
  *   - AI glossary and Translation Memory custom tables
@@ -125,7 +125,7 @@ $wpdb->query(
 
 $linguaforge_always_meta_keys = [
     // Derived search index — rebuilt on next language assignment save.
-    '_search_content',
+    '_lf_search_content',
 ];
 
 foreach ( $linguaforge_always_meta_keys as $linguaforge_key ) {
@@ -145,11 +145,11 @@ if ( $linguaforge_remove_content ) {
 
     $linguaforge_content_meta_keys = [
         // Language Router — routing and relationship data
-        '_lang',
-        '_lang_previous',
-        '_trid',
-        '_source_updated_at',
-        '_translation_source_updated_at',
+        '_lf_lang',
+        '_lf_lang_previous',
+        '_lf_trid',
+        '_lf_source_updated_at',
+        '_lf_translation_source_updated_at',
         // Meta Description — prefixed key written by this plugin.
         // The legacy unprefixed key `meta_description` is intentionally NOT
         // deleted: it is a generic key that other plugins or themes may also

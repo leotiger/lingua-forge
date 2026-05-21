@@ -2,8 +2,8 @@
 /**
  * Class LinguaForge\Router\Translation\TridGroup
  *
- * Manages the TRID translation-group system: reading / writing the _lang and
- * _trid post-meta, looking up all translations for a post, and clearing the
+ * Manages the TRID translation-group system: reading / writing the _lf_lang and
+ * _lf_trid post-meta, looking up all translations for a post, and clearing the
  * object-cache entries that front the DB queries.
  */
 
@@ -35,11 +35,11 @@ class TridGroup {
 	// =========================================================
 
 	public function get_trid( int $id ): string {
-		return (string) get_post_meta( $id, '_trid', true );
+		return (string) get_post_meta( $id, '_lf_trid', true );
 	}
 
 	public function set_trid( int $id, string $v ): void {
-		update_post_meta( $id, '_trid', $v );
+		update_post_meta( $id, '_lf_trid', $v );
 	}
 
 	// =========================================================
@@ -47,12 +47,12 @@ class TridGroup {
 	// =========================================================
 
 	public function get_lang( int $id ): string {
-		$lang = get_post_meta( $id, '_lang', true );
+		$lang = get_post_meta( $id, '_lf_lang', true );
 		return $lang ?: $this->router->context->source_language();
 	}
 
 	public function set_lang( int $id, string $v ): void {
-		update_post_meta( $id, '_lang', $v );
+		update_post_meta( $id, '_lf_lang', $v );
 	}
 
 	// =========================================================
@@ -73,10 +73,10 @@ class TridGroup {
 		$rows = $wpdb->get_results( $wpdb->prepare( "
 			SELECT post_id, meta_value lang
 			FROM $wpdb->postmeta
-			WHERE meta_key='_lang'
+			WHERE meta_key='_lf_lang'
 			AND post_id IN (
 				SELECT post_id FROM $wpdb->postmeta
-				WHERE meta_key='_trid' AND meta_value=%s
+				WHERE meta_key='_lf_trid' AND meta_value=%s
 			)
 		", $trid ) );
 

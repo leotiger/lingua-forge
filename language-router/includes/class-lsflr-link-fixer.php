@@ -674,7 +674,7 @@ class LinkFixer {
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- see comment above the $query assignment.
-			'meta_query'     => [ [ 'key' => '_lang', 'value' => $lang ] ],
+			'meta_query'     => [ [ 'key' => '_lf_lang', 'value' => $lang ] ],
 		] );
 
 		$scanned = 0;

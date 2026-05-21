@@ -29,7 +29,7 @@ class FillTranslationsCommand extends AbstractTranslateCommand {
 
         // ── Determine source language ─────────────────────────────────────
         $router      = \LinguaForge\Router\Router::get_instance();
-        $source_lang = (string) get_post_meta( $post_id, '_lang', true );
+        $source_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
         if ( $source_lang === '' ) {
             $source_lang = $router->source_language();
         }

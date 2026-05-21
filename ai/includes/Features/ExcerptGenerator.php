@@ -63,7 +63,7 @@ class ExcerptGenerator implements FeatureInterface {
 
         $content = wp_strip_all_tags($post->post_content);
 
-        $locale = get_post_meta($post_id, '_lang', true)
+        $locale = get_post_meta($post_id, '_lf_lang', true)
             ?: determine_locale();
 
         // Convert WordPress locale (e.g. 'it_IT') or short code (e.g. 'it')

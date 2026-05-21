@@ -168,7 +168,7 @@ class Translation implements FeatureInterface {
 
         // ── 1. Our own _lang post meta ────────────────────────────────────────
 
-        $lang = (string) get_post_meta( $post_id, '_lang', true );
+        $lang = (string) get_post_meta( $post_id, '_lf_lang', true );
 
         if ( $lang !== '' && array_key_exists( $lang, self::get_languages() ) ) {
             return $lang;
@@ -682,7 +682,7 @@ class Translation implements FeatureInterface {
             'with_meta_description' => '1',
         ];
 
-        $lang = (string) get_post_meta($post_id, '_lang', true);
+        $lang = (string) get_post_meta($post_id, '_lf_lang', true);
 
         if ($lang !== '' && array_key_exists($lang, self::get_languages())) {
             $defaults['target_language'] = $lang;
@@ -864,7 +864,7 @@ class Translation implements FeatureInterface {
         // + title + footnotes. Falls back to the existing JSON-envelope flow
         // when TM doesn't apply (block attrs present, unknown source lang,
         // unsupported post type, or a TM parse failure).
-        $source_lang = (string) get_post_meta($post_id, '_lang', true);
+        $source_lang = (string) get_post_meta($post_id, '_lf_lang', true);
 
         $tm_eligible = TranslationMemory::enabled()
             && ! $force                                            // force_refresh / debug mode bypass TM cache

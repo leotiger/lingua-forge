@@ -394,10 +394,10 @@ abstract class AbstractTranslateCommand {
         }
 
         // ── TRID — get or create ──────────────────────────────────────────
-        $trid = (string) get_post_meta( $source_post_id, '_trid', true );
+        $trid = (string) get_post_meta( $source_post_id, '_lf_trid', true );
         if ( $trid === '' ) {
             $trid = wp_generate_uuid4();
-            update_post_meta( $source_post_id, '_trid', $trid );
+            update_post_meta( $source_post_id, '_lf_trid', $trid );
         }
 
         // ── Determine title ───────────────────────────────────────────────
@@ -445,8 +445,8 @@ abstract class AbstractTranslateCommand {
         }
 
         // ── Link into TRID group ──────────────────────────────────────────
-        update_post_meta( $new_id, '_trid', $trid );
-        update_post_meta( $new_id, '_lang', $target_lang );
+        update_post_meta( $new_id, '_lf_trid', $trid );
+        update_post_meta( $new_id, '_lf_lang', $target_lang );
 
         // ── Footnotes ─────────────────────────────────────────────────────
         if ( ! empty( $result['footnotes'] ) ) {

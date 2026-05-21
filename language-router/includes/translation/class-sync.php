@@ -35,7 +35,7 @@ class Sync {
 	// =========================================================
 
 	public function mark_source_updated( int $post_id ): void {
-		update_post_meta( $post_id, '_source_updated_at', time() );
+		update_post_meta( $post_id, '_lf_source_updated_at', time() );
 	}
 
 	public function mark_translation_synced( int $post_id ): void {
@@ -43,16 +43,16 @@ class Sync {
 		$source_id    = $translations[$this->router->context->source_language()] ?? 0;
 		if ( ! $source_id ) return;
 
-		$source_time = get_post_meta( $source_id, '_source_updated_at', true );
-		update_post_meta( $post_id, '_translation_source_updated_at', $source_time );
+		$source_time = get_post_meta( $source_id, '_lf_source_updated_at', true );
+		update_post_meta( $post_id, '_lf_translation_source_updated_at', $source_time );
 	}
 
 	public function is_outdated( int $post_id ): bool {
 		$lang = $this->router->trid_group->get_lang( $post_id );
 		if ( $lang === $this->router->context->source_language() ) return false;
 
-		$source = get_post_meta( $post_id, '_source_updated_at', true );
-		$trans  = get_post_meta( $post_id, '_translation_source_updated_at', true );
+		$source = get_post_meta( $post_id, '_lf_source_updated_at', true );
+		$trans  = get_post_meta( $post_id, '_lf_translation_source_updated_at', true );
 
 		if ( ! $source ) return false;
 		if ( ! $trans  ) return true;
@@ -230,7 +230,7 @@ class Sync {
 		if ( $has_lang_nonce && isset( $_POST['lf_lang'] ) && $context->is_valid_lang( sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) ) ) {
 			$trid_group->set_lang( $post_id, sanitize_key( wp_unslash( $_POST['lf_lang'] ) ) );
 		}
-		if ( ! get_post_meta( $post_id, '_lang', true ) ) {
+		if ( ! get_post_meta( $post_id, '_lf_lang', true ) ) {
 			$trid_group->set_lang( $post_id, $context->source_language() );
 		}
 
@@ -250,16 +250,16 @@ class Sync {
 		//
 		// Without the first-save branch, posts created programmatically (REST
 		// inserts, wp_insert_post calls, duplicated-from-source flows) with
-		// _lang already set would never get their language-specific template
-		// assigned, since there's no _lang_previous to compare against.
+		// _lf_lang already set would never get their language-specific template
+		// assigned, since there's no _lf_lang_previous to compare against.
 		// Template auto-assignment runs on every save — not just on language
 		// changes — so that posts saved before templates existed, or posts whose
 		// tracking meta was cleared, also get the correct template on the next
 		// ordinary update.  assign_template_if_needed() is idempotent and
 		// protects user-chosen templates via its internal guard, so calling it
 		// unconditionally is safe.
-		$previous_lang = get_post_meta( $post_id, '_lang_previous', true );
-		update_post_meta( $post_id, '_lang_previous', $lang );
+		$previous_lang = get_post_meta( $post_id, '_lf_lang_previous', true );
+		update_post_meta( $post_id, '_lf_lang_previous', $lang );
 
 		// Two paths for template assignment:
 		//
@@ -289,7 +289,7 @@ class Sync {
 			$this->mark_source_updated( $post_id );
 			$translations = $trid_group->get_translations( $post_id );
 			foreach ( $translations as $t ) {
-				update_post_meta( $t, '_translation_source_updated_at', 0 );
+				update_post_meta( $t, '_lf_translation_source_updated_at', 0 );
 			}
 		} else {
 			$this->mark_translation_synced( $post_id );

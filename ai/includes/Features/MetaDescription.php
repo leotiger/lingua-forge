@@ -79,7 +79,7 @@ class MetaDescription implements FeatureInterface {
             $locale = sanitize_text_field($params['lang']);
         }
         if ($locale === '') {
-            $locale = (string) get_post_meta($post_id, '_lang', true)
+            $locale = (string) get_post_meta($post_id, '_lf_lang', true)
                 ?: determine_locale();
         }
 

@@ -2,7 +2,7 @@
 /**
  * Class LinguaForge\Router\Search\Query
  *
- * Extends WordPress search to include the _search_content meta index,
+ * Extends WordPress search to include the _lf_search_content meta index,
  * boosts title matches, fixes the search form action URL, and overrides
  * the search template for language-specific variants.
  */
@@ -113,7 +113,7 @@ class Query {
 				OR EXISTS (
 					SELECT 1 FROM {$wpdb->postmeta}
 					WHERE post_id = {$wpdb->posts}.ID
-					AND meta_key = '_search_content'
+					AND meta_key = '_lf_search_content'
 					AND meta_value LIKE %s
 				)
 			)

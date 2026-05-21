@@ -61,7 +61,7 @@ class MissingTranslationsCommand {
             'posts_per_page' => -1,
             'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- intentional full-type scan; CLI-only, not a frontend query.
                 [
-                    'key'   => '_lang',
+                    'key'   => '_lf_lang',
                     'value' => $source_lang,
                 ],
             ],

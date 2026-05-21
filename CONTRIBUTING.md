@@ -59,11 +59,12 @@ a short name is meaningfully more readable.
 - **Post meta and user meta keys.** Examples: `lf_lang_filter`
   (user-level admin filter), every `lf_trans_{lang}` form field that maps
   back to TRID groups.
-  - **Exception:** the underscore-prefixed `_lang`, `_trid`,
-    `_lang_previous`, `_source_updated_at`, `_translation_source_updated_at`,
-    `_search_content` meta keys are intentionally generic so other plugins
-    can read them. They predate the prefix policy and are now part of the
-    plugin's data contract — preserve them.
+  - **Language Router meta keys** (public data contract — readable by other
+    plugins and themes): `_lf_lang`, `_lf_trid`, `_lf_lang_previous`,
+    `_lf_source_updated_at`, `_lf_translation_source_updated_at`,
+    `_lf_search_content`. These are stable public API; preserve the exact key
+    names. *(Renamed from unprefixed `_lang`, `_trid`, etc. in DB version 1.1;
+    `Db\Migrator::rename_meta_keys()` handles in-place migration on upgrade.)*
   - **Plugin-owned AI module keys** (prefixed, not part of external API):
     `_linguaforge_meta_description` (Meta Description module — stores the
     per-post translated meta description; read by the CLI
@@ -181,9 +182,9 @@ instead of reaching into the class instances directly. All are prefixed
 | Function | Returns | Purpose |
 |---|---|---|
 | `linguaforge_get_lang( $id )` | `string` | Language code stored on a post |
-| `linguaforge_set_lang( $id, $lang )` | `void` | Write the `_lang` meta |
+| `linguaforge_set_lang( $id, $lang )` | `void` | Write the `_lf_lang` meta |
 | `linguaforge_get_trid( $id )` | `string` | UUID linking a post to its translation group |
-| `linguaforge_set_trid( $id, $trid )` | `void` | Write the `_trid` meta |
+| `linguaforge_set_trid( $id, $trid )` | `void` | Write the `_lf_trid` meta |
 | `linguaforge_get_translations( $id )` | `array` | `[ lang => post_id ]` map for all variants |
 | `linguaforge_clear_translation_cache( $id )` | `void` | Bust the `wp_cache` entry for a TRID group |
 | `linguaforge_get_missing_languages( $id )` | `string[]` | Language codes that have no translation yet |
@@ -215,7 +216,7 @@ instead of reaching into the class instances directly. All are prefixed
 
 | Function | Returns | Purpose |
 |---|---|---|
-| `linguaforge_build_search_content( $id )` | `void` | Rebuild the `_search_content` index for a post |
+| `linguaforge_build_search_content( $id )` | `void` | Rebuild the `_lf_search_content` index for a post |
 | `linguaforge_ensure_lang_index()` | `bool` | Create the `idx_lang` postmeta index if missing |
 | `linguaforge_debug( $message, $context )` | `void` | Write a debug entry (no-op unless debug is on) |
 

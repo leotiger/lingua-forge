@@ -156,7 +156,7 @@ class MetaBoxes {
 			$args = [
 				'name'             => 'lf_trans_' . $l,
 				'show_option_none' => '—',
-				'meta_key'         => '_lang',
+				'meta_key'         => '_lf_lang',
 				'meta_value'       => $l,
 			];
 
@@ -355,8 +355,8 @@ class MetaBoxes {
 
 		$this->router->trid_group->set_lang( $target_id, $original_lang );
 
-		$source_time = get_post_meta( $source_id, '_source_updated_at', true );
-		update_post_meta( $target_id, '_translation_source_updated_at', $source_time );
+		$source_time = get_post_meta( $source_id, '_lf_source_updated_at', true );
+		update_post_meta( $target_id, '_lf_translation_source_updated_at', $source_time );
 
 		wp_send_json_success();
 	}

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -207,6 +207,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+
+= 1.4.3 =
+* Changed: Post meta keys renamed to _lf_ prefix — eliminates collision risk with other plugins that may use the same generic key names. Affected keys: _lang → _lf_lang, _trid → _lf_trid, _source_updated_at → _lf_source_updated_at, _translation_source_updated_at → _lf_translation_source_updated_at, _lang_previous → _lf_lang_previous, _search_content → _lf_search_content. A one-time database migration runs automatically on first load after upgrade; no data is lost. Theme and plugin code using the linguaforge_* wrapper functions (linguaforge_get_lang(), linguaforge_get_trid(), etc.) is unaffected. Code reading the meta keys directly must update to the new names.
 
 = 1.4.2 =
 * Tested up to WordPress 7.0.

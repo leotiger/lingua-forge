@@ -313,10 +313,10 @@ Every translatable post carries four post-meta fields, all registered with `show
 
 | Meta key | Type | Description |
 |---|---|---|
-| `_lang` | `string` | Two-letter language code |
-| `_trid` | `string` | Shared translation group ID (UUID) |
-| `_source_updated_at` | `number` | Unix timestamp of the last source-language save |
-| `_translation_source_updated_at` | `number` | Source timestamp at the time the translation was last synced |
+| `_lf_lang` | `string` | Two-letter language code |
+| `_lf_trid` | `string` | Shared translation group ID (UUID) |
+| `_lf_source_updated_at` | `number` | Unix timestamp of the last source-language save |
+| `_lf_translation_source_updated_at` | `number` | Source timestamp at the time the translation was last synced |
 
 Translation groups are resolved with a graph-expansion algorithm: linking posts A↔B when B↔C already exists results in all three sharing the same TRID automatically.
 

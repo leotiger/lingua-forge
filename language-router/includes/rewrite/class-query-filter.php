@@ -63,7 +63,7 @@ class QueryFilter {
 
 			if ( $q->is_search() ) {
 				$meta_query   = $q->get( 'meta_query' ) ?: [];
-				$meta_query[] = [ 'key' => '_lang', 'value' => LF_LANG ];
+				$meta_query[] = [ 'key' => '_lf_lang', 'value' => LF_LANG ];
 				$q->set( 'meta_query', $meta_query );
 				$this->router->debug( 'Search filtered by language', [ 'lang' => LF_LANG ] );
 				return;
@@ -71,7 +71,7 @@ class QueryFilter {
 
 			if ( $q->is_archive() || $q->is_home() ) {
 				$meta_query   = $q->get( 'meta_query' ) ?: [];
-				$meta_query[] = [ 'key' => '_lang', 'value' => LF_LANG ];
+				$meta_query[] = [ 'key' => '_lf_lang', 'value' => LF_LANG ];
 				$q->set( 'meta_query', $meta_query );
 			}
 
@@ -92,20 +92,20 @@ class QueryFilter {
 		}
 
 		if ( ! empty( $lang ) ) {
-			$meta_query[] = [ 'key' => '_lang', 'value' => $lang ];
+			$meta_query[] = [ 'key' => '_lf_lang', 'value' => $lang ];
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
 		if ( ! empty( $_GET['lf_outdated_filter'] ) ) {
 			$meta_query[] = [
-				'key'     => '_lang',
+				'key'     => '_lf_lang',
 				'value'   => $this->router->context->source_language(),
 				'compare' => '!=',
 			];
 			$meta_query[] = [
 				'relation' => 'OR',
-				[ 'key' => '_translation_source_updated_at', 'compare' => 'NOT EXISTS' ],
-				[ 'key' => '_translation_source_updated_at', 'value' => 0, 'compare' => '=' ],
+				[ 'key' => '_lf_translation_source_updated_at', 'compare' => 'NOT EXISTS' ],
+				[ 'key' => '_lf_translation_source_updated_at', 'value' => 0, 'compare' => '=' ],
 			];
 		}
 
@@ -121,13 +121,13 @@ class QueryFilter {
 	public function query( array $args = [] ): WP_Query {
 		if ( ! empty( $args['meta_query'] ) ) {
 			foreach ( $args['meta_query'] as $mq ) {
-				if ( isset( $mq['key'] ) && $mq['key'] === '_lang' ) {
+				if ( isset( $mq['key'] ) && $mq['key'] === '_lf_lang' ) {
 					return new WP_Query( $args );
 				}
 			}
 		}
 
-		$args['meta_query'][] = [ 'key' => '_lang', 'value' => LF_LANG ];
+		$args['meta_query'][] = [ 'key' => '_lf_lang', 'value' => LF_LANG ];
 
 		return new WP_Query( $args );
 	}
@@ -135,8 +135,8 @@ class QueryFilter {
 	public function query_fallback( array $args = [] ): WP_Query {
 		$args['meta_query'][] = [
 			'relation' => 'OR',
-			[ 'key' => '_lang', 'value' => LF_LANG ],
-			[ 'key' => '_lang', 'value' => $this->router->context->source_language() ],
+			[ 'key' => '_lf_lang', 'value' => LF_LANG ],
+			[ 'key' => '_lf_lang', 'value' => $this->router->context->source_language() ],
 		];
 
 		return new WP_Query( $args );

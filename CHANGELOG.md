@@ -2,6 +2,27 @@
 
 ---
 
+## [1.4.3] — 2026-05-21
+
+### Changed
+
+- **Post meta keys renamed to `_lf_` prefix** — all six Language Router post meta keys now carry the plugin prefix, eliminating collision risk with any other plugin that stores language or search data under the same generic names.
+
+  | Old key | New key |
+  |---|---|
+  | `_lang` | `_lf_lang` |
+  | `_trid` | `_lf_trid` |
+  | `_lang_previous` | `_lf_lang_previous` |
+  | `_source_updated_at` | `_lf_source_updated_at` |
+  | `_translation_source_updated_at` | `_lf_translation_source_updated_at` |
+  | `_search_content` | `_lf_search_content` |
+
+  `Db\Migrator::rename_meta_keys()` performs the in-place migration automatically on first load after upgrade. `DB_VERSION` bumps from `1.0` to `1.1` to gate the one-time operation. Migration is idempotent and scoped — only rows belonging to Lingua Forge posts are touched (identified via `_lf_trid` presence). No data is lost.
+
+  **Compatibility note:** theme or plugin code that reads these meta keys directly must update to the new names. Code using the public `linguaforge_*` wrapper functions (`linguaforge_get_lang()`, `linguaforge_get_trid()`, etc.) requires no changes.
+
+---
+
 ## [1.4.2] — 2026-05-21
 
 ### Fixed
