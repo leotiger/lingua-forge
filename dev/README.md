@@ -67,6 +67,19 @@ npm run env:stop
 npm run env:cli -- option get blogname     # WP-CLI inside the dev container
 ```
 
+### What composite commands include
+
+| Command                    | Expands to                                                              | Docker needed |
+| -------------------------- | ----------------------------------------------------------------------- | ------------- |
+| `composer test`            | `test:unit` + `test:integration`                                        | Yes           |
+| `composer qa`              | `lint` → `analyse` → `test:unit`                                        | No            |
+| `composer plugin-check`    | starts wp-env CLI, runs the official WP.org Plugin Check inside it      | Yes           |
+
+Notes:
+- `composer qa` runs only the **unit** suite — it is intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
+- `composer test:integration` requires wp-env to be running (`npm run env:start`) and Docker Desktop to be open.
+- `composer plugin-check` also requires Docker Desktop + wp-env; it runs the same checker WordPress.org uses on submission.
+
 ## ⚠️ `composer lint:fix` caution
 
 `phpcbf` rewrites files in place. Always run `git diff` (or stage with
@@ -96,5 +109,6 @@ in bulk. When in doubt, accept nothing and fix manually.
 composer qa && composer plugin-check && npm run lint:js && npm run lint:css
 ```
 
+`composer qa` runs lint + `composer analyse` (PHPStan) + unit tests in one shot.
 If green, the plugin root is ready to push to production via SFTP / rsync.
 Nothing in `dev/` reaches the deploy target — `.distignore` excludes it.
