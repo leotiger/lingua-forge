@@ -107,6 +107,14 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ---
 
+## Recommended companions
+
+**[Options for Block Themes](https://wordpress.org/plugins/options-for-block-themes/)** — Lingua Forge routes requests to language-specific FSE templates (`page-de.html`, `single-fr.html`, …) and patterns, but those templates must exist in the theme first. Options for Block Themes provides a UI for creating and managing templates and patterns per language without editing theme files directly. Localising your block theme is a prerequisite for Lingua Forge to work well across all languages; this plugin is the recommended tool for that step.
+
+**[Loco Translate](https://wordpress.org/plugins/loco-translate/)** — for translating third-party plugin and theme strings (`.po`/`.mo` editing, automatic language-pack sync, developer extraction). Integrates cleanly alongside Lingua Forge with no conflicts.
+
+---
+
 ## Installation
 
 1. Copy the `lingua-forge/` folder to `wp-content/plugins/`

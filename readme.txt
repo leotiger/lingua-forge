@@ -85,6 +85,12 @@ Yes. The Language Router (URL-based language routing, hreflang injection, langua
 
 Most features work with any theme. Language routing, hreflang injection, the AI meta box, and meta description generation are theme-agnostic. The Language Switcher block requires a block theme or a block-ready widget area. For classic themes, use the `[linguaforge_switcher]` shortcode or call `lsflr_language_switcher()` directly in a template file.
 
+= Does Lingua Forge require any theme preparation? =
+
+For full multilingual operation with block (FSE) themes, each language needs its own set of templates and patterns (e.g. `page-de.html`, `single-fr.html`). Lingua Forge routes incoming requests to these templates automatically, but the templates themselves must exist in your theme first.
+
+The recommended companion for this is [Options for Block Themes](https://wordpress.org/plugins/options-for-block-themes/). It provides a UI for managing templates and patterns per language without touching theme files directly, making theme localisation significantly easier. Localising your block theme is a prerequisite for Lingua Forge to work well across all languages.
+
 = Can I use Lingua Forge alongside WPML or Polylang? =
 
 Not recommended — all three handle language routing at the URL and content level, and running them in parallel will produce conflicts. Lingua Forge is a replacement, not an add-on. If you are migrating, disable WPML or Polylang before activating Lingua Forge. Post relationships from those plugins are not auto-imported; use the Translation meta box in the post editor to re-link translated posts after migrating.
@@ -222,4 +228,4 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 == Upgrade Notice ==
 
 = 1.5.0 =
-Adds Quick Translate Create tab and iterative Refine for both Translate and Create. Per-preset editable addenda replace the single global custom addendum field — existing custom addenda are migrated automatically. Includes a PHP Fatal fix for class-language-router.php; update immediately if you are on 1.4.x.
+Adds Quick Translate Create tab and iterative Refine. Per-preset addenda replace the single global custom addendum field — existing values migrate automatically. Includes a PHP Fatal fix for class-language-router.php; update immediately if on 1.4.x.
