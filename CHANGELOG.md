@@ -14,6 +14,8 @@
 
 ### Fixed
 
+- **Primary language setting not persisting — hardcoded `'ca'` fallback** — `Context::source_language()` read `linguaforge_primary_language` from the database but applied two `'ca'` overrides inherited from initial versions: `get_option( …, 'ca' )` as the default and `$stored ?: 'ca'` as a second fallback. Any primary language the user saved in Settings → Router was silently overridden back to Catalan on the next request. Both fallbacks are removed; the option now defaults to an empty string and resolves to the first language in the Router's active language list when unset. Sites always running Catalan as primary are unaffected; sites that had intended a different primary language but were silently ignored will now honour the saved value.
+
 - **PHPStan — unreachable statement in `ajax_fix_fse_links()`** — PHPStan treated the post-type guard as always-terminating, making the subsequent `strrpos`/`$lang` computation unreachable. Reordered: language inference now runs before the post-type check so the control-flow graph is linear.
 - **PHPStan — dead `return` after `wp_send_json_success()`** — `wp_send_json_success()` is typed `@return never` in WP stubs; the trailing `return;` was genuinely unreachable and removed.
 - **PHPCS — `MissingTranslatorsComment` on `_n()` call** — the `/* translators: */` comment in `ajax_fix_fse_parts()` was placed above `sprintf()` rather than immediately above the `_n()` call; moved inside the `sprintf` argument list.

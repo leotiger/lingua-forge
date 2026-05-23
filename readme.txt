@@ -219,6 +219,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Added: Language Navigations — lists all base wp_navigation posts × secondary languages. Translate button creates a language-copy navigation post ({name}-{lang}) with AI-translated link labels and language-prefixed internal URLs. Re-translate updates the existing copy.
 * Added: Pattern reference expansion — wp:pattern pointer blocks are resolved to their actual markup before any translation or fixing pass, ensuring patterns within templates and parts are fully processed.
 * Added: PHPUnit unit test suite — RouterSingletonTest verifies the singleton reset contract in isolation without booting WordPress.
+* Fixed: Primary language setting not persisting — Context::source_language() had two hardcoded 'ca' (Catalan) fallbacks dating from initial versions (get_option default and a ?: guard). Any primary language saved in Settings → Router was silently overridden back to Catalan on the next request. Both fallbacks removed; the saved value is now honoured correctly.
 * Fixed: PHPStan — unreachable-statement false positives in ajax_fix_fse_links() resolved by reordering validation guards to match control-flow analysis expectations.
 * Fixed: PHPCS — MissingTranslatorsComment on _n() call in ajax_fix_fse_parts() and slow_db_query warning in class-migrator.php.
 
