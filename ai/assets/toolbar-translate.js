@@ -27,6 +27,11 @@
 
 const { __ } = wp.i18n;
 
+const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur']);
+function isRtlLang(code) {
+    return RTL_LANGS.has((code || '').toLowerCase());
+}
+
 // ── Per-result state (reset on each new Translate / Create call) ──────────────
 
 let lastMode    = null;   // 'translate' | 'create'
@@ -612,6 +617,7 @@ async function fetchResult(popover, endpointPath, bodyParams, mode, refinement) 
             const msg = data.error || __( 'Request failed. Please try again.', 'lingua-forge' );
             resultMeta.innerHTML = `<span class="lingua-forge-tp__error">${escHtml(msg)}</span>`;
             outputArea.value     = '';
+            outputArea.dir       = '';
 
         } else {
 
@@ -640,12 +646,14 @@ async function fetchResult(popover, endpointPath, bodyParams, mode, refinement) 
 
             resultMeta.innerHTML = `<span class="lingua-forge-tp__success">${metaText}</span>`;
             outputArea.value     = data.output;
+            outputArea.dir       = isRtlLang(bodyParams.target_language) ? 'rtl' : '';
         }
 
     } catch (_) {
 
         resultMeta.innerHTML = `<span class="lingua-forge-tp__error">${ __( 'Request failed. Check your connection.', 'lingua-forge' ) }</span>`;
         outputArea.value     = '';
+        outputArea.dir       = '';
     }
 
     // ── Restore primary button ────────────────────────────────────────────────

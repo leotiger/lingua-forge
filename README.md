@@ -24,7 +24,7 @@ The competitive landscape splits into three architectural camps. **Post-based pl
 
 Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
 
-Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — Quick Translate (WordPress derives the slug from the translated title automatically), the Gutenberg Apply modal (dispatches a slug update to the editor), and CLI commands (set `post_name` from the translated title on every run).
+Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — full-page Translation dispatches the translated title via the Gutenberg Apply modal and WordPress derives the slug automatically; CLI commands set `post_name` from the translated title on every run.
 
 → [Full competitive analysis — Lingua Forge vs WPML vs Polylang vs TranslatePress vs Weglot vs MultilingualPress](COMPETITIVE-ANALYSIS.md)
 
@@ -785,13 +785,14 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.5.0**
+**Current release — 1.5.1**
 
-- **Quick Translate — Create tab** — the Admin Toolbar popover gains a second tab for generating new content from scratch. Enter instructions and key points, choose a writing tone (Informative, Persuasive, Storytelling, Technical, Conversational), and optionally select a target language.
-- **Quick Translate — Refine** — after any Translate or Create result, an inline Refine row lets you iteratively improve the output with additional instructions. The model receives the original request and prior draft as context.
-- **Per-preset editable addenda** — the single global "Custom prompt instructions" field is replaced by three separate editable fields in Settings → Behavior, one per non-standard preset. Leave blank to use the built-in default; existing custom addenda are migrated automatically.
-- **PHP Fatal fix** — namespace declaration order corrected in `class-language-router.php`; the ABSPATH guard is now placed after the `namespace` line as required by PHP 8.1+.
-- **Quick Translate tab pane fix** — Translate and Create panels no longer both render visible simultaneously; author-level `[hidden]` override added to the CSS.
+- **RTL language support — Persian locale** — `fa` (Persian/Farsi) was missing from the locale fallback map; Persian pages now switch to `fa_IR` correctly instead of falling back to `en_US`.
+- **Language switcher accessibility** — LSFLR switcher links now carry a `lang` attribute so screen readers and browser heuristics can identify each link's language.
+- **Language switcher RTL fix** — the submenu now opens from the correct side on RTL pages via `[dir="rtl"]` CSS overrides.
+- **AI result panels RTL fix** — translation output for Arabic, Hebrew, Persian, and Urdu now renders with `dir="rtl"` in all result textareas (admin metabox, diff modal, Quick Translate popover).
+
+**1.5.0** — Quick Translate Create tab, iterative Refine, per-preset addenda, PHP Fatal fix, tab pane fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

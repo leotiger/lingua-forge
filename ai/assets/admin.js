@@ -4,6 +4,11 @@
 
 const { __ } = wp.i18n;
 
+const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur']);
+function isRtlLang(code) {
+    return RTL_LANGS.has((code || '').toLowerCase());
+}
+
 // ─── Conditional field visibility ────────────────────────────────────────────
 
 /**
@@ -108,6 +113,7 @@ document.addEventListener('click', (event) => {
     const translatedTitle = result?.dataset.translatedTitle  || '';
     const footnotesJson   = result?.dataset.footnotes        || '';
     const metaDescription = result?.dataset.metaDescription  || '';
+    const targetLang      = result?.dataset.targetLang       || '';
 
     if (!textarea) return;
 
@@ -119,6 +125,7 @@ document.addEventListener('click', (event) => {
         translatedTitle,
         footnotesJson,
         metaDescription,
+        targetLang,
     });
 });
 
@@ -284,16 +291,19 @@ function wireDiffModalEvents(modal) {
  * The pending-apply context (button, translated payload) is stored on the
  * modal node itself so the Apply handler can reach it without globals.
  */
-function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson, metaDescription = '' }) {
+function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson, metaDescription = '', targetLang = '' }) {
 
     const modal   = ensureDiffModal();
     const current = snapshotCurrentEditorState();
+    const rtl     = isRtlLang(targetLang);
 
     // Title row — show only when there's actually a translated title to apply.
     const titleRow = modal.querySelector('[data-lf-row="title"]');
     if (translatedTitle) {
         modal.querySelector('[data-lf-pane="current-title"]').textContent = current.title;
-        modal.querySelector('[data-lf-pane="new-title"]').textContent     = translatedTitle;
+        const newTitlePane = modal.querySelector('[data-lf-pane="new-title"]');
+        newTitlePane.textContent = translatedTitle;
+        newTitlePane.dir         = rtl ? 'rtl' : '';
         titleRow.hidden = false;
     } else {
         titleRow.hidden = true;
@@ -309,7 +319,9 @@ function openApplyDiffModal({ button, translatedContent, translatedTitle, footno
     // preview pane doesn't broaden attack surface. A future hardening pass
     // could move these into sandbox="allow-same-origin" iframes.
     modal.querySelector('[data-lf-pane="current-content"]').innerHTML = current.content;
-    modal.querySelector('[data-lf-pane="new-content"]').innerHTML     = translatedContent;
+    const newContentPane = modal.querySelector('[data-lf-pane="new-content"]');
+    newContentPane.innerHTML = translatedContent;
+    newContentPane.dir       = rtl ? 'rtl' : '';
 
     // Footnotes — collapsible JSON dump, only when the translation produced one.
     const footnoteRow = modal.querySelector('[data-lf-row="footnotes"]');
@@ -1018,16 +1030,16 @@ async function runFeature(featureKey, postId, params, resultEl) {
                     `<p class="lingua-forge-status">${ escHtml( __( '✓ Content generated — see the overlay to review, refine, and apply.', 'lingua-forge' ) ) }</p>`;
                 openContentGenOverlay(data, params, postId);
             } else {
-                renderContentResult(resultEl, data, featureKey, postId);
+                renderContentResult(resultEl, data, featureKey, postId, params.target_language);
             }
 
         } else if (data.type === 'chunk') {
 
-            renderChunkResult(resultEl, data);
+            renderChunkResult(resultEl, data, params.target_language);
 
         } else {
 
-            renderTextResult(resultEl, data, featureKey, postId);
+            renderTextResult(resultEl, data, featureKey, postId, params.target_language);
         }
 
     } catch (_) {
@@ -1044,7 +1056,7 @@ async function runFeature(featureKey, postId, params, resultEl) {
  * Builds the meta summary line dynamically based on which feature produced
  * the result, so new content-type features don't require JS changes.
  */
-function renderContentResult(container, data, featureKey, postId) {
+function renderContentResult(container, data, featureKey, postId, targetLang = '') {
 
     const footnotesAttr = data.footnotes
         ? ` data-footnotes="${escapeAttr(data.footnotes)}"`
@@ -1057,6 +1069,12 @@ function renderContentResult(container, data, featureKey, postId) {
     const metaDescAttr = data.meta_description
         ? ` data-meta-description="${escapeAttr(data.meta_description)}"`
         : '';
+
+    const targetLangAttr = targetLang
+        ? ` data-target-lang="${escapeAttr(targetLang)}"`
+        : '';
+
+    const dirAttr = isRtlLang(targetLang) ? ' dir="rtl"' : '';
 
     const cachedBadge = data.cached
         ? ` <span class="lingua-forge-cached-badge">${ __( 'cached', 'lingua-forge' ) }</span>`
@@ -1098,14 +1116,14 @@ function renderContentResult(container, data, featureKey, postId) {
     const copyLabel  = __( 'Copy',            'lingua-forge' );
 
     container.innerHTML = `
-        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}${metaDescAttr}>
+        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}${metaDescAttr}${targetLangAttr}>
             <p class="lingua-forge-result-meta">
                 ${metaSummary}${cachedBadge}
             </p>
             ${footnotesNote}
             <textarea
                 class="lingua-forge-textarea lingua-forge-textarea--large"
-                rows="10"
+                rows="10"${dirAttr}
             >${escapeHtml(data.output)}</textarea>
             <div class="lingua-forge-btn-row">
                 <button
@@ -1127,7 +1145,7 @@ function renderContentResult(container, data, featureKey, postId) {
  * No "Apply to Editor" button — the user copies and pastes the translated
  * snippet manually wherever it belongs (e.g. into a footnote field).
  */
-function renderChunkResult(container, data) {
+function renderChunkResult(container, data, targetLang = '') {
 
     const lang = data.language
         ? `${ __( 'Chunk translated to:', 'lingua-forge' ) } <strong>${escapeHtml(data.language)}</strong>`
@@ -1135,6 +1153,7 @@ function renderChunkResult(container, data) {
 
     const chunkHint = __( 'Copy the result and paste it wherever needed (e.g. directly into the footnote field).', 'lingua-forge' );
     const copyLabel = __( 'Copy', 'lingua-forge' );
+    const dirAttr   = isRtlLang(targetLang) ? ' dir="rtl"' : '';
 
     container.innerHTML = `
         <div class="lingua-forge-content-result lingua-forge-chunk-result">
@@ -1144,7 +1163,7 @@ function renderChunkResult(container, data) {
             </p>
             <textarea
                 class="lingua-forge-textarea lingua-forge-textarea--large"
-                rows="8"
+                rows="8"${dirAttr}
             >${escapeHtml(data.output)}</textarea>
             <div class="lingua-forge-btn-row">
                 <button
@@ -1162,9 +1181,10 @@ function renderChunkResult(container, data) {
  * button is also rendered; hovering/focusing it reveals a character-count
  * overlay with an SEO quality hint.
  */
-function renderTextResult(container, data, featureKey, postId) {
+function renderTextResult(container, data, featureKey, postId, targetLang = '') {
 
     const text = data.output || '';
+    const dirAttr = isRtlLang(targetLang) ? ' dir="rtl"' : '';
 
     const cachedBadge = data.cached
         ? ` <span class="lingua-forge-cached-badge">${ __( 'cached', 'lingua-forge' ) }</span>`
@@ -1194,7 +1214,7 @@ function renderTextResult(container, data, featureKey, postId) {
         <div class="lingua-forge-textarea-wrap">
             <textarea
                 class="lingua-forge-textarea"
-                rows="3"
+                rows="3"${dirAttr}
             >${escapeHtml(text)}</textarea>
         </div>
         <div class="lingua-forge-result-bar">

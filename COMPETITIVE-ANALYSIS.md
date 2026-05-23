@@ -267,7 +267,7 @@ Lingua Forge does not currently support WooCommerce. The architectural foundatio
 
 ### Translated URL slugs — not a gap
 
-Slug translation is fully supported across all paths. Quick Translate sets the title and WordPress derives the slug automatically; the Gutenberg Apply modal dispatches the translated slug to the editor; CLI commands set `post_name` from `sanitize_title(translated_title)` on every run. Each translation lives under its own language-prefixed URL — `/es/pagina-en-castellano`, `/fr/equivalent-content-en-francais` — as independent WordPress posts.
+Slug translation is fully supported across all paths. Full-page Translation sets the translated title and dispatches it to the editor via the Gutenberg Apply modal, from which WordPress derives the slug automatically; CLI commands set `post_name` from `sanitize_title(translated_title)` on every run. Each translation lives under its own language-prefixed URL — `/es/pagina-en-castellano`, `/fr/equivalent-content-en-francais` — as independent WordPress posts.
 
 After translation, the editor retains full freedom to adjust the slug independently of the title. This is a deliberate SEO advantage: title and slug can carry different keyword sets — the title paraphrasing for engagement, the slug optimised for search. Fully automated slug systems do not allow this. The permalink filter and TRID groups ensure the language switcher resolves to the correct slug per language regardless of how it was customised.
 

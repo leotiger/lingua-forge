@@ -88,6 +88,7 @@ class LocaleDetector {
 			'ko' => 'ko_KR',
 			'ar' => 'ar',
 			'he' => 'he_IL',
+			'fa' => 'fa_IR',
 			'id' => 'id_ID',
 		] );
 

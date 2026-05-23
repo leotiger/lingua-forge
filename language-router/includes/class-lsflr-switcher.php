@@ -166,7 +166,7 @@ class Switcher {
 				<ul class="lsflr-submenu">
 					<?php foreach ( $others as $lang ) : ?>
 						<li>
-							<a href="<?php echo esc_url( $lang['url'] ); ?>">
+							<a href="<?php echo esc_url( $lang['url'] ); ?>" lang="<?php echo esc_attr( $lang['code'] ); ?>">
 								<?php echo esc_html( $lang['label'] ); ?>
 							</a>
 						</li>

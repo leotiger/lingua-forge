@@ -199,6 +199,24 @@
 }
 
 /* =========================================
+   RTL SUPPORT
+   Scoped to .lsflr-switcher so specificity
+   (0,3,0) and (0,4,0) matches or beats the
+   auto-right rules (0,2,0) and (0,3,0).
+   Placed after all regular rules so no
+   lower-specificity rule follows.
+========================================= */
+[dir="rtl"] .lsflr-switcher .lsflr-submenu {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
+}
+
+[dir="rtl"] .lsflr-switcher.lsflr-dropup .lsflr-submenu {
+    transform-origin: bottom right;
+}
+
+/* =========================================
    Mobile (no hover devices)
 ========================================= */
 @media (hover: none) {
