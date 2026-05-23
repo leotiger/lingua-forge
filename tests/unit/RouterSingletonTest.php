@@ -37,11 +37,12 @@ class RouterSingletonTest extends TestCase {
 	}
 
 	public function test_reset_instance_nulls_the_static_property(): void {
-		// Inject a dummy object so the property is non-null without booting WP.
+		// Inject a bare Router shell (no constructor, no WP) so the property is
+		// non-null while satisfying the ?Router type constraint.
 		$ref  = new ReflectionClass( \LinguaForge\Router\Router::class );
 		$prop = $ref->getProperty( 'instance' );
 		$prop->setAccessible( true );
-		$prop->setValue( null, new \stdClass() );
+		$prop->setValue( null, $ref->newInstanceWithoutConstructor() );
 
 		$this->assertNotNull( $this->read_static_instance(), 'Pre-condition: instance should be non-null.' );
 

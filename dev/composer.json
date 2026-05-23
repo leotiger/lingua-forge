@@ -29,6 +29,14 @@
         "wp-coding-standards/wpcs": "^3.1",
         "yoast/phpunit-polyfills": "^2.0"
     },
+    "autoload-dev": {
+        "classmap": [
+            "../language-router/includes/",
+            "../ai/includes/",
+            "../meta-description/",
+            "../tests/"
+        ]
+    },
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",

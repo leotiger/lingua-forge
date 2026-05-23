@@ -20,6 +20,51 @@
 .lingua-forge-glossary-table td { vertical-align: middle; }
 .lingua-forge-glossary-table code { font-size: 12px; }
 
+/* ── Router tab: language template scaffold table ──────────── */
+/* Placed here (before AI Usage / Models) so the base th/td rule at       */
+/* specificity 0,2,0 precedes the higher-specificity tfoot th (0,2,1) and  */
+/* tbody tr td (0,2,2) rules below — satisfying no-descending-specificity. */
+.lf-template-scaffold-table {
+    margin: 12px 0 24px;
+}
+.lf-template-scaffold-table th {
+    vertical-align: middle; padding: 8px 10px; font-size: 13px;
+}
+.lf-template-scaffold-table td {
+    vertical-align: top; padding: 8px 10px; font-size: 13px;
+}
+
+/* Per-cell button stack — each action on its own line so the row height
+   set by the Actions column is used cleanly instead of causing wraps. */
+.lf-tpl-cell {
+    min-width: 110px;
+}
+.lf-tpl-exists {
+    display: block;
+    color: #46b450; font-weight: 700; font-size: 15px;
+    margin-bottom: 4px;
+}
+.lf-tpl-cell .button,
+.lf-tpl-actions .button {
+    display: block;
+    width: 100%;
+    margin: 3px 0 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Actions column — tighter width, buttons already stacked. */
+.lf-tpl-actions {
+    min-width: 130px;
+}
+.lf-scaffold-row-msg {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 12px; font-weight: 600;
+}
+.lf-scaffold-row-msg.lf-ok   { color: #46b450; }
+.lf-scaffold-row-msg.lf-fail { color: #dc3232; }
+
 /* ── AI Usage ───────────────────────────────────────────────── */
 .lingua-forge-range-buttons .button { margin-right: 4px; }
 .lingua-forge-usage-table .lingua-forge-num {
@@ -90,11 +135,12 @@
 .lf-installed-langs {
     display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 20px;
 }
-.lf-installed-langs .lf-lang-chip {
+.lf-lang-chip {
     display: inline-block; padding: 2px 10px; border-radius: 10px;
     background: #e7f3ff; color: #0073aa; font-size: 12px;
     font-weight: 600; font-family: monospace; border: 1px solid #b9d9f0;
 }
+
 #lf-lang-install-select {
     min-width: 260px; max-width: 380px;
 }
@@ -132,3 +178,22 @@
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+/* ── FSE translation buttons ───────────────────────────────── */
+.lf-translated-btn {
+    color: #46b450; border-color: transparent;
+    background: transparent; box-shadow: none; cursor: default;
+}
+.lf-scaffold-row-msg.lf-warn { color: #996800; }
+
+/* ── Template part area badge ──────────────────────────────── */
+.lf-area-badge {
+    display: inline-block; margin-left: 6px; padding: 1px 7px;
+    border-radius: 10px; font-size: 11px; font-weight: 600;
+    vertical-align: middle; background: #f0f0f1; color: #646970;
+    border: 1px solid #dcdcde;
+}
+.lf-area-header     { background: #e7f3ff; color: #0073aa; border-color: #b9d9f0; }
+.lf-area-footer     { background: #f0f6fc; color: #2271b1; border-color: #b9d9f0; }
+.lf-area-navigation { background: #edfaef; color: #00a32a; border-color: #9dd9a8; }
+.lf-area-sidebar    { background: #fef8e7; color: #996800; border-color: #f0c33c; }

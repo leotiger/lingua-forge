@@ -97,6 +97,32 @@ if ( ! $wp_tests_dir || ! file_exists( $wp_tests_dir . '/includes/functions.php'
         }
     }
 
+    // Unit-test classmap autoloader.
+    //
+    // The plugin uses the WordPress file-naming convention (class-*.php) which
+    // is not PSR-4-compatible, so Composer can't resolve plugin source classes
+    // without an explicit classmap. Rather than requiring `composer dump-autoload`
+    // after every change, we register the map here so the unit suite is
+    // self-contained and always up to date.
+    //
+    // Add an entry whenever a new unit test needs a plugin class that lives
+    // outside the tests/ directory. Only map the class(es) the test actually
+    // uses via ReflectionClass or direct reference — do NOT chain-load the
+    // full require_once hierarchy from language-router.php, which would call
+    // WP functions and boot the whole plugin.
+    $lf_plugin_root = dirname( __DIR__ );
+    $lf_classmap    = [
+        'LinguaForge\\Router\\Router' =>
+            $lf_plugin_root . '/language-router/includes/class-language-router.php',
+    ];
+    spl_autoload_register(
+        static function ( string $class ) use ( $lf_classmap ): void {
+            if ( isset( $lf_classmap[ $class ] ) ) {
+                require_once $lf_classmap[ $class ];
+            }
+        }
+    );
+
     return; // ← unit suite stops here.
 }
 

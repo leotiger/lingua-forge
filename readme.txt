@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -89,7 +89,7 @@ Most features work with any theme. Language routing, hreflang injection, the AI 
 
 For full multilingual operation with block (FSE) themes, each language needs its own set of templates and patterns (e.g. `page-de.html`, `single-fr.html`). Lingua Forge routes incoming requests to these templates automatically, but the templates themselves must exist in your theme first.
 
-The recommended companion for this is [Options for Block Themes](https://wordpress.org/plugins/options-for-block-themes/). It provides a UI for managing templates and patterns per language without touching theme files directly, making theme localisation significantly easier. Localising your block theme is a prerequisite for Lingua Forge to work well across all languages.
+As of 1.6.0, Lingua Forge handles this natively: the **Settings → Router** page lets you scaffold a language copy of any template or template part, AI-translate it in one click, and fix internal links, template part references, and navigation menu references — all without editing theme files directly.
 
 = Can I use Lingua Forge alongside WPML or Polylang? =
 
@@ -213,7 +213,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 1.5.0 =
+= 1.6.0 =
+* Added: FSE Template Localisation — Settings → Router now includes a Language Templates section. Scaffold language-specific FSE templates (page-ca, single-de, …) from base templates in one click, AI-translate their content, fix internal links, and update template-part slug references to language-specific variants (e.g. footer → footer-ca) via the new Fix Parts action.
+* Added: Language Template Parts — scaffold, AI-translate, and fix internal links for language-specific template parts (header-ca, footer-de, …). A Fix Nav action rewrites wp:navigation ref IDs inside each part to point at the corresponding language-copy navigation post, resolving mismatched menus in the Site Editor.
+* Added: Language Navigations — lists all base wp_navigation posts × secondary languages. Translate button creates a language-copy navigation post ({name}-{lang}) with AI-translated link labels and language-prefixed internal URLs. Re-translate updates the existing copy.
+* Added: Pattern reference expansion — wp:pattern pointer blocks are resolved to their actual markup before any translation or fixing pass, ensuring patterns within templates and parts are fully processed.
+* Added: PHPUnit unit test suite — RouterSingletonTest verifies the singleton reset contract in isolation without booting WordPress.
+* Fixed: PHPStan — unreachable-statement false positives in ajax_fix_fse_links() resolved by reordering validation guards to match control-flow analysis expectations.
+* Fixed: PHPCS — MissingTranslatorsComment on _n() call in ajax_fix_fse_parts() and slow_db_query warning in class-migrator.php.
+
+= 1.5.1 =
 * Added: Quick Translate — Create tab in the Admin Toolbar popover. Generate new content from instructions and key points, with tone selector (Informative, Persuasive, Storytelling, Technical, Conversational) and optional target language.
 * Added: Quick Translate — Refine. After any Translate or Create result, an inline Refine row lets you iteratively improve the output with additional instructions. The model receives the original request and prior draft as context.
 * Added: /create-chunk REST endpoint for free-form text generation without requiring a post ID. Rate-limited and quota-gated on the same policy as /translate-chunk.
@@ -226,6 +235,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+Adds full FSE template localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific templates, template parts, and navigation menus directly from Settings → Router.
 
 = 1.5.0 =
 Adds Quick Translate Create tab and iterative Refine. Per-preset addenda replace the single global custom addendum field — existing values migrate automatically. Includes a PHP Fatal fix for class-language-router.php; update immediately if on 1.4.x.

@@ -255,7 +255,7 @@ class MaintenanceTab extends Tab {
         <p>
             <?php
             esc_html_e(
-                'When LINGUAFORGE_AI_DEBUG is defined in wp-config.php, the Translation feature writes its raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter.',
+                'When debug logging is enabled (via the toggle below or by defining LINGUAFORGE_AI_DEBUG in wp-config.php), the Translation and FSE template translation features write their raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter.',
                 'lingua-forge'
             );
             ?>

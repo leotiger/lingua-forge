@@ -109,8 +109,6 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ## Recommended companions
 
-**[Options for Block Themes](https://wordpress.org/plugins/options-for-block-themes/)** — Lingua Forge routes requests to language-specific FSE templates (`page-de.html`, `single-fr.html`, …) and patterns, but those templates must exist in the theme first. Options for Block Themes provides a UI for creating and managing templates and patterns per language without editing theme files directly. Localising your block theme is a prerequisite for Lingua Forge to work well across all languages; this plugin is the recommended tool for that step.
-
 **[Loco Translate](https://wordpress.org/plugins/loco-translate/)** — for translating third-party plugin and theme strings (`.po`/`.mo` editing, automatic language-pack sync, developer extraction). Integrates cleanly alongside Lingua Forge with no conflicts.
 
 ---
@@ -785,12 +783,11 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.5.1**
+**Current release — 1.6.0**
 
-- **RTL language support — Persian locale** — `fa` (Persian/Farsi) was missing from the locale fallback map; Persian pages now switch to `fa_IR` correctly instead of falling back to `en_US`.
-- **Language switcher accessibility** — LSFLR switcher links now carry a `lang` attribute so screen readers and browser heuristics can identify each link's language.
-- **Language switcher RTL fix** — the submenu now opens from the correct side on RTL pages via `[dir="rtl"]` CSS overrides.
-- **AI result panels RTL fix** — translation output for Arabic, Hebrew, Persian, and Urdu now renders with `dir="rtl"` in all result textareas (admin metabox, diff modal, Quick Translate popover).
+- **FSE Template Localisation** — Settings → Router now includes three new sections: Language Templates, Language Template Parts, and Language Navigations. Scaffold language-specific FSE templates and parts in one click, AI-translate their content, fix internal links, update template-part slug references to language-specific variants, and fix `wp:navigation` ref IDs so each language header/footer part points at the correct translated navigation menu.
+
+**1.5.1** — RTL support (Persian locale, switcher `lang` attribute, RTL submenu, RTL AI result panels). See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.5.0** — Quick Translate Create tab, iterative Refine, per-preset addenda, PHP Fatal fix, tab pane fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 

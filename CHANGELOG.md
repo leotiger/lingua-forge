@@ -2,6 +2,25 @@
 
 ---
 
+## [1.6.0] — 2026-05-23
+
+### Added
+
+- **FSE Template Localisation — Language Templates** — Settings → Router gains a new Language Templates section. Each base FSE template (page, single, archive, …) is shown in a table with one column per secondary language. Per-cell actions: **Create** (scaffold a language copy from the base template), **Translate** / **Retranslate** (AI-translate the full block content), **Fix Links** (rewrite internal URLs to the correct language prefix), and **Fix Parts** (update `wp:template-part` slug attributes to point at language-specific variants — e.g. `footer` → `footer-ca` — when those variants exist). Per-row actions run the same operations across all languages in one click.
+- **FSE Template Localisation — Language Template Parts** — a parallel section for template parts (header, footer, navigation, …). Per-cell: **Create**, **Translate** / **Retranslate**, **Fix Links**, and **Fix Nav** (rewrites `wp:navigation {"ref":N}` block attributes so each language-specific part points at the correct language-copy navigation post, resolving mismatched menus in the Site Editor). Per-row: **Translate all**, **Fix all links**, **Fix all nav refs**.
+- **FSE Template Localisation — Language Navigations** — lists every base `wp_navigation` post with one column per secondary language. **Translate** / **Re-translate** creates or updates a `{post_name}-{lang}` navigation post with AI-translated link labels and language-prefixed internal URLs. The translated post can then be wired into language-specific template parts via the Fix Nav action above.
+- **`expand_pattern_refs()`** — private helper that resolves `wp:pattern` pointer blocks to their actual registered markup before any translation or fixing pass. Resolution order: PHP-registered / theme-directory patterns first, synced `wp_block` posts second. Unresolvable slugs are left untouched so block structure remains valid.
+- **PHPUnit unit test suite** — `RouterSingletonTest` verifies the Router singleton's `reset_instance()` contract in isolation (no WordPress boot). Uses `ReflectionClass::newInstanceWithoutConstructor()` to satisfy the typed `?Router` property constraint without calling the WP-dependent constructor. Bootstrap registers a classmap autoloader for plugin source classes so no `composer dump-autoload` is required.
+
+### Fixed
+
+- **PHPStan — unreachable statement in `ajax_fix_fse_links()`** — PHPStan treated the post-type guard as always-terminating, making the subsequent `strrpos`/`$lang` computation unreachable. Reordered: language inference now runs before the post-type check so the control-flow graph is linear.
+- **PHPStan — dead `return` after `wp_send_json_success()`** — `wp_send_json_success()` is typed `@return never` in WP stubs; the trailing `return;` was genuinely unreachable and removed.
+- **PHPCS — `MissingTranslatorsComment` on `_n()` call** — the `/* translators: */` comment in `ajax_fix_fse_parts()` was placed above `sprintf()` rather than immediately above the `_n()` call; moved inside the `sprintf` argument list.
+- **PHPCS — `SlowDBQuery` warning in `class-migrator.php`** — the `meta_key`-based `$wpdb->update()` in `rename_meta_keys()` is a one-time idempotent migration with no WP API equivalent; added `WordPress.DB.SlowDBQuery.slow_db_query_meta_key` to the existing inline `phpcs:ignore` comment.
+
+---
+
 ## [1.5.1] — 2026-05-22
 
 ### Fixed

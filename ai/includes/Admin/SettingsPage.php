@@ -122,6 +122,13 @@ class SettingsPage {
         add_action('admin_post_linguaforge_flush_permalinks',         [RouterTab::class, 'handle_flush_permalinks']);
         add_action('wp_ajax_linguaforge_get_available_languages',     [RouterTab::class, 'ajax_get_available_languages']);
         add_action('wp_ajax_linguaforge_install_language',            [RouterTab::class, 'ajax_install_language']);
+        add_action('wp_ajax_linguaforge_scaffold_template',           [RouterTab::class, 'ajax_scaffold_template']);
+        add_action('wp_ajax_linguaforge_scaffold_template_part',      [RouterTab::class, 'ajax_scaffold_template_part']);
+        add_action('wp_ajax_linguaforge_translate_fse_content',       [RouterTab::class, 'ajax_translate_fse_content']);
+        add_action('wp_ajax_linguaforge_fix_fse_links',               [RouterTab::class, 'ajax_fix_fse_links']);
+        add_action('wp_ajax_linguaforge_fix_fse_parts',               [RouterTab::class, 'ajax_fix_fse_parts']);
+        add_action('wp_ajax_linguaforge_translate_fse_navigation',    [RouterTab::class, 'ajax_translate_fse_navigation']);
+        add_action('wp_ajax_linguaforge_fix_fse_nav_refs',            [RouterTab::class, 'ajax_fix_fse_nav_refs']);
 
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
@@ -186,16 +193,48 @@ class SettingsPage {
         wp_add_inline_script(
             'linguaforge-router-tab',
             'var lfRouterTab = ' . wp_json_encode( [
-                'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-                'fetchNonce'   => wp_create_nonce( 'linguaforge_get_available_languages' ),
-                'installNonce' => wp_create_nonce( 'linguaforge_install_language' ),
-                'strings'      => [
+                'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+                'fetchNonce'    => wp_create_nonce( 'linguaforge_get_available_languages' ),
+                'installNonce'  => wp_create_nonce( 'linguaforge_install_language' ),
+                'scaffoldNonce'     => wp_create_nonce( 'linguaforge_scaffold_template' ),
+                'scaffoldPartNonce' => wp_create_nonce( 'linguaforge_scaffold_template_part' ),
+                'translateNonce'    => wp_create_nonce( 'linguaforge_translate_fse_content' ),
+                'fixLinksNonce'     => wp_create_nonce( 'linguaforge_fix_fse_links' ),
+                'fixPartsNonce'     => wp_create_nonce( 'linguaforge_fix_fse_parts' ),
+                'translateNavNonce' => wp_create_nonce( 'linguaforge_translate_fse_navigation' ),
+                'fixNavRefsNonce'   => wp_create_nonce( 'linguaforge_fix_fse_nav_refs' ),
+                'strings'           => [
                     'loading'           => __( 'Loading…',                'lingua-forge' ),
                     'installing'        => __( 'Installing…',             'lingua-forge' ),
                     'installed'         => __( '✓ Language installed.',   'lingua-forge' ),
                     'error'             => __( '✗ Error:',                'lingua-forge' ),
                     'selectPlaceholder' => __( '— select a language —',   'lingua-forge' ),
                     'noModify'          => __( 'Language installation is disabled on this server (DISALLOW_FILE_MODS is set).', 'lingua-forge' ),
+                    'creating'          => __( 'Creating…',                         'lingua-forge' ),
+                    'allDone'           => __( '✓ All templates created.',            'lingua-forge' ),
+                    'allFail'           => __( 'Some templates could not be created.','lingua-forge' ),
+                    'allPartsDone'      => __( '✓ All parts created.',                           'lingua-forge' ),
+                    'allPartsFail'      => __( 'Some parts could not be created.',               'lingua-forge' ),
+                    'translate'         => __( 'Translate',                                      'lingua-forge' ),
+                    'translating'       => __( 'Translating…',                                   'lingua-forge' ),
+                    'allTranslated'     => __( '✓ All translated.',                              'lingua-forge' ),
+                    'translateFail'     => __( 'Some translations failed.',                      'lingua-forge' ),
+                    'translateWarning'  => __( 'Review carefully — links and slugs not updated.','lingua-forge' ),
+                    'fixLinks'          => __( 'Fix Links',                                         'lingua-forge' ),
+                    'fixingLinks'       => __( 'Fixing…',                                           'lingua-forge' ),
+                    'linksFixed'        => __( '✓ Links fixed.',                                    'lingua-forge' ),
+                    'linksFail'         => __( 'Some link fixes failed.',                           'lingua-forge' ),
+                    'fixParts'          => __( 'Fix Parts',                                         'lingua-forge' ),
+                    'fixingParts'       => __( 'Fixing…',                                           'lingua-forge' ),
+                    'partsFixed'        => __( '✓ Parts fixed.',                                    'lingua-forge' ),
+                    'partsFail'         => __( 'Some part fixes failed.',                           'lingua-forge' ),
+                    'retranslate'       => __( 'Re-translate',                                      'lingua-forge' ),
+                    'translateNav'      => __( 'Translate',                                         'lingua-forge' ),
+                    'translatingNav'    => __( 'Translating…',                                      'lingua-forge' ),
+                    'fixNavRefs'        => __( 'Fix Nav',                                            'lingua-forge' ),
+                    'fixingNavRefs'     => __( 'Fixing…',                                            'lingua-forge' ),
+                    'navRefsFixed'      => __( '✓ Nav refs fixed.',                                  'lingua-forge' ),
+                    'navRefsFail'       => __( 'Some nav ref fixes failed.',                         'lingua-forge' ),
                 ],
             ] ) . ';',
             'before'

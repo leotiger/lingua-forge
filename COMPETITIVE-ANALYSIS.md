@@ -2,7 +2,13 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 1.5.0
+**Date:** May 2026 · Lingua Forge 1.6.0
+
+---
+
+> **⚠ Disclaimer — AI-generated and AI-maintained document**
+>
+> This document is researched, written, and updated by an AI assistant (Claude). It is intended as a high-level orientation to the WordPress multilingual plugin landscape — not as a definitive or authoritative source. Competitor feature sets, pricing, and roadmaps change frequently, and AI-produced assessments can contain errors, omissions, or outdated information even when recently reviewed. Treat every claim as a starting point for your own investigation, not a conclusion. Before making purchasing, migration, or architectural decisions, verify the details directly with each vendor's current documentation and pricing pages. The §15 Sources section lists the primary references used at the time of writing.
 
 ---
 
@@ -82,7 +88,9 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 | Cookie / query-param detection | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Browser auto-redirect | ✅ opt-in (Accept-Language header) | ✅ | ✅ Pro | ✅ Business | ✅ | ✅ |
 | Language Switcher block (FSE) | ✅ | ✅ (add-on) | ✅ Pro | ✅ | ✅ (widget/block) | ✅ |
-| Language-specific FSE templates | ✅ (`page-de`, `single-fr`) | ❌ (known open issues as of 2026) | ❌ Pro (translates template parts, not template entities — no `page-de`) | ❌ | ❌ | ❌ |
+| Language-specific FSE templates | ✅ (`page-de`, `single-fr`) with full in-plugin scaffold + AI-translate + fix workflow | ❌ (known open issues as of 2026) | ❌ Pro (translates template parts, not template entities — no `page-de`) | ❌ | ❌ | ❌ |
+| FSE template part localisation (scaffold + AI-translate + fix) | ✅ (`header-de`, `footer-ca`, …); Fix Nav rewrites navigation refs per part | ❌ | ⚠ Pro (template parts only, no fix workflow) | ❌ | ❌ | ❌ |
+| Navigation menu localisation (AI-translate + lang-copy) | ✅ per-language `wp_navigation` posts with AI-translated labels and URL fixing | ❌ | ✅ Pro (manual) | ✅ (string-intercept) | ✅ (cloud) | ✅ |
 | Admin link fixer (repairs cross-language internal links) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | WP-CLI support | ✅ 5 commands | ❌ | ❌ | ❌ | ❌ | ❌ |
 
@@ -149,7 +157,9 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
 | Site Editor (FSE) support | ✅ designed for it | ⚠ (retrofit; known open issues with FSE template application) | ✅ Pro (template parts + patterns; full template entities not supported) | ✅ (string-intercept works on FSE output) | ✅ (cloud catches rendered output) | ✅ |
-| Language-specific FSE templates (`page-de`) | ✅ auto-assigned | ❌ | ❌ free / ❌ Pro (template-part approach) | ❌ | ❌ | ❌ |
+| Language-specific FSE templates (`page-de`) | ✅ auto-assigned; scaffold + AI-translate + fix-links + fix-parts in Settings → Router | ❌ | ❌ free / ❌ Pro (template-part approach) | ❌ | ❌ | ❌ |
+| Language-specific template parts (`header-ca`) | ✅ scaffold + AI-translate + fix-links + fix-nav-refs; Fix Nav rewrites `wp:navigation` ref IDs | ❌ | ✅ Pro (scaffold + translate, no nav ref fix) | ❌ | ❌ | ❌ |
+| Language navigation menus (wp_navigation) | ✅ AI-translate labels, fix internal URLs, create `{name}-{lang}` copies | ❌ | ✅ Pro (manual) | ✅ (string-intercept) | ✅ (cloud) | ✅ |
 | Language Switcher as a block | ✅ | ✅ (add-on) | ✅ Pro | ✅ | ✅ | ✅ |
 | Block attribute translation (JSON inside block comments) | ✅ custom extractor | ✅ | Partial | ✅ (string-intercept) | ✅ | Partial |
 
@@ -231,7 +241,7 @@ Polylang's free tier has no FSE template translation support — block themes wo
 
 Lingua Forge takes the WordPress-native path: every template part — header, footer, navigation, reusable sections — has a language-specific equivalent built in the Site Editor. Each is a real WordPress entity, not a string-swapped version of a shared one. There is no ambiguity, no context collapse, and no shared-string problem. The Quick Translate tool makes building language variants of template parts fast. The result is a fully independent, editorially correct template structure per language. Templates, template parts, posts, pages, blocks — everything is a native WordPress object. Nothing sits outside WordPress's own data model.
 
-Near-term roadmap: WP-CLI commands for registering and translating templates and template parts in bulk, bringing the same automation story that already covers posts and pages to the FSE layer.
+The complete FSE localisation workflow shipped natively in 1.6.0: scaffold a language variant of any template or template part, AI-translate it in one click, fix internal links to point at the correct language equivalents, fix template-part slug references, fix `wp:navigation` ref IDs so each header and footer loads the correct language navigation, and create language-specific `wp_navigation` copies with AI-translated labels — all from Settings → Router with no CLI or manual database work required. WP-CLI commands for templates and template parts remain on the roadmap as a future automation path, extending the same five existing commands that already cover posts and pages to the FSE layer.
 
 ### SEO — native output, no plugin dependency
 
@@ -294,7 +304,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 ## 13. When to Choose Each Plugin
 
 ### Choose Lingua Forge when:
-- The site runs a **block / FSE theme** and needs language-specific templates.
+- The site runs a **block / FSE theme** and needs language-specific templates, template parts, and navigation menus — scaffold, AI-translate, fix links, fix nav refs, and create language navigation copies, all from Settings → Router with no CLI or manual database work.
 - **Zero licensing cost** is a hard requirement — no annual fee is acceptable.
 - **AI content assistance** embedded in the editorial workflow matters (content generation with iterative refinement, meta descriptions, excerpts, quick translate, behavior presets).
 - You want to **own your AI costs** directly and switch providers without a credit intermediary.
@@ -346,11 +356,11 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.4.2 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.6.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in, a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches, and a native-block architecture that carries none of the overhead that string-interception or cloud-proxy tools require.**
 
-Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilingual needs have well-supported dedicated options — and those competitors exist for good reason. For content-focused sites, everything in the competitive surface — routing, hreflang, FSE templates, AI translation and generation, SEO meta output, WP-CLI, block-level granularity with refinement and rewrite — is fully covered at 1.4.2.
+Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilingual needs have well-supported dedicated options — and those competitors exist for good reason. For content-focused sites, everything in the competitive surface — routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, block-level granularity with refinement and rewrite — is fully covered at 1.6.0.
 
 ---
 

@@ -102,7 +102,7 @@ class Migrator {
 		global $wpdb;
 
 		// Step 1 — rename _trid globally (idempotent: zero rows if already done).
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- One-time data migration on version bump; no WP API equivalent for bulk meta_key rename. Idempotent.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key, PluginCheck.Security.DirectDB.UnescapedDBParameter -- One-time data migration on version bump; no WP API equivalent for bulk meta_key rename. Idempotent.
 		$wpdb->update( $wpdb->postmeta, [ 'meta_key' => '_lf_trid' ], [ 'meta_key' => '_trid' ] );
 
 		// Step 2 — rename remaining keys, scoped to posts that have _lf_trid
