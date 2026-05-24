@@ -28,6 +28,12 @@ Current gaps worth knowing: WooCommerce multilingual support and a general-purpo
 
 → [Full competitive analysis — Lingua Forge vs WPML vs Polylang vs TranslatePress vs Weglot vs MultilingualPress](COMPETITIVE-ANALYSIS.md)
 
+## Built on WordPress, not around it
+
+Lingua Forge is designed to stay as close to WordPress core and Full Site Editing conventions as possible. Translations are native WordPress posts. FSE templates, template parts, and navigation menus are native `wp_template`, `wp_template_part`, and `wp_navigation` posts — not string-swapped versions of a single shared entity. Blocks are blocks. Routing uses standard `WP_Query`. Nothing sits outside WordPress's own data model.
+
+This is intentional and measurable: no runtime dependencies ship with the plugin (all dev tooling lives in `dev/`), Block API v3 is used throughout, the frontend carries no jQuery dependency, REST routes register at `rest_api_init`, and standard WordPress i18n and security conventions are applied without exception. The result is a plugin that behaves predictably alongside the rest of the WordPress ecosystem — no parallel data layer, no recomposition step, no render-time interception.
+
 ## The story behind Lingua Forge
 
 If you want to understand where this plugin came from and why it exists as a free, open-source project rather than another subscription product, the blog post below covers the full picture in plain language — the necessity that started it, the weeks of intense work, the real website ([cal-talaia.cat](https://cal-talaia.cat)) that served as the test environment, the honest account of building an AI plugin with AI assistance (including the tokens spent and the many corrections along the way), and the social argument for why multilingual tools should belong to everyone.
@@ -66,7 +72,9 @@ The post below tells the story as it unfolded — the false starts, the two laye
 - Custom rewrite rules for language-prefixed URLs and category archives
 - Post and page translation groups linked via a shared TRID (UUID)
 - Outdated translation tracking — warnings when source content is updated after a translation was synced
-- Language-specific FSE templates (`page-de`, `single-fr`, `search-en`)
+- **Full FSE template localisation** — language-specific templates (`page-de`, `single-fr`, `search-en`) are auto-assigned when a post's language is set. From **Settings → Router** you can scaffold a language copy of any template or template part in one click, AI-translate it, fix all internal links to point at the correct language equivalents, fix template-part slug references (`footer` → `footer-ca`), and fix `wp:navigation` ref IDs so each header and footer loads the correct language menu — all without CLI or manual database work.
+- **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version.
+- **Language navigation menus** — create per-language `wp_navigation` copies with AI-translated link labels and language-prefixed internal URLs. The Fix Nav action rewrites `wp:navigation` ref IDs inside template parts to point at the correct copy.
 - hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
 - Language switcher block (LSFLR Switcher) rendered as dropdown or dropup
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
@@ -441,9 +449,9 @@ echo linguaforge_lsflr_render_switcher([
 
 **Gutenberg block:** search for **LSFLR Switcher** in the block inserter (category: Widgets). All options are in the Inspector sidebar.
 
-### FSE templates per language
+### FSE template localisation
 
-The router can load a language-specific FSE template instead of the default one:
+The router loads a language-specific FSE template instead of the default one whenever one exists:
 
 | Content type | Slug pattern | Example |
 |---|---|---|
@@ -451,9 +459,20 @@ The router can load a language-specific FSE template instead of the default one:
 | Post (single) | `single-{lang}` | `single-de`, `single-fr` |
 | Search results | `search-{lang}` | `search-de`, `search-fr`, `search-en` |
 
-Create language templates in the Site Editor (**Appearance → Editor → Templates**) by duplicating an existing template and saving it under the slug convention above. If a language-specific template does not exist, WordPress falls back to the default template.
-
 **Auto-assignment on language change:** when an editor changes the `_lang` meta of a post or page, the router checks whether a matching template slug exists and assigns it automatically — but only if no custom template has already been set on that post.
+
+#### Settings → Router — full FSE workflow
+
+The Language Templates section in **Settings → Router** provides a complete in-plugin workflow for managing language variants of every FSE entity — no CLI or manual database work required:
+
+- **Scaffold** — creates a `page-{lang}`, `header-{lang}`, or other language copy of any template or template part by duplicating the base entity as a new native `wp_template` / `wp_template_part` post.
+- **AI-Translate** — sends the template's block content to the AI and writes the translated result back into the language copy. Block markup, `wp:navigation` refs, and template-part slug references are preserved; only visible text is changed.
+- **Fix Links** — rewrites internal post/page URLs inside the template to point at the correct language equivalent (e.g. an `/en/about` link inside `page-de` becomes `/de/ueber-uns`).
+- **Fix Parts** — updates `wp:template-part` slug references to their language-specific variants (e.g. `footer` → `footer-ca`), ensuring the language template loads the correctly localised header, footer, and other parts.
+- **Fix Nav** — rewrites `wp:navigation` block ref IDs inside template parts so each header and footer loads the correct language navigation post instead of the base-language menu.
+- **Language Navigations** — for each base `wp_navigation` post, creates a `{name}-{lang}` copy with AI-translated link labels and language-prefixed internal URLs. The resulting `wp_navigation` posts are native WordPress objects independent of the source menu.
+
+Each entity produced by this workflow is a real WordPress `wp_template`, `wp_template_part`, or `wp_navigation` post — not a string-swapped version of a shared entity. Content, links, part references, and navigation refs are all independently editable per language in the Site Editor.
 
 ### Admin UX
 

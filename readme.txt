@@ -18,6 +18,10 @@ Lingua Forge is for sites that publish content in more than one language and wan
 
 It brings together three concerns that always end up intertwined on multilingual WordPress sites: language routing, SEO meta output, and AI-assisted editorial work. Instead of coordinating three separate plugins that each make assumptions about the others, everything ships as a single installable package with a shared foundation.
 
+**Built on WordPress, not around it**
+
+Lingua Forge stays as close to WordPress core and Full Site Editing conventions as possible. Translations are native WordPress posts. FSE templates, template parts, and navigations are native `wp_template`, `wp_template_part`, and `wp_navigation` posts — not string-swapped versions of a shared entity. No runtime dependencies ship with the plugin, no parallel data layer, no render-time interception. Block API v3 throughout, no jQuery on the frontend, REST routes at `rest_api_init`, standard WordPress i18n and security conventions without exception.
+
 **Language Router**
 
 Detects the active language from URL prefixes (`/de/`), query parameters, or a cookie, and keeps all routing, hreflang, and admin UX in sync.
@@ -25,7 +29,9 @@ Detects the active language from URL prefixes (`/de/`), query parameters, or a c
 * Language-prefixed URLs and category archives with automatic rewrite rules
 * Post and page translation groups linked via a shared TRID (UUID)
 * Outdated-translation tracking — flags content that was updated after its translations were last synced
-* Language-specific FSE templates (`page-de`, `single-fr`, `search-en`)
+* Full FSE template localisation — language-specific templates (`page-de`, `single-fr`, `search-en`) auto-assigned when a post's language is set. Settings → Router provides a complete scaffold → AI-translate → fix links → fix parts → fix nav workflow: create a language copy of any template or template part, AI-translate it, fix internal links, fix template-part slug references, and fix wp:navigation ref IDs — all without CLI or manual database work
+* Language-specific template parts — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any template part. Each is an independent native `wp_template_part` post
+* Language navigation menus — create per-language `wp_navigation` copies with AI-translated labels and language-prefixed URLs
 * hreflang tags for singular, archive, and paginated views; suppresses duplicate output from Yoast SEO, Rank Math, AIOSEO, and SEOPress automatically
 * Language Switcher block (dropdown or dropup, fully customisable)
 * Admin link fixer — finds internal links pointing to the wrong language version and repairs them in bulk
@@ -57,10 +63,6 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` for scripted and automated workflows
 
 API keys are stored encrypted (AES-256-GCM with provider slug as authenticated data, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
-
-**WordPress-core and FSE conformance**
-
-Lingua Forge is built to stay as close to WordPress core and Full Site Editing conventions as possible: no runtime dependencies (only what WordPress provides ships in the plugin), Block API v3 with server-side rendering and a full block-supports declaration, no jQuery on the frontend, REST routes registered at `rest_api_init`, FSE post types used with correct taxonomy bindings, and standard i18n / security conventions throughout.
 
 Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
