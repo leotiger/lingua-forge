@@ -4,12 +4,12 @@
 # Usage:
 #   ./dev/build-zip.sh [output-dir]
 #
-# output-dir defaults to ~/Downloads. The ZIP is always named
+# output-dir defaults to ~/Github/lingua-forge-deploy. The ZIP is always named
 # lingua-forge-{version}.zip and always extracts to a lingua-forge/ folder.
 #
 # Examples:
-#   ./dev/build-zip.sh                      # → ~/Downloads/lingua-forge-1.6.5.zip
-#   ./dev/build-zip.sh /tmp/plugin-build    # → /tmp/plugin-build/lingua-forge-1.6.5.zip
+#   ./dev/build-zip.sh                      # → ~/Github/lingua-forge-deploy/lingua-forge-1.6.5.zip
+#   ./dev/build-zip.sh ~/Downloads          # → ~/Downloads/lingua-forge-1.6.5.zip
 
 set -euo pipefail
 
@@ -20,8 +20,8 @@ PLUGIN_SLUG="lingua-forge"
 # Read version from lingua-forge.php
 VERSION=$(grep -E "^\s*\*\s*Version:" "$PLUGIN_DIR/lingua-forge.php" | sed "s/.*Version:[[:space:]]*//" | tr -d '[:space:]')
 
-# Output directory — first argument or ~/Downloads
-OUTPUT_DIR="${1:-$HOME/Downloads}"
+# Output directory — first argument or ~/Github/lingua-forge-deploy
+OUTPUT_DIR="${1:-$HOME/Github/lingua-forge-deploy}"
 mkdir -p "$OUTPUT_DIR"
 
 ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"

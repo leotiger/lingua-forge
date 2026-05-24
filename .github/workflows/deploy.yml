@@ -23,33 +23,3 @@ jobs:
           SLUG: lingua-forge
           ASSETS_DIR: docs/assets
 
-  release:
-    name: Create GitHub Release with clean plugin ZIP
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Extract version from tag
-        id: version
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-
-      - name: Build clean plugin ZIP
-        run: |
-          chmod +x dev/build-zip.sh
-          dev/build-zip.sh /tmp/plugin-dist
-
-      - name: Upload ZIP to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: /tmp/plugin-dist/lingua-forge-${{ steps.version.outputs.tag }}.zip
-          generate_release_notes: true
-          body: |
-            ## Installation
-
-            Download **`lingua-forge-${{ steps.version.outputs.tag }}.zip`** above and install via **Plugins → Add New → Upload Plugin** in WordPress.
-
-            > ⚠️ Do not use the *Source code (zip)* or *Source code (tar.gz)* archives — those expand to the wrong folder name and will not install correctly.
