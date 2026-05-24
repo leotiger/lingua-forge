@@ -9,6 +9,7 @@ jobs:
   deploy:
     name: Deploy to WordPress.org SVN
     runs-on: ubuntu-latest
+    if: ${{ secrets.SVN_USERNAME != '' }}
 
     steps:
       - name: Checkout code
@@ -21,3 +22,37 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SLUG: lingua-forge
           ASSETS_DIR: docs/assets
+
+  release:
+    name: Create GitHub Release with clean plugin ZIP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Build clean plugin ZIP
+        run: |
+          # Read exclusions from .distignore and pass them to zip.
+          # Each non-empty, non-comment line becomes a */pattern exclusion
+          # so the zip -x flag works correctly on both GNU and BSD zip.
+          EXCLUDES=()
+          while IFS= read -r line; do
+            [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+            [[ "$line" =~ ^# ]] && continue
+            EXCLUDES+=(-x "*/${line%/}/*" -x "*/${line%/}")
+          done < .distignore
+
+          cd ..
+          zip -r "lingua-forge-${{ steps.version.outputs.tag }}.zip" lingua-forge/ \
+            "${EXCLUDES[@]}"
+
+      - name: Upload ZIP to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ../lingua-forge-${{ steps.version.outputs.tag }}.zip
+          generate_release_notes: true

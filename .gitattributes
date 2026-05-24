@@ -1,0 +1,38 @@
+# export-ignore — paths listed here are excluded from git archive outputs,
+# which means they are stripped from the automatic "Source code (zip/tar.gz)"
+# downloads GitHub generates for every release tag.
+
+# Repo documentation and WordPress.org assets
+docs/                       export-ignore
+
+# Developer / project documentation
+CONTRIBUTING.md             export-ignore
+COMPETITIVE-ANALYSIS.md     export-ignore
+readme-wp.md                export-ignore
+blog-post-draft.md          export-ignore
+blog-post-redis.md          export-ignore
+blog-ai-who-is-learning.md  export-ignore
+blog-review-uniform.md      export-ignore
+blog-knocking-on-the-door.md export-ignore
+
+# Internal audit docs (normally in ../lingua-forge-audit/, belt-and-braces)
+CLAUDE.md                   export-ignore
+REVIEW.md                   export-ignore
+
+# Git and CI
+.gitattributes              export-ignore
+.gitignore                  export-ignore
+.github/                    export-ignore
+
+# Editor and IDE
+.editorconfig               export-ignore
+.vscode/                    export-ignore
+.idea/                      export-ignore
+
+# Dev tooling
+dev/                        export-ignore
+
+# Tests
+tests/                      export-ignore
+build/                      export-ignore
+coverage/                   export-ignore
