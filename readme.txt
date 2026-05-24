@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.6.0
+Stable tag: 1.6.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -213,6 +213,18 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.6.2 =
+* Fixed: handle_singular_redirect() now skips non-public post types (wp_global_styles, wp_navigation, etc.) — previously these satisfied is_singular() and could produce cross-domain redirects when the object cache was poisoned (e.g. shared Redis without WP_CACHE_KEY_SALT).
+* Fixed: get_translations() query now excludes non-public post types and auto-drafts — wp_template and other FSE-internal posts could appear as translation group members, causing the homepage redirector to send visitors to raw template slugs like /front-page-it/.
+* Fixed: lang_permalink() short-circuits for non-public post types — prevents URL rewriting on internal WordPress post types that pass through post_link / page_link.
+* Fixed: set_lang_cookie() now explicitly scopes the lf_lang cookie to the site's own domain (wp_parse_url( home_url(), PHP_URL_HOST )) instead of passing an empty domain string, preventing cookie bleed between sites sharing a server.
+
+= 1.6.1 =
+* Fixed: Translation Memory cache invalidation — Translation::compute_compliance_signature() was still reading the legacy linguaforge_compliance_addendum option (replaced in 1.5.0 by three per-preset options). Editing a per-preset addendum no longer invalidated the affected TM rows, so the cache served back translations produced under the previous preset rules. The signature now reads Config::preset_addendum( $preset ) and folds in the resolved per-post preset; existing TM rows become one-time misses on first encounter and are rewritten on the next translation.
+* Fixed: MetaBox per-page preset picker — the "Global default (Custom)" indicator stopped surfacing after the 1.5.0 migration because the underlying check still read the legacy global option. Now compares the resolved per-preset addendum against the built-in default.
+* Fixed: FSE-translate AJAX endpoints (Settings → Router → Translate / Translate all) bypassed the rate-limit and daily-quota gates that protect every other paid-AI endpoint. Both ajax_translate_fse_content and ajax_translate_fse_navigation now apply the same per-user sliding window and site-wide UTC daily ceiling via the new RateLimiter::gate_ajax_or_die() adapter. The linguaforge_ai_rate_limit and linguaforge_ai_daily_quota filters apply to two new endpoint keys: translate-fse-content and translate-fse-navigation.
+* Added: LinguaForge\AI\REST\RateLimiter class — extracted from FeatureController so the REST endpoints and the new AJAX FSE-translate handlers share one limiter implementation.
+
 = 1.6.0 =
 * Added: FSE Template Localisation — Settings → Router now includes a Language Templates section. Scaffold language-specific FSE templates (page-ca, single-de, …) from base templates in one click, AI-translate their content, fix internal links, and update template-part slug references to language-specific variants (e.g. footer → footer-ca) via the new Fix Parts action.
 * Added: Language Template Parts — scaffold, AI-translate, and fix internal links for language-specific template parts (header-ca, footer-de, …). A Fix Nav action rewrites wp:navigation ref IDs inside each part to point at the corresponding language-copy navigation post, resolving mismatched menus in the Site Editor.
@@ -236,6 +248,12 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+Defensive hardening release. Closes four edge cases surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT): the singular redirect handler, translation group query, permalink filter, and language cookie all now guard against non-public WordPress post types and cross-site domain bleed. No schema or settings changes — behaviour is identical on correctly configured sites.
+
+= 1.6.1 =
+Bug-fix release. Restores correct Translation Memory cache invalidation after per-preset addendum edits (the 1.5.0 migration left a stale option-read in the signature path) and closes a budget-protection gap where the 1.6.0 FSE-translate AJAX endpoints bypassed the per-user rate limit and site-wide daily quota that guard every other paid-AI endpoint. No schema or settings changes.
 
 = 1.6.0 =
 Adds full FSE template localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific templates, template parts, and navigation menus directly from Settings → Router.

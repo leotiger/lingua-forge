@@ -2,6 +2,38 @@
 
 ---
 
+## [1.6.2] — 2026-05-24
+
+### Fixed
+
+- **`handle_singular_redirect()` — non-public post types processed as translatable content** — `wp_global_styles`, `wp_navigation`, and other internal WordPress post types satisfy `is_singular()` and were therefore processed by the redirect logic. When the object cache was poisoned (e.g. shared Redis with no `WP_CACHE_KEY_SALT`), this produced live 302 redirects to internal FSE URLs on the wrong domain (e.g. `other-site.com/wp-global-styles-theme/`). The handler now checks `get_post_type_object()->public` and returns immediately for non-public post types.
+- **`get_translations()` — non-public post types returned as translation group members** — the TRID query joined only `wp_postmeta`, so `wp_template`, `wp_template_part`, `wp_navigation`, `wp_global_styles`, `wp_block`, `nav_menu_item`, `revision`, and `attachment` posts could appear as translations of public pages if they shared a `_lf_trid` value. The query now inner-joins `wp_posts` and excludes all non-public post types and `auto-draft` status. Fixes the `front-page-it` redirect caused by FSE template posts leaking into homepage translation lookups.
+- **`lang_permalink()` — URL rewriting attempted on non-public post types** — `post_link` and `page_link` fire for any post, including internal types. The filter now short-circuits immediately for non-public post types, preventing URL mangling on `wp_template` and similar posts.
+- **`set_lang_cookie()` — empty domain allowed cross-site cookie bleed** — the `setcookie()` call passed an empty string as the domain parameter, leaving scope resolution to the browser. On servers hosting multiple WordPress sites this could allow the `lf_lang` cookie set by one site to be read by another. The domain is now explicitly set to `wp_parse_url( home_url(), PHP_URL_HOST )`.
+
+---
+
+## [1.6.1] — 2026-05-23
+
+### Fixed
+
+- **Translation Memory cache invalidation — stale legacy option read** — `Translation::compute_compliance_signature()` was reading the pre-1.5.0 `linguaforge_compliance_addendum` option as part of the TM cache-key signature. Since 1.5.0 replaced that global option with per-preset options (`linguaforge_preset_addendum_{technical,legal,creative}`), the signature went silently constant: editing a per-preset addendum no longer invalidated affected TM rows, and the cache served back translations produced under the previous preset rules. The signature now reads `Config::preset_addendum( $preset )` and folds in the resolved per-post preset via a new `$post_id` parameter, so per-page preset overrides also participate in cache keying. TM rows written before this fix become one-time permanent misses on first encounter and are overwritten on the next translation — an acceptable one-shot reset since those rows were keyed on a stale addendum value anyway.
+- **MetaBox per-page preset picker — "(Custom)" indicator never surfacing** — the `$has_custom_addendum` check in `MetaBox::render()` also read the legacy `linguaforge_compliance_addendum` option, so the "Global default (Custom)" label in the per-page preset dropdown stopped appearing after the 1.5.0 migration even on sites that had saved a custom per-preset addendum. The check now compares the global preset's resolved addendum against its built-in default — "(Custom)" surfaces whenever an admin has saved an override.
+- **FSE-translate AJAX endpoints bypassed rate-limit + daily-quota gates** — `RouterTab::ajax_translate_fse_content` and `ajax_translate_fse_navigation` (added in 1.6.0) called the AI provider directly without going through the per-user 30/min sliding window or the site-wide UTC daily ceiling that guard every other paid-AI endpoint. An admin clicking "Translate all" in the Language Templates row could dispatch many parallel quality-tier calls with no upper bound. Both handlers now gate on the same defences as `/translate-chunk` / `/create-chunk` / `/revise-block`, via the new `RateLimiter::gate_ajax_or_die()` adapter.
+
+### Added
+
+- **`LinguaForge\AI\REST\RateLimiter` class** — extracted from `FeatureController` to make the per-user-per-endpoint sliding-window rate limit and the site-wide UTC daily quota reusable across the REST endpoints and the AJAX FSE-translate handlers. Public surface: `enforce_rate_limit($endpoint)` and `enforce_daily_quota($endpoint)` return `null` on success / `WP_Error` 429 on limit hit (used by REST callers, which return the `WP_Error` directly), and `gate_ajax_or_die($endpoint)` runs both gates and exits with `wp_send_json_error` on the first failure (used by the AJAX FSE-translate handlers). Both filter hooks (`linguaforge_ai_rate_limit`, `linguaforge_ai_daily_quota`) keep their existing signatures and now apply to the two new endpoint keys `translate-fse-content` and `translate-fse-navigation` as well.
+
+### Maintenance
+
+- **`CONTRIBUTING.md` — verifying-changes-without-PHP section rewritten** with a primary path that installs PHP 8.1 user-space from the apt cache via `apt-get download` + `dpkg-deb -x` (works in restricted sandboxes that have neither root nor `composer install` capability). The previous Python-tokenizer + global-class regex audit guidance is kept as a fallback for environments where even `apt-get download` is blocked.
+- **`CONTRIBUTING.md` — new "When you add something new" item 9** — explicit "Don't touch `CHANGELOG.md`, `Stable tag`, or version headers" rule. Iterating on a fix produces meaningless version history if every attempt bumps the version; releases are cut at clean checkpoints.
+- **`CONTRIBUTING.md` — REVIEW.md cross-reference** updated to clarify that architectural notes live in the maintainer-only `lingua-forge-audit/` sibling folder; older `REVIEW.md` is historical.
+- **`tests/README.md` — full refresh.** Was 36 lines listing 2 of 9 actual test files. Now 100 lines covering every test file by name with a one-line scope, a "where does a new test go?" decision table (by what the code-under-test depends on), the bootstrap dual-path mechanism, and the ReflectionMethod-on-private-statics pattern.
+
+---
+
 ## [1.6.0] — 2026-05-23
 
 ### Added

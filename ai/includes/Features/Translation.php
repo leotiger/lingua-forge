@@ -348,7 +348,7 @@ class Translation implements FeatureInterface {
 
         // ── Auxiliary cache-key components ─────────────────────────────────
         $glossary_hash        = Glossary::hash_for_pair( $source_lang, $target_language );
-        $compliance_signature = self::compute_compliance_signature();
+        $compliance_signature = self::compute_compliance_signature( $post_id );
 
         // ── Bulk lookup ────────────────────────────────────────────────────
         $tm_hits = TranslationMemory::lookup_batch(
@@ -613,19 +613,40 @@ class Translation implements FeatureInterface {
     }
 
     /**
-     * Stable signature of the current compliance preset state.
+     * Stable signature of the active preset's state at translation time.
      *
-     * Folded into the Translation Memory cache key so toggling compliance
-     * (or editing its temperature or addendum) invalidates affected cached
-     * translations — the new system prompt's stricter rules should actually
-     * apply on the next translation, not be hidden behind a stale cache.
+     * Folded into the Translation Memory cache key so that toggling the
+     * preset (or editing its temperature or per-preset addendum) invalidates
+     * affected cached translations — the new system prompt's stricter
+     * rules should actually apply on the next translation, not be hidden
+     * behind a stale cache.
+     *
+     * Reads via {@see Config::active_preset()} + {@see Config::preset_addendum()}
+     * so that:
+     *
+     *   • The 1.5.0+ per-preset addenda
+     *     (`linguaforge_preset_addendum_{technical,legal,creative}`) are
+     *     correctly reflected — editing any of them invalidates the cache
+     *     rows that used the previous value.
+     *   • A per-post `_linguaforge_preset` override participates in the
+     *     signature: a page that overrides to Legal gets its own cache
+     *     bucket distinct from the global-Technical bucket on the same
+     *     source markup.
+     *
+     * Note on backward compatibility: TM rows written before this fix
+     * (with the legacy `linguaforge_compliance_addendum`-derived signature)
+     * become permanent misses on first encounter. They are overwritten on
+     * the next translation rather than re-served, which is the correct
+     * outcome — those rows were keyed on a stale addendum.
+     *
+     * @param int $post_id Pass through so per-page preset overrides
+     *                     participate in the signature. 0 = global only.
      */
-    private static function compute_compliance_signature(): string {
+    private static function compute_compliance_signature( int $post_id = 0 ): string {
 
-        $preset   = Config::active_preset();
+        $preset   = Config::active_preset( $post_id );
         $presets  = Config::presets();
-        $stored   = (string) get_option( 'linguaforge_compliance_addendum', '' );
-        $addendum = $stored !== '' ? $stored : Config::LEGAL_ADDENDUM_DEFAULT;
+        $addendum = Config::preset_addendum( $preset );
 
         return substr( hash( 'sha256',
             ( $preset !== 'standard' ? '1' : '0' )

@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Admin\Settings\Tabs;
 
 use LinguaForge\AI\Admin\SettingsPage;
+use LinguaForge\AI\REST\RateLimiter;
 
 defined('ABSPATH') || exit;
 
@@ -1194,6 +1195,13 @@ class RouterTab extends Tab {
             wp_send_json_error( __( 'No source content found to translate.', 'lingua-forge' ) );
         }
 
+        // Budget protection — same per-user sliding window + site-wide UTC
+        // daily ceiling that guard the REST chunk / revise / create endpoints.
+        // Runs after structural validation (so bad-request calls don't burn
+        // the user's budget) but before the paid AI call. Exits with a 429
+        // JSON envelope on either limit hit; never returns in that case.
+        RateLimiter::gate_ajax_or_die( 'translate-fse-content' );
+
         // Resolve human-readable language names for the AI prompt.
         $languages   = \LinguaForge\AI\Features\Translation::get_languages();
         $source_name = $languages[ $source_lang ] ?? strtoupper( $source_lang );
@@ -1443,6 +1451,13 @@ class RouterTab extends Tab {
         if ( $content === '' ) {
             wp_send_json_error( __( 'Navigation has no content to translate.', 'lingua-forge' ) );
         }
+
+        // Budget protection — same per-user sliding window + site-wide UTC
+        // daily ceiling that guard the REST chunk / revise / create endpoints.
+        // Runs after structural validation (so bad-request calls don't burn
+        // the user's budget) but before the paid AI call. Exits with a 429
+        // JSON envelope on either limit hit; never returns in that case.
+        RateLimiter::gate_ajax_or_die( 'translate-fse-navigation' );
 
         // Resolve human-readable language names for the prompt.
         $languages   = \LinguaForge\AI\Features\Translation::get_languages();

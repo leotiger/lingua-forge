@@ -92,6 +92,10 @@ class Manager {
 		if ( is_numeric( $post ) ) $post = get_post( $post );
 		if ( ! $post || ! isset( $post->ID ) ) return $url;
 
+		// Only rewrite URLs for public, front-end post types.
+		$post_type_obj = get_post_type_object( $post->post_type );
+		if ( ! $post_type_obj || ! $post_type_obj->public ) return $url;
+
 		$lang = $this->router->trid_group->get_lang( $post->ID );
 		if ( ! $lang || $lang === $this->router->context->source_language() ) return $url;
 

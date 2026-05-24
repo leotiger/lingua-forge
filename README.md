@@ -48,6 +48,14 @@ This blog post grew directly out of a Lingua Forge coding session. It wasn't pro
 
 → [You're Teaching the Machine — Whether You Know It or Not](blog-ai-who-is-learning.md)
 
+## On running WordPress in the real world — and what can quietly go wrong
+
+Building a plugin that runs on production servers means encountering failure modes that no amount of local testing ever surfaces. One of the stranger ones: two completely independent WordPress sites on the same server, each with a clean database and correct configuration, spending an afternoon redirecting visitors to each other — because a single missing line in `wp-config.php` left them sharing a Redis object cache. No errors, no warnings, just two sites casually swapping identities until the cache was flushed and the key salt was added.
+
+The post below tells the story as it unfolded — the false starts, the two layers of caching that compounded the confusion, and the embarrassingly small fix at the end.
+
+→ [How Two Innocent WordPress Sites Spent an Afternoon Impersonating Each Other](blog-post-redis.md)
+
 ---
 
 ## Features
@@ -783,9 +791,17 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.6.0**
+**Current release — 1.6.2**
 
-- **FSE Template Localisation** — Settings → Router now includes three new sections: Language Templates, Language Template Parts, and Language Navigations. Scaffold language-specific FSE templates and parts in one click, AI-translate their content, fix internal links, update template-part slug references to language-specific variants, and fix `wp:navigation` ref IDs so each language header/footer part points at the correct translated navigation menu.
+- **Defensive hardening — non-public post type guards** — `handle_singular_redirect()`, `get_translations()`, and `lang_permalink()` now all skip internal WordPress post types (`wp_global_styles`, `wp_template`, `wp_navigation`, etc.), preventing cross-domain redirects and broken translation lookups when the object cache is misconfigured.
+- **Cookie domain scoping** — `set_lang_cookie()` now explicitly binds the `lf_lang` cookie to the site's own domain, preventing bleed between sites on shared servers.
+
+**1.6.1**
+
+- **Translation Memory cache invalidation fix** — the TM cache-key signature was still reading the pre-1.5.0 global `linguaforge_compliance_addendum` option, so editing a per-preset addendum no longer invalidated affected TM rows. Fixed.
+- **Budget-protection fix** — the 1.6.0 FSE-translate AJAX endpoints bypassed the per-user rate limit and site-wide daily quota that guard every other paid-AI endpoint. The new `LinguaForge\AI\REST\RateLimiter` class (extracted from `FeatureController`) is now shared by both REST and AJAX paths.
+
+**1.6.0** — FSE Template Localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific FSE templates, template parts, and navigation menus directly from Settings → Router.
 
 **1.5.1** — RTL support (Persian locale, switcher `lang` attribute, RTL submenu, RTL AI result panels). See [CHANGELOG.md](CHANGELOG.md) for details.
 

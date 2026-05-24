@@ -260,14 +260,14 @@ class FeatureController {
 
         // Rate-limit check runs after structural validation (so bad-request
         // calls don't burn the user's budget) but before the paid AI call.
-        $rate_error = self::enforce_rate_limit('translate-chunk');
+        $rate_error = RateLimiter::enforce_rate_limit('translate-chunk');
         if ($rate_error instanceof \WP_Error) {
             return $rate_error;
         }
 
         // Site-wide daily ceiling — protects against the per-user limit being
         // multiplied across many users on multi-author sites.
-        $quota_error = self::enforce_daily_quota('translate-chunk');
+        $quota_error = RateLimiter::enforce_daily_quota('translate-chunk');
         if ($quota_error instanceof \WP_Error) {
             return $quota_error;
         }
@@ -319,12 +319,12 @@ class FeatureController {
             $tone = 'informative';
         }
 
-        $rate_error = self::enforce_rate_limit('create-chunk');
+        $rate_error = RateLimiter::enforce_rate_limit('create-chunk');
         if ($rate_error instanceof \WP_Error) {
             return $rate_error;
         }
 
-        $quota_error = self::enforce_daily_quota('create-chunk');
+        $quota_error = RateLimiter::enforce_daily_quota('create-chunk');
         if ($quota_error instanceof \WP_Error) {
             return $quota_error;
         }
@@ -470,14 +470,14 @@ class FeatureController {
 
         // Rate-limit check runs after structural validation (so bad-request
         // calls don't burn the user's budget) but before the paid AI call.
-        $rate_error = self::enforce_rate_limit('revise-block');
+        $rate_error = RateLimiter::enforce_rate_limit('revise-block');
         if ($rate_error instanceof \WP_Error) {
             return $rate_error;
         }
 
         // Site-wide daily ceiling — protects against the per-user limit being
         // multiplied across many users on multi-author sites.
-        $quota_error = self::enforce_daily_quota('revise-block');
+        $quota_error = RateLimiter::enforce_daily_quota('revise-block');
         if ($quota_error instanceof \WP_Error) {
             return $quota_error;
         }
@@ -530,168 +530,24 @@ class FeatureController {
     // ─────────────────────────────────────────────────────────────────────────
     // RATE LIMITING & QUOTA
     //
-    // The translate-chunk and revise-block endpoints accept arbitrary text
-    // and make paid AI calls. Two layered defenses protect the API budget:
+    // The translate-chunk, create-chunk, and revise-block endpoints accept
+    // arbitrary text and make paid AI calls. Two layered defenses protect
+    // the API budget — both live on {@see RateLimiter} so the same gates
+    // can be reused by the FSE-translate AJAX handlers in RouterTab:
     //
-    //   1. Per-user sliding 60s window (enforce_rate_limit)
+    //   1. Per-user sliding 60s window — RateLimiter::enforce_rate_limit()
     //         Default 30 req/min per user per endpoint. Filterable via
     //         apply_filters('linguaforge_ai_rate_limit', ...).
     //
-    //   2. Per-site rolling daily ceiling (enforce_daily_quota)
+    //   2. Per-site rolling daily ceiling — RateLimiter::enforce_daily_quota()
     //         Configured in Settings → AI Limits & Security. 0 = unlimited.
     //         Filterable via apply_filters('linguaforge_ai_daily_quota', ...).
     //
     // Both fire before the AI call. Rate limit returns 429 with retry_after;
     // the daily ceiling returns 429 with the human-readable date when the
-    // counter resets.
+    // counter resets. REST callers return the WP_Error directly; AJAX
+    // callers use RateLimiter::gate_ajax_or_die() to convert + exit.
     // ─────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Enforce a per-user-per-endpoint rate limit.
-     *
-     * Returns null when the request is allowed (and records the call), or a
-     * WP_Error with HTTP 429 when the user has exceeded the threshold. The
-     * error payload includes a `retry_after` integer (seconds until the next
-     * quota slot frees up — i.e. when the oldest in-window event ages out).
-     *
-     * Implementation note: WordPress transients have no atomic increment, so
-     * we store an array of timestamps. A race between two concurrent requests
-     * may let one over-the-limit call slip through; that's acceptable for a
-     * budget-protection limiter (vs. a security limiter).
-     *
-     * @param string $endpoint Short identifier for the endpoint (used in the
-     *                         transient key so chunk/revise quotas are separate).
-     */
-    private static function enforce_rate_limit(string $endpoint): ?\WP_Error {
-
-        $policy = apply_filters(
-            'linguaforge_ai_rate_limit',
-            [
-                'window_seconds' => 60,
-                'max_requests'   => 30,
-            ],
-            $endpoint
-        );
-
-        $window = max(1, (int) ($policy['window_seconds'] ?? 60));
-        $limit  = max(1, (int) ($policy['max_requests']   ?? 30));
-
-        $user_id = get_current_user_id();
-
-        // Anonymous callers shouldn't reach this — the permission_callback
-        // requires edit_posts. If a future code path bypasses that, fail closed.
-        if ($user_id <= 0) {
-            return new \WP_Error(
-                'rate_limited',
-                'Rate limit unavailable for anonymous requests.',
-                ['status' => 429, 'retry_after' => $window]
-            );
-        }
-
-        $key = "linguaforge_rate_user_{$user_id}_{$endpoint}";
-
-        $now    = time();
-        $cutoff = $now - $window;
-
-        $events = get_transient($key);
-        $events = is_array($events)
-            ? array_values(array_filter(
-                $events,
-                static fn($t) => is_int($t) && $t >= $cutoff
-            ))
-            : [];
-
-        if (count($events) >= $limit) {
-
-            $oldest      = min($events);
-            $retry_after = max(1, ($oldest + $window) - $now);
-
-            return new \WP_Error(
-                'rate_limited',
-                sprintf(
-                    /* translators: %d is seconds until the next AI request is allowed. */
-                    __('Too many AI requests. Please retry in %d seconds.', 'lingua-forge'),
-                    $retry_after
-                ),
-                [
-                    'status'      => 429,
-                    'retry_after' => $retry_after,
-                ]
-            );
-        }
-
-        $events[] = $now;
-
-        // TTL slightly larger than the window so the array survives the full
-        // sliding span. Anything older than $cutoff is pruned on next read.
-        set_transient($key, $events, $window + 5);
-
-        return null;
-    }
-
-    /**
-     * Enforce a site-wide daily ceiling on AI calls.
-     *
-     * Counter lives in a transient keyed by UTC date (YYYYMMDD) with a TTL
-     * that lasts until UTC midnight. WordPress will auto-expire the entry
-     * the day after, so there's no cleanup to do.
-     *
-     * Returns null when the call is allowed (and increments the counter),
-     * or a WP_Error with HTTP 429 when the daily ceiling is reached. The
-     * `retry_after` field on the error payload is the seconds remaining
-     * until UTC midnight (when the counter resets).
-     *
-     * Quota source (lowest priority first):
-     *   wp_options['linguaforge_ai_daily_quota']   set by admin in Settings
-     *   apply_filters('linguaforge_ai_daily_quota', $option, $endpoint)
-     *
-     * A value of 0 means "unlimited" and short-circuits the helper.
-     */
-    private static function enforce_daily_quota(string $endpoint): ?\WP_Error {
-
-        $quota = (int) apply_filters(
-            'linguaforge_ai_daily_quota',
-            (int) get_option('linguaforge_ai_daily_quota', 0),
-            $endpoint
-        );
-
-        if ($quota <= 0) {
-            return null; // unlimited
-        }
-
-        // UTC keyed counter — same key across all users so the limit is site-wide.
-        $today = gmdate('Ymd');
-        $key   = "linguaforge_quota_daily_used_{$today}";
-
-        $used = (int) get_transient($key);
-
-        if ($used >= $quota) {
-
-            // Seconds until UTC midnight tomorrow.
-            $retry_after = max(1, (strtotime('tomorrow UTC') ?: (time() + 86400)) - time());
-
-            return new \WP_Error(
-                'daily_quota_exceeded',
-                sprintf(
-                    /* translators: 1: quota number, 2: reset time. */
-                    __('Daily AI quota reached (%1$d requests). Resets at %2$s UTC.', 'lingua-forge'),
-                    $quota,
-                    gmdate('H:i', strtotime('tomorrow UTC') ?: time() + 86400)
-                ),
-                [
-                    'status'      => 429,
-                    'retry_after' => $retry_after,
-                    'quota'       => $quota,
-                ]
-            );
-        }
-
-        // TTL to UTC midnight + small grace, so the transient evaporates with the day.
-        $ttl = max(60, (strtotime('tomorrow UTC') ?: (time() + 86400)) - time() + 30);
-        set_transient($key, $used + 1, $ttl);
-
-        return null;
-    }
 
     /**
      * Remove <br> tags that wpautop injected between Gutenberg block

@@ -99,6 +99,10 @@ class Redirector {
 		global $post;
 		if ( ! $post ) return;
 
+		// Don't process internal/non-public post types (e.g. wp_global_styles, wp_navigation).
+		$post_type_obj = get_post_type_object( $post->post_type );
+		if ( ! $post_type_obj || ! $post_type_obj->public ) return;
+
 		$translations = $this->router->trid_group->get_translations( $post->ID );
 
 		if ( empty( $translations[LF_LANG] ) ) {

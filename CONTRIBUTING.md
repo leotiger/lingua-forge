@@ -289,10 +289,13 @@ ai/                           AI features (translation, meta-description, excerp
 meta-description/             Meta Description module — LinguaForge\MetaDescription\Module class
 ```
 
-The `REVIEW.md` at the repo root documents the architectural review
-findings and the prioritized refactor roadmap. Several roadmap items
-remain open (see that document); be aware of the in-flight conventions
-when adding new code.
+Architectural review and audit notes live **outside** the public
+plugin tree — in a maintainer-only `lingua-forge-audit/` sibling
+folder (not tracked in this repo). The current snapshot is
+`AUDIT-2026-05-23.md`; older `REVIEW.md` / `AUDIT-2026-05-19.md`
+documents are kept as historical record only. Contributors don't
+need to read them to ship a correct change — the conventions they
+codify all live in this file.
 
 ---
 
@@ -844,16 +847,78 @@ gives you four of the five rules, Plugin Check gives you the fifth.
 ## Verifying changes when PHP isn't installed locally
 
 A common scenario: editing in an environment without `php` on PATH
-(remote shell, restricted sandbox). `php -l` isn't an option but two
-tools cover most of the failure surface:
+(remote shell, restricted sandbox, hosted AI session).
+
+### First choice — install PHP user-space from the apt cache
+
+In most restricted environments `sudo` and `apt-get install` are
+blocked, but `apt-get download` (pulls a .deb without installing it)
+and `dpkg-deb -x` (extracts a .deb into any directory) both work
+without root. The recipe — confirmed working in the Cowork sandbox
+this project is developed in — takes ~3 minutes and gives you the
+full `composer qa` toolchain:
+
+```bash
+# 1) Pull the .deb files (no sudo).
+cd /tmp
+apt-get download \
+    php8.1-cli php8.1-common php8.1-opcache \
+    php8.1-xml php8.1-mbstring php8.1-curl php8.1-zip \
+    php-common libssl3 libxml2 libzip4 libonig5 libargon2-1 \
+    libgmp10 libgmpxx4ldbl libtidy5deb1 libsodium23 libffi8 \
+    libsqlite3-0 libreadline8 zlib1g
+
+# 2) Extract into ~/.local/php-root.
+mkdir -p ~/.local/php-root && cd ~/.local/php-root
+for d in /tmp/*.deb; do dpkg-deb -x "$d" .; done
+
+# 3) Override extension_dir so the extension .so files resolve against
+#    the user-space install path (the .ini files ship with bare names).
+cat > ~/.local/php-root/etc/php/8.1/cli/conf.d/00-extension-dir.ini <<EOF
+extension_dir = "$HOME/.local/php-root/usr/lib/php/20210902"
+EOF
+
+# 4) Copy the extension .ini files into the cli conf.d so they load.
+for ini in ~/.local/php-root/usr/share/php8.1-*/*/*.ini; do
+    cp "$ini" "$HOME/.local/php-root/etc/php/8.1/cli/conf.d/20-$(basename $ini)"
+done
+
+# 5) Drop a wrapper on PATH that bakes in the LD path + scan dir.
+mkdir -p ~/.local/bin
+cat > ~/.local/bin/php <<'EOF'
+#!/usr/bin/env bash
+export LD_LIBRARY_PATH="$HOME/.local/php-root/usr/lib/aarch64-linux-gnu:$HOME/.local/php-root/lib/aarch64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export PHP_INI_SCAN_DIR="$HOME/.local/php-root/etc/php/8.1/cli/conf.d"
+exec "$HOME/.local/php-root/usr/bin/php8.1" "$@"
+EOF
+chmod +x ~/.local/bin/php
+export PATH="$HOME/.local/bin:$PATH"
+
+# 6) Verify — should print PHP 8.1.x and a module list including
+#    tokenizer, xml, simplexml, dom, mbstring, …
+php -v && php -m
+```
+
+The `aarch64-linux-gnu` path in step 5 assumes ARM64 hosts. On x86_64
+hosts, swap that segment for `x86_64-linux-gnu` and request `_amd64`
+.deb variants in step 1.
+
+After this, `phpcs` / `phpstan` / `phpunit` from `dev/vendor/bin/`
+run exactly as they do on a developer's machine. The full
+walkthrough (with explanations of why the obvious paths fail and a
+verified `composer qa` reproduction) is in
+`lingua-forge-audit/AUDIT-2026-05-23.md` §9.5.
+
+### Fallback — when even `apt-get download` is blocked
+
+Two regex-tier tools cover most of the failure surface:
 
 - **Brace / paren / `<?php`-aware tokenizer in Python.** Walks the file
   tracking PHP / HTML mode, single + double quoted strings, heredocs and
   nowdocs, block + line comments, and counts `{}` / `()` only inside
   PHP regions. Catches unclosed blocks, runaway strings, and `<?php …`
-  blocks left open after a refactor. The full implementation lives in
-  this project's session history and is small enough to inline into a
-  prompt — under 50 lines of Python.
+  blocks left open after a refactor. ~50 lines of Python; small enough
+  to inline into a prompt.
 
 - **Global-class reference audit.** A regex scan over
   `new \w+(`, `: ?\w+`, `(\w+ \$var`, `instanceof \w+`, `\w+::`,
@@ -957,3 +1022,11 @@ A short checklist:
    uninstall list and whether the generic unprefixed variant (if any)
    is safe to delete — keys like `meta_description` may be shared with
    other plugins and must not be wiped on uninstall.
+9. **Don't touch `CHANGELOG.md`, `readme.txt`'s `Stable tag`, or the
+   `Version:` headers in `lingua-forge.php` / the constants in
+   `lingua-forge.php`.** The maintainer cuts releases manually via
+   SFTP/rsync and bumps version strings + writes changelog entries at
+   release time. Iterating on a fix produces meaningless version
+   history if every attempt gets its own bump. Same applies to AI-
+   assisted PRs — fix the code, leave the version metadata alone, and
+   the maintainer batches changelog entries when the release ships.

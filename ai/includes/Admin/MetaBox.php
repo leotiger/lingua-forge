@@ -305,7 +305,16 @@ class MetaBox {
         $presets          = Config::presets();
         $global_preset    = Config::active_preset();
         $page_preset      = (string) get_post_meta($post->ID, '_linguaforge_preset', true);
-        $has_custom_addendum = trim( (string) get_option('linguaforge_compliance_addendum', '') ) !== '';
+
+        // True when the editor has saved a per-preset addendum override
+        // for the currently-active global preset (Settings → Behavior).
+        // After 1.5.0 each non-standard preset has its own
+        // `linguaforge_preset_addendum_{preset}` option; the "(Custom)"
+        // hint should appear when the resolved value diverges from the
+        // built-in default. The Standard preset never carries an addendum
+        // surface so this is always false for it.
+        $has_custom_addendum = $global_preset !== 'standard'
+            && Config::preset_addendum( $global_preset ) !== Config::default_preset_addendum( $global_preset );
 
         ?>
         <div class="lingua-forge-panel">
@@ -319,16 +328,16 @@ class MetaBox {
                     <option value="global" <?php selected($page_preset, ''); ?>>
                         <?php
                         // Build the "Global default (…)" label.
-                        // When site-wide custom prompt instructions are saved they always
-                        // apply on top of (or instead of) the preset's built-in addendum,
-                        // so surface that fact in the option text.
-                        // When site-wide custom prompt instructions are saved, they
-                        // always override or supplement the preset addendum (see
-                        // Config::apply_compliance_to_system). Surface this as
-                        // "Custom" so editors understand the link to Settings → Behavior.
-                        // Without custom instructions, show the active preset name.
+                        //
+                        // When the global preset's per-preset addendum
+                        // (Settings → Behavior → AI Behaviour Presets) has been
+                        // edited away from its built-in default, surface that
+                        // fact as "Global default (Custom)" so editors know
+                        // the global isn't the vanilla preset definition.
+                        // Otherwise show the active preset's label
+                        // (Standard / Technical / Legal / Creative).
                         if ( $has_custom_addendum ) {
-                            // translators: %s: the word "Custom" referring to site-wide custom prompt instructions configured in Settings → Behavior
+                            // translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
                             echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html__( 'Custom', 'lingua-forge' ) );
                         } else {
                             $global_label = $presets[$global_preset]['label'] ?? $global_preset;

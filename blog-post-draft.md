@@ -42,7 +42,7 @@ AI proposes. Humans dispose. That is also, not coincidentally, exactly the philo
 
 ## What was actually built
 
-Lingua Forge 1.2.0 is a single WordPress plugin that handles the three concerns that always end up tangled together on a multilingual site:
+Lingua Forge is a single WordPress plugin that handles the three concerns that always end up tangled together on a multilingual site:
 
 **Getting visitors to the right language.** URL prefixes like `/de/` or `/fr/`, hreflang tags for search engines, a language switcher block for the modern block editor, and a panel that warns you when a translation has fallen behind its source post. There is also a tool that scans translated pages for internal links pointing to the wrong language version and fixes them in bulk — a quiet feature that saves hours of manual checking.
 

@@ -270,12 +270,14 @@ class Context {
 	public function set_lang_cookie( string $lang ): void {
 		if ( ! $this->is_valid_lang( $lang ) ) return;
 
+		$domain = wp_parse_url( home_url(), PHP_URL_HOST );
+
 		setcookie(
 			'lf_lang',
 			$lang,
 			time() + MONTH_IN_SECONDS,
 			'/',
-			'',
+			$domain,
 			is_ssl(),
 			true
 		);

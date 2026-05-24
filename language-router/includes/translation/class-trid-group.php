@@ -71,10 +71,13 @@ class TridGroup {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Subquery across wp_postmeta to resolve translation groups by TRID; no WP API equivalent. $wpdb->postmeta is a server-defined table name; $trid bound via %s placeholder. Result cached immediately below via wp_cache_set.
 		$rows = $wpdb->get_results( $wpdb->prepare( "
-			SELECT post_id, meta_value lang
-			FROM $wpdb->postmeta
-			WHERE meta_key='_lf_lang'
-			AND post_id IN (
+			SELECT pm.post_id, pm.meta_value lang
+			FROM $wpdb->postmeta pm
+			INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
+			WHERE pm.meta_key='_lf_lang'
+			AND p.post_status != 'auto-draft'
+			AND p.post_type NOT IN ('wp_template','wp_template_part','wp_navigation','wp_global_styles','wp_block','nav_menu_item','revision','attachment')
+			AND pm.post_id IN (
 				SELECT post_id FROM $wpdb->postmeta
 				WHERE meta_key='_lf_trid' AND meta_value=%s
 			)
