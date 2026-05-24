@@ -33,6 +33,7 @@ Lingua Forge sits in the post-based camp alongside WPML and Polylang, but diverg
 | **AI / auto-translation cost** | Your API key, provider rates (~€0.002–€0.01 per 1 000 tokens) | WPML Credits: 2 000 free/mo then top-up; ~€0.90 per 1 000 words | DeepL or Google subscription (separate) | Included word quota per plan (50 k–500 k AI words/yr) | Included (machine translation, then billed by word count) | DeepL / GPT4 / Google via AutoTranslate (API key, provider rates) |
 | **WooCommerce** | ❌ | Add-on (bundled in Agency) | Separate add-on | ✅ included | ✅ included (cloud handles dynamic content) | ✅ included |
 | **True zero-cost path** | ✅ Manual translation — no API key, no limit | ❌ Annual license required | ❌ Pro required for FSE template translation/hreflang | ✅ Manual translation free | ❌ Word count limit on free tier | ❌ |
+| **WordPress.org listing** | 🗓 Planned | ❌ Not listed (commercial only) | ✅ Free tier listed | ✅ Free tier listed | ✅ Connector plugin listed | ❌ Not listed (v2 retired early 2025; current version commercial only) |
 
 ### Three-year cost model — single site, ~200 posts, 3 languages, moderate AI use
 
