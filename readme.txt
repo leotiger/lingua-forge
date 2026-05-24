@@ -223,6 +223,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 = 1.6.5 =
 * Fixed: ajax_fix_fse_links() stale-path links not updated in template parts — links that already carried the correct language prefix but whose slug had changed were never repaired. A second pass via LinkFixer::fix_post() now runs after the prefix-rewrite save, using data-id as ground truth. Covers footers, headers, sidebars, and any wp_template_part.
+* Maintenance: .distignore — .github/ added (workflow directory was missing and would have been included in SVN submission); docs/ added for screenshots, banner, and icon pushed to SVN assets/ by the deploy workflow.
 * Maintenance: filter_locale_for_vik_booking() renamed to filter_locale() — the locale filter hook is generic and covers any plugin that reads locale directly instead of determine_locale. Docblock added.
 * Maintenance: All ->debug() call sites removed from language-router sub-classes (QueryFilter, Sync, Query, Redirector, Hreflang) — leftover from the mu-plugin era, flooding debug.log on every request. The debug() method and linguaforge_debug() wrapper are retained.
 * Maintenance: Router::debug_system_init() and debug_request_context() removed along with their add_action registrations — fired on every frontend page load whenever WP_DEBUG was on.

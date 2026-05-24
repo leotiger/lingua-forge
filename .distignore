@@ -5,7 +5,12 @@
 # Dev tooling — Composer, npm, PHPCS, PHPStan, PHPUnit, wp-env, ESLint —
 # lives in dev/. It is excluded as a whole below; the belt-and-braces
 # entries further down catch any stray copies of individual config files
-# that might appear in the root.
+# that might appear in the plugin root.
+
+# Repo documentation and WordPress.org assets (screenshots, banner, icon).
+# docs/assets/ is pushed to SVN assets/ by the deploy workflow — it does
+# not belong inside the plugin ZIP.
+docs/
 
 # Developer / project documentation
 CONTRIBUTING.md
@@ -23,10 +28,11 @@ CLAUDE.md
 REVIEW.md
 AUDIT-*.md
 
-# Git
+# Git and CI
 .git
 .gitignore
 .gitattributes
+.github/
 
 # Editor and IDE
 .editorconfig
@@ -34,17 +40,17 @@ AUDIT-*.md
 .idea/
 .DS_Store
 
-# Dev tooling — all tooling lives here; never ships to .org.
+# Dev tooling — all tooling lives under dev/; never ships to .org.
 dev/
 
-# Tests — the suite lives in this folder (it's plugin source we want
-# under version control), but we don't ship it to .org.
+# Tests — the suite lives here (plugin source under version control)
+# but is not shipped to .org.
 tests/
 build/
 coverage/
 
-# Belt-and-braces — if anyone ever copies a dev-tooling config back
-# into the plugin folder, the deploy ZIP must still exclude it.
+# Belt-and-braces — if a dev-tooling config file ever drifts back into
+# the plugin root, the deploy ZIP must still exclude it.
 node_modules/
 package.json
 package-lock.json
