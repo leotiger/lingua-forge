@@ -166,7 +166,36 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 ---
 
-## 8. WooCommerce Multilingual
+## 8. Setup and Theme Integration Experience
+
+Feature tables show what a plugin can do — not what it costs in actual effort to get there. For block themes especially, the gap between "feature listed" and "what you actually have to do" is significant and varies widely across plugins.
+
+| | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
+|---|---|---|---|---|---|---|
+| **Install → routing live** | Install + Settings → Languages + Settings → Router (2 screens) | Install + setup wizard + String Translation add-on install (CMS plan minimum for FSE) | Install + Languages screen (clean; FSE requires Pro) | Install + Settings → TranslatePress → add language | Install + enter API key — automatic translation + switcher live immediately | WordPress Multisite prerequisite first; then network-activate, create per-language sites, configure relationships |
+| **Language switcher in header/nav** | Add the Language Switcher block anywhere in Site Editor — standard block insertion | WPML Switcher block available; known errata: cannot be inserted directly into the Navigation Block; if no Navigation Block is present, styles may break requiring custom PHP | Switcher block available (free since 3.8); requires inserting a regular block into the Navigation Block first before the switcher becomes insertable (WordPress quirk) | Floating switcher auto-injected on activation; can also be placed as a block, widget, shortcode, or menu item — most flexible placement of any plugin | Floating switcher auto-injected; appearance configurable in Weglot's visual Switcher Editor with no code | Language Switcher widget or Gutenberg Menu Block; must be configured on each sub-site independently (or copied via "Copy Navigation Menu" feature) |
+| **Navigation menus per language** | Settings → Router: scaffold a language copy of any `wp_navigation`, AI-translate labels in one click, fix internal URLs to correct language — unified workflow | Translation Dashboard → create job → assign to self → complete in translation editor; adding language switcher to Navigation Block is unsupported (open errata) | Pro only; translate labels manually in the menu editor; no AI assist, no automated URL fix | Labels translated automatically via string interception; no separate copy step required | Labels auto-translated as part of all site content; no manual step | Copy menu from source site using "Copy Navigation Menu"; translate labels per sub-site individually |
+| **FSE template / template part localisation** | Scaffold language variant, AI-translate, fix internal links, fix `wp:navigation` ref IDs — all from Settings → Router in one workflow | String Translation add-on required; WPML Translation Dashboard job workflow; open errata: custom FSE templates may not be applied correctly to translated pages in some configurations | Pro only; translate content manually in Site Editor; no scaffold, no AI assist, no nav-ref fix workflow; full template entities not supported | N/A — string interception operates on rendered output; no per-template differentiation | N/A — cloud proxy catches all rendered output | N/A — each language is its own WP site; templates are configured independently per site |
+| **Add-ons / plan required for full FSE** | None — full workflow in the free core plugin | String Translation add-on + CMS plan (€99/yr minimum) | Pro plan (€99/yr) | None (free tier works; string-intercept is theme-agnostic) | None (cloud model is theme-agnostic; free tier limited to 1 language / 2 000 words) | None beyond base license — but Multisite is required regardless |
+| **Estimated time to first working multilingual front-end** | Classic theme: ~30 min · FSE full workflow (templates + nav + switcher): 1–2 h | Classic theme: 1–2 h · FSE: several hours + likely troubleshooting | Classic (Pro): ~30 min · FSE (Pro): 1–2 h | ~15–30 min (install + visual editor pass on key pages) | ~5 min (auto-translation + auto-switcher; content control comes later) | 2–4 h minimum, assuming Multisite is already in place |
+
+### Notes
+
+**Weglot** has the lowest setup barrier by a wide margin — install, connect an API key, done. The trade-off is structural: no control over templates or navigation, all content lives in Weglot's cloud, and pricing compounds steeply at scale. For a team that needs multilingual quickly with no FSE complexity, it is the fastest path; for a team that needs editorial control, it is not.
+
+**TranslatePress** is the second-fastest initial setup and the most accessible for non-technical translators, who can click any text on the live front-end and type a translation inline. Because string interception operates on rendered output, no template or navigation work is required. The cost is the string-interception model: render-time overhead, parallel string storage with no per-template context, and no structural differentiation between languages.
+
+**Polylang free** is clean for classic themes but essentially unusable for FSE — template parts, hreflang output, and the language switcher block all require Pro. With Pro, the experience is reasonable for teams comfortable with manual work: no scaffold, no AI assist, no automated link or nav-ref fixing. The Pro language switcher works in FSE headers once you navigate a WordPress quirk in the Navigation Block.
+
+**WPML** has a structured onboarding wizard and is predictable on classic themes. On FSE themes it accumulates complexity quickly: the String Translation add-on is required for template strings, the language switcher has a documented errata preventing direct insertion into the Navigation Block, and FSE template application has open known issues that can require multi-step workarounds. Independent reviewer analysis from 2025 consistently describes WPML + FSE as a pairing that demands patience and troubleshooting time.
+
+**Lingua Forge** sits in the middle on raw setup time — not as fast as Weglot or TranslatePress for a quick first page. For a full FSE multilingual site the workflow is the most complete and most self-contained: everything required to produce a correctly localised block theme (templates, template parts, navigation menus, internal links, `wp:navigation` ref IDs) runs from a single Settings screen, with no add-ons, no CLI, and no manual database work.
+
+**MultilingualPress** carries the highest upfront cost of all: WordPress Multisite is a non-negotiable prerequisite. For teams already operating a Multisite network the experience normalises after initial configuration. For a team not on Multisite, the migration and per-site configuration overhead is substantial.
+
+---
+
+## 9. WooCommerce Multilingual
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
@@ -178,7 +207,7 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 ---
 
-## 9. Performance and Architecture
+## 10. Performance and Architecture
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
@@ -191,7 +220,7 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 ---
 
-## 10. Developer and Operator Experience
+## 11. Developer and Operator Experience
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
@@ -206,7 +235,7 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 ---
 
-## 11. Lingua Forge Strengths
+## 12. Lingua Forge Strengths
 
 ### No subscription, no paywalls, no surprise bills
 
@@ -272,7 +301,7 @@ Translation content lives in standard WordPress posts and postmeta — exactly w
 
 ---
 
-## 12. Honest Gaps
+## 13. Honest Gaps
 
 ### WooCommerce
 
@@ -306,7 +335,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 
 ---
 
-## 13. When to Choose Each Plugin
+## 14. When to Choose Each Plugin
 
 ### Choose Lingua Forge when:
 - The site runs a **block / FSE theme** and needs language-specific templates, template parts, and navigation menus — scaffold, AI-translate, fix links, fix nav refs, and create language navigation copies, all from Settings → Router with no CLI or manual database work.
@@ -350,7 +379,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 
 ---
 
-## 14. Market Positioning Summary
+## 15. Market Positioning Summary
 
 | Plugin | Best fit | Core strength | Core limitation |
 |---|---|---|---|
@@ -361,7 +390,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.6.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 1.7.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in, a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches, and a native-block architecture that carries none of the overhead that string-interception or cloud-proxy tools require.**
 
@@ -369,7 +398,7 @@ Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilin
 
 ---
 
-## 15. Sources and References
+## 16. Sources and References
 
 > All sources verified May 2026. Pricing pages change frequently — the ⚠ caution in §1 applies throughout.
 
@@ -410,3 +439,16 @@ Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilin
 - [Polylang CLI — official docs (Pro, since 3.8)](https://polylang.pro/documentation/support/developers/polylang-cli/)
 - [WPML Export and Import with WP-CLI](https://wpml.org/documentation/related-projects/wpml-export-and-import/how-to-run-wpml-export-and-import-with-wp-cli/)
 - [MultilingualPress — assign language via WP-CLI](https://multilingualpress.org/docs/how-to-assign-a-language-via-wp-cli/)
+
+### Setup and Theme Integration
+
+- [WPML errata — Language Switcher Block display issue with no Navigation Block](https://wpml.org/errata/full-site-editing-fse-wpml-language-switcher-block-display-issue-if-no-navigation-block-is-used/)
+- [WPML errata — Not possible to add language switcher to Navigation Block](https://wpml.org/errata/not-possible-to-add-a-language-switcher-to-the-navigation-block/)
+- [Why WPML and WordPress Full Site Editing Are a Bad Match — BHI Localization (independent review, 2025)](https://www.bhi-localization.com/why-wpml-and-wordpress-full-site-editing-are-a-bad-match-for-now/)
+- [WPML Review — Elegant Themes (2025)](https://www.elegantthemes.com/blog/wordpress/wpml-review)
+- [Polylang — Language Switcher guide](https://polylang.pro/documentation/support/guides/the-language-switcher/)
+- [Polylang — Language Switcher block not registering in Site Editor (support thread)](https://wordpress.org/support/topic/polylang-language-switcher-block-not-available-registering-in-site-editor-fse/)
+- [TranslatePress — Language Switcher documentation](https://translatepress.com/docs/settings/language-switcher/)
+- [Weglot — How to Add a WordPress Language Switcher](https://www.weglot.com/guides/wordpress-language-switcher)
+- [MultilingualPress — Getting started guide](https://multilingualpress.org/docs/getting-started-with-multilingualpress/)
+- [MultilingualPress — Language Switcher setup](https://multilingualpress.org/docs/language-switcher-multilingual-wordpress-website/)
