@@ -27,13 +27,24 @@ mkdir -p "$OUTPUT_DIR"
 ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
 ZIP_PATH="$OUTPUT_DIR/$ZIP_NAME"
 
-# Build rsync exclusions from .distignore
+# Build rsync exclusions from .distignore.
+# Entries that start with a dot and contain no slash are file/dir patterns
+# that can appear anywhere in the tree (e.g. .DS_Store, .gitkeep) — those
+# get no leading slash so rsync matches them at any depth.
+# Everything else gets a leading slash to anchor it to the plugin root.
 RSYNC_EXCLUDES=()
 while IFS= read -r line; do
   [[ "$line" =~ ^[[:space:]]*$ ]] && continue
   [[ "$line" =~ ^# ]] && continue
-  RSYNC_EXCLUDES+=(--exclude="/${line}")
+  if [[ "$line" == .* && "$line" != */* ]]; then
+    RSYNC_EXCLUDES+=(--exclude="$line")
+  else
+    RSYNC_EXCLUDES+=(--exclude="/${line}")
+  fi
 done < "$PLUGIN_DIR/.distignore"
+
+# Always exclude .DS_Store anywhere in the tree (macOS metadata)
+RSYNC_EXCLUDES+=(--exclude=".DS_Store")
 
 # Copy into a temp directory named exactly 'lingua-forge' so the ZIP
 # always extracts to lingua-forge/ regardless of the source path.
