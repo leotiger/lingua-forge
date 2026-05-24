@@ -117,6 +117,8 @@ Yes — the Language Router was designed specifically for block-theme sites. Lan
 
 The hreflang output from third-party SEO plugins is suppressed automatically when Lingua Forge is handling hreflang (the default). Meta description output coexists without conflict. If you prefer to let an SEO plugin handle hreflang, set the `lf_hreflang_mode` filter to `'off'`.
 
+Plugins that read the WordPress `locale` filter directly instead of `determine_locale` — common in booking and e-commerce plugins — receive the correct frontend locale automatically. No configuration is required.
+
 = What languages can be translated? =
 
 The AI translation feature supports 38 languages out of the box: English, Spanish, Portuguese, French, Italian, German, Dutch, Catalan, Swedish, Danish, Norwegian, Finnish, Polish, Czech, Slovak, Hungarian, Romanian, Bulgarian, Croatian, Slovenian, Greek, Ukrainian, Russian, Arabic, Hebrew, Persian, Turkish, Swahili, Hindi, Bengali, Indonesian, Malay, Vietnamese, Thai, Chinese (Simplified), Chinese (Traditional), Japanese, and Korean. The list is filterable via `linguaforge_translation_languages` — you can add, remove, or replace languages without modifying plugin files. The Language Router itself works with any language WordPress supports.
@@ -221,6 +223,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 = 1.6.5 =
 * Fixed: ajax_fix_fse_links() stale-path links not updated in template parts — links that already carried the correct language prefix but whose slug had changed were never repaired. A second pass via LinkFixer::fix_post() now runs after the prefix-rewrite save, using data-id as ground truth. Covers footers, headers, sidebars, and any wp_template_part.
+* Maintenance: filter_locale_for_vik_booking() renamed to filter_locale() — the locale filter hook is generic and covers any plugin that reads locale directly instead of determine_locale. Docblock added.
 * Maintenance: All ->debug() call sites removed from language-router sub-classes (QueryFilter, Sync, Query, Redirector, Hreflang) — leftover from the mu-plugin era, flooding debug.log on every request. The debug() method and linguaforge_debug() wrapper are retained.
 * Maintenance: Router::debug_system_init() and debug_request_context() removed along with their add_action registrations — fired on every frontend page load whenever WP_DEBUG was on.
 

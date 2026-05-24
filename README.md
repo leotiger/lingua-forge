@@ -828,7 +828,7 @@ The filter applies everywhere the directory is read — both the file loader and
 
 SEO plugin hreflang output is suppressed automatically when `lf_hreflang_mode` is `'custom'`. Confirmed compatible with: **Yoast SEO**, **Rank Math**, **AIOSEO**, **SEOPress**.
 
-VikBooking locale compatibility is handled via the `lf_lang_force_locale` filter and `filter_locale_for_vik_booking`.
+Plugins that read the `locale` filter directly instead of `determine_locale` (booking plugins, e-commerce plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
 
 ---
 
@@ -846,15 +846,18 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.6.2**
+**Current release — 1.6.5**
 
-- **Defensive hardening — non-public post type guards** — `handle_singular_redirect()`, `get_translations()`, and `lang_permalink()` now all skip internal WordPress post types (`wp_global_styles`, `wp_template`, `wp_navigation`, etc.), preventing cross-domain redirects and broken translation lookups when the object cache is misconfigured.
-- **Cookie domain scoping** — `set_lang_cookie()` now explicitly binds the `lf_lang` cookie to the site's own domain, preventing bleed between sites on shared servers.
+- **Link Fixer — stale-path links now corrected in template parts** — `ajax_fix_fse_links()` was stopping early when no prefix-rewrite was needed, so links that already carried the correct language prefix but whose slug had changed (page moved or renamed) were never updated. A second pass via `LinkFixer::fix_post()` now runs unconditionally, using `data-id` as ground truth. Covers footers, headers, sidebars, and all other template parts.
+- **Language-router debug call sites removed** — `->debug()` calls scattered across `QueryFilter`, `Sync`, `Query`, `Redirector`, and `Hreflang` date from the mu-plugin era; removed. `Router::debug_system_init()` and `debug_request_context()` and their `add_action` registrations removed — both were firing on every frontend request. The `debug()` method and `linguaforge_debug()` wrapper are retained.
 
-**1.6.1**
+**1.6.4** — `register_meta` gated on admin/REST/CLI context; `linguaforge_flush_rewrite_rules` option writes pass `autoload = false`; `tests/bootstrap.php` autoload path corrected; roles and capabilities documented in README. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-- **Translation Memory cache invalidation fix** — the TM cache-key signature was still reading the pre-1.5.0 global `linguaforge_compliance_addendum` option, so editing a per-preset addendum no longer invalidated affected TM rows. Fixed.
-- **Budget-protection fix** — the 1.6.0 FSE-translate AJAX endpoints bypassed the per-user rate limit and site-wide daily quota that guard every other paid-AI endpoint. The new `LinguaForge\AI\REST\RateLimiter` class (extracted from `FeatureController`) is now shared by both REST and AJAX paths.
+**1.6.3** — Multi-character locale routing fixed (zh-tw, zh-hant, pt-br); frontend AJAX lang detection fixed for POST requests; missing-translation-notice block gains a full Site Editor component. See [CHANGELOG.md](CHANGELOG.md) for details.
+
+**1.6.2** — Defensive hardening for non-public post types; cookie domain scoping fix. See [CHANGELOG.md](CHANGELOG.md) for details.
+
+**1.6.1** — Translation Memory cache invalidation fix; FSE-translate AJAX budget-protection fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.0** — FSE Template Localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific FSE templates, template parts, and navigation menus directly from Settings → Router.
 

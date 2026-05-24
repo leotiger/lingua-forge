@@ -10,6 +10,8 @@
 
 ### Maintenance
 
+- **`LocaleDetector::filter_locale_for_vik_booking()` renamed to `filter_locale()`** — the hook enforces the active frontend locale on the `locale` filter for any plugin that reads it directly instead of `determine_locale` (booking plugins, e-commerce plugins, etc.). The old name was an implementation note baked into the method signature; the new name is generic and accurate. Docblock added explaining the pattern.
+
 - **Language router — debug call sites removed** — all `->debug()` calls scattered across language-router sub-classes (`QueryFilter`, `Sync`, `Query`, `Redirector`, `Hreflang`) date from when the router was a mu-plugin and verbose tracing was needed during early development. All eight call sites are removed. The `debug()` method itself (gated on `WP_DEBUG && WP_DEBUG_LOG`) and the `linguaforge_debug()` public wrapper are retained for targeted use when needed.
 - **`Router::debug_system_init()` and `debug_request_context()` removed** — both methods and their `add_action( 'wp' / 'init' )` registrations are removed. They were firing on every frontend request and flooding `debug.log` unconditionally whenever `WP_DEBUG` was on.
 

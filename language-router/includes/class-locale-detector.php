@@ -27,7 +27,7 @@ class LocaleDetector {
 	public function register_hooks(): void {
 		add_action( 'plugins_loaded',    [ $this, 'apply_locale' ], 0 );
 		add_filter( 'determine_locale',  [ $this, 'filter_determine_locale' ], 0 );
-		add_filter( 'locale',            [ $this, 'filter_locale_for_vik_booking' ], 0 );
+		add_filter( 'locale',            [ $this, 'filter_locale' ], 0 );
 	}
 
 	// =========================================================
@@ -164,7 +164,15 @@ class LocaleDetector {
 		return $locale;
 	}
 
-	public function filter_locale_for_vik_booking( string $locale ): string {
+	/**
+	 * Enforce the active frontend locale on the `locale` filter.
+	 *
+	 * Some third-party plugins (e.g. booking or e-commerce plugins) read the
+	 * `locale` filter directly instead of `determine_locale`, bypassing
+	 * `filter_determine_locale()`. This callback ensures they receive the
+	 * correct language-specific locale for the current frontend request.
+	 */
+	public function filter_locale( string $locale ): string {
 		if ( is_admin() ) return $locale;
 		if ( ! defined( 'LF_LANG' ) ) return $locale;
 		return $this->locale_from_lang( LF_LANG );
