@@ -82,17 +82,17 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 |---|---|---|---|---|---|---|
 | URL prefixes (`/de/`, `/fr/`) | ✅ | ✅ | ✅ | ✅ | ✅ (or subdomain / separate domain) | ✅ (one domain per language, or subdirectories) |
 | Subdomains (`de.site.com`) | ✅ (1.7.0, selectable in Settings → Router) | ✅ | ✅ Pro | ✅ | ✅ | ✅ (native per site) |
-| Separate domain per language | ❌ | ✅ | ✅ Pro | ❌ | ✅ | ✅ (native per site) |
+| Separate domain per language | ❌ | ✅ | ✅ Pro | ⚠ Business+ add-on ("Different Domain per Language") | ✅ | ✅ (native per site) |
 | Translation groups (linked posts) | ✅ TRID / UUID | ✅ | ✅ | N/A (string-based) | N/A (cloud-based) | ✅ (cross-site relationships) |
-| Outdated translation tracking | ✅ ⚠ indicator | ✅ dashboard | ✅ Pro | ✅ (visual indicator) | ❌ | ❌ |
+| Outdated translation tracking | ✅ ⚠ indicator | ✅ dashboard | ✅ Pro | ✅ (visual indicator) | ❌ | ⚠ dashboard widget (incomplete) |
 | Cookie / query-param detection | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Browser auto-redirect | ✅ opt-in (Accept-Language header) | ✅ | ✅ Pro | ✅ Business | ✅ | ✅ |
-| Language Switcher block (FSE) | ✅ | ✅ (add-on) | ✅ Pro | ✅ | ✅ (widget/block) | ✅ |
+| Language Switcher block (FSE) | ✅ | ✅ built-in (CMS/Agency plan) | ✅ Pro | ✅ | ✅ (widget/block) | ✅ |
 | Language-specific FSE templates | ✅ (`page-de`, `single-fr`) with full in-plugin scaffold + AI-translate + fix workflow | ❌ (known open issues as of 2026) | ❌ Pro (translates template parts, not template entities — no `page-de`) | ❌ | ❌ | ❌ |
 | FSE template part localisation (scaffold + AI-translate + fix) | ✅ (`header-de`, `footer-ca`, …); Fix Nav rewrites navigation refs per part | ❌ | ⚠ Pro (template parts only, no fix workflow) | ❌ | ❌ | ❌ |
 | Navigation menu localisation (AI-translate + lang-copy) | ✅ per-language `wp_navigation` posts with AI-translated labels and URL fixing | ❌ | ✅ Pro (manual) | ✅ (string-intercept) | ✅ (cloud) | ✅ |
-| Admin link fixer (repairs cross-language internal links) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| WP-CLI support | ✅ 5 commands | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Admin link fixer (repairs cross-language internal links) | ✅ | ⚠ Translate Link Targets scan (Settings); Sticky Links add-on | ❌ | ❌ | ❌ | ❌ |
+| WP-CLI support | ✅ 5 commands | ⚠ import/export only | ⚠ Pro (native since 3.8) | ❌ | ❌ | ⚠ language assignment + AutoTranslate |
 
 ---
 
@@ -156,12 +156,12 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| Site Editor (FSE) support | ✅ designed for it | ⚠ (retrofit; known open issues with FSE template application) | ✅ Pro (template parts + patterns; full template entities not supported) | ✅ (string-intercept works on FSE output) | ✅ (cloud catches rendered output) | ✅ |
-| Language-specific FSE templates (`page-de`) | ✅ auto-assigned; scaffold + AI-translate + fix-links + fix-parts in Settings → Router | ❌ | ❌ free / ❌ Pro (template-part approach) | ❌ | ❌ | ❌ |
-| Language-specific template parts (`header-ca`) | ✅ scaffold + AI-translate + fix-links + fix-nav-refs; Fix Nav rewrites `wp:navigation` ref IDs | ❌ | ✅ Pro (scaffold + translate, no nav ref fix) | ❌ | ❌ | ❌ |
-| Language navigation menus (wp_navigation) | ✅ AI-translate labels, fix internal URLs, create `{name}-{lang}` copies | ❌ | ✅ Pro (manual) | ✅ (string-intercept) | ✅ (cloud) | ✅ |
-| Language Switcher as a block | ✅ | ✅ (add-on) | ✅ Pro | ✅ | ✅ | ✅ |
-| Block attribute translation (JSON inside block comments) | ✅ custom extractor | ✅ | Partial | ✅ (string-intercept) | ✅ | Partial |
+| Site Editor (FSE) support | ✅ designed for it | ⚠ retrofit; open errata: custom FSE templates not applied to translated pages in some cases | ✅ Pro (template parts + patterns; full template entities not supported); language switcher blocks free since 3.8 | ✅ string-intercept works on FSE output; language switcher has known FSE integration issues | ✅ (cloud catches rendered output) | ✅ (each language is a separate site; FSE works natively per site) |
+| Language-specific FSE templates (`page-de`) | ✅ auto-assigned; scaffold + AI-translate + fix-links + fix-parts in Settings → Router | ❌ | ❌ free / ❌ Pro (translates template part content in-place; no separate `header-de` entity approach) | ❌ | ❌ | N/A (each language is its own WP site) |
+| Language-specific template parts (`header-ca`) | ✅ scaffold + AI-translate + fix-links + fix-nav-refs; Fix Nav rewrites `wp:navigation` ref IDs | ❌ | ✅ Pro (translate in Site Editor; no nav ref fix workflow) | ❌ | ❌ | N/A (each language is its own WP site) |
+| Language navigation menus (wp_navigation) | ✅ AI-translate labels, fix internal URLs, create `{name}-{lang}` copies | ❌ (errata: not possible to add language switcher to Navigation Block) | ✅ Pro (manual) | ✅ (string-intercept) | ✅ (cloud) | ✅ (per-site navigation) |
+| Language Switcher as a block | ✅ | ✅ built-in (CMS/Agency plan); known issue: cannot be inserted into core Navigation Block | ✅ free since 3.8 (language switcher blocks moved from Pro to free) | ⚠ block exists; known FSE issues — renders as dropdown in Navigation Block, not inline links | ✅ (floating/CSS switcher; works on all themes) | ✅ (per-site) |
+| Block attribute translation (JSON inside block comments) | ✅ custom extractor | ✅ | Partial (Pro) | ✅ (string-intercept catches rendered output) | ✅ (cloud catches all output) | Partial (manual per-site editing) |
 
 ---
 
@@ -169,7 +169,7 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| Product / variation / category translation | ❌ | ✅ (add-on, bundled Agency) | ✅ paid add-on | ✅ included | ✅ (cloud, including JS-rendered cart/checkout) | ✅ included |
+| Product / variation / category translation | ❌ | ✅ (add-on; requires CMS plan or higher) | ✅ paid add-on | ✅ included | ✅ (cloud, including JS-rendered cart/checkout) | ✅ included |
 | Dynamic cart / checkout translation | ❌ | ✅ | ✅ | ✅ | ✅ (strongest — cloud catches JS output) | ✅ |
 | Multi-currency | ❌ | ✅ (WPML Multi-Currency add-on) | Via WooCommerce / 3rd-party | ❌ | ❌ | ✅ (separate store per language) |
 
@@ -194,7 +194,7 @@ This was a hard gap in most plugins as recently as 2024. The landscape has impro
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| WP-CLI commands | ✅ 5 commands (translate, retranslate, fill-translations, missing-translations, cache-clear) — shipped natively | ❌ | ⚠ community package (polylang-cli, unofficial, separate install) | ❌ | ❌ | ❌ |
+| WP-CLI commands | ✅ 5 commands (translate, retranslate, fill-translations, missing-translations, cache-clear) — shipped natively; more underway | ⚠ `wp wpml import process` (export/import only; no language management) | ⚠ Pro: native `wp pll language` + `wp pll setting` since 3.8 (Feb 2026); free tier: unofficial community package only | ❌ | ❌ | ⚠ language assignment to subsites + AutoTranslate trigger; multisite-scoped |
 | Public PHP API | ✅ (`linguaforge_*` wrapper functions) | ✅ (`wpml_*` filters/functions) | ✅ (`pll_*` functions) | Limited (hooks only) | Limited (REST API) | ✅ (MLP API) |
 | WordPress Multisite required | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ (prerequisite) |
 | Third-party plugin ecosystem dependency | None | Large (WPML-specific APIs widespread) | Moderate | Low | Low | Low |
@@ -257,11 +257,13 @@ Every competitor either delegates SEO entirely to a third-party plugin (WPML, Po
 
 ### WP-CLI for automation at scale
 
-Lingua Forge is the only plugin in this market that ships WP-CLI commands natively as part of the plugin. Polylang has an unofficial community-maintained package (`polylang-cli`) that requires separate installation and is not supported by the Polylang team. WPML, TranslatePress, Weglot, and MultilingualPress have nothing. Lingua Forge's five native commands (`translate`, `retranslate`, `fill-translations`, `missing-translations`, `cache-clear`) enable batch translation jobs, CI/CD pipeline integration, cron-based retranslation, and audit scripts. The `missing-translations` + `fill-translations` pipeline can identify and resolve gaps across an entire post type in a single shell session. Additional commands are on the roadmap, including template and template part translation to extend the same automation story to the FSE layer.
+Lingua Forge ships five native WP-CLI commands covering the full editorial automation loop: `translate`, `retranslate`, `fill-translations`, `missing-translations`, and `cache-clear`. The `missing-translations` + `fill-translations` pipeline can identify and resolve translation gaps across an entire post type in a single shell session, and all commands integrate cleanly with CI/CD pipelines and cron jobs. More commands are underway.
+
+Polylang Pro added native CLI in version 3.8 (February 2026) — `wp pll language` for language management and `wp pll setting` for options — but these are limited to site configuration; no content translation commands exist. The free Polylang tier still relies on the unofficial community-maintained `polylang-cli` package. WPML exposes `wp wpml import process` for its export/import add-on but has no language management or translation commands. MultilingualPress provides CLI for language assignment to subsites and an AutoTranslate trigger, both scoped to its multisite architecture. TranslatePress and Weglot have no CLI support. Lingua Forge remains the only plugin in this space with native CLI for content translation and automation at scale.
 
 ### Single plugin, shared foundation
 
-WPML's complete feature set requires at minimum three separate plugins (WPML Multilingual CMS + String Translation + Media Translation), with a fourth for WooCommerce. Each has its own update cycle and can introduce conflicts. Lingua Forge ships language routing, meta description, and AI tools as a single package with a shared constants layer and unified settings page.
+WPML's complete feature set typically requires multiple plugins (WPML Multilingual CMS plus add-ons such as String Translation and Media Translation as needed), with an additional plugin for WooCommerce. Each has its own update cycle and can introduce conflicts. Lingua Forge ships language routing, meta description, and AI tools as a single package with a shared constants layer and unified settings page.
 
 ### No lock-in
 
@@ -404,3 +406,6 @@ Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilin
 ### WP-CLI
 
 - [diggy/polylang-cli — GitHub (unofficial community package)](https://github.com/diggy/polylang-cli)
+- [Polylang CLI — official docs (Pro, since 3.8)](https://polylang.pro/documentation/support/developers/polylang-cli/)
+- [WPML Export and Import with WP-CLI](https://wpml.org/documentation/related-projects/wpml-export-and-import/how-to-run-wpml-export-and-import-with-wp-cli/)
+- [MultilingualPress — assign language via WP-CLI](https://multilingualpress.org/docs/how-to-assign-a-language-via-wp-cli/)
