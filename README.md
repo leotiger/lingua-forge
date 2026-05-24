@@ -6,7 +6,7 @@ Lingua Forge is a WordPress plugin for sites that publish content in more than o
 
 At its core it does three things that always end up intertwined on multilingual sites:
 
-1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, with hreflang SEO tags, a language switcher block, and an admin panel that keeps translations linked and warns you when source content has changed.
+1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, or via language subdomains like `de.example.com`, with hreflang SEO tags, a language switcher block, and an admin panel that keeps translations linked and warns you when source content has changed.
 
 2. **Keeps SEO meta descriptions accurate and in the right language** — a simple meta box on every post and page, with AI generation available in one click when you need a fresh description.
 
@@ -76,8 +76,9 @@ This is the third piece in a short series. The first, [Knocking on a Door with N
 
 ### Language Router
 
-- Language detection from URL prefix (`/de/`), query param (`?lang=de`), and cookie
-- Custom rewrite rules for language-prefixed URLs and category archives
+- **Two URL structure modes** — path prefix (`example.com/de/`) or subdomain (`de.example.com`), selectable from **Settings → Router → URL structure**. Subdomain mode requires wildcard DNS and TLS; path prefix mode works with standard WordPress permalink settings.
+- Language detection from URL prefix (`/de/`), subdomain host (`de.example.com`), query param (`?lang=de`), and cookie
+- Custom rewrite rules for language-prefixed URLs and category archives (path mode); no extra rules needed in subdomain mode
 - Post and page translation groups linked via a shared TRID (UUID)
 - Outdated translation tracking — warnings when source content is updated after a translation was synced
 - **Full FSE template localisation** — language-specific templates (`page-de`, `single-fr`, `search-en`) are auto-assigned when a post's language is set. From **Settings → Router** you can scaffold a language copy of any template or template part in one click, AI-translate it, fix all internal links to point at the correct language equivalents, fix template-part slug references (`footer` → `footer-ca`), and fix `wp:navigation` ref IDs so each header and footer loads the correct language menu — all without CLI or manual database work.
@@ -181,6 +182,7 @@ add_filter( 'lf_languages_list', fn() => ['ca', 'es', 'en', 'de', 'fr'] );
 | `lf_lang_force_locale` | `['ca' => 'ca']` | Hard locale overrides (e.g. for VikBooking) |
 | `lf_lang_fallback_map` | `['en'=>'en_US', …]` | Locale fallbacks when no installed locale matches |
 | `lf_lang_default_fallback` | `'en_US'` | Last-resort locale |
+| `lf_base_domain` | Auto from `home_url()` | Override the bare domain used for subdomain URL construction (useful when `home_url()` includes `www` or a non-apex hostname) |
 | `lf_hreflang_mode` | `'custom'` | Set to `'off'` to disable built-in hreflang output |
 | `lf_i18n_overrides_dir` | `uploads/lingua-forge/i18n-overrides/` | Override the storage path for third-party `.mo` override files |
 | `linguaforge_translation_languages` | Built-in list | Override the AI translation target language list — see Content Translation section |
@@ -358,13 +360,14 @@ Language Router boots first because its constructor defines the `LF_LANG` consta
 
 Detection runs in priority order:
 
-1. **URL segment** — `/de/` at the start of the path is the strongest signal
-2. **`?lang=` query param** — used for search requests (`/?lang=de&s=query`)
-3. **Cookie** — `lf_lang` persists the last detected language across requests
-4. **Browser `Accept-Language` header** — opt-in; enabled from **Settings → Router → Browser language redirect**. Parses the header in quality order, matches both exact two-char codes (`de`) and regional tags (`de-DE`, `de-AT`) against the active language list. Only fires when steps 1–3 yield no result — i.e. a genuine first visit with no prior preference recorded. Once the visitor picks a language via the switcher, `set_lang_cookie()` fires and the cookie wins on all future visits
+0. **Subdomain host** — `de.example.com` is checked first when subdomain routing mode is active; the language is extracted from the HTTP host before any path or parameter is inspected
+1. **URL segment** — `/de/` at the start of the path (path mode only; no prefix exists in subdomain mode)
+2. **`?lang=` query param** — used for search requests in path mode (`/?lang=de&s=query`)
+3. **Cookie** — `lf_lang` persists the last detected language across requests. In subdomain mode the cookie is scoped to the apex domain (`.example.com`) so it is shared across all language subdomains
+4. **Browser `Accept-Language` header** — opt-in; enabled from **Settings → Router → Browser language redirect**. Parses the header in quality order, matches both exact two-char codes (`de`) and regional tags (`de-DE`, `de-AT`) against the active language list. Only fires when steps 0–3 yield no result — i.e. a genuine first visit with no prior preference recorded. Once the visitor picks a language via the switcher, `set_lang_cookie()` fires and the cookie wins on all future visits
 5. **Fallback** — the configured source language
 
-`detect_lang()` uses URL + cookie (+ browser header when the opt-in is enabled). `detect_lang_safe()` additionally checks `$_GET['lang']` (safe to call before WP is fully loaded). The result is stored in the `LF_LANG` constant.
+`detect_lang()` uses host/URL + cookie (+ browser header when the opt-in is enabled). `detect_lang_safe()` additionally checks `$_GET['lang']` (safe to call before WP is fully loaded). The result is stored in the `LF_LANG` constant.
 
 ### Translation model
 
@@ -792,6 +795,16 @@ wp linguaforge missing-translations ca page --format=json \
 
 **Fix:** Add footnotes manually to the translation using **Chunk mode** — copy each footnote text, switch to Translate chunk, translate it, and paste the result into the footnote panel.
 
+### Language navigation shows pages from all languages (Page List block)
+
+**Symptom:** A language-specific navigation menu (e.g. Navigation DE) lists pages from all languages instead of only German pages.
+
+**Root cause:** WordPress's `core/page-list` block calls `get_pages()` directly with no filterable query arguments. There is no hook between the block and its database query, so language-based filtering is not currently possible. This is a WordPress core limitation confirmed against WP 6.4 and later.
+
+**Workaround:** Open the navigation in the Site Editor (Appearance → Editor → Navigation), select the language navigation, and click **Edit** to convert the Page List block to individual static links. Once converted, use **Settings → Router → Fix Links** to ensure all URLs point to the correct language version. Static-link navigations are fully language-aware and do not have this problem.
+
+**Status:** A fix is planned for a future release. The approach under consideration (`render_block` filter on `core/navigation-link` for render-time link swapping) would replace the need for per-language navigation posts entirely and resolve this issue as a side effect.
+
 ---
 
 ## Language Overrides
@@ -846,10 +859,24 @@ Uli Hake — [@leotiger](https://github.com/leotiger) on GitHub · [@ulih](https
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
-**Current release — 1.6.5**
+---
 
-- **Link Fixer — stale-path links now corrected in template parts** — `ajax_fix_fse_links()` was stopping early when no prefix-rewrite was needed, so links that already carried the correct language prefix but whose slug had changed (page moved or renamed) were never updated. A second pass via `LinkFixer::fix_post()` now runs unconditionally, using `data-id` as ground truth. Covers footers, headers, sidebars, and all other template parts.
-- **Language-router debug call sites removed** — `->debug()` calls scattered across `QueryFilter`, `Sync`, `Query`, `Redirector`, and `Hreflang` date from the mu-plugin era; removed. `Router::debug_system_init()` and `debug_request_context()` and their `add_action` registrations removed — both were firing on every frontend request. The `debug()` method and `linguaforge_debug()` wrapper are retained.
+## Screenshots
+
+![AI translation review — side-by-side comparison of source content and AI-generated translation before applying to the editor](docs/assets/screenshot-1.png)
+
+*AI translation review modal — side-by-side view of the current source content (left) and the AI-generated translation (right). The generated meta description is shown below. Editors can apply to the editor, copy to clipboard, or cancel.*
+
+---
+
+**Current release — 1.7.0**
+
+- **Subdomain routing mode** — languages can now be served from subdomains (`de.example.com`, `fr.example.com`) as an alternative to path prefixes (`example.com/de/`). Select the URL structure in **Settings → Router → URL structure**. Cookie scoping, permalink generation, hreflang output, language switcher, and link-fixer scan are all subdomain-aware. The `lf_base_domain` filter overrides the auto-derived apex domain when `home_url()` includes `www`. Requires wildcard DNS and TLS on the server side.
+- **Language switcher fixes** — switcher now appears on archive, category, tag, and author pages (was invisible in subdomain mode due to missing non-singular URL fallback); dropdown no longer overflows the viewport on right-aligned placements; SVG globe icon renders at the correct size regardless of theme; panel background and text colour inherit FSE theme tokens (`--wp--preset--color--base` / `--contrast`) with `Canvas`/`CanvasText` OS-aware fallbacks.
+- **Fix Navigation References fixes** — source-language template parts no longer rejected; wrong-language navigation references (e.g. `navigation-it` assigned to the DE template) now derive the correct base name by reading `_lf_lang` meta, preventing double-suffixed slugs.
+- **Translate Navigation subdomain fix** — internal URLs rewritten as `de.example.com/contact/` in subdomain mode instead of the previous path-prefix form.
+
+**1.6.5** — Link Fixer stale-path fix for template parts; language-router debug call sites removed; `filter_locale` renamed to generic name; `.distignore` fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.4** — `register_meta` gated on admin/REST/CLI context; `linguaforge_flush_rewrite_rules` option writes pass `autoload = false`; `tests/bootstrap.php` autoload path corrected; roles and capabilities documented in README. See [CHANGELOG.md](CHANGELOG.md) for details.
 

@@ -84,7 +84,7 @@ class LinkFixer {
 				'unknownError'       => __( 'unknown error', 'lingua-forge' ),
 				'scanRequestFailed'  => __( 'Scan request failed. Please try again.', 'lingua-forge' ),
 				'noPostsFound'       => __( '⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts have their Language meta set to <strong>{lang}</strong> in the Language metabox.', 'lingua-forge' ),
-				'noBrokenLinks'      => __( '✅ No broken links or template issues found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all checks passed.', 'lingua-forge' ),
+				'noBrokenLinks'      => __( '✅ No broken links or template mismatches found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) and page(s) — all checks passed. Template part links (header, footer, sidebar) are not included here — use the Fix Template Parts button to check those separately.', 'lingua-forge' ),
 				'autoFixableCount'   => __( '<strong>{n}</strong> auto-fixable link(s)', 'lingua-forge' ),
 				'manualReviewCount'  => __( '<strong>{n}</strong> link(s) needing manual review', 'lingua-forge' ),
 				'and'                => __( 'and', 'lingua-forge' ),
@@ -275,7 +275,9 @@ class LinkFixer {
 			];
 		}
 
-		$target_prefix = trailingslashit( home_url() ) . $target_lang . '/';
+		$target_prefix = $this->router->context->routing_mode() === 'subdomain'
+			? $this->router->context->lang_base_url( $target_lang )
+			: trailingslashit( home_url() ) . $target_lang . '/';
 		$fixes         = [];
 		$stale_fixes   = [];
 		$flagged       = [];

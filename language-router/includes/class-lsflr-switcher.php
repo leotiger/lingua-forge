@@ -42,17 +42,30 @@ class Switcher {
 	// =========================================================
 
 	public function get_languages(): array {
-		$post_id = get_the_ID();
-		if ( ! $post_id ) return [];
+		$post_id = get_the_ID() ?: null;
 
-		$translations = $this->router->get_translations( $post_id );
-		if ( empty( $translations ) ) return [];
+		// Singular pages: build from the post's translation group so each
+		// language link points at the correct translated post permalink.
+		// Non-singular pages (archives, category, tag, author, date, search,
+		// homepage without a static page): there is no post to translate, so
+		// generate one URL per language by rewriting the current URL only.
+		// Without this fallback the switcher is invisible on all archive pages,
+		// which is a hard blocker for subdomain routing where every URL on
+		// de.example.com should have a working language switcher.
+		if ( $post_id ) {
+			$translation_map = $this->router->get_translations( $post_id );
+			if ( empty( $translation_map ) ) return [];
+		} else {
+			// Keyed by lang code, value null signals "URL-rewrite only".
+			$translation_map = array_fill_keys( $this->router->languages(), null );
+		}
 
 		$langs = [];
 
-		foreach ( $translations as $lang => $id ) {
-			// Only published posts
-			if ( get_post_status( $id ) !== 'publish' ) continue;
+		foreach ( $translation_map as $lang => $id ) {
+			// For translation-group entries, skip unpublished posts.
+			// For URL-rewrite entries ($id === null) there is nothing to check.
+			if ( null !== $id && get_post_status( $id ) !== 'publish' ) continue;
 
 			$langs[] = [
 				'code'    => $lang,
@@ -85,6 +98,9 @@ class Switcher {
 		// Search
 		if ( is_search() ) {
 			$s = get_query_var( 's' );
+			if ( $this->router->context->routing_mode() === 'subdomain' ) {
+				return $this->router->context->lang_base_url( $target_lang ) . '?s=' . rawurlencode( $s );
+			}
 			return home_url( '/?lang=' . $target_lang . '&s=' . rawurlencode( $s ) );
 		}
 
@@ -97,6 +113,11 @@ class Switcher {
 		// Non-singular
 		if ( $target_lang === $source ) {
 			return home_url( '/' . trim( $new_path, '/' ) . '/' ) . $query;
+		}
+
+		if ( $this->router->context->routing_mode() === 'subdomain' ) {
+			$base = $this->router->context->lang_base_url( $target_lang );
+			return $base . ( $new_path ? trailingslashit( $new_path ) : '' ) . $query;
 		}
 
 		return home_url( '/' . $target_lang . '/' . $new_path . '/' ) . $query;
@@ -140,7 +161,7 @@ class Switcher {
 			// Pre-escaping with esc_html() here would double-encode entities (e.g. & → &amp;amp;).
 			$toggle = $atts['customLabel'];
 		} elseif ( $atts['show'] === 'icon' ) {
-			$toggle = $get_icon( $atts['iconHtml'] );
+			$toggle = '<span class="lsflr-icon">' . $get_icon( $atts['iconHtml'] ) . '</span>';
 		} elseif ( $atts['show'] === 'icon-label' ) {
 			$toggle =
 				'<span class="lsflr-icon">' . $get_icon( $atts['iconHtml'] ) . '</span>' .
@@ -149,11 +170,12 @@ class Switcher {
 			$toggle = esc_html( $current['label'] );
 		}
 
-		$dir = ( $atts['direction'] === 'up' ) ? 'lsflr-dropup' : 'lsflr-dropdown';
+		$dir        = ( $atts['direction'] === 'up' ) ? 'lsflr-dropup' : 'lsflr-dropdown';
+		$switcher_id = 'lsflr-' . wp_unique_id();
 
 		ob_start(); ?>
 
-		<ul class="lsflr-switcher <?php echo esc_attr( $dir ); ?>">
+		<ul id="<?php echo esc_attr( $switcher_id ); ?>" class="lsflr-switcher <?php echo esc_attr( $dir ); ?>">
 			<li class="lsflr-toggle" tabindex="0">
 
 				<div class="lsflr-current"><?php echo wp_kses( $toggle, [
@@ -176,6 +198,25 @@ class Switcher {
 
 			</li>
 		</ul>
+
+		<script>
+		(function(){
+			var el = document.getElementById('<?php echo esc_js( $switcher_id ); ?>');
+			if (!el) return;
+			function reposition(){
+				var sub = el.querySelector('.lsflr-submenu');
+				if (!sub) return;
+				/* Reset first so we measure the natural position */
+				el.classList.remove('lsflr-auto-right');
+				var r = sub.getBoundingClientRect();
+				if (r.right > (window.innerWidth || document.documentElement.clientWidth) - 8) {
+					el.classList.add('lsflr-auto-right');
+				}
+			}
+			reposition();
+			window.addEventListener('resize', reposition, { passive: true });
+		})();
+		</script>
 
 		<?php
 		return ob_get_clean();

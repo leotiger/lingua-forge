@@ -52,6 +52,12 @@ BUILD_DIR="$(mktemp -d)/build"
 mkdir -p "$BUILD_DIR/$PLUGIN_SLUG"
 rsync -a "${RSYNC_EXCLUDES[@]}" "$PLUGIN_DIR/" "$BUILD_DIR/$PLUGIN_SLUG/"
 
+# Normalise permissions: 0755 for directories, 0644 for files.
+# Matches the WordPress.org packaging standard and avoids shipping
+# executable bits on PHP/JS/CSS files copied from a dev machine.
+find "$BUILD_DIR/$PLUGIN_SLUG" -type d -exec chmod 0755 {} \;
+find "$BUILD_DIR/$PLUGIN_SLUG" -type f -exec chmod 0644 {} \;
+
 # Build the ZIP
 cd "$BUILD_DIR"
 zip -r "$ZIP_PATH" "$PLUGIN_SLUG/"

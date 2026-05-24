@@ -31,6 +31,7 @@ class RouterTab extends Tab {
     public static function render_content(): void {
 
         $router          = \LinguaForge\Router\Router::get_instance();
+        $routing_mode    = $router->context->routing_mode();
         $primary_stored  = (string) get_option( 'linguaforge_primary_language', '' );
         $router_langs    = $router->languages();
 
@@ -64,7 +65,7 @@ class RouterTab extends Tab {
         <h2><?php esc_html_e( 'Primary Language', 'lingua-forge' ); ?></h2>
 
         <p>
-            <?php esc_html_e( 'The primary language is served at the root of your site (no URL prefix) and uses the default WordPress FSE templates (page, single, etc.). All other languages get a /lang/ URL prefix and are expected to use language-specific templates such as page-de or single-de.', 'lingua-forge' ); ?>
+            <?php esc_html_e( 'The primary language is always served at the root of your site — no URL prefix in path mode, no language subdomain in subdomain mode. All other languages use either a /lang/ path prefix (e.g. example.com/de/) or a language subdomain (e.g. de.example.com), depending on the URL structure setting below.', 'lingua-forge' ); ?>
         </p>
 
         <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -88,6 +89,26 @@ class RouterTab extends Tab {
                         </select>
                         <p class="description">
                             <?php esc_html_e( 'After changing the primary language, flush permalinks (section below) for the URL routing to update.', 'lingua-forge' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="linguaforge_routing_mode">
+                            <?php esc_html_e( 'URL structure', 'lingua-forge' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <select id="linguaforge_routing_mode" name="linguaforge_routing_mode">
+                            <option value="path" <?php selected( $routing_mode, 'path' ); ?>>
+                                <?php esc_html_e( 'Path prefix — example.com/de/', 'lingua-forge' ); ?>
+                            </option>
+                            <option value="subdomain" <?php selected( $routing_mode, 'subdomain' ); ?>>
+                                <?php esc_html_e( 'Subdomain — de.example.com/', 'lingua-forge' ); ?>
+                            </option>
+                        </select>
+                        <p class="description">
+                            <?php esc_html_e( 'Subdomain mode requires your web server to point all language subdomains (e.g. de.example.com) to this WordPress installation. After switching modes, flush permalink rules and clear any caches. If your home URL includes www (e.g. www.example.com), use the lf_base_domain filter to set the bare apex domain so subdomains are constructed correctly.', 'lingua-forge' ); ?>
                         </p>
                     </td>
                 </tr>
@@ -689,6 +710,13 @@ class RouterTab extends Tab {
             <?php esc_html_e( 'Create language-specific copies of your navigation menus with translated labels and language-prefixed internal URLs. Translated menus are saved as new navigation posts following the {name}-{lang} convention (e.g. primary-navigation-de) and can be referenced from language-specific template parts.', 'lingua-forge' ); ?>
         </p>
 
+        <div class="notice notice-warning inline">
+            <p>
+                <strong><?php esc_html_e( 'Known limitation — Page List block:', 'lingua-forge' ); ?></strong>
+                <?php esc_html_e( 'If a language navigation uses the Page List block (WordPress\'s default before manual editing), it lists all pages regardless of language. This is a WordPress core limitation: the block has no filterable query hook. Workaround: open each language navigation in the Site Editor, click Edit to convert it to static links, then use Fix Links to correct the URLs. A proper fix is planned for a future release.', 'lingua-forge' ); ?>
+            </p>
+        </div>
+
         <?php if ( ! $ai_active ) : ?>
             <p class="description">
                 <?php esc_html_e( 'Navigation translation requires an active AI provider. Configure an API key in the API Keys tab.', 'lingua-forge' ); ?>
@@ -823,6 +851,11 @@ class RouterTab extends Tab {
         // if the POST field was somehow absent (e.g. the select had no options).
         if ( $lang !== '' ) {
             update_option( 'linguaforge_primary_language', $lang, false );
+        }
+
+        $mode = sanitize_key( wp_unslash( $_POST['linguaforge_routing_mode'] ?? 'path' ) );
+        if ( in_array( $mode, [ 'path', 'subdomain' ], true ) ) {
+            update_option( 'linguaforge_routing_mode', $mode, false );
         }
 
         update_option( 'lf_browser_redirect', ! empty( $_POST['lf_browser_redirect'] ), false );
@@ -1510,22 +1543,38 @@ class RouterTab extends Tab {
             wp_send_json_error( __( 'AI provider returned an empty response.', 'lingua-forge' ) );
         }
 
-        // Rewrite internal URLs to carry the language prefix
-        // (e.g. /contact/ → /de/contact/) using the same logic as Fix Links.
-        $home   = untrailingslashit( home_url() );
-        $prefix = '/' . $lang . '/';
+        // Rewrite internal URLs for the target language.
+        // • Path mode:      example.com/contact/      → example.com/de/contact/
+        // • Subdomain mode: example.com/contact/      → de.example.com/contact/
+        $home    = untrailingslashit( home_url() );
+        $context = $router->context;
+        $pattern = '/"url":"(' . preg_quote( $home, '/' ) . ')(\/[^"]*?)"/i';
 
-        $fixed = preg_replace_callback(
-            '/"url":"(' . preg_quote( $home, '/' ) . ')(\/[^"]*?)"/i',
-            static function ( array $m ) use ( $lang, $prefix ): string {
-                $path = $m[2];
-                if ( str_starts_with( ltrim( $path, '/' ), $lang . '/' ) || ltrim( $path, '/' ) === $lang ) {
-                    return $m[0];
-                }
-                return '"url":"' . $m[1] . $prefix . ltrim( $path, '/' ) . '"';
-            },
-            $translated
-        );
+        if ( $context->routing_mode() === 'subdomain' ) {
+            $lang_base = untrailingslashit( $context->lang_base_url( $lang ) );
+            $fixed     = preg_replace_callback(
+                $pattern,
+                static function ( array $m ) use ( $lang_base ): string {
+                    // $m[2] is the path component, e.g. /contact/ — keep as-is,
+                    // only swap the host from home_url() to the lang subdomain.
+                    return '"url":"' . $lang_base . $m[2] . '"';
+                },
+                $translated
+            );
+        } else {
+            $prefix = '/' . $lang . '/';
+            $fixed  = preg_replace_callback(
+                $pattern,
+                static function ( array $m ) use ( $lang, $prefix ): string {
+                    $path = $m[2];
+                    if ( str_starts_with( ltrim( $path, '/' ), $lang . '/' ) || ltrim( $path, '/' ) === $lang ) {
+                        return $m[0]; // Already prefixed — skip.
+                    }
+                    return '"url":"' . $m[1] . $prefix . ltrim( $path, '/' ) . '"';
+                },
+                $translated
+            );
+        }
 
         $final = is_string( $fixed ) ? $fixed : $translated;
 
@@ -1753,8 +1802,11 @@ class RouterTab extends Tab {
         $router      = \LinguaForge\Router\Router::get_instance();
         $source_lang = $router->source_language();
 
-        if ( ! $router->is_valid_lang( $lang ) || $lang === $source_lang ) {
-            wp_send_json_error( __( 'Invalid or primary language.', 'lingua-forge' ) );
+        // Source-language template parts are valid targets: 'header-ca' must be
+        // fixable so it points at the base navigation (no lang suffix), not at
+        // whichever nav WordPress happened to auto-assign first.
+        if ( ! $router->is_valid_lang( $lang ) ) {
+            wp_send_json_error( __( 'Invalid language.', 'lingua-forge' ) );
         }
 
         // Resolve the template part from the DB — filesystem-only parts can't
@@ -1778,11 +1830,11 @@ class RouterTab extends Tab {
 
         $content = self::expand_pattern_refs( $content );
 
-        // Replace each wp:navigation "ref" with the lang-specific nav post ID.
+        // Replace each wp:navigation "ref" with the correct lang nav post ID.
         $replaced    = 0;
         $new_content = preg_replace_callback(
             '/<!--\s*wp:navigation\s+(\{[^}]+\})\s*\/-->/i',
-            static function ( array $m ) use ( $lang, &$replaced ): string {
+            static function ( array $m ) use ( $lang, $source_lang, &$replaced ): string {
                 $attrs = json_decode( $m[1], true );
                 if ( ! isset( $attrs['ref'] ) || ! is_numeric( $attrs['ref'] ) ) {
                     return $m[0];
@@ -1794,15 +1846,31 @@ class RouterTab extends Tab {
                     return $m[0];
                 }
 
-                // Derive the base post_name: strip any existing lang suffix so
-                // we always search from the canonical base name.
+                // Derive the canonical base post_name by stripping any existing
+                // language suffix from the currently referenced nav.  WordPress
+                // sometimes auto-assigns the first navigation in the list (e.g.
+                // navigation-it) rather than the correct one, so the ref may
+                // already be wrong.  Reading _lf_lang from the referenced post
+                // and stripping that suffix recovers the true base name:
+                //   navigation-it  (_lf_lang = 'it')  → base: navigation
+                //   navigation     (_lf_lang = 'ca')  → base: navigation (no change)
                 $base_name = $src_nav->post_name;
+                $ref_lang  = (string) get_post_meta( $ref_id, '_lf_lang', true );
+                if ( $ref_lang && $ref_lang !== $source_lang
+                    && str_ends_with( $base_name, '-' . $ref_lang )
+                ) {
+                    $base_name = substr( $base_name, 0, -( strlen( $ref_lang ) + 1 ) );
+                }
 
-                // Build and look up the lang-specific nav post name.
-                $lang_name = $base_name . '-' . $lang;
+                // Source language → target is the base nav (no suffix).
+                // Other languages  → target is {base_name}-{lang}.
+                $target_name = ( $lang === $source_lang )
+                    ? $base_name
+                    : $base_name . '-' . $lang;
+
                 $lang_navs = get_posts( [
                     'post_type'      => 'wp_navigation',
-                    'name'           => $lang_name,
+                    'name'           => $target_name,
                     'post_status'    => 'publish',
                     'posts_per_page' => 1,
                     'no_found_rows'  => true,
@@ -1810,7 +1878,7 @@ class RouterTab extends Tab {
                 ] );
 
                 if ( empty( $lang_navs ) ) {
-                    return $m[0]; // No lang copy exists yet — leave ref untouched.
+                    return $m[0]; // Target nav does not exist yet — leave untouched.
                 }
 
                 $lang_nav_id  = (int) $lang_navs[0];

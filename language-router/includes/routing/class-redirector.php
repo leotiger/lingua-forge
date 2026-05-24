@@ -35,11 +35,32 @@ class Redirector {
 		// Init redirects (homepage + search at 'init' stage)
 		add_action( 'init', [ $this, 'handle_init_redirects' ], 0 );
 
+		// Allow wp_safe_redirect() to follow cross-domain redirects to language subdomains.
+		add_filter( 'allowed_redirect_hosts', [ $this, 'allow_lang_subdomains' ] );
+
 		// Site logo link
 		add_filter( 'render_block', [ $this, 'fix_site_logo_link' ], 20, 2 );
 
-		// Menu translation
+		// Menu translation — classic nav menus
 		add_filter( 'wp_nav_menu_objects', [ $this, 'translate_menu_items' ] );
+	}
+
+	/**
+	 * Whitelist language subdomains for wp_safe_redirect() in subdomain routing mode.
+	 *
+	 * Without this, wp_safe_redirect() strips cross-domain redirects to
+	 * e.g. de.example.com when home_url() is example.com.
+	 *
+	 * @param  array<string> $hosts  Currently allowed hosts.
+	 * @return array<string>
+	 */
+	public function allow_lang_subdomains( array $hosts ): array {
+		if ( $this->router->context->routing_mode() !== 'subdomain' ) return $hosts;
+		$base = $this->router->context->base_domain();
+		foreach ( $this->router->context->languages() as $lang ) {
+			$hosts[] = $lang . '.' . $base;
+		}
+		return $hosts;
 	}
 
 	// =========================================================
@@ -73,14 +94,21 @@ class Redirector {
 		$uri  = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 		$path = wp_parse_url( $uri, PHP_URL_PATH );
 
-		// Search redirect
+		// Search redirect — canonicalise search requests that arrive under a lang prefix.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 		if ( isset( $_GET['s'] ) && preg_match( '#^/(?:' . $this->lang_regex() . ')/#', $path ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
 			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
-			$s    = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
-			wp_safe_redirect( '/?lang=' . $lang . '&s=' . rawurlencode( $s ), 301 );
+			$s = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+			if ( $this->router->context->routing_mode() === 'subdomain' ) {
+				// In subdomain mode the language is in the host; redirect to the
+				// language subdomain root with just the search query.
+				$base = $this->router->context->lang_base_url( $lang );
+				wp_safe_redirect( $base . '?s=' . rawurlencode( $s ), 301 );
+			} else {
+				wp_safe_redirect( '/?lang=' . $lang . '&s=' . rawurlencode( $s ), 301 );
+			}
 			exit;
 		}
 
@@ -198,6 +226,7 @@ class Redirector {
 
 	public function redirect_search_under_lang_prefix(): void {
 		if ( ! is_search() ) return;
+		if ( $this->router->context->routing_mode() === 'subdomain' ) return; // No path prefix in subdomain mode.
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 		$uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
@@ -269,4 +298,5 @@ class Redirector {
 		}
 		return $items;
 	}
+
 }

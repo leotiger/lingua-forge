@@ -105,7 +105,7 @@
 				);
 			} else {
 				status.html(
-					tpl(i18n.noBrokenLinks || '✅ No broken links or template issues found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) — all checks passed.',
+					tpl(i18n.noBrokenLinks || '✅ No broken links or template mismatches found for <strong>{lang}</strong>. Scanned <strong>{scanned}</strong> post(s) and page(s) — all checks passed. Template part links (header, footer, sidebar) are not included here — use the Fix Template Parts button to check those separately.',
 						{ lang: esc(langUpper), scanned: data.scanned })
 				);
 			}

@@ -225,6 +225,79 @@ class Router {
 		$this->columns->register_hooks();
 		$this->filters->register_hooks();
 		$this->scripts->register_admin_hooks();
+
+		add_action( 'after_switch_theme', [ $this, 'on_switch_theme' ], 10, 2 );
+		add_action( 'admin_notices',      [ $this, 'show_theme_switch_notice' ] );
+	}
+
+	// =========================================================
+	// THEME SWITCH NOTICE
+	// =========================================================
+
+	/**
+	 * Fires when a theme is activated. Counts Lingua Forge localized templates
+	 * and template parts from the previous theme and stores the count in a
+	 * transient so an admin notice can be shown on the next admin page load.
+	 *
+	 * Templates are scoped to the theme stylesheet slug in their post_name
+	 * (`{stylesheet}//{slug}`), so they are inactive but preserved in the DB
+	 * when a different theme is activated — they do not need to be deleted.
+	 *
+	 * @param string    $old_name  Display name of the previous theme.
+	 * @param \WP_Theme $old_theme Previous theme object.
+	 */
+	public function on_switch_theme( string $old_name, \WP_Theme $old_theme ): void {
+		global $wpdb;
+
+		$old_slug = $old_theme->get_stylesheet();
+
+		// Count Lingua Forge localized templates/parts from the previous theme.
+		// Direct SQL required: WP_Query has no post_name prefix filter equivalent.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Admin-only, fires once on theme switch; result stored in a transient immediately.
+		$count = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(p.ID)
+			   FROM {$wpdb->posts} p
+			  INNER JOIN {$wpdb->postmeta} pm
+			     ON pm.post_id = p.ID AND pm.meta_key = '_lf_lang'
+			  WHERE p.post_type IN ('wp_template', 'wp_template_part')
+			    AND p.post_name LIKE %s",
+			$wpdb->esc_like( $old_slug . '//' ) . '%'
+		) );
+
+		if ( $count > 0 ) {
+			set_transient( 'linguaforge_theme_switch_notice', [
+				'old_theme' => $old_name,
+				'count'     => $count,
+			], DAY_IN_SECONDS );
+		}
+	}
+
+	/**
+	 * Shows a one-time admin notice after a theme switch when Lingua Forge
+	 * localized templates from the previous theme are found in the database.
+	 * The transient is deleted immediately after display so the notice appears
+	 * only once.
+	 */
+	public function show_theme_switch_notice(): void {
+		$data = get_transient( 'linguaforge_theme_switch_notice' );
+		if ( ! $data ) return;
+
+		delete_transient( 'linguaforge_theme_switch_notice' );
+
+		$old_theme = esc_html( $data['old_theme'] );
+		$count     = (int) $data['count'];
+
+		echo '<div class="notice notice-info is-dismissible"><p>';
+		echo wp_kses(
+			sprintf(
+				/* translators: 1: number of localized templates, 2: previous theme name */
+				__( '<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;%2$s&#8221; theme are preserved in the database but are currently inactive. They will become active again if you reactivate that theme. To carry your translations to the new theme, regenerate them via <strong>Settings → Lingua Forge → Router → FSE scaffold</strong>.', 'lingua-forge' ),
+				$count,
+				$old_theme
+			),
+			[ 'strong' => [] ]
+		);
+		echo '</p></div>';
 	}
 
 	// =========================================================

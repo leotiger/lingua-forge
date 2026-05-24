@@ -21,6 +21,51 @@ class Context {
 	// CONFIG
 	// =========================================================
 
+	/** @var string|null */
+	private ?string $cached_routing_mode = null;
+
+	/** @var string|null */
+	private ?string $cached_base_domain  = null;
+
+	public function routing_mode(): string {
+		if ( $this->cached_routing_mode !== null ) return $this->cached_routing_mode;
+		return $this->cached_routing_mode = sanitize_key( (string) get_option( 'linguaforge_routing_mode', 'path' ) );
+	}
+
+	/**
+	 * The bare domain used to construct subdomain URLs in subdomain routing mode.
+	 *
+	 * Auto-derived from home_url() — e.g. 'https://example.com' → 'example.com'.
+	 * If home_url() includes a www or other prefix (e.g. 'www.example.com'), use
+	 * the lf_base_domain filter to return the apex domain instead.
+	 *
+	 * @return string  e.g. 'example.com'
+	 */
+	public function base_domain(): string {
+		if ( $this->cached_base_domain !== null ) return $this->cached_base_domain;
+		$host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
+		return $this->cached_base_domain = (string) apply_filters( 'lf_base_domain', $host );
+	}
+
+	/**
+	 * Returns the base URL for a given language code.
+	 *
+	 * Path mode  : always home_url('/') — language expressed as a URL path prefix.
+	 * Subdomain  : home_url('/') for the source language; https://{lang}.{base_domain}/
+	 *              for all other languages.
+	 *
+	 * @param  string $lang  Two-char language code.
+	 * @return string        Trailing-slash URL.
+	 */
+	public function lang_base_url( string $lang ): string {
+		if ( $this->routing_mode() !== 'subdomain' || $lang === $this->source_language() ) {
+			return home_url( '/' );
+		}
+		$scheme = is_ssl() ? 'https' : 'http';
+		return $scheme . '://' . $lang . '.' . $this->base_domain() . '/';
+	}
+
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
 		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', 'ca' ) );
@@ -115,17 +160,50 @@ class Context {
 	// LANGUAGE DETECTION
 	// =========================================================
 
+	/**
+	 * Attempt to detect the active language from the HTTP_HOST header.
+	 *
+	 * Only active in subdomain routing mode. Returns the language code when the
+	 * current request host is {lang}.{base_domain}, or '' when no match is found.
+	 *
+	 * @param  array<string> $langs  Known router language codes.
+	 * @return string                Matched language code, or '' on no match.
+	 */
+	private function detect_lang_from_host( array $langs ): string {
+		if ( $this->routing_mode() !== 'subdomain' ) return '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- value extracted via sanitize_key() and matched against a whitelist immediately.
+		$host = strtolower( (string) wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) );
+		$host = (string) preg_replace( '/:\d+$/', '', $host ); // strip port
+		$base = $this->base_domain();
+		if ( str_ends_with( $host, '.' . $base ) ) {
+			$subdomain = sanitize_key( substr( $host, 0, strlen( $host ) - strlen( $base ) - 1 ) );
+			if ( in_array( $subdomain, $langs, true ) ) return $subdomain;
+		}
+		return '';
+	}
+
 	public function detect_lang_safe(): string {
 		$langs   = $this->languages();
 		$default = $this->source_language();
 
-		// 1. URL
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
-		$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
-		$seg = explode( '/', $uri );
-		if ( ! empty( $seg[0] ) ) {
-			$url_lang = strtolower( $seg[0] );
-			if ( in_array( $url_lang, $langs, true ) ) return $url_lang;
+		// 0. Subdomain — checked first in subdomain routing mode.
+		$host_lang = $this->detect_lang_from_host( $langs );
+		if ( $host_lang !== '' ) return $host_lang;
+
+		// 1. URL path prefix — path mode only; in subdomain mode there is no prefix.
+		if ( $this->routing_mode() === 'path' ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+			$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
+			$seg = explode( '/', $uri );
+			if ( ! empty( $seg[0] ) ) {
+				$url_lang = strtolower( $seg[0] );
+				if ( in_array( $url_lang, $langs, true ) ) return $url_lang;
+				// Non-empty path with no language prefix is authoritative in path mode:
+				// it can only be a source-language URL. Skip cookie / browser detection
+				// so a stale cross-language cookie never redirects the visitor away from
+				// a source-language page they navigated to intentionally.
+				return $default;
+			}
 		}
 
 		// 2. GET
@@ -166,13 +244,22 @@ class Context {
 		$langs   = $this->languages();
 		$default = $this->source_language();
 
-		// 1. URL
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
-		$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
-		$seg = explode( '/', $uri );
-		if ( ! empty( $seg[0] ) ) {
-			$url_lang = strtolower( $seg[0] );
-			if ( in_array( $url_lang, $langs, true ) ) return $url_lang;
+		// 0. Subdomain — checked first in subdomain routing mode.
+		$host_lang = $this->detect_lang_from_host( $langs );
+		if ( $host_lang !== '' ) return $host_lang;
+
+		// 1. URL path prefix — path mode only.
+		if ( $this->routing_mode() === 'path' ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
+			$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
+			$seg = explode( '/', $uri );
+			if ( ! empty( $seg[0] ) ) {
+				$url_lang = strtolower( $seg[0] );
+				if ( in_array( $url_lang, $langs, true ) ) return $url_lang;
+				// Non-empty path with no language prefix = source language. Return
+				// immediately so a stale cookie cannot override the URL signal.
+				return $default;
+			}
 		}
 
 		// 2. Cookie
@@ -270,7 +357,11 @@ class Context {
 	public function set_lang_cookie( string $lang ): void {
 		if ( ! $this->is_valid_lang( $lang ) ) return;
 
-		$domain = wp_parse_url( home_url(), PHP_URL_HOST );
+		// In subdomain mode scope the cookie to the apex domain (leading dot) so it
+		// is shared across all language subdomains (de.example.com, fr.example.com…).
+		$domain = $this->routing_mode() === 'subdomain'
+			? '.' . $this->base_domain()
+			: (string) wp_parse_url( home_url(), PHP_URL_HOST );
 
 		setcookie(
 			'lf_lang',

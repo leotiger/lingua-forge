@@ -53,7 +53,8 @@
             "@lint",
             "@analyse",
             "@test:unit"
-        ]
+        ],
+        "make-pot": "bash bin/make-pot.sh"
     },
     "scripts-descriptions": {
         "lint": "Run PHPCS against ../ using WordPress Coding Standards.",
@@ -63,6 +64,7 @@
         "test:unit": "Run only the unit suite (no WordPress required).",
         "test:integration": "Run only the integration suite (requires wp-env running).",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
-        "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration."
+        "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
+        "make-pot": "Regenerate languages/lingua-forge.pot. Downloads wp-cli.phar to dev/ on first run (curl + php required); no Docker or global WP-CLI needed."
     }
 }

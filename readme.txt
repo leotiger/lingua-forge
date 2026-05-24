@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.6.5
+Stable tag: 1.7.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -155,9 +155,17 @@ Clicking "Apply to Editor" now triggers an automatic save. If the save succeeds 
 
 Yes. Language URL prefixes (`/de/`, `/fr/`, etc.) require WordPress to use pretty permalinks. Go to **Settings → Permalinks** and choose any option except **Plain**.
 
+= My language navigation shows pages from all languages, not just the current one. =
+
+This happens when the navigation uses the **Page List** block — WordPress's default before the user manually edits the menu. The Page List block calls `get_pages()` directly with no filterable query arguments, so language-based filtering is not currently possible. This is a WordPress core limitation.
+
+**Workaround:** Open the navigation in the Site Editor (Appearance → Editor → Navigation), select the affected language navigation, and click **Edit** to convert the Page List to individual static links. Then go to **Settings → Router → Fix Links** to ensure each link points to the correct language version. Static-link navigations are fully language-aware.
+
+A proper fix is planned for a future release.
+
 == Screenshots ==
 
-1. The Lingua Forge meta box in the block editor — Meta Description, Excerpt, Translation, and Content Generator features.
+1. AI translation review — side-by-side comparison of the current source content and the AI-generated translation before applying it to the editor. The generated meta description is shown below the content diff.
 2. Quick Translate popover in the admin toolbar — Translate, Create, and Refine tabs.
 3. Quick Translate popover in the Gutenberg editor toolbar.
 4. Block-level Translate / Revise popover on a selected block.
@@ -221,6 +229,18 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.7.0 =
+* Added: Subdomain routing mode — languages can now be served from subdomains (de.example.com, fr.example.com) instead of path prefixes (example.com/de/). Select the URL structure in Settings → Lingua Forge → Router → URL structure. Requires wildcard DNS and TLS on the server side; no WordPress configuration beyond the setting. Source language always serves from the root domain. Cookie scoping, permalink generation, hreflang output, language switcher, and the link-fixer scan are all subdomain-aware. The lf_base_domain filter is available to override the auto-derived base domain when home_url() includes www.
+* Fixed: Translated pages were automatically added to navigation menus by WordPress's language-unaware auto-add feature. A hook now removes any just-added menu item whose page is a non-source-language translation.
+* Fixed: Language switcher was invisible on archive, category, tag, and author pages — get_the_ID() returns nothing on non-singular pages, causing get_languages() to return an empty array. Switcher now falls back to URL-rewrite mode for all configured languages when no post is in context.
+* Fixed: Translate Navigation generated wrong URLs in subdomain routing mode — internal page URLs were rewritten using path-prefix logic (/de/contact/) instead of subdomain URLs (de.example.com/contact/). Now uses lang_base_url() for host-based rewriting in subdomain mode.
+* Fixed: Source-language pages were redirected to the wrong language when a stale cross-language cookie was present. In path mode, a non-prefixed URL is now treated as an authoritative source-language signal and bypasses cookie detection. The homepage is unaffected.
+* Fixed: Fix Navigation References now correctly handles source-language template parts and wrong-language navigation references — source-language targets were previously rejected; wrong-language nav references produced double-suffixed slugs (e.g. navigation-it-de). Base name derivation now reads _lf_lang meta from the referenced navigation post.
+* Fixed: Language switcher SVG globe icon collapsed to zero size — was sized via a theme-specific CSS variable undefined on most sites. Replaced with a generic 1.2em rule using currentColor.
+* Fixed: Language switcher dropdown overflowed the viewport on right-aligned placements. Inline JS now detects overflow via getBoundingClientRect on load and resize and flips the panel to open right-to-left when needed.
+* Fixed: Language switcher showed a white background with invisible text on dark-themed sites. CSS variables now inherit FSE global-style color tokens (--wp--preset--color--base / --contrast) with CSS system-color fallbacks (Canvas / CanvasText) that track OS light/dark preference.
+* Maintenance: build-zip.sh now normalises file permissions after rsync (0755 directories, 0644 files) before creating the ZIP.
+
 = 1.6.5 =
 * Fixed: ajax_fix_fse_links() stale-path links not updated in template parts — links that already carried the correct language prefix but whose slug had changed were never repaired. A second pass via LinkFixer::fix_post() now runs after the prefix-rewrite save, using data-id as ground truth. Covers footers, headers, sidebars, and any wp_template_part.
 * Maintenance: .distignore — .github/ added (workflow directory was missing and would have been included in SVN submission); docs/ added for screenshots, banner, and icon pushed to SVN assets/ by the deploy workflow.
@@ -278,6 +298,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+Adds subdomain routing mode (de.example.com style). No schema changes. Existing path-prefix setups are unaffected — subdomain mode must be explicitly enabled in Router settings. Safe to update in place.
 
 = 1.6.5 =
 Maintenance release — removes leftover debug logging from the language-router module. No schema, settings, or behaviour changes. Safe to update in place.

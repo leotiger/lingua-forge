@@ -28,6 +28,9 @@ class Sync {
 	public function register_hooks(): void {
 		// Priority 10 — fires before the cache-clear hook at 20.
 		add_action( 'wp_after_insert_post', [ $this, 'handle_save_post' ], 10, 2 );
+
+		// Priority 11 — fires after WordPress's own _wp_auto_add_pages_to_menus (priority 10).
+		add_action( 'publish_page', [ $this, 'remove_cross_language_menu_auto_add' ], 11 );
 	}
 
 	// =========================================================
@@ -183,6 +186,56 @@ class Sync {
 
 		update_post_meta( $post_id, '_wp_page_template', $template_slug );
 		update_post_meta( $post_id, '_lf_auto_template', $template_slug );
+	}
+
+	// =========================================================
+	// MENU AUTO-ADD GUARD
+	// =========================================================
+
+	/**
+	 * Prevents translated pages from being auto-added to navigation menus.
+	 *
+	 * WordPress's _wp_auto_add_pages_to_menus() fires on `publish_page` at
+	 * priority 10 and adds new top-level pages to any classic nav menu that has
+	 * "Automatically add new top-level pages" enabled. This is language-unaware:
+	 * a newly published French page would be inserted into every auto-add menu,
+	 * including the primary (source-language) menu.
+	 *
+	 * This callback runs at priority 11 — after the auto-add — and removes any
+	 * item that references a non-source-language page. Source-language pages are
+	 * allowed through normally; our translate_menu_items() filter in Redirector
+	 * already handles dynamic URL swapping to translated permalinks at render time.
+	 *
+	 * @param int $post_id Published page ID.
+	 */
+	public function remove_cross_language_menu_auto_add( int $post_id ): void {
+		$page_lang = get_post_meta( $post_id, '_lf_lang', true );
+		if ( ! $page_lang ) return;
+		if ( $page_lang === $this->router->context->source_language() ) return;
+
+		$nav_menu_options = get_option( 'nav_menu_options', [] );
+		if ( empty( $nav_menu_options['auto_add'] ) ) return;
+
+		foreach ( (array) $nav_menu_options['auto_add'] as $menu_id ) {
+			$menu_id = (int) $menu_id;
+			$items   = wp_get_nav_menu_items( $menu_id );
+			if ( ! $items ) continue;
+
+			$removed = false;
+			foreach ( $items as $item ) {
+				if ( $item->type === 'post_type' && (int) $item->object_id === $post_id ) {
+					wp_delete_post( (int) $item->ID, true );
+					$removed = true;
+				}
+			}
+
+			if ( $removed ) {
+				// wp_delete_post() clears the item's own post cache but not the
+				// nav menu items group cache keyed by menu term ID. Clear it
+				// explicitly so the removed item doesn't persist until cache expiry.
+				clean_term_cache( $menu_id, 'nav_menu' );
+			}
+		}
 	}
 
 	// =========================================================

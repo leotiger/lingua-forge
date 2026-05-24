@@ -39,6 +39,12 @@ class Manager {
 
 		add_rewrite_tag( '%lang%', '(' . $langs . ')' );
 
+		// In subdomain mode the language is determined by the host, not the URL
+		// path. No path-prefix rewrite rules are needed; WordPress handles routing
+		// normally on each subdomain and the %lang% query var is still registered
+		// above for admin-ajax and other internal uses.
+		if ( $this->router->context->routing_mode() === 'subdomain' ) return;
+
 		// Pagination
 		add_rewrite_rule(
 			'^(' . $langs . ')/page/([0-9]+)/?$',
@@ -99,13 +105,21 @@ class Manager {
 		$lang = $this->router->trid_group->get_lang( $post->ID );
 		if ( ! $lang || $lang === $this->router->context->source_language() ) return $url;
 
-		$path = wp_parse_url( $url, PHP_URL_PATH );
+		$path        = wp_parse_url( $url, PHP_URL_PATH );
 		if ( ! $path ) return $url;
 
-		$path        = trim( $path, '/' );
 		$langs_regex = implode( '|', array_map( 'preg_quote', $this->router->context->languages() ) );
-		$path        = preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
 
+		if ( $this->router->context->routing_mode() === 'subdomain' ) {
+			// Replace scheme+host with the language subdomain; strip any stale
+			// path-prefix that may have been baked into the URL.
+			$path = (string) preg_replace( '#^/(' . $langs_regex . ')/#', '/', $path );
+			return $this->router->context->lang_base_url( $lang ) . ltrim( $path, '/' );
+		}
+
+		// Path mode: prepend /lang/ prefix.
+		$path = trim( $path, '/' );
+		$path = (string) preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
 		return home_url( '/' . $lang . '/' . $path . '/' );
 	}
 }

@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 1.6.3
+**Date:** May 2026 · Lingua Forge 1.7.0
 
 ---
 
@@ -81,7 +81,7 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 | Feature | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
 | URL prefixes (`/de/`, `/fr/`) | ✅ | ✅ | ✅ | ✅ | ✅ (or subdomain / separate domain) | ✅ (one domain per language, or subdirectories) |
-| Subdomains (`de.site.com`) | ❌ | ✅ | ✅ Pro | ✅ | ✅ | ✅ (native per site) |
+| Subdomains (`de.site.com`) | ✅ (1.7.0, selectable in Settings → Router) | ✅ | ✅ Pro | ✅ | ✅ | ✅ (native per site) |
 | Separate domain per language | ❌ | ✅ | ✅ Pro | ❌ | ✅ | ✅ (native per site) |
 | Translation groups (linked posts) | ✅ TRID / UUID | ✅ | ✅ | N/A (string-based) | N/A (cloud-based) | ✅ (cross-site relationships) |
 | Outdated translation tracking | ✅ ⚠ indicator | ✅ dashboard | ✅ Pro | ✅ (visual indicator) | ❌ | ❌ |
@@ -283,7 +283,9 @@ After translation, the editor retains full freedom to adjust the slug independen
 
 ### Subdomain and separate-domain routing
 
-Lingua Forge currently supports URL prefixes (`/de/`) only. If a site needs `de.site.com` or `site.de` per language, it is not currently possible without custom code. Subdomain and separate-domain routing are on the roadmap — both are achievable on a single WordPress instance (no Multisite required) as a routing extension to the existing Language Router.
+Lingua Forge 1.7.0 adds subdomain routing — select **Settings → Router → URL structure → Subdomain** to serve languages from `de.example.com`, `fr.example.com`, etc. on a single WordPress installation (no Multisite required). The source language remains at the root domain. Cookie scoping, permalink generation, hreflang output, and the language switcher are all subdomain-aware. Server prerequisites: wildcard DNS and a wildcard TLS certificate covering all language subdomains.
+
+Separate-domain routing (`site.de`, `site.fr`) is not yet supported. Sites that require fully independent domains per language should consider MultilingualPress (Multisite approach) or a reverse-proxy setup.
 
 ### Professional translation management
 
@@ -317,7 +319,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 - Your site depends on plugins that have already integrated with **WPML's public API** (`icl_object_id`, `wpml_get_language_information`, etc.).
 - You need **agency or CAT-tool workflows** with XLIFF round-trips and OTGS marketplace access.
 - **WooCommerce multilingual** at scale is required and the budget supports the Agency tier.
-- You need **subdomain or separate-domain routing** per language.
+- You need **separate-domain routing** (`site.de`, `site.fr`) per language — subdomains are now supported by Lingua Forge 1.7.0, but fully independent domains per language are not.
 
 ### Choose Polylang when:
 - You want a **post-based plugin with a lighter footprint** than WPML and the site does not depend on complex block-template logic.
@@ -349,7 +351,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 
 | Plugin | Best fit | Core strength | Core limitation |
 |---|---|---|---|
-| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects | Zero cost + AI editorial depth + WP-CLI + FSE-native + native block model (no storage overhead) | WooCommerce not current priority; subdomain/separate-domain routing on roadmap |
+| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects | Zero cost + AI editorial depth + WP-CLI + FSE-native + native block model (no storage overhead) + subdomain routing (1.7.0) | WooCommerce not current priority; separate-domain routing not yet supported |
 | **WPML** | Plugin-ecosystem-dependent sites, agencies, WooCommerce at scale | Market leader, widest compatibility, agency/CAT workflows | High cost, plugin bloat, metered AI credits |
 | **Polylang** | Budget post-based sites where Lingua Forge is overkill | Lightweight, clean, widely understood | Free tier severely limited; Pro still needs DeepL separately |
 | **TranslatePress** | Teams where visual front-end editing is priority | Front-end editor UX, transparent WooCommerce, predictable pricing | Render-time overhead + parallel string storage layer, no FSE template support |
@@ -360,7 +362,7 @@ For a small to medium WordPress site on a block theme — a business site, a mag
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in, a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches, and a native-block architecture that carries none of the overhead that string-interception or cloud-proxy tools require.**
 
-Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilingual needs have well-supported dedicated options — and those competitors exist for good reason. For content-focused sites, everything in the competitive surface — routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, block-level granularity with refinement and rewrite — is fully covered at 1.6.0.
+Lingua Forge is a content-site plugin. Ecommerce sites with WooCommerce multilingual needs have well-supported dedicated options — and those competitors exist for good reason. For content-focused sites, everything in the competitive surface — path-prefix and subdomain routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, block-level granularity with refinement and rewrite — is fully covered at 1.7.0.
 
 ---
 

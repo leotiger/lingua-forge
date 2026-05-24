@@ -6,21 +6,42 @@
    Variables + Container
 ========================================= */
 .lsflr-switcher {
-    --lsflr-bg: #fff;
-    --lsflr-color: currentColor;
-    --lsflr-border: rgba(0,0,0,0.08);
-    --lsflr-hover: rgba(0,0,0,0.05);
-    --lsflr-shadow: 0 10px 26px rgba(0,0,0,0.14);
+    /* Adaptive palette.
+     *
+     * --lsflr-bg / --lsflr-color inherit the FSE global-style tokens
+     * (--wp--preset--color--base / --contrast) when the active theme defines
+     * them — all modern block themes (TT4, etc.) do.  When those tokens are
+     * absent (classic theme or custom FSE palette names) the fallback is a
+     * CSS system colour: Canvas / CanvasText.  System colours automatically
+     * match the OS light/dark preference via color-scheme below.
+     *
+     * Override any variable on the block's parent element for site-specific
+     * tuning without touching plugin CSS:
+     *   .my-header { --lsflr-bg: #1a1a2e; --lsflr-color: #eee; }
+     *
+     * --lsflr-border / --lsflr-hover use neutral 50 % grey at low opacity —
+     * visible on both white and black backgrounds without needing to know
+     * which one the theme uses.
+     */
+    --lsflr-bg:     var(--wp--preset--color--base,     Canvas);
+    --lsflr-color:  var(--wp--preset--color--contrast, CanvasText);
+    --lsflr-border: rgba(128, 128, 128, 0.22);
+    --lsflr-hover:  rgba(128, 128, 128, 0.12);
+    --lsflr-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
     --lsflr-radius: 8px;
-    --lsflr-speed: 0.18s;
-    --lsflr-delay: 0.04s;
+    --lsflr-speed:  0.18s;
+    --lsflr-delay:  0.04s;
+
+    /* Tell the browser this component supports both schemes so system colours
+       resolve correctly even when the OS preference differs from the page. */
+    color-scheme: light dark;
+
     position: relative;
     display: inline-block;
     font-size: 1.3rem;
-	font-family: var(--wp--preset--font-family--base-hand);
+    font-family: var(--wp--preset--font-family--base-hand);
     color: var(--lsflr-color);
-	color-scheme: light;
-	margin-block-start: 0;
+    margin-block-start: 0;
 }
 
 /* =========================================
@@ -51,23 +72,20 @@
     align-items: center;
 }
 
-.lsflr-icon svg {
-    width: 1em;
-    height: 1em;
-}
-
-.lsflr-toggle .lsflr-current img, .lsflr-toggle .lsflr-current svg {
-	height: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);
-	width: calc(var(--wp--custom--fixed-bottom-bar--icon-size) - 1rem);
-}
-
+/* Size and colour for every SVG inside the toggle, regardless of show mode.
+   The old rule used --wp--custom--fixed-bottom-bar--icon-size which is a
+   theme-specific variable — when undefined calc() produces an invalid value
+   and the icon collapses to zero size. */
 .lsflr-toggle .lsflr-current svg {
-	fill: currentColor;
-	display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    fill: currentColor;
+    display: inline-flex;
+    flex-shrink: 0;
 }
 
 .lsflr-toggle .lsflr-current svg path {
-	fill: currentColor;
+    fill: currentColor;
 }
 
 .lsflr-toggle:hover .lsflr-current::after,
@@ -91,6 +109,7 @@
     list-style: none;
 
     background: var(--lsflr-bg);
+    color: var(--lsflr-color);
     border: 1px solid var(--lsflr-border);
     border-radius: var(--lsflr-radius);
     box-shadow: var(--lsflr-shadow);

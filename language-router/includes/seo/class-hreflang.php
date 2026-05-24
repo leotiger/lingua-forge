@@ -81,7 +81,11 @@ class Hreflang {
 		if ( is_paged() ) {
 			$paged = get_query_var( 'paged' );
 			foreach ( $this->router->context->languages() as $lang ) {
-				$base = ( $lang === $this->router->context->source_language() ) ? home_url( '/' ) : home_url( '/' . $lang . '/' );
+				if ( $this->router->context->routing_mode() === 'subdomain' ) {
+					$base = $this->router->context->lang_base_url( $lang );
+				} else {
+					$base = ( $lang === $this->router->context->source_language() ) ? home_url( '/' ) : home_url( '/' . $lang . '/' );
+				}
 				$url  = ( $paged > 1 ) ? $base . 'page/' . $paged . '/' : $base;
 				echo '<link rel="alternate" hreflang="' . esc_attr( $lang ) . '" href="' . esc_url( $url ) . '" />' . "\n";
 			}
@@ -97,7 +101,10 @@ class Hreflang {
 			$path        = preg_replace( '#/+#', '/', $path );
 
 			foreach ( $this->router->context->languages() as $lang ) {
-				if ( $lang === $this->router->context->source_language() ) {
+				if ( $this->router->context->routing_mode() === 'subdomain' ) {
+					$base = $this->router->context->lang_base_url( $lang );
+					$url  = empty( $path ) ? $base : $base . trailingslashit( $path );
+				} elseif ( $lang === $this->router->context->source_language() ) {
 					$url = empty( $path ) ? home_url( '/' ) : home_url( '/' . trailingslashit( $path ) );
 				} else {
 					$url = empty( $path )
