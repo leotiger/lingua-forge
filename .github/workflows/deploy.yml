@@ -56,3 +56,9 @@ jobs:
         with:
           files: ../lingua-forge-${{ steps.version.outputs.tag }}.zip
           generate_release_notes: true
+          body: |
+            ## Installation
+
+            Download **`lingua-forge-${{ steps.version.outputs.tag }}.zip`** above and install via **Plugins → Add New → Upload Plugin** in WordPress.
+
+            > ⚠️ Do not use the *Source code (zip)* or *Source code (tar.gz)* archives — those expand to the wrong folder name and will not install correctly.
