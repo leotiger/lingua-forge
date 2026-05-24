@@ -89,7 +89,7 @@ class Router {
 		$this->redirector    = new Redirector( $this );
 		$this->hreflang      = new Hreflang( $this );
 		$this->search_index  = new SearchIndex();
-		$this->search_query  = new SearchQuery( $this );
+		$this->search_query  = new SearchQuery();
 		$this->trid_group    = new TridGroup( $this );
 		$this->sync          = new TranslationSync( $this );
 		$this->migrator      = new Migrator();
@@ -207,10 +207,6 @@ class Router {
 		// Frontend scripts
 		$this->scripts->register_hooks();
 
-		// Debug
-		add_action( 'wp',   [ $this, 'debug_request_context' ] );
-		add_action( 'init', [ $this, 'debug_system_init' ] );
-
 		// Admin-only hooks — registered lazily to skip the ~15 add_* calls
 		// on every anonymous frontend page render.
 		if ( is_admin() ) {
@@ -311,33 +307,6 @@ class Router {
 		if ( ! empty( $context ) ) $message .= ' | ' . wp_json_encode( $context );
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
 		error_log( $prefix . $message );
-	}
-
-	public function debug_system_init(): void {
-		if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) return;
-		if ( is_admin() ) return;
-		$this->debug( '=========================================' );
-		$this->debug( 'SYSTEM INIT', [
-			'mode' => $this->hreflang->hreflang_mode(),
-			'lang' => defined( 'LF_LANG' ) ? LF_LANG : null,
-		] );
-	}
-
-	public function debug_request_context(): void {
-		if ( is_admin() ) return;
-		if ( ! is_singular() && ! is_archive() && ! is_home() && ! is_search() ) return;
-		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
-		$this->debug( 'Request context', [
-			'url'  => wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ),
-			'lang' => defined( 'LF_LANG' ) ? LF_LANG : null,
-			'type' => [
-				'singular' => is_singular(),
-				'archive'  => is_archive(),
-				'home'     => is_home(),
-				'search'   => is_search(),
-			],
-		] );
-		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 
 	// =========================================================

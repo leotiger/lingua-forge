@@ -1381,7 +1381,29 @@ class RouterTab extends Tab {
             $content
         );
 
-        if ( $count === 0 ) {
+        // ── Save prefix-rewritten content if any changes were made ───────────
+        if ( $count > 0 ) {
+            $result = wp_update_post( [
+                'ID'           => $post_id,
+                'post_content' => $content,
+            ], true );
+
+            if ( is_wp_error( $result ) ) {
+                wp_send_json_error( $result->get_error_message() );
+            }
+        }
+
+        // ── Stale-path pass ───────────────────────────────────────────────────
+        // Fix links that already carry the correct language prefix but whose
+        // path has changed — e.g. a page was moved or its slug was updated after
+        // the template part was last saved. LinkFixer::fix_post() uses data-id
+        // as ground truth: if get_permalink(data-id) no longer matches the
+        // stored href the link is stale and gets rewritten. Works for any post
+        // type, including wp_template_part.
+        $stale = $router->link_fixer->fix_post( $post_id, $lang );
+        $total = $count + ( $stale['applied'] ?? 0 );
+
+        if ( $total === 0 ) {
             wp_send_json_success( [
                 'slug'    => $slug,
                 'count'   => 0,
@@ -1389,20 +1411,11 @@ class RouterTab extends Tab {
             ] );
         }
 
-        $result = wp_update_post( [
-            'ID'           => $post_id,
-            'post_content' => $content,
-        ], true );
-
-        if ( is_wp_error( $result ) ) {
-            wp_send_json_error( $result->get_error_message() );
-        }
-
         wp_send_json_success( [
             'slug'  => $slug,
-            'count' => $count,
+            'count' => $total,
             /* translators: %d: number of links rewritten */
-            'message' => sprintf( _n( '%d link updated.', '%d links updated.', $count, 'lingua-forge' ), $count ),
+            'message' => sprintf( _n( '%d link updated.', '%d links updated.', $total, 'lingua-forge' ), $total ),
         ] );
     }
 

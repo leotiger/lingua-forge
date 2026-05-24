@@ -122,8 +122,6 @@ class Hreflang {
 	public function disable_seo_plugin_hreflang(): void {
 		if ( $this->hreflang_mode() !== 'custom' ) return;
 
-		$this->router->debug( 'Disabling plugin hreflang' );
-
 		if ( defined( 'WPSEO_VERSION' ) )     add_filter( 'wpseo_hreflang', '__return_false' );
 		if ( defined( 'RANK_MATH_VERSION' ) )  add_filter( 'rank_math/frontend/hreflang', '__return_false' );
 		if ( defined( 'AIOSEO_VERSION' ) )     add_filter( 'aioseo_hreflang', '__return_false' );

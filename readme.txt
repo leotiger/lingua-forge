@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.6.3
+Stable tag: 1.6.5
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -219,6 +219,17 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.6.5 =
+* Fixed: ajax_fix_fse_links() stale-path links not updated in template parts — links that already carried the correct language prefix but whose slug had changed were never repaired. A second pass via LinkFixer::fix_post() now runs after the prefix-rewrite save, using data-id as ground truth. Covers footers, headers, sidebars, and any wp_template_part.
+* Maintenance: All ->debug() call sites removed from language-router sub-classes (QueryFilter, Sync, Query, Redirector, Hreflang) — leftover from the mu-plugin era, flooding debug.log on every request. The debug() method and linguaforge_debug() wrapper are retained.
+* Maintenance: Router::debug_system_init() and debug_request_context() removed along with their add_action registrations — fired on every frontend page load whenever WP_DEBUG was on.
+
+= 1.6.4 =
+* Fixed: tests/bootstrap.php autoload path corrected to dev/vendor/autoload.php — previously pointed at a non-existent vendor/ in the plugin root; silent failure masked by PHPUnit's own autoloader.
+* Improved: register_meta in the Meta Description module is now gated on is_admin(), REST_REQUEST, and WP_CLI — skipped entirely on anonymous front-end requests where it was pure dead weight.
+* Improved: all update_option() calls for linguaforge_flush_rewrite_rules now pass autoload = false — option is short-lived and does not belong in the autoloaded options blob.
+* Documentation: README.md gains a Roles and capabilities section documenting the two-tier capability model — linguaforge_required_capability gates editor AI operations; FSE template and navigation operations always require manage_options regardless of that setting.
+
 = 1.6.3 =
 * Fixed: Language-prefix regex now matches multi-character locales (zh-tw, zh-hant, pt-br, …) — three [a-z]{2} hardcodes in Redirector replaced by a dynamic lang_regex() helper built from the configured locale list.
 * Fixed: Frontend AJAX — POST requests were silently sent without the lang parameter because the old jQuery ajaxSend interceptor appended it to the POST body, which detect_lang_safe() never reads. The script is rewritten without jQuery: XMLHttpRequest.prototype.open and window.fetch are patched to append ?lang=X to the URL query string of same-origin requests. jQuery is no longer a script dependency.
@@ -264,14 +275,20 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 == Upgrade Notice ==
 
+= 1.6.5 =
+Maintenance release — removes leftover debug logging from the language-router module. No schema, settings, or behaviour changes. Safe to update in place.
+
+= 1.6.4 =
+Maintenance and micro-optimisation release. No schema or settings changes — safe to update in place. register_meta no longer fires on front-end requests; flush_rewrite_rules option writes are now autoload-free; tests bootstrap path corrected.
+
 = 1.6.3 =
-Conformance and correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route correctly. Frontend AJAX lang detection fixed for POST requests (no more silent fallback to cookie/Accept-Language). The missing-translation-notice block gains a full Site Editor component. No schema or settings changes — safe to update in place.
+Correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route correctly. Frontend AJAX lang detection fixed for POST requests. Missing-translation-notice block gains a full Site Editor component. No schema or settings changes — safe to update in place.
 
 = 1.6.2 =
-Defensive hardening release. Closes four edge cases surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT): the singular redirect handler, translation group query, permalink filter, and language cookie all now guard against non-public WordPress post types and cross-site domain bleed. No schema or settings changes — behaviour is identical on correctly configured sites.
+Defensive hardening release. Closes four edge cases around non-public post types and cross-site cookie bleed, surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT). No schema or settings changes — safe to update in place.
 
 = 1.6.1 =
-Bug-fix release. Restores correct Translation Memory cache invalidation after per-preset addendum edits (the 1.5.0 migration left a stale option-read in the signature path) and closes a budget-protection gap where the 1.6.0 FSE-translate AJAX endpoints bypassed the per-user rate limit and site-wide daily quota that guard every other paid-AI endpoint. No schema or settings changes.
+Bug-fix release. Fixes Translation Memory cache invalidation after per-preset addendum edits and closes a rate-limit gap where 1.6.0 FSE-translate AJAX endpoints bypassed per-user and site-wide quota guards. No schema or settings changes.
 
 = 1.6.0 =
 Adds full FSE template localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific templates, template parts, and navigation menus directly from Settings → Router.

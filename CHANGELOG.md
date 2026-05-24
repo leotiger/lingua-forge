@@ -2,6 +2,36 @@
 
 ---
 
+## [1.6.5] — 2026-05-24
+
+### Fixed
+
+- **`ajax_fix_fse_links()` — stale-path links not updated in template parts** — the handler was saving prefix-rewritten content and returning early when `$count === 0`, so links that already carried the correct language prefix but whose slug had changed (page moved or renamed after the template part was last saved) were never repaired. A second pass via `LinkFixer::fix_post()` now runs unconditionally after the prefix-rewrite save, using `data-id` as ground truth to detect and rewrite stale paths. Covers footers, headers, sidebars, and any other `wp_template_part` post type.
+
+### Maintenance
+
+- **Language router — debug call sites removed** — all `->debug()` calls scattered across language-router sub-classes (`QueryFilter`, `Sync`, `Query`, `Redirector`, `Hreflang`) date from when the router was a mu-plugin and verbose tracing was needed during early development. All eight call sites are removed. The `debug()` method itself (gated on `WP_DEBUG && WP_DEBUG_LOG`) and the `linguaforge_debug()` public wrapper are retained for targeted use when needed.
+- **`Router::debug_system_init()` and `debug_request_context()` removed** — both methods and their `add_action( 'wp' / 'init' )` registrations are removed. They were firing on every frontend request and flooding `debug.log` unconditionally whenever `WP_DEBUG` was on.
+
+---
+
+## [1.6.4] — 2026-05-24
+
+### Fixed
+
+- **`tests/bootstrap.php` — autoload path corrected** — pointed at `../vendor/autoload.php` (non-existent since Composer moved to `dev/` in 1.4.0); corrected to `../dev/vendor/autoload.php`. Silent failure was masked by PHPUnit's own autoloader when invoked from `dev/`.
+
+### Improved
+
+- **`MetaDescription\Module` — `register_meta` gated on admin/REST/CLI context** — `register_post_meta()` was called on every request including anonymous front-end views where the metabox is never rendered. Now skipped unless `is_admin()`, `REST_REQUEST`, or `WP_CLI` is true.
+- **`linguaforge_flush_rewrite_rules` — `autoload = false` on all write sites** — three `update_option()` call sites (activation hook in `lingua-forge.php`, upload and delete handlers in `MaintenanceTab`) now pass the `false` autoload flag. The option is consumed within one request cycle and does not belong in the autoloaded options blob.
+
+### Documentation
+
+- **`README.md` — Roles and capabilities section** — documents the two-tier capability model: `linguaforge_required_capability` (default `edit_posts`) gates editor-level AI operations (chunk translation, block revision, meta/excerpt generation); FSE template scaffold, AI-translate, fix-links, fix-parts, fix-nav, and language navigation operations always require `manage_options` regardless of that filter.
+
+---
+
 ## [1.6.3] — 2026-05-24
 
 ### Fixed

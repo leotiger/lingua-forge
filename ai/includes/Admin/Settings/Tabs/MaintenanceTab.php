@@ -686,7 +686,7 @@ class MaintenanceTab extends Tab {
         // set built on init. Mark the rules dirty so the init-priority-99 hook
         // in lingua-forge.php picks the flush up on the next request — without
         // this the new /xx/ URLs return 404 until Settings → Permalinks → Save.
-        update_option( 'linguaforge_flush_rewrite_rules', true );
+        update_option( 'linguaforge_flush_rewrite_rules', true, false );
 
         wp_safe_redirect(add_query_arg('lf_override_uploaded', '1', $redirect_base));
         exit;
@@ -748,7 +748,7 @@ class MaintenanceTab extends Tab {
         // Deleting the last .mo for a discovered-only locale removes it from
         // \LinguaForge\Router\Router::languages(), so the rewrite-rule set must rebuild.
         // Same mechanism as on upload — defer to init-priority-99 in lingua-forge.php.
-        update_option( 'linguaforge_flush_rewrite_rules', true );
+        update_option( 'linguaforge_flush_rewrite_rules', true, false );
 
         wp_safe_redirect(add_query_arg('lf_override_deleted', '1', $redirect_base));
         exit;

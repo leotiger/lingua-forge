@@ -33,7 +33,7 @@ if ( ! $wp_tests_dir ) {
 
 // Composer autoload — required for both unit and integration paths
 // (PHPUnit itself, Yoast polyfills, dev libraries).
-$autoload = __DIR__ . '/../vendor/autoload.php';
+$autoload = __DIR__ . '/../dev/vendor/autoload.php';
 if ( file_exists( $autoload ) ) {
     require_once $autoload;
 }

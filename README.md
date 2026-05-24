@@ -336,6 +336,16 @@ Lingua Forge is designed to stay as close to WordPress core and Full Site Editin
 - **i18n** — textdomain `lingua-forge` throughout; `wp_set_script_translations()` wired for all editor assets; no manual `load_plugin_textdomain` call (WP 4.6+ handles this automatically for slug-matched plugins).
 - **Security conventions** — capability + nonce checks on every entry point; `wp_unslash` before sanitise, `esc_*` on every output; `wp_handle_upload()` with full MIME-magic validation.
 
+### Roles and capabilities
+
+Lingua Forge applies two separate capability tiers depending on the operation:
+
+**Editor-level operations** — AI chunk translation, block revision, excerpt and meta description generation — gate on the `linguaforge_required_capability` filter, which defaults to `edit_posts`. Administrators can raise this in Settings → Limits to `edit_published_posts`, `edit_others_posts`, or `manage_options` if the site should restrict AI spending to more senior roles.
+
+**Admin-only operations** — FSE template and template-part scaffold, AI-translate, fix-links, fix-parts, fix-nav, and language navigation creation — always gate on `manage_options`. The `linguaforge_required_capability` filter does not apply to these paths. This is intentional: FSE operations modify shared theme assets that affect every visitor, so only site administrators should authorise them regardless of the AI capability setting.
+
+The practical result: a site that raises `linguaforge_required_capability` to `manage_options` makes all AI operations admin-only. A site that leaves it at `edit_posts` runs a two-tier model where editors can translate post content but only administrators can touch templates and navigations.
+
 ### Boot order
 
 Language Router boots first because its constructor defines the `LF_LANG` constant at file-load time — before any `init` hooks fire. Meta Description boots second (no dependencies). The AI module boots third and may depend on `LF_LANG` for language-aware features.

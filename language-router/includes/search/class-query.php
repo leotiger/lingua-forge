@@ -9,17 +9,11 @@
 
 namespace LinguaForge\Router\Search;
 
-use LinguaForge\Router\Router;
-
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Query {
 
-	private Router $router;
-
-	public function __construct( Router $router ) {
-		$this->router = $router;
-	}
+	public function __construct() {}
 
 	// =========================================================
 	// HOOK REGISTRATION
@@ -45,7 +39,6 @@ class Query {
 		$tpl       = get_page_by_path( $lang_slug, OBJECT, 'wp_template' );
 
 		if ( $tpl ) {
-			$this->router->debug( 'Search template override SUCCESS', [ 'template' => $lang_slug ] );
 			return [ _build_block_template_result_from_post( $tpl ) ];
 		}
 
@@ -66,8 +59,6 @@ class Query {
 			$hidden        = '<input type="hidden" name="lang" value="' . esc_attr( LF_LANG ) . '">';
 			$block_content = preg_replace( '/<\/form>/', $hidden . '</form>', $block_content, 1 );
 		}
-
-		$this->router->debug( 'Search form fixed (root + lang)', [ 'lang' => LF_LANG ] );
 
 		return $block_content;
 	}

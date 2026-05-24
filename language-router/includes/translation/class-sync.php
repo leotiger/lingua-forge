@@ -117,21 +117,12 @@ class Sync {
 		if ( $template_slug ) {
 			update_post_meta( $post_id, '_wp_page_template', $template_slug );
 			update_post_meta( $post_id, '_lf_auto_template', $template_slug );
-			$this->router->debug( 'Template forced by explicit language change', [
-				'post_id'  => $post_id,
-				'template' => $template_slug,
-				'lang'     => $lang,
-			] );
 		} else {
 			// Source language — revert to default if we auto-assigned the template.
 			$auto_prev = (string) get_post_meta( $post_id, '_lf_auto_template', true );
 			if ( $auto_prev ) {
 				update_post_meta( $post_id, '_wp_page_template', 'default' );
 				delete_post_meta( $post_id, '_lf_auto_template' );
-				$this->router->debug( 'Template reverted to default on source language', [
-					'post_id' => $post_id,
-					'was'     => $auto_prev,
-				] );
 			}
 		}
 	}
@@ -164,7 +155,6 @@ class Sync {
 			if ( $auto_prev && $current === $auto_prev ) {
 				update_post_meta( $post_id, '_wp_page_template', 'default' );
 				delete_post_meta( $post_id, '_lf_auto_template' );
-				$this->router->debug( 'Template reverted to default (source language)', [ 'post_id' => $post_id, 'was' => $current ] );
 			}
 			return;
 		}
@@ -193,11 +183,6 @@ class Sync {
 
 		update_post_meta( $post_id, '_wp_page_template', $template_slug );
 		update_post_meta( $post_id, '_lf_auto_template', $template_slug );
-		$this->router->debug( 'Template auto-assigned', [
-			'post_id'  => $post_id,
-			'template' => $template_slug,
-			'previous' => $current ?: 'default',
-		] );
 	}
 
 	// =========================================================

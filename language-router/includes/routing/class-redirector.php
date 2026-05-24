@@ -80,7 +80,6 @@ class Redirector {
 			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 			$s    = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
-			$this->router->debug( 'SEARCH REDIRECT: /?lang=' . $lang . '&s=' . $s );
 			wp_safe_redirect( '/?lang=' . $lang . '&s=' . rawurlencode( $s ), 301 );
 			exit;
 		}

@@ -45,8 +45,6 @@ class QueryFilter {
 		if ( ! empty( $_GET['s'] ) ) {
 			$q->is_search = true;
 			$q->is_home   = false;
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
-			$this->router->debug( 'Search forced', [ 's' => sanitize_text_field( wp_unslash( $_GET['s'] ) ) ] );
 		}
 	}
 
@@ -65,7 +63,6 @@ class QueryFilter {
 				$meta_query   = $q->get( 'meta_query' ) ?: [];
 				$meta_query[] = [ 'key' => '_lf_lang', 'value' => LF_LANG ];
 				$q->set( 'meta_query', $meta_query );
-				$this->router->debug( 'Search filtered by language', [ 'lang' => LF_LANG ] );
 				return;
 			}
 

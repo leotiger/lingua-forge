@@ -21,7 +21,9 @@ class Module {
 	const INPUT_FIELD  = 'lf_meta_description_field';
 
 	public static function init(): void {
-		add_action( 'init',                   [ self::class, 'register_meta'     ] );
+		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			add_action( 'init', [ self::class, 'register_meta' ] );
+		}
 		add_action( 'add_meta_boxes',         [ self::class, 'register_meta_box' ] );
 		add_action( 'save_post',              [ self::class, 'save'              ] );
 		add_action( 'wp_head',                [ self::class, 'output_tags'       ], 1 );
