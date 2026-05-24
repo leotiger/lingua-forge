@@ -865,7 +865,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ![AI translation review — side-by-side comparison of source content and AI-generated translation before applying to the editor](docs/assets/screenshot-1.png)
 
-*AI translation review modal — side-by-side view of the current source content (left) and the AI-generated translation (right). The generated meta description is shown below. Editors can apply to the editor, copy to clipboard, or cancel.*
+*AI translation review modal — side-by-side view of the current source content (left) and the AI-generated translation (right). The generated meta description is shown below. Editors can apply to the editor, copy to clipboard, or cancel. (And it's actually not herrings, it's sardines, but AI does not know that in some parts of Catalonia arengades=herrings is used for sardines. Never trust AI...)*
 
 ---
 
