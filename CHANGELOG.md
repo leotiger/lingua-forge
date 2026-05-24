@@ -2,6 +2,26 @@
 
 ---
 
+## [1.6.3] — 2026-05-24
+
+### Fixed
+
+- **Language-prefix regex — multi-character locales (zh-tw, zh-hant, …) not matched** — three `[a-z]{2}` hardcoded patterns in `Redirector` (search redirect, homepage redirect, search-under-lang-prefix) rejected any locale whose slug is longer than two characters. Replaced with a new private `lang_regex()` helper that builds the alternation dynamically from the configured locale list via `preg_quote`, matching the approach already used in `Rewrite\Manager`. zh-tw, zh-hant, pt-br, and any future multi-character slugs now route correctly.
+- **Frontend AJAX — POST requests silently sent without `lang` parameter** — the previous jQuery `ajaxSend` interceptor appended `lang=X` to the POST body, but `detect_lang_safe()` reads only `$_GET`. POST requests from the frontend therefore always fell through to cookie/Accept-Language detection regardless of the active language. The script is rewritten without jQuery: `XMLHttpRequest.prototype.open` and `window.fetch` are monkey-patched to append `?lang=X` to the URL query string of same-origin requests, landing the value reliably in `$_GET` for all HTTP methods. The jQuery handle is removed from the script's dependency array.
+
+### Added
+
+- **`missing-translation-notice` block — editor component** — the block previously had no `editorScript`, so the Site Editor showed a blank slot with no controls. `index.js` registers the `edit` function using `wp.*` globals (no build step): sidebar `InspectorControls` with a `TextControl` for the notice message, a `ToggleControl` for the home link, and a conditional `TextControl` for the link text. A `ServerSideRender` in the canvas gives an accurate live preview including all block-supports (colour, spacing, typography). `index.asset.php` declares the six `wp-*` script dependencies. `block.json` gains `"editorScript": "file:./index.js"`.
+
+### Maintenance
+
+- **`CONTRIBUTING.md` — `LINGUAFORGE_SECRET` cross-environment guidance** — the "API keys" storage-shapes entry now explains that `wp_salt('auth')` is shared across environments that share a `wp-config.php` copy (dev/staging/prod), and that defining a unique `LINGUAFORGE_SECRET` constant per environment gives each its own independent encryption key. Includes a `define()` snippet and a note that rotating the constant invalidates stored ciphertexts.
+- **`README.md` — `LINGUAFORGE_SECRET` cross-environment guidance** — matching paragraph added to the "API keys" section aimed at deployers.
+- **`CONTRIBUTING.md` — pre-1.3.x debug directory migration note** — "Things worth knowing" now includes a bullet noting that installs upgrading from before 1.3.x may have orphaned debug files under `wp-content/uploads/lingua-forge-debug/`. Options: point the `linguaforge_debug_dir` filter at that path for managed cleanup, or delete the directory manually.
+- **`README.md` + `readme.txt` — WordPress-core and FSE conformance section** — documents that the plugin ships with no runtime dependencies, uses Block API v3 with server-side rendering, carries no jQuery frontend dependency, registers REST routes at `rest_api_init`, manages FSE post types with correct taxonomy bindings, and follows standard i18n and security conventions throughout.
+
+---
+
 ## [1.6.2] — 2026-05-24
 
 ### Fixed

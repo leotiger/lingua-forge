@@ -3,7 +3,7 @@
  * Class LinguaForge\Router\Admin\Scripts
  *
  * Enqueues all Language Router JavaScript: the admin metabox script (post edit
- * screens), the quick-edit script (list screens), and the frontend jQuery AJAX
+ * screens), the quick-edit script (list screens), and the frontend AJAX
  * language interceptor.
  *
  * The three scripts live as real files under language-router/assets/ and are
@@ -31,9 +31,9 @@ class Scripts {
 	// =========================================================
 
 	public function register_hooks(): void {
-		// Frontend AJAX lang — appends current language to every same-origin
-		// jQuery AJAX request. Hooked to wp_enqueue_scripts (priority 20) so
-		// that LF_LANG is already defined by the template_redirect
+		// Frontend AJAX lang — appends ?lang=X to every same-origin XHR/fetch
+		// request URL. Hooked to wp_enqueue_scripts (priority 20) so that
+		// LF_LANG is already defined by the template_redirect
 		// language-detection pass.
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_lang_script' ], 20 );
 	}
@@ -101,8 +101,15 @@ class Scripts {
 	// =========================================================
 
 	/**
-	 * Enqueue the script that appends the current language code to every
-	 * jQuery AJAX request sent to a same-origin endpoint.
+	 * Enqueue the script that appends ?lang=X to every same-origin XHR and
+	 * fetch() request so PHP's detect_lang_safe() can read it from $_GET.
+	 *
+	 * No jQuery dependency — the script patches XMLHttpRequest.prototype.open
+	 * and window.fetch directly, which covers jQuery.ajax, Backbone.sync,
+	 * and native fetch() callers alike. Appending to the URL query string
+	 * (rather than the POST body as the old jQuery ajaxSend approach did)
+	 * ensures detect_lang_safe()'s $_GET['lang'] step picks it up for every
+	 * HTTP method.
 	 *
 	 * Third-party endpoints (Stripe, reCAPTCHA, etc.) are excluded by the
 	 * scoping rule inside frontend-lang.js — see that file's header comment
@@ -118,7 +125,7 @@ class Scripts {
 		wp_enqueue_script(
 			'lf-frontend-lang',
 			LINGUAFORGE_URL . 'language-router/assets/frontend-lang.js',
-			[ 'jquery' ],
+			[],
 			$version,
 			true
 		);

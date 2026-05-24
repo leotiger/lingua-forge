@@ -90,7 +90,7 @@ class Manager {
 
 	public function lang_permalink( string $url, $post ): string {
 		if ( is_numeric( $post ) ) $post = get_post( $post );
-		if ( ! $post || ! isset( $post->ID ) ) return $url;
+		if ( ! $post instanceof \WP_Post ) return $url;
 
 		// Only rewrite URLs for public, front-end post types.
 		$post_type_obj = get_post_type_object( $post->post_type );

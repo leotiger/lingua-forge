@@ -43,6 +43,25 @@ class Redirector {
 	}
 
 	// =========================================================
+	// HELPERS
+	// =========================================================
+
+	/**
+	 * Returns a regex alternation of all configured language slugs,
+	 * each preg_quote'd against the '#' delimiter used in this class.
+	 * Replaces the former hardcoded '[a-z]{2}' pattern so that
+	 * multi-character locale codes such as zh-tw are matched correctly.
+	 *
+	 * @return string  e.g. 'ca|es|en|zh\-tw'
+	 */
+	private function lang_regex(): string {
+		return implode( '|', array_map(
+			static fn( string $l ) => preg_quote( $l, '#' ),
+			$this->router->context->languages()
+		) );
+	}
+
+	// =========================================================
 	// INIT REDIRECTS
 	// =========================================================
 
@@ -56,7 +75,7 @@ class Redirector {
 
 		// Search redirect
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
-		if ( isset( $_GET['s'] ) && preg_match( '#^/[a-z]{2}/#', $path ) ) {
+		if ( isset( $_GET['s'] ) && preg_match( '#^/(?:' . $this->lang_regex() . ')/#', $path ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
 			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
@@ -135,7 +154,7 @@ class Redirector {
 		if (
 			$path !== '/' &&
 			$path !== '' &&
-			! preg_match( '#^/[a-z]{2}/?$#', $path )
+			! preg_match( '#^/(?:' . $this->lang_regex() . ')/?$#', $path )
 		) {
 			return;
 		}
@@ -184,7 +203,7 @@ class Redirector {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 		$uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 
-		if ( preg_match( '#^/[a-z]{2}/#', $uri ) ) {
+		if ( preg_match( '#^/(?:' . $this->lang_regex() . ')/#', $uri ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
 			$lang = isset( $_GET['lang'] ) ? sanitize_key( wp_unslash( $_GET['lang'] ) ) : LF_LANG;
 			$s    = get_query_var( 's' );

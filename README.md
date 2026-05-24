@@ -203,6 +203,14 @@ define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini
 
 Enter keys directly from **Settings → Lingua Forge**. Keys are stored encrypted in `wp_options` using AES-256-GCM (with the provider slug as authenticated data) derived from WordPress's own auth salts — plaintext keys never touch the database.
 
+For sites where development, staging, and production share a `wp-config.php` copy (and therefore the same `wp_salt('auth')` value), define a unique `LINGUAFORGE_SECRET` constant in each environment to ensure each has an independent encryption key:
+
+```php
+define( 'LINGUAFORGE_SECRET', 'your-64-char-random-string-here' );
+```
+
+Generate a value with `openssl rand -base64 48`. Note: changing this constant invalidates stored ciphertexts, so re-enter your API keys afterward.
+
 **Fallback resolution order** (highest to lowest priority):
 1. Encrypted value in `wp_options` (set via the Settings page)
 2. Server environment variable (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`)
@@ -301,6 +309,18 @@ Defined in `lingua-forge.php` and available to all sub-modules:
 | `LINGUAFORGE_PATH` | `plugin_dir_path()` of the plugin root (trailing slash) |
 | `LINGUAFORGE_URL` | `plugin_dir_url()` of the plugin root (trailing slash) |
 | `LINGUAFORGE_VERSION` | Plugin version string |
+
+### WordPress-core and FSE conformance
+
+Lingua Forge is designed to stay as close to WordPress core and Full Site Editing conventions as possible:
+
+- **No runtime dependencies** — only what WordPress provides ships in the plugin. All dev tooling (Composer, npm, PHPUnit, PHPCS, PHPStan, ESLint) lives in `dev/` and is excluded from the distribution via `.distignore`.
+- **Block API v3** — the `missing-translation-notice` block uses `apiVersion: 3`, server-side rendering via `render: "file:..."`, a proper `editorScript` with dependency manifest, and full block-supports (colour, spacing, typography). No build step required.
+- **No jQuery on the frontend** — the language-sync script patches `XMLHttpRequest.prototype.open` and `window.fetch` natively; no jQuery dependency is declared or loaded.
+- **REST registration at `rest_api_init`**, not `init`. Permission callbacks return `bool` or `WP_Error`. Custom routes are namespaced under `lingua-forge/v1`.
+- **FSE post types used correctly** — templates, template parts, and navigations are managed via `wp_template`, `wp_template_part`, and `wp_navigation` with correct taxonomy bindings.
+- **i18n** — textdomain `lingua-forge` throughout; `wp_set_script_translations()` wired for all editor assets; no manual `load_plugin_textdomain` call (WP 4.6+ handles this automatically for slug-matched plugins).
+- **Security conventions** — capability + nonce checks on every entry point; `wp_unslash` before sanitise, `esc_*` on every output; `wp_handle_upload()` with full MIME-magic validation.
 
 ### Boot order
 

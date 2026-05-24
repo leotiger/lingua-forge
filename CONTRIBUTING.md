@@ -570,6 +570,23 @@ under control; the ignore directive is what makes WPCS tolerate it.
   `LINGUAFORGE_SECRET` is defined. Legacy v1 (AES-256-CBC) values are
   decrypted transparently and re-encrypted as v2 on the first successful
   read (lazy migration).
+
+  **When to define `LINGUAFORGE_SECRET`:** `wp_salt('auth')` is written
+  once into `wp-config.php` and stays identical across every copy of that
+  file — development, staging, and production share the same secret when
+  bootstrapped from the same config. A key ciphertext extracted from one
+  environment would therefore decrypt successfully in another. Define a
+  unique constant in each environment's `wp-config.php` to give each its
+  own independent encryption key:
+
+  ```php
+  // Different random string on each environment.
+  define( 'LINGUAFORGE_SECRET', 'your-64-char-random-string-here' );
+  ```
+
+  Use a cryptographically random value (e.g. `openssl rand -base64 48`).
+  Changing this constant on an existing install invalidates all stored
+  ciphertexts — re-enter API keys after rotating it.
 - **Translation cache key** is `translation_{lang}` (e.g.
   `translation_fr`) so a single post can hold many language caches
   without collision.
@@ -578,6 +595,12 @@ under control; the ignore directive is what makes WPCS tolerate it.
 
 ## Things worth knowing
 
+- **Pre-1.3.x debug files may be orphaned** under
+  `wp-content/uploads/lingua-forge-debug/`. That path was the hardcoded
+  default before the `linguaforge_debug_dir` filter was added. Either
+  point the filter at the old path so the plugin manages cleanup there, or
+  delete the directory manually — it is never touched again on 1.3.x+
+  installs unless redirected.
 - **`is_admin()` returns true** for `wp-admin/*` AND for admin-ajax.php.
   It returns **false** for REST requests — sniff `REST_REQUEST` or the
   URL pattern when you need to detect REST. See

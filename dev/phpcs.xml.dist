@@ -42,7 +42,13 @@
     <config name="minimum_wp_version" value="6.4"/>
     <config name="testVersion" value="8.1-"/>
 
-    <!-- WordPress rules: standard + extra + docs. -->
+    <!-- WordPress rules: standard + extra + docs.
+         WordPress-Extra is a superset of WordPress; one bare ref here
+         plus the exclude list on <rule ref="WordPress"> below covers both —
+         PHPCS resolves excluded sniffs at the leaf-sniff level, so the
+         excludes apply regardless of which ruleset path loaded the sniff.
+         Keeping a single exclude list prevents future divergence bugs. -->
+    <rule ref="WordPress-Extra"/>
     <rule ref="WordPress">
         <!--
             The codebase has historical splits (tabs vs spaces, 4 vs tabs)
@@ -531,94 +537,6 @@
             or with sibling docblocks). Same family as other alignment
             exclusions.
         -->
-        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
-        <!--
-            Concatenation operator (`.`) padding: codebase aligns
-            sibling concat-chain lines vertically — three meta-tag
-            output lines line up the `.` columns. Same alignment-
-            rejection family as comma/operator/=> exclusions.
-        -->
-        <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
-        <exclude name="Generic.WhiteSpace.LanguageConstructSpacing.IncorrectSingle"/>
-        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceBeforeEquals"/>
-    </rule>
-
-    <rule ref="WordPress-Extra">
-        <exclude name="Generic.WhiteSpace.ScopeIndent"/>
-        <exclude name="WordPress.PHP.YodaConditions"/>
-        <exclude name="WordPress.Files.FileName"/>
-        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
-        <exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
-        <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
-        <exclude name="Generic.ControlStructures.InlineControlStructure"/>
-        <exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
-        <exclude name="Squiz.Commenting.FileComment.Missing"/>
-        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
-        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
-        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
-        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
-        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen"/>
-        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose"/>
-        <exclude name="WordPress.Arrays.ArrayKeySpacingRestrictions"/>
-        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
-        <exclude name="WordPress.WhiteSpace.OperatorSpacing.SpacingBefore"/>
-        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
-        <exclude name="Squiz.Commenting.LongConditionClosingComment"/>
-        <exclude name="NormalizedArrays.Arrays.ArrayBraceSpacing"/>
-        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis"/>
-        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis"/>
-        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.ExtraSpaceAfterCloseParenthesis"/>
-        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseParenthesis"/>
-        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceBefore"/>
-        <exclude name="WordPress.WhiteSpace.OperatorSpacing.NoSpaceAfter"/>
-        <exclude name="Squiz.Commenting.InlineComment.SpacingBefore"/>
-        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-        <exclude name="Squiz.Commenting.PostStatementComment.Found"/>
-        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
-        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterHint"/>
-        <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
-        <exclude name="Squiz.Commenting.FunctionComment.WrongStyle"/>
-        <exclude name="WordPress.WhiteSpace.CastStructureSpacing.NoSpaceBeforeOpenParenthesis"/>
-        <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
-        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction"/>
-        <exclude name="Squiz.PHP.EmbeddedPhp.ContentAfterOpen"/>
-        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen"/>
-        <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd"/>
-        <exclude name="WordPress.Arrays.ArrayIndentation"/>
-        <exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
-        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
-        <exclude name="Generic.Commenting.DocComment.LongNotCapital"/>
-        <exclude name="Generic.Commenting.DocComment.ShortNotCapital"/>
-        <exclude name="Squiz.Strings.DoubleQuoteUsage.NotRequired"/>
-        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen"/>
-        <exclude name="Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose"/>
-        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd"/>
-        <exclude name="Universal.WhiteSpace.PrecisionAlignment"/>
-        <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
-        <exclude name="Universal.UseStatements.KeywordSpacing.SpaceBeforeAs"/>
-        <exclude name="Squiz.Commenting.VariableComment.WrongStyle"/>
-        <exclude name="PSR2.Classes.PropertyDeclaration.SpacingAfterType"/>
-        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace"/>
-        <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.SpaceBeforeBrace"/>
-        <exclude name="Generic.Formatting.DisallowMultipleStatements.SameLine"/>
-        <exclude name="Universal.WhiteSpace.CommaSpacing.TooMuchSpaceAfter"/>
-        <exclude name="NormalizedArrays.Arrays.CommaAfterLast"/>
-        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
-        <exclude name="Universal.Operators.DisallowShortTernary.Found"/>
-        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword"/>
-        <exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
-        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode"/>
-        <exclude name="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode"/>
-        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
-        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
-        <exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
-        <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames.classFound"/>
-        <exclude name="Generic.Formatting.SpaceAfterCast.TooMuchSpace"/>
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
         <!--
             Concatenation operator (`.`) padding: codebase aligns

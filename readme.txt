@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -57,6 +57,10 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` for scripted and automated workflows
 
 API keys are stored encrypted (AES-256-GCM with provider slug as authenticated data, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
+
+**WordPress-core and FSE conformance**
+
+Lingua Forge is built to stay as close to WordPress core and Full Site Editing conventions as possible: no runtime dependencies (only what WordPress provides ships in the plugin), Block API v3 with server-side rendering and a full block-supports declaration, no jQuery on the frontend, REST routes registered at `rest_api_init`, FSE post types used with correct taxonomy bindings, and standard i18n / security conventions throughout.
 
 Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
@@ -213,6 +217,15 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.6.3 =
+* Fixed: Language-prefix regex now matches multi-character locales (zh-tw, zh-hant, pt-br, …) — three [a-z]{2} hardcodes in Redirector replaced by a dynamic lang_regex() helper built from the configured locale list.
+* Fixed: Frontend AJAX — POST requests were silently sent without the lang parameter because the old jQuery ajaxSend interceptor appended it to the POST body, which detect_lang_safe() never reads. The script is rewritten without jQuery: XMLHttpRequest.prototype.open and window.fetch are patched to append ?lang=X to the URL query string of same-origin requests. jQuery is no longer a script dependency.
+* Added: missing-translation-notice block now has a full editor component — sidebar controls (notice message, home-link toggle, home-link text) and a live ServerSideRender canvas preview. index.js + index.asset.php added; block.json gains editorScript.
+* Maintenance: CONTRIBUTING.md — LINGUAFORGE_SECRET cross-environment guidance added to the API keys section: explains shared-salt risk across environments and includes a define() snippet.
+* Maintenance: README.md — matching LINGUAFORGE_SECRET paragraph added to the API keys section.
+* Maintenance: CONTRIBUTING.md — pre-1.3.x debug directory migration note added to "Things worth knowing".
+* Maintenance: README.md + readme.txt — WordPress-core and FSE conformance section added.
+
 = 1.6.2 =
 * Fixed: handle_singular_redirect() now skips non-public post types (wp_global_styles, wp_navigation, etc.) — previously these satisfied is_singular() and could produce cross-domain redirects when the object cache was poisoned (e.g. shared Redis without WP_CACHE_KEY_SALT).
 * Fixed: get_translations() query now excludes non-public post types and auto-drafts — wp_template and other FSE-internal posts could appear as translation group members, causing the homepage redirector to send visitors to raw template slugs like /front-page-it/.
@@ -248,6 +261,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+Conformance and correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route correctly. Frontend AJAX lang detection fixed for POST requests (no more silent fallback to cookie/Accept-Language). The missing-translation-notice block gains a full Site Editor component. No schema or settings changes — safe to update in place.
 
 = 1.6.2 =
 Defensive hardening release. Closes four edge cases surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT): the singular redirect handler, translation group query, permalink filter, and language cookie all now guard against non-public WordPress post types and cross-site domain bleed. No schema or settings changes — behaviour is identical on correctly configured sites.
