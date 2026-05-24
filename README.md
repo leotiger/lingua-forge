@@ -62,6 +62,14 @@ The post below tells the story as it unfolded — the false starts, the two laye
 
 → [How Two Innocent WordPress Sites Spent an Afternoon Impersonating Each Other](blog-post-redis.md)
 
+## On giving something away — and being kept knocking on a door which never opens
+
+Submitting a free plugin to the WordPress.org directory turns out to be its own kind of education. An AI classifier, we don't know which tier, which AI api was used, flagged the name as a "potential trademark" conflict without naming what it conflicted with, nevertheless the Plugin Check states that the plugin name is generally allowable when run on our side. A situation that seems to be pulled straight out of Kafka. A human reviewer maintained the position without adding anything the classifier hadn't already said. A detailed reply with references went unanswered. A letter to Matt Mullenweg raising it as a process problem rather than a personal one went the same way.
+
+This is the third piece in a short series. The first, [Knocking on a Door with No Window](blog-knocking-on-the-door.md), was a first approximation, this post is the reflection that came after the reinstated silence — on arbitrary decisions, surprising statements in the Slack plugin review group the asymmetry between plugin authors (who have page after page of documented guidelines) and reviewers (who, one admitted, have none), and the volunteer argument deployed as a shield against criticism rather than a description of a situation. Frank Zappa gets a footnote. Schumpeter gets the last word.
+
+→ [Everybody in This Room Is Wearing a Uniform](blog-review-uniform.md)
+
 ---
 
 ## Features
