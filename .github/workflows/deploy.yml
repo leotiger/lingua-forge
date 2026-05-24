@@ -37,19 +37,21 @@ jobs:
 
       - name: Build clean plugin ZIP
         run: |
-          # Read exclusions from .distignore and pass them to zip.
-          # Each non-empty, non-comment line becomes a */pattern exclusion
-          # so the zip -x flag works correctly on both GNU and BSD zip.
-          EXCLUDES=()
+          # Rsync into a temp directory named exactly 'lingua-forge' so the
+          # folder inside the ZIP is always 'lingua-forge/' regardless of what
+          # the GitHub Actions runner names the workspace directory.
+          RSYNC_EXCLUDES=()
           while IFS= read -r line; do
             [[ "$line" =~ ^[[:space:]]*$ ]] && continue
             [[ "$line" =~ ^# ]] && continue
-            EXCLUDES+=(-x "*/${line%/}/*" -x "*/${line%/}")
+            RSYNC_EXCLUDES+=(--exclude="/${line}")
           done < .distignore
 
-          cd ..
-          zip -r "lingua-forge-${{ steps.version.outputs.tag }}.zip" lingua-forge/ \
-            "${EXCLUDES[@]}"
+          mkdir -p /tmp/plugin-build/lingua-forge
+          rsync -a "${RSYNC_EXCLUDES[@]}" ./ /tmp/plugin-build/lingua-forge/
+
+          cd /tmp/plugin-build
+          zip -r "$GITHUB_WORKSPACE/../lingua-forge-${{ steps.version.outputs.tag }}.zip" lingua-forge/
 
       - name: Upload ZIP to GitHub Release
         uses: softprops/action-gh-release@v2
