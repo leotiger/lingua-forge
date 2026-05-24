@@ -43,7 +43,7 @@ Adds a meta description field to every public post type and outputs `<meta name=
 * Editable in the Classic meta box, fully compatible with the Block Editor
 * Character counter with green/amber/red guidance (120–160 ideal range)
 * Fallback chain: custom field → post excerpt → site description
-* Stores descriptions under `_linguaforge_meta_description` (prefixed, plugin-owned). A one-time migration on upgrade copies any existing `meta_description` rows to the new key automatically. The old key is left intact so other plugins that read it are unaffected
+* Stores descriptions under `_linguaforge_meta_description` (prefixed, plugin-owned)
 
 **AI Content Tools**
 

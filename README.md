@@ -91,8 +91,6 @@ Adds a meta description field to every public post type. Outputs `<meta name="de
 - Excerpt fallback is auto-generated from content if no manual excerpt exists
 - Only custom descriptions are output verbatim; fallback descriptions are auto-truncated at 190 characters
 
-> As of 1.2.0 the plugin writes meta descriptions to the prefixed key `_linguaforge_meta_description`. A one-time bulk migration copies any existing `meta_description` rows to the new key on the first admin request after upgrade — no manual steps required. The `meta_description` key is intentionally **not** deleted on uninstall because other plugins may use it.
-
 ### AI Content Tools
 
 Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangeable backends. All results appear in a review panel — nothing is applied automatically.
