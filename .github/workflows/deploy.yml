@@ -37,26 +37,13 @@ jobs:
 
       - name: Build clean plugin ZIP
         run: |
-          # Rsync into a temp directory named exactly 'lingua-forge' so the
-          # folder inside the ZIP is always 'lingua-forge/' regardless of what
-          # the GitHub Actions runner names the workspace directory.
-          RSYNC_EXCLUDES=()
-          while IFS= read -r line; do
-            [[ "$line" =~ ^[[:space:]]*$ ]] && continue
-            [[ "$line" =~ ^# ]] && continue
-            RSYNC_EXCLUDES+=(--exclude="/${line}")
-          done < .distignore
-
-          mkdir -p /tmp/plugin-build/lingua-forge
-          rsync -a "${RSYNC_EXCLUDES[@]}" ./ /tmp/plugin-build/lingua-forge/
-
-          cd /tmp/plugin-build
-          zip -r "$GITHUB_WORKSPACE/../lingua-forge-${{ steps.version.outputs.tag }}.zip" lingua-forge/
+          chmod +x dev/build-zip.sh
+          dev/build-zip.sh /tmp/plugin-dist
 
       - name: Upload ZIP to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ../lingua-forge-${{ steps.version.outputs.tag }}.zip
+          files: /tmp/plugin-dist/lingua-forge-${{ steps.version.outputs.tag }}.zip
           generate_release_notes: true
           body: |
             ## Installation
