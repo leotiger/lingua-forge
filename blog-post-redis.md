@@ -96,4 +96,12 @@ That is it. One line. One afternoon saved.
 
 ---
 
+## A note to the WordPress core team
+
+After working through this we reported the issue to the WordPress community via the official WordPress Slack, in the `#core` channel. The detection point is clean — `$_SERVER['HTTP_HOST']` is always the ground truth of what domain was actually requested, and comparing it against `home_url()` on admin and login requests would catch this class of misconfiguration before it produces any visible damage. A Site Health warning when a persistent object cache is active without `WP_CACHE_KEY_SALT` defined would go even further.
+
+The fix itself belongs in WordPress core, not in individual plugins patching around it. It is documented, it is detectable, and it is silent enough to cost people real time before they find it. Hopefully this finds its way into a future release.
+
+---
+
 *Found this useful? Our multilingual WordPress plugin is free and open-source: [github.com/leotiger/lingua-forge](https://github.com/leotiger/lingua-forge)*
