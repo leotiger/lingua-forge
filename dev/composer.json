@@ -41,13 +41,13 @@
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
         "analyse": "phpstan analyse --memory-limit=2G",
-        "test": "phpunit",
-        "test:unit": "phpunit --testsuite=unit",
-        "test:integration": "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration'",
+        "test": "php -d pcov.directory=.. vendor/bin/phpunit",
+        "test:unit": "php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
+        "test:integration": "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'",
         "plugin-check": [
             "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
             "./node_modules/.bin/wp-env run cli wp plugin install plugin-check --activate || true",
-            "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge"
+            "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge --exclude-directories=dev,tests"
         ],
         "qa": [
             "@lint",

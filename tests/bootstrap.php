@@ -140,7 +140,12 @@ require_once $wp_tests_dir . '/includes/functions.php';
 tests_add_filter(
     'muplugins_loaded',
     static function (): void {
-        require dirname( __DIR__ ) . '/lingua-forge.php';
+        // Use WP_PLUGIN_DIR rather than dirname(__DIR__) so this path
+        // resolves correctly whether tests/ is mounted directly under the
+        // WordPress root (wp-env container) or sits as a sibling of the
+        // plugin root (local checkout). WP_PLUGIN_DIR is defined by
+        // wp-settings.php before muplugins_loaded fires.
+        require WP_PLUGIN_DIR . '/lingua-forge/lingua-forge.php';
     }
 );
 
