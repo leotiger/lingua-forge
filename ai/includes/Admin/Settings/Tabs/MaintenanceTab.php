@@ -585,7 +585,7 @@ class MaintenanceTab extends Tab {
                             <strong><?php esc_html_e( 'Warning:', 'lingua-forge' ); ?></strong>
                             <?php
                             esc_html_e(
-                                'If checked, uninstalling the plugin will permanently delete the language assignment (_lang) and translation link (_trid) post meta for every post on this site, along with meta descriptions, per-page presets, the AI glossary, and Translation Memory. This cannot be undone. Leave unchecked unless you are fully removing multilingual support from the site.',
+                                'If checked, uninstalling the plugin will permanently delete all language assignments, translation relationships, meta descriptions, per-page presets, the AI glossary, and Translation Memory for every post on this site. This cannot be undone. Leave unchecked unless you are fully removing multilingual support from the site.',
                                 'lingua-forge'
                             );
                             ?>
