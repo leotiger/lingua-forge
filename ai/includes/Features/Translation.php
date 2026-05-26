@@ -671,7 +671,14 @@ class Translation implements FeatureInterface {
                 'name'    => 'target_language',
                 'type'    => 'select',
                 'label'   => __( 'Target Language', 'lingua-forge' ),
-                'options' => self::get_languages(), // English names intentionally kept for AI prompt
+                // Intersect with linguaforge_languages() so the dropdown shows
+                // only languages active on this instance — same source as the
+                // Quick Translate modal (MetaBox::instance_languages()).
+                // English names are kept as-is for AI prompt compatibility.
+                'options' => array_intersect_key(
+                    self::get_languages(),
+                    array_flip( linguaforge_languages() )
+                ),
             ],
             [
                 'name'        => 'chunk_text',

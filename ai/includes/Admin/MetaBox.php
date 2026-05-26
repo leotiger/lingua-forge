@@ -34,9 +34,62 @@ class MetaBox {
         );
     }
 
+    /**
+     * Filter callback — auto-injects any language active on this WordPress
+     * instance (from linguaforge_languages()) that is absent from the built-in
+     * AI language map.
+     *
+     * Registered at priority 5 so user-supplied filters (priority 10) can still
+     * override the derived name if needed.
+     *
+     * English language names are resolved via PHP's Locale class (intl
+     * extension). When intl is unavailable the locale code is uppercased as a
+     * last-resort fallback (e.g. "EU"). The result is good enough for AI prompt
+     * usage in all cases where intl is present (true on virtually every
+     * modern PHP host).
+     *
+     * @param  array<string,string> $languages  Current language map.
+     * @return array<string,string>
+     */
+    public static function inject_instance_languages( array $languages ): array {
+
+        foreach ( linguaforge_languages() as $code ) {
+
+            if ( isset( $languages[ $code ] ) ) {
+                continue;
+            }
+
+            if ( class_exists( 'Locale' ) ) {
+                $name = \Locale::getDisplayLanguage( $code, 'en' );
+                // Locale::getDisplayLanguage() returns the code itself when it
+                // cannot resolve the name — treat that as a failure.
+                if ( $name === '' || $name === $code ) {
+                    $name = strtoupper( $code );
+                }
+            } else {
+                $name = strtoupper( $code );
+            }
+
+            $languages[ $code ] = $name;
+        }
+
+        return $languages;
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
 
     public static function init(): void {
+
+        // Auto-inject any instance-configured language that is absent from the
+        // built-in AI language map. Runs at priority 5 (before user filters at 10)
+        // so site-specific overrides still win. English names are derived from
+        // PHP's Locale class (intl extension); falls back to the uppercased code
+        // when intl is unavailable.
+        add_filter(
+            'linguaforge_translation_languages',
+            [self::class, 'inject_instance_languages'],
+            5
+        );
 
         add_action(
             'add_meta_boxes',

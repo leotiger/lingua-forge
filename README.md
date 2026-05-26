@@ -869,29 +869,23 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.7.0**
+**Current release — 1.7.1**
 
-- **Subdomain routing mode** — languages can now be served from subdomains (`de.example.com`, `fr.example.com`) as an alternative to path prefixes (`example.com/de/`). Select the URL structure in **Settings → Router → URL structure**. Cookie scoping, permalink generation, hreflang output, language switcher, and link-fixer scan are all subdomain-aware. The `lf_base_domain` filter overrides the auto-derived apex domain when `home_url()` includes `www`. Requires wildcard DNS and TLS on the server side.
-- **Classic navigation menu auto-add guard** — a `publish_page` hook now removes translated pages from classic nav menus that have "automatically add new top-level pages" enabled, preventing non-source-language pages from appearing in the source-language menu. Applies to classic menus only; FSE `wp_navigation` posts are unaffected.
-- **Language switcher fixes** — block rendered empty on non-singular pages (archives, category, tag, author) when placed in a shared header/footer template, because `get_languages()` returned nothing when no post ID was available; fixed with a URL-rewrite fallback. Dropdown no longer overflows the viewport on right-aligned placements. SVG globe icon renders at the correct size regardless of theme. Panel background and text colour inherit FSE theme tokens (`--wp--preset--color--base` / `--contrast`) with `Canvas`/`CanvasText` OS-aware fallbacks.
-- **Fix Navigation References fixes** — source-language template parts no longer rejected; wrong-language navigation references (e.g. `navigation-it` assigned to the DE template) now derive the correct base name by reading `_lf_lang` meta, preventing double-suffixed slugs.
-- **Translate Navigation subdomain fix** — internal URLs rewritten as `de.example.com/contact/` in subdomain mode instead of the previous path-prefix form.
+- **MetaBox Target Language dropdown** — now shows only languages active on the server instance (matches Quick Translate). Any instance-configured language absent from the built-in AI map (e.g. Basque/`eu`) is automatically injected via a new `MetaBox::inject_instance_languages()` filter callback on `linguaforge_translation_languages` (priority 5); English names are resolved via PHP's `Locale::getDisplayLanguage()` with uppercased code as fallback. Pre-selection from post language meta works correctly for all server-installed languages without per-language hardcoding.
+- **Maintenance tab warning** — internal meta key names removed from the uninstall warning text.
+- **`SECURITY.md`** — excluded from the SVN deploy ZIP and GitHub source archives via `.distignore` / `.gitattributes`.
+
+**1.7.0** — Subdomain routing mode (`de.example.com`); classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.5** — Link Fixer stale-path fix for template parts; language-router debug call sites removed; `filter_locale` renamed to generic name; `.distignore` fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-**1.6.4** — `register_meta` gated on admin/REST/CLI context; `linguaforge_flush_rewrite_rules` option writes pass `autoload = false`; `tests/bootstrap.php` autoload path corrected; roles and capabilities documented in README. See [CHANGELOG.md](CHANGELOG.md) for details.
+**1.6.4** — `register_meta` gated on admin/REST/CLI context; `linguaforge_flush_rewrite_rules` writes pass `autoload = false`; `tests/bootstrap.php` path corrected; roles and capabilities documented. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.3** — Multi-character locale routing fixed (zh-tw, zh-hant, pt-br); frontend AJAX lang detection fixed for POST requests; missing-translation-notice block gains a full Site Editor component. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.2** — Defensive hardening for non-public post types; cookie domain scoping fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.1** — Translation Memory cache invalidation fix; FSE-translate AJAX budget-protection fix. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.0** — FSE Template Localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific FSE templates, template parts, and navigation menus directly from Settings → Router.
-
-**1.5.1** — RTL support (Persian locale, switcher `lang` attribute, RTL submenu, RTL AI result panels). See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.5.0** — Quick Translate Create tab, iterative Refine, per-preset addenda, PHP Fatal fix, tab pane fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

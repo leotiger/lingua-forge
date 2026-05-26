@@ -2,6 +2,20 @@
 
 ---
 
+## [1.7.1] — 2026-05-26
+
+### Fixed
+
+- **MetaBox — Target Language dropdown shows only instance languages** — `Translation::get_ui_fields()` was passing `self::get_languages()` (the full hardcoded AI language list) as dropdown options instead of filtering to languages active on the server instance. Now uses `array_intersect_key( self::get_languages(), array_flip( linguaforge_languages() ) )`, identical to the Quick Translate modal source. Additionally, `MetaBox::inject_instance_languages()` is registered on `linguaforge_translation_languages` at priority 5 to automatically add any instance-configured language absent from the built-in map — English names derived via `Locale::getDisplayLanguage()`. Languages such as Basque (`eu`) that are installed on the server but not in the default list now appear in all dropdowns and are correctly pre-selected from `_lf_lang` post meta.
+
+- **Maintenance tab — uninstall warning text** — internal meta key names (`_lang`, `_trid`) removed from the user-facing warning; replaced with plain-language equivalents ("language assignments", "translation relationships").
+
+### Maintenance
+
+- **`SECURITY.md` excluded from distribution** — added to `.distignore` and `.gitattributes export-ignore` so the file stays in the GitHub repository but is excluded from the SVN deploy ZIP and GitHub's auto-generated source archives.
+
+---
+
 ## [1.7.0] — 2026-05-24
 
 ### Added

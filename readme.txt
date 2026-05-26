@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -229,6 +229,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.7.1 =
+* Fixed: Target Language dropdown (Meta Boxes and Quick Translate) — now limited to languages active on the server instance. Any instance-configured language absent from the built-in AI map (e.g. Basque/eu) is automatically injected via a new MetaBox::inject_instance_languages() filter callback on linguaforge_translation_languages (priority 5). English language names are resolved via PHP's Locale::getDisplayLanguage(); the uppercased code is used as fallback when the intl extension is unavailable. Language and pre-selection from post _lf_lang meta now work correctly for all server-installed languages without any per-language hardcoding.
+* Fixed: Maintenance tab uninstall warning — internal meta key names removed from the user-facing description; replaced with plain-language equivalents.
+* Maintenance: SECURITY.md excluded via .distignore and .gitattributes export-ignore.
+
 = 1.7.0 =
 * Added: Subdomain routing mode — languages can now be served from subdomains (de.example.com, fr.example.com) instead of path prefixes (example.com/de/). Select the URL structure in Settings → Lingua Forge → Router → URL structure. Requires wildcard DNS and TLS on the server side; no WordPress configuration beyond the setting. Source language always serves from the root domain. Cookie scoping, permalink generation, hreflang output, language switcher, and the link-fixer scan are all subdomain-aware. The lf_base_domain filter is available to override the auto-derived base domain when home_url() includes www.
 * Added: Classic navigation menu auto-add guard — a publish_page hook (priority 11) removes any just-inserted menu item whose page is a non-source-language translation, preventing translated pages from appearing in source-language classic menus. Applies to classic nav menus (wp_nav_menu) only; FSE wp_navigation posts are unaffected.
@@ -270,34 +275,17 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Fixed: set_lang_cookie() now explicitly scopes the lf_lang cookie to the site's own domain (wp_parse_url( home_url(), PHP_URL_HOST )) instead of passing an empty domain string, preventing cookie bleed between sites sharing a server.
 
 = 1.6.1 =
-* Fixed: Translation Memory cache invalidation — Translation::compute_compliance_signature() was still reading the legacy linguaforge_compliance_addendum option (replaced in 1.5.0 by three per-preset options). Editing a per-preset addendum no longer invalidated the affected TM rows, so the cache served back translations produced under the previous preset rules. The signature now reads Config::preset_addendum( $preset ) and folds in the resolved per-post preset; existing TM rows become one-time misses on first encounter and are rewritten on the next translation.
-* Fixed: MetaBox per-page preset picker — the "Global default (Custom)" indicator stopped surfacing after the 1.5.0 migration because the underlying check still read the legacy global option. Now compares the resolved per-preset addendum against the built-in default.
-* Fixed: FSE-translate AJAX endpoints (Settings → Router → Translate / Translate all) bypassed the rate-limit and daily-quota gates that protect every other paid-AI endpoint. Both ajax_translate_fse_content and ajax_translate_fse_navigation now apply the same per-user sliding window and site-wide UTC daily ceiling via the new RateLimiter::gate_ajax_or_die() adapter. The linguaforge_ai_rate_limit and linguaforge_ai_daily_quota filters apply to two new endpoint keys: translate-fse-content and translate-fse-navigation.
-* Added: LinguaForge\AI\REST\RateLimiter class — extracted from FeatureController so the REST endpoints and the new AJAX FSE-translate handlers share one limiter implementation.
-
-= 1.6.0 =
-* Added: FSE Template Localisation — Settings → Router now includes a Language Templates section. Scaffold language-specific FSE templates (page-ca, single-de, …) from base templates in one click, AI-translate their content, fix internal links, and update template-part slug references to language-specific variants (e.g. footer → footer-ca) via the new Fix Parts action.
-* Added: Language Template Parts — scaffold, AI-translate, and fix internal links for language-specific template parts (header-ca, footer-de, …). A Fix Nav action rewrites wp:navigation ref IDs inside each part to point at the corresponding language-copy navigation post, resolving mismatched menus in the Site Editor.
-* Added: Language Navigations — lists all base wp_navigation posts × secondary languages. Translate button creates a language-copy navigation post ({name}-{lang}) with AI-translated link labels and language-prefixed internal URLs. Re-translate updates the existing copy.
-* Added: Pattern reference expansion — wp:pattern pointer blocks are resolved to their actual markup before any translation or fixing pass, ensuring patterns within templates and parts are fully processed.
-* Added: PHPUnit unit test suite — RouterSingletonTest verifies the singleton reset contract in isolation without booting WordPress.
-* Fixed: Primary language setting not persisting — Context::source_language() had two hardcoded 'ca' (Catalan) fallbacks dating from initial versions (get_option default and a ?: guard). Any primary language saved in Settings → Router was silently overridden back to Catalan on the next request. Both fallbacks removed; the saved value is now honoured correctly.
-* Fixed: PHPStan — unreachable-statement false positives in ajax_fix_fse_links() resolved by reordering validation guards to match control-flow analysis expectations.
-* Fixed: PHPCS — MissingTranslatorsComment on _n() call in ajax_fix_fse_parts() and slow_db_query warning in class-migrator.php.
-
-= 1.5.1 =
-* Added: Quick Translate — Create tab in the Admin Toolbar popover. Generate new content from instructions and key points, with tone selector (Informative, Persuasive, Storytelling, Technical, Conversational) and optional target language.
-* Added: Quick Translate — Refine. After any Translate or Create result, an inline Refine row lets you iteratively improve the output with additional instructions. The model receives the original request and prior draft as context.
-* Added: /create-chunk REST endpoint for free-form text generation without requiring a post ID. Rate-limited and quota-gated on the same policy as /translate-chunk.
-* Changed: Per-preset editable addenda — the single global "Custom prompt instructions" field is replaced by three separate fields in Settings → Behavior, one for each non-standard preset (Technical/Scientific, Legal/Compliance, Creative/Marketing). Leave blank to use the built-in default; a built-in default preview is shown inline. Sites with a saved custom addendum are migrated automatically on first admin load.
-* Changed: /translate-chunk now supports iterative refinement via refine_hint + previous_output params (multi-turn conversation).
-* Fixed: PHP Fatal — namespace declaration in class-language-router.php was preceded by the ABSPATH guard, causing a fatal error on PHP 8.1+ ("Namespace declaration statement has to be the very first statement"). Guard moved to after the namespace line.
-* Fixed: Quick Translate Translate and Create tab panes were both visible simultaneously. display:flex was overriding the browser's hidden attribute; explicit [hidden]{display:none} author rule added.
+* Fixed: Translation Memory cache invalidation — signature now reads Config::preset_addendum( $preset ) and folds in the resolved per-post preset; existing TM rows become one-time misses and are rewritten on the next translation.
+* Fixed: MetaBox per-page preset picker — "Global default (Custom)" indicator restored after the 1.5.0 migration.
+* Fixed: FSE-translate AJAX endpoints now apply per-user and site-wide quota gates via RateLimiter::gate_ajax_or_die(). LinguaForge\AI\REST\RateLimiter extracted from FeatureController.
 
 For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.7.1 =
+Patch release. Fixes Target Language dropdown in the Meta Boxes panel showing the wrong language list (missing instance-configured languages such as Basque). No schema or settings changes — safe to update in place.
 
 = 1.7.0 =
 Adds subdomain routing mode (de.example.com style). No schema changes. Existing path-prefix setups are unaffected — subdomain mode must be explicitly enabled in Router settings. Safe to update in place.
@@ -315,10 +303,4 @@ Correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route c
 Defensive hardening release. Closes four edge cases around non-public post types and cross-site cookie bleed, surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT). No schema or settings changes — safe to update in place.
 
 = 1.6.1 =
-Bug-fix release. Fixes Translation Memory cache invalidation after per-preset addendum edits and closes a rate-limit gap where 1.6.0 FSE-translate AJAX endpoints bypassed per-user and site-wide quota guards. No schema or settings changes.
-
-= 1.6.0 =
-Adds full FSE template localisation: scaffold, AI-translate, fix links, fix template-part slugs, and fix navigation refs for language-specific templates, template parts, and navigation menus directly from Settings → Router.
-
-= 1.5.0 =
-Adds Quick Translate Create tab and iterative Refine. Per-preset addenda replace the single global custom addendum field — existing values migrate automatically. Includes a PHP Fatal fix for class-language-router.php; update immediately if on 1.4.x.
+Bug-fix release. Fixes Translation Memory cache invalidation after per-preset addendum edits and closes a rate-limit gap where FSE-translate AJAX endpoints bypassed quota guards. No schema or settings changes.
