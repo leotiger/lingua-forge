@@ -274,6 +274,8 @@ missing class.
 ```
 lingua-forge.php              Plugin entry point; defines constants, loads sub-modules
 uninstall.php                 Wipe-on-delete handler (named options + LIKE prefixes + tables)
+includes/
+  class-updater.php           Self-hosted update checker (Linguaforge_Updater)
 
 language-router/              Routing, locale, translations, hreflang, admin meta boxes
   language-router.php         Sub-module bootstrap + procedural template wrappers
@@ -283,7 +285,15 @@ language-router/              Routing, locale, translations, hreflang, admin met
 ai/                           AI features (translation, meta-description, excerpt, content gen, revise)
   ai.php                      Sub-module bootstrap
   includes/                   PSR-4 class files under LinguaForge\AI\…
-  assets/                     CSS / JS for the editor toolbar + Settings page
+    Admin/                    Admin UI: MetaBox, AdminToolbar, PostListColumn, SettingsPage
+    Admin/Settings/Tabs/      One class per settings tab (Tab base + 8 concrete tabs)
+    CLI/                      WP-CLI commands (Commands facade + one class per subcommand)
+    Contracts/                Interface definitions (AIProviderInterface)
+    Core/                     Bootstrap, config, caching, TM, glossary, key store, utilities
+    Features/                 Feature implementations (Translation, MetaDescription, …)
+    Providers/                AI provider adapters (Anthropic, OpenAI, Gemini) + factory
+    REST/                     REST controller + rate limiter
+  assets/                     CSS / JS for the meta box, editor toolbar, Settings page, post list
   templates/prompts/          AI prompt templates (translation.txt, block-revision.txt, …)
 
 meta-description/             Meta Description module — LinguaForge\MetaDescription\Module class

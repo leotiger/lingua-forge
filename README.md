@@ -288,6 +288,8 @@ All provider API calls use a 300-second HTTP timeout by default. This can be ove
 ```
 lingua-forge/
   lingua-forge.php                   ← Plugin entry point, constants, activation hooks
+  includes/
+    class-updater.php                ← Self-hosted update checker (Linguaforge_Updater)
   language-router/
     language-router.php              ← Module entry: boots classes, defines LF_LANG, lf_* wrapper functions
     includes/
@@ -312,6 +314,8 @@ lingua-forge/
         Glossary.php                 ← Per-language-pair terminology table
         UsageRecorder.php            ← Per-call token usage telemetry
         BlockTextExtractor.php       ← Extracts / reinserts translatable block attribute strings
+        JsonRepair.php               ← JSON normaliser / balanced-brace extractor for AI responses
+        TranslationDebug.php         ← Debug helpers for translation pipeline
       Contracts/
         AIProviderInterface.php      ← Contract all providers must satisfy
       Features/
@@ -323,6 +327,7 @@ lingua-forge/
         Translation.php
         ContentGenerator.php
       Providers/
+        AbstractProvider.php         ← Shared HTTP + retry logic for all providers
         ProviderFactory.php
         WorkerConfig.php             ← Immutable DTO: model, max_tokens, temperature
         Anthropic.php
@@ -331,7 +336,18 @@ lingua-forge/
       Admin/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
-        SettingsPage.php             ← Settings → Lingua Forge (5-tab layout)
+        PostListColumn.php           ← "Translate missing" button in the Posts/Pages list
+        SettingsPage.php             ← Settings → Lingua Forge (8-tab layout, delegates to Tabs/)
+        Settings/Tabs/
+          Tab.php                    ← Abstract base class for all tab classes
+          GeneralTab.php             ← Provider + model selection
+          ApiKeysTab.php             ← API key entry + Test Connection
+          LimitsTab.php              ← Quotas, rate limits, capability gate
+          BehaviorTab.php            ← AI behavior presets and toggles
+          RouterTab.php              ← Language Router settings + FSE scaffold tools
+          GlossaryTab.php            ← Per-language-pair terminology table
+          AiUsageTab.php             ← Read-only token usage log
+          MaintenanceTab.php         ← Cache, debug, language overrides, TM tools
       CLI/
         Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / cache_clear
       REST/
@@ -339,11 +355,18 @@ lingua-forge/
                                         POST /lingua-forge/v1/translate-chunk
                                         POST /lingua-forge/v1/create-chunk
                                         POST /lingua-forge/v1/revise-block
+        RateLimiter.php              ← Per-user request rate limiting for REST endpoints
     assets/
       admin.js / admin.css           ← Meta box UI
       toolbar-translate.js / .css    ← Admin bar Quick Translate popover
       editor-translate.js / .css     ← Editor toolbar Quick Translate
       block-action.js / .css         ← Block-level action buttons
+      post-list.js                   ← "Translate missing" button AJAX handler
+      settings.css                   ← Settings page styles
+      settings-tabs.js               ← Settings page tab switching
+      router-tab.js                  ← Router tab AJAX actions (scaffold, fix, translate nav)
+      preset-preview.js              ← Behavior preset live preview
+      test-connection.js             ← API Keys tab "Test Connection" AJAX
     templates/prompts/               ← AI prompt templates (plain text, editable)
 ```
 
