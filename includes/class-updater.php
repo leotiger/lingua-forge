@@ -43,7 +43,7 @@ class Linguaforge_Updater {
 	 *
 	 * @var string
 	 */
-	const MANIFEST_URL = 'https://lingua-forge.com/lingua-forge-update.json';
+	const MANIFEST_URL = 'https://lingua-forge.com/wp-json/lingua-forge/v1/update';
 
 	/**
 	 * WordPress transient key used to cache the manifest.
@@ -100,6 +100,15 @@ class Linguaforge_Updater {
 			[ self::class, 'purge_cache' ],
 			10,
 			2
+		);
+
+		// Also purge when WordPress itself force-refreshes the update_plugins
+		// site transient (e.g. "Check Again" on the Updates screen).  Without
+		// this, our 12-hour transient keeps injecting stale manifest data into
+		// every fresh WordPress update check.
+		add_action(
+			'delete_site_transient_update_plugins',
+			[ self::class, 'purge_manifest_cache' ]
 		);
 
 		// Add a "View details" link to the plugin row on the Plugins screen.
@@ -195,6 +204,18 @@ class Linguaforge_Updater {
 		) {
 			delete_transient( self::CACHE_KEY );
 		}
+	}
+
+	/**
+	 * Purge the cached manifest whenever WordPress force-refreshes its own
+	 * plugin-update site transient (e.g. "Check Again" on the Updates screen,
+	 * or any code that calls `delete_site_transient( 'update_plugins' )`).
+	 *
+	 * Without this, our 12-hour transient keeps serving stale manifest data
+	 * into every fresh WordPress update check.
+	 */
+	public static function purge_manifest_cache(): void {
+		delete_transient( self::CACHE_KEY );
 	}
 
 	/**
