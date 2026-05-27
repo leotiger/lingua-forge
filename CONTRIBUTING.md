@@ -80,12 +80,18 @@ a short name is meaningfully more readable.
 - **Nonce names and actions.** Examples: `lf_language_nonce` /
   `lf_language_save`, `lf_translations_nonce` / `lf_translations_save`,
   `lf_import_translation_nonce`.
-- **Filter hooks exposed by the Language Router sub-module.** These are
+- **Hooks exposed by the Language Router sub-module.** These are
   the public API for theme code and other plugins integrating with
-  routing/translation. Examples: `lf_primary_language`,
+  routing/translation. Filter hook examples: `lf_primary_language`,
   `lf_languages_list`, `lf_hreflang_mode`, `lf_hreflang_x_default`,
   `lf_block_editor_restrictions`, `lf_lang_default_fallback`,
   `lf_lang_fallback_map`, `lf_lang_force_locale`, `lf_i18n_overrides_dir`.
+  Action hook examples: `lf_lang_column_missing` (fires after the ⭕
+  missing-language indicator in the Lang column; receives `$post_id, $missing[]`),
+  `lf_lang_column_outdated` (fires after the ⚠ outdated indicator; receives
+  `$post_id`). Both are designed for injecting UI into the column from a
+  decoupled module — the AI module uses them for the "Translate missing" and
+  "Retranslate" buttons.
 - **GET-flag query args** set by `wp_safe_redirect()` after an
   admin-post handler so the success notice renders on the next request.
   Examples: `lf_override_uploaded`, `lf_cache_cleared`, `lf_debug_cleared`,

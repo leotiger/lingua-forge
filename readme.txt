@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -234,6 +234,10 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.8.2 =
+* Added: "Retranslate" button in the Lang column for outdated target-language posts — fires alongside the ⚠ indicator with a language selector (From EN / From ES / …) letting editors choose which language version to retranslate from. Same-language retranslation is blocked. Success clears the outdated flag and regenerates the meta description.
+* Improved: "Translate missing" and "Retranslate" buttons now render inline on the same line as the language indicator. Lang column layout uses inline-flex for compact presentation.
+
 = 1.8.1 =
 * Added: "Translate missing" button in the Lang column of the Posts and Pages list screens — one click fires all missing AI translations for a source-language post directly from the overview, without opening the editor.
 
@@ -300,6 +304,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.8.2 =
+Adds "Retranslate" button with language selector for outdated translations in the Posts/Pages list. No schema changes — safe to update in place.
 
 = 1.8.1 =
 Adds a "Translate missing" button to the Posts/Pages list — trigger AI translations for all missing languages without opening the editor. No schema changes — safe to update in place.

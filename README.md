@@ -924,9 +924,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.8.1**
+**Current release — 1.8.2**
 
-- **"Translate missing" button in the Posts/Pages list** — a one-click button appears in the existing "Lang" column next to the ⭕ indicator for any source-language post missing one or more translations. One click fires all missing AI translations, creates TRID-linked posts with FSE template assignment, generates meta descriptions, and replaces the indicator with ✓ Done — without leaving the list screen.
+- **"Retranslate" button with language selector in the Posts/Pages list** — outdated target-language posts (⚠ indicator) now show a "From [lang]" dropdown listing all other language versions in the TRID group, plus a "Retranslate" button. Clears stale cache, reruns the full AI translation pipeline, resets the outdated flag, and regenerates the meta description.
+- **Inline Lang column layout** — "Translate missing" and "Retranslate" buttons now sit on the same line as the language indicator.
+
+**1.8.1** — "Translate missing" button in the Lang column for source posts with missing translations. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.8.0** — Translations metabox Override-button bug fixed (stale TRID cache after language switch); "Add Language" now flushes rewrite rules and reloads the page automatically; Router tab replaced with per-language tabbed UI for Templates, Parts, and Navigations. See [CHANGELOG.md](CHANGELOG.md) for details.
 

@@ -48,7 +48,20 @@ class Columns {
 		$lang = $this->router->trid_group->get_lang( $id );
 		echo '<strong data-lang="' . esc_attr( $lang ) . '">' . esc_html( strtoupper( $lang ) ) . '</strong>';
 
-		if ( $this->router->sync->is_outdated( $id ) ) echo ' ⚠';
+		if ( $this->router->sync->is_outdated( $id ) ) {
+			echo ' <span class="lf-outdated-indicator">⚠</span>';
+
+			/**
+			 * Fires after the outdated indicator in the Lang column.
+			 *
+			 * The AI module hooks this to inject a "Retranslate" button
+			 * without creating a hard dependency from the language-router
+			 * to the AI sub-module.
+			 *
+			 * @param int $post_id  Current (target) post ID.
+			 */
+			do_action( 'lf_lang_column_outdated', $id );
+		}
 
 		$missing = $this->router->trid_group->get_missing_languages( $id );
 		if ( ! empty( $missing ) ) {

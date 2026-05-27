@@ -2,6 +2,18 @@
 
 ---
 
+## [1.8.2] — 2026-05-27
+
+### Added
+
+- **"Retranslate" button with language selector in the Posts/Pages list** — outdated target-language posts (those showing the ⚠ indicator) now display a compact "From [lang]" dropdown listing all other language versions in the TRID group, followed by a "Retranslate" button. The editor selects which language version to translate from, clicks the button, and the translation is refreshed via the same AI pipeline as the CLI `retranslate` command — stale cache cleared, `Translation::run()` called with `force_refresh: true`, outdated flag reset, meta description regenerated. Same-language retranslation is rejected both client-side and server-side. The button is injected via the new `lf_lang_column_outdated` action hook, keeping the AI module decoupled from the language-router module.
+
+### Improved
+
+- **Lang column inline layout** — "Translate missing" and "Retranslate" buttons now render on the same line as the language indicator instead of on a new line below it. The retranslate selector + button use `inline-flex` for compact, wrapping-free presentation.
+
+---
+
 ## [1.8.1] — 2026-05-27
 
 ### Added

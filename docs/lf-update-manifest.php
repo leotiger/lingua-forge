@@ -35,13 +35,19 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.8.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.1/lingua-forge-1.8.1.zip';
+	$version      = '1.8.2';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.2/lingua-forge-1.8.2.zip';
 	$last_updated = '2026-05-27';
 	$tested       = '7.0';
 
 	// Prepend new release entry; keep the last 3–4 entries for the modal.
 	$changelog =
+		'<h4>1.8.2 — 2026-05-27</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> "Retranslate" button with language selector in the Lang column — outdated target posts show a "From [lang]" dropdown and a Retranslate button. Clears stale cache, reruns AI translation, resets outdated flag, regenerates meta description.</li>' .
+			'<li><strong>Improved:</strong> Lang column buttons now render inline on the same line as the language indicator.</li>' .
+		'</ul>' .
+
 		'<h4>1.8.1 — 2026-05-27</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> "Translate missing" button in the Lang column of the Posts/Pages list — one click fires all missing AI translations for a source-language post from the overview screen without opening the editor. Success replaces the ⭕ indicator with ✓ Done inline.</li>' .
