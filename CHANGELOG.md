@@ -28,17 +28,16 @@
 
 ## [1.7.2] — 2026-05-27
 
-### Added
+### Improved
 
-- **Self-hosted update checker** — `Linguaforge_Updater` class hooks into WordPress's plugin-update machinery so **Plugins → Installed Plugins** surfaces update badges and one-click updates directly from lingua-forge.com, without the plugin being listed on WordPress.org. The update manifest is fetched from `https://lingua-forge.com/lingua-forge-update.json` and cached for 12 hours (error results cached 1 hour via a sentinel object to avoid hammering the server on transient failures). The manifest JSON template lives at `docs/update-manifest.json`; update it on every release.
-- **"View details" link in the plugin row** — clicking it opens the standard WordPress plugin-information modal (thickbox) populated with the description, changelog, and installation sections from the manifest. The method deduplicates: if WordPress has already added its own thickbox link (which it does when `plugins_api` returns data for the slug) no second link is added.
-- **"Visit plugin site" link guaranteed in the plugin row** — the GitHub repository link (`https://github.com/leotiger/lingua-forge`) is explicitly restored when WordPress drops it for self-hosted plugins not tracked in the .org update transient.
+- **"View details" link in the plugin row** — clicking it opens the standard WordPress plugin-information modal (thickbox) populated with the description, changelog, and installation sections from the manifest. The method deduplicates: if WordPress has already added its own thickbox link no second link is added.
+- **"Visit plugin site" link guaranteed in the plugin row** — the GitHub repository link (`https://github.com/leotiger/lingua-forge`) is now explicitly restored when WordPress drops it for self-hosted plugins not tracked in the .org update transient.
 
 ### Fixed
 
+- **Plugin info modal graceful fallback** — when the remote manifest is temporarily unreachable, `plugins_api` now returns a minimal info object (name, current installed version, author, homepage, short description) instead of `false`. This prevents WordPress from falling through to the .org API and showing "Plugin not found."
 - **PHPStan level 5 — `$transient` typed as `\stdClass`** — `check_for_update()` previously declared `object $transient`, which PHPStan does not allow dynamic property access on. Changed to `\stdClass` so `$transient->response` and `$transient->no_update` resolve cleanly.
 - **PHPStan — `includes/` missing from analysis paths** — `dev/phpstan.neon.dist` now includes `../includes` in `paths`, so PHPStan resolves `Linguaforge_Updater` when analysing `lingua-forge.php`.
-- **Plugin info modal graceful fallback** — when the remote manifest is temporarily unreachable, `plugins_api` now returns a minimal info object (name, current installed version, author, homepage, short description) instead of `false`. This prevents WordPress from falling through to the .org API and showing "Plugin not found."
 
 ### Maintenance
 
@@ -69,6 +68,7 @@
   **Server prerequisite:** wildcard DNS and a wildcard TLS certificate covering all language subdomains must be in place before enabling this mode. The `lf_base_domain` filter overrides the auto-detected apex domain when `home_url()` includes `www`.
 
 - **Classic navigation menu auto-add guard** — publishing a translated page no longer inserts it into classic nav menus that have "automatically add new top-level pages" enabled. A `publish_page` hook removes any just-inserted item whose page has a non-source-language `_lf_lang` value. Classic menus only; FSE `wp_navigation` posts are unaffected.
+- **Self-hosted update checker** — `Linguaforge_Updater` class hooks into WordPress's plugin-update machinery so **Plugins → Installed Plugins** surfaces update badges and one-click updates directly from lingua-forge.com, without the plugin being listed on WordPress.org. The update manifest is fetched from a REST endpoint on lingua-forge.com and cached for 12 hours (error results cached 1 hour via a sentinel object to avoid hammering the server on transient failures).
 
 ### Fixed
 

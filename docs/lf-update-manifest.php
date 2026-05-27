@@ -57,8 +57,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 
 		'<h4>1.7.2 — 2026-05-27</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Self-hosted automatic update checker — once installed, WordPress surfaces update badges and one-click updates from lingua-forge.com without a WordPress.org listing.</li>' .
-			'<li><strong>Added:</strong> "View details" link in the plugin row with full changelog/description modal. Duplicate links suppressed; "Visit plugin site" (GitHub) always guaranteed.</li>' .
+			'<li><strong>Improved:</strong> "View details" link in the plugin row with full changelog/description modal. Duplicate links suppressed; "Visit plugin site" (GitHub) always guaranteed.</li>' .
 			'<li><strong>Fixed:</strong> Plugin info modal returns a graceful local fallback instead of "Plugin not found" when the manifest is temporarily unreachable.</li>' .
 			'<li><strong>Fixed:</strong> PHPStan — $transient typed as \\stdClass; includes/ added to analysis paths.</li>' .
 		'</ul>' .
@@ -72,6 +71,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 
 		'<h4>1.7.0 — 2026-05-24</h4>' .
 		'<ul>' .
+			'<li><strong>Added:</strong> Self-hosted automatic update checker — once installed, WordPress surfaces update badges and one-click updates from lingua-forge.com without a WordPress.org listing.</li>' .
 			'<li>Subdomain routing mode (<code>de.example.com</code>); classic menu auto-add guard; language switcher fixes; Fix Navigation References corrections; Translate Navigation subdomain fix.</li>' .
 		'</ul>';
 
