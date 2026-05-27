@@ -13,7 +13,7 @@
  *
  * Depends on: jQuery (wp-includes), lfPostList (wp_localize_script).
  *
- * @since 1.9.0
+ * @since 1.8.1
  */
 ( function ( $ ) {
 	'use strict';

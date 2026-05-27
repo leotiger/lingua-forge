@@ -18,7 +18,7 @@
  * flushes the TRID translation cache.
  *
  * @package LinguaForge\AI\Admin
- * @since   1.9.0
+ * @since   1.8.1
  */
 
 namespace LinguaForge\AI\Admin;
