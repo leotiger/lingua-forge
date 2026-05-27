@@ -23,6 +23,7 @@
 
 namespace LinguaForge\AI\Admin;
 
+use LinguaForge\AI\Features\MetaDescription;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
 use LinguaForge\Router\Router;
@@ -217,6 +218,11 @@ class PostListColumn {
 
 			if ( 'error' === $outcome['status'] ) {
 				++$errors;
+			} else {
+				// Generate and persist a meta description for the new/updated post,
+				// reusing the same MetaDescription::run() stack as the CLI's
+				// --with-meta-description flag.
+				self::generate_meta_description( (int) $outcome['id'] );
 			}
 
 			$results[ $lang ] = $outcome;
@@ -307,6 +313,24 @@ class PostListColumn {
 			'id'       => $new_id,
 			'edit_url' => (string) ( get_edit_post_link( $new_id ) ?: '' ),
 		];
+	}
+
+	/**
+	 * Generate and persist a meta description for a freshly translated post.
+	 *
+	 * Mirrors AbstractTranslateCommand::generate_and_save_meta_description().
+	 * Failures are silently swallowed — a missing meta description is not a
+	 * reason to surface an error to the user for a list-screen batch action.
+	 *
+	 * @param int $target_id  Post ID to generate a meta description for.
+	 */
+	private static function generate_meta_description( int $target_id ): void {
+		$feature = new MetaDescription();
+		$result  = $feature->run( $target_id );
+
+		if ( ! empty( $result['success'] ) && ! empty( $result['output'] ) ) {
+			update_post_meta( $target_id, '_linguaforge_meta_description', (string) $result['output'] );
+		}
 	}
 
 	/**
