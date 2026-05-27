@@ -903,14 +903,15 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 **Current release — 1.8.1**
 
-- **Self-hosted automatic updates** — once installed, WordPress checks for new releases every 12 hours and shows the standard update badge in Plugins → Installed Plugins. The first install is manual (ZIP from [GitHub Releases](https://github.com/leotiger/lingua-forge/releases)); all subsequent updates are one-click from the WordPress admin.
-- **"View details" modal** — plugin row now includes a "View details" link that opens the standard plugin-information thickbox with description, changelog, and installation instructions from the live manifest. Duplicate links suppressed; "Visit plugin site" (GitHub) guaranteed.
-- **Graceful fallback** — if the remote manifest is temporarily unreachable the modal shows locally-known plugin data instead of "Plugin not found."
-- **PHPStan** — `$transient` typed as `\stdClass`; `includes/` added to analysis paths.
+- **"Translate missing" button in the Posts/Pages list** — a one-click button appears in the existing "Lang" column next to the ⭕ indicator for any source-language post missing one or more translations. One click fires all missing AI translations, creates TRID-linked posts with FSE template assignment, generates meta descriptions, and replaces the indicator with ✓ Done — without leaving the list screen.
+
+**1.8.0** — Translations metabox Override-button bug fixed (stale TRID cache after language switch); "Add Language" now flushes rewrite rules and reloads the page automatically; Router tab replaced with per-language tabbed UI for Templates, Parts, and Navigations. See [CHANGELOG.md](CHANGELOG.md) for details.
+
+**1.7.2** — Update-checker UI improvements: "View details" modal added to the plugin row; "Visit plugin site" link guaranteed; plugin info modal shows graceful fallback when manifest is unreachable. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.7.1** — MetaBox Target Language dropdown fixed (instance languages only; Basque/eu auto-injected via filter); maintenance tab warning cleaned up; `SECURITY.md` excluded from distribution. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-**1.7.0** — Subdomain routing mode (`de.example.com`); classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
+**1.7.0** — Subdomain routing mode (`de.example.com`); self-hosted automatic update checker; classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.5** — Link Fixer stale-path fix for template parts; language-router debug call sites removed; `filter_locale` renamed to generic name; `.distignore` fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
 
