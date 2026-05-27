@@ -349,67 +349,163 @@ class MetaBox {
         );
     }
 
+    // ── Field renderer (shared by inline + overlay paths) ─────────────────────
+
+    /**
+     * Render the UI fields (textareas, selects, checkboxes) for one feature.
+     *
+     * Extracted to avoid duplication between the inline rendering path and the
+     * overlay rendering path introduced in 1.7.3.  Outputs HTML directly.
+     *
+     * @param array<int,array<string,mixed>> $ui_fields   Field defs from Feature::get_ui_fields().
+     * @param string                         $feature_key Feature slug for data-feature-ref attrs.
+     * @param array<string,mixed>            $defaults    Default / persisted field values.
+     */
+    private static function render_feature_fields(
+        array  $ui_fields,
+        string $feature_key,
+        array  $defaults
+    ): void {
+
+        foreach ( $ui_fields as $field ) :
+
+            $has_condition   = ! empty( $field['condition'] ) && is_array( $field['condition'] );
+            $condition_field = $has_condition ? (string) array_key_first( $field['condition'] ) : '';
+            $condition_value = $has_condition ? (string) $field['condition'][ $condition_field ] : '';
+
+            ?>
+            <div
+                class="lingua-forge-field-wrapper"
+                <?php if ( $has_condition ) : ?>
+                    data-condition-field="<?php echo esc_attr( $condition_field ); ?>"
+                    data-condition-value="<?php echo esc_attr( $condition_value ); ?>"
+                <?php endif; ?>
+            >
+
+            <?php if ( $field['type'] === 'textarea' ) : ?>
+                <label class="lingua-forge-label">
+                    <?php echo esc_html( $field['label'] ); ?>
+                    <textarea
+                        class="lingua-forge-input-textarea"
+                        data-field="<?php echo esc_attr( $field['name'] ); ?>"
+                        data-feature-ref="<?php echo esc_attr( $feature_key ); ?>"
+                        rows="<?php echo esc_attr( $field['rows'] ?? 4 ); ?>"
+                        placeholder="<?php echo esc_attr( $field['placeholder'] ?? '' ); ?>"
+                    ><?php echo esc_textarea( $defaults[ $field['name'] ] ?? '' ); ?></textarea>
+                </label>
+            <?php endif; ?>
+
+            <?php if ( $field['type'] === 'select' ) : ?>
+                <label class="lingua-forge-label">
+                    <?php echo esc_html( $field['label'] ); ?>
+                    <select
+                        class="lingua-forge-select"
+                        data-field="<?php echo esc_attr( $field['name'] ); ?>"
+                        data-feature-ref="<?php echo esc_attr( $feature_key ); ?>"
+                    >
+                        <?php
+                        $selected_val = $defaults[ $field['name'] ] ?? '';
+                        foreach ( $field['options'] as $val => $label ) :
+                        ?>
+                            <option
+                                value="<?php echo esc_attr( $val ); ?>"
+                                <?php selected( $selected_val, $val ); ?>
+                            >
+                                <?php echo esc_html( $label ); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            <?php endif; ?>
+
+            <?php if ( $field['type'] === 'checkbox' ) : ?>
+                <label class="lingua-forge-label lingua-forge-label--inline">
+                    <input
+                        type="checkbox"
+                        class="lingua-forge-checkbox"
+                        data-field="<?php echo esc_attr( $field['name'] ); ?>"
+                        data-feature-ref="<?php echo esc_attr( $feature_key ); ?>"
+                        value="1"
+                        <?php checked( ! empty( $defaults[ $field['name'] ] ) ); ?>
+                    />
+                    <?php echo esc_html( $field['label'] ); ?>
+                </label>
+            <?php endif; ?>
+
+            </div><!-- .lingua-forge-field-wrapper -->
+
+        <?php
+        endforeach;
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+
     public static function render(
         \WP_Post $post
     ): void {
 
         $features = Registry::all();
 
-        $presets          = Config::presets();
-        $global_preset    = Config::active_preset();
-        $page_preset      = (string) get_post_meta($post->ID, '_linguaforge_preset', true);
+        $presets       = Config::presets();
+        $global_preset = Config::active_preset();
+        $page_preset   = (string) get_post_meta( $post->ID, '_linguaforge_preset', true );
 
         // True when the editor has saved a per-preset addendum override
         // for the currently-active global preset (Settings → Behavior).
-        // After 1.5.0 each non-standard preset has its own
-        // `linguaforge_preset_addendum_{preset}` option; the "(Custom)"
-        // hint should appear when the resolved value diverges from the
-        // built-in default. The Standard preset never carries an addendum
-        // surface so this is always false for it.
         $has_custom_addendum = $global_preset !== 'standard'
             && Config::preset_addendum( $global_preset ) !== Config::default_preset_addendum( $global_preset );
+
+        // Features that open in a focused overlay instead of rendering inline.
+        // Everything else (meta-description, etc.) stays in the compact panel.
+        $overlay_keys = [ 'translation', 'content-generator' ];
+
+        // Compact trigger-button labels shown in the main panel.
+        $trigger_labels = [
+            'translation'       => __( 'Translate page…',   'lingua-forge' ),
+            'content-generator' => __( 'Generate content…', 'lingua-forge' ),
+        ];
+
+        $inline_features  = [];
+        $overlay_features = [];
+
+        foreach ( $features as $feature ) {
+            if ( in_array( $feature->get_key(), $overlay_keys, true ) ) {
+                $overlay_features[] = $feature;
+            } else {
+                $inline_features[] = $feature;
+            }
+        }
 
         ?>
         <div class="lingua-forge-panel">
 
-            <div class="lingua-forge-feature-group" style="border-bottom:1px solid #dcdcde;padding-bottom:12px;margin-bottom:4px;">
-                <?php wp_nonce_field('linguaforge_preset_save', '_linguaforge_preset_nonce'); ?>
+            <div class="lingua-forge-feature-group lf-preset-row">
+                <?php wp_nonce_field( 'linguaforge_preset_save', '_linguaforge_preset_nonce' ); ?>
                 <label class="lingua-forge-label" for="lf-page-preset">
-                    <?php esc_html_e('AI Behaviour Preset', 'lingua-forge'); ?>
+                    <?php esc_html_e( 'AI Behaviour Preset', 'lingua-forge' ); ?>
                 </label>
                 <select id="lf-page-preset" name="_linguaforge_preset" class="lingua-forge-select" style="width:100%;margin-top:4px;">
-                    <option value="global" <?php selected($page_preset, ''); ?>>
+                    <option value="global" <?php selected( $page_preset, '' ); ?>>
                         <?php
-                        // Build the "Global default (…)" label.
-                        //
-                        // When the global preset's per-preset addendum
-                        // (Settings → Behavior → AI Behaviour Presets) has been
-                        // edited away from its built-in default, surface that
-                        // fact as "Global default (Custom)" so editors know
-                        // the global isn't the vanilla preset definition.
-                        // Otherwise show the active preset's label
-                        // (Standard / Technical / Legal / Creative).
                         if ( $has_custom_addendum ) {
                             // translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
                             echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html__( 'Custom', 'lingua-forge' ) );
                         } else {
-                            $global_label = $presets[$global_preset]['label'] ?? $global_preset;
+                            $global_label = $presets[ $global_preset ]['label'] ?? $global_preset;
                             // translators: %s: name of the globally configured preset
                             echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html( $global_label ) );
                         }
                         ?>
                     </option>
-                    <?php foreach ($presets as $key => $meta): ?>
-                        <option value="<?php echo esc_attr($key); ?>" <?php selected($page_preset, $key); ?>>
-                            <?php echo esc_html($meta['label']); ?>
+                    <?php foreach ( $presets as $key => $meta ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php selected( $page_preset, $key ); ?>>
+                            <?php echo esc_html( $meta['label'] ); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <p class="description" style="font-size:11px;color:#646970;margin-top:4px;">
                     <?php
                     if ( $has_custom_addendum ) {
-                        // Custom addendum is always applied by the server regardless of
-                        // which preset is active here — surface that clearly.
                         esc_html_e(
                             'Overrides the AI preset for Translation and Content Generation on this page. Site-wide custom prompt instructions (Settings → Behavior) are always appended to every request regardless of this selection.',
                             'lingua-forge'
@@ -424,97 +520,28 @@ class MetaBox {
                 </p>
             </div>
 
-            <?php foreach ($features as $feature): ?>
+            <?php foreach ( $inline_features as $feature ) : ?>
 
                 <div class="lingua-forge-feature-group">
 
                     <?php
                     $ui_fields = $feature->get_ui_fields();
-                    $defaults  = $feature->get_field_defaults($post->ID);
+                    $defaults  = $feature->get_field_defaults( $post->ID );
                     ?>
 
-                    <?php if (!empty($ui_fields)): ?>
+                    <?php if ( ! empty( $ui_fields ) ) : ?>
                         <div class="lingua-forge-feature-fields">
-                            <?php foreach ($ui_fields as $field):
-
-                                // Conditional visibility: wrap in a div with data-condition-* attrs
-                                // so JS can show/hide based on another field's current value.
-                                $has_condition   = !empty($field['condition']) && is_array($field['condition']);
-                                $condition_field = $has_condition ? (string) array_key_first($field['condition']) : '';
-                                $condition_value = $has_condition ? (string) $field['condition'][$condition_field] : '';
-                            ?>
-
-                                <div
-                                    class="lingua-forge-field-wrapper"
-                                    <?php if ($has_condition): ?>
-                                        data-condition-field="<?php echo esc_attr($condition_field); ?>"
-                                        data-condition-value="<?php echo esc_attr($condition_value); ?>"
-                                    <?php endif; ?>
-                                >
-
-                                <?php if ($field['type'] === 'textarea'): ?>
-                                    <label class="lingua-forge-label">
-                                        <?php echo esc_html($field['label']); ?>
-                                        <textarea
-                                            class="lingua-forge-input-textarea"
-                                            data-field="<?php echo esc_attr($field['name']); ?>"
-                                            data-feature-ref="<?php echo esc_attr($feature->get_key()); ?>"
-                                            rows="<?php echo esc_attr($field['rows'] ?? 4); ?>"
-                                            placeholder="<?php echo esc_attr($field['placeholder'] ?? ''); ?>"
-                                        ><?php echo esc_textarea($defaults[$field['name']] ?? ''); ?></textarea>
-                                    </label>
-                                <?php endif; ?>
-
-                                <?php if ($field['type'] === 'select'): ?>
-                                    <label class="lingua-forge-label">
-                                        <?php echo esc_html($field['label']); ?>
-                                        <select
-                                            class="lingua-forge-select"
-                                            data-field="<?php echo esc_attr($field['name']); ?>"
-                                            data-feature-ref="<?php echo esc_attr($feature->get_key()); ?>"
-                                        >
-                                            <?php
-                                            $selected_val = $defaults[$field['name']] ?? '';
-                                            foreach ($field['options'] as $val => $label):
-                                            ?>
-                                                <option
-                                                    value="<?php echo esc_attr($val); ?>"
-                                                    <?php selected($selected_val, $val); ?>
-                                                >
-                                                    <?php echo esc_html($label); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </label>
-                                <?php endif; ?>
-
-                                <?php if ($field['type'] === 'checkbox'): ?>
-                                    <label class="lingua-forge-label lingua-forge-label--inline">
-                                        <input
-                                            type="checkbox"
-                                            class="lingua-forge-checkbox"
-                                            data-field="<?php echo esc_attr($field['name']); ?>"
-                                            data-feature-ref="<?php echo esc_attr($feature->get_key()); ?>"
-                                            value="1"
-                                            <?php checked(!empty($defaults[$field['name']])); ?>
-                                        />
-                                        <?php echo esc_html($field['label']); ?>
-                                    </label>
-                                <?php endif; ?>
-
-                                </div><!-- .lingua-forge-field-wrapper -->
-
-                            <?php endforeach; ?>
+                            <?php self::render_feature_fields( $ui_fields, $feature->get_key(), $defaults ); ?>
                         </div>
                     <?php endif; ?>
 
                     <button
                         type="button"
                         class="button button-secondary lingua-forge-action"
-                        data-feature="<?php echo esc_attr($feature->get_key()); ?>"
+                        data-feature="<?php echo esc_attr( $feature->get_key() ); ?>"
                         data-post-id="<?php echo esc_attr( (string) $post->ID ); ?>"
                     >
-                        <?php echo esc_html($feature->get_label()); ?>
+                        <?php echo esc_html( $feature->get_label() ); ?>
                     </button>
 
                     <div class="lingua-forge-result"></div>
@@ -523,7 +550,83 @@ class MetaBox {
 
             <?php endforeach; ?>
 
+            <?php if ( ! empty( $overlay_features ) ) : ?>
+                <div class="lf-trigger-row">
+                    <?php foreach ( $overlay_features as $feature ) : ?>
+                        <button
+                            type="button"
+                            class="button button-secondary lf-overlay-trigger"
+                            data-lf-overlay-target="lf-overlay-<?php echo esc_attr( $feature->get_key() ); ?>"
+                        >
+                            <?php echo esc_html( $trigger_labels[ $feature->get_key() ] ?? ( $feature->get_label() . '…' ) ); ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
         </div>
+
+        <?php
+        // Overlay dialogs — position:fixed relative to the metabox iframe
+        // viewport, so they can live anywhere in the DOM.
+        foreach ( $overlay_features as $feature ) :
+            $ui_fields   = $feature->get_ui_fields();
+            $defaults    = $feature->get_field_defaults( $post->ID );
+            $feature_key = $feature->get_key();
+        ?>
+            <div
+                class="lf-feature-overlay"
+                id="lf-overlay-<?php echo esc_attr( $feature_key ); ?>"
+                hidden
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="lf-overlay-title-<?php echo esc_attr( $feature_key ); ?>"
+            >
+                <div class="lf-feature-overlay__backdrop" data-lf-overlay="close"></div>
+                <div class="lf-feature-overlay__panel" role="document">
+                    <header class="lf-feature-overlay__header">
+                        <h2 id="lf-overlay-title-<?php echo esc_attr( $feature_key ); ?>">
+                            <?php echo esc_html( $feature->get_label() ); ?>
+                        </h2>
+                        <button
+                            type="button"
+                            class="lf-feature-overlay__close"
+                            data-lf-overlay="close"
+                            aria-label="<?php esc_attr_e( 'Close', 'lingua-forge' ); ?>"
+                        >✕</button>
+                    </header>
+                    <div class="lf-feature-overlay__body">
+                        <!-- Config phase: fields + action button. Hidden after action runs. -->
+                        <div class="lf-feature-overlay__config-section">
+                            <div class="lingua-forge-panel">
+                                <div class="lingua-forge-feature-group">
+
+                                    <?php if ( ! empty( $ui_fields ) ) : ?>
+                                        <div class="lingua-forge-feature-fields">
+                                            <?php self::render_feature_fields( $ui_fields, $feature_key, $defaults ); ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <button
+                                        type="button"
+                                        class="button button-primary lingua-forge-action"
+                                        data-feature="<?php echo esc_attr( $feature_key ); ?>"
+                                        data-post-id="<?php echo esc_attr( (string) $post->ID ); ?>"
+                                    >
+                                        <?php echo esc_html( $feature->get_label() ); ?>
+                                    </button>
+
+                                    <div class="lingua-forge-result"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Result phase: diff or CG preview populated by JS, shown after action. -->
+                        <div class="lf-feature-overlay__result-section" hidden></div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
         <?php
     }
 }

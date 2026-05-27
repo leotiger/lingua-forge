@@ -2,6 +2,22 @@
 
 ---
 
+## [1.8.0] — 2026-05-27
+
+### Fixed
+
+- **Translations metabox — spurious "Override" button after language switch** — after `ajax_set_language()` updated `_lf_lang` post meta and returned, the TRID object-cache entry (stored under key `trid_{uuid}` in the `lf_translations` group) was not cleared. The normal cache-clear hook (`handle_cache_clear`) fires on `wp_after_insert_post`, which is not triggered by `update_post_meta()` alone. On the immediate page reload the stale cached group still showed the post under its old language, causing the Translations metabox to render an Override button for a language that was in fact the same post. Fix: explicit `TridGroup::clear_translation_cache()` call in `ajax_set_language()` after `set_lang()`.
+- **PHPCS `MissingTranslatorsComment` in Translations metabox** — the `/* translators: */` comment preceding `_n()` in `render_translations_meta_box()` was separated from the function call by a blank line, breaking PHPCS's adjacency check. Moved inside the `sprintf()` call directly above `_n()`.
+- **PHPCS `EscapeOutput.OutputNotEscaped` on multi-line `wp_dropdown_pages()` calls** — single-line `phpcs:ignore` only suppresses the first line of a multi-line expression. Converted both occurrences in `class-meta-boxes.php` to `phpcs:disable` / `phpcs:enable` block pairs.
+- **PHPCS `SlowDBQuery` on `wp_dropdown_pages()` `meta_key`/`meta_value` args** — `_lf_lang` is an indexed, intentional meta key used for per-language page filtering. Extended the existing `phpcs:disable` blocks to also suppress `slow_db_query_meta_key` and `slow_db_query_meta_value` with an explanatory comment.
+
+### Improved
+
+- **Router tab — "Add Language" flow** — after a language pack is successfully downloaded, the server now calls `flush_rewrite_rules()` immediately so the new language's URL prefix is registered before the response is sent. The client shows a "Reloading page…" notice and reloads after 1.5 seconds, so the Active Languages chips and template/parts/navigations tables update automatically without a manual refresh.
+- **Router tab — per-language tabbed UI for Templates, Parts, and Navigations** — the previous layout rendered all secondary languages side-by-side in three large cross-language tables, which became unmanageable with many languages. The three section methods (`render_templates_section`, `render_parts_section`, `render_navigations_section`) have been replaced with a tabbed panel layout: one tab per secondary language, each panel containing that language's Templates, Parts, and Navigations tables. The active tab is preserved across page loads via `sessionStorage`. All existing delegated JS event handlers work unchanged — every `data-lang`, `data-slug`, `data-base`, and `data-post-type` attribute is preserved in the new layout.
+
+---
+
 ## [1.7.2] — 2026-05-27
 
 ### Added
@@ -331,7 +347,7 @@
 
 ### Fixed
 
-- **Slug not updated on retranslation** — when a WP-CLI `translate` / `retranslate` / `fill-translations` command updates an existing translated post, `wp_update_post()` does not automatically regenerate `post_name` from `post_title`. The CLI now explicitly adds `post_name => sanitize_title($translated_title)` to the update arguments whenever a translated title is present, so the URL slug stays in sync with the translated title across all CLI translation commands.
+- **Slug not updated on retranslation** — when a WP-CLI `translate` / `retranslate` / `fill_translations` command updates an existing translated post, `wp_update_post()` does not automatically regenerate `post_name` from `post_title`. The CLI now explicitly adds `post_name => sanitize_title($translated_title)` to the update arguments whenever a translated title is present, so the URL slug stays in sync with the translated title across all CLI translation commands.
 - **Admin apply path slug** — the Gutenberg `editPost()` dispatch in the "Apply translation" modal now includes a `slug` field derived from the translated title via the new `lfSlugify()` helper. WordPress sanitizes this further via `sanitize_title()` + `wp_unique_post_slug()` on save. The classic-editor fallback does not touch the slug (no client-side field exists there; the server-side fix covers that path via the CLI workflow).
 
 ---
@@ -353,11 +369,11 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 - **Content Generator overlay** — dedicated single-column overlay with iterative multi-turn refinement (chat with the model to improve its own draft) and automatic meta description generation chained server-side after every generation and every refinement iteration.
 - **Translation meta description chaining** — optional "Also generate meta description" checkbox in the Translation metabox generates a meta description in the same server-side request using the already-translated content, with no second API round-trip.
 - **`MetaDescription::run()` direct-content override** — accepts `content`, `title`, and `lang` params so any feature can chain a meta description from in-memory content without re-reading the post from the database.
-- **WP-CLI `--debug` flag** — available on `translate`, `retranslate`, and `fill-translations`. Forces debug-file writes for that run and echoes the source prompt and raw API response inline in the terminal. Provider errors surface in WP-CLI output regardless of `--debug`.
+- **WP-CLI `--debug` flag** — available on `translate`, `retranslate`, and `fill_translations`. Forces debug-file writes for that run and echoes the source prompt and raw API response inline in the terminal. Provider errors surface in WP-CLI output regardless of `--debug`.
 - **`Translation::force_debug(bool)`** — runtime debug activation without touching the database option or wp-config.php; used by the CLI flag, also available for custom scripts.
 - **HTTP timeout raised to 300 s** — was hardcoded at 120 s; now 300 s by default and configurable via the `linguaforge_ai_retry_policy` filter (`timeout` key) for very large posts.
-- **WP-CLI `fill-translations` and `missing-translations` commands** — bulk-fill missing router-language translations for a post in one pass; scan all posts of a given type for missing translations.
-- **WP-CLI `--with-meta-description`** — available on `translate`, `retranslate`, and `fill-translations`; generates and saves a meta description for each translated post immediately after writing its content.
+- **WP-CLI `fill_translations` and `missing_translations` commands** — bulk-fill missing router-language translations for a post in one pass; scan all posts of a given type for missing translations.
+- **WP-CLI `--with-meta-description`** — available on `translate`, `retranslate`, and `fill_translations`; generates and saves a meta description for each translated post immediately after writing its content.
 - **Settings → Behavior** — Global AI Preset live preview, renamed Custom prompt instructions field with realistic placeholder, Standard preset temperature hint in dropdown.
 - **Settings → Router tab** — Primary Language selector, Flush Permalinks button, Active Languages chip list, Install Language pack section.
 - **Glossary "any target language" entries** — apply a term to all target languages at once.
@@ -369,11 +385,11 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 
 ### Added
 
-- **WP-CLI `--debug` flag on `translate`, `retranslate`, and `fill-translations`** — forces translation debug-file writes for that single run (no need to enable debug site-wide or touch `wp-config.php`), and immediately echoes the source prompt and raw API response for each language to the terminal inline after the call returns. Provider errors — timeouts, HTTP failures, truncation, bad JSON — are also printed inline via the same channel. This makes it possible to inspect exactly what was sent and what came back for a specific failing post without tailing any log file:
+- **WP-CLI `--debug` flag on `translate`, `retranslate`, and `fill_translations`** — forces translation debug-file writes for that single run (no need to enable debug site-wide or touch `wp-config.php`), and immediately echoes the source prompt and raw API response for each language to the terminal inline after the call returns. Provider errors — timeouts, HTTP failures, truncation, bad JSON — are also printed inline via the same channel. This makes it possible to inspect exactly what was sent and what came back for a specific failing post without tailing any log file:
   ```
   wp linguaforge translate 42 --to=fr --debug
   wp linguaforge retranslate 42 --to=fr --debug
-  wp linguaforge fill-translations 42 --debug
+  wp linguaforge fill_translations 42 --debug
   ```
 - **Provider errors now surface in WP-CLI terminal** — `AbstractProvider::log_error()` and `log_retry()` now also call `WP_CLI::log()` when running under WP-CLI, so HTTP failures, truncation warnings, and retry events are visible without checking the PHP error log or WordPress debug.log.
 - **`Translation::force_debug(bool)`** — new public static method that activates debug-file writes for the current process without touching the database option or requiring a `LINGUAFORGE_AI_DEBUG` constant. Used by the CLI `--debug` flag; also available for custom scripts and mu-plugins.
@@ -424,7 +440,7 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 
 ### Added
 
-- **`--with-meta-description` flag on `translate`, `retranslate`, and `fill-translations`** — when passed, each command generates and saves an AI meta description for every translated post immediately after writing its content, storing it under `_linguaforge_meta_description` (the same key the admin metabox writes). The description is generated in the target language using the post's `_lang` meta via `MetaDescription::run()`. Skipped on `--dry-run` (no target post exists to write to) and on `--check-only` in `fill-translations`. The `detail` column in the results table appends `+ meta` on success or `+ meta (error: …)` on failure so every operation is visible in the same output row. This makes a full multilingual content pass possible in one command: `wp linguaforge fill-translations 42 --draft --with-meta-description`.
+- **`--with-meta-description` flag on `translate`, `retranslate`, and `fill_translations`** — when passed, each command generates and saves an AI meta description for every translated post immediately after writing its content, storing it under `_linguaforge_meta_description` (the same key the admin metabox writes). The description is generated in the target language using the post's `_lang` meta via `MetaDescription::run()`. Skipped on `--dry-run` (no target post exists to write to) and on `--check-only` in `fill_translations`. The `detail` column in the results table appends `+ meta` on success or `+ meta (error: …)` on failure so every operation is visible in the same output row. This makes a full multilingual content pass possible in one command: `wp linguaforge fill_translations 42 --draft --with-meta-description`.
 
 ---
 
@@ -432,7 +448,7 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 
 ### Added
 
-- **WP-CLI `missing-translations` command** — `wp linguaforge missing-translations <lang> <post_type>` scans every post of the given type whose `_lang` matches the source language and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending so the most incomplete posts surface first. Supports `--exclude`, `--status` (default `publish`, accepts `any`), and `--format`. Pairs directly with `fill-translations`: the final warning line shows the exact command to run on each incomplete post, and `--format=json | jq -r '.[].post_id' | xargs` pipelines work out of the box.
+- **WP-CLI `missing_translations` command** — `wp linguaforge missing_translations <lang> <post_type>` scans every post of the given type whose `_lang` matches the source language and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending so the most incomplete posts surface first. Supports `--exclude`, `--status` (default `publish`, accepts `any`), and `--format`. Pairs directly with `fill_translations`: the final warning line shows the exact command to run on each incomplete post, and `--format=json | jq -r '.[].post_id' | xargs` pipelines work out of the box.
 
 ### Fixed
 
@@ -450,7 +466,7 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 
 ### Added
 
-- **WP-CLI `fill-translations` command** — `wp linguaforge fill-translations <post_id>` checks which router languages are missing a translation for a post and creates them in one go. Use `--check-only` to report missing languages without touching the database. Respects `--exclude`, `--draft`, `--dry-run`, `--format`, and all provider/model/token override flags. Uses only the active router languages (not the full AI-supported language list), so it's safe to run against any post without generating unwanted locales.
+- **WP-CLI `fill_translations` command** — `wp linguaforge fill_translations <post_id>` checks which router languages are missing a translation for a post and creates them in one go. Use `--check-only` to report missing languages without touching the database. Respects `--exclude`, `--draft`, `--dry-run`, `--format`, and all provider/model/token override flags. Uses only the active router languages (not the full AI-supported language list), so it's safe to run against any post without generating unwanted locales.
 
 ---
 
@@ -553,7 +569,7 @@ Version milestone. No breaking changes; no database migrations required. Consoli
 - **Side-by-side diff preview before applying translations** — "Apply to Editor" now opens a two-column modal overlay showing the current editor content (left) vs the translated content (right) before anything is written. Apply fires only when the editor explicitly clicks "Apply translation" inside the modal; all cancel paths (overlay click, ✕, Cancel, Escape) dismiss without changes. Content panes render HTML so block markup reads close to the final post appearance. Footnotes are shown as a collapsible reference below. Layout stacks to a single column below 800 px viewport.
 - **Translation Memory** — opt-in block-level cache shared across posts (`{$wpdb->prefix}lingua_forge_ai_tm`). When enabled, a full-post translation request parses the content into individual blocks, batch-looks up cached translations, and issues a single API call only for the uncached portion. Cache key includes a SHA-256 of block markup, language pair, glossary hash, and compliance preset signature, so glossary edits and preset changes automatically invalidate affected entries. Status, block count, hit rate, and a Clear button are visible in **Settings → Maintenance**.
 - **Glossary** — user-managed terminology table per language pair (`{$wpdb->prefix}lingua_forge_ai_glossary`). Source language `''` (wildcard) covers brand names and language-agnostic abbreviations. A new **Glossary** tab in Settings shows the table with filter dropdown and an add-new form. Glossary terms are injected into every Translation and Quick Translate system prompt; the glossary hash is folded into the TM cache key.
-- **WP-CLI commands** — `wp linguaforge translate <post_id> --to=fr,de[,…]` (with `--temperature`, `--max-tokens`, `--model`, `--force`, `--dry-run` overrides) and `wp linguaforge cache-clear` (with `--feature` and `--post-id` scope flags, requires `--yes` for full truncate).
+- **WP-CLI commands** — `wp linguaforge translate <post_id> --to=fr,de[,…]` (with `--temperature`, `--max-tokens`, `--model`, `--force`, `--dry-run` overrides) and `wp linguaforge cache_clear` (with `--feature` and `--post-id` scope flags, requires `--yes` for full truncate).
 - **Per-user rate limiting and per-site daily quota** on all REST endpoints — sliding 60-second window (default 30 req/min per user), UTC-keyed daily ceiling in site settings, both filterable. Managed from **Settings → Limits**.
 - **Test Connection button** per provider — fires a lightweight 16-token ping against the selected provider. Result shows inline in the API Keys tab.
 - **Provider retry / backoff** — all providers retry up to twice on `WP_Error`, HTTP 429, or 5xx responses, with ~1.5 s + jitter between attempts. Policy filterable via `linguaforge_ai_retry_policy`.

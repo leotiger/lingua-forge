@@ -5,7 +5,7 @@ namespace LinguaForge\AI\CLI;
 defined('ABSPATH') || exit;
 
 /**
- * `wp linguaforge fill-translations` — implementation.
+ * `wp linguaforge fill_translations` — implementation.
  *
  * The user-facing docblock (## OPTIONS / ## EXAMPLES / @when) lives on the
  * matching method in \LinguaForge\AI\CLI\Commands so WP-CLI's command-help

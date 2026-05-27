@@ -225,7 +225,7 @@ Feature tables show what a plugin can do — not what it costs in actual effort 
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| WP-CLI commands | ✅ 5 commands (translate, retranslate, fill-translations, missing-translations, cache-clear) — shipped natively; more underway | ⚠ `wp wpml import process` (export/import only; no language management) | ⚠ Pro: native `wp pll language` + `wp pll setting` since 3.8 (Feb 2026); free tier: unofficial community package only | ❌ | ❌ | ⚠ language assignment to subsites + AutoTranslate trigger; multisite-scoped |
+| WP-CLI commands | ✅ 5 commands (translate, retranslate, fill_translations, missing_translations, cache_clear) — shipped natively; more underway | ⚠ `wp wpml import process` (export/import only; no language management) | ⚠ Pro: native `wp pll language` + `wp pll setting` since 3.8 (Feb 2026); free tier: unofficial community package only | ❌ | ❌ | ⚠ language assignment to subsites + AutoTranslate trigger; multisite-scoped |
 | Public PHP API | ✅ (`linguaforge_*` wrapper functions) | ✅ (`wpml_*` filters/functions) | ✅ (`pll_*` functions) | Limited (hooks only) | Limited (REST API) | ✅ (MLP API) |
 | WordPress Multisite required | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ (prerequisite) |
 | Third-party plugin ecosystem dependency | None | Large (WPML-specific APIs widespread) | Moderate | Low | Low | Low |
@@ -288,7 +288,7 @@ Every competitor either delegates SEO entirely to a third-party plugin (WPML, Po
 
 ### WP-CLI for automation at scale
 
-Lingua Forge ships five native WP-CLI commands covering the full editorial automation loop: `translate`, `retranslate`, `fill-translations`, `missing-translations`, and `cache-clear`. The `missing-translations` + `fill-translations` pipeline can identify and resolve translation gaps across an entire post type in a single shell session, and all commands integrate cleanly with CI/CD pipelines and cron jobs. More commands are underway.
+Lingua Forge ships five native WP-CLI commands covering the full editorial automation loop: `translate`, `retranslate`, `fill_translations`, `missing_translations`, and `cache_clear`. The `missing_translations` + `fill_translations` pipeline can identify and resolve translation gaps across an entire post type in a single shell session, and all commands integrate cleanly with CI/CD pipelines and cron jobs. More commands are underway.
 
 Polylang Pro added native CLI in version 3.8 (February 2026) — `wp pll language` for language management and `wp pll setting` for options — but these are limited to site configuration; no content translation commands exist. The free Polylang tier still relies on the unofficial community-maintained `polylang-cli` package. WPML exposes `wp wpml import process` for its export/import add-on but has no language management or translation commands. MultilingualPress provides CLI for language assignment to subsites and an AutoTranslate trigger, both scoped to its multisite architecture. TranslatePress and Weglot have no CLI support. Lingua Forge remains the only plugin in this space with native CLI for content translation and automation at scale.
 

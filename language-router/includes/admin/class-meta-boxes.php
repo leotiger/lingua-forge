@@ -144,36 +144,81 @@ class MetaBoxes {
 
 		echo '<p><strong>Current language:</strong> ' . esc_html( strtoupper( $current_lang ) ) . '</p>';
 
+		// Pre-sort languages into linked (TRID-connected post exists) and
+		// unlinked (no post yet).  An ID in the translations map is only
+		// considered "linked" when the post actually exists — this prevents
+		// stale TRID entries (e.g. a post whose language was changed after
+		// translations were linked) from surfacing spurious Override buttons.
+		$linked   = []; // [ lang => post_id ]
+		$unlinked = []; // [ lang, … ]
+
 		foreach ( $this->router->context->languages() as $l ) {
-			if ( $l === $current_lang ) continue;
+			if ( $l === $current_lang ) {
+				continue;
+			}
+			$id = isset( $translations[ $l ] ) ? (int) $translations[ $l ] : 0;
+			if ( $id && get_post( $id ) instanceof \WP_Post ) {
+				$linked[ $l ] = $id;
+			} else {
+				$unlinked[] = $l;
+			}
+		}
 
-			$id = $translations[$l] ?? '';
-
+		// ── Linked languages (expanded) ──────────────────────────────────────
+		foreach ( $linked as $l => $id ) {
 			echo '<p><strong>' . esc_html( strtoupper( $l ) ) . '</strong>';
-			if ( $id && $this->router->sync->is_outdated( (int) $id ) ) echo ' ⚠';
+			if ( $this->router->sync->is_outdated( $id ) ) {
+				echo ' ⚠';
+			}
 			echo '<br>';
 
-			$args = [
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- wp_dropdown_pages() escapes all its own output; meta_key/_lf_lang is indexed and intentional for per-language page filtering.
+			wp_dropdown_pages( [
 				'name'             => 'lf_trans_' . $l,
 				'show_option_none' => '—',
 				'meta_key'         => '_lf_lang',
 				'meta_value'       => $l,
-			];
-
-			if ( $id ) {
-				$args['include']  = [ $id ];
-				$args['selected'] = $id;
-			}
-
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_dropdown_pages() is a WordPress core function that escapes all its own output.
-			wp_dropdown_pages( $args );
+				'include'          => [ $id ],
+				'selected'         => $id,
+			] );
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 
 			echo '<br>';
-			if ( ! empty( $id ) ) {
-				echo '<button type="button" class="button lf-import" data-lang="' . esc_attr( $l ) . '">Override</button>';
-			}
-
+			echo '<button type="button" class="button lf-import" data-lang="' . esc_attr( $l ) . '">Override</button>';
 			echo '</p>';
+		}
+
+		// ── Unlinked languages (collapsed) ───────────────────────────────────
+		// Displayed inside a native <details> element so the panel stays compact
+		// when many languages have no translation yet.  Each row still renders a
+		// dropdown so the editor can establish the TRID link on save; no Override
+		// button is shown because there is nothing to override.
+		if ( ! empty( $unlinked ) ) {
+			$count = count( $unlinked );
+			echo '<details class="lf-unlinked-langs">';
+			echo '<summary class="lf-unlinked-langs__summary">';
+			echo esc_html( sprintf(
+				/* translators: %d: number of languages without a translation post */
+				_n( '%d language not yet linked', '%d languages not yet linked', $count, 'lingua-forge' ),
+				$count
+			) );
+			echo '</summary>';
+			echo '<div class="lf-unlinked-langs__list">';
+			foreach ( $unlinked as $l ) {
+				echo '<p class="lf-unlinked-langs__row">';
+				echo '<strong>' . esc_html( strtoupper( $l ) ) . '</strong><br>';
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- wp_dropdown_pages() escapes all its own output; meta_key/_lf_lang is indexed and intentional for per-language page filtering.
+				wp_dropdown_pages( [
+					'name'             => 'lf_trans_' . $l,
+					'show_option_none' => '—',
+					'meta_key'         => '_lf_lang',
+					'meta_value'       => $l,
+				] );
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped, WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				echo '</p>';
+			}
+			echo '</div>';
+			echo '</details>';
 		}
 	}
 
@@ -283,6 +328,13 @@ class MetaBoxes {
 		}
 
 		$this->router->trid_group->set_lang( $post_id, $lang );
+		// Flush the TRID object-cache entry immediately so the next page load
+		// (triggered by location.reload() in the JS) reads fresh DB state.
+		// set_lang() only calls update_post_meta(), which does not fire
+		// wp_after_insert_post — the normal cache-clear hook — so without this
+		// line the stale group (e.g. ['en' => $post_id]) survives in Redis and
+		// the Translations metabox renders a spurious Override button on reload.
+		$this->router->trid_group->clear_translation_cache( $post_id );
 		$this->router->sync->force_lang_template( $post_id, $post, $lang );
 
 		wp_send_json_success( [

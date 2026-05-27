@@ -65,6 +65,50 @@
 .lf-scaffold-row-msg.lf-ok   { color: #46b450; }
 .lf-scaffold-row-msg.lf-fail { color: #dc3232; }
 
+/* ── Router tab: per-language panels ───────────────────────── */
+.lf-lang-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 0;
+    margin: 16px 0 0;
+    border-bottom: 2px solid #c3c4c7;
+}
+.lf-lang-tab {
+    padding: 5px 14px;
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #50575e;
+    margin-bottom: -2px;
+    line-height: 2;
+}
+.lf-lang-tab:hover { background: #fff; color: #1d2327; }
+.lf-lang-tab.is-active {
+    background: #fff;
+    color: #1d2327;
+    border-bottom-color: #fff;
+    border-bottom-width: 2px;
+    z-index: 1;
+}
+.lf-lang-panel { display: none; padding: 20px 0 0; }
+.lf-lang-panel.is-active { display: block; }
+
+/* Inline button layout for template-parts rows */
+.lf-tpl-cell--inline .button {
+    display: inline-block;
+    width: auto;
+    margin: 2px 4px 2px 0;
+}
+.lf-tpl-cell--inline .lf-tpl-exists--inline {
+    display: inline;
+    margin-right: 4px;
+    font-size: 13px;
+}
+
 /* ── AI Usage ───────────────────────────────────────────────── */
 .lingua-forge-range-buttons .button { margin-right: 4px; }
 .lingua-forge-usage-table .lingua-forge-num {

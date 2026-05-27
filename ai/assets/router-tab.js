@@ -25,6 +25,28 @@
     var fixNavRefsNonce    = L.fixNavRefsNonce    || '';
     var s                  = L.strings            || {};
 
+    // ── Language panel tabs ───────────────────────────────────────────────────
+
+    function activateTab( lang ) {
+        $('.lf-lang-tab').removeClass('is-active').attr('aria-selected', 'false');
+        $('.lf-lang-panel').removeClass('is-active');
+        var $tab   = $('.lf-lang-tab[data-tab="' + lang + '"]');
+        var $panel = $('.lf-lang-panel[data-panel="' + lang + '"]');
+        if ( $tab.length ) {
+            $tab.addClass('is-active').attr('aria-selected', 'true');
+            $panel.addClass('is-active');
+        }
+    }
+    if ( $('.lf-lang-tabs').length ) {
+        var savedTab = sessionStorage.getItem('lf_router_active_tab');
+        if ( savedTab ) { activateTab( savedTab ); }
+        $(document).on('click', '.lf-lang-tab', function () {
+            var lang = $(this).data('tab');
+            activateTab( lang );
+            sessionStorage.setItem('lf_router_active_tab', lang);
+        });
+    }
+
     // ── Language install ──────────────────────────────────────────────────────
 
     var $loadBtn    = $('#lf-load-langs-btn');
@@ -73,10 +95,24 @@
             }, function (resp) {
                 $installBtn.prop('disabled', false).text('Install');
                 if (resp.success) {
-                    $result.addClass('lf-ok').text(resp.data.message || s.installed);
-                    // Remove the installed locale from the dropdown.
+                    // Remove the installed locale from the dropdown so it
+                    // can't be submitted again in the same session.
                     $select.find('option[value="' + resp.data.locale + '"]').remove();
                     $select.val('');
+
+                    // Show success message with a reload notice, then reload.
+                    // The reload is required because:
+                    //   • The Active Languages chip list is rendered server-side
+                    //     and won't show the new language without a fresh page.
+                    //   • The Language Templates / Template Parts tables also
+                    //     need to be rebuilt to include the new language columns.
+                    // Permalinks were already flushed server-side inside
+                    // ajax_install_language() so no manual flush step is needed.
+                    $result.addClass('lf-ok').text(
+                        (resp.data.message || s.installed || 'Installed.') +
+                        ' ' + (s.reloading || 'Reloading page…')
+                    );
+                    setTimeout(function () { window.location.reload(); }, 1500);
                 } else {
                     $result.addClass('lf-fail').text((s.error || '✗') + ' ' + (resp.data || 'Unknown error'));
                 }

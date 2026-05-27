@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
 
 /**
  * Shared base for the three CLI commands that drive Translation::run() —
- * translate, retranslate, fill-translations.
+ * translate, retranslate, fill_translations.
  *
  * Holds the helpers that were previously private methods on Commands:
  *
@@ -335,6 +335,12 @@ abstract class AbstractTranslateCommand {
             ];
         }
 
+        // Invalidate TRID translation cache — same reason as in
+        // create_trid_linked_post(): handle_cache_clear was detached during
+        // wp_update_post so the update didn't self-invalidate.  The content
+        // changed so any persistent-cache entry for this TRID group is stale.
+        $router->trid_group->clear_translation_cache( $target_id );
+
         // Footnotes meta — only when the translation produced one.
         if ( ! empty( $result['footnotes'] ) ) {
             update_post_meta( $target_id, 'footnotes', (string) $result['footnotes'] );
@@ -452,6 +458,16 @@ abstract class AbstractTranslateCommand {
         if ( ! empty( $result['footnotes'] ) ) {
             update_post_meta( $new_id, 'footnotes', (string) $result['footnotes'] );
         }
+
+        // ── Invalidate TRID translation cache ─────────────────────────────
+        // handle_cache_clear was detached during wp_insert_post to avoid a
+        // premature flush before the _lf_trid/_lf_lang meta were written.
+        // Now that the group membership is complete, clear explicitly so the
+        // next frontend request re-queries the DB and finds the new post.
+        // This is critical when a persistent object cache (Redis) is active:
+        // without this flush the language switcher keeps serving the stale
+        // group until the target post is opened and re-saved in the editor.
+        $router->trid_group->clear_translation_cache( $new_id );
 
         return (int) $new_id;
     }

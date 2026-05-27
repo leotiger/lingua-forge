@@ -1023,12 +1023,22 @@ async function runFeature(featureKey, postId, params, resultEl) {
 
         if (data.type === 'content') {
 
+            // When the action button lives inside a feature overlay, show the
+            // result inline in that same overlay (no second modal on top).
+            const featureOverlay = resultEl.closest('.lf-feature-overlay');
+
             if (featureKey === 'content-generator') {
-                // Content generation gets its own dedicated overlay with
-                // iterative refinement — no side-by-side diff needed here.
-                resultEl.innerHTML =
-                    `<p class="lingua-forge-status">${ escHtml( __( '✓ Content generated — see the overlay to review, refine, and apply.', 'lingua-forge' ) ) }</p>`;
-                openContentGenOverlay(data, params, postId);
+                if (featureOverlay) {
+                    showContentGenInOverlay(featureOverlay, data, params, postId);
+                } else {
+                    // Content generation gets its own dedicated overlay with
+                    // iterative refinement — no side-by-side diff needed here.
+                    resultEl.innerHTML =
+                        `<p class="lingua-forge-status">${ escHtml( __( '✓ Content generated — see the overlay to review, refine, and apply.', 'lingua-forge' ) ) }</p>`;
+                    openContentGenOverlay(data, params, postId);
+                }
+            } else if (featureOverlay) {
+                showTranslationDiffInOverlay(featureOverlay, data, params);
             } else {
                 renderContentResult(resultEl, data, featureKey, postId, params.target_language);
             }
@@ -1386,6 +1396,491 @@ function escapeHtml(value) {
         .replace(/>/g,  '&gt;')
         .replace(/"/g,  '&quot;')
         .replace(/'/g,  '&#39;');
+}
+
+// ─── Feature overlay triggers ─────────────────────────────────────────────────
+//
+// "Translate page…" / "Generate content…" compact buttons open a single
+// focused overlay.  The overlay starts in config mode (fields + action
+// button); after the action runs the body transitions to the result view —
+// two-column diff for translation or content-gen preview with refinement.
+// No second modal ever opens on top.
+
+/**
+ * Reset an overlay back to its initial config state.
+ *
+ * Called on close (✕, backdrop, Escape) and on the "← Back" button inside
+ * the result view.  Restores the config section, clears the result section,
+ * and removes the wide-panel modifier added for the translation diff view.
+ *
+ * @param {Element} overlay  .lf-feature-overlay root element.
+ */
+function resetOverlayToConfig(overlay) {
+
+    overlay.classList.remove('lf-feature-overlay--wide');
+
+    const configSection = overlay.querySelector('.lf-feature-overlay__config-section');
+    const resultSection = overlay.querySelector('.lf-feature-overlay__result-section');
+
+    if (configSection) configSection.hidden = false;
+
+    if (resultSection) {
+        resultSection.hidden   = true;
+        resultSection.innerHTML = '';
+    }
+
+    // Clear any inline result left over in the config section's result div.
+    const resultEl = overlay.querySelector('.lingua-forge-result');
+    if (resultEl) resultEl.innerHTML = '';
+
+    overlay._lfPending  = null;
+    overlay._lfCgState  = null;
+}
+
+// Open: reveal the overlay.
+document.addEventListener('click', (event) => {
+
+    const trigger = event.target.closest('.lf-overlay-trigger');
+    if (!trigger) return;
+
+    const targetId = trigger.dataset.lfOverlayTarget;
+    if (!targetId) return;
+
+    const overlay = document.getElementById(targetId);
+    if (!overlay) return;
+
+    // Hoist to <body> on first open so position:fixed is relative to the
+    // full iframe viewport.  WP Admin ancestor elements (postbox wrappers,
+    // theme styles) can create stacking contexts that clip fixed children,
+    // exactly as they do in the existing diff-modal / CG-modal pattern.
+    if (overlay.parentElement !== document.body) {
+        document.body.appendChild(overlay);
+    }
+
+    overlay.hidden = false;
+});
+
+// Close: ✕ button or backdrop click.
+document.addEventListener('click', (event) => {
+
+    const btn = event.target.closest('[data-lf-overlay="close"]');
+    if (!btn) return;
+
+    const overlay = btn.closest('.lf-feature-overlay');
+    if (!overlay) return;
+
+    overlay.hidden = true;
+    resetOverlayToConfig(overlay);
+});
+
+// Close: Escape key.
+document.addEventListener('keydown', (event) => {
+
+    if (event.key !== 'Escape') return;
+
+    document.querySelectorAll('.lf-feature-overlay:not([hidden])').forEach((overlay) => {
+        overlay.hidden = true;
+        resetOverlayToConfig(overlay);
+    });
+});
+
+// ─── Inline result renderers ──────────────────────────────────────────────────
+
+/**
+ * Transition a feature overlay to the translation diff view.
+ *
+ * Replaces the config section with a two-column diff (current vs translated)
+ * using the existing diff-modal CSS classes so no extra styles are needed for
+ * the content layout.  "Apply translation" applies directly; "← Back" returns
+ * to the config view.  No second modal is opened.
+ *
+ * @param {Element} overlay  .lf-feature-overlay root.
+ * @param {object}  data     REST response payload.
+ * @param {object}  params   Original request params (target_language, …).
+ */
+function showTranslationDiffInOverlay(overlay, data, params) {
+
+    const current       = snapshotCurrentEditorState();
+    const targetLang    = params.target_language || '';
+    const rtl           = isRtlLang(targetLang);
+    const transContent  = data.output;
+    const transTitle    = data.translated_title  || '';
+    const footnotesJson = data.footnotes         || '';
+    const metaDesc      = data.meta_description  || '';
+
+    // Widen the panel for two-column content.
+    overlay.classList.add('lf-feature-overlay--wide');
+
+    const titleRowHtml = transTitle ? `
+        <section class="lingua-forge-diff-modal__title-row">
+            <div class="lingua-forge-diff-modal__pane">
+                <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Current title', 'lingua-forge' ) ) }</div>
+                <div class="lingua-forge-diff-modal__title" data-lf-odiff="current-title"></div>
+            </div>
+            <div class="lingua-forge-diff-modal__pane lingua-forge-diff-modal__pane--new">
+                <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Translated title', 'lingua-forge' ) ) }</div>
+                <div class="lingua-forge-diff-modal__title" data-lf-odiff="new-title"></div>
+            </div>
+        </section>` : '';
+
+    const footnotesHtml = footnotesJson ? `
+        <section class="lingua-forge-diff-modal__footnotes">
+            <details>
+                <summary>${ escHtml( __( 'Footnotes payload (advanced)', 'lingua-forge' ) ) }</summary>
+                <pre class="lingua-forge-diff-modal__footnotes-json" data-lf-odiff="footnotes"></pre>
+            </details>
+        </section>` : '';
+
+    const metaDescHtml = metaDesc ? `
+        <section class="lingua-forge-diff-modal__meta-desc">
+            <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Generated meta description', 'lingua-forge' ) ) }</div>
+            <p class="lingua-forge-diff-modal__meta-desc-text" data-lf-odiff="meta-desc"></p>
+            <p class="lingua-forge-diff-modal__meta-desc-note">${ escHtml( __( 'Saved to the meta description field when you apply.', 'lingua-forge' ) ) }</p>
+        </section>` : '';
+
+    const resultSection = overlay.querySelector('.lf-feature-overlay__result-section');
+
+    resultSection.innerHTML = `
+        ${ titleRowHtml }
+        <section class="lingua-forge-diff-modal__content-row lf-overlay-content-row">
+            <div class="lingua-forge-diff-modal__pane">
+                <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Current content (will be overwritten)', 'lingua-forge' ) ) }</div>
+                <div class="lingua-forge-diff-modal__preview" data-lf-odiff="current-content"></div>
+            </div>
+            <div class="lingua-forge-diff-modal__pane lingua-forge-diff-modal__pane--new">
+                <div class="lingua-forge-diff-modal__label">${ escHtml( __( 'Translated content', 'lingua-forge' ) ) }</div>
+                <div class="lingua-forge-diff-modal__preview" data-lf-odiff="new-content"></div>
+            </div>
+        </section>
+        ${ footnotesHtml }
+        ${ metaDescHtml }
+        <footer class="lf-overlay-result-footer">
+            <button type="button" class="button" data-lf-odiff="back">
+                ${ escHtml( __( '← Back', 'lingua-forge' ) ) }
+            </button>
+            <button type="button" class="button button-primary lf-overlay-apply-btn" data-lf-odiff="apply">
+                ${ escHtml( __( 'Apply translation', 'lingua-forge' ) ) }
+            </button>
+        </footer>`;
+
+    // Populate content — trust model matches the standalone diff modal:
+    // both sides are admin-authored or AI output triggered by an editor.
+    if (transTitle) {
+        resultSection.querySelector('[data-lf-odiff="current-title"]').textContent = current.title;
+        const newTitleEl = resultSection.querySelector('[data-lf-odiff="new-title"]');
+        newTitleEl.textContent = transTitle;
+        newTitleEl.dir         = rtl ? 'rtl' : '';
+    }
+
+    resultSection.querySelector('[data-lf-odiff="current-content"]').innerHTML = current.content;
+    const newContentEl = resultSection.querySelector('[data-lf-odiff="new-content"]');
+    newContentEl.innerHTML = transContent;
+    newContentEl.dir       = rtl ? 'rtl' : '';
+
+    if (footnotesJson) {
+        try {
+            const parsed = JSON.parse(footnotesJson);
+            resultSection.querySelector('[data-lf-odiff="footnotes"]').textContent =
+                JSON.stringify(parsed, null, 2);
+        } catch (_) {
+            resultSection.querySelector('[data-lf-odiff="footnotes"]').textContent = footnotesJson;
+        }
+    }
+
+    if (metaDesc) {
+        resultSection.querySelector('[data-lf-odiff="meta-desc"]').textContent = metaDesc;
+    }
+
+    overlay._lfPending = { transContent, transTitle, footnotesJson, metaDesc };
+
+    // Back button — restore config view.
+    resultSection.querySelector('[data-lf-odiff="back"]').addEventListener('click', () => {
+        resetOverlayToConfig(overlay);
+    });
+
+    // Apply button — same logic as performApplyFromModal, no outer modal needed.
+    const applyBtn = resultSection.querySelector('[data-lf-odiff="apply"]');
+
+    applyBtn.addEventListener('click', async () => {
+
+        const ctx = overlay._lfPending;
+        if (!ctx) return;
+
+        applyBtn.disabled    = true;
+        applyBtn.textContent = __( 'Applying…', 'lingua-forge' );
+
+        try {
+
+            const store = getEditorStore();
+
+            if (store) {
+                const payload = { content: ctx.transContent };
+                if (ctx.transTitle) {
+                    payload.title = ctx.transTitle;
+                    payload.slug  = lfSlugify(ctx.transTitle);
+                }
+                if (ctx.footnotesJson) payload.meta = { footnotes: ctx.footnotesJson };
+                await store.dispatch('core/editor').editPost(payload);
+            } else {
+                const classicContent = document.querySelector('#content');
+                if (classicContent) classicContent.value = ctx.transContent;
+                if (ctx.transTitle) {
+                    const classicTitle = document.querySelector('#title');
+                    if (classicTitle) classicTitle.value = ctx.transTitle;
+                }
+            }
+
+            if (ctx.metaDesc) {
+                if (store) {
+                    store.dispatch('core/editor')
+                        ?.editPost({ meta: { _linguaforge_meta_description: ctx.metaDesc } });
+                }
+                const metaField = document.getElementById('lf_meta_description_field')
+                    || findInIframes('lf_meta_description_field');
+                if (metaField) {
+                    metaField.value = ctx.metaDesc;
+                    metaField.dispatchEvent(new Event('input'));
+                }
+            }
+
+            applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
+            setTimeout(() => {
+                overlay.hidden = true;
+                resetOverlayToConfig(overlay);
+            }, 900);
+
+        } catch (err) {
+
+            applyBtn.disabled    = false;
+            applyBtn.textContent = __( 'Apply translation', 'lingua-forge' );
+
+            let errBar = resultSection.querySelector('.lf-overlay-apply-error');
+            if (!errBar) {
+                errBar = document.createElement('div');
+                errBar.className = 'lf-overlay-apply-error';
+                applyBtn.closest('.lf-overlay-result-footer').before(errBar);
+            }
+            errBar.textContent = err.message || __( 'Apply failed — please try again.', 'lingua-forge' );
+        }
+    });
+
+    // Transition: show result, hide config.
+    resultSection.hidden = false;
+    overlay.querySelector('.lf-feature-overlay__config-section').hidden = true;
+}
+
+/**
+ * Transition a feature overlay to the content-generation result view.
+ *
+ * Renders the generated content preview with meta description and iterative
+ * refinement — same UX as the standalone lf-cg-modal but entirely inline
+ * in the overlay so no second modal ever opens on top.
+ *
+ * @param {Element} overlay  .lf-feature-overlay root.
+ * @param {object}  data     REST response payload (output, tone, content_type…).
+ * @param {object}  params   Original request params.
+ * @param {string}  postId   WordPress post ID.
+ */
+function showContentGenInOverlay(overlay, data, params, postId) {
+
+    const metaLine = [data.content_type, data.tone].filter(Boolean).join(' · ');
+
+    const metaDescHtml = data.meta_description
+        ? `<section class="lf-cg-modal__meta-desc" data-lf-ocg="meta-desc-section">
+               <div class="lf-cg-modal__meta-desc-label">${ escHtml( __( 'Generated meta description', 'lingua-forge' ) ) }</div>
+               <p class="lf-cg-modal__meta-desc-text" data-lf-ocg="meta-desc"></p>
+           </section>`
+        : `<section data-lf-ocg="meta-desc-section" hidden></section>`;
+
+    const resultSection = overlay.querySelector('.lf-feature-overlay__result-section');
+
+    resultSection.innerHTML = `
+        <div class="lf-overlay-cg-preview">
+            <p class="lf-cg-modal__meta" data-lf-ocg="meta">${ escHtml(metaLine) }</p>
+            <div class="lf-cg-modal__preview" data-lf-ocg="preview"></div>
+        </div>
+        ${ metaDescHtml }
+        <section class="lf-cg-modal__refine">
+            <label class="lf-cg-modal__refine-label" for="lf-ocg-refine-input">
+                ${ escHtml( __( 'Refine further:', 'lingua-forge' ) ) }
+            </label>
+            <div class="lf-cg-modal__refine-row">
+                <textarea
+                    id="lf-ocg-refine-input"
+                    class="lf-cg-modal__refine-input"
+                    rows="3"
+                    placeholder="${ escAttr( __( 'Add instructions to improve the draft — e.g. make it shorter, add a conclusion section, use a more formal register…', 'lingua-forge' ) ) }"
+                ></textarea>
+                <button type="button" class="button lf-cg-modal__refine-btn" data-lf-ocg="refine">
+                    ${ escHtml( __( '↺ Refine', 'lingua-forge' ) ) }
+                </button>
+            </div>
+            <p class="lf-cg-modal__refine-status" data-lf-ocg="refine-status" hidden></p>
+        </section>
+        <footer class="lf-overlay-result-footer">
+            <button type="button" class="button" data-lf-ocg="back">
+                ${ escHtml( __( '← Back', 'lingua-forge' ) ) }
+            </button>
+            <button type="button" class="button button-secondary" data-lf-ocg="copy">
+                ${ escHtml( __( 'Copy markup', 'lingua-forge' ) ) }
+            </button>
+            <button type="button" class="button button-primary lf-overlay-apply-btn" data-lf-ocg="apply">
+                ${ escHtml( __( 'Apply to Editor', 'lingua-forge' ) ) }
+            </button>
+        </footer>`;
+
+    // Populate preview.
+    resultSection.querySelector('[data-lf-ocg="preview"]').innerHTML = data.output;
+    if (data.meta_description) {
+        resultSection.querySelector('[data-lf-ocg="meta-desc"]').textContent = data.meta_description;
+    }
+
+    // State kept on the overlay node so the refinement loop can update it.
+    overlay._lfCgState = {
+        postId,
+        params:               { ...params },
+        currentOutput:        data.output,
+        currentMetaDescription: data.meta_description || '',
+        generation:           0,
+    };
+
+    // ── Back ──────────────────────────────────────────────────────────────────
+    resultSection.querySelector('[data-lf-ocg="back"]').addEventListener('click', () => {
+        resetOverlayToConfig(overlay);
+    });
+
+    // ── Copy ──────────────────────────────────────────────────────────────────
+    resultSection.querySelector('[data-lf-ocg="copy"]').addEventListener('click', async () => {
+
+        const output = overlay._lfCgState?.currentOutput ?? '';
+        try { await navigator.clipboard.writeText(output); } catch (_) {}
+
+        const btn  = resultSection.querySelector('[data-lf-ocg="copy"]');
+        const prev = btn.textContent;
+        btn.textContent = __( 'Copied ✓', 'lingua-forge' );
+        setTimeout(() => { btn.textContent = prev; }, 2000);
+    });
+
+    // ── Apply ─────────────────────────────────────────────────────────────────
+    const applyBtn = resultSection.querySelector('[data-lf-ocg="apply"]');
+
+    applyBtn.addEventListener('click', () => {
+
+        const output  = overlay._lfCgState?.currentOutput          ?? '';
+        const metaOut = overlay._lfCgState?.currentMetaDescription ?? '';
+        if (!output) return;
+
+        applyBtn.disabled    = true;
+        applyBtn.textContent = __( 'Applying…', 'lingua-forge' );
+
+        const store = getEditorStore();
+        if (store) {
+            store.dispatch('core/editor').editPost({ content: output });
+        } else {
+            const el = document.querySelector('#content');
+            if (el) el.value = output;
+        }
+
+        if (metaOut) {
+            if (store) {
+                store.dispatch('core/editor')
+                    ?.editPost({ meta: { _linguaforge_meta_description: metaOut } });
+            }
+            const metaField = document.getElementById('lf_meta_description_field')
+                || findInIframes('lf_meta_description_field');
+            if (metaField) {
+                metaField.value = metaOut;
+                metaField.dispatchEvent(new Event('input'));
+            }
+        }
+
+        applyBtn.textContent = __( 'Applied ✓', 'lingua-forge' );
+        setTimeout(() => {
+            overlay.hidden = true;
+            resetOverlayToConfig(overlay);
+        }, 900);
+    });
+
+    // ── Refine ────────────────────────────────────────────────────────────────
+    resultSection.querySelector('[data-lf-ocg="refine"]').addEventListener('click', async () => {
+
+        const state = overlay._lfCgState;
+        if (!state) return;
+
+        const refineInput = resultSection.querySelector('.lf-cg-modal__refine-input');
+        const refineHint  = refineInput.value.trim();
+        if (!refineHint) { refineInput.focus(); return; }
+
+        const refineBtn = resultSection.querySelector('[data-lf-ocg="refine"]');
+        const statusEl  = resultSection.querySelector('[data-lf-ocg="refine-status"]');
+        const preview   = resultSection.querySelector('[data-lf-ocg="preview"]');
+        const metaEl    = resultSection.querySelector('[data-lf-ocg="meta"]');
+
+        refineBtn.disabled   = true;
+        statusEl.classList.remove('lf-cg-modal__refine-status--error');
+        statusEl.textContent = __( 'Refining…', 'lingua-forge' );
+        statusEl.hidden      = false;
+
+        const refineParams = {
+            ...state.params,
+            previous_output: state.currentOutput,
+            refine_hint:     refineHint,
+            force_refresh:   true,
+        };
+
+        try {
+
+            const response = await fetch(
+                `${ LinguaForgeAI.restUrl }/feature/content-generator/${ state.postId }`,
+                {
+                    method:  'POST',
+                    headers: { 'X-WP-Nonce': LinguaForgeAI.nonce, 'Content-Type': 'application/json' },
+                    body:    JSON.stringify(refineParams),
+                }
+            );
+            const refined = await response.json();
+
+            if (!refined.success || !refined.output) {
+                statusEl.textContent = refined.error || __( 'Refinement failed — please try again.', 'lingua-forge' );
+                statusEl.classList.add('lf-cg-modal__refine-status--error');
+            } else {
+                state.currentOutput = refined.output;
+                state.generation++;
+                preview.innerHTML   = refined.output;
+
+                if (refined.meta_description) {
+                    const mdSection = resultSection.querySelector('[data-lf-ocg="meta-desc-section"]');
+                    if (mdSection) mdSection.hidden = false;
+                    const mdEl = resultSection.querySelector('[data-lf-ocg="meta-desc"]');
+                    if (mdEl) mdEl.textContent = refined.meta_description;
+                    state.currentMetaDescription = refined.meta_description;
+                }
+
+                const parts = [];
+                if (refined.content_type) parts.push(escHtml(refined.content_type));
+                if (refined.tone)         parts.push(escHtml(refined.tone));
+                /* translators: %d is the refinement iteration number */
+                parts.push( __( 'Refinement', 'lingua-forge' ) + ' #' + state.generation );
+                metaEl.textContent = parts.join(' · ');
+
+                refineInput.value    = '';
+                statusEl.textContent = __( '✓ Refined — review the updated draft above.', 'lingua-forge' );
+                setTimeout(() => { statusEl.hidden = true; statusEl.textContent = ''; }, 3000);
+            }
+
+        } catch (_) {
+            statusEl.textContent = __( 'Request failed — please try again.', 'lingua-forge' );
+            statusEl.classList.add('lf-cg-modal__refine-status--error');
+        }
+
+        refineBtn.disabled = false;
+    });
+
+    // Transition: show result, hide config.
+    resultSection.hidden = false;
+    overlay.querySelector('.lf-feature-overlay__config-section').hidden = true;
+
+    resultSection.querySelector('.lf-cg-modal__refine-input')?.focus();
 }
 
 } )();

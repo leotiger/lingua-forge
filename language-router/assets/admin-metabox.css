@@ -1,0 +1,44 @@
+/**
+ * Translations meta box — admin styles.
+ *
+ * Scoped to the Translations panel (#lf_trans) rendered by
+ * Admin\MetaBoxes::render_translations_meta_box().
+ */
+
+/* ── Unlinked-languages collapsible section ──────────────────────────────── */
+
+.lf-unlinked-langs {
+	margin-top: 8px;
+	border-top: 1px solid #dcdcde;
+	padding-top: 6px;
+}
+
+.lf-unlinked-langs__summary {
+	cursor: pointer;
+	font-size: 12px;
+	color: #50575e;
+	user-select: none;
+	list-style: disclosure-closed;
+	padding: 2px 0;
+}
+
+details[open].lf-unlinked-langs > .lf-unlinked-langs__summary {
+	list-style: disclosure-open;
+	margin-bottom: 6px;
+}
+
+.lf-unlinked-langs__list {
+	padding-left: 2px;
+}
+
+.lf-unlinked-langs__row {
+	margin: 0 0 6px;
+}
+
+.lf-unlinked-langs__row strong {
+	font-size: 12px;
+}
+
+.lf-unlinked-langs__row select {
+	max-width: 100%;
+}

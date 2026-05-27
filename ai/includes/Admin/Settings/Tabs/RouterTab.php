@@ -203,7 +203,7 @@ class RouterTab extends Tab {
             </p>
         <?php endif; ?>
 
-        <?php self::render_templates_section(); ?>
+        <?php self::render_language_panels(); ?>
 
     <?php
     }
@@ -258,61 +258,108 @@ class RouterTab extends Tab {
         ];
     }
 
+    // ── Language Panels (tabbed per-language layout) ─────────────────────────
+
     /**
-     * Render the Language Templates scaffold section.
+     * Render the tabbed Language Setup section.
      *
-     * Shows a table of secondary languages × standard template types.
-     * Each cell displays ✓ if the template already exists, or a "Create"
-     * button if it is missing. A "Create missing" button per row creates
-     * all absent templates for that language in one click.
+     * Replaces the old cross-language tables (languages × template types,
+     * parts × languages) with a tab-per-language layout so the page stays
+     * manageable at 10+ installed languages.
+     *
+     * PHP renders the first tab active; JS (router-tab.js) persists and
+     * restores the chosen tab via sessionStorage across reloads.
      */
-    private static function render_templates_section(): void {
+    private static function render_language_panels(): void {
+
         $router          = \LinguaForge\Router\Router::get_instance();
         $source_lang     = $router->source_language();
-        $router_langs    = $router->languages();
-        $secondary_langs = array_values( array_filter( $router_langs, fn( $l ) => $l !== $source_lang ) );
-        $template_defs   = self::template_definitions();
-        $ai_active        = self::ai_is_active();
-        $translated_slugs = (array) get_option( 'linguaforge_fse_translated_slugs', [] );
+        $secondary_langs = array_values( array_filter( $router->languages(), fn( $l ) => $l !== $source_lang ) );
         ?>
 
-        <!-- ── Language Templates ──────────────────────────────────────────── -->
-        <h2><?php esc_html_e( 'Language Templates', 'lingua-forge' ); ?></h2>
-
-        <p>
-            <?php esc_html_e( 'Create language-specific FSE templates for each active secondary language. Each template is seeded from the corresponding default theme template and named to match the routing model (e.g. page-de, search-de). Templates can then be customised in the WordPress Site Editor.', 'lingua-forge' ); ?>
-        </p>
+        <!-- ── Language Setup ────────────────────────────────────────────── -->
+        <h2><?php esc_html_e( 'Language Setup', 'lingua-forge' ); ?></h2>
 
         <?php if ( empty( $secondary_langs ) ) : ?>
             <p class="description">
                 <?php esc_html_e( 'No secondary languages configured. Install a language pack above to enable template scaffolding.', 'lingua-forge' ); ?>
             </p>
-        <?php else : ?>
+        <?php return; endif; ?>
+
+        <p>
+            <?php esc_html_e( 'Select a language to manage its FSE templates, template parts, and navigation menus.', 'lingua-forge' ); ?>
+        </p>
+
+        <!-- Tab bar -->
+        <div class="lf-lang-tabs" role="tablist">
+            <?php foreach ( $secondary_langs as $i => $lang ) : ?>
+            <button
+                class="lf-lang-tab<?php echo 0 === $i ? ' is-active' : ''; ?>"
+                role="tab"
+                data-tab="<?php echo esc_attr( $lang ); ?>"
+                aria-selected="<?php echo 0 === $i ? 'true' : 'false'; ?>"
+                aria-controls="lf-panel-<?php echo esc_attr( $lang ); ?>">
+                <?php echo esc_html( strtoupper( $lang ) ); ?>
+            </button>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- One panel per secondary language -->
+        <?php foreach ( $secondary_langs as $i => $lang ) : ?>
+        <div
+            class="lf-lang-panel<?php echo 0 === $i ? ' is-active' : ''; ?>"
+            id="lf-panel-<?php echo esc_attr( $lang ); ?>"
+            role="tabpanel"
+            data-panel="<?php echo esc_attr( $lang ); ?>">
+            <?php
+            self::render_templates_panel( $lang );
+            self::render_parts_panel( $lang );
+            self::render_navigations_panel( $lang );
+            ?>
+        </div>
+        <?php endforeach; ?>
+
+    <?php
+    }
+
+    /**
+     * Render the FSE templates scaffold table for one secondary language.
+     *
+     * Single-row table with one column per template type. The Actions column
+     * provides per-language bulk Create / Translate / Fix operations via the
+     * same JS handlers used by the old multi-language layout.
+     *
+     * @param string $lang Two-char secondary language code (e.g. 'de').
+     */
+    private static function render_templates_panel( string $lang ): void {
+
+        $router           = \LinguaForge\Router\Router::get_instance();
+        $template_defs    = self::template_definitions();
+        $ai_active        = self::ai_is_active();
+        $translated_slugs = (array) get_option( 'linguaforge_fse_translated_slugs', [] );
+
+        // Pre-compute existence for every template type in one pass.
+        $row_exists = [];
+        foreach ( array_keys( $template_defs ) as $base ) {
+            $row_exists[ $base ] = $router->template_exists( $base . '-' . $lang );
+        }
+        $has_missing = in_array( false, $row_exists, true );
+        ?>
+
+        <h3><?php esc_html_e( 'Templates', 'lingua-forge' ); ?></h3>
+        <p><?php esc_html_e( 'FSE templates seeded from the active theme. Create then customise in the Site Editor.', 'lingua-forge' ); ?></p>
 
         <table class="widefat striped lf-template-scaffold-table">
             <thead>
                 <tr>
-                    <th scope="col" style="width:72px"><?php esc_html_e( 'Language', 'lingua-forge' ); ?></th>
                     <?php foreach ( $template_defs as $def ) : ?>
-                        <th scope="col"><?php echo esc_html( $def['label'] ); ?></th>
+                    <th scope="col"><?php echo esc_html( $def['label'] ); ?></th>
                     <?php endforeach; ?>
-                    <th scope="col" style="width:200px"><?php esc_html_e( 'Actions', 'lingua-forge' ); ?></th>
+                    <th scope="col" style="width:160px"><?php esc_html_e( 'Actions', 'lingua-forge' ); ?></th>
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ( $secondary_langs as $lang ) :
-                // Pre-compute existence for every template type in this row so
-                // we can decide whether "Create missing" is needed before rendering.
-                $row_exists = [];
-                foreach ( array_keys( $template_defs ) as $base ) {
-                    $row_exists[ $base ] = $router->template_exists( $base . '-' . $lang );
-                }
-                $has_missing = in_array( false, $row_exists, true );
-            ?>
                 <tr class="lf-tpl-row" data-lang="<?php echo esc_attr( $lang ); ?>">
-                    <td>
-                        <span class="lf-lang-chip"><?php echo esc_html( strtoupper( $lang ) ); ?></span>
-                    </td>
                     <?php foreach ( $template_defs as $base => $def ) :
                         $slug               = $base . '-' . $lang;
                         $exists             = $row_exists[ $base ];
@@ -380,13 +427,10 @@ class RouterTab extends Tab {
                         <span class="lf-scaffold-row-msg"></span>
                     </td>
                 </tr>
-            <?php endforeach; ?>
             </tbody>
         </table>
 
-        <?php endif;
-
-        self::render_parts_section();
+    <?php
     }
 
     // ── Language Template Parts ───────────────────────────────────────────────
@@ -500,63 +544,41 @@ class RouterTab extends Tab {
     }
 
     /**
-     * Render the Language Template Parts scaffold section.
+     * Render the FSE template parts scaffold table for one secondary language.
      *
-     * Discovers template parts used by the active theme's base templates, then
-     * renders a table with part slugs as rows and secondary languages as columns.
-     * Each cell shows ✓ if the language-specific part already exists, or a
-     * "Create" button otherwise. A "Create missing" button per row creates all
-     * absent language variants of that part in one click.
+     * Two-column table: part name + area badge in the first column, status
+     * and action buttons in the second.  Replaces the old parts × languages
+     * cross-table with a compact per-language view.
+     *
+     * @param string $lang Two-char secondary language code (e.g. 'de').
      */
-    private static function render_parts_section(): void {
-        $router          = \LinguaForge\Router\Router::get_instance();
-        $source_lang     = $router->source_language();
-        $router_langs    = $router->languages();
-        $secondary_langs = array_values( array_filter( $router_langs, fn( $l ) => $l !== $source_lang ) );
-
-        if ( empty( $secondary_langs ) ) {
-            return; // Notice already shown in the templates section above.
-        }
+    private static function render_parts_panel( string $lang ): void {
 
         $theme            = get_stylesheet();
         $parts            = self::discover_template_parts( $theme );
         $ai_active        = self::ai_is_active();
         $translated_slugs = (array) get_option( 'linguaforge_fse_translated_slugs', [] );
+
+        if ( empty( $parts ) ) {
+            return;
+        }
         ?>
 
-        <!-- ── Language Template Parts ──────────────────────────────────────── -->
-        <h2><?php esc_html_e( 'Language Template Parts', 'lingua-forge' ); ?></h2>
-
-        <p>
-            <?php esc_html_e( 'Create language-specific FSE template parts (header, footer, navigation, etc.) for each secondary language. Parts are discovered from the base templates above. Once a localised part is scaffolded, any already-created language templates for that language are automatically updated to reference it instead of the base part.', 'lingua-forge' ); ?>
-        </p>
-
-        <?php if ( empty( $parts ) ) : ?>
-            <p class="description">
-                <?php esc_html_e( 'No template parts discovered in the active theme\'s base templates. Template parts appear in templates as core/template-part blocks (header, footer, navigation, etc.).', 'lingua-forge' ); ?>
-            </p>
-        <?php else : ?>
+        <h3><?php esc_html_e( 'Template Parts', 'lingua-forge' ); ?></h3>
+        <p><?php esc_html_e( 'Language-specific copies of the theme\'s template parts. Once scaffolded, templates are updated to reference the language-specific part.', 'lingua-forge' ); ?></p>
 
         <table class="widefat striped lf-template-scaffold-table">
             <thead>
                 <tr>
-                    <th scope="col" style="width:180px"><?php esc_html_e( 'Part', 'lingua-forge' ); ?></th>
-                    <?php foreach ( $secondary_langs as $lang ) : ?>
-                        <th scope="col">
-                            <span class="lf-lang-chip"><?php echo esc_html( strtoupper( $lang ) ); ?></span>
-                        </th>
-                    <?php endforeach; ?>
-                    <th scope="col" style="width:200px"><?php esc_html_e( 'Actions', 'lingua-forge' ); ?></th>
+                    <th scope="col" style="width:220px"><?php esc_html_e( 'Part', 'lingua-forge' ); ?></th>
+                    <th scope="col"><?php esc_html_e( 'Status / Actions', 'lingua-forge' ); ?></th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach ( $parts as $part_slug => $area ) :
-                // Pre-compute existence per language for this part row.
-                $row_part_exists = [];
-                foreach ( $secondary_langs as $lang ) {
-                    $row_part_exists[ $lang ] = self::part_exists( $part_slug . '-' . $lang );
-                }
-                $has_missing_parts = in_array( false, $row_part_exists, true );
+                $lang_slug          = $part_slug . '-' . $lang;
+                $exists             = self::part_exists( $lang_slug );
+                $already_translated = $exists && in_array( $lang_slug, $translated_slugs, true );
             ?>
                 <tr class="lf-tpl-row" data-part="<?php echo esc_attr( $part_slug ); ?>">
                     <td>
@@ -565,14 +587,10 @@ class RouterTab extends Tab {
                             <?php echo esc_html( $area ); ?>
                         </span>
                     </td>
-                    <?php foreach ( $secondary_langs as $lang ) :
-                        $lang_slug          = $part_slug . '-' . $lang;
-                        $exists             = $row_part_exists[ $lang ];
-                        $already_translated = $exists && in_array( $lang_slug, $translated_slugs, true );
-                    ?>
-                    <td class="lf-tpl-cell" data-base="<?php echo esc_attr( $part_slug ); ?>">
+                    <td class="lf-tpl-cell lf-tpl-cell--inline" data-base="<?php echo esc_attr( $part_slug ); ?>">
                         <?php if ( $exists ) : ?>
-                            <span class="lf-tpl-exists" title="<?php echo esc_attr( $lang_slug . '.html' ); ?>">✓</span>
+                            <span class="lf-tpl-exists lf-tpl-exists--inline"
+                                  title="<?php echo esc_attr( $lang_slug . '.html' ); ?>">✓</span>
                             <?php if ( $ai_active ) : ?>
                             <button type="button"
                                     class="button button-small lf-translate-one-btn"
@@ -602,30 +620,6 @@ class RouterTab extends Tab {
                                 <?php esc_html_e( 'Create', 'lingua-forge' ); ?>
                             </button>
                         <?php endif; ?>
-                    </td>
-                    <?php endforeach; ?>
-                    <td class="lf-tpl-actions">
-                        <?php if ( $has_missing_parts ) : ?>
-                        <button type="button"
-                                class="button lf-scaffold-all-parts-btn"
-                                data-part="<?php echo esc_attr( $part_slug ); ?>">
-                            <?php esc_html_e( 'Create missing', 'lingua-forge' ); ?>
-                        </button>
-                        <?php endif; ?>
-                        <?php if ( $ai_active ) : ?>
-                        <button type="button"
-                                class="button lf-translate-row-btn">
-                            <?php esc_html_e( 'Translate all', 'lingua-forge' ); ?>
-                        </button>
-                        <?php endif; ?>
-                        <button type="button"
-                                class="button lf-fix-links-row-btn">
-                            <?php esc_html_e( 'Fix all links', 'lingua-forge' ); ?>
-                        </button>
-                        <button type="button"
-                                class="button lf-fix-nav-refs-row-btn">
-                            <?php esc_html_e( 'Fix all nav refs', 'lingua-forge' ); ?>
-                        </button>
                         <span class="lf-scaffold-row-msg"></span>
                     </td>
                 </tr>
@@ -633,9 +627,7 @@ class RouterTab extends Tab {
             </tbody>
         </table>
 
-        <?php endif;
-
-        self::render_navigations_section();
+    <?php
     }
 
     // ── Language Navigations ──────────────────────────────────────────────────
@@ -643,24 +635,16 @@ class RouterTab extends Tab {
     /**
      * Render the Language Navigations section.
      *
-     * Lists every published wp_navigation post that is not itself a
-     * language-specific copy (detected by the -{lang} suffix convention).
-     * For each base navigation × secondary language, shows a ✓ if a
-     * translated copy already exists or a Translate button if it does not.
+     * Lists every published base wp_navigation post (excludes language copies
+     * identified by their -{lang} suffix).  For each base nav, shows a
+     * Translate / Re-translate button for the given language.
      *
-     * Translation creates a new wp_navigation post named {base}-{lang} with
-     * AI-translated label values and language-prefixed internal URLs.
+     * @param string $lang Two-char secondary language code (e.g. 'de').
      */
-    private static function render_navigations_section(): void {
+    private static function render_navigations_panel( string $lang ): void {
 
-        $router          = \LinguaForge\Router\Router::get_instance();
-        $source_lang     = $router->source_language();
-        $router_langs    = $router->languages();
-        $secondary_langs = array_values( array_filter( $router_langs, fn( $l ) => $l !== $source_lang ) );
-
-        if ( empty( $secondary_langs ) ) {
-            return;
-        }
+        $router      = \LinguaForge\Router\Router::get_instance();
+        $source_lang = $router->source_language();
 
         $all_navs = get_posts( [
             'post_type'     => 'wp_navigation',
@@ -681,9 +665,10 @@ class RouterTab extends Tab {
             $nav_by_name[ $nav->post_name ] = true;
         }
 
-        // Only show base navs — exclude any post whose post_name already ends
-        // with a secondary-language suffix (those are the translated copies).
-        $lang_suffixes = array_map( fn( $l ) => '-' . $l, $secondary_langs );
+        // Exclude language copies — posts whose name ends with a -{lang} suffix.
+        $router_langs  = $router->languages();
+        $secondary_all = array_values( array_filter( $router_langs, fn( $l ) => $l !== $source_lang ) );
+        $lang_suffixes = array_map( fn( $l ) => '-' . $l, $secondary_all );
         $base_navs     = array_filter(
             $all_navs,
             static function ( \WP_Post $nav ) use ( $lang_suffixes ): bool {
@@ -703,17 +688,12 @@ class RouterTab extends Tab {
         $ai_active = self::ai_is_active();
         ?>
 
-        <!-- ── Language Navigations ──────────────────────────────────────── -->
-        <h2><?php esc_html_e( 'Language Navigations', 'lingua-forge' ); ?></h2>
+        <h3><?php esc_html_e( 'Navigations', 'lingua-forge' ); ?></h3>
 
-        <p>
-            <?php esc_html_e( 'Create language-specific copies of your navigation menus with translated labels and language-prefixed internal URLs. Translated menus are saved as new navigation posts following the {name}-{lang} convention (e.g. primary-navigation-de) and can be referenced from language-specific template parts.', 'lingua-forge' ); ?>
-        </p>
-
-        <div class="notice notice-warning inline">
+        <div class="notice notice-warning inline" style="margin:0 0 12px;">
             <p>
                 <strong><?php esc_html_e( 'Known limitation — Page List block:', 'lingua-forge' ); ?></strong>
-                <?php esc_html_e( 'If a language navigation uses the Page List block (WordPress\'s default before manual editing), it lists all pages regardless of language. This is a WordPress core limitation: the block has no filterable query hook. Workaround: open each language navigation in the Site Editor, click Edit to convert it to static links, then use Fix Links to correct the URLs. A proper fix is planned for a future release.', 'lingua-forge' ); ?>
+                <?php esc_html_e( 'If a language navigation uses the Page List block, it lists all pages regardless of language. Workaround: open each language navigation in the Site Editor, convert to static links, then use Fix Links.', 'lingua-forge' ); ?>
             </p>
         </div>
 
@@ -721,34 +701,29 @@ class RouterTab extends Tab {
             <p class="description">
                 <?php esc_html_e( 'Navigation translation requires an active AI provider. Configure an API key in the API Keys tab.', 'lingua-forge' ); ?>
             </p>
-        <?php else : ?>
+        <?php return; endif; ?>
 
         <table class="widefat striped lf-template-scaffold-table">
             <thead>
                 <tr>
-                    <th scope="col" style="width:260px"><?php esc_html_e( 'Navigation', 'lingua-forge' ); ?></th>
-                    <?php foreach ( $secondary_langs as $lang ) : ?>
-                        <th scope="col">
-                            <span class="lf-lang-chip"><?php echo esc_html( strtoupper( $lang ) ); ?></span>
-                        </th>
-                    <?php endforeach; ?>
+                    <th scope="col"><?php esc_html_e( 'Navigation', 'lingua-forge' ); ?></th>
+                    <th scope="col" style="width:140px"><?php esc_html_e( 'Action', 'lingua-forge' ); ?></th>
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ( $base_navs as $nav ) : ?>
+            <?php foreach ( $base_navs as $nav ) :
+                $lang_name = $nav->post_name . '-' . $lang;
+                $exists    = isset( $nav_by_name[ $lang_name ] );
+            ?>
                 <tr class="lf-tpl-row">
                     <td>
                         <strong><?php echo esc_html( $nav->post_title ); ?></strong>
                         <code class="lf-nav-name"><?php echo esc_html( $nav->post_name ); ?></code>
-                    </td>
-                    <?php foreach ( $secondary_langs as $lang ) :
-                        $lang_name = $nav->post_name . '-' . $lang;
-                        $exists    = isset( $nav_by_name[ $lang_name ] );
-                    ?>
-                    <td class="lf-tpl-cell">
                         <?php if ( $exists ) : ?>
-                            <span class="lf-tpl-exists" title="<?php echo esc_attr( $lang_name ); ?>">✓</span>
+                            <span style="color:#46b450;font-weight:700;margin-left:6px;">✓</span>
                         <?php endif; ?>
+                    </td>
+                    <td class="lf-tpl-actions">
                         <button type="button"
                                 class="button button-small lf-translate-nav-btn"
                                 data-nav-id="<?php echo esc_attr( (string) $nav->ID ); ?>"
@@ -757,14 +732,14 @@ class RouterTab extends Tab {
                                 ? esc_html__( 'Re-translate', 'lingua-forge' )
                                 : esc_html__( 'Translate',    'lingua-forge' ); ?>
                         </button>
+                        <span class="lf-scaffold-row-msg"></span>
                     </td>
-                    <?php endforeach; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
 
-        <?php endif;
+    <?php
     }
 
     // ── Pattern resolution ───────────────────────────────────────────────────
@@ -1955,6 +1930,14 @@ class RouterTab extends Tab {
         ob_end_clean();
 
         if ( $result ) {
+            // Flush rewrite rules immediately after installing a new locale pack.
+            // The router derives available languages from installed locale packs,
+            // so the rewrite rules (which include per-language URL prefixes and
+            // archive rewrites) must be regenerated now — otherwise the new
+            // language's /lang/ prefix returns 404 until someone visits
+            // Settings → Permalinks manually.
+            flush_rewrite_rules();
+
             wp_send_json_success( [
                 'locale'  => $result,
                 /* translators: %s: locale code such as de_DE */

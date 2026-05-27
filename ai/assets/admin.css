@@ -33,6 +33,11 @@
     text-align: center;
 }
 
+.lf-trigger-row .button {
+    flex: 1;
+    text-align: center;
+}
+
 /* ── Extra UI fields (language selector, chunk textarea, etc.) ───────────── */
 
 .lingua-forge-feature-fields {
@@ -772,4 +777,189 @@
     padding: 12px 20px;
     border-top: 1px solid #e0e0e0;
     background: #fafafa;
+}
+
+/* =========================================================================
+   §B — Compact panel + feature overlays.
+
+   "Translate page…" / "Generate content…" are the two overlay-triggered
+   features. Everything else (meta description, etc.) stays inline.
+
+   The preset-row spans the full panel width via flex: 1 0 100%.
+   The trigger-row sits below all inline features and holds the two
+   compact buttons that open the overlays.
+   ========================================================================= */
+
+/* ── Preset selector row — full width ────────────────────────────────────── */
+
+.lf-preset-row {
+    flex: 1 0 100%;
+    border-bottom: 1px solid #dcdcde;
+    padding-bottom: 12px;
+}
+
+/* ── Compact trigger row ─────────────────────────────────────────────────── */
+
+.lf-trigger-row {
+    flex: 1 0 100%;
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 480px) {
+    .lf-trigger-row {
+        flex-direction: column;
+    }
+}
+
+/* ── Feature overlay — shell ─────────────────────────────────────────────── */
+
+.lf-feature-overlay[hidden] {
+    display: none !important;
+}
+
+.lf-feature-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.lf-feature-overlay__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.lf-feature-overlay__panel {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
+    width: min(760px, 96vw);
+    max-height: calc(100vh - 16px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.lf-feature-overlay__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f6f7f7;
+    flex-shrink: 0;
+}
+
+.lf-feature-overlay__header h2 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.lf-feature-overlay__close {
+    background: none;
+    border: 0;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.lf-feature-overlay__close:hover {
+    color: #000;
+}
+
+/* ── Scrollable body ─────────────────────────────────────────────────────── */
+
+.lf-feature-overlay__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 18px;
+}
+
+/* Reset panel/group card chrome inside the overlay — the panel itself
+   already provides the container styling. */
+.lf-feature-overlay .lingua-forge-panel {
+    display: block;
+}
+
+.lf-feature-overlay .lingua-forge-feature-group {
+    border: none;
+    background: none;
+    padding: 0;
+    min-width: unset;
+}
+
+/* Action button spans full width inside the overlay. */
+.lf-feature-overlay .lingua-forge-action {
+    width: 100%;
+    text-align: center;
+}
+
+/* ── Wide variant — translation diff view needs two columns ──────────────── */
+
+.lf-feature-overlay--wide .lf-feature-overlay__panel {
+    width: min(1200px, 95vw);
+}
+
+/* Neutralise the flex-grow the diff-modal content-row uses in its native
+   context; inside the overlay body the row should be its natural height. */
+.lf-feature-overlay .lingua-forge-diff-modal__content-row {
+    flex: none;
+}
+
+/* ── CG preview area (scrollable block above the refine section) ─────────── */
+
+.lf-overlay-cg-preview {
+    flex: none;
+    max-height: 45vh;
+    overflow-y: auto;
+    padding: 16px 18px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.lf-overlay-cg-preview .lf-cg-modal__meta {
+    font-size: 11px;
+    color: #757575;
+    margin: 0 0 8px;
+}
+
+/* ── Result-section footer (Back / Copy / Apply row) ─────────────────────── */
+
+.lf-overlay-result-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 18px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+    flex-shrink: 0;
+}
+
+/* Keep the "← Back" button visually separate from the action buttons. */
+.lf-overlay-result-footer .button:first-child {
+    margin-right: auto;
+}
+
+/* ── Inline apply-error notice ───────────────────────────────────────────── */
+
+.lf-overlay-apply-error {
+    padding: 8px 18px;
+    border-left: 4px solid #d63638;
+    background: #fcf0f1;
+    color: #b32d2e;
+    font-size: 13px;
 }

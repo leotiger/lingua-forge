@@ -5,7 +5,7 @@ namespace LinguaForge\AI\CLI;
 defined('ABSPATH') || exit;
 
 /**
- * `wp linguaforge missing-translations` — implementation.
+ * `wp linguaforge missing_translations` — implementation.
  *
  * The user-facing docblock (## OPTIONS / ## EXAMPLES / @when) lives on the
  * matching method in \LinguaForge\AI\CLI\Commands so WP-CLI's command-help
@@ -125,7 +125,7 @@ class MissingTranslationsCommand {
 
         \WP_CLI::warning( sprintf(
             '%d of %d post(s) are missing at least one translation. '
-            . 'Run: wp linguaforge fill-translations <post_id> --draft',
+            . 'Run: wp linguaforge fill_translations <post_id> --draft',
             count( $rows ),
             count( $query->posts )
         ) );

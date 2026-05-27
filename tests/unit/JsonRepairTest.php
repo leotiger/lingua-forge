@@ -160,4 +160,66 @@ final class JsonRepairTest extends TestCase {
 
         $this->assertSame( '{"ok":true}', $result );
     }
+
+    public function test_normalise_extracts_object_when_prose_precedes_code_fence(): void {
+
+        // Common AI pattern for some languages: introductory sentence, then a
+        // ```json block, then optionally a trailing remark.
+        $raw = "Hier ist die Übersetzung:\n\n```json\n{\"title\":\"Titel\",\"content\":\"Inhalt\"}\n```";
+
+        $result = JsonRepair::normalise_json_response( $raw );
+
+        $this->assertJson( $result, 'Extracted content must be parseable JSON.' );
+        $decoded = json_decode( $result, true );
+        $this->assertSame( 'Titel',  $decoded['title'] );
+        $this->assertSame( 'Inhalt', $decoded['content'] );
+    }
+
+    public function test_normalise_stops_at_matching_brace_not_last_brace(): void {
+
+        // Greedy regex would have matched all the way to the } inside {formell},
+        // producing invalid JSON.  The balanced extractor must stop at the JSON
+        // closing brace and discard the trailing note.
+        $raw = "Here is your translation:\n{\"title\":\"T\",\"content\":\"C\"}\n\nNote: used {formal} register.";
+
+        $result = JsonRepair::normalise_json_response( $raw );
+
+        $this->assertJson( $result, 'Result must be parseable JSON — trailing {} must not be included.' );
+        $decoded = json_decode( $result, true );
+        $this->assertSame( 'T', $decoded['title'] );
+        $this->assertSame( 'C', $decoded['content'] );
+    }
+
+    public function test_normalise_handles_braces_inside_string_values(): void {
+
+        // JSON object whose content value itself contains {} — the balanced
+        // scanner must not close at the inner braces.
+        $json = "{\"content\":\"CSS: .foo { color: red; }\"}";
+
+        $result = JsonRepair::normalise_json_response( $json );
+
+        $this->assertSame( $json, $result, 'Clean JSON with inner {} must pass through unchanged.' );
+    }
+
+    public function test_repair_german_ascii_closing_quote_before_comma(): void {
+
+        // Real-world German AI response pattern: AI uses typographic „ (U+201E)
+        // as opening quote but falls back to ASCII " (U+0022) as closing quote.
+        // The closing " is immediately followed by a German sentence comma,
+        // so the old single-level peek-ahead incorrectly treated it as a JSON
+        // string terminator rather than a content quote to be escaped.
+        //
+        // Input bytes around the problem: …hinzufügen", indem…
+        // The " after hinzufügen is 0x22 followed by 0x2C (',').
+        $broken = '{"title":"T","content":"Updates \xc3\xbcber \xe2\x80\x9ePlugin hinzuf\xc3\xbcgen", indem weiter."}';
+        // Use actual UTF-8 bytes:
+        $broken = '{"title":"T","content":"Updates über „Plugin hinzufügen", indem weiter."}';
+
+        $result = JsonRepair::normalise_json_response( $broken );
+
+        $this->assertJson( $result, 'Repaired JSON must be parseable. Got: ' . $result );
+        $decoded = json_decode( $result, true );
+        $this->assertStringContainsString( 'hinzufügen', $decoded['content'] );
+        $this->assertStringContainsString( 'indem weiter', $decoded['content'] );
+    }
 }

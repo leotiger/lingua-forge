@@ -382,7 +382,7 @@ The CLI namespace under `ai/includes/CLI/` is split into:
   implementation is structured underneath.
 - `AbstractTranslateCommand.php` — shared base for the three commands
   that drive `Translation::run()` (translate, retranslate,
-  fill-translations). Provides the validators (`validate_post_id`,
+  fill_translations). Provides the validators (`validate_post_id`,
   `validate_target_langs`), the worker-overrides filter installer, the
   debug-mode helper, the `apply_translation` / `create_trid_linked_post`
   / `generate_and_save_meta_description` pipeline, and the
@@ -413,17 +413,17 @@ Currently shipped:
   it always calls the provider. Use when content has changed and you want
   a fresh translation without clearing the cache globally.
 
-- **`wp linguaforge fill-translations [--post-type=post] [--lang=fr]`** —
+- **`wp linguaforge fill_translations [--post-type=post] [--lang=fr]`** —
   iterates over all posts of the given type (default: `post`, `page`) and
   translates into any target languages where a TRID-linked post exists but
   has no content yet. Safe to re-run; posts with existing content are
   skipped unless `--force` is passed.
 
-- **`wp linguaforge missing-translations [--post-type=post]`** — reports
+- **`wp linguaforge missing_translations [--post-type=post]`** — reports
   which posts are missing one or more language variants. No writes; pure
-  audit. Pairs with `fill-translations` as a detect-then-fill pipeline.
+  audit. Pairs with `fill_translations` as a detect-then-fill pipeline.
 
-- **`wp linguaforge cache-clear`** — wipes AI-result cache entries.
+- **`wp linguaforge cache_clear`** — wipes AI-result cache entries.
   Bare command truncates the whole table; `--feature=translation` scopes
   to feature-key prefix; `--post-id=N` scopes to a single post; both
   combine. Bare-truncate prompts unless `--yes` is passed.

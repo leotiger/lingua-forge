@@ -35,13 +35,21 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.7.2';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.7.2/lingua-forge-1.7.2.zip';
+	$version      = '1.8.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.0/lingua-forge-1.8.0.zip';
 	$last_updated = '2026-05-27';
 	$tested       = '7.0';
 
 	// Prepend new release entry; keep the last 3–4 entries for the modal.
 	$changelog =
+		'<h4>1.8.0 — 2026-05-27</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Translations metabox — spurious Override button after language switch. Stale TRID object-cache entry not cleared by set_lang() alone; explicit cache flush added to the AJAX handler.</li>' .
+			'<li><strong>Improved:</strong> "Add Language" flushes rewrite rules server-side and reloads the page client-side automatically — Active Languages chips and template tables refresh without manual reload.</li>' .
+			'<li><strong>Improved:</strong> Router tab Templates / Parts / Navigations replaced with a per-language tabbed UI; active tab persists via sessionStorage.</li>' .
+			'<li><strong>Maintenance:</strong> PHPCS MissingTranslatorsComment and SlowDBQuery warnings resolved in Translations metabox.</li>' .
+		'</ul>' .
+
 		'<h4>1.7.2 — 2026-05-27</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> Self-hosted automatic update checker — once installed, WordPress surfaces update badges and one-click updates from lingua-forge.com without a WordPress.org listing.</li>' .

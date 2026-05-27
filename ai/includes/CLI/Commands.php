@@ -15,16 +15,16 @@ defined('ABSPATH') || exit;
  *   retranslate    Force a fresh retranslation, wiping the prior cache first
  *                  and marking the translation synced afterwards.
  *
- *   fill-translations      Find and fill every missing translation for a post
+ *   fill_translations      Find and fill every missing translation for a post
  *                         across all router-active languages. Skips languages
  *                         that already have a TRID-linked post.
  *
- *   missing-translations  Scan all posts of a given type and source language,
+ *   missing_translations  Scan all posts of a given type and source language,
  *                         and list every post that is missing one or more
  *                         router-language translations. Use as a work-list to
- *                         drive fill-translations in bulk.
+ *                         drive fill_translations in bulk.
  *
- *   cache-clear    Clear AI-result cache entries (whole table, by feature,
+ *   cache_clear    Clear AI-result cache entries (whole table, by feature,
  *                  or by post ID).
  *
  * Run `wp linguaforge <subcommand> --help` for full options and examples.
@@ -287,22 +287,22 @@ class Commands {
      * ## EXAMPLES
      *
      *   # See which translations are missing for post 123.
-     *   $ wp linguaforge fill-translations 123 --check-only
+     *   $ wp linguaforge fill_translations 123 --check-only
      *
      *   # Fill all missing translations, creating new posts as draft.
-     *   $ wp linguaforge fill-translations 123 --draft
+     *   $ wp linguaforge fill_translations 123 --draft
      *
      *   # Fill missing, skip Italian, create as draft.
-     *   $ wp linguaforge fill-translations 123 --exclude=it --draft
+     *   $ wp linguaforge fill_translations 123 --exclude=it --draft
      *
      *   # Dry-run — translate but don't write; inspect output length per language.
-     *   $ wp linguaforge fill-translations 123 --dry-run
+     *   $ wp linguaforge fill_translations 123 --dry-run
      *
      *   # Fill missing translations and immediately generate meta descriptions.
-     *   $ wp linguaforge fill-translations 123 --draft --with-meta-description
+     *   $ wp linguaforge fill_translations 123 --draft --with-meta-description
      *
      *   # CI check: exit 1 when any translation is missing.
-     *   $ wp linguaforge fill-translations 123 --check-only --format=json
+     *   $ wp linguaforge fill_translations 123 --check-only --format=json
      *
      * @when after_wp_load
      */
@@ -316,7 +316,7 @@ class Commands {
      * Scans every post of a given post type whose _lang meta matches the
      * supplied source language, checks each post's TRID translation group,
      * and reports any router language for which no linked translation post
-     * exists yet. Use the output as a work-list to drive fill-translations.
+     * exists yet. Use the output as a work-list to drive fill_translations.
      *
      * ## OPTIONS
      *
@@ -352,21 +352,21 @@ class Commands {
      * ## EXAMPLES
      *
      *   # Show all Catalan pages with missing translations.
-     *   $ wp linguaforge missing-translations ca page
+     *   $ wp linguaforge missing_translations ca page
      *
      *   # Same, but ignore Italian (not yet required).
-     *   $ wp linguaforge missing-translations ca page --exclude=it
+     *   $ wp linguaforge missing_translations ca page --exclude=it
      *
      *   # Include drafts as well as published posts.
-     *   $ wp linguaforge missing-translations ca post --status=any
+     *   $ wp linguaforge missing_translations ca post --status=any
      *
      *   # Machine-readable output to feed into a shell loop.
-     *   $ wp linguaforge missing-translations ca page --format=json
+     *   $ wp linguaforge missing_translations ca page --format=json
      *
-     *   # Pipe directly to fill-translations for each found post.
-     *   $ wp linguaforge missing-translations ca page --format=json \
+     *   # Pipe directly to fill_translations for each found post.
+     *   $ wp linguaforge missing_translations ca page --format=json \
      *       | jq -r '.[].post_id' \
-     *       | xargs -I{} wp linguaforge fill-translations {} --draft
+     *       | xargs -I{} wp linguaforge fill_translations {} --draft
      *
      * @when after_wp_load
      */
@@ -398,13 +398,13 @@ class Commands {
      * ## EXAMPLES
      *
      *   # Clear every cached translation across the whole site.
-     *   $ wp linguaforge cache-clear --feature=translation
+     *   $ wp linguaforge cache_clear --feature=translation
      *
      *   # Clear all cached AI results for one post.
-     *   $ wp linguaforge cache-clear --post-id=123
+     *   $ wp linguaforge cache_clear --post-id=123
      *
      *   # Nuke the whole cache, no prompt.
-     *   $ wp linguaforge cache-clear --yes
+     *   $ wp linguaforge cache_clear --yes
      *
      * @when after_wp_load
      */

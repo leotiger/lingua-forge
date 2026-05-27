@@ -7,7 +7,7 @@ use LinguaForge\AI\Core\CacheStore;
 defined('ABSPATH') || exit;
 
 /**
- * `wp linguaforge cache-clear` — implementation.
+ * `wp linguaforge cache_clear` — implementation.
  *
  * The user-facing docblock (## OPTIONS / ## EXAMPLES / @when) lives on the
  * matching method in \LinguaForge\AI\CLI\Commands so WP-CLI's command-help

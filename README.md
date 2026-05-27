@@ -117,7 +117,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A usage summary (requests, input tokens, output tokens) is available in **Settings → AI Usage** for any date range
 - SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
-- **WP-CLI support** — five commands for scripted and automated workflows: `translate`, `retranslate`, `fill-translations`, `missing-translations`, and `cache-clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
+- **WP-CLI support** — five commands for scripted and automated workflows: `translate`, `retranslate`, `fill_translations`, `missing_translations`, and `cache_clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
 
 ---
 
@@ -306,7 +306,7 @@ lingua-forge/
         AdminToolbar.php             ← Admin bar Quick Translate node
         SettingsPage.php             ← Settings → Lingua Forge (5-tab layout)
       CLI/
-        Commands.php                 ← wp linguaforge translate / retranslate / fill-translations / missing-translations / cache-clear
+        Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / cache_clear
       REST/
         FeatureController.php        ← POST /lingua-forge/v1/feature/{key}/{post_id}
                                         POST /lingua-forge/v1/translate-chunk
@@ -704,20 +704,20 @@ Five commands are available for scripted and automated workflows.
 
 **`wp linguaforge retranslate <post_id> --to=<langs>`** — designed for the "source page was edited, retranslate now" workflow. Always bypasses the cache (no `--force` needed), clears the previous cached translation before running, and marks the target post as synced after a successful write so the ⚠ outdated indicator clears. Options: `--with-meta-description`, `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--dry-run`, `--format=<table|json|csv|yaml>`.
 
-**`wp linguaforge fill-translations <post_id>`** — checks which active router languages are missing a translation for the given post and creates them all in one pass. Useful after adding a new language to the router or after bulk-importing source content. Options: `--check-only` (report missing languages, no API calls), `--exclude=<langs>` (comma-separated codes to skip), `--draft` (save targets as draft instead of the source post's status), `--with-meta-description`, `--dry-run`, `--format=<table|json|csv|yaml>`, plus all provider/model/token override flags.
+**`wp linguaforge fill_translations <post_id>`** — checks which active router languages are missing a translation for the given post and creates them all in one pass. Useful after adding a new language to the router or after bulk-importing source content. Options: `--check-only` (report missing languages, no API calls), `--exclude=<langs>` (comma-separated codes to skip), `--draft` (save targets as draft instead of the source post's status), `--with-meta-description`, `--dry-run`, `--format=<table|json|csv|yaml>`, plus all provider/model/token override flags.
 
-**`wp linguaforge missing-translations <lang> <post_type>`** — scans every post of `<post_type>` whose `_lang` meta matches `<lang>` and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending. Options: `--exclude=<langs>`, `--status=<any|publish|draft|…>` (default `publish`), `--format=<table|json|csv|yaml>`. Pairs directly with `fill-translations`: the warning footer shows the exact command to run on each incomplete post.
+**`wp linguaforge missing_translations <lang> <post_type>`** — scans every post of `<post_type>` whose `_lang` meta matches `<lang>` and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending. Options: `--exclude=<langs>`, `--status=<any|publish|draft|…>` (default `publish`), `--format=<table|json|csv|yaml>`. Pairs directly with `fill_translations`: the warning footer shows the exact command to run on each incomplete post.
 
-**`wp linguaforge cache-clear`** — wipes AI-result cache entries. Bare command truncates the entire table (prompts for confirmation unless `--yes` is passed). Scope with `--feature=translation` or `--post-id=<id>` to target a subset.
+**`wp linguaforge cache_clear`** — wipes AI-result cache entries. Bare command truncates the entire table (prompts for confirmation unless `--yes` is passed). Scope with `--feature=translation` or `--post-id=<id>` to target a subset.
 
 #### Common workflows
 
 ```bash
 # Find all Catalan pages that are missing translations
-wp linguaforge missing-translations ca page
+wp linguaforge missing_translations ca page
 
 # Fill every missing translation for a post, including meta descriptions
-wp linguaforge fill-translations 42 --with-meta-description
+wp linguaforge fill_translations 42 --with-meta-description
 
 # Retranslate an edited legal page into French with strict temperature
 wp linguaforge retranslate 123 --to=fr --temperature=0.1
@@ -725,16 +725,16 @@ wp linguaforge retranslate 123 --to=fr --temperature=0.1
 # Translate a post into three languages at once, generate meta descriptions too
 wp linguaforge translate 456 --to=fr,de,es --with-meta-description
 
-# Check what fill-translations would do without writing anything
-wp linguaforge fill-translations 42 --check-only
+# Check what fill_translations would do without writing anything
+wp linguaforge fill_translations 42 --check-only
 
 # Clear all cached translations for one post
-wp linguaforge cache-clear --feature=translation --post-id=123
+wp linguaforge cache_clear --feature=translation --post-id=123
 
 # Pipeline: collect IDs of all incomplete posts and fill them
-wp linguaforge missing-translations ca page --format=json \
+wp linguaforge missing_translations ca page --format=json \
   | jq -r '.[].post_id' \
-  | xargs -I{} wp linguaforge fill-translations {} --with-meta-description
+  | xargs -I{} wp linguaforge fill_translations {} --with-meta-description
 ```
 
 ---
@@ -874,7 +874,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.7.2**
+**Current release — 1.8.0**
 
 - **Self-hosted automatic updates** — once installed, WordPress checks for new releases every 12 hours and shows the standard update badge in Plugins → Installed Plugins. The first install is manual (ZIP from [GitHub Releases](https://github.com/leotiger/lingua-forge/releases)); all subsequent updates are one-click from the WordPress admin.
 - **"View details" modal** — plugin row now includes a "View details" link that opens the standard plugin-information thickbox with description, changelog, and installation instructions from the live manifest. Duplicate links suppressed; "Visit plugin site" (GitHub) guaranteed.

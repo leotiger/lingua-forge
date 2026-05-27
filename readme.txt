@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.7.2
+Stable tag: 1.8.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -60,7 +60,7 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **Side-by-side diff preview** — "Apply to Editor" shows a two-column before/after modal so you can review the translation before it touches the post
 * **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A summary table with token counts is available in **Settings → AI Usage**
 * **Language Overrides** — upload custom `.mo` files to override third-party plugin strings per locale (e.g. replace "room" with "apartment" in VikBooking). Files are stored in the uploads folder and survive plugin updates. Managed from **Settings → Lingua Forge → Language Overrides**
-* **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache-clear` for scripted and automated workflows
+* **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache_clear` for scripted and automated workflows
 
 API keys are stored encrypted (AES-256-GCM with provider slug as authenticated data, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
 
@@ -234,6 +234,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.8.0 =
+* Fixed: Translations metabox — "Override" button no longer appears for the wrong language immediately after switching a post to a different language. Root cause: stale TRID object-cache entry not cleared by set_lang() alone. Explicit cache flush added to the AJAX handler.
+* Fixed: PHPCS MissingTranslatorsComment in the Translations metabox _n() call.
+* Fixed: PHPCS SlowDBQuery warnings on wp_dropdown_pages() meta_key/meta_value args — _lf_lang is indexed and intentional; phpcs:disable blocks extended with explanatory comments.
+* Improved: "Add Language" now flushes rewrite rules server-side and triggers an automatic page reload client-side — Active Languages chips and template tables update without a manual refresh.
+* Improved: Router tab Templates / Parts / Navigations now use a per-language tabbed UI. Each secondary language gets its own tab panel; active tab persists via sessionStorage. Reduces scroll depth on multi-language installs.
+
 = 1.7.2 =
 * Added: Self-hosted update checker — once installed, WordPress surfaces update badges and one-click updates directly from lingua-forge.com. The plugin is not listed on WordPress.org; the first install is manual (download ZIP from GitHub Releases), but all subsequent updates are handled automatically inside the WordPress admin.
 * Added: "View details" link in the Plugins screen row — opens the standard plugin-information modal with description, changelog, and installation instructions drawn from the live update manifest. Duplicate links are suppressed automatically.
@@ -291,8 +298,11 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 == Upgrade Notice ==
 
+= 1.8.0 =
+Fixes spurious Override button in the Translations metabox after language switch (stale cache). Adds automatic rewrite-rule flush and page reload after installing a language. Router tab now shows a per-language tabbed UI. No schema changes — safe to update in place.
+
 = 1.7.2 =
-Adds self-hosted automatic update support — after this update, future releases will appear as standard WordPress update notices. First install is manual (ZIP from GitHub Releases); all subsequent updates are one-click from the WordPress admin. No schema or settings changes — safe to update in place.
+Adds self-hosted update support — future releases appear as standard WordPress update notices. First install is manual (ZIP from GitHub Releases); all subsequent updates are one-click from the admin. No schema or settings changes — safe to update in place.
 
 = 1.7.1 =
 Patch release. Fixes Target Language dropdown in the Meta Boxes panel showing the wrong language list (missing instance-configured languages such as Basque). No schema or settings changes — safe to update in place.

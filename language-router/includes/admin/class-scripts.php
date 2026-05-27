@@ -61,6 +61,13 @@ class Scripts {
 
 		// Import-translation button + language-change select: post edit screens only.
 		if ( in_array( $hook_suffix, [ 'post.php', 'post-new.php' ], true ) ) {
+			wp_enqueue_style(
+				'lf-admin-metabox',
+				$base_url . 'admin-metabox.css',
+				[],
+				$version
+			);
+
 			wp_enqueue_script(
 				'lf-admin-metabox',
 				$base_url . 'admin-metabox.js',

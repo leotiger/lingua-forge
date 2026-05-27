@@ -65,10 +65,19 @@ class JsonRepair {
             $text = trim($text);
         }
 
-        // Step 3 — extract first JSON object when preamble precedes it.
+        // Step 3 — extract first balanced JSON object when preamble or trailing
+        // text surrounds it.
+        //
+        // Uses a byte-level balanced-brace scanner instead of a greedy regex so
+        // that trailing prose containing curly braces — a common pattern in AI
+        // responses for some languages, e.g. "Hinweis: verwendet {formelle Anrede}"
+        // — does not corrupt the extracted substring.  The greedy approach
+        // (\{[\s\S]*\}) would match all the way to the last } in the entire text,
+        // accidentally including any trailing {} pairs.
         if (!str_starts_with($text, '{') && !str_starts_with($text, '[')) {
-            if (preg_match('/(\{[\s\S]*\})/u', $text, $matches)) {
-                $text = $matches[1];
+            $extracted = self::extract_first_balanced_object($text);
+            if ($extracted !== null) {
+                $text = $extracted;
             }
         }
 
@@ -83,6 +92,80 @@ class JsonRepair {
         }
 
         return $text;
+    }
+
+    /**
+     * Find and return the first balanced { … } block in $text.
+     *
+     * Scans byte-by-byte, tracking brace depth while respecting JSON string
+     * boundaries (including already-escaped characters).  Stops as soon as the
+     * depth returns to zero — i.e. at the closing brace that belongs to the
+     * opening { rather than at the last } anywhere in the input.
+     *
+     * This is deliberately tolerant of unescaped " characters inside string
+     * values: the scanner tracks in_string state the same way
+     * repair_unescaped_quotes() does, but a "wrong" in_string toggle caused by
+     * an unescaped quote merely causes a momentary mis-classification of the
+     * surrounding bytes; because unescaped content quotes come in pairs the
+     * depth counter is never affected and the scanner still finds the correct
+     * closing brace.
+     *
+     * Returns null when no { is found in $text.
+     *
+     * @param  string $text  Raw or partially-normalised provider response.
+     * @return string|null   Balanced substring from first { to its matching },
+     *                       or null when no opening brace is found.
+     */
+    private static function extract_first_balanced_object(string $text): ?string {
+
+        $len   = strlen($text);
+        $start = strpos($text, '{');
+
+        if ($start === false) {
+            return null;
+        }
+
+        $depth     = 0;
+        $in_string = false;
+        $escape    = false;
+
+        for ($i = $start; $i < $len; $i++) {
+            $c = $text[$i];
+
+            if ($escape) {
+                $escape = false;
+                continue;
+            }
+
+            if ($c === '\\' && $in_string) {
+                $escape = true;
+                continue;
+            }
+
+            if ($c === '"') {
+                $in_string = !$in_string;
+                continue;
+            }
+
+            if ($in_string) {
+                continue;
+            }
+
+            if ($c === '{') {
+                $depth++;
+                continue;
+            }
+
+            if ($c === '}') {
+                $depth--;
+                if ($depth === 0) {
+                    return substr($text, $start, $i - $start + 1);
+                }
+            }
+        }
+
+        // Unmatched opening brace — return everything from $start (best effort).
+        return substr($text, $start);
     }
 
     /**
@@ -144,7 +227,34 @@ class JsonRepair {
                 }
                 $next = $j < $len ? $json[$j] : '';
 
-                if ($next === ':' || $next === ',' || $next === '}' || $next === ']' || $next === '') {
+                // `,` needs a two-level look-ahead because prose can produce
+                // `"word", next sentence` (e.g. German „Plugin hinzufügen", indem…)
+                // where the closing quote is ASCII " and the following comma is
+                // part of the sentence, not a JSON key separator.
+                //
+                // Rule: `"` + `,` is a real string terminator only if the token
+                // immediately after the comma (skipping whitespace) is itself a `"`
+                // (the opening of the next JSON key), `}`, or `]`.  If it is
+                // regular prose text the quote is a content quote and must be escaped.
+                if ($next === ',') {
+                    $k = $j + 1; // skip past the comma
+                    while ($k < $len && ($json[$k] === ' ' || $json[$k] === "\t"
+                            || $json[$k] === "\n" || $json[$k] === "\r")) {
+                        $k++;
+                    }
+                    $after_comma = $k < $len ? $json[$k] : '';
+                    if ($after_comma === '"' || $after_comma === '}' || $after_comma === ']') {
+                        // Comma followed by next key / close bracket — real terminator.
+                        $in_string = false;
+                        $out      .= $c;
+                    } else {
+                        // Comma followed by prose — content quote, escape it.
+                        $out .= '\\"';
+                    }
+                    continue;
+                }
+
+                if ($next === ':' || $next === '}' || $next === ']' || $next === '') {
                     // Looks like a string terminator.
                     $in_string = false;
                     $out      .= $c;
