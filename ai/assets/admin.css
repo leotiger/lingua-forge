@@ -963,3 +963,32 @@
     color: #b32d2e;
     font-size: 13px;
 }
+
+/* ── Post-list "Translate missing" button (Lang column) ─────────────────── */
+
+/* Sits on its own line below the ⭕ missing-language indicator. */
+.lf-fill-missing {
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    padding: 2px 8px !important;
+}
+
+/* Muted appearance while the AJAX call is in-flight. */
+.lf-fill-missing--busy {
+    opacity: 0.7;
+    cursor: wait !important;
+}
+
+/* Success indicator — replaces the button after all translations are created. */
+.lf-fill-done {
+    font-size: 11px;
+    color: #46b450;
+}
+
+/* Inline error note appended after the button on failure. */
+.lf-fill-error {
+    font-size: 11px;
+    color: #b32d2e;
+}

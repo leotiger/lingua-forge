@@ -2,6 +2,14 @@
 
 ---
 
+## [1.8.1] — 2026-05-27
+
+### Added
+
+- **"Translate missing" button in the Posts/Pages list** — a one-click button now appears in the existing "Lang" column next to the ⭕ missing-language indicator for any source-language post that lacks one or more target-language translations. Clicking it fires all missing AI translations in a single AJAX request, creates TRID-linked posts (inheriting source status), assigns FSE templates where applicable, and replaces the indicator with "✓ Done" on success — without leaving the list screen. The button is injected via the new `lf_lang_column_missing` action hook so the AI module stays decoupled from the language-router module.
+
+---
+
 ## [1.8.0] — 2026-05-27
 
 ### Fixed

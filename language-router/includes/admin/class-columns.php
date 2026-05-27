@@ -52,7 +52,21 @@ class Columns {
 
 		$missing = $this->router->trid_group->get_missing_languages( $id );
 		if ( ! empty( $missing ) ) {
-			echo ' ⭕ ' . esc_html( implode( ',', array_map( 'strtoupper', $missing ) ) );
+			echo ' <span class="lf-missing-langs">⭕ '
+				. esc_html( implode( ',', array_map( 'strtoupper', $missing ) ) )
+				. '</span>';
+
+			/**
+			 * Fires after the missing-language indicator in the Lang column.
+			 *
+			 * The AI module hooks this to inject a "Translate missing" button
+			 * without creating a hard dependency from the language-router to the
+			 * AI sub-module.
+			 *
+			 * @param int      $post_id  Current post ID.
+			 * @param string[] $missing  Missing language codes.
+			 */
+			do_action( 'lf_lang_column_missing', $id, $missing );
 		}
 	}
 

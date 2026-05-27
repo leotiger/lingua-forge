@@ -874,7 +874,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.8.0**
+**Current release — 1.8.1**
 
 - **Self-hosted automatic updates** — once installed, WordPress checks for new releases every 12 hours and shows the standard update badge in Plugins → Installed Plugins. The first install is manual (ZIP from [GitHub Releases](https://github.com/leotiger/lingua-forge/releases)); all subsequent updates are one-click from the WordPress admin.
 - **"View details" modal** — plugin row now includes a "View details" link that opens the standard plugin-information thickbox with description, changelog, and installation instructions from the live manifest. Duplicate links suppressed; "Visit plugin site" (GitHub) guaranteed.

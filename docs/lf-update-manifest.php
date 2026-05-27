@@ -35,13 +35,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.8.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.0/lingua-forge-1.8.0.zip';
+	$version      = '1.8.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.1/lingua-forge-1.8.1.zip';
 	$last_updated = '2026-05-27';
 	$tested       = '7.0';
 
 	// Prepend new release entry; keep the last 3–4 entries for the modal.
 	$changelog =
+		'<h4>1.8.1 — 2026-05-27</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> "Translate missing" button in the Lang column of the Posts/Pages list — one click fires all missing AI translations for a source-language post from the overview screen without opening the editor. Success replaces the ⭕ indicator with ✓ Done inline.</li>' .
+		'</ul>' .
+
 		'<h4>1.8.0 — 2026-05-27</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> Translations metabox — spurious Override button after language switch. Stale TRID object-cache entry not cleared by set_lang() alone; explicit cache flush added to the AJAX handler.</li>' .

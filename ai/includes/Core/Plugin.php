@@ -4,6 +4,7 @@ namespace LinguaForge\AI\Core;
 
 use LinguaForge\AI\Admin\AdminToolbar;
 use LinguaForge\AI\Admin\MetaBox;
+use LinguaForge\AI\Admin\PostListColumn;
 use LinguaForge\AI\Admin\SettingsPage;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\REST\FeatureController;
@@ -45,6 +46,7 @@ class Plugin {
         Registry::init();
 
         MetaBox::init();
+        PostListColumn::init();
         SettingsPage::init();
         AdminToolbar::init();
 

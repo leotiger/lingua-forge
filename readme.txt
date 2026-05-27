@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -234,6 +234,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.8.1 =
+* Added: "Translate missing" button in the Lang column of the Posts and Pages list screens — one click fires all missing AI translations for a source-language post directly from the overview, without opening the editor.
+
 = 1.8.0 =
 * Fixed: Translations metabox — "Override" button no longer appears for the wrong language immediately after switching a post to a different language. Root cause: stale TRID object-cache entry not cleared by set_lang() alone. Explicit cache flush added to the AJAX handler.
 * Fixed: PHPCS MissingTranslatorsComment in the Translations metabox _n() call.
@@ -297,6 +300,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.8.1 =
+Adds a "Translate missing" button to the Posts/Pages list — trigger AI translations for all missing languages without opening the editor. No schema changes — safe to update in place.
 
 = 1.8.0 =
 Fixes spurious Override button in the Translations metabox after language switch (stale cache). Adds automatic rewrite-rule flush and page reload after installing a language. Router tab now shows a per-language tabbed UI. No schema changes — safe to update in place.
