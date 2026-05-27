@@ -347,11 +347,20 @@ class Context {
 	// =========================================================
 
 	public function is_system_request(): bool {
+		// REST_REQUEST is only defined after parse_request fires — too late for
+		// handle_init_redirects() which hooks to 'init' at priority 0.  Guard
+		// REST calls early by matching the request URI directly against the REST
+		// prefix (usually /wp-json/) and the legacy ?rest_route= form.
+		$uri         = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read-only URI comparison; not output or used in queries.
+		$rest_prefix = '/' . rest_get_url_prefix() . '/';
+
 		return
 			( defined( 'DOING_AJAX' )     && DOING_AJAX ) ||
 			( defined( 'REST_REQUEST' )   && REST_REQUEST ) ||
 			( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ||
-			( defined( 'WP_CLI' )         && WP_CLI );
+			( defined( 'WP_CLI' )         && WP_CLI ) ||
+			( '' !== $uri && str_contains( $uri, $rest_prefix ) ) ||
+			( '' !== $uri && str_contains( $uri, '?rest_route=' ) );
 	}
 
 	public function set_lang_cookie( string $lang ): void {
