@@ -40,6 +40,10 @@
 
 ## [1.7.2] — 2026-05-27
 
+### Added
+
+- **Self-hosted update checker** — `Linguaforge_Updater` class hooks into WordPress's plugin-update machinery so **Plugins → Installed Plugins** surfaces update badges and one-click updates directly from lingua-forge.com, without the plugin being listed on WordPress.org. The update manifest is fetched from a REST endpoint on lingua-forge.com and cached for 12 hours (error results cached 1 hour via a sentinel object to avoid hammering the server on transient failures).
+
 ### Improved
 
 - **"View details" link in the plugin row** — clicking it opens the standard WordPress plugin-information modal (thickbox) populated with the description, changelog, and installation sections from the manifest. The method deduplicates: if WordPress has already added its own thickbox link no second link is added.
@@ -80,7 +84,6 @@
   **Server prerequisite:** wildcard DNS and a wildcard TLS certificate covering all language subdomains must be in place before enabling this mode. The `lf_base_domain` filter overrides the auto-detected apex domain when `home_url()` includes `www`.
 
 - **Classic navigation menu auto-add guard** — publishing a translated page no longer inserts it into classic nav menus that have "automatically add new top-level pages" enabled. A `publish_page` hook removes any just-inserted item whose page has a non-source-language `_lf_lang` value. Classic menus only; FSE `wp_navigation` posts are unaffected.
-- **Self-hosted update checker** — `Linguaforge_Updater` class hooks into WordPress's plugin-update machinery so **Plugins → Installed Plugins** surfaces update badges and one-click updates directly from lingua-forge.com, without the plugin being listed on WordPress.org. The update manifest is fetched from a REST endpoint on lingua-forge.com and cached for 12 hours (error results cached 1 hour via a sentinel object to avoid hammering the server on transient failures).
 
 ### Fixed
 

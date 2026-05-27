@@ -249,6 +249,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Improved: Router tab Templates / Parts / Navigations now use a per-language tabbed UI. Each secondary language gets its own tab panel; active tab persists via sessionStorage. Reduces scroll depth on multi-language installs.
 
 = 1.7.2 =
+* Added: Self-hosted update checker — once installed, WordPress surfaces update badges and one-click updates directly from lingua-forge.com. The plugin is not listed on WordPress.org; the first install is manual (download ZIP from GitHub Releases), but all subsequent updates are handled automatically inside the WordPress admin.
 * Improved: "View details" link in the Plugins screen row — opens the standard plugin-information modal with description, changelog, and installation instructions drawn from the live update manifest. Duplicate links are suppressed automatically.
 * Improved: "Visit plugin site" link (GitHub repository) guaranteed in the plugin row meta even when WordPress drops it for self-hosted plugins.
 * Fixed: Plugin info modal now returns a graceful local fallback (name, installed version, homepage) instead of "Plugin not found" when the remote manifest is temporarily unreachable.
@@ -262,7 +263,6 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 = 1.7.0 =
 * Added: Subdomain routing mode — languages can now be served from subdomains (de.example.com, fr.example.com) instead of path prefixes (example.com/de/). Select the URL structure in Settings → Lingua Forge → Router → URL structure. Requires wildcard DNS and TLS on the server side; no WordPress configuration beyond the setting. Source language always serves from the root domain. Cookie scoping, permalink generation, hreflang output, language switcher, and the link-fixer scan are all subdomain-aware. The lf_base_domain filter is available to override the auto-derived base domain when home_url() includes www.
 * Added: Classic navigation menu auto-add guard — a publish_page hook (priority 11) removes any just-inserted menu item whose page is a non-source-language translation, preventing translated pages from appearing in source-language classic menus. Applies to classic nav menus (wp_nav_menu) only; FSE wp_navigation posts are unaffected.
-* Added: Self-hosted update checker — once installed, WordPress surfaces update badges and one-click updates directly from lingua-forge.com. The plugin is not listed on WordPress.org; the first install is manual (download ZIP from GitHub Releases), but all subsequent updates are handled automatically inside the WordPress admin.
 * Fixed: Language switcher rendered empty on non-singular pages (archives, category, tag, author, blog index) — get_the_ID() returns 0 there, causing get_languages() to return an empty array even when the block was present in a shared header or footer template. A URL-rewrite fallback now builds the language list from all configured languages when no post ID is available.
 * Fixed: Translate Navigation generated wrong URLs in subdomain routing mode — internal page URLs were rewritten using path-prefix logic (/de/contact/) instead of subdomain URLs (de.example.com/contact/). Now uses lang_base_url() for host-based rewriting in subdomain mode.
 * Fixed: Source-language pages were redirected to the wrong language when a stale cross-language cookie was present. In path mode, a non-prefixed URL is now treated as an authoritative source-language signal and bypasses cookie detection. The homepage is unaffected.
@@ -315,13 +315,13 @@ Adds a "Translate missing" button to the Posts/Pages list — trigger AI transla
 Fixes spurious Override button in the Translations metabox after language switch (stale cache). Adds automatic rewrite-rule flush and page reload after installing a language. Router tab now shows a per-language tabbed UI. No schema changes — safe to update in place.
 
 = 1.7.2 =
-Improves the update-checker UI — adds "View details" modal and guarantees the "Visit plugin site" link. Fixes plugin info modal fallback when the manifest is unreachable. No schema or settings changes — safe to update in place.
+Introduces the self-hosted automatic update checker and improves its UI — "View details" modal, guaranteed "Visit plugin site" link, graceful fallback when the manifest is unreachable. No schema or settings changes — safe to update in place.
 
 = 1.7.1 =
 Patch release. Fixes Target Language dropdown in the Meta Boxes panel showing the wrong language list (missing instance-configured languages such as Basque). No schema or settings changes — safe to update in place.
 
 = 1.7.0 =
-Adds subdomain routing mode (de.example.com style) and self-hosted automatic update checker. No schema changes. Existing path-prefix setups are unaffected — subdomain mode must be explicitly enabled in Router settings. Safe to update in place.
+Adds subdomain routing mode (de.example.com style). No schema changes. Existing path-prefix setups are unaffected — subdomain mode must be explicitly enabled in Router settings. Safe to update in place.
 
 = 1.6.5 =
 Maintenance release — removes leftover debug logging from the language-router module. No schema, settings, or behaviour changes. Safe to update in place.

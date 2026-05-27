@@ -147,7 +147,20 @@ class Linguaforge_Updater {
 			return $transient;
 		}
 
-		if ( version_compare( $manifest->version, LINGUAFORGE_VERSION, '>' ) ) {
+		// Read the installed version from the plugin file on disk rather than
+		// from the LINGUAFORGE_VERSION constant.  When WordPress re-runs this
+		// filter immediately after an upgrade (still within the same update.php
+		// request), the constant still reflects the old version while the file
+		// on disk already contains the new one.  Reading from disk prevents us
+		// from re-injecting a spurious "update available" entry that would force
+		// the user to click Update a second time before the badge clears.
+		$file_data         = get_file_data(
+			WP_PLUGIN_DIR . '/' . self::PLUGIN_BASENAME,
+			[ 'Version' => 'Version' ]
+		);
+		$installed_version = $file_data['Version'] ?? LINGUAFORGE_VERSION;
+
+		if ( version_compare( $manifest->version, $installed_version, '>' ) ) {
 			// Newer version available — WordPress will show the update badge.
 			$transient->response[ self::PLUGIN_BASENAME ] = self::build_update_object( $manifest );
 		} else {

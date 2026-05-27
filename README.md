@@ -1,5 +1,8 @@
 # Lingua Forge
 
+> **Feature freeze — feedback and testing welcome**
+> Lingua Forge has reached a stable feature set. New features are on hold while the focus shifts to real-world testing, compatibility, and reliability. If you try the plugin and run into anything — bugs, edge cases, unexpected behaviour, or missing pieces — please open an issue on GitHub. Pull requests and testing reports are genuinely appreciated.
+
 **GitHub:** https://github.com/leotiger/lingua-forge
 
 Lingua Forge is a WordPress plugin for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
@@ -933,11 +936,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 **1.8.0** — Translations metabox Override-button bug fixed (stale TRID cache after language switch); "Add Language" now flushes rewrite rules and reloads the page automatically; Router tab replaced with per-language tabbed UI for Templates, Parts, and Navigations. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-**1.7.2** — Update-checker UI improvements: "View details" modal added to the plugin row; "Visit plugin site" link guaranteed; plugin info modal shows graceful fallback when manifest is unreachable. See [CHANGELOG.md](CHANGELOG.md) for details.
+**1.7.2** — Self-hosted automatic update checker introduced; update-checker UI: "View details" modal added to the plugin row; "Visit plugin site" link guaranteed; plugin info modal shows graceful fallback when manifest is unreachable. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.7.1** — MetaBox Target Language dropdown fixed (instance languages only; Basque/eu auto-injected via filter); maintenance tab warning cleaned up; `SECURITY.md` excluded from distribution. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-**1.7.0** — Subdomain routing mode (`de.example.com`); self-hosted automatic update checker; classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
+**1.7.0** — Subdomain routing mode (`de.example.com`); classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.5** — Link Fixer stale-path fix for template parts; language-router debug call sites removed; `filter_locale` renamed to generic name; `.distignore` fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
 
