@@ -47,7 +47,7 @@
         "plugin-check": [
             "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
             "./node_modules/.bin/wp-env run cli wp plugin install plugin-check --activate || true",
-            "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge --exclude-directories=dev,tests"
+            "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge --exclude-directories=dev,tests --ignore-codes=plugin_updater_detected,update_modification_detected"
         ],
         "qa": [
             "@lint",

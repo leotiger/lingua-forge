@@ -138,10 +138,15 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ## Installation
 
-1. Copy the `lingua-forge/` folder to `wp-content/plugins/`
-2. Activate **Lingua Forge** from the WordPress admin (Plugins → Installed Plugins)
-3. Go to **Settings → Permalinks** and click **Save Changes** — this flushes the rewrite rules for the language URL prefixes
-4. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
+**Lingua Forge is not listed in the WordPress.org Plugin Directory.** The first install is manual:
+
+1. Download the latest `lingua-forge-{version}.zip` from the [Releases page](https://github.com/leotiger/lingua-forge/releases)
+2. In your WordPress admin go to **Plugins → Add New → Upload Plugin**, choose the ZIP, and click **Install Now**
+3. Activate **Lingua Forge** from **Plugins → Installed Plugins**
+4. Go to **Settings → Permalinks** and click **Save Changes** — this flushes the rewrite rules for the language URL prefixes
+5. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
+
+**After the first install, updates are automatic.** WordPress checks for new releases every 12 hours and displays the standard update badge in **Plugins → Installed Plugins** when one is available — one-click update from there, no manual download required.
 
 ```
 wp-content/
@@ -869,11 +874,14 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.7.1**
+**Current release — 1.7.2**
 
-- **MetaBox Target Language dropdown** — now shows only languages active on the server instance (matches Quick Translate). Any instance-configured language absent from the built-in AI map (e.g. Basque/`eu`) is automatically injected via a new `MetaBox::inject_instance_languages()` filter callback on `linguaforge_translation_languages` (priority 5); English names are resolved via PHP's `Locale::getDisplayLanguage()` with uppercased code as fallback. Pre-selection from post language meta works correctly for all server-installed languages without per-language hardcoding.
-- **Maintenance tab warning** — internal meta key names removed from the uninstall warning text.
-- **`SECURITY.md`** — excluded from the SVN deploy ZIP and GitHub source archives via `.distignore` / `.gitattributes`.
+- **Self-hosted automatic updates** — once installed, WordPress checks for new releases every 12 hours and shows the standard update badge in Plugins → Installed Plugins. The first install is manual (ZIP from [GitHub Releases](https://github.com/leotiger/lingua-forge/releases)); all subsequent updates are one-click from the WordPress admin.
+- **"View details" modal** — plugin row now includes a "View details" link that opens the standard plugin-information thickbox with description, changelog, and installation instructions from the live manifest. Duplicate links suppressed; "Visit plugin site" (GitHub) guaranteed.
+- **Graceful fallback** — if the remote manifest is temporarily unreachable the modal shows locally-known plugin data instead of "Plugin not found."
+- **PHPStan** — `$transient` typed as `\stdClass`; `includes/` added to analysis paths.
+
+**1.7.1** — MetaBox Target Language dropdown fixed (instance languages only; Basque/eu auto-injected via filter); maintenance tab warning cleaned up; `SECURITY.md` excluded from distribution. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.7.0** — Subdomain routing mode (`de.example.com`); classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
@@ -884,8 +892,6 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 **1.6.3** — Multi-character locale routing fixed (zh-tw, zh-hant, pt-br); frontend AJAX lang detection fixed for POST requests; missing-translation-notice block gains a full Site Editor component. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.6.2** — Defensive hardening for non-public post types; cookie domain scoping fix. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.1** — Translation Memory cache invalidation fix; FSE-translate AJAX budget-protection fix. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 

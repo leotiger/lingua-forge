@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -68,10 +68,15 @@ Source code and issue tracker: https://github.com/leotiger/lingua-forge
 
 == Installation ==
 
-1. Upload the `lingua-forge` folder to `wp-content/plugins/`.
-2. Activate **Lingua Forge** from **Plugins → Installed Plugins**.
-3. Go to **Settings → Permalinks** and click **Save Changes** — this registers the language URL prefixes.
-4. Go to **Settings → Lingua Forge**, select an AI provider, and enter your API key.
+**Lingua Forge is not listed in the WordPress.org Plugin Directory.** Install it manually from GitHub:
+
+1. Go to the [Releases page](https://github.com/leotiger/lingua-forge/releases) and download the latest `lingua-forge-{version}.zip`.
+2. In your WordPress admin go to **Plugins → Add New → Upload Plugin**, choose the ZIP, and click **Install Now**.
+3. Activate **Lingua Forge** from **Plugins → Installed Plugins**.
+4. Go to **Settings → Permalinks** and click **Save Changes** — this registers the language URL prefixes.
+5. Go to **Settings → Lingua Forge**, select an AI provider, and enter your API key.
+
+**After the first manual install, updates are automatic.** Once the plugin is active, WordPress checks for new versions automatically (every 12 hours) and displays the standard update badge in **Plugins → Installed Plugins** when a new release is available. You can then update with one click — no manual download needed for subsequent updates.
 
 **Migrating from mu-plugins:** if you were running Language Router, Meta Description, or WPEnhance AI as must-use plugins, deactivate or remove those files before activating Lingua Forge to avoid duplicate hooks. Existing post meta (`_lang`, `_trid`, `meta_description`) and the `my_lang_filter` user preference are migrated automatically on first activation.
 
@@ -229,6 +234,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.7.2 =
+* Added: Self-hosted update checker — once installed, WordPress surfaces update badges and one-click updates directly from lingua-forge.com. The plugin is not listed on WordPress.org; the first install is manual (download ZIP from GitHub Releases), but all subsequent updates are handled automatically inside the WordPress admin.
+* Added: "View details" link in the Plugins screen row — opens the standard plugin-information modal with description, changelog, and installation instructions drawn from the live update manifest. Duplicate links are suppressed automatically.
+* Added: "Visit plugin site" link (GitHub repository) guaranteed in the plugin row meta even when WordPress drops it for self-hosted plugins.
+* Fixed: Plugin info modal now returns a graceful local fallback (name, installed version, homepage) instead of "Plugin not found" when the remote manifest is temporarily unreachable.
+* Fixed: PHPStan — $transient parameter typed as \stdClass; includes/ added to analysis paths.
+
 = 1.7.1 =
 * Fixed: Target Language dropdown (Meta Boxes and Quick Translate) — now limited to languages active on the server instance. Any instance-configured language absent from the built-in AI map (e.g. Basque/eu) is automatically injected via a new MetaBox::inject_instance_languages() filter callback on linguaforge_translation_languages (priority 5). English language names are resolved via PHP's Locale::getDisplayLanguage(); the uppercased code is used as fallback when the intl extension is unavailable. Language and pre-selection from post _lf_lang meta now work correctly for all server-installed languages without any per-language hardcoding.
 * Fixed: Maintenance tab uninstall warning — internal meta key names removed from the user-facing description; replaced with plain-language equivalents.
@@ -274,15 +286,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Fixed: lang_permalink() short-circuits for non-public post types — prevents URL rewriting on internal WordPress post types that pass through post_link / page_link.
 * Fixed: set_lang_cookie() now explicitly scopes the lf_lang cookie to the site's own domain (wp_parse_url( home_url(), PHP_URL_HOST )) instead of passing an empty domain string, preventing cookie bleed between sites sharing a server.
 
-= 1.6.1 =
-* Fixed: Translation Memory cache invalidation — signature now reads Config::preset_addendum( $preset ) and folds in the resolved per-post preset; existing TM rows become one-time misses and are rewritten on the next translation.
-* Fixed: MetaBox per-page preset picker — "Global default (Custom)" indicator restored after the 1.5.0 migration.
-* Fixed: FSE-translate AJAX endpoints now apply per-user and site-wide quota gates via RateLimiter::gate_ajax_or_die(). LinguaForge\AI\REST\RateLimiter extracted from FeatureController.
-
 For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.7.2 =
+Adds self-hosted automatic update support — after this update, future releases will appear as standard WordPress update notices. First install is manual (ZIP from GitHub Releases); all subsequent updates are one-click from the WordPress admin. No schema or settings changes — safe to update in place.
 
 = 1.7.1 =
 Patch release. Fixes Target Language dropdown in the Meta Boxes panel showing the wrong language list (missing instance-configured languages such as Basque). No schema or settings changes — safe to update in place.
@@ -302,5 +312,3 @@ Correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route c
 = 1.6.2 =
 Defensive hardening release. Closes four edge cases around non-public post types and cross-site cookie bleed, surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT). No schema or settings changes — safe to update in place.
 
-= 1.6.1 =
-Bug-fix release. Fixes Translation Memory cache invalidation after per-preset addendum edits and closes a rate-limit gap where FSE-translate AJAX endpoints bypassed quota guards. No schema or settings changes.
