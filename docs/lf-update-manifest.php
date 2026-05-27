@@ -35,13 +35,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.8.2';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.2/lingua-forge-1.8.2.zip';
+	$version      = '1.8.3';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.3/lingua-forge-1.8.3.zip';
 	$last_updated = '2026-05-27';
 	$tested       = '7.0';
 
 	// Prepend new release entry; keep the last 3–4 entries for the modal.
 	$changelog =
+		'<h4>1.8.3 — 2026-05-27</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Double-update badge after upgrade — update checker now reads installed version from disk instead of the in-memory constant, eliminating the need to click Update twice.</li>' .
+		'</ul>' .
+
 		'<h4>1.8.2 — 2026-05-27</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> "Retranslate" button with language selector in the Lang column — outdated target posts show a "From [lang]" dropdown and a Retranslate button. Clears stale cache, reruns AI translation, resets outdated flag, regenerates meta description.</li>' .

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -234,6 +234,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.8.3 =
+* Fixed: Double-update badge after WordPress one-click upgrade — update checker now reads the installed version from the plugin file header on disk instead of the in-memory constant. During the post-upgrade request the old constant was still loaded while the file already contained the new version, causing a spurious "update available" re-injection. No longer requires clicking Update twice.
+* Fixed: Self-hosted update checker correctly attributed to 1.7.2 in all documentation (was incorrectly listed under 1.7.0).
+* Added: Feature freeze notice at the top of README.md — collaboration and testing welcome.
+
 = 1.8.2 =
 * Added: "Retranslate" button in the Lang column for outdated target-language posts — fires alongside the ⚠ indicator with a language selector (From EN / From ES / …) letting editors choose which language version to retranslate from. Same-language retranslation is blocked. Success clears the outdated flag and regenerates the meta description.
 * Improved: "Translate missing" and "Retranslate" buttons now render inline on the same line as the language indicator. Lang column layout uses inline-flex for compact presentation.
@@ -304,6 +309,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.8.3 =
+Fixes a double-update badge that required clicking Update twice after a successful upgrade. No schema or settings changes — safe to update in place.
 
 = 1.8.2 =
 Adds "Retranslate" button with language selector for outdated translations in the Posts/Pages list. No schema changes — safe to update in place.

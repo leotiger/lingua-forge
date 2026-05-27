@@ -927,10 +927,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.8.2**
+**Current release — 1.8.3**
 
-- **"Retranslate" button with language selector in the Posts/Pages list** — outdated target-language posts (⚠ indicator) now show a "From [lang]" dropdown listing all other language versions in the TRID group, plus a "Retranslate" button. Clears stale cache, reruns the full AI translation pipeline, resets the outdated flag, and regenerates the meta description.
-- **Inline Lang column layout** — "Translate missing" and "Retranslate" buttons now sit on the same line as the language indicator.
+- **Double-update badge fixed** — after a WordPress one-click upgrade the plugin no longer shows a spurious second "update available" badge. Root cause: the update checker was comparing the manifest version against the in-memory constant (still the old version during the post-upgrade request) rather than the file on disk. Now reads from disk via `get_file_data()`.
+
+**1.8.2** — "Retranslate" button with language selector in the Posts/Pages list; inline Lang column layout. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.8.1** — "Translate missing" button in the Lang column for source posts with missing translations. See [CHANGELOG.md](CHANGELOG.md) for details.
 

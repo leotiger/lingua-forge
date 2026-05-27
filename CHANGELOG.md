@@ -2,6 +2,19 @@
 
 ---
 
+## [1.8.3] — 2026-05-27
+
+### Fixed
+
+- **Double-update badge after WordPress upgrade** — `check_for_update()` now reads the installed version from the plugin file header on disk via `get_file_data()` instead of from the `LINGUAFORGE_VERSION` constant. WordPress re-runs the `pre_set_site_transient_update_plugins` filter immediately after an upgrade while the old constant is still in memory for the current request, causing the update entry to be re-injected even though the file on disk already has the new version. Reading from disk closes this race and eliminates the need to click Update a second time.
+
+### Documentation
+
+- **Update checker attribution corrected** — self-hosted automatic update checker is now correctly listed under 1.7.2 in all docs (`CHANGELOG.md`, `readme.txt`, `README.md`, `docs/lf-update-manifest.php`). Was incorrectly attributed to 1.7.0.
+- **Feature freeze notice** — added a short collaboration and testing callout at the top of `README.md`.
+
+---
+
 ## [1.8.2] — 2026-05-27
 
 ### Added
