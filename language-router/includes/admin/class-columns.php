@@ -60,7 +60,7 @@ class Columns {
 			 *
 			 * @param int $post_id  Current (target) post ID.
 			 */
-			do_action( 'lf_lang_column_outdated', $id );
+			do_action( 'lf_lang_column_outdated', $id ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is the registered plugin prefix; WPCS skips 2-char prefixes for hook validation.
 		}
 
 		$missing = $this->router->trid_group->get_missing_languages( $id );
@@ -79,7 +79,7 @@ class Columns {
 			 * @param int      $post_id  Current post ID.
 			 * @param string[] $missing  Missing language codes.
 			 */
-			do_action( 'lf_lang_column_missing', $id, $missing );
+			do_action( 'lf_lang_column_missing', $id, $missing ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is the registered plugin prefix; WPCS skips 2-char prefixes for hook validation.
 		}
 
 		/**
@@ -94,7 +94,7 @@ class Columns {
 		 *
 		 * @param int $post_id  Current post ID.
 		 */
-		do_action( 'lf_lang_column_retranslate', $id );
+		do_action( 'lf_lang_column_retranslate', $id ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is the registered plugin prefix; WPCS skips 2-char prefixes for hook validation.
 	}
 
 	// =========================================================
