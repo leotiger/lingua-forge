@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.8.3
+Stable tag: 1.8.4
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -234,6 +234,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 1.8.4 =
+* Improved: "Retranslate" button now appears on all TRID-linked posts, not just those flagged as outdated. A new lf_lang_column_retranslate hook fires unconditionally in the Lang column so editors can force a fresh translation at any time. The lf_lang_column_outdated hook is unchanged.
+
 = 1.8.3 =
 * Fixed: Double-update badge after WordPress one-click upgrade — update checker now reads the installed version from the plugin file header on disk instead of the in-memory constant. During the post-upgrade request the old constant was still loaded while the file already contained the new version, causing a spurious "update available" re-injection. No longer requires clicking Update twice.
 * Fixed: Self-hosted update checker correctly attributed to 1.7.2 in all documentation (was incorrectly listed under 1.7.0).
@@ -309,6 +312,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 1.8.4 =
+"Retranslate" button now visible on all TRID-linked posts, not just outdated ones. No schema changes — safe to update in place.
 
 = 1.8.3 =
 Fixes a double-update badge that required clicking Update twice after a successful upgrade. No schema or settings changes — safe to update in place.

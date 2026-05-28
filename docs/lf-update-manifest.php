@@ -35,13 +35,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.8.3';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.3/lingua-forge-1.8.3.zip';
-	$last_updated = '2026-05-27';
+	$version      = '1.8.4';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.4/lingua-forge-1.8.4.zip';
+	$last_updated = '2026-05-28';
 	$tested       = '7.0';
 
 	// Prepend new release entry; keep the last 3–4 entries for the modal.
 	$changelog =
+		'<h4>1.8.4 — 2026-05-28</h4>' .
+		'<ul>' .
+			'<li><strong>Improved:</strong> "Retranslate" button now available on all TRID-linked posts, not just those flagged as outdated. A new <code>lf_lang_column_retranslate</code> hook fires unconditionally in the Lang column so editors can always force a fresh translation from the list screen.</li>' .
+		'</ul>' .
+
 		'<h4>1.8.3 — 2026-05-27</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> Double-update badge after upgrade — update checker now reads installed version from disk instead of the in-memory constant, eliminating the need to click Update twice.</li>' .

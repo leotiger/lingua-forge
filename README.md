@@ -927,9 +927,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.8.3**
+**Current release — 1.8.4**
 
 - **Double-update badge fixed** — after a WordPress one-click upgrade the plugin no longer shows a spurious second "update available" badge. Root cause: the update checker was comparing the manifest version against the in-memory constant (still the old version during the post-upgrade request) rather than the file on disk. Now reads from disk via `get_file_data()`.
+
+**1.8.4** — "Retranslate" button now available on all TRID-linked posts regardless of outdated status. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 **1.8.2** — "Retranslate" button with language selector in the Posts/Pages list; inline Lang column layout. See [CHANGELOG.md](CHANGELOG.md) for details.
 

@@ -2,6 +2,14 @@
 
 ---
 
+## [1.8.4] — 2026-05-28
+
+### Improved
+
+- **"Retranslate" button now available on all TRID-linked posts** — previously the "Retranslate" selector and button only appeared next to the ⚠ outdated indicator, meaning posts whose translations existed but were not flagged as outdated offered no way to force a fresh translation from the list screen. A new `lf_lang_column_retranslate` action hook now fires unconditionally for every post in the Lang column, so the button is always present whenever a post has at least one other language in its TRID group — regardless of sync status. The `lf_lang_column_outdated` hook is retained and continues to fire for the ⚠ indicator so any third-party code hooking it is unaffected.
+
+---
+
 ## [1.8.3] — 2026-05-27
 
 ### Fixed

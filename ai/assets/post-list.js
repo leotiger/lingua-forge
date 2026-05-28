@@ -4,7 +4,7 @@
  * Handles two buttons injected into the "Lang" column by PostListColumn:
  *
  *   .lf-fill-missing  — "Translate missing" on source posts with ⭕ indicator.
- *   .lf-retranslate   — "Retranslate" on target posts with ⚠ indicator.
+ *   .lf-retranslate   — "Retranslate" on any TRID-linked post (outdated or not).
  *
  * On click (both buttons):
  *   • Disables the button and shows a spinner label

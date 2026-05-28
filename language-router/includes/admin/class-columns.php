@@ -81,6 +81,20 @@ class Columns {
 			 */
 			do_action( 'lf_lang_column_missing', $id, $missing );
 		}
+
+		/**
+		 * Fires for every post in the Lang column, regardless of outdated or
+		 * missing-translation status.
+		 *
+		 * The AI module hooks this to inject a "Retranslate" button that is
+		 * always available on any TRID-linked post — not only when the ⚠
+		 * outdated indicator is present.  The handler is responsible for
+		 * checking whether the post actually has TRID siblings before rendering
+		 * any UI.
+		 *
+		 * @param int $post_id  Current post ID.
+		 */
+		do_action( 'lf_lang_column_retranslate', $id );
 	}
 
 	// =========================================================

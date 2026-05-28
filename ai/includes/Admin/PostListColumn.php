@@ -8,9 +8,9 @@
  *   • "Translate missing" — shown on source-language posts that are missing
  *     one or more target-language translations.  Hooks `lf_lang_column_missing`.
  *
- *   • "Retranslate" — shown on target-language posts whose translation is
- *     outdated (source has been edited since the translation was applied).
- *     Hooks `lf_lang_column_outdated`.
+ *   • "Retranslate" — shown on every TRID-linked post regardless of outdated
+ *     status, so editors can force a fresh translation at any time.
+ *     Hooks `lf_lang_column_retranslate`.
  *
  * Both hooks are fired by Columns::render_lang_column() in the language-router
  * module, keeping the AI module fully decoupled.
@@ -44,8 +44,8 @@ class PostListColumn {
 		// "Translate missing" — fires on source posts with missing translations.
 		add_action( 'lf_lang_column_missing', [ self::class, 'render_fill_button' ], 10, 2 );
 
-		// "Retranslate" — fires on target posts whose translation is outdated.
-		add_action( 'lf_lang_column_outdated', [ self::class, 'render_retranslate_button' ], 10, 1 );
+		// "Retranslate" — fires on every post regardless of outdated status.
+		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_retranslate_button' ], 10, 1 );
 
 		// Enqueue JS + CSS on the post list screen.
 		add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue' ] );
@@ -79,17 +79,19 @@ class PostListColumn {
 	}
 
 	/**
-	 * Output the "Retranslate" selector + button next to the ⚠ outdated indicator.
+	 * Output the "Retranslate" selector + button in the Lang column.
 	 *
 	 * Renders a <select> listing every language in the TRID group except the
 	 * current post's own language, so the editor can choose which version to
 	 * translate from.  Excluding the current language prevents a meaningless
 	 * "retranslate German from German" operation.
 	 *
-	 * Called via the `lf_lang_column_outdated` action fired by
-	 * Columns::render_lang_column() when a target-language post is outdated.
+	 * Called via the `lf_lang_column_retranslate` action fired unconditionally
+	 * by Columns::render_lang_column() for every post, whether or not the ⚠
+	 * outdated indicator is present.  Returns early if the post has no TRID
+	 * siblings to translate from.
 	 *
-	 * @param int $post_id  Current (target) post ID.
+	 * @param int $post_id  Current post ID.
 	 */
 	public static function render_retranslate_button( int $post_id ): void {
 		$current_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
