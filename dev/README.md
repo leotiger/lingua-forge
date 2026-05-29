@@ -63,6 +63,11 @@ npm run lint:js
 npm run lint:css
 npm run format
 
+# i18n
+composer make-pot              # regenerate languages/lingua-forge.pot
+                               # downloads wp-cli.phar to dev/ on first run (curl + php required)
+                               # no Docker or global WP-CLI needed
+
 # wp-env
 npm run env:start
 npm run env:stop
