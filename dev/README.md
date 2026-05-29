@@ -115,3 +115,18 @@ composer qa && composer plugin-check && npm run lint:js && npm run lint:css
 `composer qa` runs lint + `composer analyse` (PHPStan) + unit tests in one shot.
 If green, the plugin root is ready to push to production via SFTP / rsync.
 Nothing in `dev/` reaches the deploy target — `.distignore` excludes it.
+
+### Expected plugin-check noise — do not fix
+
+`composer plugin-check` will report **1 error and 2 warnings** related to
+the self-hosted auto-update path (`docs/lf-update-manifest.php` + the
+`Updater` class). These fire because Plugin Check expects updates to come
+from WordPress.org; Lingua Forge uses its own update channel instead.
+All three — including the error flagged against the manifest file — are
+permanent known false positives. Ignore them; do not suppress or work
+around them.
+
+Additionally, Plugin Check flags **hidden files** (`.htaccess`, `.gitignore`,
+`.distignore`, etc.) and **Markdown files** (`CHANGELOG.md`, `CONTRIBUTING.md`,
+`README.md`, etc.) as warnings. These files are excluded from release zips
+and SFTP deploys via `.distignore` — the warnings are safe to ignore.
