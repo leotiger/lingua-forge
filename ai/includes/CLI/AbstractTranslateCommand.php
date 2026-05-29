@@ -469,6 +469,20 @@ abstract class AbstractTranslateCommand {
         // group until the target post is opened and re-saved in the editor.
         $router->trid_group->clear_translation_cache( $new_id );
 
+        /**
+         * Fires after a translated post has been created, linked into its TRID
+         * group, and its translation cache invalidated.
+         *
+         * Only fires in the CLI (server-side save) path. In the editor flow the
+         * translated content is returned to the browser and saved client-side via
+         * Gutenberg; no server-side post ID is available at REST response time.
+         *
+         * @param int    $new_id          Post ID of the newly created translation.
+         * @param int    $source_post_id  Post ID of the source (original) post.
+         * @param string $target_lang     Two-letter target language code (e.g. 'es').
+         */
+        do_action( 'linguaforge_translation_complete', (int) $new_id, $source_post_id, $target_lang );
+
         return (int) $new_id;
     }
 

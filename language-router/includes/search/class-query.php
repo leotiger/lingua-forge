@@ -36,10 +36,10 @@ class Query {
 		if ( ! is_search() ) return $templates;
 
 		$lang_slug = 'search-' . LF_LANG;
-		$tpl       = get_page_by_path( $lang_slug, OBJECT, 'wp_template' );
+		$found     = get_block_templates( [ 'slug__in' => [ $lang_slug ] ] );
 
-		if ( $tpl ) {
-			return [ _build_block_template_result_from_post( $tpl ) ];
+		if ( ! empty( $found ) ) {
+			return $found;
 		}
 
 		return $templates;

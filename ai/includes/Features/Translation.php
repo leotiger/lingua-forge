@@ -897,8 +897,8 @@ class Translation implements FeatureInterface {
         $tm_eligible = TranslationMemory::enabled()
             && ! $force                                            // force_refresh / debug mode bypass TM cache
             && empty($attr_map)                                    // v1 doesn't handle block attribute placeholders
-            && $source_lang !== ''                                 // need known source for TM keys
-            && in_array($post->post_type, ['post', 'page'], true); // standard types only
+            && $source_lang !== '';                                // need known source for TM keys
+            // TM cache is keyed on block content + language pair — post type is irrelevant to cache validity.
 
         if ($tm_eligible) {
 
@@ -1096,6 +1096,26 @@ class Translation implements FeatureInterface {
         if ($translated_footnotes !== null) {
             $payload['footnotes'] = $translated_footnotes;
         }
+
+        /**
+         * Filters the translated content payload before it is cached and returned.
+         *
+         * Runs after the AI response has been validated, footnotes and block
+         * attributes re-inserted, and stray `<br>` tags stripped — but before the
+         * payload is stored in the translation cache or sent back to the caller.
+         * Changes made here are reflected in the cache, in the REST response (editor
+         * flow), and in the post saved server-side (CLI flow).
+         *
+         * @param array  $payload          Associative array with keys:
+         *                                 `output` (string — translated post content),
+         *                                 `type` ('content'),
+         *                                 `language` (human-readable language name),
+         *                                 and optionally `translated_title` (string)
+         *                                 and `footnotes` (JSON string).
+         * @param int    $post_id          Source post ID being translated.
+         * @param string $target_language  Two-letter target language code (e.g. 'es').
+         */
+        $payload = (array) apply_filters( 'linguaforge_translation_content', $payload, $post_id, $target_language );
 
         // Cache the translation payload before chaining meta description —
         // the meta description is ephemeral (content not yet saved to DB)

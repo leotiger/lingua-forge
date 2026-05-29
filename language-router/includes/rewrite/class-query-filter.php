@@ -99,11 +99,7 @@ class QueryFilter {
 				'value'   => $this->router->context->source_language(),
 				'compare' => '!=',
 			];
-			$meta_query[] = [
-				'relation' => 'OR',
-				[ 'key' => '_lf_translation_source_updated_at', 'compare' => 'NOT EXISTS' ],
-				[ 'key' => '_lf_translation_source_updated_at', 'value' => 0, 'compare' => '=' ],
-			];
+			$meta_query[] = [ 'key' => '_lf_translation_source_updated_at', 'compare' => 'NOT EXISTS' ];
 		}
 
 		if ( ! empty( $meta_query ) ) {

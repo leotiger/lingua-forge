@@ -17,7 +17,7 @@ who owns it* at a glance.
 
 | Prefix          | Case        | Used for                                                              |
 |-----------------|-------------|-----------------------------------------------------------------------|
-| `linguaforge_`  | lowercase   | Long-form identifiers: option keys, admin_post / wp_ajax actions, AI-module filter hooks, transient prefixes |
+| `linguaforge_`  | lowercase   | Long-form identifiers: option keys, admin_post / wp_ajax actions, integration API hooks (across all sub-modules), transient prefixes |
 | `lf_`           | lowercase   | Short-form identifiers: post/user-meta keys, form field names, nonce names, Language-Router filter hooks, GET-flag query args |
 | `LF_`           | UPPERCASE   | One runtime constant defined at file-load time (currently only `LF_LANG`) |
 | `LINGUAFORGE_`  | UPPERCASE   | Plugin-wide PHP constants — paths, URLs, version, and the wp-config-overridable behavior switches |
@@ -34,16 +34,28 @@ outside the plugin namespace.
 - **`admin_post_*` and `wp_ajax_*` action names.** Examples:
   `admin_post_linguaforge_clear_ai_cache`,
   `wp_ajax_linguaforge_test_provider`.
-- **Filter hooks exposed by the AI sub-module.** These are the
-  "settings-on-top-of-options" knobs that integrators tune from a custom
-  plugin or theme. Examples: `linguaforge_ai_retry_policy`,
-  `linguaforge_required_capability`, `linguaforge_debug_dir`,
-  `linguaforge_ai_should_boot`, `linguaforge_ai_rate_limit`,
-  `linguaforge_ai_daily_quota`, `linguaforge_translation_worker_config`
-  (per-invocation model / temperature / max_tokens override for the
-  translation feature; receives `WorkerConfig`, `$post_id`, `$params`),
-  `linguaforge_translation_memory_enabled` (disable TM per-invocation;
-  receives `bool $enabled`, `int $post_id`).
+- **Integration API hooks** — the stable surface for third-party plugins
+  (see *Writing a third-party integration* below). These span all sub-modules:
+  - **Router sub-module:** `linguaforge_loaded` (fires after the router has
+    fully booted; receives `string $version`), `linguaforge_trid_changed`
+    (fires in `TridGroup::set_trid()` only when the TRID UUID changes;
+    receives `int $post_id`, `string $new_trid`, `string $old_trid`),
+    `linguaforge_switcher_output` (filter on the fully-rendered language-
+    switcher HTML; receives `string $html`, `array $langs`, `array $atts`).
+  - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
+    translation payload before it is written to the result cache; receives
+    `array $payload`, `int $post_id`, `string $target_lang`),
+    `linguaforge_translation_complete` (action after a CLI / programmatic
+    translation creates or updates a post; receives `int $new_id`,
+    `int $source_id`, `string $target_lang`).
+  - **AI sub-module settings knobs:** `linguaforge_ai_retry_policy`,
+    `linguaforge_required_capability`, `linguaforge_debug_dir`,
+    `linguaforge_ai_should_boot`, `linguaforge_ai_rate_limit`,
+    `linguaforge_ai_daily_quota`, `linguaforge_translation_worker_config`
+    (per-invocation model / temperature / max_tokens override; receives
+    `WorkerConfig`, `$post_id`, `$params`),
+    `linguaforge_translation_memory_enabled` (disable TM per-invocation;
+    receives `bool $enabled`, `int $post_id`).
 - **Transient name prefixes.** Examples:
   `linguaforge_rate_user_{id}_{endpoint}`,
   `linguaforge_quota_daily_used_{Ymd}`.
@@ -75,6 +87,13 @@ a short name is meaningfully more readable.
     template was auto-assigned by the Language Router so it can be
     retracted if the language setting changes; not in the uninstall list
     because it is regenerated on the next save).
+  - **WooCommerce term name keys** (public data contract — readable by
+    other plugins): `_lf_term_name_{lang}` (e.g. `_lf_term_name_es`) —
+    stores the translated display name for a WooCommerce taxonomy term
+    (`product_cat`, `product_tag`, `product_type`, `pa_*`). Written by
+    `TermNameAdmin` from the term edit screen; read by `TermNameFilter`
+    via the `term_name` filter. One termmeta row per language per term;
+    no value stored means "fall back to the source name".
 - **`<input name="…">` form field names.** Examples: `lf_lang`,
   `lf_trans_{lang}`, `lf_page_template`.
 - **Nonce names and actions.** Examples: `lf_language_nonce` /
@@ -89,9 +108,11 @@ a short name is meaningfully more readable.
   Action hook examples: `lf_lang_column_missing` (fires after the ⭕
   missing-language indicator in the Lang column; receives `$post_id, $missing[]`),
   `lf_lang_column_outdated` (fires after the ⚠ outdated indicator; receives
-  `$post_id`). Both are designed for injecting UI into the column from a
-  decoupled module — the AI module uses them for the "Translate missing" and
-  "Retranslate" buttons.
+  `$post_id`), `lf_lang_column_retranslate` (fires unconditionally for every
+  post in the Lang column that has at least one other TRID-linked language;
+  receives `$post_id` — used for the "Retranslate" button that appears
+  regardless of outdated status). All three are designed for injecting UI
+  into the column from a decoupled module — the AI module uses them.
 - **GET-flag query args** set by `wp_safe_redirect()` after an
   admin-post handler so the success notice renders on the next request.
   Examples: `lf_override_uploaded`, `lf_cache_cleared`, `lf_debug_cleared`,
@@ -217,6 +238,12 @@ instead of reaching into the class instances directly. All are prefixed
 | `linguaforge_safe_query_args( $url )` | `string` | Strip language-routing internals from a URL |
 | `linguaforge_lang_permalink( $url, $post )` | `string` | Language-prefixed permalink (used as `post_link` filter) |
 
+**AI integration (defined in `ai/ai.php` — requires the AI module)**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_trigger_translation( $source_id, $lang, $params = [] )` | `int\|WP_Error` | Programmatically run the full AI translation pipeline (AI call → create-or-update translated post → TRID link → cache clear → `linguaforge_translation_complete` action). Returns the new/updated post ID or a `WP_Error`. Accepted `$params` keys: `force_refresh` (bool), `force_draft` (bool), `with_meta_description` (bool). |
+
 **Developer / internal**
 
 | Function | Returns | Purpose |
@@ -239,6 +266,12 @@ Modern code lives under three namespaces:
   - `LinguaForge\Router\LinkFixer` (canonical)
   The old bare names `Language_Router`, `LSFLR_Switcher`, and `LSFLR_Link_Fixer`
   no longer exist. New code in this sub-module must use the fully-qualified names.
+- `LinguaForge\Router\REST\…` — REST endpoints bundled with the router
+  (file location: `language-router/includes/rest/`).
+  - `LinguaForge\Router\REST\DataEndpoints` — public read-only REST routes
+    (`GET /wp-json/lingua-forge/v1/languages` and
+    `GET /wp-json/lingua-forge/v1/post/{id}/translations`). No AI dependency;
+    active whenever the router is active.
 - `LinguaForge\AI\Core\…`, `LinguaForge\AI\Providers\…`,
   `LinguaForge\AI\Features\…`, `LinguaForge\AI\Admin\…`,
   `LinguaForge\AI\REST\…`, `LinguaForge\AI\Contracts\…` — the AI
@@ -285,7 +318,8 @@ includes/
 
 language-router/              Routing, locale, translations, hreflang, admin meta boxes
   language-router.php         Sub-module bootstrap + procedural template wrappers
-  includes/                   Class files
+  includes/                   Class files (Router, Switcher, LinkFixer, widget, …)
+    rest/                     REST endpoint classes (DataEndpoints)
   assets/                     CSS / JS enqueued into admin
 
 ai/                           AI features (translation, meta-description, excerpt, content gen, revise)
@@ -296,7 +330,11 @@ ai/                           AI features (translation, meta-description, excerp
     CLI/                      WP-CLI commands (Commands facade + one class per subcommand)
     Contracts/                Interface definitions (AIProviderInterface)
     Core/                     Bootstrap, config, caching, TM, glossary, key store, utilities
-    Features/                 Feature implementations (Translation, MetaDescription, …)
+    Features/                 Feature implementations (Translation, MetaDescription,
+                              TranslationTrigger, …)
+    Integrations/WooCommerce/ WooCommerce delegation layer (Bootstrap, MetaDelegate,
+                              StockRouter, VariationDelegate, TaxonomyDelegate,
+                              CatalogQuery, TermNameFilter, TermNameAdmin)
     Providers/                AI provider adapters (Anthropic, OpenAI, Gemini) + factory
     REST/                     REST controller + rate limiter
   assets/                     CSS / JS for the meta box, editor toolbar, Settings page, post list
@@ -308,8 +346,8 @@ meta-description/             Meta Description module — LinguaForge\MetaDescri
 Architectural review and audit notes live **outside** the public
 plugin tree — in a maintainer-only `lingua-forge-audit/` sibling
 folder (not tracked in this repo). The current snapshot is
-`AUDIT-2026-05-23.md`; older `REVIEW.md` / `AUDIT-2026-05-19.md`
-documents are kept as historical record only. Contributors don't
+`AUDIT-2026-05-29.md`; older documents (`AUDIT-2026-05-23.md`,
+`REVIEW.md`, `AUDIT-2026-05-19.md`) are kept as historical record only. Contributors don't
 need to read them to ship a correct change — the conventions they
 codify all live in this file.
 
@@ -468,6 +506,197 @@ the filters list below) rather than reaching into the feature's worker
 config directly. The CLI's `translate` command is the reference
 implementation — registers a closure on the filter, runs the feature,
 removes the closure.
+
+---
+
+## WooCommerce integration
+
+The WooCommerce integration lives entirely under
+`ai/includes/Integrations/WooCommerce/` and is bootstrapped by
+`Bootstrap::init()` on `plugins_loaded` priority 20 (after WooCommerce
+itself loads at priority 10). It is silently skipped when
+`class_exists('WooCommerce')` is false.
+
+### Shared-stock delegation model
+
+Translated `product` posts carry only content fields (title, description,
+excerpt, meta description). All operational data is served transparently
+from the source-language product at runtime:
+
+| Class | Hook | Responsibility |
+|---|---|---|
+| `MetaDelegate` | `get_post_metadata` priority 1 | Price, SKU, stock, images, etc. transparently read from source |
+| `StockRouter` | `update/add_post_metadata` priority 1 | Stock writes routed to source; translated post stays clean |
+| `VariationDelegate` | `pre_get_posts` priority 5 | `product_variation` children delegated to source product |
+| `TaxonomyDelegate` | `wp_get_object_terms` priority 10 | Term assignments delegated to source product |
+| `CatalogQuery` | `woocommerce_product_query` | Language filter for secondary WC product queries |
+
+### Translated term names (Phase 1b)
+
+Category, tag, and attribute term names display in the visitor's language:
+
+| Class | Hook | Responsibility |
+|---|---|---|
+| `TermNameFilter` | `term_name` priority 10 | Swaps name from `_lf_term_name_{lang}` termmeta for WC taxonomies |
+| `TermNameAdmin` | `init` priority 15 + taxonomy hooks | Term edit/add screen fields; saves/deletes termmeta |
+
+`TermNameAdmin::init()` is a no-op on non-admin requests. It registers
+form hooks after WooCommerce has registered its `pa_*` attribute
+taxonomies (WC registers them at `init` priority 5; we run at priority 15).
+
+### Filters
+
+| Filter | Default | Purpose |
+|---|---|---|
+| `linguaforge_wc_delegate_post_types` | `['product']` | Which post types participate in meta/taxonomy delegation and stock routing |
+| `linguaforge_cpt_create_allowed` | `true` | Gates translated-post creation in `PostListColumn::ajax_fill_missing()` — return `false` for a post type until its delegation layer is confirmed active |
+
+### Extending the delegation layer
+
+To delegate a new meta key, add it to `MetaDelegate::OPERATIONAL_KEYS`.
+To add delegation for a new post type, use the
+`linguaforge_wc_delegate_post_types` filter — the five delegation classes
+all read from this filter.
+
+To add a new taxonomy to the term-name translation system, no code change
+is needed: `TermNameFilter::is_wc_taxonomy()` and
+`TermNameAdmin::active_wc_taxonomies()` both check the registered taxonomy
+list at runtime, so any taxonomy that passes `is_wc_taxonomy()` is
+automatically covered.
+
+### Integration tests
+
+The WooCommerce integration suite lives in `tests/integration/WooCommerce/`
+and requires Docker + wp-env with WooCommerce active:
+
+```bash
+cd dev/
+npm run env:start          # boots wp-env (only needed if stopped)
+composer test:integration:wc   # 76 tests, WC-only suite
+composer test:integration      # full suite including WC tests
+```
+
+A full stop/destroy/start is only needed when `.wp-env.json` changes
+(adding plugins, changing WP/PHP version). New PHP files are picked up
+immediately from the mounted plugin directory without any restart.
+
+---
+
+## Writing a third-party integration
+
+This section describes how an external plugin should integrate with Lingua
+Forge. The WooCommerce integration in `ai/includes/Integrations/WooCommerce/`
+is the canonical reference implementation.
+
+### Safe attach point
+
+Always hook into `linguaforge_loaded` rather than `plugins_loaded` directly.
+`linguaforge_loaded` fires synchronously at the end of the router boot
+sequence (which itself runs during `plugins_loaded` at priority 10), after
+`LF_LANG` is defined and all `linguaforge_*` / `lf_*` wrapper functions are
+available. If you must hook `plugins_loaded` for other reasons, use priority
+20 or higher — priority ≤ 10 risks running before the router has initialised.
+
+```php
+add_action( 'linguaforge_loaded', function ( string $version ) {
+    if ( version_compare( $version, '2.0.0', '<' ) ) {
+        return; // version gate — bail if LF is too old
+    }
+    MyPlugin\LinguaForgeIntegration::init();
+} );
+```
+
+### Bootstrap class structure
+
+Follow the WC integration pattern:
+
+```php
+namespace MyPlugin\Integrations\LinguaForge;
+
+class Bootstrap {
+
+    public static function init(): void {
+        // Guard: only boot if Lingua Forge is active and language list is non-empty.
+        if ( ! function_exists( 'linguaforge_languages' ) ) {
+            return;
+        }
+        if ( empty( linguaforge_languages() ) ) {
+            return;
+        }
+
+        // Register your hooks here.
+        add_filter( 'linguaforge_translation_content', [ self::class, 'apply_glossary' ], 10, 3 );
+
+        // Announce that your integration is active (allows downstream code to gate on it).
+        do_action( 'myplugin_linguaforge_integration_active' );
+    }
+}
+```
+
+Then call from your main file:
+
+```php
+add_action( 'linguaforge_loaded', function () {
+    \MyPlugin\Integrations\LinguaForge\Bootstrap::init();
+} );
+```
+
+### Available hooks for integrations
+
+**Filters — modify behaviour:**
+
+| Hook | Signature | Purpose |
+|---|---|---|
+| `linguaforge_translation_content` | `(array $payload, int $post_id, string $lang)` | Modify translated content before cache/return |
+| `linguaforge_translation_worker_config` | `(WorkerConfig $cfg, int $post_id, array $params)` | Override AI model / temperature / max_tokens |
+| `linguaforge_wc_delegate_post_types` | `(string[] $types)` | Add post types to WC shared-stock delegation |
+| `linguaforge_cpt_create_allowed` | `(bool $allowed, string $post_type)` | Prevent translation creation for a post type |
+| `linguaforge_switcher_output` | `(string $html, array $langs, array $atts)` | Customise language-switcher HTML |
+| `lf_languages_list` | `(string[] $codes)` | Override the active language list |
+| `lf_hreflang_x_default` | `(string $url, int $post_id, array $translations)` | Override x-default hreflang URL |
+
+**Actions — react to events:**
+
+| Hook | Signature | Purpose |
+|---|---|---|
+| `linguaforge_loaded` | `(string $version)` | Router fully booted; all wrapper functions available |
+| `linguaforge_translation_complete` | `(int $new_id, int $source_id, string $lang)` | Translated post saved (CLI / programmatic path) |
+| `linguaforge_trid_changed` | `(int $post_id, string $new_trid, string $old_trid)` | Post joined or left a translation group |
+| `linguaforge_wc_integration_active` | — | WooCommerce integration booted successfully |
+
+### Programmatic translation
+
+To trigger a translation from PHP (bulk import, migration script, custom
+CLI command):
+
+```php
+$post_id = linguaforge_trigger_translation( $source_id, 'es' );
+
+if ( is_wp_error( $post_id ) ) {
+    // handle error
+} else {
+    // $post_id is the ID of the new or updated translated post
+}
+```
+
+`linguaforge_trigger_translation()` is defined in `ai/ai.php` and requires
+the AI module to be active. It fires `linguaforge_translation_complete` on
+success, so any hooks registered on that action will run automatically.
+
+### REST read endpoints
+
+Two unauthenticated GET endpoints are available for headless setups and
+block-theme data consumers:
+
+```
+GET /wp-json/lingua-forge/v1/languages
+→ [ { "code": "ca", "label": "Català" }, … ]
+
+GET /wp-json/lingua-forge/v1/post/{id}/translations
+→ { "ca": "https://example.com/post-slug/", "es": "https://example.com/es/post-slug/" }
+```
+
+Private or password-protected posts require `read_post` capability.
 
 ---
 
@@ -779,6 +1008,7 @@ Run every command from the `dev/` directory:
 | PHPUnit — full suite               | `composer test`               |
 | PHPUnit — unit only (fast, no WP)  | `composer test:unit`          |
 | PHPUnit — integration only         | `composer test:integration`   |
+| PHPUnit — WooCommerce integration  | `composer test:integration:wc` |
 | All of the above                   | `composer qa`                 |
 | Start wp-env (Docker WP install)   | `npm run env:start`           |
 | Stop wp-env                        | `npm run env:stop`            |
@@ -839,9 +1069,11 @@ Run every command from the `dev/` directory:
   PHPUnit framework (wp-env exposes this automatically). The test files
   themselves live in `tests/` — they're plugin source, just
   `.distignore`'d out of the .org build.
-- **wp-env (`dev/.wp-env.json`)** boots WordPress 6.4 on PHP 8.1 with
+- **wp-env (`dev/.wp-env.json`)** boots WordPress 6.9 on PHP 8.1 with
   `..` (plugin root) mounted at `wp-content/plugins/lingua-forge`.
   `WP_DEBUG` is on in both the development and test environments.
+  A `.wp-env.override.json` (gitignored) activates WooCommerce for the
+  WC integration suite — see `dev/README.md` for the override pattern.
 - **Plugin Check** runs inside the wp-env CLI container via
   `composer plugin-check`. This is the same checker WordPress.org uses
   on submission, so passing it locally is a strong signal that a

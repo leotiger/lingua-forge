@@ -14,6 +14,17 @@ require_once LINGUAFORGE_AI_PATH . '/includes/Core/Autoloader.php';
 
 \LinguaForge\AI\Core\Plugin::init();
 
+// ── WooCommerce integration ───────────────────────────────────────────────────
+// Registers the shared-stock delegation filters (MetaDelegate, StockRouter,
+// VariationDelegate, TaxonomyDelegate, CatalogQuery) on every request — not just
+// admin — so frontend reads and catalog queries are delegated correctly.
+//
+// Priority 20: WooCommerce itself loads at plugins_loaded priority 10, so
+// class_exists('WooCommerce') is reliable here without any extra guards.
+add_action( 'plugins_loaded', function () {
+	\LinguaForge\AI\Integrations\WooCommerce\Bootstrap::init();
+}, 20 );
+
 // ── WP-CLI commands ───────────────────────────────────────────────────────
 // Registered eagerly so they're available the first time `wp linguaforge …`
 // dispatches. The Commands class itself is autoloaded lazily on the first
@@ -24,4 +35,44 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         'linguaforge',
         \LinguaForge\AI\CLI\Commands::class
     );
+}
+
+// ── Public PHP API ────────────────────────────────────────────────────────────
+// Thin procedural wrappers around AI-module classes. Theme code and third-party
+// plugins should call these rather than reaching into the class hierarchy.
+
+/**
+ * Programmatically translate a post and persist the result.
+ *
+ * Runs the full translation pipeline (AI call → post create/update → TRID link
+ * → cache clear → `linguaforge_translation_complete` action) without requiring
+ * a browser session or WP-CLI context.
+ *
+ * Safe to call from `plugins_loaded` (priority > 20), `init`, custom WP-CLI
+ * commands, bulk-import scripts, and REST endpoint callbacks.
+ *
+ * Requires the AI module to be active. Check with
+ * `did_action('linguaforge_loaded')` before calling if uncertain.
+ *
+ * @param int    $source_post_id  Post ID of the source-language post to translate.
+ * @param string $target_lang     Two-letter language code, e.g. 'es'. Must be an
+ *                                active Lingua Forge language.
+ * @param array  $params {
+ *     Optional parameters.
+ *     @type bool $force_refresh         Bypass the translation cache. Default false.
+ *     @type bool $force_draft           Create/update as draft even if source is published. Default false.
+ *     @type bool $with_meta_description Also generate a translated meta description. Default false.
+ * }
+ * @return int|\WP_Error  Translated post ID on success, WP_Error on failure.
+ *
+ * @example
+ * $result = linguaforge_trigger_translation( 42, 'es' );
+ * if ( is_wp_error( $result ) ) {
+ *     error_log( $result->get_error_message() );
+ * } else {
+ *     // $result is the ID of the created/updated translated post
+ * }
+ */
+function linguaforge_trigger_translation( int $source_post_id, string $target_lang, array $params = [] ): int|\WP_Error {
+	return \LinguaForge\AI\Features\TranslationTrigger::run( $source_post_id, $target_lang, $params );
 }

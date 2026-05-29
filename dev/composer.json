@@ -40,10 +40,17 @@
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
-        "analyse": "phpstan analyse --memory-limit=2G",
+        "analyse": "phpstan analyse --memory-limit=1G",
         "test": "php -d pcov.directory=.. vendor/bin/phpunit",
         "test:unit": "php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
-        "test:integration": "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'",
+        "test:integration": [
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge'",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
+        ],
+        "test:integration:wc": [
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
+        ],
         "plugin-check": [
             "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
             "./node_modules/.bin/wp-env run cli wp plugin install plugin-check --activate || true",
@@ -62,7 +69,8 @@
         "analyse": "Run PHPStan with the WordPress stub set against ../.",
         "test": "Run the full PHPUnit suite (unit + integration).",
         "test:unit": "Run only the unit suite (no WordPress required).",
-        "test:integration": "Run only the integration suite (requires wp-env running).",
+        "test:integration": "Run the full integration suite (requires wp-env running). WC tests self-skip when WooCommerce is absent.",
+        "test:integration:wc": "Run only the WooCommerce integration suite. Requires .wp-env.override.json with WooCommerce in its plugins list and npm run env:start. Activates WooCommerce in the test env automatically before running.",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
         "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
         "make-pot": "Regenerate languages/lingua-forge.pot. Downloads wp-cli.phar to dev/ on first run (curl + php required); no Docker or global WP-CLI needed."

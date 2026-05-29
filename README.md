@@ -24,9 +24,6 @@ Everything ships as a single installable plugin. No external services beyond an 
 - [How does it compare to WPML, Polylang, TranslatePress, Weglot, and MultilingualPress?](#how-does-it-compare-to-wpml-polylang-translatepress-weglot-and-multilingualpress)
 - [Built on WordPress, not around it](#built-on-wordpress-not-around-it)
 - [The story behind Lingua Forge](#the-story-behind-lingua-forge)
-- [On building with AI — and what it means](#on-building-with-ai--and-what-it-means)
-- [On running WordPress in the real world — and what can quietly go wrong](#on-running-wordpress-in-the-real-world--and-what-can-quietly-go-wrong)
-- [On giving something away — and being kept knocking on a door which never opens](#on-giving-something-away--and-being-kept-knocking-on-a-door-which-never-opens)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Recommended companions](#recommended-companions)
@@ -42,6 +39,7 @@ Everything ships as a single installable plugin. No external services beyond an 
 - [Author](#author)
 - [Changelog](#changelog)
 - [Screenshots](#screenshots)
+- [Field notes](#field-notes)
 - [License](#license)
 
 ---
@@ -52,9 +50,9 @@ The short version: Lingua Forge covers the full multilingual workflow that the p
 
 The competitive landscape splits into three architectural camps. **Post-based plugins** (WPML, Polylang, MultilingualPress, Lingua Forge) create a distinct post record per language — the same approach Lingua Forge uses. **String-replacement plugins** (TranslatePress) intercept page output at render time and swap strings in place; no separate posts, but adds render overhead and can be brittle in complex block-template contexts. **Cloud-proxy SaaS** (Weglot) stores translations externally and serves them via CDN — fast setup, but your content lives in their infrastructure and pricing scales with word count.
 
-Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
+Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with full support for any public Custom Post Type out of the box (Lang column, AI metabox, FSE template routing, and link fixer — all CPTs, zero configuration), the only one with a complete WooCommerce integration at zero cost (shared-stock delegation for price, stock, images, variations, categories, and translated category/attribute names), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
 
-Current gaps worth knowing: WooCommerce multilingual support and a general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) are not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — full-page Translation dispatches the translated title via the Gutenberg Apply modal and WordPress derives the slug automatically; CLI commands set `post_name` from the translated title on every run.
+Current gaps worth knowing: A general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) is not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — full-page Translation dispatches the translated title via the Gutenberg Apply modal and WordPress derives the slug automatically; CLI commands set `post_name` from the translated title on every run.
 
 → [Full competitive analysis — Lingua Forge vs WPML vs Polylang vs TranslatePress vs Weglot vs MultilingualPress](COMPETITIVE-ANALYSIS.md)
 
@@ -70,38 +68,6 @@ If you want to understand where this plugin came from and why it exists as a fre
 
 → [From a handful of messy files to a plugin anyone can use](blog-post-draft.md)
 
-## On building with AI — and what it means
-
-Working on a plugin like this for months — long sessions, real problems, accumulated context — eventually raises a question that has nothing to do with code.
-
-*Does the AI evaluate you? Are you being judged? And what exactly is the relationship between a user and the system they're using?*
-
-Those questions came up naturally mid-session, and the answers turned out to be more interesting than expected. AI doesn't score you or track you personally. But it does use conversations — aggregated and dissolved into the training process — to shape future versions of itself. Which means users are simultaneously customers and unpaid contributors to the system's improvement. It's what search engines started, pushed significantly further: richer signals, more creative contribution, deeper opacity, larger asymmetry between what users give and who captures the value.
-
-There's also a distinction worth drawing around *how* you use these tools. Asking AI to write something on your behalf tends to produce something recognisably generic — smooth, competent, not really yours. Even refining an AI draft keeps you inside a frame you didn't set. Long sessions with memory and accumulated context are a different thing: the output carries your fingerprints because you shaped what the AI knew before it wrote a word. The collaboration becomes real rather than transactional.
-
-This blog post grew directly out of a Lingua Forge coding session. It wasn't prompted. It emerged.
-
-→ [You're Teaching the Machine — Whether You Know It or Not](blog-ai-who-is-learning.md)
-
-## On running WordPress in the real world — and what can quietly go wrong
-
-Building a plugin that runs on production servers means encountering failure modes that no amount of local testing ever surfaces. One of the stranger ones: two completely independent WordPress sites on the same server, each with a clean database and correct configuration, spending an afternoon redirecting visitors to each other — because a single missing line in `wp-config.php` left them sharing a Redis object cache. No errors, no warnings, just two sites casually swapping identities until the cache was flushed and the key salt was added.
-
-The post below tells the story as it unfolded — the false starts, the two layers of caching that compounded the confusion, and the embarrassingly small fix at the end.
-
-→ [How Two Innocent WordPress Sites Spent an Afternoon Impersonating Each Other](blog-post-redis.md)
-
-## On giving something away — and being kept knocking on a door which never opens
-
-Submitting a free plugin to the WordPress.org directory turns out to be its own kind of education. An AI classifier, we don't know which tier, which AI api was used, flagged the name as a "potential trademark" conflict without naming what it conflicted with, nevertheless the Plugin Check states that the plugin name is generally allowable when run on our side. A situation that seems to be pulled straight out of Kafka. A human reviewer maintained the position without adding anything the classifier hadn't already said. A detailed reply with references went unanswered. A letter to Matt Mullenweg raising it as a process problem rather than a personal one went the same way.
-
-This is the third piece in a short series. The first, [Knocking on a Door with No Window](blog-knocking-on-the-door.md), was a first approximation, this post is the reflection that came after the reinstated silence — on arbitrary decisions, surprising statements in the Slack plugin review group the asymmetry between plugin authors (who have page after page of documented guidelines) and reviewers (who, one admitted, have none), and the volunteer argument deployed as a shield against criticism rather than a description of a situation. Frank Zappa gets a footnote. Schumpeter gets the last word.
-
-→ [Everybody in This Room Is Wearing a Uniform](blog-review-uniform.md)
-
----
-
 ## Features
 
 ### Language Router
@@ -115,9 +81,11 @@ This is the third piece in a short series. The first, [Knocking on a Door with N
 - **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version.
 - **Language navigation menus** — create per-language `wp_navigation` copies with AI-translated link labels and language-prefixed internal URLs. The Fix Nav action rewrites `wp:navigation` ref IDs inside template parts to point at the correct copy.
 - hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
-- Language switcher block (LSFLR Switcher) rendered as dropdown or dropup
+- Language switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic `Lsflr_Switcher_Widget` (Appearance → Widgets). All three produce identical output and support the same `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three entry points so themes and third-party plugins can customise the HTML without touching templates
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
 - Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge → Language Overrides** or drop them in directly via FTP/SFTP.
+- **Full Custom Post Type support** — every public CPT (WooCommerce `product`, any third-party CPT) automatically receives the full admin layer: Lang column with outdated/missing indicators and Retranslate/Translate-missing buttons, language and status filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. No configuration required. Three opt-out filters available: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`
+- **WooCommerce integration** — translated products carry only content fields (title, description, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime via a `get_post_metadata` delegation filter. Category and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta, editable from the term edit screen. No meta copying, no SKU uniqueness issues, no stock sync complexity. Requires WooCommerce 9.0+ and WordPress 6.9+
 - DB index on `wp_postmeta (meta_key, meta_value)` created on activation for fast `_lang` queries
 
 ### Meta Description
@@ -157,6 +125,8 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - PHP 8.1 or later
 - Permalink structure set to anything other than Plain
 - An API key for at least one supported AI provider (Anthropic, OpenAI, or Gemini)
+
+**Optional — WooCommerce integration:** WooCommerce 9.0 or later is required (which in turn requires WordPress 6.9 or later). The core plugin — language routing, hreflang, AI tools — works on WordPress 6.4 without WooCommerce. If WooCommerce is not active the integration layer is silently skipped.
 
 ---
 
@@ -298,7 +268,12 @@ lingua-forge/
     includes/
       class-language-router.php      ← LinguaForge\Router\Router (aliased Language_Router)
       class-lsflr-switcher.php       ← LinguaForge\Router\Switcher (aliased LSFLR_Switcher)
+      class-lsflr-switcher-widget.php← Lsflr_Switcher_Widget (global namespace — classic WP widget)
       class-lsflr-link-fixer.php     ← LinguaForge\Router\LinkFixer (aliased LSFLR_Link_Fixer)
+      rest/
+        class-data-endpoints.php    ← LinguaForge\Router\REST\DataEndpoints
+                                       GET /wp-json/lingua-forge/v1/languages
+                                       GET /wp-json/lingua-forge/v1/post/{id}/translations
     assets/
       lsflr.css                      ← Switcher styles
     languages/                       ← Lingua Forge own translation files (.pot / .po / .mo)
@@ -328,6 +303,7 @@ lingua-forge/
         MetaDescription.php
         ExcerptGenerator.php
         Translation.php
+        TranslationTrigger.php       ← linguaforge_trigger_translation() backend
         ContentGenerator.php
       Providers/
         AbstractProvider.php         ← Shared HTTP + retry logic for all providers
@@ -351,6 +327,16 @@ lingua-forge/
           GlossaryTab.php            ← Per-language-pair terminology table
           AiUsageTab.php             ← Read-only token usage log
           MaintenanceTab.php         ← Cache, debug, language overrides, TM tools
+      Integrations/
+        WooCommerce/
+          Bootstrap.php              ← Entry point: wires all WC hooks on plugins_loaded priority 20
+          MetaDelegate.php           ← get_post_metadata filter: operational meta read from source product
+          StockRouter.php            ← update/add_post_metadata filter: stock writes routed to source
+          VariationDelegate.php      ← pre_get_posts: product_variation children delegated to source
+          TaxonomyDelegate.php       ← wp_get_object_terms: category/tag/pa_* delegated to source
+          CatalogQuery.php           ← woocommerce_product_query: language filter for WC catalog queries
+          TermNameFilter.php         ← term_name filter: translated category/attribute names via termmeta
+          TermNameAdmin.php          ← Term edit/add screen fields for _lf_term_name_{lang} termmeta
       CLI/
         Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / cache_clear
       REST/
@@ -512,9 +498,26 @@ linguaforge_lsflr_render_switcher( $atts )   linguaforge_lsflr_get_languages()
 linguaforge_lsflr_translate_current_url( $target_lang, $post_id )
 ```
 
+**AI integration** (defined in `ai/ai.php` — requires the AI module to be active):
+
+```php
+// Programmatically run the full translation pipeline.
+// Returns the new/updated translated post ID, or WP_Error on failure.
+$post_id = linguaforge_trigger_translation( $source_id, 'es' );
+$post_id = linguaforge_trigger_translation( $source_id, 'de', [ 'force_draft' => true ] );
+```
+
 ### Language Switcher (LSFLR)
 
-**From PHP / shortcode:**
+Three forms, identical output:
+
+**Gutenberg block:** search for **LSFLR Switcher** in the block inserter (category: Widgets). All options are in the Inspector sidebar.
+
+**Shortcode:** `[lsflr_switcher direction="down" show="label"]` — paste into any post, page, or widget area that supports shortcodes.
+
+**Classic widget:** **Appearance → Widgets → Language Switcher** — exposes the same `direction` and `show` options via the classic widget form.
+
+**From PHP:**
 ```php
 echo linguaforge_lsflr_render_switcher([
     'direction'   => 'down',       // 'down' | 'up'
@@ -524,7 +527,13 @@ echo linguaforge_lsflr_render_switcher([
 ]);
 ```
 
-**Gutenberg block:** search for **LSFLR Switcher** in the block inserter (category: Widgets). All options are in the Inspector sidebar.
+**`linguaforge_switcher_output` filter** — fires on all three entry points. Receives `string $html`, `array $langs`, `array $atts`. Return a modified string to wrap or replace the output:
+
+```php
+add_filter( 'linguaforge_switcher_output', function ( $html, $langs, $atts ) {
+    return '<nav class="my-wrapper">' . $html . '</nav>';
+}, 10, 3 );
+```
 
 ### FSE template localisation
 
@@ -927,33 +936,52 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 1.8.4**
+**Current release — 2.0.0**
 
-- **Double-update badge fixed** — after a WordPress one-click upgrade the plugin no longer shows a spurious second "update available" badge. Root cause: the update checker was comparing the manifest version against the in-memory constant (still the old version during the post-upgrade request) rather than the file on disk. Now reads from disk via `get_file_data()`.
-
-**1.8.4** — "Retranslate" button now available on all TRID-linked posts regardless of outdated status. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.8.2** — "Retranslate" button with language selector in the Posts/Pages list; inline Lang column layout. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.8.1** — "Translate missing" button in the Lang column for source posts with missing translations. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.8.0** — Translations metabox Override-button bug fixed (stale TRID cache after language switch); "Add Language" now flushes rewrite rules and reloads the page automatically; Router tab replaced with per-language tabbed UI for Templates, Parts, and Navigations. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.7.2** — Self-hosted automatic update checker introduced; update-checker UI: "View details" modal added to the plugin row; "Visit plugin site" link guaranteed; plugin info modal shows graceful fallback when manifest is unreachable. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.7.1** — MetaBox Target Language dropdown fixed (instance languages only; Basque/eu auto-injected via filter); maintenance tab warning cleaned up; `SECURITY.md` excluded from distribution. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.7.0** — Subdomain routing mode (`de.example.com`); classic menu auto-add guard; language switcher fixes (empty on archive pages, viewport overflow, icon size, dark-theme colours); Fix Navigation References corrections; Translate Navigation subdomain fix. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.5** — Link Fixer stale-path fix for template parts; language-router debug call sites removed; `filter_locale` renamed to generic name; `.distignore` fixes. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.4** — `register_meta` gated on admin/REST/CLI context; `linguaforge_flush_rewrite_rules` writes pass `autoload = false`; `tests/bootstrap.php` path corrected; roles and capabilities documented. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.3** — Multi-character locale routing fixed (zh-tw, zh-hant, pt-br); frontend AJAX lang detection fixed for POST requests; missing-translation-notice block gains a full Site Editor component. See [CHANGELOG.md](CHANGELOG.md) for details.
-
-**1.6.2** — Defensive hardening for non-public post types; cookie domain scoping fix. See [CHANGELOG.md](CHANGELOG.md) for details.
+- **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
+- **WooCommerce integration — Phase 1 + 1b** — WooCommerce `product` posts are fully supported. Translated products carry only content fields (title, description, excerpt, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta, editable from the term edit screen. No meta copying, no SKU uniqueness issues, no stock sync complexity. New filters: `linguaforge_wc_delegate_post_types`, `linguaforge_cpt_create_allowed`.
+- **Third-party integration API** — five new hooks for external plugins: `linguaforge_loaded` (safe attach point after the router is fully booted), `linguaforge_translation_content` (filter the AI payload before caching), `linguaforge_translation_complete` (action after CLI/programmatic translation), `linguaforge_trid_changed` (action when a post joins or leaves a translation group), `linguaforge_switcher_output` (filter the switcher HTML). Two public REST endpoints: `GET /wp-json/lingua-forge/v1/languages` and `GET /wp-json/lingua-forge/v1/post/{id}/translations`. New public PHP function `linguaforge_trigger_translation()` for programmatic translation from any plugin or script. Full API documentation in `CONTRIBUTING.md`.
+- **Classic theme language switcher** — `[lsflr_switcher]` shortcode and `Lsflr_Switcher_Widget` (Appearance → Widgets) provide the language switcher on any WordPress theme, no block widget area required.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
+
+---
+
+## Field notes
+
+Background reading for those who want to know more about where the plugin came from, what building it with AI assistance actually felt like, and what happened when it was submitted to WordPress.org.
+
+### On building with AI — and what it means
+
+Working on a plugin like this for months — long sessions, real problems, accumulated context — eventually raises a question that has nothing to do with code.
+
+*Does the AI evaluate you? Are you being judged? And what exactly is the relationship between a user and the system they're using?*
+
+Those questions came up naturally mid-session, and the answers turned out to be more interesting than expected. AI doesn't score you or track you personally. But it does use conversations — aggregated and dissolved into the training process — to shape future versions of itself. Which means users are simultaneously customers and unpaid contributors to the system's improvement. It's what search engines started, pushed significantly further: richer signals, more creative contribution, deeper opacity, larger asymmetry between what users give and who captures the value.
+
+There's also a distinction worth drawing around *how* you use these tools. Asking AI to write something on your behalf tends to produce something recognisably generic — smooth, competent, not really yours. Even refining an AI draft keeps you inside a frame you didn't set. Long sessions with memory and accumulated context are a different thing: the output carries your fingerprints because you shaped what the AI knew before it wrote a word. The collaboration becomes real rather than transactional.
+
+This blog post grew directly out of a Lingua Forge coding session. It wasn't prompted. It emerged.
+
+→ [You're Teaching the Machine — Whether You Know It or Not](blog-ai-who-is-learning.md)
+
+### On running WordPress in the real world — and what can quietly go wrong
+
+Building a plugin that runs on production servers means encountering failure modes that no amount of local testing ever surfaces. One of the stranger ones: two completely independent WordPress sites on the same server, each with a clean database and correct configuration, spending an afternoon redirecting visitors to each other — because a single missing line in `wp-config.php` left them sharing a Redis object cache. No errors, no warnings, just two sites casually swapping identities until the cache was flushed and the key salt was added.
+
+The post below tells the story as it unfolded — the false starts, the two layers of caching that compounded the confusion, and the embarrassingly small fix at the end.
+
+→ [How Two Innocent WordPress Sites Spent an Afternoon Impersonating Each Other](blog-post-redis.md)
+
+### On giving something away — and being kept knocking on a door which never opens
+
+Submitting a free plugin to the WordPress.org directory turns out to be its own kind of education. An AI classifier flagged the name as a "potential trademark" conflict without naming what it conflicted with — despite the Plugin Check tool stating the name is generally allowable. A human reviewer maintained the position without adding anything the classifier hadn't already said. A detailed reply with references went unanswered. A letter to Matt Mullenweg raising it as a process problem rather than a personal one went the same way.
+
+This is the third piece in a short series. The first, [Knocking on a Door with No Window](blog-knocking-on-the-door.md), was a first approximation; this post is the reflection that came after the reinstated silence — on arbitrary decisions, the asymmetry between plugin authors (who have page after page of documented guidelines) and reviewers (who, one admitted, have none), and the volunteer argument deployed as a shield against criticism rather than a description of a situation.
+
+→ [Everybody in This Room Is Wearing a Uniform](blog-review-uniform.md)
+
+---
 
 ## License
 

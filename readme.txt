@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 1.8.4
+Stable tag: 2.0.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -33,8 +33,10 @@ Detects the active language from URL prefixes (`/de/`), query parameters, or a c
 * Language-specific template parts — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any template part. Each is an independent native `wp_template_part` post
 * Language navigation menus — create per-language `wp_navigation` copies with AI-translated labels and language-prefixed URLs
 * hreflang tags for singular, archive, and paginated views; suppresses duplicate output from Yoast SEO, Rank Math, AIOSEO, and SEOPress automatically
-* Language Switcher block (dropdown or dropup, fully customisable)
+* Language Switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic widget (Appearance → Widgets). All three produce identical output and support `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three
 * Admin link fixer — finds internal links pointing to the wrong language version and repairs them in bulk
+* **Full Custom Post Type support** — every public CPT (WooCommerce `product`, any third-party CPT) automatically receives the full admin layer: Lang column with outdated/missing indicators and Retranslate/Translate-missing buttons, language filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. No configuration required
+* **WooCommerce integration** — translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, variations, and taxonomy assignments are served transparently from the source-language product at runtime. Category and attribute term names display in the visitor's language via translated names stored on the term edit screen. Requires WooCommerce 9.0+ and WordPress 6.9+
 
 **Meta Description**
 
@@ -60,11 +62,19 @@ Supports Anthropic Claude, OpenAI, and Google Gemini as interchangeable backends
 * **Side-by-side diff preview** — "Apply to Editor" shows a two-column before/after modal so you can review the translation before it touches the post
 * **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A summary table with token counts is available in **Settings → AI Usage**
 * **Language Overrides** — upload custom `.mo` files to override third-party plugin strings per locale (e.g. replace "room" with "apartment" in VikBooking). Files are stored in the uploads folder and survive plugin updates. Managed from **Settings → Lingua Forge → Language Overrides**
-* **WP-CLI** — `wp linguaforge translate`, `wp linguaforge retranslate`, and `wp linguaforge cache_clear` for scripted and automated workflows
+* **WP-CLI** — five commands for scripted and automated workflows: `wp linguaforge translate`, `retranslate`, `fill_translations`, `missing_translations`, and `cache_clear`
 
 API keys are stored encrypted (AES-256-GCM with provider slug as authenticated data, derived from WordPress auth salts). Model endpoints are configurable from Settings with no code changes needed when a new model version ships.
 
 Source code and issue tracker: https://github.com/leotiger/lingua-forge
+
+== Compatibility ==
+
+**WordPress:** Lingua Forge requires WordPress 6.4 or later. All core features — language routing, hreflang, SEO meta, AI tools, CPT support, subdomain mode — work on 6.4+.
+
+**WooCommerce integration:** The built-in WooCommerce integration (shared-stock delegation, translated category and attribute names) requires WordPress 6.9 or later and WooCommerce 9.0 or later. The integration is inactive and causes no errors on earlier versions; it is simply not loaded.
+
+**PHP:** 8.1 or later is required regardless of which features are used.
 
 == Installation ==
 
@@ -94,7 +104,7 @@ Yes. The Language Router (URL-based language routing, hreflang injection, langua
 
 = Does this work with classic (non-block) themes? =
 
-Most features work with any theme. Language routing, hreflang injection, the AI meta box, and meta description generation are theme-agnostic. The Language Switcher block requires a block theme or a block-ready widget area. For classic themes, use the `[linguaforge_switcher]` shortcode or call `lsflr_language_switcher()` directly in a template file.
+Most features work with any theme. Language routing, hreflang injection, the AI meta box, and meta description generation are theme-agnostic. For classic themes the language switcher is available as the `[lsflr_switcher]` shortcode (paste into any post, page, or widget area that supports shortcodes) or as the **Language Switcher** classic widget under Appearance → Widgets. Both produce the same output as the Gutenberg block.
 
 = Does Lingua Forge require any theme preparation? =
 
@@ -105,6 +115,12 @@ As of 1.6.0, Lingua Forge handles this natively: the **Settings → Router** pag
 = Can I use Lingua Forge alongside WPML or Polylang? =
 
 Not recommended — all three handle language routing at the URL and content level, and running them in parallel will produce conflicts. Lingua Forge is a replacement, not an add-on. If you are migrating, disable WPML or Polylang before activating Lingua Forge. Post relationships from those plugins are not auto-imported; use the Translation meta box in the post editor to re-link translated posts after migrating.
+
+= Does Lingua Forge work with WooCommerce? =
+
+Yes — WooCommerce product posts are fully supported via the shared-stock delegation model. Translated products carry only content fields (title, description, excerpt); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served from the source-language product at runtime with no copying or sync required. Category, tag, and product attribute term names display in the visitor's language — enter translated names directly on the term edit screen (Products → Categories, Products → Tags, or the attribute edit screen under Products → Attributes).
+
+**Minimum versions for WooCommerce support:** WooCommerce 9.0 or later and WordPress 6.9 or later. The core plugin (language routing, hreflang, AI tools) works on WordPress 6.4 without WooCommerce — the integration layer is silently skipped when WooCommerce is not active.
 
 = Which AI providers are supported? =
 
@@ -234,118 +250,23 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 1.8.4 =
-* Improved: "Retranslate" button now appears on all TRID-linked posts, not just those flagged as outdated. A new lf_lang_column_retranslate hook fires unconditionally in the Lang column so editors can force a fresh translation at any time. The lf_lang_column_outdated hook is unchanged.
-
-= 1.8.3 =
-* Fixed: Double-update badge after WordPress one-click upgrade — update checker now reads the installed version from the plugin file header on disk instead of the in-memory constant. During the post-upgrade request the old constant was still loaded while the file already contained the new version, causing a spurious "update available" re-injection. No longer requires clicking Update twice.
-* Fixed: Self-hosted update checker correctly attributed to 1.7.2 in all documentation (was incorrectly listed under 1.7.0).
-* Added: Feature freeze notice at the top of README.md — collaboration and testing welcome.
-
-= 1.8.2 =
-* Added: "Retranslate" button in the Lang column for outdated target-language posts — fires alongside the ⚠ indicator with a language selector (From EN / From ES / …) letting editors choose which language version to retranslate from. Same-language retranslation is blocked. Success clears the outdated flag and regenerates the meta description.
-* Improved: "Translate missing" and "Retranslate" buttons now render inline on the same line as the language indicator. Lang column layout uses inline-flex for compact presentation.
-
-= 1.8.1 =
-* Added: "Translate missing" button in the Lang column of the Posts and Pages list screens — one click fires all missing AI translations for a source-language post directly from the overview, without opening the editor.
-
-= 1.8.0 =
-* Fixed: Translations metabox — "Override" button no longer appears for the wrong language immediately after switching a post to a different language. Root cause: stale TRID object-cache entry not cleared by set_lang() alone. Explicit cache flush added to the AJAX handler.
-* Fixed: PHPCS MissingTranslatorsComment in the Translations metabox _n() call.
-* Fixed: PHPCS SlowDBQuery warnings on wp_dropdown_pages() meta_key/meta_value args — _lf_lang is indexed and intentional; phpcs:disable blocks extended with explanatory comments.
-* Improved: "Add Language" now flushes rewrite rules server-side and triggers an automatic page reload client-side — Active Languages chips and template tables update without a manual refresh.
-* Improved: Router tab Templates / Parts / Navigations now use a per-language tabbed UI. Each secondary language gets its own tab panel; active tab persists via sessionStorage. Reduces scroll depth on multi-language installs.
-
-= 1.7.2 =
-* Added: Self-hosted update checker — once installed, WordPress surfaces update badges and one-click updates directly from lingua-forge.com. The plugin is not listed on WordPress.org; the first install is manual (download ZIP from GitHub Releases), but all subsequent updates are handled automatically inside the WordPress admin.
-* Improved: "View details" link in the Plugins screen row — opens the standard plugin-information modal with description, changelog, and installation instructions drawn from the live update manifest. Duplicate links are suppressed automatically.
-* Improved: "Visit plugin site" link (GitHub repository) guaranteed in the plugin row meta even when WordPress drops it for self-hosted plugins.
-* Fixed: Plugin info modal now returns a graceful local fallback (name, installed version, homepage) instead of "Plugin not found" when the remote manifest is temporarily unreachable.
-* Fixed: PHPStan — $transient parameter typed as \stdClass; includes/ added to analysis paths.
-
-= 1.7.1 =
-* Fixed: Target Language dropdown (Meta Boxes and Quick Translate) — now limited to languages active on the server instance. Any instance-configured language absent from the built-in AI map (e.g. Basque/eu) is automatically injected via a new MetaBox::inject_instance_languages() filter callback on linguaforge_translation_languages (priority 5). English language names are resolved via PHP's Locale::getDisplayLanguage(); the uppercased code is used as fallback when the intl extension is unavailable. Language and pre-selection from post _lf_lang meta now work correctly for all server-installed languages without any per-language hardcoding.
-* Fixed: Maintenance tab uninstall warning — internal meta key names removed from the user-facing description; replaced with plain-language equivalents.
-* Maintenance: SECURITY.md excluded via .distignore and .gitattributes export-ignore.
-
-= 1.7.0 =
-* Added: Subdomain routing mode — languages can now be served from subdomains (de.example.com, fr.example.com) instead of path prefixes (example.com/de/). Select the URL structure in Settings → Lingua Forge → Router → URL structure. Requires wildcard DNS and TLS on the server side; no WordPress configuration beyond the setting. Source language always serves from the root domain. Cookie scoping, permalink generation, hreflang output, language switcher, and the link-fixer scan are all subdomain-aware. The lf_base_domain filter is available to override the auto-derived base domain when home_url() includes www.
-* Added: Classic navigation menu auto-add guard — a publish_page hook (priority 11) removes any just-inserted menu item whose page is a non-source-language translation, preventing translated pages from appearing in source-language classic menus. Applies to classic nav menus (wp_nav_menu) only; FSE wp_navigation posts are unaffected.
-* Fixed: Language switcher rendered empty on non-singular pages (archives, category, tag, author, blog index) — get_the_ID() returns 0 there, causing get_languages() to return an empty array even when the block was present in a shared header or footer template. A URL-rewrite fallback now builds the language list from all configured languages when no post ID is available.
-* Fixed: Translate Navigation generated wrong URLs in subdomain routing mode — internal page URLs were rewritten using path-prefix logic (/de/contact/) instead of subdomain URLs (de.example.com/contact/). Now uses lang_base_url() for host-based rewriting in subdomain mode.
-* Fixed: Source-language pages were redirected to the wrong language when a stale cross-language cookie was present. In path mode, a non-prefixed URL is now treated as an authoritative source-language signal and bypasses cookie detection. The homepage is unaffected.
-* Fixed: Fix Navigation References now correctly handles source-language template parts and wrong-language navigation references — source-language targets were previously rejected; wrong-language nav references produced double-suffixed slugs (e.g. navigation-it-de). Base name derivation now reads _lf_lang meta from the referenced navigation post.
-* Fixed: Language switcher SVG globe icon collapsed to zero size — was sized via a theme-specific CSS variable undefined on most sites. Replaced with a generic 1.2em rule using currentColor.
-* Fixed: Language switcher dropdown overflowed the viewport on right-aligned placements. Inline JS now detects overflow via getBoundingClientRect on load and resize and flips the panel to open right-to-left when needed.
-* Fixed: Language switcher showed a white background with invisible text on dark-themed sites. CSS variables now inherit FSE global-style color tokens (--wp--preset--color--base / --contrast) with CSS system-color fallbacks (Canvas / CanvasText) that track OS light/dark preference.
-* Maintenance: build-zip.sh now normalises file permissions after rsync (0755 directories, 0644 files) before creating the ZIP.
-
-= 1.6.5 =
-* Fixed: ajax_fix_fse_links() stale-path links not updated in template parts — links that already carried the correct language prefix but whose slug had changed were never repaired. A second pass via LinkFixer::fix_post() now runs after the prefix-rewrite save, using data-id as ground truth. Covers footers, headers, sidebars, and any wp_template_part.
-* Maintenance: .distignore — .github/ added (workflow directory was missing and would have been included in SVN submission); docs/ added for screenshots, banner, and icon pushed to SVN assets/ by the deploy workflow.
-* Maintenance: filter_locale_for_vik_booking() renamed to filter_locale() — the locale filter hook is generic and covers any plugin that reads locale directly instead of determine_locale. Docblock added.
-* Maintenance: All ->debug() call sites removed from language-router sub-classes (QueryFilter, Sync, Query, Redirector, Hreflang) — leftover from the mu-plugin era, flooding debug.log on every request. The debug() method and linguaforge_debug() wrapper are retained.
-* Maintenance: Router::debug_system_init() and debug_request_context() removed along with their add_action registrations — fired on every frontend page load whenever WP_DEBUG was on.
-
-= 1.6.4 =
-* Fixed: tests/bootstrap.php autoload path corrected to dev/vendor/autoload.php — previously pointed at a non-existent vendor/ in the plugin root; silent failure masked by PHPUnit's own autoloader.
-* Improved: register_meta in the Meta Description module is now gated on is_admin(), REST_REQUEST, and WP_CLI — skipped entirely on anonymous front-end requests where it was pure dead weight.
-* Improved: all update_option() calls for linguaforge_flush_rewrite_rules now pass autoload = false — option is short-lived and does not belong in the autoloaded options blob.
-* Documentation: README.md gains a Roles and capabilities section documenting the two-tier capability model — linguaforge_required_capability gates editor AI operations; FSE template and navigation operations always require manage_options regardless of that setting.
-
-= 1.6.3 =
-* Fixed: Language-prefix regex now matches multi-character locales (zh-tw, zh-hant, pt-br, …) — three [a-z]{2} hardcodes in Redirector replaced by a dynamic lang_regex() helper built from the configured locale list.
-* Fixed: Frontend AJAX — POST requests were silently sent without the lang parameter because the old jQuery ajaxSend interceptor appended it to the POST body, which detect_lang_safe() never reads. The script is rewritten without jQuery: XMLHttpRequest.prototype.open and window.fetch are patched to append ?lang=X to the URL query string of same-origin requests. jQuery is no longer a script dependency.
-* Added: missing-translation-notice block now has a full editor component — sidebar controls (notice message, home-link toggle, home-link text) and a live ServerSideRender canvas preview. index.js + index.asset.php added; block.json gains editorScript.
-* Maintenance: CONTRIBUTING.md — LINGUAFORGE_SECRET cross-environment guidance added to the API keys section: explains shared-salt risk across environments and includes a define() snippet.
-* Maintenance: README.md — matching LINGUAFORGE_SECRET paragraph added to the API keys section.
-* Maintenance: CONTRIBUTING.md — pre-1.3.x debug directory migration note added to "Things worth knowing".
-* Maintenance: README.md + readme.txt — WordPress-core and FSE conformance section added.
-
-= 1.6.2 =
-* Fixed: handle_singular_redirect() now skips non-public post types (wp_global_styles, wp_navigation, etc.) — previously these satisfied is_singular() and could produce cross-domain redirects when the object cache was poisoned (e.g. shared Redis without WP_CACHE_KEY_SALT).
-* Fixed: get_translations() query now excludes non-public post types and auto-drafts — wp_template and other FSE-internal posts could appear as translation group members, causing the homepage redirector to send visitors to raw template slugs like /front-page-it/.
-* Fixed: lang_permalink() short-circuits for non-public post types — prevents URL rewriting on internal WordPress post types that pass through post_link / page_link.
-* Fixed: set_lang_cookie() now explicitly scopes the lf_lang cookie to the site's own domain (wp_parse_url( home_url(), PHP_URL_HOST )) instead of passing an empty domain string, preventing cookie bleed between sites sharing a server.
+= 2.0.0 =
+* Added: Custom Post Type support (Phase 0) — all public CPTs now receive the full Lingua Forge admin layer: Lang column, language and outdated-status filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. New opt-out filters: linguaforge_column_post_types, linguaforge_ai_metabox_post_types, linguaforge_link_fixer_post_types.
+* Added: FSE template auto-assignment for CPTs using single-{post_type}-{lang} naming (e.g. single-product-de).
+* Added: WooCommerce integration Phase 1 (shared-stock delegation model) — translated products carry only content fields; all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is read transparently from the source-language product at runtime. Five new classes: MetaDelegate, StockRouter, VariationDelegate, TaxonomyDelegate, CatalogQuery.
+* Added: WooCommerce integration Phase 1b (translated term names) — category, tag, product-type, and attribute term names display in the visitor's language via _lf_term_name_{lang} termmeta. Editable from the term add/edit screens (Products → Categories, Tags, Attributes). New classes: TermNameFilter, TermNameAdmin.
+* Added: linguaforge_cpt_create_allowed filter — allows integrations to block translated-post creation until their delegation layer is active. Defaults to true.
+* Added: linguaforge_wc_delegate_post_types filter — controls which post types participate in operational-meta delegation and stock-write routing.
+* Added: linguaforge_wc_integration_active action — fires after the WooCommerce integration initialises for the current request.
+* Added: Third-party integration API — five new hooks: linguaforge_loaded (fires after router boot; use instead of plugins_loaded for integrations), linguaforge_translation_content filter (modify AI payload before caching), linguaforge_translation_complete action (CLI/programmatic translation saved), linguaforge_trid_changed action (post joined or left a translation group), linguaforge_switcher_output filter (wrap or replace switcher HTML). Two public REST endpoints: GET /wp-json/lingua-forge/v1/languages and GET /wp-json/lingua-forge/v1/post/{id}/translations. New public PHP function linguaforge_trigger_translation() for programmatic translation. Full documentation in CONTRIBUTING.md.
+* Added: Classic theme language switcher — [lsflr_switcher] shortcode and Lsflr_Switcher_Widget (Appearance → Widgets) make the language switcher available on any theme, no block widget area required.
 
 For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
 
-= 1.8.4 =
-"Retranslate" button now visible on all TRID-linked posts, not just outdated ones. No schema changes — safe to update in place.
+= 2.0.0 =
+Custom Post Type support, WooCommerce Phase 1 + 1b, classic theme language switcher (shortcode + widget), and third-party integration API. No schema changes — safe to update in place.
 
-= 1.8.3 =
-Fixes a double-update badge that required clicking Update twice after a successful upgrade. No schema or settings changes — safe to update in place.
-
-= 1.8.2 =
-Adds "Retranslate" button with language selector for outdated translations in the Posts/Pages list. No schema changes — safe to update in place.
-
-= 1.8.1 =
-Adds a "Translate missing" button to the Posts/Pages list — trigger AI translations for all missing languages without opening the editor. No schema changes — safe to update in place.
-
-= 1.8.0 =
-Fixes spurious Override button in the Translations metabox after language switch (stale cache). Adds automatic rewrite-rule flush and page reload after installing a language. Router tab now shows a per-language tabbed UI. No schema changes — safe to update in place.
-
-= 1.7.2 =
-Introduces the self-hosted automatic update checker and improves its UI — "View details" modal, guaranteed "Visit plugin site" link, graceful fallback when the manifest is unreachable. No schema or settings changes — safe to update in place.
-
-= 1.7.1 =
-Patch release. Fixes Target Language dropdown in the Meta Boxes panel showing the wrong language list (missing instance-configured languages such as Basque). No schema or settings changes — safe to update in place.
-
-= 1.7.0 =
-Adds subdomain routing mode (de.example.com style). No schema changes. Existing path-prefix setups are unaffected — subdomain mode must be explicitly enabled in Router settings. Safe to update in place.
-
-= 1.6.5 =
-Maintenance release — removes leftover debug logging from the language-router module. No schema, settings, or behaviour changes. Safe to update in place.
-
-= 1.6.4 =
-Maintenance and micro-optimisation release. No schema or settings changes — safe to update in place. register_meta no longer fires on front-end requests; flush_rewrite_rules option writes are now autoload-free; tests bootstrap path corrected.
-
-= 1.6.3 =
-Correctness release. Multi-character locales (zh-tw, zh-hant, pt-br) now route correctly. Frontend AJAX lang detection fixed for POST requests. Missing-translation-notice block gains a full Site Editor component. No schema or settings changes — safe to update in place.
-
-= 1.6.2 =
-Defensive hardening release. Closes four edge cases around non-public post types and cross-site cookie bleed, surfaced by a shared-Redis misconfiguration (missing WP_CACHE_KEY_SALT). No schema or settings changes — safe to update in place.
 

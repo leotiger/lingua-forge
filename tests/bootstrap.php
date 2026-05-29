@@ -127,6 +127,29 @@ if ( ! $wp_tests_dir || ! file_exists( $wp_tests_dir . '/includes/functions.php'
 }
 
 // ── Integration suite path ───────────────────────────────────────────────────
+
+// Integration test classmap autoloader.
+//
+// PHPUnit 9 processes <directory> elements before <file> elements regardless
+// of XML order, so we cannot rely on a <file> entry to pre-load abstract base
+// classes before the concrete subclasses are discovered. Register an
+// spl_autoload_register here instead — it fires on demand whenever PHP needs
+// a class, regardless of discovery order.
+//
+// Add an entry whenever a new integration test base class is introduced that
+// lives outside the Composer classmap.
+$lf_integration_classmap = [
+    'LinguaForge\Tests\Integration\WooCommerce\WcIntegrationTestCase' =>
+        __DIR__ . '/integration/WooCommerce/WcIntegrationTestCase.php',
+];
+spl_autoload_register(
+    static function ( string $class ) use ( $lf_integration_classmap ): void {
+        if ( isset( $lf_integration_classmap[ $class ] ) ) {
+            require_once $lf_integration_classmap[ $class ];
+        }
+    }
+);
+
 // Load WP test framework function helpers (tests_add_filter, …).
 require_once $wp_tests_dir . '/includes/functions.php';
 
@@ -146,6 +169,17 @@ tests_add_filter(
         // plugin root (local checkout). WP_PLUGIN_DIR is defined by
         // wp-settings.php before muplugins_loaded fires.
         require WP_PLUGIN_DIR . '/lingua-forge/lingua-forge.php';
+
+        // Load WooCommerce if installed — the WP test framework resets
+        // active_plugins on every run so wp plugin activate has no effect.
+        // Loading here (before plugins_loaded fires) is safe: WooCommerce
+        // registers its init hooks on plugins_loaded, which still fires
+        // after muplugins_loaded completes. When the file is absent (base
+        // env without the override) WC integration tests skip gracefully.
+        $wc_file = WP_PLUGIN_DIR . '/woocommerce/woocommerce.php';
+        if ( file_exists( $wc_file ) ) {
+            require $wc_file;
+        }
     }
 );
 

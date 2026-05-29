@@ -39,7 +39,9 @@ require_once __DIR__ . '/includes/admin/class-scripts.php';
 // Language Switcher + Link Fixer — loaded before the Router class so the
 // Router constructor can instantiate them as sub-objects.
 require_once __DIR__ . '/includes/class-lsflr-switcher.php';
+require_once __DIR__ . '/includes/class-lsflr-switcher-widget.php';
 require_once __DIR__ . '/includes/class-lsflr-link-fixer.php';
+require_once __DIR__ . '/includes/rest/class-data-endpoints.php';
 
 // Router orchestrator — requires all sub-classes above.
 require_once __DIR__ . '/includes/class-language-router.php';
@@ -55,6 +57,7 @@ require_once __DIR__ . '/blocks/blocks.php';
 // no separate globals needed.
 // =========================================================
 \LinguaForge\Router\Router::get_instance();
+\LinguaForge\Router\REST\DataEndpoints::init();
 
 // =========================================================
 // THEME / TEMPLATE WRAPPERS
@@ -188,3 +191,23 @@ function linguaforge_lsflr_get_languages(): array {
 function linguaforge_lsflr_translate_current_url( string $target_lang, ?int $post_id = null ): string {
 	return \LinguaForge\Router\Router::get_instance()->switcher->translate_current_url( $target_lang, $post_id );
 }
+
+/**
+ * Fires after the Lingua Forge Language Router has fully booted and all
+ * public wrapper functions are available.
+ *
+ * Use this as the safe attach point for third-party integrations that depend
+ * on `LF_LANG`, the Router singleton, or any `linguaforge_*` / `lf_*`
+ * wrapper function being defined. Hooking on `plugins_loaded` at a lower
+ * priority risks running before the router has initialised.
+ *
+ * @param string $version Current Lingua Forge version string (LINGUAFORGE_VERSION).
+ *
+ * @example
+ * add_action( 'linguaforge_loaded', function ( $version ) {
+ *     if ( version_compare( $version, '2.0.0', '>=' ) ) {
+ *         // safe to use linguaforge_* functions here
+ *     }
+ * } );
+ */
+do_action( 'linguaforge_loaded', defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : '' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.

@@ -54,7 +54,7 @@ class Filters {
 	// =========================================================
 
 	public function render_lang_filter_dropdown( string $post_type ): void {
-		if ( ! in_array( $post_type, [ 'post', 'page' ] ) ) return;
+		if ( ! in_array( $post_type, $this->managed_post_types(), true ) ) return;
 
 		$user_id = get_current_user_id();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading admin list-filter URL parameter; no data is modified.
@@ -72,7 +72,7 @@ class Filters {
 	}
 
 	public function render_outdated_filter_dropdown( string $post_type ): void {
-		if ( ! in_array( $post_type, [ 'post', 'page' ] ) ) return;
+		if ( ! in_array( $post_type, $this->managed_post_types(), true ) ) return;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reading admin list-filter URL parameter; no data is modified.
 		$current = isset( $_GET['lf_outdated_filter'] ) ? sanitize_key( wp_unslash( $_GET['lf_outdated_filter'] ) ) : '';
@@ -81,6 +81,36 @@ class Filters {
 		echo '<option value="">All statuses</option>';
 		echo '<option value="1" ' . selected( $current, '1', false ) . '>Outdated only</option>';
 		echo '</select>';
+	}
+
+	// =========================================================
+	// MANAGED POST TYPES
+	// =========================================================
+
+	/**
+	 * Returns all post types that should display the Lingua Forge filter
+	 * dropdowns: 'post', 'page', and any public CPT registered via the
+	 * 'linguaforge_column_post_types' filter.
+	 *
+	 * @return string[]
+	 */
+	private function managed_post_types(): array {
+		$internal = [
+			'attachment', 'revision', 'nav_menu_item',
+			'wp_template', 'wp_template_part', 'wp_navigation',
+			'wp_block', 'wp_global_styles', 'wp_font_family', 'wp_font_face',
+			'wp_navigation_fallback',
+		];
+
+		$cpts = array_values( array_diff(
+			array_keys( get_post_types( [ 'public' => true ] ) ),
+			array_merge( [ 'post', 'page' ], $internal )
+		) );
+
+		/** @see linguaforge_column_post_types (documented in class-columns.php) */
+		$cpts = (array) apply_filters( 'linguaforge_column_post_types', $cpts ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+
+		return array_merge( [ 'post', 'page' ], $cpts );
 	}
 
 	// =========================================================

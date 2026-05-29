@@ -669,9 +669,9 @@ class LinkFixer {
 			wp_send_json_error( 'Invalid language' );
 		}
 
-		// Admin-only path: gated by current_user_can('edit_posts') and only fires when an admin clicks "Scan Links". Bounded to post/page + published. The slow-query warning is documented; this isn't a hot frontend path. (phpcs:ignore directive on the meta_query line itself, where the sniff actually fires.)
+		// Admin-only path: gated by current_user_can('edit_posts') and only fires when an admin clicks "Scan Links". Bounded to published content post types. The slow-query warning is documented; this isn't a hot frontend path. (phpcs:ignore directive on the meta_query line itself, where the sniff actually fires.)
 		$query = new \WP_Query( [
-			'post_type'      => [ 'post', 'page' ],
+			'post_type'      => $this->link_fixer_post_types(),
 			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
@@ -738,7 +738,7 @@ class LinkFixer {
 	 * Only shown when a language filter is currently active.
 	 */
 	public function render_fix_links_button( string $post_type ): void {
-		if ( ! in_array( $post_type, [ 'post', 'page' ], true ) ) {
+		if ( ! in_array( $post_type, $this->link_fixer_post_types(), true ) ) {
 			return;
 		}
 
@@ -806,6 +806,33 @@ class LinkFixer {
 	// =========================================================
 	// HELPERS
 	// =========================================================
+
+	/**
+	 * Returns the post types whose content is scanned and fixed by the
+	 * link fixer: 'post', 'page', and any public CPT opted in via the
+	 * 'linguaforge_link_fixer_post_types' filter.
+	 *
+	 * @return string[]
+	 */
+	private function link_fixer_post_types(): array {
+		$internal = [
+			'attachment', 'revision', 'nav_menu_item',
+			'wp_template', 'wp_template_part', 'wp_navigation',
+			'wp_block', 'wp_global_styles', 'wp_font_family', 'wp_font_face',
+			'wp_navigation_fallback',
+		];
+		$cpts = array_values( array_diff(
+			array_keys( get_post_types( [ 'public' => true ] ) ),
+			array_merge( [ 'post', 'page' ], $internal )
+		) );
+		/**
+		 * Filters the post types included in the Lingua Forge link-fixer scan.
+		 *
+		 * @param string[] $cpts CPT slugs (excludes 'post' and 'page', which are always included).
+		 */
+		$cpts = (array) apply_filters( 'linguaforge_link_fixer_post_types', $cpts ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+		return array_merge( [ 'post', 'page' ], $cpts );
+	}
 
 	/**
 	 * Return the language currently chosen in the admin list filter,

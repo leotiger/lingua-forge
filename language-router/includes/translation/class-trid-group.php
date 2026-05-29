@@ -39,7 +39,23 @@ class TridGroup {
 	}
 
 	public function set_trid( int $id, string $v ): void {
+		$old = $this->get_trid( $id );
 		update_post_meta( $id, '_lf_trid', $v );
+
+		if ( $old !== $v ) {
+			/**
+			 * Fires after a post's TRID (translation-group UUID) changes.
+			 *
+			 * Useful for object-cache plugins that need to invalidate entries keyed
+			 * on TRID, and for any code that maintains derived data from translation
+			 * groups (e.g. sitemaps, search indexes).
+			 *
+			 * @param int    $id       Post ID whose TRID was updated.
+			 * @param string $new_trid New TRID value (a UUID, or '' to unlink).
+			 * @param string $old_trid Previous TRID value ('' if not previously set).
+			 */
+			do_action( 'linguaforge_trid_changed', $id, $v, $old ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+		}
 	}
 
 	// =========================================================

@@ -233,6 +233,21 @@ class PostListColumn {
 			] );
 		}
 
+		// ── Creation gate ─────────────────────────────────────────────────────
+		// Allow external integrations (e.g. WooCommerce) to block translated-post
+		// creation until their own delegation layer is active.  Returning false
+		// from this filter prevents creating a broken product post that lacks
+		// price, stock, and other operational meta.
+		if ( ! apply_filters( 'linguaforge_cpt_create_allowed', true, $post->post_type ) ) {
+			wp_send_json_error( [
+				'message' => sprintf(
+					/* translators: %s: post type slug */
+					__( 'Creating translations for post type "%s" requires an active integration. Please ensure the required integration is installed and active.', 'lingua-forge' ),
+					$post->post_type
+				),
+			] );
+		}
+
 		// ── Translation feature ───────────────────────────────────────────────
 		$translation = Registry::get( 'translation' );
 		if ( ! $translation instanceof Translation ) {

@@ -78,7 +78,7 @@ class Sync {
 
 		if ( $type === 'page' )      $base = 'page';
 		elseif ( $type === 'post' )  $base = 'single';
-		else                         return null;
+		else                         $base = 'single-' . $type; // CPT: e.g. single-product
 
 		return $base . '-' . $lang;
 	}
@@ -96,12 +96,8 @@ class Sync {
 		}
 
 		// ── 2. Block-template API (covers DB-stored / customised templates) ───
-		if ( function_exists( 'get_block_templates' ) ) {
-			return ! empty( get_block_templates( [ 'slug__in' => [ $slug ] ] ) );
-		}
-
-		// ── 3. Fallback for WordPress < 5.8 ──────────────────────────────────
-		return ! empty( get_page_by_path( $slug, OBJECT, 'wp_template' ) );
+		// Minimum WP is 6.4; get_block_templates() is always available.
+		return ! empty( get_block_templates( [ 'slug__in' => [ $slug ] ] ) );
 	}
 
 	/**
@@ -113,8 +109,6 @@ class Sync {
 	 * Reverting to the source language clears any auto-assigned template.
 	 */
 	public function force_lang_template( int $post_id, $post, string $lang ): void {
-		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
-
 		$template_slug = $this->resolve_template_for_lang( $post, $lang );
 
 		if ( $template_slug ) {
@@ -131,8 +125,6 @@ class Sync {
 	}
 
 	public function assign_template_if_needed( int $post_id, $post, string $lang ): void {
-		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
-
 		$template_slug = $this->resolve_template_for_lang( $post, $lang );
 		$auto_prev     = (string) get_post_meta( $post_id, '_lf_auto_template', true );
 		$current       = (string) ( get_post_meta( $post_id, '_wp_page_template', true ) ?: '' );
@@ -142,7 +134,15 @@ class Sync {
 		// {base}-{lang} naming convention for any active language, treat it as
 		// a previously auto-assigned template so a language change can replace it.
 		if ( empty( $auto_prev ) && ! empty( $current ) && $current !== 'default' ) {
-			$base = $post->post_type === 'page' ? 'page' : 'single';
+			// Determine the template base name using the same logic as
+			// resolve_template_for_lang(): 'page', 'single', or 'single-{cpt}'.
+			if ( $post->post_type === 'page' ) {
+				$base = 'page';
+			} elseif ( $post->post_type === 'post' ) {
+				$base = 'single';
+			} else {
+				$base = 'single-' . $post->post_type;
+			}
 			foreach ( $this->router->context->languages() as $l ) {
 				if ( $current === $base . '-' . $l ) {
 					$auto_prev = $current;
@@ -239,11 +239,35 @@ class Sync {
 	}
 
 	// =========================================================
+	// HELPERS
+	// =========================================================
+
+	/**
+	 * WordPress-internal post types that must never be treated as translatable
+	 * content, regardless of their 'public' flag.
+	 *
+	 * @return string[]
+	 */
+	private function internal_post_types(): array {
+		return [
+			'attachment', 'revision', 'nav_menu_item',
+			'wp_template', 'wp_template_part', 'wp_block',
+			'wp_global_styles', 'wp_font_family', 'wp_font_face',
+			'wp_navigation_fallback',
+		];
+	}
+
+	// =========================================================
 	// SAVE HANDLER
 	// =========================================================
 
 	public function handle_save_post( int $post_id, $post ): void {
-		if ( ! in_array( $post->post_type, [ 'post', 'page', 'wp_navigation' ], true ) ) return;
+		// wp_navigation needs language assignment even though it is not a public
+		// post type; all other types must be public and non-internal to qualify.
+		if ( $post->post_type !== 'wp_navigation' ) {
+			$pto = get_post_type_object( $post->post_type );
+			if ( ! $pto || ! $pto->public || in_array( $post->post_type, $this->internal_post_types(), true ) ) return;
+		}
 		if ( wp_is_post_revision( $post_id ) ) return;
 		if ( wp_is_post_autosave( $post_id ) ) return;
 		if ( ! current_user_can( 'edit_post', $post_id ) ) return;
@@ -274,8 +298,11 @@ class Sync {
 
 		$lang = $trid_group->get_lang( $post_id );
 
-		// Skip template/TRID/timestamp for non-page/post types
-		if ( ! in_array( $post->post_type, [ 'post', 'page' ], true ) ) return;
+		// Skip template/TRID/timestamp for wp_navigation and all non-content
+		// post types (internal WP types are excluded above; this gate is what
+		// keeps wp_navigation — public => false — out of this block).
+		$pto = get_post_type_object( $post->post_type );
+		if ( ! $pto || ! $pto->public || in_array( $post->post_type, $this->internal_post_types(), true ) ) return;
 
 		// Template auto-assignment.
 		//

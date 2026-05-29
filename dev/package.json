@@ -7,7 +7,7 @@
     "license": "GPL-2.0-or-later",
     "author": "Uli Hake",
     "scripts": {
-        "env:start": "wp-env start",
+        "env:start": "wp-env start && wp-env run cli bash -c 'wp plugin activate lingua-forge --quiet'",
         "env:stop": "wp-env stop",
         "env:destroy": "wp-env destroy",
         "env:cli": "wp-env run cli wp",

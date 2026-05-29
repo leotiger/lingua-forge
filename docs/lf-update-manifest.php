@@ -35,60 +35,24 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '1.8.4';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v1.8.4/lingua-forge-1.8.4.zip';
+	$version      = '2.0.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.0.0/lingua-forge-2.0.0.zip';
 	$last_updated = '2026-05-28';
 	$tested       = '7.0';
 
-	// Prepend new release entry; keep the last 3–4 entries for the modal.
+	// Current release only. Full history: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>1.8.4 — 2026-05-28</h4>' .
+		'<h4>2.0.0 — 2026-05-28</h4>' .
 		'<ul>' .
-			'<li><strong>Improved:</strong> "Retranslate" button now available on all TRID-linked posts, not just those flagged as outdated. A new <code>lf_lang_column_retranslate</code> hook fires unconditionally in the Lang column so editors can always force a fresh translation from the list screen.</li>' .
-		'</ul>' .
-
-		'<h4>1.8.3 — 2026-05-27</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> Double-update badge after upgrade — update checker now reads installed version from disk instead of the in-memory constant, eliminating the need to click Update twice.</li>' .
-		'</ul>' .
-
-		'<h4>1.8.2 — 2026-05-27</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> "Retranslate" button with language selector in the Lang column — outdated target posts show a "From [lang]" dropdown and a Retranslate button. Clears stale cache, reruns AI translation, resets outdated flag, regenerates meta description.</li>' .
-			'<li><strong>Improved:</strong> Lang column buttons now render inline on the same line as the language indicator.</li>' .
-		'</ul>' .
-
-		'<h4>1.8.1 — 2026-05-27</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> "Translate missing" button in the Lang column of the Posts/Pages list — one click fires all missing AI translations for a source-language post from the overview screen without opening the editor. Success replaces the ⭕ indicator with ✓ Done inline.</li>' .
-		'</ul>' .
-
-		'<h4>1.8.0 — 2026-05-27</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> Translations metabox — spurious Override button after language switch. Stale TRID object-cache entry not cleared by set_lang() alone; explicit cache flush added to the AJAX handler.</li>' .
-			'<li><strong>Improved:</strong> "Add Language" flushes rewrite rules server-side and reloads the page client-side automatically — Active Languages chips and template tables refresh without manual reload.</li>' .
-			'<li><strong>Improved:</strong> Router tab Templates / Parts / Navigations replaced with a per-language tabbed UI; active tab persists via sessionStorage.</li>' .
-			'<li><strong>Maintenance:</strong> PHPCS MissingTranslatorsComment and SlowDBQuery warnings resolved in Translations metabox.</li>' .
-		'</ul>' .
-
-		'<h4>1.7.2 — 2026-05-27</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> Self-hosted automatic update checker — once installed, WordPress surfaces update badges and one-click updates from lingua-forge.com without a WordPress.org listing.</li>' .
-			'<li><strong>Improved:</strong> "View details" link in the plugin row with full changelog/description modal. Duplicate links suppressed; "Visit plugin site" (GitHub) always guaranteed.</li>' .
-			'<li><strong>Fixed:</strong> Plugin info modal returns a graceful local fallback instead of "Plugin not found" when the manifest is temporarily unreachable.</li>' .
-			'<li><strong>Fixed:</strong> PHPStan — $transient typed as \\stdClass; includes/ added to analysis paths.</li>' .
-		'</ul>' .
-
-		'<h4>1.7.1 — 2026-05-26</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> Target Language dropdown now limited to instance languages; missing languages (e.g. Basque/eu) auto-injected via <code>linguaforge_translation_languages</code> filter.</li>' .
-			'<li><strong>Fixed:</strong> Maintenance tab uninstall warning — internal meta key names removed.</li>' .
-			'<li><strong>Maintenance:</strong> SECURITY.md excluded via .distignore and .gitattributes.</li>' .
-		'</ul>' .
-
-		'<h4>1.7.0 — 2026-05-24</h4>' .
-		'<ul>' .
-			'<li>Subdomain routing mode (<code>de.example.com</code>); classic menu auto-add guard; language switcher fixes; Fix Navigation References corrections; Translate Navigation subdomain fix.</li>' .
+			'<li><strong>Added:</strong> WooCommerce integration — Phase 1 (shared-stock delegation model). Translated products carry only content fields; all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is read transparently from the source-language product at runtime. Five new classes: <code>MetaDelegate</code> (<code>get_post_metadata</code> delegation), <code>StockRouter</code> (stock write routing), <code>VariationDelegate</code> (<code>product_variation</code> delegation), <code>TaxonomyDelegate</code> (<code>wp_get_object_terms</code> delegation for <code>product_cat</code> / <code>product_tag</code> / <code>product_type</code> / <code>pa_*</code>), <code>CatalogQuery</code> (WC product query language filter).</li>' .
+			'<li><strong>Added:</strong> WooCommerce integration — Phase 1b (translated term names). Category, tag, product-type, and attribute term names display in the visitor\'s language via <code>_lf_term_name_{lang}</code> termmeta. Editable from the term add/edit screens. New classes: <code>TermNameFilter</code>, <code>TermNameAdmin</code>.</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_cpt_create_allowed</code> filter — allows integrations to block translated-post creation until their delegation layer is active.</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_wc_delegate_post_types</code> filter — controls which post types participate in operational-meta delegation and stock-write routing.</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_wc_integration_active</code> action — fires after the WooCommerce integration initialises for the current request.</li>' .
+			'<li><strong>Added:</strong> Custom Post Type support (Phase 0) — all public CPTs now receive the full Lingua Forge admin layer: Lang column, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Opt-out filters: <code>linguaforge_column_post_types</code>, <code>linguaforge_ai_metabox_post_types</code>, <code>linguaforge_link_fixer_post_types</code>.</li>' .
+			'<li><strong>Added:</strong> FSE template auto-assignment for CPTs using <code>single-{post_type}-{lang}</code> naming (e.g. <code>single-product-de</code>).</li>' .
+			'<li><strong>Added:</strong> Third-party integration API — five new hooks: <code>linguaforge_loaded</code> (fires after router boot; use instead of <code>plugins_loaded</code> for integrations), <code>linguaforge_translation_content</code> filter, <code>linguaforge_translation_complete</code> action, <code>linguaforge_trid_changed</code> action, <code>linguaforge_switcher_output</code> filter. Two public REST endpoints: <code>GET /wp-json/lingua-forge/v1/languages</code> and <code>GET /wp-json/lingua-forge/v1/post/{id}/translations</code>. New public PHP function <code>linguaforge_trigger_translation()</code>. Full documentation in CONTRIBUTING.md.</li>' .
+			'<li><strong>Added:</strong> Classic theme language switcher — <code>[lsflr_switcher]</code> shortcode and <code>Lsflr_Switcher_Widget</code> (Appearance → Widgets) available on any theme.</li>' .
 		'</ul>';
 
 	// -------------------------------------------------------------------------

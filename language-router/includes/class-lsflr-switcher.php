@@ -21,7 +21,9 @@ class Switcher {
 
 	private function register_hooks(): void {
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ] );
-		add_action( 'init', [ $this, 'register_block' ] );
+		add_action( 'init',          [ $this, 'register_block' ] );
+		add_action( 'init',          [ $this, 'register_shortcode' ] );
+		add_action( 'widgets_init',  [ $this, 'register_widget' ] );
 	}
 
 	// =========================================================
@@ -219,7 +221,20 @@ class Switcher {
 		</script>
 
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		/**
+		 * Filters the rendered language-switcher HTML.
+		 *
+		 * Allows themes and third-party plugins to wrap, modify, or replace the
+		 * switcher output without overriding the block render callback.
+		 * Applies to all three entry points: block, shortcode, and classic widget.
+		 *
+		 * @param string $html    The fully-rendered switcher HTML.
+		 * @param array  $langs   Language entries: each has keys `code`, `url`, `label`, `current`.
+		 * @param array  $atts    Resolved attributes: `direction`, `show`, `customLabel`, `iconHtml`.
+		 */
+		return (string) apply_filters( 'linguaforge_switcher_output', $html, $langs, $atts );
 	}
 
 	// =========================================================
@@ -236,9 +251,26 @@ class Switcher {
 		);
 
 		register_block_type( 'custom/lsflr-switcher', [
-			'editor_script'   => 'lsflr-switcher-editor',
-			'render_callback' => [ $this, 'render_switcher' ],
+			'editor_script_handles' => [ 'lsflr-switcher-editor' ],
+			'render_callback'       => [ $this, 'render_switcher' ],
 		] );
 	}
+
+	// =========================================================
+	// SHORTCODE
+	// =========================================================
+
+	public function register_shortcode(): void {
+		add_shortcode( 'lsflr_switcher', [ $this, 'render_switcher' ] );
+	}
+
+	// =========================================================
+	// CLASSIC WIDGET
+	// =========================================================
+
+	public function register_widget(): void {
+		register_widget( 'Lsflr_Switcher_Widget' );
+	}
 }
+
 

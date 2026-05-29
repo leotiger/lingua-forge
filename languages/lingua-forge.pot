@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 1.8.3\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
+"Project-Id-Version: Lingua Forge 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge-2.0\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-28T08:53:54+00:00\n"
+"POT-Creation-Date: 2026-05-29T10:43:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -93,40 +93,40 @@ msgstr ""
 msgid "Conversational"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:464
+#: ai/includes/Admin/MetaBox.php:481
 msgid "Translate page…"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:465
+#: ai/includes/Admin/MetaBox.php:482
 msgid "Generate content…"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:485
+#: ai/includes/Admin/MetaBox.php:502
 msgid "AI Behaviour Preset"
 msgstr ""
 
 #. translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
 #. translators: %s: name of the globally configured preset
-#: ai/includes/Admin/MetaBox.php:492
-#: ai/includes/Admin/MetaBox.php:496
+#: ai/includes/Admin/MetaBox.php:509
+#: ai/includes/Admin/MetaBox.php:513
 #, php-format
 msgid "Global default (%s)"
 msgstr ""
 
 #. translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
-#: ai/includes/Admin/MetaBox.php:492
+#: ai/includes/Admin/MetaBox.php:509
 msgid "Custom"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:509
+#: ai/includes/Admin/MetaBox.php:526
 msgid "Overrides the AI preset for Translation and Content Generation on this page. Site-wide custom prompt instructions (Settings → Behavior) are always appended to every request regardless of this selection."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:514
+#: ai/includes/Admin/MetaBox.php:531
 msgid "Overrides the AI preset for Translation and Content Generation on this page. All other features always use the global preset."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:595
+#: ai/includes/Admin/MetaBox.php:612
 #: language-router/includes/class-lsflr-link-fixer.php:782
 #: ai/assets/admin.js:216
 #: ai/assets/admin.js:397
@@ -170,8 +170,14 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#. translators: %s: post type slug
+#: ai/includes/Admin/PostListColumn.php:245
+#, php-format
+msgid "Creating translations for post type \"%s\" requires an active integration. Please ensure the required integration is installed and active."
+msgstr ""
+
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:359
+#: ai/includes/Admin/PostListColumn.php:374
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr ""
@@ -1721,6 +1727,16 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr ""
 
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:109
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:150
+msgid "Translated Names"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
+msgid "Name displayed in this language. Leave empty to use the source name."
+msgstr ""
+
 #. translators: %d is seconds until the next AI request is allowed.
 #: ai/includes/REST/RateLimiter.php:103
 #, php-format
@@ -1746,27 +1762,27 @@ msgid "Visit plugin site"
 msgstr ""
 
 #. translators: %d: number of languages without a translation post
-#: language-router/includes/admin/class-meta-boxes.php:202
+#: language-router/includes/admin/class-meta-boxes.php:209
 #, php-format
 msgid "%d language not yet linked"
 msgid_plural "%d languages not yet linked"
 msgstr[0] ""
 msgstr[1] ""
 
-#: language-router/includes/admin/class-meta-boxes.php:252
+#: language-router/includes/admin/class-meta-boxes.php:259
 msgid "This is the source page. Footnotes are edited directly in the block editor."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:260
+#: language-router/includes/admin/class-meta-boxes.php:267
 msgid "No source page linked yet."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:267
 #: language-router/includes/admin/class-meta-boxes.php:274
+#: language-router/includes/admin/class-meta-boxes.php:281
 msgid "The source page has no footnotes."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:279
+#: language-router/includes/admin/class-meta-boxes.php:286
 msgid "These footnotes come from the source page and are shown here for reference only. Add them to this page using the block editor."
 msgstr ""
 
@@ -1927,6 +1943,46 @@ msgstr ""
 
 #: language-router/includes/class-lsflr-link-fixer.php:795
 msgid "Re-scan"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:25
+msgid "Language Switcher"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:26
+msgid "Displays the Lingua Forge language switcher."
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:43
+msgid "Language"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:60
+msgid "Display"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:63
+msgid "Language label"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:64
+msgid "Icon only"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:65
+msgid "Icon + label"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:69
+msgid "Dropdown direction"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:72
+msgid "Down"
+msgstr ""
+
+#: language-router/includes/class-lsflr-switcher-widget.php:73
+msgid "Up"
 msgstr ""
 
 #: meta-description/meta-description.php:67

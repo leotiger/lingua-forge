@@ -30,6 +30,49 @@ class Columns {
 		add_action( 'manage_posts_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
 		add_action( 'manage_pages_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
 		add_action( 'quick_edit_custom_box',         [ $this, 'render_quick_edit_box' ], 10, 2 );
+		// CPT-specific column hooks must be registered after post types are defined.
+		// Priority 20 fires after most plugins register their CPTs at init priority 10.
+		add_action( 'init', [ $this, 'register_cpt_column_hooks' ], 20 );
+	}
+
+	public function register_cpt_column_hooks(): void {
+		foreach ( $this->cpt_post_types() as $pt ) {
+			add_filter( "manage_{$pt}_posts_columns",       [ $this, 'add_lang_column' ] );
+			add_action( "manage_{$pt}_posts_custom_column", [ $this, 'render_lang_column' ], 10, 2 );
+		}
+	}
+
+	/**
+	 * Returns the list of public CPTs (excluding 'post', 'page', and internal
+	 * WordPress types) that receive the Lingua Forge Lang column.
+	 *
+	 * Filterable via the 'linguaforge_column_post_types' hook so site owners
+	 * can opt specific CPTs out.
+	 *
+	 * @return string[]
+	 */
+	private function cpt_post_types(): array {
+		$internal = [
+			'attachment', 'revision', 'nav_menu_item',
+			'wp_template', 'wp_template_part', 'wp_navigation',
+			'wp_block', 'wp_global_styles', 'wp_font_family', 'wp_font_face',
+			'wp_navigation_fallback',
+		];
+
+		$types = array_values( array_diff(
+			array_keys( get_post_types( [ 'public' => true ] ) ),
+			array_merge( [ 'post', 'page' ], $internal )
+		) );
+
+		/**
+		 * Filters the CPTs that receive Lingua Forge admin columns.
+		 *
+		 * 'post' and 'page' are always covered by their own dedicated hooks
+		 * and are not included in this list.
+		 *
+		 * @param string[] $types Post type slugs.
+		 */
+		return (array) apply_filters( 'linguaforge_column_post_types', $types ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
 	}
 
 	// =========================================================
@@ -103,7 +146,10 @@ class Columns {
 
 	public function render_quick_edit_box( string $column_name, string $post_type ): void {
 		if ( $column_name !== 'lang' ) return;
-		if ( ! in_array( $post_type, [ 'post', 'page', 'wp_navigation' ] ) ) return;
+		// Allow all public post types; quick_edit_custom_box only fires for the
+		// type currently being listed, so this is already contextually scoped.
+		$pto = get_post_type_object( $post_type );
+		if ( ! $pto || ! $pto->public ) return;
 		?>
 		<fieldset class="inline-edit-col">
 			<label>

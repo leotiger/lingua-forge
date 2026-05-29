@@ -339,11 +339,28 @@ class MetaBox {
 
     public static function register(): void {
 
+        $internal = [
+            'attachment', 'revision', 'nav_menu_item',
+            'wp_template', 'wp_template_part', 'wp_navigation',
+            'wp_block', 'wp_global_styles', 'wp_font_family', 'wp_font_face',
+            'wp_navigation_fallback',
+        ];
+        $types = array_values( array_diff(
+            array_keys( get_post_types( [ 'public' => true ] ) ),
+            $internal
+        ) );
+        /**
+         * Filters the post types that receive the Lingua Forge AI metabox.
+         *
+         * @param string[] $types Post type slugs (includes 'post' and 'page' by default).
+         */
+        $types = (array) apply_filters( 'linguaforge_ai_metabox_post_types', $types );
+
         add_meta_box(
             'lingua-forge-ai',
             'Lingua Forge',
             [self::class, 'render'],
-            ['post', 'page'],
+            $types,
             'normal',
             'high'
         );

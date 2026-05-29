@@ -95,22 +95,29 @@ class MetaBoxes {
 	}
 
 	public function render_template_meta_box( $post ): void {
-		if ( ! in_array( $post->post_type, [ 'page', 'post' ] ) ) return;
+		// Show for post, page, and any public CPT managed by Lingua Forge.
+		$pto = get_post_type_object( $post->post_type );
+		if ( ! $pto || ! $pto->public ) return;
+		$internal = [
+			'attachment', 'revision', 'nav_menu_item',
+			'wp_template', 'wp_template_part', 'wp_navigation',
+			'wp_block', 'wp_global_styles', 'wp_font_family', 'wp_font_face',
+		];
+		if ( in_array( $post->post_type, $internal, true ) ) return;
 
 		$current = get_post_meta( $post->ID, '_wp_page_template', true ) ?: 'default';
 
-		$templates = get_posts( [
-			'post_type'      => 'wp_template',
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-		] );
+		// get_block_templates() returns both DB-stored (customised) and
+		// filesystem-bundled theme templates — get_posts(wp_template) misses
+		// filesystem templates until they are edited in the Site Editor.
+		$templates = get_block_templates( [ 'post_type' => $post->post_type ] );
 
 		wp_nonce_field( 'lf_template_save', 'lf_template_nonce' );
 		echo '<select name="lf_page_template" style="width:100%">';
 		echo '<option value="default"' . selected( $current, 'default', false ) . '>Default</option>';
 
 		foreach ( $templates as $tpl ) {
-			$slug = $tpl->post_name;
+			$slug = $tpl->slug;
 			if ( ! str_starts_with( $slug, 'page-' ) && ! str_starts_with( $slug, 'single-' ) ) continue;
 			echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $current, $slug, false ) . '>' . esc_html( $slug ) . '</option>';
 		}
