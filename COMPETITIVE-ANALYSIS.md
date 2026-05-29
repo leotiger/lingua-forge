@@ -126,13 +126,12 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 | Terminology Glossary | ✅ per language-pair | ✅ | ❌ | ❌ | ✅ (translation rules) | ❌ |
 | Front-end block-level translation overlay | ✅ native blocks — no string indexing or recomposition layer required | ❌ | ❌ | ✅ string-interception (parallel storage + reassembly layer) | ✅ cloud proxy | ❌ |
 | Side-by-side diff preview (before / after) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Inline editing in diff preview | 🗓 Next major release | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Block flagging (needs review / needs editing) from diff view | 🗓 Next major release | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Block flagging (needs review / needs editing) from diff view | 🔜 Coming soon | ❌ | ❌ | ❌ | ❌ | ❌ |
 | AI Behavior Presets (temperature + system prompt tuning) | ✅ 4 presets | ❌ | ❌ | ❌ | ❌ | ❌ |
 | AI Usage tracking (tokens / feature / date) | ✅ | ❌ | ❌ | Word quota shown in dashboard | Weglot dashboard | ❌ |
 | API key encryption | ✅ AES-256-GCM with versioned envelope | N/A (WPML manages) | N/A | N/A (site credentials) | N/A (SaaS) | Site credentials |
-| Translator role | 🗓 Medium-term | ✅ | ✅ Pro | ✅ Business | ✅ Pro | ❌ |
-| Agency / CAT tool integration (XLIFF) | ⬇ Low priority | ✅ | ✅ Pro | ❌ | ✅ (export) | ❌ |
+| Translator role | 🔜 Coming soon | ✅ | ✅ Pro | ✅ Business | ✅ Pro | ❌ |
+| Agency / CAT tool integration (XLIFF) | 📣 On request | ✅ | ✅ Pro | ❌ | ✅ (export) | ❌ |
 
 ---
 
@@ -204,9 +203,9 @@ Feature tables show what a plugin can do — not what it costs in actual effort 
 |---|---|---|---|---|---|---|
 | Product / variation / category translation | ✅ Phase 1+1b — shared-stock model (title, description, price, stock, images, variations, categories all work; category and attribute term names translated via termmeta, editable on term edit screen) | ✅ (add-on; requires CMS plan or higher) | ✅ paid add-on | ✅ included | ✅ (cloud, including JS-rendered cart/checkout) | ✅ included |
 | WooCommerce UI string translation (cart labels, notices, button text) | ✅ via Loco Translate companion (.mo/.po layer) | ✅ | ✅ | ✅ (string-intercept) | ✅ (cloud) | ✅ |
-| Multi-currency | ❌ | ✅ (WPML Multi-Currency add-on) | Via WooCommerce / 3rd-party | ❌ | ❌ | ✅ (separate store per language) |
+| Multi-currency | Via WooCommerce / 3rd-party | ✅ (WPML Multi-Currency add-on) | Via WooCommerce / 3rd-party | ❌ | ❌ | ✅ (separate store per language) |
 
-**Assessment (v2.0.0):** Lingua Forge supports WooCommerce products via a shared-stock delegation model: translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, variations, and taxonomy assignments are delegated transparently from the source product at runtime. No meta copying, no SKU uniqueness issues, no stock sync complexity. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta — entered directly on the term edit screen, no CLI or code required (Phase 1b, shipped v2.0.0). WooCommerce UI strings (cart labels, checkout headers, button text, notices) live in `.po`/`.mo` files and are translated via Loco Translate, the recommended free companion. This is not a Lingua Forge architecture gap — price and stock data are delegated from the source product at runtime, so there are no dynamic price recalculations on translated products to intercept. The `.mo` layer covers the full WooCommerce string surface cleanly.
+**Assessment (v2.0.0):** Lingua Forge supports WooCommerce products via a shared-stock delegation model: translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, variations, and taxonomy assignments are delegated transparently from the source product at runtime. No meta copying, no SKU uniqueness issues, no stock sync complexity. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta — entered directly on the term edit screen, no CLI or code required (Phase 1b, shipped v2.0.0). WooCommerce UI strings (cart labels, checkout headers, button text, notices) live in `.po`/`.mo` files and are translated via Loco Translate, the recommended free companion. This is not a Lingua Forge architecture gap — price and stock data are delegated from the source product at runtime, so there are no dynamic price recalculations on translated products to intercept. The `.mo` layer covers the full WooCommerce string surface cleanly. Multi-currency is not a translation-plugin concern: WooCommerce core manages the store currency; per-language or per-country currency conversion is handled by WC Payments' built-in multi-currency feature or a standalone currency plugin. Lingua Forge's price delegation operates at the product meta level and is transparent to whichever currency layer is active.
 
 ---
 
@@ -324,7 +323,7 @@ WPML (2008) and Polylang (2012) have large user bases, extensive third-party doc
 
 ### Professional translation management
 
-WPML integrates with translation agencies and CAT tools via XLIFF export. Polylang Pro supports similar workflows. TranslatePress and Weglot both support translator role assignment. A dedicated translator role is on Lingua Forge's medium-term roadmap — a scoped WordPress role that allows contributors to translate without access to source content or settings. XLIFF agency integration is lower priority: the maintenance overhead against evolving block formats and the professional-agency target audience are a poor fit for a solo-maintained free plugin at this stage.
+WPML integrates with translation agencies and CAT tools via XLIFF export. Polylang Pro supports similar workflows. TranslatePress and Weglot both support translator role assignment. A dedicated translator role is coming soon — a scoped WordPress role that allows contributors to translate without access to source content or settings. XLIFF agency integration will be implemented if there is sufficient user demand — report your need via the support forum or GitHub issues to help prioritise it.
 
 ---
 
