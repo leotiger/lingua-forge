@@ -1,9 +1,10 @@
 # dev/
 
 Dev tooling for the Lingua Forge WordPress plugin. The plugin itself ships
-with **zero runtime Composer dependencies** — that policy is non-negotiable
-for WordPress.org submission. This `dev/` folder is where every dev-tooling
-dependency lives so the plugin's root stays clean.
+with **zero runtime Composer dependencies** — this is a hard rule: no
+Composer autoloader, no third-party libraries in the shipped plugin root.
+This `dev/` folder is where every dev-tooling dependency lives so the
+plugin root stays clean and deployable.
 
 ## Layout
 
@@ -39,7 +40,7 @@ npm install                   # @wordpress/env, @wordpress/scripts
 ```
 
 After this, the plugin root is untouched — no `vendor/`, no `node_modules/`,
-no caches pollute the folder that ships to WordPress.org.
+no caches pollute the folder that ships to users.
 
 ## Day-to-day
 
@@ -52,6 +53,7 @@ composer lint:fix             # phpcbf auto-fix  ⚠️  see caution below
 composer analyse              # PHPStan, WP stubs
 composer test:unit            # PHPUnit unit suite — no Docker needed
 composer test:integration     # PHPUnit integration suite — wp-env up
+composer test:integration:wc  # WooCommerce integration suite only (needs WC in .wp-env.override.json)
 composer test                 # both suites
 composer qa                   # lint + analyse + unit tests
 composer plugin-check         # the official .org checker (inside wp-env)
@@ -69,16 +71,17 @@ npm run env:cli -- option get blogname     # WP-CLI inside the dev container
 
 ### What composite commands include
 
-| Command                    | Expands to                                                              | Docker needed |
-| -------------------------- | ----------------------------------------------------------------------- | ------------- |
-| `composer test`            | `test:unit` + `test:integration`                                        | Yes           |
-| `composer qa`              | `lint` → `analyse` → `test:unit`                                        | No            |
-| `composer plugin-check`    | starts wp-env CLI, runs the official WP.org Plugin Check inside it      | Yes           |
+| Command                       | Expands to                                                         | Docker needed |
+| ----------------------------- | ------------------------------------------------------------------ | ------------- |
+| `composer test`               | `test:unit` + `test:integration`                                   | Yes           |
+| `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |
+| `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |
+| `composer plugin-check`       | starts wp-env CLI, runs the WP Plugin Check tool inside it         | Yes           |
 
 Notes:
-- `composer qa` runs only the **unit** suite — it is intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
-- `composer test:integration` requires wp-env to be running (`npm run env:start`) and Docker Desktop to be open.
-- `composer plugin-check` also requires Docker Desktop + wp-env; it runs the same checker WordPress.org uses on submission.
+- `composer qa` runs only the **unit** suite — intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
+- `composer test:integration` and `composer test:integration:wc` require wp-env to be running (`npm run env:start`) and Docker Desktop to be open.
+- `composer plugin-check` also requires Docker Desktop + wp-env.
 
 ## ⚠️ `composer lint:fix` caution
 
