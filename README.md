@@ -5,6 +5,8 @@
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 
+**Lingua Forge:** https://lingua-forge.com
+
 Lingua Forge is a WordPress plugin for sites that publish content in more than one language and want AI assistance built into the editorial workflow — without a paid third-party subscription service or a complex multi-plugin stack.
 
 At its core it does three things that always end up intertwined on multilingual sites:
