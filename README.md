@@ -970,7 +970,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 2.0.0**
+**Current release — 2.0.1**
 
 - **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
 - **WooCommerce integration — Phase 1 + 1b** — WooCommerce `product` posts are fully supported. Translated products carry only content fields (title, description, excerpt, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta, editable from the term edit screen. No meta copying, no SKU uniqueness issues, no stock sync complexity. New filters: `linguaforge_wc_delegate_post_types`, `linguaforge_cpt_create_allowed`.

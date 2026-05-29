@@ -40,7 +40,7 @@
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
-        "analyse": "phpstan analyse --memory-limit=1G",
+        "analyse": "phpstan analyse --memory-limit=2G",
         "test": "php -d pcov.directory=.. vendor/bin/phpunit",
         "test:unit": "php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
         "test:integration": [

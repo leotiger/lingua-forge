@@ -34,9 +34,9 @@
     const { registerFormatType }                       = wp.richText    || {};
     const { createElement: el }                         = wp.element     || {};
     const { BlockFormatControls }                      = wp.blockEditor || {};
-    const { select, dispatch }                         = wp.data        || {};
+    const { select, dispatch, subscribe }              = wp.data        || {};
 
-    if ( !registerFormatType || !el || !BlockFormatControls || !select || !dispatch ) return;
+    if ( !registerFormatType || !el || !BlockFormatControls || !select || !dispatch || !subscribe ) return;
 
     const { __ } = wp.i18n;
 
@@ -474,6 +474,15 @@
         // Close on Escape
         document.addEventListener( 'keydown', ( e ) => {
             if ( e.key === 'Escape' && !popover.hidden ) closePopover( popover );
+        } );
+
+        // Close when the user focuses a different block.
+        // subscribe fires on every store change; bail fast when the popover is
+        // hidden or no block is active to keep the hot path cheap.
+        subscribe( () => {
+            if ( popover.hidden || ! activeClientId ) return;
+            const selected = select( 'core/block-editor' ).getSelectedBlockClientId();
+            if ( selected !== activeClientId ) closePopover( popover );
         } );
     }
 

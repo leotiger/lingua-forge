@@ -35,13 +35,17 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.0.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.0.0/lingua-forge-2.0.0.zip';
-	$last_updated = '2026-05-28';
+	$version      = '2.0.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.0.1/lingua-forge-2.0.1.zip';
+	$last_updated = '2026-05-29';
 	$tested       = '7.0';
 
 	// Current release only. Full history: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.0.1 — 2026-05-29</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Translate / Review panel now closes automatically when the user focuses a different block in the editor. Previously the panel remained open after switching blocks, requiring a manual dismiss.</li>' .
+		'</ul>' .
 		'<h4>2.0.0 — 2026-05-28</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> WooCommerce integration — Phase 1 (shared-stock delegation model). Translated products carry only content fields; all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is read transparently from the source-language product at runtime. Five new classes: <code>MetaDelegate</code> (<code>get_post_metadata</code> delegation), <code>StockRouter</code> (stock write routing), <code>VariationDelegate</code> (<code>product_variation</code> delegation), <code>TaxonomyDelegate</code> (<code>wp_get_object_terms</code> delegation for <code>product_cat</code> / <code>product_tag</code> / <code>product_type</code> / <code>pa_*</code>), <code>CatalogQuery</code> (WC product query language filter).</li>' .

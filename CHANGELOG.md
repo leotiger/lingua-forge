@@ -2,6 +2,14 @@
 
 ---
 
+## [2.0.1] — 2026-05-29
+
+### Fixed
+
+- **Translate / Review panel closes on block focus change** — the panel now closes automatically when the user focuses a different block in the editor. Previously the panel stayed open after switching blocks, requiring a manual dismiss. Implemented via `wp.data.subscribe()` watching `getSelectedBlockClientId()` against the panel's `activeClientId`.
+
+---
+
 ## [2.0.0] — 2026-05-29
 
 ### Added
@@ -27,7 +35,7 @@
 ### Improved
 
 - **`readme.txt` — added `== Compatibility ==` section** — clarifies that WordPress 6.4+ is required for all core features, while the WooCommerce integration requires WP 6.9+ and WooCommerce 9.0+ (it is safely inactive on earlier versions). Plugin header `Requires at least` remains 6.4.
-- **Dev tooling — memory limits** — PHPStan reduced from 2G to 1G in `dev/composer.json`; PHPUnit reduced from 2G to 512M in `dev/phpunit.xml.dist`.
+- **Dev tooling — memory limits** — PHPStan set to 2G in `dev/composer.json`; PHPUnit reduced from 2G to 512M in `dev/phpunit.xml.dist`.
 
 ---
 

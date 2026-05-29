@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -250,6 +250,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.0.1 =
+* Fixed: Translate / Review panel now closes automatically when the user focuses a different block. Previously the panel stayed open after switching blocks, requiring a manual dismiss.
+
 = 2.0.0 =
 * Added: Custom Post Type support (Phase 0) — all public CPTs now receive the full Lingua Forge admin layer: Lang column, language and outdated-status filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. New opt-out filters: linguaforge_column_post_types, linguaforge_ai_metabox_post_types, linguaforge_link_fixer_post_types.
 * Added: FSE template auto-assignment for CPTs using single-{post_type}-{lang} naming (e.g. single-product-de).
@@ -265,6 +268,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+UX fix: Translate / Review panel now closes automatically on block focus change.
 
 = 2.0.0 =
 Custom Post Type support, WooCommerce Phase 1 + 1b, classic theme language switcher (shortcode + widget), and third-party integration API. No schema changes — safe to update in place.
