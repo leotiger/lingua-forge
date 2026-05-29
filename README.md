@@ -1,7 +1,11 @@
 # Lingua Forge
 
-> **Feature freeze — feedback and testing welcome**
-> Lingua Forge has reached a stable feature set. New features are on hold while the focus shifts to real-world testing, compatibility, and reliability. If you try the plugin and run into anything — bugs, edge cases, unexpected behaviour, or missing pieces — please open an issue on GitHub. Pull requests and testing reports are genuinely appreciated.
+> **A note on WordPress.org.**
+> Multilingual support is a fundamental need for any publishing platform. Gutenberg's name honours Johannes Gutenberg not merely for inventing a press, but for making the dissemination of knowledge possible at scale — a mission that stops at a language boundary if the platform does not natively cross it. We believe first-class multilingual support belongs in WordPress Core and in Gutenberg itself, not perpetually deferred to a third-party plugin ecosystem.
+>
+> Lingua Forge is not listed in the WordPress.org Plugin Directory — not because of code quality, security, trademark or licensing, but because WordPress.org maintains an undisclosed and ever-growing list of plugin names it considers reserved or off-limits, with no public registry, no appeal process, and no stated criteria. When gatekeeping operates without transparency, it does not protect a commons; it creates one. Closing a door on a legitimate, well-intentioned contribution is itself a door that opens toward something less accountable.
+>
+> Lingua Forge is distributed directly from this repository. It is permanently free, permanently open-source, and self-updates automatically after the first manual install.
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 
@@ -140,7 +144,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ## Installation
 
-**Lingua Forge is not listed in the WordPress.org Plugin Directory.** The first install is manual:
+**The first install is manual** (Lingua Forge is self-distributed — see the note at the top of this file):
 
 1. Download the latest `lingua-forge-{version}.zip` from the [Releases page](https://github.com/leotiger/lingua-forge/releases)
 2. In your WordPress admin go to **Plugins → Add New → Upload Plugin**, choose the ZIP, and click **Install Now**
