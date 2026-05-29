@@ -5,7 +5,7 @@
 >
 > Lingua Forge is not listed in the WordPress.org Plugin Directory — not because of code quality, security, trademark or licensing, but because WordPress.org maintains an undisclosed and ever-growing list of plugin names it considers reserved or off-limits, with no public registry, no appeal process, and no stated criteria. When gatekeeping operates without transparency, it does not protect a commons; it creates one. Closing a door on a legitimate, well-intentioned contribution is itself a door that opens toward something less accountable. Feel free to star, not the plugin, we want to see it in core, but our reasoning. And if you want to do it for the plugin, welcome as well. (We have offered our domain, https://lingua-forge.com as a gift along with this plugin to the Wordpress community to do a better job for all of us.)
 >
-> Lingua Forge is distributed directly from this repository. It is permanently free, permanently open-source, and self-updates automatically after the first manual install.
+> Lingua Forge is distributed directly from this repository. It is permanently free, permanently open-source, and self-updates automatically after the first manual install. Collaboration welcome!
 
 **GitHub:** https://github.com/leotiger/lingua-forge
 
