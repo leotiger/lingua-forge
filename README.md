@@ -908,9 +908,11 @@ The filter applies everywhere the directory is read — both the file loader and
 
 ## Third-party compatibility
 
-SEO plugin hreflang output is suppressed automatically when `lf_hreflang_mode` is `'custom'`. Confirmed compatible with: **Yoast SEO**, **Rank Math**, **AIOSEO**, **SEOPress**.
+**SEO plugins** — Lingua Forge outputs its own hreflang tags and suppresses duplicate output from SEO plugins by default. Hreflang suppression is confirmed for **Yoast SEO**, **Rank Math**, **AIOSEO**, and **SEOPress**. To hand hreflang control back to your SEO plugin instead, filter `lf_hreflang_mode` to any value other than `'custom'` (the default).
 
-Plugins that read the `locale` filter directly instead of `determine_locale` (booking plugins, e-commerce plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
+**WooCommerce** — product, variation, and category translation is supported via a shared-stock delegation model (v2.0.0+). See the [WooCommerce Multilingual](#woocommerce-multilingual) section for details.
+
+**Locale-aware plugins** — plugins that read the `locale` filter directly (booking plugins, form plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
 
 ---
 
