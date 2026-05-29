@@ -954,6 +954,18 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
+![Pages list — Lang column with translation status, Retranslate buttons, and Fix Links filter](docs/assets/screenshot-5.png)
+
+*The Pages list screen with the Lingua Forge Lang column. Each row shows the language code, an outdated (⚠) or missing-translation (⭕) indicator where applicable, and inline Retranslate buttons. The Fix Links filter at the top lets editors scope the list to posts with unresolved internal links.*
+
+---
+
+![Block editor — AI Revise panel for block-level content refinement](docs/assets/screenshot-6.png)
+
+*The AI block-level Revise panel in the block editor. Select a revision type (Improve writing, Adjust tone, Shorten, and more), add optional instructions for tone, style, or target audience, then revise the selected block's content without leaving the editor.*
+
+---
+
 **Current release — 2.0.0**
 
 - **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
