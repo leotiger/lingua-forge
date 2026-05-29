@@ -1,15 +1,15 @@
 name: Deploy to WordPress.org
 
+# Disabled: WordPress.org rejected the plugin name ("Lingua Forge").
+# Distribution is via self-hosted update channel (docs/lf-update-manifest.php).
+# Re-enable by restoring the push/tags trigger if WP.org submission is ever approved.
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
 
 jobs:
   deploy:
     name: Deploy to WordPress.org SVN
     runs-on: ubuntu-latest
-    if: ${{ secrets.SVN_USERNAME != '' }}
 
     steps:
       - name: Checkout code
