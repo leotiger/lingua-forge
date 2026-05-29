@@ -936,6 +936,24 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
+![FSE language setup — template and template-part scaffold workflow in the Router tab](docs/assets/screenshot-2.png)
+
+*Settings → Router: Language Setup and FSE template management. Select a language to activate its FSE templates, template parts, and navigation menus. Each template shows its translation status and gives one-click access to Translate, Fix Links, and Fix Parts — all without leaving the settings screen.*
+
+---
+
+![AI behavior settings — compliance presets and block editor configuration](docs/assets/screenshot-3.png)
+
+*Settings → Behavior: Block Editor and Compliance Preset configuration. Choose from Standard, Technical/Scientific, or Legal/Compliance presets — each applies a different AI temperature and system-prompt addendum tuned to the content type. Individual posts can override the global preset.*
+
+---
+
+![Frontend language switcher — live multilingual site with full language list](docs/assets/screenshot-4.png)
+
+*The language switcher block on a live FSE site, showing the full list of active languages. Renders inline with the block theme, inherits theme colours automatically, and adapts its dropdown position to the viewport.*
+
+---
+
 **Current release — 2.0.0**
 
 - **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
