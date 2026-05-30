@@ -268,7 +268,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Added: Third-party integration API — five new hooks: linguaforge_loaded (fires after router boot; use instead of plugins_loaded for integrations), linguaforge_translation_content filter (modify AI payload before caching), linguaforge_translation_complete action (CLI/programmatic translation saved), linguaforge_trid_changed action (post joined or left a translation group), linguaforge_switcher_output filter (wrap or replace switcher HTML). Two public REST endpoints: GET /wp-json/lingua-forge/v1/languages and GET /wp-json/lingua-forge/v1/post/{id}/translations. New public PHP function linguaforge_trigger_translation() for programmatic translation. Full documentation in CONTRIBUTING.md.
 * Added: Classic theme language switcher — [lsflr_switcher] shortcode and Lsflr_Switcher_Widget (Appearance → Widgets) make the language switcher available on any theme, no block widget area required.
 
-For the full changelog see CHANGELOG.md in the plugin repository.
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 
 == Upgrade Notice ==

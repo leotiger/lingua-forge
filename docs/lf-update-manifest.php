@@ -40,29 +40,15 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	$last_updated = '2026-05-30';
 	$tested       = '7.0';
 
-	// Current release only. Full history: CHANGELOG.md in the plugin repository.
+	// Current release only — do not accumulate history here; it bloats the manifest.
+	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
 		'<h4>2.1.0 — 2026-05-30</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> CPT-scoped block pattern translation. The Router tab now shows a Patterns section listing every block pattern whose <code>postTypes</code> metadata includes a public Custom Post Type. Each pattern can be AI-translated per language, with the result stored and displayed as a copy-paste-ready preview. Patterns scoped only to built-in types (<code>post</code>, <code>page</code>, etc.) are excluded. New classes: <code>PatternDiscovery</code> (registry queries + translation store via <code>linguaforge_pattern_translations</code> option), <code>PatternHandler</code> (AJAX handler), <code>PatternsSection</code> (UI renderer). New script: <code>fse-patterns.js</code>.</li>' .
-			'<li><strong>Added:</strong> Router tab FSE panel split — the single <code>RouterTab</code> class has been refactored into a thin dispatcher with four dedicated section renderers (<code>TemplatesSection</code>, <code>TemplatePartsSection</code>, <code>NavigationsSection</code>, <code>PatternsSection</code>) and nine <code>FseLocalisation\</code> handler classes. Router-tab JS has been split into five purpose-specific scripts (<code>fse-scaffold.js</code>, <code>fse-translate.js</code>, <code>fse-link-fixer.js</code>, <code>fse-part-fixer.js</code>, <code>fse-patterns.js</code>); <code>router-tab.js</code> now handles only language install and panel wiring.</li>' .
+			'<li><strong>Added:</strong> CPT-scoped block pattern translation. The Router tab now shows a Patterns section listing every block pattern whose <code>postTypes</code> metadata includes a public Custom Post Type. Each pattern can be AI-translated per language, with the result stored and displayed as a copy-paste-ready preview. Patterns scoped only to built-in types (<code>post</code>, <code>page</code>, etc.) are excluded. New classes: <code>PatternDiscovery</code>, <code>PatternHandler</code>, <code>PatternsSection</code>. New script: <code>fse-patterns.js</code>.</li>' .
+			'<li><strong>Added:</strong> Router tab FSE panel split — <code>RouterTab</code> refactored into a thin dispatcher with four section renderers and nine <code>FseLocalisation\</code> handler classes; router-tab JS split into five purpose-specific scripts.</li>' .
 		'</ul>' .
-		'<h4>2.0.1 — 2026-05-29</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> Translate / Review panel now closes automatically when the user focuses a different block in the editor. Previously the panel remained open after switching blocks, requiring a manual dismiss.</li>' .
-		'</ul>' .
-		'<h4>2.0.0 — 2026-05-28</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> WooCommerce integration — Phase 1 (shared-stock delegation model). Translated products carry only content fields; all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is read transparently from the source-language product at runtime. Five new classes: <code>MetaDelegate</code> (<code>get_post_metadata</code> delegation), <code>StockRouter</code> (stock write routing), <code>VariationDelegate</code> (<code>product_variation</code> delegation), <code>TaxonomyDelegate</code> (<code>wp_get_object_terms</code> delegation for <code>product_cat</code> / <code>product_tag</code> / <code>product_type</code> / <code>pa_*</code>), <code>CatalogQuery</code> (WC product query language filter).</li>' .
-			'<li><strong>Added:</strong> WooCommerce integration — Phase 1b (translated term names). Category, tag, product-type, and attribute term names display in the visitor\'s language via <code>_lf_term_name_{lang}</code> termmeta. Editable from the term add/edit screens. New classes: <code>TermNameFilter</code>, <code>TermNameAdmin</code>.</li>' .
-			'<li><strong>Added:</strong> <code>linguaforge_cpt_create_allowed</code> filter — allows integrations to block translated-post creation until their delegation layer is active.</li>' .
-			'<li><strong>Added:</strong> <code>linguaforge_wc_delegate_post_types</code> filter — controls which post types participate in operational-meta delegation and stock-write routing.</li>' .
-			'<li><strong>Added:</strong> <code>linguaforge_wc_integration_active</code> action — fires after the WooCommerce integration initialises for the current request.</li>' .
-			'<li><strong>Added:</strong> Custom Post Type support (Phase 0) — all public CPTs now receive the full Lingua Forge admin layer: Lang column, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Opt-out filters: <code>linguaforge_column_post_types</code>, <code>linguaforge_ai_metabox_post_types</code>, <code>linguaforge_link_fixer_post_types</code>.</li>' .
-			'<li><strong>Added:</strong> FSE template auto-assignment for CPTs using <code>single-{post_type}-{lang}</code> naming (e.g. <code>single-product-de</code>).</li>' .
-			'<li><strong>Added:</strong> Third-party integration API — five new hooks: <code>linguaforge_loaded</code> (fires after router boot; use instead of <code>plugins_loaded</code> for integrations), <code>linguaforge_translation_content</code> filter, <code>linguaforge_translation_complete</code> action, <code>linguaforge_trid_changed</code> action, <code>linguaforge_switcher_output</code> filter. Two public REST endpoints: <code>GET /wp-json/lingua-forge/v1/languages</code> and <code>GET /wp-json/lingua-forge/v1/post/{id}/translations</code>. New public PHP function <code>linguaforge_trigger_translation()</code>. Full documentation in CONTRIBUTING.md.</li>' .
-			'<li><strong>Added:</strong> Classic theme language switcher — <code>[lsflr_switcher]</code> shortcode and <code>Lsflr_Switcher_Widget</code> (Appearance → Widgets) available on any theme.</li>' .
-		'</ul>';
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 
 	// -------------------------------------------------------------------------
 	// STATIC FIELDS — change rarely

@@ -1321,7 +1321,11 @@ A short checklist:
    uninstall list and whether the generic unprefixed variant (if any)
    is safe to delete — keys like `meta_description` may be shared with
    other plugins and must not be wiped on uninstall.
-9. **Don't touch `CHANGELOG.md`, `readme.txt`'s `Stable tag`, or the
+9. **Changelog entries in `docs/lf-update-manifest.php` and `readme.txt`
+   contain the current release only** — never accumulate history there.
+   Full history belongs in `CHANGELOG.md`. Replace the previous entry
+   on every release; do not prepend to a growing list.
+10. **Don't touch `CHANGELOG.md`, `readme.txt`'s `Stable tag`, or the
    `Version:` headers in `lingua-forge.php` / the constants in
    `lingua-forge.php`.** The maintainer cuts releases manually via
    SFTP/rsync and bumps version strings + writes changelog entries at
