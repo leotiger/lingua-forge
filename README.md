@@ -208,7 +208,7 @@ These are two independent settings and it is intentional that they can differ.
 
 **WordPress site language** (`Settings → General → Site Language`) controls the admin interface and the locale WordPress uses internally. This is typically set to a well-supported locale such as `en_US` or `de_DE`.
 
-**Primary content language** (`lf_primary_language` filter, default `'ca'`) is the language your actual content is written in — the language that maps to the root URL path (no prefix) and acts as the source for all translations.
+**Primary content language** (set in **Settings → Lingua Forge → Router**) is the language your actual content is written in — the language that maps to the root URL path (no prefix) and acts as the source for all translations. Developers can override it via the `lf_primary_language` filter.
 
 A practical example: the site admin works in `en_US`, but the primary content is Catalan (`ca`). The WordPress site language is left at `en_US` so the admin backend stays in English. The plugin's source language is set to `ca` so Catalan content lives at `/your-page/` and other languages are served at `/es/your-page/`, `/de/your-page/`, etc.
 
