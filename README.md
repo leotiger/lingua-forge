@@ -149,8 +149,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 1. Download the latest `lingua-forge-{version}.zip` from the [Releases page](https://github.com/leotiger/lingua-forge/releases)
 2. In your WordPress admin go to **Plugins → Add New → Upload Plugin**, choose the ZIP, and click **Install Now**
 3. Activate **Lingua Forge** from **Plugins → Installed Plugins**
-4. Go to **Settings → Permalinks** and click **Save Changes** — this flushes the rewrite rules for the language URL prefixes
-5. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
+4. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
 
 **After the first install, updates are automatic.** WordPress checks for new releases every 12 hours and displays the standard update badge in **Plugins → Installed Plugins** when one is available — one-click update from there, no manual download required.
 
@@ -172,15 +171,13 @@ wp-content/
 
 ### Language Router
 
-Set the source language via filter (default is `'ca'`):
+The source language and active language list are configured from **Settings → Lingua Forge → Router** — no code changes required. The filters below are developer overrides that take precedence over the stored settings:
 
 ```php
+// Override the source language programmatically (takes priority over the Router setting)
 add_filter( 'lf_primary_language', fn() => 'ca' );
-```
 
-Override the active language list:
-
-```php
+// Override the active language list programmatically
 add_filter( 'lf_languages_list', fn() => ['ca', 'es', 'en', 'de', 'fr'] );
 ```
 
@@ -188,13 +185,14 @@ add_filter( 'lf_languages_list', fn() => ['ca', 'es', 'en', 'de', 'fr'] );
 
 | Filter | Default | Description |
 |---|---|---|
-| `lf_primary_language` | `'ca'` | Source / default language code |
-| `lf_languages_list` | Auto from WP locales | Full list of active language codes |
+| `lf_primary_language` | Value from Router settings | Developer override for the source / default language code. Takes priority over **Settings → Router** |
+| `lf_languages_list` | Value from Router settings | Developer override for the full active language list. Takes priority over **Settings → Router** |
 | `lf_lang_force_locale` | `['ca' => 'ca']` | Hard locale overrides (e.g. for VikBooking) |
 | `lf_lang_fallback_map` | `['en'=>'en_US', …]` | Locale fallbacks when no installed locale matches |
 | `lf_lang_default_fallback` | `'en_US'` | Last-resort locale |
 | `lf_base_domain` | Auto from `home_url()` | Override the bare domain used for subdomain URL construction (useful when `home_url()` includes `www` or a non-apex hostname) |
-| `lf_hreflang_mode` | `'custom'` | Set to `'off'` to disable built-in hreflang output |
+| `lf_hreflang_mode` | `'custom'` | `'custom'` outputs Lingua Forge hreflang tags and suppresses SEO-plugin duplicates. Any other value (e.g. `'off'`) disables built-in output and hands control to the SEO plugin |
+| `lf_hreflang_x_default` | Source-language URL | Override the URL used for the `x-default` hreflang tag. Receives `$url`, `$post_id`, `$translations` |
 | `lf_i18n_overrides_dir` | `uploads/lingua-forge/i18n-overrides/` | Override the storage path for third-party `.mo` override files |
 | `linguaforge_translation_languages` | Built-in list | Override the AI translation target language list — see Content Translation section |
 
@@ -549,7 +547,7 @@ The router loads a language-specific FSE template instead of the default one whe
 | Post (single) | `single-{lang}` | `single-de`, `single-fr` |
 | Search results | `search-{lang}` | `search-de`, `search-fr`, `search-en` |
 
-**Auto-assignment on language change:** when an editor changes the `_lang` meta of a post or page, the router checks whether a matching template slug exists and assigns it automatically — but only if no custom template has already been set on that post.
+**Auto-assignment on language change:** when an editor changes the `_lf_lang` meta of a post or page, the router checks whether a matching template slug exists and assigns it automatically — but only if no custom template has already been set on that post.
 
 #### Settings → Router — full FSE workflow
 
@@ -578,11 +576,11 @@ Quick Edit includes a language selector for posts, pages, and navigation items.
 
 When the post list is filtered by language, a **Fix Links (XX)** button appears in the toolbar. Clicking it opens a modal overlay that:
 
-1. Scans all published posts and pages in that language for internal links that still point to a different language version of the same page
-2. Shows a dry-run table with auto-fixable (red → green) and flagged (amber) links, each with a reason code
-3. Provides per-row **Fix** and a **Fix All** action, plus a **🔄 Re-scan** button to verify results immediately
+1. Scans all published posts and pages in that language for two classes of issue: **broken language links** (internal links pointing to the wrong language version) and **wrong template assignments** (posts whose FSE template does not match the expected `page-{lang}` / `single-{lang}` pattern)
+2. Shows a dry-run table with auto-fixable (red → green) and flagged (amber) issues, each with a reason code. Template issues show the expected vs current template slug and a dedicated **Fix Template** button
+3. Provides per-row **Fix** / **Fix Template** and a **Fix All** action, plus a **🔄 Re-scan** button to verify results immediately
 
-Only links with a Gutenberg `data-id` attribute are inspected. Structural links (breadcrumbs, manually typed hrefs) are deliberately skipped to avoid false positives.
+Only links with a Gutenberg `data-id` attribute are inspected for the link check. Structural links (breadcrumbs, manually typed hrefs) are deliberately skipped to avoid false positives. Template-part links (header, footer, sidebar) are not included — use **Fix Parts** in **Settings → Router** for those.
 
 ### Overriding plugin translation strings
 
@@ -910,9 +908,9 @@ The filter applies everywhere the directory is read — both the file loader and
 
 ## Third-party compatibility
 
-**SEO plugins** — Lingua Forge outputs its own hreflang tags and suppresses duplicate output from SEO plugins by default. Hreflang suppression is confirmed for **Yoast SEO**, **Rank Math**, **AIOSEO**, and **SEOPress**. To hand hreflang control back to your SEO plugin instead, filter `lf_hreflang_mode` to any value other than `'custom'` (the default).
+**SEO plugins** — Lingua Forge outputs its own hreflang tags and suppresses duplicate output from SEO plugins by default. Hreflang suppression is confirmed for **Yoast SEO**, **Rank Math**, **AIOSEO**, and **SEOPress**. To hand hreflang control back to your SEO plugin instead, filter `lf_hreflang_mode` to `'off'` (or any value other than `'custom'`).
 
-**WooCommerce** — product, variation, and category translation is supported via a shared-stock delegation model (v2.0.0+). See the [WooCommerce Multilingual](#woocommerce-multilingual) section for details.
+**WooCommerce** — product, variation, and category translation is supported via a shared-stock delegation model (v2.0.0+). See the [WooCommerce integration](#language-router) entry in the Features section for details.
 
 **Locale-aware plugins** — plugins that read the `locale` filter directly (booking plugins, form plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
 
@@ -920,7 +918,7 @@ The filter applies everywhere the directory is read — both the file loader and
 
 ## Performance
 
-On activation and version bump, Lingua Forge creates a composite index on `wp_postmeta (meta_key, meta_value(10))` to speed up `_lang` queries across large sites. Translation lookups are wrapped in WordPress object cache and invalidated on post save. AI result caches are stored in post meta with `autoload = false`.
+On activation and version bump, Lingua Forge creates a composite index on `wp_postmeta (meta_key, meta_value(10))` to speed up `_lf_lang` queries across large sites. Translation lookups are wrapped in WordPress object cache and invalidated on post save. AI result caches are stored in a dedicated custom table (`wp_lingua_forge_ai_cache`) — not in post meta — to avoid bloating every `get_post_meta()` call with large translation payloads.
 
 ---
 
