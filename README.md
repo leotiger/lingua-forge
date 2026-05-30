@@ -200,9 +200,7 @@ add_filter( 'lf_languages_list', fn() => ['ca', 'es', 'en', 'de', 'fr'] );
 
 #### WordPress language setup
 
-Languages are configured entirely inside **Settings → Lingua Forge → Router**. There is no need to install WordPress language packs or visit **Settings → General → Site Language** to add a language to your site — Lingua Forge manages its own language registry independently.
-
-> **Newly added language returns 404?** After adding a new language in the Router settings, go to **Settings → Permalinks** and click **Save Changes**. This flushes the rewrite rule cache to include the new URL prefix. This is a one-time step each time a language is added or removed.
+Languages are configured entirely inside **Settings → Lingua Forge → Router**. There is no need to install WordPress language packs or visit **Settings → General → Site Language** to add a language to your site — Lingua Forge manages its own language registry independently. Adding or removing a language automatically flushes the rewrite rules so the new URL prefix is live immediately, with no manual Permalinks save required.
 
 #### WP site language vs. primary content language
 
