@@ -35,13 +35,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.0.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.0.1/lingua-forge-2.0.1.zip';
-	$last_updated = '2026-05-29';
+	$version      = '2.1.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.0/lingua-forge-2.1.0.zip';
+	$last_updated = '2026-05-30';
 	$tested       = '7.0';
 
 	// Current release only. Full history: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.1.0 — 2026-05-30</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> CPT-scoped block pattern translation. The Router tab now shows a Patterns section listing every block pattern whose <code>postTypes</code> metadata includes a public Custom Post Type. Each pattern can be AI-translated per language, with the result stored and displayed as a copy-paste-ready preview. Patterns scoped only to built-in types (<code>post</code>, <code>page</code>, etc.) are excluded. New classes: <code>PatternDiscovery</code> (registry queries + translation store via <code>linguaforge_pattern_translations</code> option), <code>PatternHandler</code> (AJAX handler), <code>PatternsSection</code> (UI renderer). New script: <code>fse-patterns.js</code>.</li>' .
+			'<li><strong>Added:</strong> Router tab FSE panel split — the single <code>RouterTab</code> class has been refactored into a thin dispatcher with four dedicated section renderers (<code>TemplatesSection</code>, <code>TemplatePartsSection</code>, <code>NavigationsSection</code>, <code>PatternsSection</code>) and nine <code>FseLocalisation\</code> handler classes. Router-tab JS has been split into five purpose-specific scripts (<code>fse-scaffold.js</code>, <code>fse-translate.js</code>, <code>fse-link-fixer.js</code>, <code>fse-part-fixer.js</code>, <code>fse-patterns.js</code>); <code>router-tab.js</code> now handles only language install and panel wiring.</li>' .
+		'</ul>' .
 		'<h4>2.0.1 — 2026-05-29</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> Translate / Review panel now closes automatically when the user focuses a different block in the editor. Previously the panel remained open after switching blocks, requiring a manual dismiss.</li>' .

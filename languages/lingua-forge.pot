@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 2.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge-2.0\n"
+"Project-Id-Version: Lingua Forge 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-29T10:43:19+00:00\n"
+"POT-Creation-Date: 2026-05-30T19:29:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -41,11 +41,13 @@ msgid "https://lingua-forge.com"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:63
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:378
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:601
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:733
-#: ai/includes/Admin/SettingsPage.php:218
-#: ai/includes/Admin/SettingsPage.php:232
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:112
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
+#: ai/includes/Admin/SettingsPage.php:213
+#: ai/includes/Admin/SettingsPage.php:227
+#: ai/includes/Admin/SettingsPage.php:233
 #: ai/assets/block-action.js:243
 #: ai/assets/block-action.js:262
 #: ai/assets/block-action.js:286
@@ -91,6 +93,249 @@ msgstr ""
 #: ai/includes/Admin/MetaBox.php:222
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:34
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:125
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:41
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:214
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:698
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:766
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:788
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:809
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:834
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:859
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:416
+msgid "Permission denied."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:49
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:77
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:222
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:60
+msgid "Cannot determine target language from slug."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:54
+msgid "Invalid post type."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:61
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:57
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:136
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:68
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:229
+msgid "Invalid or primary language."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:93
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:81
+msgid "Template not found or not stored in the database."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:75
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:104
+msgid "Template has no content."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:138
+msgid "No internal links found to update."
+msgstr ""
+
+#. translators: %d: number of links rewritten
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:146
+#, php-format
+msgid "%d link updated."
+msgid_plural "%d links updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
+msgid "No language-specific template parts found to map."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:167
+msgid "No template part references needed updating."
+msgstr ""
+
+#. translators: %d: number of template part references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:185
+#, php-format
+msgid "%d part reference updated."
+msgid_plural "%d part references updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:233
+msgid "Invalid language."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:241
+msgid "Template part not found or not stored in the database."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:252
+msgid "Template part has no content."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:324
+msgid "No navigation references needed updating."
+msgstr ""
+
+#. translators: %d: number of navigation block references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:342
+#, php-format
+msgid "%d navigation reference updated."
+msgid_plural "%d navigation references updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:38
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:45
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:218
+msgid "No AI provider configured."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:50
+msgid "Missing pattern name or language."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:63
+msgid "Pattern not found."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:70
+msgid "Pattern has no content to translate."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:114
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:155
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:284
+msgid "AI provider returned an empty response."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:126
+msgid "Pattern translated and saved. Copy the content into your CPT post via the block editor Pattern inserter or use it as a starting point for a Reusable Block."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:51
+msgid "Invalid template type."
+msgstr ""
+
+#. translators: %s: template slug such as page-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:60
+#, php-format
+msgid "Template \"%s\" already exists."
+msgstr ""
+
+#. translators: %s: template title such as "Page DE"
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:103
+#, php-format
+msgid "\"%s\" created."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:143
+msgid "Invalid template part."
+msgstr ""
+
+#. translators: %s: template part slug such as header-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:152
+#, php-format
+msgid "Template part \"%s\" already exists."
+msgstr ""
+
+#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:220
+#, php-format
+msgid "\"%1$s\" created. %2$d template updated."
+msgid_plural "\"%1$s\" created. %2$d templates updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:31
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:32
+msgid "Page"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:35
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:36
+msgid "Single"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:39
+msgid "Search"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:40
+msgid "Search Results"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
+msgid "Archive"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:47
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:48
+msgid "Front Page"
+msgstr ""
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:87
+#, php-format
+msgid "Single: %s"
+msgstr ""
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:92
+#, php-format
+msgid "Single %s"
+msgstr ""
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:102
+#, php-format
+msgid "Archive: %s"
+msgstr ""
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:107
+#, php-format
+msgid "%s Archive"
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:103
+msgid "No source content found to translate."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:192
+msgid "Translated. Review in the Site Editor — internal links, navigation URLs, and template slugs are not updated automatically."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:234
+msgid "Navigation not found."
+msgstr ""
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:239
+msgid "Navigation has no content to translate."
+msgstr ""
+
+#. translators: 1: navigation title e.g. "Primary Navigation", 2: language code e.g. "DE"
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:358
+#, php-format
+msgid "\"%1$s %2$s\" saved."
 msgstr ""
 
 #: ai/includes/Admin/MetaBox.php:481
@@ -145,14 +390,15 @@ msgid "From"
 msgstr ""
 
 #: ai/includes/Admin/PostListColumn.php:128
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:377
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:600
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:67
 msgid "Retranslate"
 msgstr ""
 
 #: ai/includes/Admin/PostListColumn.php:172
-#: ai/includes/Admin/SettingsPage.php:219
-#: ai/includes/Admin/SettingsPage.php:233
+#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:228
+#: ai/includes/Admin/SettingsPage.php:234
 #: ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:584
 msgid "Translating…"
@@ -184,7 +430,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:22
 #: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:88
-#: ai/includes/Admin/SettingsPage.php:530
+#: ai/includes/Admin/SettingsPage.php:551
 msgid "AI Usage"
 msgstr ""
 
@@ -254,7 +500,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsPage.php:525
+#: ai/includes/Admin/SettingsPage.php:546
 msgid "API Keys"
 msgstr ""
 
@@ -316,27 +562,6 @@ msgstr ""
 msgid "To use a custom encryption secret (instead of the derived wp_salt value), add this to wp-config.php:"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
-#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
-#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:698
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:766
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:788
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:809
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:834
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:859
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:920
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1012
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1141
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1316
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1448
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1619
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1764
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1909
-msgid "Permission denied."
-msgstr ""
-
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
 msgid "Unknown provider."
 msgstr ""
@@ -354,7 +579,7 @@ msgid "Provider returned no text. Check the WordPress error log for the detailed
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:527
+#: ai/includes/Admin/SettingsPage.php:548
 msgid "Behavior"
 msgstr ""
 
@@ -460,7 +685,7 @@ msgid "Currently skipped for posts that use block-comment attribute placeholders
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:524
+#: ai/includes/Admin/SettingsPage.php:545
 msgid "General"
 msgstr ""
 
@@ -516,7 +741,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
-#: ai/includes/Admin/SettingsPage.php:529
+#: ai/includes/Admin/SettingsPage.php:550
 msgid "Glossary"
 msgstr ""
 
@@ -648,7 +873,7 @@ msgid "Add entry"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:526
+#: ai/includes/Admin/SettingsPage.php:547
 msgid "Limits"
 msgstr ""
 
@@ -793,7 +1018,7 @@ msgid "Maximum characters of existing post content passed to the AI as seed cont
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:28
-#: ai/includes/Admin/SettingsPage.php:531
+#: ai/includes/Admin/SettingsPage.php:552
 msgid "Maintenance"
 msgstr ""
 
@@ -1067,428 +1292,278 @@ msgstr ""
 msgid "Save Uninstall Setting"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:26
-#: ai/includes/Admin/SettingsPage.php:528
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:37
+#: ai/includes/Admin/SettingsPage.php:549
 msgid "Router"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:55
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:92
 msgid "Primary language saved."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:60
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:97
 msgid "Permalink rules flushed successfully."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:65
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:102
 msgid "Primary Language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:68
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:105
 msgid "The primary language is always served at the root of your site — no URL prefix in path mode, no language subdomain in subdomain mode. All other languages use either a /lang/ path prefix (e.g. example.com/de/) or a language subdomain (e.g. de.example.com), depending on the URL structure setting below."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:79
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:116
 msgid "Primary language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:91
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:128
 msgid "After changing the primary language, flush permalinks (section below) for the URL routing to update."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:98
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:135
 msgid "URL structure"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:104
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
 msgid "Path prefix — example.com/de/"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:107
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:144
 msgid "Subdomain — de.example.com/"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:111
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:148
 msgid "Subdomain mode requires your web server to point all language subdomains (e.g. de.example.com) to this WordPress installation. After switching modes, flush permalink rules and clear any caches. If your home URL includes www (e.g. www.example.com), use the lf_base_domain filter to set the bare apex domain so subdomains are constructed correctly."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:117
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:154
 msgid "Browser language redirect"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:127
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:164
 msgid "Redirect visitors to their preferred language based on the browser's Accept-Language header"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:130
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:167
 msgid "When enabled, first-time visitors with no language cookie and no language prefix in the URL are redirected to the closest matching language version. The redirect is skipped if the browser's preferred language is not among the active router languages. Once a visitor selects a language via the switcher, the cookie takes priority and the browser header is ignored on all future visits."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:136
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:173
 msgid "Save Router Settings"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:140
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:177
 msgid "Flush Permalinks"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:180
 msgid "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs, and archive rewrites are all in sync. Necessary after changing the primary language or adding new language support."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:149
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:186
 msgid "Flush Permalink Rules"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:153
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:190
 msgid "Active Languages"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:156
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:193
 msgid "Languages currently known to the router (derived from installed WordPress locale packs plus the primary language). Install additional language packs in the section below to make more languages available for routing and translation."
 msgstr ""
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:170
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:207
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:178
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
 msgid "Install a Language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:181
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
 msgid "Download and install a WordPress core language pack directly from WordPress.org. Once installed, the locale becomes available for URL routing and the AI translation workflow. The list of available languages is fetched on demand — click the button below to load it."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:186
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:223
 msgid "Language installation is disabled on this server. The DISALLOW_FILE_MODS constant is set in wp-config.php. Install language packs manually via WP-CLI: wp language core install de_DE"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:191
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:228
 msgid "Load available languages"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:197
-#: ai/includes/Admin/SettingsPage.php:211
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "— select a language —"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:200
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:237
 msgid "Install"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:239
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:240
-msgid "Page"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:243
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:244
-msgid "Single"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:247
-msgid "Search"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
-msgid "Search Results"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:251
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
-msgid "Archive"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
-msgid "Front Page"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:281
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid "Language Setup"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:285
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:272
 msgid "No secondary languages configured. Install a language pack above to enable template scaffolding."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:277
 msgid "Select a language to manage its FSE templates, template parts, and navigation menus."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:349
-msgid "Templates"
-msgstr ""
-
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:321
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:350
-msgid "FSE templates seeded from the active theme. Create then customise in the Site Editor."
+msgid "Forbidden"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:358
-msgid "Actions"
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/SettingsPage.php:207
+msgid "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:385
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:608
-#: ai/includes/Admin/SettingsPage.php:223
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:425
+msgid "Invalid locale code."
+msgstr ""
+
+#. translators: %s: locale code such as de_DE
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:451
+#, php-format
+msgid "Language %s installed successfully."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:454
+msgid "Language pack installation failed. The language may already be installed, the locale code may be incorrect, or your server may block file writes."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:70
+msgid "Navigations"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:74
+msgid "Known limitation — Page List block:"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:75
+msgid "If a language navigation uses the Page List block, it lists all pages regardless of language. Workaround: open each language navigation in the Site Editor, convert to static links, then use Fix Links."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:81
+msgid "Navigation translation requires an active AI provider. Configure an API key in the API Keys tab."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:88
+msgid "Navigation"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:51
+msgid "Action"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:111
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
+#: ai/includes/Admin/SettingsPage.php:226
+msgid "Re-translate"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:40
+msgid "CPT Block Patterns"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:43
+msgid "Block patterns registered for custom post types. Use the Translate button to produce a language variant. The translated content is saved here and can be copied into any CPT post from the block editor Pattern inserter or used as a starting point for a Synced Pattern (Reusable Block)."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:49
+msgid "Pattern"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
+msgid "Post Types"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
+#: ai/includes/Admin/SettingsPage.php:237
+msgid "✓ Translation saved"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
+#: ai/includes/Admin/SettingsPage.php:238
+msgid "View"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:36
+msgid "Template Parts"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:37
+msgid "Language-specific copies of the theme's template parts. Once scaffolded, templates are updated to reference the language-specific part."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:42
+msgid "Part"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:43
+msgid "Status / Actions"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Fix Links"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:390
-#: ai/includes/Admin/SettingsPage.php:227
-msgid "Fix Parts"
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
+#: ai/includes/Admin/SettingsPage.php:229
+msgid "Fix Nav"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:397
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:620
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
 #: ai/assets/editor-translate.js:230
 #: ai/assets/toolbar-translate.js:221
 msgid "Create"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:407
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:39
+msgid "Templates"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:40
+msgid "FSE templates seeded from the active theme. Create then customise in the Site Editor."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:48
+msgid "Actions"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
+#: ai/includes/Admin/SettingsPage.php:222
+msgid "Fix Parts"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
 msgid "Create missing"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:414
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:104
 msgid "Translate all"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
 msgid "Fix all parts"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:425
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
 msgid "Fix all links"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:567
-msgid "Template Parts"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:568
-msgid "Language-specific copies of the theme's template parts. Once scaffolded, templates are updated to reference the language-specific part."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:573
-msgid "Part"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:574
-msgid "Status / Actions"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:613
-#: ai/includes/Admin/SettingsPage.php:234
-msgid "Fix Nav"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:691
-msgid "Navigations"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:695
-msgid "Known limitation — Page List block:"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:696
-msgid "If a language navigation uses the Page List block, it lists all pages regardless of language. Workaround: open each language navigation in the Site Editor, convert to static links, then use Fix Links."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:702
-msgid "Navigation translation requires an active AI provider. Configure an API key in the API Keys tab."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:709
-msgid "Navigation"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:710
-msgid "Action"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:732
-#: ai/includes/Admin/SettingsPage.php:231
-msgid "Re-translate"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:819
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:848
-msgid "Forbidden"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:931
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1023
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1168
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1341
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1463
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1636
-msgid "Invalid or primary language."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:938
-msgid "Invalid template type."
-msgstr ""
-
-#. translators: %s: template slug such as page-de
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:947
-#, php-format
-msgid "Template \"%s\" already exists."
-msgstr ""
-
-#. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:990
-#, php-format
-msgid "\"%s\" created."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1030
-msgid "Invalid template part."
-msgstr ""
-
-#. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1039
-#, php-format
-msgid "Template part \"%s\" already exists."
-msgstr ""
-
-#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1107
-#, php-format
-msgid "\"%1$s\" created. %2$d template updated."
-msgid_plural "\"%1$s\" created. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1145
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1452
-msgid "No AI provider configured."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1154
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1334
-msgid "Invalid post type."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1160
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1329
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1628
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1773
-msgid "Cannot determine target language from slug."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1181
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1348
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1644
-msgid "Template not found or not stored in the database."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1203
-msgid "No source content found to translate."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1255
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1518
-msgid "AI provider returned an empty response."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1292
-msgid "Translated. Review in the Site Editor — internal links, navigation URLs, and template slugs are not updated automatically."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1355
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1655
-msgid "Template has no content."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1418
-msgid "No internal links found to update."
-msgstr ""
-
-#. translators: %d: number of links rewritten
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1426
-#, php-format
-msgid "%d link updated."
-msgid_plural "%d links updated."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1468
-msgid "Navigation not found."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1473
-msgid "Navigation has no content to translate."
-msgstr ""
-
-#. translators: 1: navigation title e.g. "Primary Navigation", 2: language code e.g. "DE"
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1592
-#, php-format
-msgid "\"%1$s %2$s\" saved."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1685
-msgid "No language-specific template parts found to map."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1718
-msgid "No template part references needed updating."
-msgstr ""
-
-#. translators: %d: number of template part references rewritten
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1736
-#, php-format
-msgid "%d part reference updated."
-msgid_plural "%d part references updated."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1784
-msgid "Invalid language."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1792
-msgid "Template part not found or not stored in the database."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1803
-msgid "Template part has no content."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1875
-msgid "No navigation references needed updating."
-msgstr ""
-
-#. translators: %d: number of navigation block references rewritten
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1893
-#, php-format
-msgid "%d navigation reference updated."
-msgid_plural "%d navigation references updated."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1913
-#: ai/includes/Admin/SettingsPage.php:212
-msgid "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1918
-msgid "Invalid locale code."
-msgstr ""
-
-#. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1944
-#, php-format
-msgid "Language %s installed successfully."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:1947
-msgid "Language pack installation failed. The language may already be installed, the locale code may be incorrect, or your server may block file writes."
 msgstr ""
 
 #: ai/includes/Admin/SettingsPage.php:51
@@ -1503,131 +1578,143 @@ msgstr ""
 msgid "Google (Gemini)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:177
+#: ai/includes/Admin/SettingsPage.php:171
 msgid "Testing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:178
+#: ai/includes/Admin/SettingsPage.php:172
 msgid "✓ Connection OK"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:179
+#: ai/includes/Admin/SettingsPage.php:173
 msgid "✗ Failed:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:180
+#: ai/includes/Admin/SettingsPage.php:174
 msgid "No response from provider — check the error log for details."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:181
+#: ai/includes/Admin/SettingsPage.php:175
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:202
 msgid "Loading…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:203
 msgid "Installing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:209
+#: ai/includes/Admin/SettingsPage.php:204
 msgid "✓ Language installed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:210
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "✗ Error:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:213
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "Creating…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "✓ All templates created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:210
 msgid "Some templates could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:211
 msgid "✓ All parts created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:212
 msgid "Some parts could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ All translated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:221
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "Some translations failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:222
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "Review carefully — links and slugs not updated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:224
-#: ai/includes/Admin/SettingsPage.php:228
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/SettingsPage.php:219
+#: ai/includes/Admin/SettingsPage.php:223
+#: ai/includes/Admin/SettingsPage.php:230
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:225
+#: ai/includes/Admin/SettingsPage.php:220
 msgid "✓ Links fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:226
+#: ai/includes/Admin/SettingsPage.php:221
 msgid "Some link fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:224
 msgid "✓ Parts fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:230
+#: ai/includes/Admin/SettingsPage.php:225
 msgid "Some part fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:231
 msgid "✓ Nav refs fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:232
 msgid "Some nav ref fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:235
+msgid "✓ Pattern translated."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:236
+msgid "Pattern translation failed."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:239
+msgid "Hide"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:285
 msgid "Built-in preset instructions:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:286
 msgid "No built-in instructions — each AI feature uses its own tuned defaults. Fill in the Custom prompt instructions field below to add your own site-wide rules."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:301
+#: ai/includes/Admin/SettingsPage.php:322
 msgid "Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:313
+#: ai/includes/Admin/SettingsPage.php:334
 msgid "You do not have permission to manage these settings."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:513
+#: ai/includes/Admin/SettingsPage.php:534
 msgid "Lingua Forge — Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:518
+#: ai/includes/Admin/SettingsPage.php:539
 msgid "Settings saved."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:566
+#: ai/includes/Admin/SettingsPage.php:587
 msgid "Save Settings"
 msgstr ""
 
@@ -1953,36 +2040,44 @@ msgstr ""
 msgid "Displays the Lingua Forge language switcher."
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:43
+#: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:60
+#: language-router/includes/class-lsflr-switcher-widget.php:61
 msgid "Display"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:63
+#: language-router/includes/class-lsflr-switcher-widget.php:64
 msgid "Language label"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:64
+#: language-router/includes/class-lsflr-switcher-widget.php:65
 msgid "Icon only"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:65
+#: language-router/includes/class-lsflr-switcher-widget.php:66
 msgid "Icon + label"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:69
+#: language-router/includes/class-lsflr-switcher-widget.php:70
 msgid "Dropdown direction"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:72
+#: language-router/includes/class-lsflr-switcher-widget.php:73
 msgid "Down"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:73
+#: language-router/includes/class-lsflr-switcher-widget.php:74
 msgid "Up"
+msgstr ""
+
+#: language-router/includes/rest/class-data-endpoints.php:86
+msgid "You do not have permission to read this post."
+msgstr ""
+
+#: language-router/includes/rest/class-data-endpoints.php:125
+msgid "Post not found."
 msgstr ""
 
 #: meta-description/meta-description.php:67
@@ -2115,8 +2210,8 @@ msgstr ""
 #: ai/assets/admin.js:982
 #: ai/assets/admin.js:1646
 #: ai/assets/admin.js:1797
-#: ai/assets/block-action.js:949
-#: ai/assets/block-action.js:974
+#: ai/assets/block-action.js:958
+#: ai/assets/block-action.js:983
 msgid "Applied ✓"
 msgstr ""
 
@@ -2210,8 +2305,8 @@ msgid "cached"
 msgstr ""
 
 #: ai/assets/admin.js:1098
-#: ai/assets/block-action.js:696
-#: ai/assets/block-action.js:894
+#: ai/assets/block-action.js:705
+#: ai/assets/block-action.js:903
 #: ai/assets/editor-translate.js:720
 #: ai/assets/toolbar-translate.js:628
 msgid "Translated to:"
@@ -2368,9 +2463,9 @@ msgid "Footnote Content"
 msgstr ""
 
 #: ai/assets/block-action.js:322
-#: ai/assets/block-action.js:502
-#: ai/assets/block-action.js:707
-#: ai/assets/block-action.js:975
+#: ai/assets/block-action.js:511
+#: ai/assets/block-action.js:716
+#: ai/assets/block-action.js:984
 msgid "Apply to Block"
 msgstr ""
 
@@ -2387,32 +2482,32 @@ msgstr ""
 msgid "Extra guidance — tone, style, constraints…"
 msgstr ""
 
-#: ai/assets/block-action.js:622
-#: ai/assets/block-action.js:777
+#: ai/assets/block-action.js:631
+#: ai/assets/block-action.js:786
 #: ai/assets/editor-translate.js:504
 #: ai/assets/toolbar-translate.js:403
 msgid "↑ Detected from current post"
 msgstr ""
 
-#: ai/assets/block-action.js:659
-#: ai/assets/block-action.js:860
+#: ai/assets/block-action.js:668
+#: ai/assets/block-action.js:869
 msgid "Processing…"
 msgstr ""
 
-#: ai/assets/block-action.js:715
-#: ai/assets/block-action.js:906
+#: ai/assets/block-action.js:724
+#: ai/assets/block-action.js:915
 msgid "Failed. Please try again."
 msgstr ""
 
-#: ai/assets/block-action.js:723
-#: ai/assets/block-action.js:914
+#: ai/assets/block-action.js:732
+#: ai/assets/block-action.js:923
 #: ai/assets/editor-translate.js:740
 #: ai/assets/toolbar-translate.js:654
 msgid "Request failed. Check your connection."
 msgstr ""
 
-#: ai/assets/block-action.js:902
-#: ai/assets/block-action.js:950
+#: ai/assets/block-action.js:911
+#: ai/assets/block-action.js:959
 msgid "Apply to Footnote"
 msgstr ""
 

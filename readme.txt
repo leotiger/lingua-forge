@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -250,6 +250,10 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.0 =
+* Refactored: RouterTab god class (2,015 lines) split into focused classes — seven FseLocalisation\* handlers (TemplateDefinitions, PartDiscovery, PatternExpander, ScaffoldHandler, TranslateHandler, LinkFixer, PartRefFixer) and three Sections\* render classes (TemplatesSection, TemplatePartsSection, NavigationsSection). RouterTab is now ~350 lines of tab plumbing and language-pack UI only.
+* Added: CPT-specific FSE template scaffold slots — single-{cpt} and archive-{cpt} rows appear automatically in the Language Setup table for any public CPT whose base template is shipped by the active theme.
+
 = 2.0.1 =
 * Fixed: Translate / Review panel now closes automatically when the user focuses a different block. Previously the panel stayed open after switching blocks, requiring a manual dismiss.
 
@@ -268,6 +272,9 @@ For the full changelog see CHANGELOG.md in the plugin repository.
 
 
 == Upgrade Notice ==
+
+= 2.1.0 =
+Internal refactor only — no user-facing changes, no schema changes. Safe to update in place.
 
 = 2.0.1 =
 UX fix: Translate / Review panel now closes automatically on block focus change.

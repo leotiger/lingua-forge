@@ -2,6 +2,34 @@
 
 ---
 
+## [2.1.0] — 2026-05-30
+
+### Refactored
+
+- **RouterTab god class split** — `RouterTab.php` (formerly ~2,015 lines) has been decomposed into focused, single-responsibility classes:
+  - `FseLocalisation\TemplateDefinitions` — template type registry (pure static data).
+  - `FseLocalisation\PartDiscovery` — `part_exists()`, `collect_parts_from_blocks()`, `discover_template_parts()`.
+  - `FseLocalisation\PatternExpander` — `expand_pattern_refs()` (expands `wp:pattern` pointers before AI translation).
+  - `FseLocalisation\ScaffoldHandler` — `ajax_scaffold_template()`, `ajax_scaffold_template_part()`.
+  - `FseLocalisation\TranslateHandler` — `ajax_translate_fse_content()`, `ajax_translate_fse_navigation()`.
+  - `FseLocalisation\LinkFixer` — `ajax_fix_fse_links()`.
+  - `FseLocalisation\PartRefFixer` — `replace_part_slug_in_blocks()`, `ajax_fix_fse_parts()`, `ajax_fix_fse_nav_refs()`.
+  - `Settings\Tabs\Sections\TemplatesSection` — FSE templates scaffold table render.
+  - `Settings\Tabs\Sections\TemplatePartsSection` — template parts scaffold table render.
+  - `Settings\Tabs\Sections\NavigationsSection` — navigation translation table render.
+  - `RouterTab` is now ~350 lines: tab contract (`slug`, `label`, `render_content`), language-panel dispatcher, language-pack install/list handlers, and `register_fse_hooks()`.
+  - All AJAX hook registrations consolidated: `SettingsPage` calls `RouterTab::register_fse_hooks()` instead of eleven individual `add_action` calls.
+
+### Added
+
+- **`router-tab.js` split** — the 630-line JS monolith is decomposed into four focused files mirroring the PHP split: `fse-scaffold.js`, `fse-translate.js`, `fse-link-fixer.js`, `fse-part-fixer.js`. `router-tab.js` now handles only tab panel switching and language-pack install (~115 lines). All four files depend on `linguaforge-router-tab` so the shared `lfRouterTab` data object is always available.
+
+- **CPT-specific FSE template scaffold slots** — `TemplateDefinitions::get()` now appends `single-{cpt}` and `archive-{cpt}` entries dynamically for each registered public CPT whose base template is actually shipped by the active theme (`get_block_templates()` check). Labels use the CPT's registered singular/plural names. The scaffold, translate, link-fix, and part-fix workflows all pick up the new slots automatically.
+
+- **CPT-scoped block pattern translation** — `FseLocalisation\PatternDiscovery` discovers all registered block patterns whose `postTypes` intersect with public custom post types. `FseLocalisation\PatternHandler` adds `wp_ajax_linguaforge_translate_pattern`: AI translates the pattern content (same system-prompt rules as FSE templates) and persists the result in the `linguaforge_pattern_translations` option, keyed by pattern name and target language. `Settings\Tabs\Sections\PatternsSection` renders a per-language table in the Language Setup section with Translate / Re-translate / View toggle. `fse-patterns.js` handles the button interactions. The section is silently skipped when no CPT-scoped patterns are registered or AI is not configured.
+
+---
+
 ## [2.0.1] — 2026-05-29
 
 ### Fixed

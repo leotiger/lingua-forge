@@ -118,17 +118,11 @@ class SettingsPage {
         add_action('admin_post_linguaforge_save_uninstall_setting',   [MaintenanceTab::class, 'handle_save_uninstall_setting']);
 
         // Language Router tab
-        add_action('admin_post_linguaforge_save_router_settings',    [RouterTab::class, 'handle_save_router_settings']);
-        add_action('admin_post_linguaforge_flush_permalinks',         [RouterTab::class, 'handle_flush_permalinks']);
-        add_action('wp_ajax_linguaforge_get_available_languages',     [RouterTab::class, 'ajax_get_available_languages']);
-        add_action('wp_ajax_linguaforge_install_language',            [RouterTab::class, 'ajax_install_language']);
-        add_action('wp_ajax_linguaforge_scaffold_template',           [RouterTab::class, 'ajax_scaffold_template']);
-        add_action('wp_ajax_linguaforge_scaffold_template_part',      [RouterTab::class, 'ajax_scaffold_template_part']);
-        add_action('wp_ajax_linguaforge_translate_fse_content',       [RouterTab::class, 'ajax_translate_fse_content']);
-        add_action('wp_ajax_linguaforge_fix_fse_links',               [RouterTab::class, 'ajax_fix_fse_links']);
-        add_action('wp_ajax_linguaforge_fix_fse_parts',               [RouterTab::class, 'ajax_fix_fse_parts']);
-        add_action('wp_ajax_linguaforge_translate_fse_navigation',    [RouterTab::class, 'ajax_translate_fse_navigation']);
-        add_action('wp_ajax_linguaforge_fix_fse_nav_refs',            [RouterTab::class, 'ajax_fix_fse_nav_refs']);
+        add_action('admin_post_linguaforge_save_router_settings', [RouterTab::class, 'handle_save_router_settings']);
+        add_action('admin_post_linguaforge_flush_permalinks',      [RouterTab::class, 'handle_flush_permalinks']);
+        add_action('wp_ajax_linguaforge_get_available_languages',  [RouterTab::class, 'ajax_get_available_languages']);
+        add_action('wp_ajax_linguaforge_install_language',         [RouterTab::class, 'ajax_install_language']);
+        RouterTab::register_fse_hooks();
 
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
@@ -203,6 +197,7 @@ class SettingsPage {
                 'fixPartsNonce'     => wp_create_nonce( 'linguaforge_fix_fse_parts' ),
                 'translateNavNonce' => wp_create_nonce( 'linguaforge_translate_fse_navigation' ),
                 'fixNavRefsNonce'   => wp_create_nonce( 'linguaforge_fix_fse_nav_refs' ),
+                'patternNonce'      => wp_create_nonce( 'linguaforge_translate_pattern' ),
                 'strings'           => [
                     'loading'           => __( 'Loading…',                'lingua-forge' ),
                     'installing'        => __( 'Installing…',             'lingua-forge' ),
@@ -234,11 +229,37 @@ class SettingsPage {
                     'fixNavRefs'        => __( 'Fix Nav',                                            'lingua-forge' ),
                     'fixingNavRefs'     => __( 'Fixing…',                                            'lingua-forge' ),
                     'navRefsFixed'      => __( '✓ Nav refs fixed.',                                  'lingua-forge' ),
-                    'navRefsFail'       => __( 'Some nav ref fixes failed.',                         'lingua-forge' ),
+                    'navRefsFail'         => __( 'Some nav ref fixes failed.',                         'lingua-forge' ),
+                    'translatePattern'    => __( 'Translate',                                            'lingua-forge' ),
+                    'translatingPattern'  => __( 'Translating…',                                        'lingua-forge' ),
+                    'patternTranslated'   => __( '✓ Pattern translated.',                               'lingua-forge' ),
+                    'patternFail'         => __( 'Pattern translation failed.',                          'lingua-forge' ),
+                    'translationSaved'    => __( '✓ Translation saved',                                  'lingua-forge' ),
+                    'view'                => __( 'View',                                                 'lingua-forge' ),
+                    'hide'                => __( 'Hide',                                                 'lingua-forge' ),
                 ],
             ] ) . ';',
             'before'
         );
+
+        // FSE localisation JS — each file handles one concern, depends on the
+        // router-tab script so the lfRouterTab data object is always available.
+        $fse_scripts = [
+            'linguaforge-fse-scaffold'    => 'fse-scaffold.js',
+            'linguaforge-fse-translate'   => 'fse-translate.js',
+            'linguaforge-fse-link-fixer'  => 'fse-link-fixer.js',
+            'linguaforge-fse-part-fixer'  => 'fse-part-fixer.js',
+            'linguaforge-fse-patterns'    => 'fse-patterns.js',
+        ];
+        foreach ( $fse_scripts as $handle => $file ) {
+            wp_enqueue_script(
+                $handle,
+                LINGUAFORGE_AI_URL . '/assets/' . $file,
+                [ 'jquery', 'linguaforge-router-tab' ],
+                $version,
+                true
+            );
+        }
 
         // Preset preview — shows each preset's built-in addendum text when the
         // Global AI Preset dropdown changes, so editors can see what the preset

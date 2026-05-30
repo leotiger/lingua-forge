@@ -327,6 +327,20 @@ ai/                           AI features (translation, meta-description, excerp
   includes/                   PSR-4 class files under LinguaForge\AI\…
     Admin/                    Admin UI: MetaBox, AdminToolbar, PostListColumn, SettingsPage
     Admin/Settings/Tabs/      One class per settings tab (Tab base + 8 concrete tabs)
+    Admin/Settings/Tabs/Sections/
+                              Per-section renderers for the Router tab's FSE panel:
+                              TemplatesSection, TemplatePartsSection, NavigationsSection,
+                              PatternsSection (CPT-scoped block pattern translation)
+    Admin/FseLocalisation/    FSE localisation layer — pure-static classes, no instance state:
+                              TemplateDefinitions (CPT-slot template list),
+                              PartDiscovery (template-part registry queries),
+                              PatternExpander (nested wp:pattern inline expansion),
+                              PatternDiscovery (CPT-scoped pattern registry + translation store),
+                              PatternHandler (AJAX handler for pattern translation),
+                              ScaffoldHandler (AJAX: scaffold missing FSE templates),
+                              TranslateHandler (AJAX: translate FSE templates/parts),
+                              LinkFixer (AJAX: fix cross-language navigation links),
+                              PartRefFixer (AJAX: rewrite part slugs for target language)
     CLI/                      WP-CLI commands (Commands facade + one class per subcommand)
     Contracts/                Interface definitions (AIProviderInterface)
     Core/                     Bootstrap, config, caching, TM, glossary, key store, utilities
@@ -1069,6 +1083,20 @@ Run every command from the `dev/` directory:
   PHPUnit framework (wp-env exposes this automatically). The test files
   themselves live in `tests/` — they're plugin source, just
   `.distignore`'d out of the .org build.
+
+  **Integration test conventions:**
+  - Extend `WP_UnitTestCase` (not `WP_UnitTestCase_Base` or `TestCase`).
+  - Use Yoast snake_case lifecycle hooks (`set_up` / `tear_down`) instead
+    of PHPUnit's camelCase `setUp` / `tearDown`. These **must** be declared
+    `public` — the Yoast polyfill base declares them public, and PHP will
+    fatal if a subclass narrows visibility to `protected`.
+  - `composer test:integration` runs PHPUnit inside the wp-env
+    `tests-cli` container. The working directory inside the container is
+    `wp-content/plugins/lingua-forge/dev/` — this must match the `cd`
+    path in the `test:integration` script in `dev/composer.json` so that
+    the Composer-generated classmap's `$baseDir` resolves to the plugin
+    root. If you see `Failed to open stream` errors for AI class files,
+    the `cd` path is wrong.
 - **wp-env (`dev/.wp-env.json`)** boots WordPress 6.9 on PHP 8.1 with
   `..` (plugin root) mounted at `wp-content/plugins/lingua-forge`.
   `WP_DEBUG` is on in both the development and test environments.

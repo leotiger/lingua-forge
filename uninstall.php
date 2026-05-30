@@ -71,6 +71,8 @@ $linguaforge_named_options = [
     'linguaforge_ai_debug_enabled',
     // Uninstall behaviour toggle
     'linguaforge_remove_content_on_uninstall',
+    // CPT-scoped block pattern translations (2.1.0)
+    'linguaforge_pattern_translations',
 ];
 
 foreach ( $linguaforge_named_options as $linguaforge_option ) {

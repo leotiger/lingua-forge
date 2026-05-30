@@ -325,10 +325,25 @@ lingua-forge/
           ApiKeysTab.php             ← API key entry + Test Connection
           LimitsTab.php              ← Quotas, rate limits, capability gate
           BehaviorTab.php            ← AI behavior presets and toggles
-          RouterTab.php              ← Language Router settings + FSE scaffold tools
+          RouterTab.php              ← Language Router settings; delegates FSE panels to Sections/
           GlossaryTab.php            ← Per-language-pair terminology table
           AiUsageTab.php             ← Read-only token usage log
           MaintenanceTab.php         ← Cache, debug, language overrides, TM tools
+        Settings/Tabs/Sections/
+          TemplatesSection.php       ← FSE template scaffold/translate/fix UI
+          TemplatePartsSection.php   ← Template part scaffold/translate/fix UI
+          NavigationsSection.php     ← Language navigation create/translate UI
+          PatternsSection.php        ← CPT-scoped block pattern translation UI
+      FseLocalisation/
+        TemplateDefinitions.php      ← CPT-slot template list (dynamic per active CPTs)
+        PartDiscovery.php            ← Template-part registry queries
+        PatternExpander.php          ← Inline expansion of nested wp:pattern refs
+        PatternDiscovery.php         ← CPT-scoped pattern registry + translation store
+        PatternHandler.php           ← AJAX handler for block pattern AI-translation
+        ScaffoldHandler.php          ← AJAX handler for FSE template/part scaffold
+        TranslateHandler.php         ← AJAX handler for FSE template/part AI-translation
+        LinkFixer.php                ← AJAX handler for internal link rewriting
+        PartRefFixer.php             ← AJAX handler for template-part slug rewriting
       Integrations/
         WooCommerce/
           Bootstrap.php              ← Entry point: wires all WC hooks on plugins_loaded priority 20
@@ -355,7 +370,12 @@ lingua-forge/
       post-list.js                   ← "Translate missing" button AJAX handler
       settings.css                   ← Settings page styles
       settings-tabs.js               ← Settings page tab switching
-      router-tab.js                  ← Router tab AJAX actions (scaffold, fix, translate nav)
+      router-tab.js                  ← Router tab AJAX actions (lang install, panel wiring)
+      fse-scaffold.js                ← Scaffold template/part AJAX
+      fse-translate.js               ← AI-translate template/part AJAX
+      fse-link-fixer.js              ← Fix Links AJAX
+      fse-part-fixer.js              ← Fix Parts AJAX
+      fse-patterns.js                ← CPT-scoped block pattern translation AJAX
       preset-preview.js              ← Behavior preset live preview
       test-connection.js             ← API Keys tab "Test Connection" AJAX
     templates/prompts/               ← AI prompt templates (plain text, editable)
@@ -559,8 +579,9 @@ The Language Templates section in **Settings → Router** provides a complete in
 - **Fix Parts** — updates `wp:template-part` slug references to their language-specific variants (e.g. `footer` → `footer-ca`), ensuring the language template loads the correctly localised header, footer, and other parts.
 - **Fix Nav** — rewrites `wp:navigation` block ref IDs inside template parts so each header and footer loads the correct language navigation post instead of the base-language menu.
 - **Language Navigations** — for each base `wp_navigation` post, creates a `{name}-{lang}` copy with AI-translated link labels and language-prefixed internal URLs. The resulting `wp_navigation` posts are native WordPress objects independent of the source menu.
+- **Block Pattern Translation** — for each block pattern scoped to a public CPT (via the pattern's `postTypes` metadata), an AI-Translate button sends the pattern content through the same translation pipeline, preserving block markup, JSON attributes, and visible text rules. The translated content is stored and displayed with a copy-paste-ready preview. Patterns scoped only to built-in post types (`post`, `page`, etc.) are not shown — this section focuses on CPT-specific layouts where a per-language variant makes sense.
 
-Each entity produced by this workflow is a real WordPress `wp_template`, `wp_template_part`, or `wp_navigation` post — not a string-swapped version of a shared entity. Content, links, part references, and navigation refs are all independently editable per language in the Site Editor.
+Each entity produced by this workflow is a real WordPress `wp_template`, `wp_template_part`, or `wp_navigation` post — not a string-swapped version of a shared entity. Block pattern translations are stored separately (not as `wp_block` posts) and are intended as a starting point for building language-specific CPT content. Content, links, part references, and navigation refs are all independently editable per language in the Site Editor.
 
 ### Admin UX
 

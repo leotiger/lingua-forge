@@ -45,11 +45,11 @@
         "test:unit": "php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
         "test:integration": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
         ],
         "test:integration:wc": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/dev-tools && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
         ],
         "plugin-check": [
             "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
