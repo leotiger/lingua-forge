@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-30T19:29:51+00:00\n"
+"POT-Creation-Date: 2026-05-30T21:23:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -45,9 +45,9 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:213
-#: ai/includes/Admin/SettingsPage.php:227
-#: ai/includes/Admin/SettingsPage.php:233
+#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:228
+#: ai/includes/Admin/SettingsPage.php:234
 #: ai/assets/block-action.js:243
 #: ai/assets/block-action.js:262
 #: ai/assets/block-action.js:286
@@ -106,13 +106,14 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:698
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:766
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:788
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:809
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:834
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:859
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:761
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:831
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:916
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:984
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1006
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1027
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1052
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1077
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:416
 msgid "Permission denied."
 msgstr ""
@@ -350,28 +351,25 @@ msgstr ""
 msgid "AI Behaviour Preset"
 msgstr ""
 
-#. translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
-#. translators: %s: name of the globally configured preset
-#: ai/includes/Admin/MetaBox.php:509
+#: ai/includes/Admin/MetaBox.php:508
+msgid "Custom"
+msgstr ""
+
+#. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
 #: ai/includes/Admin/MetaBox.php:513
 #, php-format
 msgid "Global default (%s)"
 msgstr ""
 
-#. translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
-#: ai/includes/Admin/MetaBox.php:509
-msgid "Custom"
-msgstr ""
-
-#: ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/MetaBox.php:525
 msgid "Overrides the AI preset for Translation and Content Generation on this page. Site-wide custom prompt instructions (Settings → Behavior) are always appended to every request regardless of this selection."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/MetaBox.php:530
 msgid "Overrides the AI preset for Translation and Content Generation on this page. All other features always use the global preset."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:612
+#: ai/includes/Admin/MetaBox.php:611
 #: language-router/includes/class-lsflr-link-fixer.php:782
 #: ai/assets/admin.js:216
 #: ai/assets/admin.js:397
@@ -396,9 +394,9 @@ msgid "Retranslate"
 msgstr ""
 
 #: ai/includes/Admin/PostListColumn.php:172
-#: ai/includes/Admin/SettingsPage.php:214
-#: ai/includes/Admin/SettingsPage.php:228
-#: ai/includes/Admin/SettingsPage.php:234
+#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:235
 #: ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:584
 msgid "Translating…"
@@ -430,7 +428,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:22
 #: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:88
-#: ai/includes/Admin/SettingsPage.php:551
+#: ai/includes/Admin/SettingsPage.php:552
 msgid "AI Usage"
 msgstr ""
 
@@ -500,7 +498,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsPage.php:546
+#: ai/includes/Admin/SettingsPage.php:547
 msgid "API Keys"
 msgstr ""
 
@@ -579,7 +577,7 @@ msgid "Provider returned no text. Check the WordPress error log for the detailed
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:548
+#: ai/includes/Admin/SettingsPage.php:549
 msgid "Behavior"
 msgstr ""
 
@@ -668,7 +666,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:427
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:571
 msgid "Translation Memory"
 msgstr ""
 
@@ -685,7 +683,7 @@ msgid "Currently skipped for posts that use block-comment attribute placeholders
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:545
+#: ai/includes/Admin/SettingsPage.php:546
 msgid "General"
 msgstr ""
 
@@ -741,7 +739,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
-#: ai/includes/Admin/SettingsPage.php:550
+#: ai/includes/Admin/SettingsPage.php:551
 msgid "Glossary"
 msgstr ""
 
@@ -832,7 +830,7 @@ msgid "Delete this glossary entry?"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:190
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:143
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:190
 msgid "Delete"
 msgstr ""
 
@@ -873,7 +871,7 @@ msgid "Add entry"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:547
+#: ai/includes/Admin/SettingsPage.php:548
 msgid "Limits"
 msgstr ""
 
@@ -1018,282 +1016,326 @@ msgid "Maximum characters of existing post content passed to the AI as seed cont
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:28
-#: ai/includes/Admin/SettingsPage.php:552
+#: ai/includes/Admin/SettingsPage.php:553
 msgid "Maintenance"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:53
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:100
 msgid "Language Overrides"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:57
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:104
 msgid "Upload compiled .mo files to override third-party plugin strings for specific locales — for example, a custom VikBooking translation that uses \"apartment\" instead of \"room\". Files must follow the WordPress naming convention: {textdomain}-{locale}.mo (e.g. vikbooking-ca.mo). They are stored in the uploads folder and survive plugin updates."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:66
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:113
 msgid "Override file uploaded successfully."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:71
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:118
 msgid "Override file deleted."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:76
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:123
 msgid "No file was selected."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:77
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:124
 msgid "Only .mo files are accepted."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:78
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:125
 msgid "The upload failed — please try again."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:79
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:126
 msgid "Could not save the file. Check that the uploads folder is writable."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:80
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:127
 msgid "Invalid filename."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:81
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:128
 msgid "Security check failed — file path is not permitted."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:84
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:131
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:273
 msgid "An unknown error occurred."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:112
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:159
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:285
 msgid "Text domain / locale"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:113
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:389
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:160
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:287
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:533
 msgid "Files"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:114
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:161
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:288
 msgid "Size"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:137
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:184
 msgid "Delete all files for this override (both .mo and .po)?"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:155
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:202
 msgid "No override files uploaded yet."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:173
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:220
 msgid "Upload .mo file"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:185
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:232
 msgid "Accepts compiled .mo files only. Filename must follow the pattern {textdomain}-{locale}.mo. Uploading a file with the same name as an existing one will replace it."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:192
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:239
 msgid "Upload Override"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:199
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:248
+msgid "Loco Translate — Copy to Safe Storage"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:252
+msgid "Loco Translate stores its custom translations in wp-content/languages/loco/ — a location that can be silently wiped by a WP core update, plugin reinstall, or if Loco Translate itself is removed. Copying files here moves them into the Lingua Forge i18n-overrides directory, which persists through all of those events and is loaded automatically on every request."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:263
+msgid "File copied to safe storage successfully."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:268
+msgid "Source file not found."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:269
+msgid "Could not copy the file. Check that the uploads folder is writable."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:270
+msgid "Invalid file reference."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:286
+msgid "Type"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:307
+msgid "✓ In safe storage"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:320
+msgid "Copy to safe storage"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:333
+msgid "No custom Loco Translate files found yet. They appear here once you save a translation in Loco Translate."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:343
 msgid "AI Cache"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:203
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:347
 msgid "Lingua Forge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue."
 msgstr ""
 
 #. translators: %d is the number of cleared cache entries.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:221
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:365
 #, php-format
 msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:237
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:381
 msgid "Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:243
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:387
 msgid "Clear AI Cache"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:253
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:397
 msgid "Debug Files"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:257
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:401
 msgid "When debug logging is enabled (via the toggle below or by defining LINGUAFORGE_AI_DEBUG in wp-config.php), the Translation and FSE template translation features write their raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter."
 msgstr ""
 
 #. translators: %d is the number of removed debug files.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:284
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:428
 #, php-format
 msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:305
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:449
 msgid "Debug logging enabled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:307
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:451
 msgid "Debug logging disabled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:323
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:467
 msgid "Debug logging"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:334
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:355
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:478
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:499
 msgid "Write AI prompts and responses to disk for troubleshooting"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:339
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:483
 msgid "Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:341
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:485
 msgid "Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:359
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:503
 msgid "Files land in the directory below. Useful for diagnosing translation issues — turn off once you have what you need so the files do not accumulate. You can also force this from wp-config.php with `define( 'LINGUAFORGE_AI_DEBUG', true );` which overrides the toggle."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:366
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:510
 msgid "Currently:"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:369
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:473
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:513
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:617
 msgid "✓ Enabled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:373
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:477
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:517
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:621
 msgid "✗ Disabled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:380
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:524
 msgid "Directory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:384
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:528
 msgid "Filter with linguaforge_debug_dir to redirect debug output to a non-public location."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:392
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:536
 msgid ".txt file(s) in the directory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:399
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:543
 msgid "Save Debug Setting"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:410
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:554
 msgid "Delete all .txt files in the debug directory? The directory itself will remain so future debug writes still land cleanly."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:416
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:560
 msgid "Clear Debug Files"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:431
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:575
 msgid "Per-block translation cache shared across posts. Configure on/off in Settings → Behavior. Stats below show what is currently cached; clearing forces every block to be re-translated on next request (useful after upgrading models or to recover database space)."
 msgstr ""
 
 #. translators: %d is the number of removed cached blocks.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:449
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:593
 #, php-format
 msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:469
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
 msgid "Status"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:479
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:623
 msgid "— toggle in Settings → Behavior."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:484
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:628
 msgid "Cached blocks"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:490
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:634
 msgid "Cumulative cache hits"
 msgstr ""
 
 #. translators: %s is the average hits per cached block.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:498
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:642
 #, php-format
 msgid "(avg %.1f hits/block)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:507
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:651
 msgid "Oldest entry"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:511
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:655
 msgid "Newest entry"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:516
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:660
 msgid "Approximate size"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:528
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:672
 msgid "Clear the entire Translation Memory? Future translations will rebuild the cache as they run."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:534
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:678
 msgid "Clear Translation Memory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:545
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:689
 msgid "Uninstall Behaviour"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:549
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:693
 msgid "Controls what happens when an administrator deletes the plugin from Plugins → Installed Plugins → Delete. Plugin settings and AI caches are always removed. Language assignments and translation relationships are kept by default so an accidental uninstall or a reinstall can pick up where it left off."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:560
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:704
 msgid "Uninstall setting saved."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:573
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:717
 msgid "Delete content data on uninstall"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:582
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:726
 msgid "Also delete language assignments, translation relationships, meta descriptions, glossary, and Translation Memory when the plugin is uninstalled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:585
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:729
 msgid "Warning:"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:587
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:731
 msgid "If checked, uninstalling the plugin will permanently delete all language assignments, translation relationships, meta descriptions, per-page presets, the AI glossary, and Translation Memory for every post on this site. This cannot be undone. Leave unchecked unless you are fully removing multilingual support from the site."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:598
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:742
 msgid "Save Uninstall Setting"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:37
-#: ai/includes/Admin/SettingsPage.php:549
+#: ai/includes/Admin/SettingsPage.php:550
 msgid "Router"
 msgstr ""
 
@@ -1398,7 +1440,7 @@ msgid "Load available languages"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "— select a language —"
 msgstr ""
 
@@ -1424,7 +1466,7 @@ msgid "Forbidden"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 
@@ -1469,7 +1511,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:111
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:226
+#: ai/includes/Admin/SettingsPage.php:227
 msgid "Re-translate"
 msgstr ""
 
@@ -1490,12 +1532,12 @@ msgid "Post Types"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Translation saved"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "View"
 msgstr ""
 
@@ -1517,12 +1559,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:219
 msgid "Fix Links"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:230
 msgid "Fix Nav"
 msgstr ""
 
@@ -1546,7 +1588,7 @@ msgid "Actions"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:222
+#: ai/includes/Admin/SettingsPage.php:223
 msgid "Fix Parts"
 msgstr ""
 
@@ -1578,143 +1620,143 @@ msgstr ""
 msgid "Google (Gemini)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:171
+#: ai/includes/Admin/SettingsPage.php:172
 msgid "Testing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:172
+#: ai/includes/Admin/SettingsPage.php:173
 msgid "✓ Connection OK"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:173
+#: ai/includes/Admin/SettingsPage.php:174
 msgid "✗ Failed:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:174
+#: ai/includes/Admin/SettingsPage.php:175
 msgid "No response from provider — check the error log for details."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:175
+#: ai/includes/Admin/SettingsPage.php:176
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:202
+#: ai/includes/Admin/SettingsPage.php:203
 msgid "Loading…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:203
+#: ai/includes/Admin/SettingsPage.php:204
 msgid "Installing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "✓ Language installed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✗ Error:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Creating…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:209
+#: ai/includes/Admin/SettingsPage.php:210
 msgid "✓ All templates created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:210
+#: ai/includes/Admin/SettingsPage.php:211
 msgid "Some templates could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:211
+#: ai/includes/Admin/SettingsPage.php:212
 msgid "✓ All parts created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:212
+#: ai/includes/Admin/SettingsPage.php:213
 msgid "Some parts could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✓ All translated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "Some translations failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Review carefully — links and slugs not updated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:219
-#: ai/includes/Admin/SettingsPage.php:223
-#: ai/includes/Admin/SettingsPage.php:230
+#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:224
+#: ai/includes/Admin/SettingsPage.php:231
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:221
 msgid "✓ Links fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:221
+#: ai/includes/Admin/SettingsPage.php:222
 msgid "Some link fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:224
+#: ai/includes/Admin/SettingsPage.php:225
 msgid "✓ Parts fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:225
+#: ai/includes/Admin/SettingsPage.php:226
 msgid "Some part fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:231
+#: ai/includes/Admin/SettingsPage.php:232
 msgid "✓ Nav refs fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:232
+#: ai/includes/Admin/SettingsPage.php:233
 msgid "Some nav ref fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "✓ Pattern translated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Pattern translation failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "Hide"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:285
+#: ai/includes/Admin/SettingsPage.php:286
 msgid "Built-in preset instructions:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:286
+#: ai/includes/Admin/SettingsPage.php:287
 msgid "No built-in instructions — each AI feature uses its own tuned defaults. Fill in the Custom prompt instructions field below to add your own site-wide rules."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:322
+#: ai/includes/Admin/SettingsPage.php:323
 msgid "Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:334
+#: ai/includes/Admin/SettingsPage.php:335
 msgid "You do not have permission to manage these settings."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:534
+#: ai/includes/Admin/SettingsPage.php:535
 msgid "Lingua Forge — Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:539
+#: ai/includes/Admin/SettingsPage.php:540
 msgid "Settings saved."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:587
+#: ai/includes/Admin/SettingsPage.php:588
 msgid "Save Settings"
 msgstr ""
 

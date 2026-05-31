@@ -10,13 +10,16 @@
         "env:start": "wp-env start && wp-env run cli bash -c 'wp plugin activate lingua-forge --quiet'",
         "env:stop": "wp-env stop",
         "env:destroy": "wp-env destroy",
+        "env:seed": "bash bin/seed-dev-env.sh",
         "env:cli": "wp-env run cli wp",
         "lint:js": "wp-scripts lint-js --no-eslintrc --config .eslintrc.json --resolve-plugins-relative-to . \"../language-router/assets/**/*.js\" \"../ai/assets/**/*.js\" \"../meta-description/assets/**/*.js\"",
         "lint:js:fix": "wp-scripts lint-js --no-eslintrc --config .eslintrc.json --resolve-plugins-relative-to . --fix \"../language-router/assets/**/*.js\" \"../ai/assets/**/*.js\" \"../meta-description/assets/**/*.js\"",
         "lint:css": "wp-scripts lint-style --config .stylelintrc.json \"../language-router/assets/**/*.css\" \"../ai/assets/**/*.css\" \"../meta-description/assets/**/*.css\"",
         "lint:css:fix": "wp-scripts lint-style --config .stylelintrc.json --fix \"../language-router/assets/**/*.css\" \"../ai/assets/**/*.css\" \"../meta-description/assets/**/*.css\"",
         "format": "wp-scripts format \"../**/*.{js,css,json,md}\"",
-        "test:e2e": "wp-scripts test-e2e"
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "e2e:install": "playwright install chromium --with-deps"
     },
     "devDependencies": {
         "@wordpress/env": "^10.0.0",

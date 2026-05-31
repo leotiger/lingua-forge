@@ -101,6 +101,7 @@ class SettingsPage {
         // Language override file management
         add_action('admin_post_linguaforge_upload_i18n_override', [MaintenanceTab::class, 'handle_upload_override']);
         add_action('admin_post_linguaforge_delete_i18n_override', [MaintenanceTab::class, 'handle_delete_override']);
+        add_action('admin_post_linguaforge_copy_loco_override',   [MaintenanceTab::class, 'handle_copy_loco_override']);
 
         // AI cache maintenance
         add_action('admin_post_linguaforge_clear_ai_cache',       [MaintenanceTab::class, 'handle_clear_ai_cache']);

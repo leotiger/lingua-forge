@@ -70,14 +70,45 @@ composer make-pot              # regenerate languages/lingua-forge.pot
 
 # wp-env
 npm run env:start
+npm run env:seed      # one-time: permalink structure, router options, language packs, sample pages, AI key prompt
 npm run env:stop
 npm run env:cli -- option get blogname     # WP-CLI inside the dev container
+
+# E2E tests (requires env:start + env:seed)
+npm run e2e:install   # one-time: install Chromium browser
+npm run test:e2e      # run all E2E specs (headless)
+npm run test:e2e:ui   # Playwright interactive UI mode
 ```
+
+### E2E suite — what runs and when
+
+`npm run test:e2e` targets the **already-running** wp-env container on port 8888.
+**Do not stop the environment before running tests** — Playwright just makes HTTP
+requests to it; stopping wp-env first will cause every test to fail.
+
+Spec files and what they cover:
+
+| Spec file               | Coverage                                                              | API calls? |
+| ----------------------- | --------------------------------------------------------------------- | ---------- |
+| `e2e/routing.spec.js`   | EN/DE/CA language-prefixed URLs return 200; root and cross-lang slugs handled without fatals | No |
+| `e2e/admin.spec.js`     | Settings page loads (no PHP/JS errors), all 8 tabs present, Router/Maintenance/API Keys tab content, post edit meta box registered | No |
+| `e2e/lang-column.spec.js` | Lang column header + filter dropdown, EN/DE/CA filter returns correct cells, WC products (auto-skipped when WC not active) | No |
+| `e2e/ai-translation.spec.js` | Meta box "Translate" button (REST `/feature/translation/{id}`), "Translate missing" in the Lang column (AJAX `lf_fill_missing`), AI Usage tab shows token rows | **Yes — costs tokens** |
+| `e2e/fse-localisation.spec.js` | Router tab smoke (no errors, DE/CA scaffold table rows); full DE pipeline: Scaffold → Translate → Fix links → Fix parts (auto-skipped if FSE theme not active) | **Yes — costs tokens** |
+
+**Reset for a clean scaffold run:**
+```bash
+npm run env:destroy && npm run env:start && npm run env:seed
+```
+This wipes all wp-env data (posts, templates, options) and re-seeds from scratch.
+Only needed when you want to re-test scaffold from an empty state.
 
 ### What composite commands include
 
 | Command                       | Expands to                                                         | Docker needed |
 | ----------------------------- | ------------------------------------------------------------------ | ------------- |
+| `npm run env:seed`            | Sets permalinks, router options, installs DE/CA language packs, creates sample pages + WC product group, prompts for AI provider + API key (written to gitignored `.wp-env.override.json` as a PHP constant — no UI entry needed). Safe to re-run. | Yes |
+| `npm run test:e2e`            | Playwright E2E suite: routing, Settings page, lang column, WC product list, AI translation, FSE localisation pipeline. Requires `env:start` (keep running) + `env:seed`. | Yes |
 | `composer test`               | `test:unit` + `test:integration`                                   | Yes           |
 | `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |
 | `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |

@@ -28,6 +28,8 @@
 
 - **CPT-scoped block pattern translation** — `FseLocalisation\PatternDiscovery` discovers all registered block patterns whose `postTypes` intersect with public custom post types. `FseLocalisation\PatternHandler` adds `wp_ajax_linguaforge_translate_pattern`: AI translates the pattern content (same system-prompt rules as FSE templates) and persists the result in the `linguaforge_pattern_translations` option, keyed by pattern name and target language. `Settings\Tabs\Sections\PatternsSection` renders a per-language table in the Language Setup section with Translate / Re-translate / View toggle. `fse-patterns.js` handles the button interactions. The section is silently skipped when no CPT-scoped patterns are registered or AI is not configured.
 
+- **Loco Translate — copy to safe storage** — When Loco Translate is active, **Settings → Maintenance → Language Overrides** now shows a subsection listing all custom `.mo`/`.po` files from `wp-content/languages/loco/plugins/` and `…/themes/`. A "Copy to safe storage" button per row copies the files into the Lingua Forge i18n-overrides directory (`wp-content/uploads/lingua-forge/i18n-overrides/`), which survives WP core updates, plugin reinstalls, and Loco Translate removal. Already-copied files are flagged "✓ In safe storage". The section is hidden when Loco Translate is not installed.
+
 ---
 
 ## [2.0.1] — 2026-05-29

@@ -47,6 +47,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 		'<ul>' .
 			'<li><strong>Added:</strong> CPT-scoped block pattern translation. The Router tab now shows a Patterns section listing every block pattern whose <code>postTypes</code> metadata includes a public Custom Post Type. Each pattern can be AI-translated per language, with the result stored and displayed as a copy-paste-ready preview. Patterns scoped only to built-in types (<code>post</code>, <code>page</code>, etc.) are excluded. New classes: <code>PatternDiscovery</code>, <code>PatternHandler</code>, <code>PatternsSection</code>. New script: <code>fse-patterns.js</code>.</li>' .
 			'<li><strong>Added:</strong> Router tab FSE panel split — <code>RouterTab</code> refactored into a thin dispatcher with four section renderers and nine <code>FseLocalisation\</code> handler classes; router-tab JS split into five purpose-specific scripts.</li>' .
+			'<li><strong>Added:</strong> Loco Translate — copy to safe storage. When Loco Translate is active, <strong>Settings → Maintenance → Language Overrides</strong> lists all custom <code>.mo</code>/<code>.po</code> files from <code>wp-content/languages/loco/</code> and provides a one-click copy into the Lingua Forge i18n-overrides directory, which survives WP core updates and plugin reinstalls.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

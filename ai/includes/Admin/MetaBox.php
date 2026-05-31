@@ -505,13 +505,12 @@ class MetaBox {
                     <option value="global" <?php selected( $page_preset, '' ); ?>>
                         <?php
                         if ( $has_custom_addendum ) {
-                            // translators: %s: the word "Custom" referring to the active preset's per-preset addendum override in Settings → Behavior
-                            echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html__( 'Custom', 'lingua-forge' ) );
+                            $linguaforge_preset_label = esc_html__( 'Custom', 'lingua-forge' );
                         } else {
-                            $global_label = $presets[ $global_preset ]['label'] ?? $global_preset;
-                            // translators: %s: name of the globally configured preset
-                            echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), esc_html( $global_label ) );
+                            $linguaforge_preset_label = esc_html( $presets[ $global_preset ]['label'] ?? $global_preset );
                         }
+                        // translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
+                        echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), $linguaforge_preset_label );
                         ?>
                     </option>
                     <?php foreach ( $presets as $key => $meta ) : ?>

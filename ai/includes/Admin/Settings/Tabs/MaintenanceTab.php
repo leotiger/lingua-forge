@@ -42,6 +42,53 @@ class MaintenanceTab extends Tab {
         return trailingslashit( $upload['basedir'] ) . 'lingua-forge/i18n-overrides/';
     }
 
+    /**
+     * Whether Loco Translate is currently active.
+     * Uses the function marker defined in loco.php rather than is_plugin_active(),
+     * which would require plugin.php to be loaded.
+     */
+    private static function loco_is_active(): bool {
+        return function_exists( 'loco_plugin_version' );
+    }
+
+    /**
+     * List .mo files that Loco Translate has saved in its custom directory
+     * (wp-content/languages/loco/plugins/ and …/themes/).
+     *
+     * @return array  Each entry: base, type, mo_path, has_po, po_path, in_overrides, size.
+     */
+    private static function loco_custom_files(): array {
+
+        if ( ! defined( 'LOCO_LANG_DIR' ) || ! LOCO_LANG_DIR ) {
+            return [];
+        }
+
+        $loco_root     = trailingslashit( LOCO_LANG_DIR );
+        $overrides_dir = self::overrides_dir();
+        $files         = [];
+
+        foreach ( [ 'plugins', 'themes' ] as $type ) {
+            $dir = $loco_root . $type . '/';
+            foreach ( glob( $dir . '*.mo' ) ?: [] as $path ) {
+                $base    = pathinfo( $path, PATHINFO_FILENAME );
+                $po_path = $dir . $base . '.po';
+                $files[] = [
+                    'type'         => $type,
+                    'base'         => $base,
+                    'mo_path'      => $path,
+                    'has_po'       => file_exists( $po_path ),
+                    'po_path'      => $po_path,
+                    'in_overrides' => file_exists( $overrides_dir . $base . '.mo' ),
+                    'size'         => size_format( (int) filesize( $path ) ),
+                ];
+            }
+        }
+
+        usort( $files, static fn( $a, $b ) => strcmp( $a['base'], $b['base'] ) );
+
+        return $files;
+    }
+
     // ── Render ────────────────────────────────────────────────────────────────
 
     public static function render_content(): void {
@@ -192,6 +239,103 @@ class MaintenanceTab extends Tab {
             <?php submit_button( __( 'Upload Override', 'lingua-forge' ), 'secondary' ); ?>
 
         </form>
+
+        <!-- ── Loco Translate — copy to safe storage ────────────────── -->
+        <?php if ( self::loco_is_active() ) :
+            $linguaforge_loco_files = self::loco_custom_files();
+        ?>
+
+        <h3><?php esc_html_e( 'Loco Translate — Copy to Safe Storage', 'lingua-forge' ); ?></h3>
+
+        <p>
+            <?php
+            esc_html_e(
+                'Loco Translate stores its custom translations in wp-content/languages/loco/ — a location that can be silently wiped by a WP core update, plugin reinstall, or if Loco Translate itself is removed. Copying files here moves them into the Lingua Forge i18n-overrides directory, which persists through all of those events and is loaded automatically on every request.',
+                'lingua-forge'
+            );
+            ?>
+        </p>
+
+        <?php
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flags set by wp_safe_redirect() after copy action.
+        if ( ! empty( $_GET['lf_loco_copied'] ) ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php esc_html_e( 'File copied to safe storage successfully.', 'lingua-forge' ); ?></p>
+            </div>
+        <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        elseif ( ! empty( $_GET['lf_loco_error'] ) ) :
+            $linguaforge_loco_error_map = [
+                'not_found'   => __( 'Source file not found.', 'lingua-forge' ),
+                'copy_failed' => __( 'Could not copy the file. Check that the uploads folder is writable.', 'lingua-forge' ),
+                'invalid'     => __( 'Invalid file reference.', 'lingua-forge' ),
+            ];
+            $linguaforge_loco_error_key = sanitize_key( wp_unslash( $_GET['lf_loco_error'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- lookup key only; no data modified.
+            $linguaforge_loco_error_msg = $linguaforge_loco_error_map[ $linguaforge_loco_error_key ] ?? __( 'An unknown error occurred.', 'lingua-forge' );
+            ?>
+            <div class="notice notice-error is-dismissible">
+                <p><?php echo esc_html( $linguaforge_loco_error_msg ); ?></p>
+            </div>
+        <?php endif; ?>
+
+        <?php if ( ! empty( $linguaforge_loco_files ) ) : ?>
+
+            <table class="widefat striped" style="max-width:680px;margin-bottom:20px;">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e( 'Text domain / locale', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Type', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Files', 'lingua-forge' ); ?></th>
+                        <th><?php esc_html_e( 'Size', 'lingua-forge' ); ?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $linguaforge_loco_files as $linguaforge_lf ) :
+                        $linguaforge_loco_badges = [ '<code>.mo</code>' ];
+                        if ( $linguaforge_lf['has_po'] ) {
+                            $linguaforge_loco_badges[] = '<code>.po</code>';
+                        }
+                    ?>
+                        <tr>
+                            <td><code><?php echo esc_html( $linguaforge_lf['base'] ); ?></code></td>
+                            <td><?php echo esc_html( $linguaforge_lf['type'] ); ?></td>
+                            <td><?php echo wp_kses( implode( ' ', $linguaforge_loco_badges ), [ 'code' => [] ] ); ?></td>
+                            <td><?php echo esc_html( $linguaforge_lf['size'] ); ?></td>
+                            <td>
+                                <?php if ( $linguaforge_lf['in_overrides'] ) : ?>
+                                    <span class="lingua-forge-key-badge lingua-forge-badge--ok">
+                                        <?php esc_html_e( '✓ In safe storage', 'lingua-forge' ); ?>
+                                    </span>
+                                <?php else : ?>
+                                    <form
+                                        method="post"
+                                        action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                                        style="display:inline;"
+                                    >
+                                        <input type="hidden" name="action" value="linguaforge_copy_loco_override">
+                                        <input type="hidden" name="linguaforge_loco_base" value="<?php echo esc_attr( $linguaforge_lf['base'] ); ?>">
+                                        <input type="hidden" name="linguaforge_loco_type" value="<?php echo esc_attr( $linguaforge_lf['type'] ); ?>">
+                                        <?php wp_nonce_field( 'linguaforge_copy_loco', 'linguaforge_loco_nonce' ); ?>
+                                        <button type="submit" class="button button-secondary">
+                                            <?php esc_html_e( 'Copy to safe storage', 'lingua-forge' ); ?>
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        <?php else : ?>
+
+            <p class="description" style="margin-bottom:16px;">
+                <?php esc_html_e( 'No custom Loco Translate files found yet. They appear here once you save a translation in Loco Translate.', 'lingua-forge' ); ?>
+            </p>
+
+        <?php endif; ?>
+
+        <?php endif; // loco_is_active ?>
 
         <!-- ── AI Cache ─────────────────────────────────────────────── -->
         <hr>
@@ -603,6 +747,80 @@ class MaintenanceTab extends Tab {
 
         </form>
         <?php
+    }
+
+    // ── Loco Translate copy handler ───────────────────────────────────────────
+
+    /**
+     * Copy a Loco Translate custom .mo (and .po if present) into the
+     * Lingua Forge i18n-overrides directory so it survives updates.
+     */
+    public static function handle_copy_loco_override(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_copy_loco', 'linguaforge_loco_nonce' );
+
+        $redirect_base = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+
+        $base = sanitize_file_name( wp_unslash( $_POST['linguaforge_loco_base'] ?? '' ) );
+        $type = sanitize_key( wp_unslash( $_POST['linguaforge_loco_type'] ?? '' ) );
+
+        if ( $base === '' || ! in_array( $type, [ 'plugins', 'themes' ], true ) ) {
+            wp_safe_redirect( add_query_arg( 'lf_loco_error', 'invalid', $redirect_base ) . '#maintenance' );
+            exit;
+        }
+
+        if ( ! defined( 'LOCO_LANG_DIR' ) || ! LOCO_LANG_DIR ) {
+            wp_safe_redirect( add_query_arg( 'lf_loco_error', 'not_found', $redirect_base ) . '#maintenance' );
+            exit;
+        }
+
+        $loco_dir      = trailingslashit( LOCO_LANG_DIR ) . $type . '/';
+        $overrides_dir = self::overrides_dir();
+
+        wp_mkdir_p( $overrides_dir );
+
+        // Resolve source directory once for path-traversal checks.
+        $real_loco_dir = realpath( $loco_dir );
+        if ( $real_loco_dir === false ) {
+            wp_safe_redirect( add_query_arg( 'lf_loco_error', 'not_found', $redirect_base ) . '#maintenance' );
+            exit;
+        }
+
+        $copied = false;
+        foreach ( [ 'mo', 'po' ] as $ext ) {
+            $src      = $loco_dir . $base . '.' . $ext;
+            $real_src = realpath( $src );
+
+            // Skip missing files silently (e.g. no .po when only .mo exists).
+            if ( $real_src === false ) {
+                continue;
+            }
+
+            // Path-traversal guard: resolved source must be inside Loco's dir.
+            if ( strpos( $real_src, $real_loco_dir . DIRECTORY_SEPARATOR ) !== 0 ) {
+                wp_safe_redirect( add_query_arg( 'lf_loco_error', 'invalid', $redirect_base ) . '#maintenance' );
+                exit;
+            }
+
+            if ( copy( $src, $overrides_dir . $base . '.' . $ext ) ) {
+                $copied = true;
+            }
+        }
+
+        if ( ! $copied ) {
+            wp_safe_redirect( add_query_arg( 'lf_loco_error', 'copy_failed', $redirect_base ) . '#maintenance' );
+            exit;
+        }
+
+        // A newly copied .mo may introduce a locale; flush rewrite rules on next init.
+        update_option( 'linguaforge_flush_rewrite_rules', true, false );
+
+        wp_safe_redirect( add_query_arg( 'lf_loco_copied', '1', $redirect_base ) . '#maintenance' );
+        exit;
     }
 
     // ── Language override handlers ────────────────────────────────────────────

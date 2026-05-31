@@ -253,6 +253,8 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 = 2.1.0 =
 * Refactored: RouterTab god class (2,015 lines) split into focused classes — seven FseLocalisation\* handlers (TemplateDefinitions, PartDiscovery, PatternExpander, ScaffoldHandler, TranslateHandler, LinkFixer, PartRefFixer) and three Sections\* render classes (TemplatesSection, TemplatePartsSection, NavigationsSection). RouterTab is now ~350 lines of tab plumbing and language-pack UI only.
 * Added: CPT-specific FSE template scaffold slots — single-{cpt} and archive-{cpt} rows appear automatically in the Language Setup table for any public CPT whose base template is shipped by the active theme.
+* Added: CPT-scoped block pattern translation — new Patterns section in the Router tab AI-translates patterns scoped to public CPTs and stores the results for copy-paste into CPT posts.
+* Added: Loco Translate integration — Settings > Maintenance > Language Overrides now lists Loco Translate custom files and provides one-click copy into the Lingua Forge durable i18n-overrides directory.
 
 = 2.0.1 =
 * Fixed: Translate / Review panel now closes automatically when the user focuses a different block. Previously the panel stayed open after switching blocks, requiring a manual dismiss.
