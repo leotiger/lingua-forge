@@ -139,7 +139,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ## Translations
 
-Lingua Forge ships built-in translations for 26 locales — no language pack download from WordPress.org is required for these languages:
+Lingua Forge ships built-in translations for 26 locales. Install the plugin and your WordPress admin language is covered automatically — no separate download needed:
 
 | Code | Language | Code | Language |
 |------|----------|------|----------|
