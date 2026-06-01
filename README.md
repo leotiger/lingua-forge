@@ -32,6 +32,7 @@ Everything ships as a single installable plugin. No external services beyond an 
 - [The story behind Lingua Forge](#the-story-behind-lingua-forge)
 - [Features](#features)
 - [Requirements](#requirements)
+- [Translations](#translations)
 - [Recommended companions](#recommended-companions)
 - [Installation](#installation)
 - [Configuration](#configuration)
