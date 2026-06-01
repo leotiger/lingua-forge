@@ -169,12 +169,17 @@ class QueryFilter {
 		// Admin — reached only when is_admin() is true (frontend block above always returns).
 		// Skip WooCommerce post types — WC has its own admin query pipeline that
 		// conflicts with appended meta_query conditions; WC support is handled separately.
+		// Exception: when the user has set an explicit lf_lang_filter, honour it even for
+		// WC post types — the filter is user-initiated and the meta_query cost is acceptable.
 		// Read post_type from the URL directly: $q->get('post_type') can return an array
 		// or be unset at this point on some WC versions, making in_array() unreliable.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL post_type param; no data is modified.
 		$screen_post_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : (string) $q->get( 'post_type' );
-		$wc_types         = [ 'product', 'product_variation', 'shop_order', 'shop_coupon', 'shop_subscription' ];
-		if ( in_array( $screen_post_type, $wc_types, true ) ) return;
+		$wc_non_content   = [ 'shop_order', 'shop_coupon', 'shop_subscription' ];
+		$wc_content_types = [ 'product', 'product_variation' ];
+		if ( in_array( $screen_post_type, $wc_non_content, true ) ) return;
+		$has_lang_filter  = (bool) get_user_meta( get_current_user_id(), 'lf_lang_filter', true );
+		if ( in_array( $screen_post_type, $wc_content_types, true ) && ! $has_lang_filter ) return;
 
 		$meta_query = $q->get( 'meta_query' ) ?: [];
 

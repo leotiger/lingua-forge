@@ -25,10 +25,10 @@ class Columns {
 	// =========================================================
 
 	public function register_hooks(): void {
-		add_filter( 'manage_posts_columns',          [ $this, 'add_lang_column' ] );
-		add_filter( 'manage_pages_columns',          [ $this, 'add_lang_column' ] );
-		add_action( 'manage_posts_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
-		add_action( 'manage_pages_custom_column',    [ $this, 'render_lang_column' ], 10, 2 );
+		add_filter( 'manage_post_posts_columns',     [ $this, 'add_lang_column' ] );
+		add_filter( 'manage_pages_columns',            [ $this, 'add_lang_column' ] );
+		add_action( 'manage_post_posts_custom_column', [ $this, 'render_lang_column' ], 10, 2 );
+		add_action( 'manage_pages_custom_column',      [ $this, 'render_lang_column' ], 10, 2 );
 		add_action( 'quick_edit_custom_box',         [ $this, 'render_quick_edit_box' ], 10, 2 );
 		// CPT-specific column hooks must be registered after post types are defined.
 		// Priority 20 fires after most plugins register their CPTs at init priority 10.
