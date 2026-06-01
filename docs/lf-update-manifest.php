@@ -50,6 +50,8 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 			'<li><strong>Fixed:</strong> <code>ExcerptGenerator</code> cache hash now includes <code>post_title</code>; a title-only edit previously returned a stale excerpt generated from the old title.</li>' .
 			'<li><strong>Added:</strong> Glossary terminology constraints now applied to FSE template, navigation, and block pattern translation — previously only post-level translations respected the glossary.</li>' .
 			'<li><strong>Added:</strong> Maintenance → AI Cache now shows cached entries, cumulative hits, average hits per entry, and oldest/newest entry dates. <code>CacheStore</code> schema updated to record <code>hit_count</code> and <code>last_hit_at</code> — applied automatically on upgrade.</li>' .
+			'<li><strong>Added:</strong> Maintenance → Translation Caching unified view with tabs (API Response Cache / Translation Memory) — no more page reload on tab switch; both panels always rendered, JS show/hide with <code>localStorage</code> persistence.</li>' .
+			'<li><strong>Fixed:</strong> Translation Memory tab showed no content — <code>data-lf-tab</code> mismatch prevented the panel from becoming visible.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

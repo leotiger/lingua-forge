@@ -21,6 +21,7 @@
 ### Fixed (JS / tooling)
 
 - **`toolbar-translate.js` ESLint errors** — unused variable `tab` (assigned but never read) removed from the re-translate click handler; inner `const reTranslateBtn` declaration removed from the `try` block to eliminate the `no-shadow` violation against the outer declaration in `fetchResult`. (`toolbar-translate.js`)
+- **Maintenance Translation Memory tab showed no content** — `data-lf-tab="translation-memory"` on the nav link did not match the panel id `lf-tab-tm`, so the JS tab switcher never made the TM panel visible. Attribute corrected to `data-lf-tab="tm"`; post-clear redirect restoration updated to match. (`MaintenanceTab.php`)
 
 ---
 
