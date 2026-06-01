@@ -139,7 +139,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ## Translations
 
-Lingua Forge ships built-in translations for 25 locales — no language pack download from WordPress.org is required for these languages:
+Lingua Forge ships built-in translations for 26 locales — no language pack download from WordPress.org is required for these languages:
 
 | Code | Language | Code | Language |
 |------|----------|------|----------|
@@ -154,10 +154,8 @@ Lingua Forge ships built-in translations for 25 locales — no language pack dow
 | `fr_FR` | French | `tr_TR` | Turkish |
 | `hi_IN` | Hindi | `ur` | Urdu |
 | `hu_HU` | Hungarian | `zh_CN` | Chinese (Simplified) |
-| `id_ID` | Indonesian | | |
-| `it_IT` | Italian | | |
-| `ja` | Japanese | | |
-| `km` | Khmer | | |
+| `id_ID` | Indonesian | `it_IT` | Italian |
+| `ja` | Japanese | `km` | Khmer |
 
 All translation files (`languages/lingua-forge-{locale}.po/.mo/.l10n.php`) are bundled in the plugin. To contribute a new translation or improve an existing one, open a pull request against the `languages/` directory.
 

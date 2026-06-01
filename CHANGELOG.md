@@ -14,7 +14,7 @@
 
 ### Added
 
-- **Built-in translations for 25 locales** — the plugin now ships `.po` / `.mo` / `.l10n.php` files for Arabic (`ar`), Basque (`eu`), Catalan (`ca`), Chinese Simplified (`zh_CN`), Dutch (`nl_NL`), English US (`en_US`), French (`fr_FR`), German (`de_DE`), Greek (`el`), Hindi (`hi_IN`), Hungarian (`hu_HU`), Indonesian (`id_ID`), Italian (`it_IT`), Japanese (`ja`), Khmer (`km`), Korean (`ko_KR`), Persian (`fa_IR`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Spanish (`es_ES`), Swahili (`sw`), Swedish (`sv_SE`), Thai (`th`), Turkish (`tr_TR`), and Urdu (`ur`). No language pack download from WordPress.org is needed for these locales. (`languages/`)
+- **Built-in translations for 26 locales** — the plugin now ships `.po` / `.mo` / `.l10n.php` files for Arabic (`ar`), Basque (`eu`), Catalan (`ca`), Chinese Simplified (`zh_CN`), Dutch (`nl_NL`), English US (`en_US`), French (`fr_FR`), German (`de_DE`), Greek (`el`), Hindi (`hi_IN`), Hungarian (`hu_HU`), Indonesian (`id_ID`), Italian (`it_IT`), Japanese (`ja`), Khmer (`km`), Korean (`ko_KR`), Persian (`fa_IR`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Spanish (`es_ES`), Swahili (`sw`), Swedish (`sv_SE`), Thai (`th`), Turkish (`tr_TR`), and Urdu (`ur`). No language pack download from WordPress.org is needed for these locales. (`languages/`)
 
 ### Dev tooling
 
