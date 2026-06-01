@@ -59,6 +59,45 @@ class Scripts {
 		$base_url = LINGUAFORGE_URL . 'language-router/assets/';
 		$version  = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
 
+		// Editor Locale Switcher — post editor and Site Editor.
+		// DOM-injected button in .interface-pinned-items (same pattern as
+		// editor-translate.js). No WP package dependencies — plain JS + fetch.
+		if ( in_array( $hook_suffix, [ 'post.php', 'post-new.php', 'site-editor.php' ], true ) ) {
+			wp_enqueue_script(
+				'lf-admin-locale-switcher',
+				$base_url . 'admin-locale-switcher.js',
+				[],
+				$version,
+				true
+			);
+
+			$user_locale = get_user_locale();
+			$source_lang = $this->router->context->source_language();
+
+			$items = array_map(
+				function ( string $lang ) use ( $user_locale, $source_lang ) {
+					$locale = $this->router->locale_from_lang( $lang );
+					return [
+						'lang'   => $lang,
+						'label'  => strtoupper( $lang ),
+						'active' => ( $locale === $user_locale )
+							|| ( $lang === $source_lang && $user_locale === '' ),
+					];
+				},
+				$this->router->context->languages()
+			);
+
+			wp_add_inline_script(
+				'lf-admin-locale-switcher',
+				'var lfLocaleSwitcher = ' . wp_json_encode( [
+					'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+					'nonce'     => wp_create_nonce( 'lf_set_user_locale_nonce' ),
+					'languages' => $items,
+				] ) . ';',
+				'before'
+			);
+		}
+
 		// Import-translation button + language-change select: post edit screens only.
 		if ( in_array( $hook_suffix, [ 'post.php', 'post-new.php' ], true ) ) {
 			wp_enqueue_style(
@@ -127,21 +166,54 @@ class Scripts {
 		// This is acceptable: the correction happens before the user can interact.
 		if ( 'site-editor.php' === $hook_suffix ) {
 			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			$nav_lang = '';
-			$p        = isset( $_GET['p'] ) ? sanitize_text_field( wp_unslash( $_GET['p'] ) ) : '';
+			$nav_lang  = '';
+			$post_type = isset( $_GET['postType'] ) ? sanitize_key( wp_unslash( $_GET['postType'] ) ) : '';
+			$post_id   = isset( $_GET['postId'] ) ? (int) $_GET['postId'] : 0;
+			$p         = isset( $_GET['p'] ) ? sanitize_text_field( wp_unslash( $_GET['p'] ) ) : '';
+
+			// wp_navigation: ?p=/wp_navigation/{id}  or  ?postType=wp_navigation&postId={id}
 			if ( preg_match( '#^/wp_navigation/(\d+)$#', $p, $m ) ) {
 				$nav_lang = (string) get_post_meta( (int) $m[1], '_lf_lang', true );
+			} elseif ( 'wp_navigation' === $post_type && $post_id ) {
+				$nav_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
 			}
-			if ( ! $nav_lang && isset( $_GET['postType'] ) && 'wp_navigation' === sanitize_key( wp_unslash( $_GET['postType'] ) ) ) {
-				$post_id  = isset( $_GET['postId'] ) ? (int) $_GET['postId'] : 0;
-				$nav_lang = $post_id ? (string) get_post_meta( $post_id, '_lf_lang', true ) : '';
+
+			// wp_template / wp_template_part via ?postType=…&postId=N
+			if ( ! $nav_lang && in_array( $post_type, [ 'wp_template', 'wp_template_part' ], true ) && $post_id ) {
+				$nav_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+				if ( ! $nav_lang ) {
+					$slug = get_post_field( 'post_name', $post_id );
+					if ( $slug && preg_match( '/-([a-z]{2,3}(?:-[a-z]{2,4})?)$/', $slug, $m ) ) {
+						$nav_lang = $m[1];
+					}
+				}
+			}
+
+			// wp_template / wp_template_part via ?p=/wp_template/{theme}//{slug}
+			// or ?p=/wp_template_part/{theme}//{slug}  — the primary URL format
+			// used by the Site Editor when opening a template or template part.
+			// The ?postType/postId params are absent in this case.
+			if ( ! $nav_lang && preg_match( '#^/wp_template(_part)?/([^/]+)//(.+)$#', $p, $m ) ) {
+				$tpl_type = 'wp_template' . ( $m[1] ? '_part' : '' );
+				$tpl_theme = $m[2]; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- already sanitized via sanitize_text_field on $p
+				$tpl_slug  = $m[3];
+				// Prefer _lf_lang meta on the DB-stored post; fall back to slug suffix.
+				$tpl = get_block_template( $tpl_theme . '//' . $tpl_slug, $tpl_type );
+				if ( $tpl && $tpl->wp_id ) {
+					$nav_lang = (string) get_post_meta( (int) $tpl->wp_id, '_lf_lang', true );
+				}
+				if ( ! $nav_lang ) {
+					if ( preg_match( '/-([a-z]{2,3}(?:-[a-z]{2,4})?)$/', $tpl_slug, $sm ) ) {
+						$nav_lang = $sm[1];
+					}
+				}
 			}
 			// phpcs:enable
 
 			wp_enqueue_script(
 				'lf-nav-lang-filter',
 				$base_url . 'nav-lang-filter.js',
-				[ 'wp-api-fetch' ],
+				[ 'wp-api-fetch', 'wp-data', 'wp-dom-ready' ],
 				$version,
 				true
 			);

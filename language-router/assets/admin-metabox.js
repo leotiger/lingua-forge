@@ -99,3 +99,4 @@ document.addEventListener('change', function (e) {
 		})
 		.catch(function (err) { alert('Language update request failed: ' + err); });
 });
+

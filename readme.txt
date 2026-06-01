@@ -178,11 +178,10 @@ Yes. Language URL prefixes (`/de/`, `/fr/`, etc.) require WordPress to use prett
 
 = My language navigation shows pages from all languages, not just the current one. =
 
-This happens when the navigation uses the **Page List** block — WordPress's default before the user manually edits the menu. The Page List block calls `get_pages()` directly with no filterable query arguments, so language-based filtering is not currently possible. This is a WordPress core limitation.
+As of 2.1.0 this is handled automatically for both navigation types:
 
-**Workaround:** Open the navigation in the Site Editor (Appearance → Editor → Navigation), select the affected language navigation, and click **Edit** to convert the Page List to individual static links. Then go to **Settings → Router → Fix Links** to ensure each link points to the correct language version. Static-link navigations are fully language-aware.
-
-A proper fix is planned for a future release.
+* **Page List (auto-add) navigations** — Lingua Forge filters the page list to the navigation's language in both the frontend canvas and the Site Editor sidebar picker. No manual action needed.
+* **Explicit (edited) navigations** — once you have manually built a navigation with specific links, those choices are yours and are left untouched. If any links point to the wrong language version, go to **Settings → Router → Fix Links** to repair them in bulk.
 
 == Screenshots ==
 
@@ -255,13 +254,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Added: CPT-specific FSE template scaffold slots — single-{cpt} and archive-{cpt} rows appear automatically in the Language Setup table for any public CPT whose base template is shipped by the active theme.
 * Added: CPT-scoped block pattern translation — new Patterns section in the Router tab AI-translates patterns scoped to public CPTs and stores the results for copy-paste into CPT posts.
 * Added: Loco Translate integration — Settings > Maintenance > Language Overrides now lists Loco Translate custom files and provides one-click copy into the Lingua Forge durable i18n-overrides directory.
-* Added: Site Editor navigation language filtering — the canvas and Inserter sidebar now show only the current language's pages when editing a navigation. Language resolved synchronously in PHP from the Site Editor URL and injected via nav-lang-filter.js; a wp.apiFetch middleware filters /wp/v2/pages REST requests by language.
+* Added: Site Editor navigation language filtering — both the canvas and the sidebar page picker now show only the current language's pages. Covers Page List (auto-add) navigations automatically; explicit navigations preserve the admin's manually chosen links. Language resolved via three complementary strategies: (1) PHP synchronous init from the Site Editor URL at page load, covering navigation post, template, and template-part URL formats; (2) JS SPA re-resolution on URL changes guarded by nav post ID and template slug to suppress irrelevant transitions; (3) wp.data.subscribe block selection watcher that fetches the navigation language when a core/navigation block is selected inside a template.
+* Fixed: Navigation blocks inside templates showed pages from all languages on direct access — three bugs combined: is_admin() bail order in filter_page_list_frontend bypassed pending language; PHP did not parse the ?p=/wp_template/{theme}//{slug} URL format the Site Editor actually emits; JS maybeInitAsync() did not extract language from the template slug when no nav post ID was in the URL.
 * Fixed: add_post_type_support for wp_navigation was firing on unauthenticated REST requests, potentially exposing postmeta of other plugins in navigation REST responses. Now gated on edit_posts capability.
-* Fixed: Site Editor navigation language detection silently failed for multi-character language codes (zh-tw, pt-br) in the async SPA-navigation path. Regex updated to cover hyphenated regional variants.
+* Fixed: extractLangFromSlug regex captured the wrong token from multi-word slugs (e.g. order-confirmation-ca yielded confirmation-ca). First group capped at three characters to match ISO 639-1/2 codes while rejecting English words; hyphenated region suffixes (zh-tw, pt-br) continue to work.
 * Fixed: Search template override caused infinite recursion and 512 MB memory exhaustion — a reentrancy guard (in override_search_template flag) now short-circuits re-entrant get_block_templates calls.
 * Fixed: WooCommerce stock writes on translated products — StockRouter now intercepts WooCommerce's direct-SQL stock update path (woocommerce_update_product_stock_query) so stock decrements from order processing are correctly routed to the source product and the wc_product_meta_lookup table is kept in sync.
 * Fixed: Glossary table recreated automatically if dropped while the DB version option is still present — ensures Settings > Glossary works correctly after DB restores or server migrations.
 * Fixed: product_variation added to the WooCommerce post-type skip list in the admin query filter, preventing meta_query injection into variation list queries.
+* Added: Editor Preview Language Switcher — globe icon button in the editor top-right toolbar (interface-pinned-items, same slot as Quick Translate). Switches the admin/editor user's WP locale so the canvas and plugin .mo translations render in the chosen language. Works in both post editor and Site Editor.
+* Added: Template picker now shows all templates (including WooCommerce Order Confirmation, Cart, Checkout, etc.) filtered to the current post's language, with human-readable titles.
 
 = 2.0.1 =
 * Fixed: Translate / Review panel now closes automatically when the user focuses a different block. Previously the panel stayed open after switching blocks, requiring a manual dismiss.
@@ -283,7 +285,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 == Upgrade Notice ==
 
 = 2.1.0 =
-Recommended update: fixes a memory exhaustion / infinite recursion bug on sites with a language-specific search template, and a WooCommerce stock-write bypass on translated products. No schema changes — safe to update in place.
+Recommended update: Site Editor navigation language filtering, editor Preview Language Switcher (globe icon, top-right toolbar), language-aware template picker, WooCommerce stock-write fix, and memory exhaustion fix. No schema changes — safe to update in place.
 
 = 2.0.1 =
 UX fix: Translate / Review panel now closes automatically on block focus change.

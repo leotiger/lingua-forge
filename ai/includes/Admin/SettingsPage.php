@@ -16,7 +16,7 @@ use LinguaForge\AI\Core\Config;
 defined('ABSPATH') || exit;
 
 /**
- * Settings → Lingua Forge
+ * Lingua Forge — top-level admin menu page
  *
  * Bootstrap class: registers the admin menu, enqueues assets, dispatches
  * the settings-form save, and delegates every tab's render and standalone
@@ -141,9 +141,9 @@ class SettingsPage {
      */
     public static function enqueue_settings_assets(string $hook_suffix): void {
 
-        // Hook suffix for an options-page screen registered via add_options_page
-        // is "settings_page_{slug}".
-        if ($hook_suffix !== 'settings_page_' . self::PAGE_SLUG) {
+        // Hook suffix for a top-level menu page registered via add_menu_page
+        // is "toplevel_page_{slug}".
+        if ($hook_suffix !== 'toplevel_page_' . self::PAGE_SLUG) {
             return;
         }
 
@@ -301,12 +301,14 @@ class SettingsPage {
 
     public static function register_menu(): void {
 
-        add_options_page(
+        add_menu_page(
             'Lingua Forge',
             'Lingua Forge',
             'manage_options',
             self::PAGE_SLUG,
-            [self::class, 'render']
+            [self::class, 'render'],
+            'dashicons-translation',
+            30
         );
     }
 
@@ -319,7 +321,7 @@ class SettingsPage {
     public static function add_action_links( array $links ): array {
         $settings_link = sprintf(
             '<a href="%s">%s</a>',
-            esc_url( admin_url( 'options-general.php?page=' . self::PAGE_SLUG ) ),
+            esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
             esc_html__( 'Settings', 'lingua-forge' )
         );
         array_unshift( $links, $settings_link );

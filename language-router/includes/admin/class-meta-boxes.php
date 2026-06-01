@@ -33,6 +33,7 @@ class MetaBoxes {
 		add_action( 'add_meta_boxes', [ $this, 'add_source_footnotes_meta_box' ] );
 		add_action( 'wp_ajax_lf_import_translation', [ $this, 'ajax_import_translation' ] );
 		add_action( 'wp_ajax_lf_set_language',       [ $this, 'ajax_set_language' ] );
+		add_action( 'wp_ajax_lf_set_user_locale',    [ $this, 'ajax_set_user_locale' ] );
 	}
 
 	// =========================================================
@@ -107,10 +108,12 @@ class MetaBoxes {
 
 		$current = get_post_meta( $post->ID, '_wp_page_template', true ) ?: 'default';
 
-		// get_block_templates() returns both DB-stored (customised) and
-		// filesystem-bundled theme templates — get_posts(wp_template) misses
-		// filesystem templates until they are edited in the Site Editor.
-		$templates = get_block_templates( [ 'post_type' => $post->post_type ] );
+		// get_block_templates() with no post_type filter returns all registered
+		// templates (theme + plugin, DB-stored + filesystem) — same set that
+		// WP core exposes in Quick Edit.
+		$templates   = get_block_templates();
+		$post_lang   = $this->router->trid_group->get_lang( $post->ID );
+		$valid_langs = $this->router->context->languages();
 
 		wp_nonce_field( 'lf_template_save', 'lf_template_nonce' );
 		echo '<select name="lf_page_template" style="width:100%">';
@@ -118,8 +121,22 @@ class MetaBoxes {
 
 		foreach ( $templates as $tpl ) {
 			$slug = $tpl->slug;
-			if ( ! str_starts_with( $slug, 'page-' ) && ! str_starts_with( $slug, 'single-' ) ) continue;
-			echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $current, $slug, false ) . '>' . esc_html( $slug ) . '</option>';
+
+			// Extract any recognised language suffix from the slug
+			// (e.g. "order-confirmation-ca" → "ca", "page-wide" → no match).
+			// Same {2,3}-char cap used in extractLangFromSlug() JS / class-scripts.php.
+			$tpl_lang = '';
+			if ( preg_match( '/-([a-z]{2,3}(?:-[a-z]{2,4})?)$/', $slug, $m )
+				&& in_array( $m[1], $valid_langs, true ) ) {
+				$tpl_lang = $m[1];
+			}
+
+			// Skip templates belonging to a different language; generic templates
+			// (no lang suffix) are always included.
+			if ( $tpl_lang !== '' && $tpl_lang !== $post_lang ) continue;
+
+			$label = $tpl->title ?: $slug;
+			echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $current, $slug, false ) . '>' . esc_html( $label ) . '</option>';
 		}
 
 		echo '</select>';
@@ -418,5 +435,43 @@ class MetaBoxes {
 		update_post_meta( $target_id, '_lf_translation_source_updated_at', $source_time );
 
 		wp_send_json_success();
+	}
+
+	// =========================================================
+	// AJAX — SET USER LOCALE (Editor Locale Switcher)
+	// =========================================================
+
+	/**
+	 * Switch the current admin/editor user's WordPress locale so the block editor
+	 * canvas and plugin translations render in the target language. Accepts a Lingua
+	 * Forge language code ('ca', 'de', …) and maps it to a WP locale via
+	 * locale_from_lang(). Passing the source language resets the user locale to the
+	 * WP site default (empty string).
+	 *
+	 * Action:  wp_ajax_lf_set_user_locale
+	 * POST:    nonce, lang
+	 */
+	public function ajax_set_user_locale(): void {
+		check_ajax_referer( 'lf_set_user_locale_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( 'Permission denied', 403 );
+		}
+
+		$lang = isset( $_POST['lang'] ) ? sanitize_key( wp_unslash( $_POST['lang'] ) ) : '';
+
+		// 'default' = revert to site language.
+		if ( $lang === 'default' ) {
+			wp_update_user( [ 'ID' => get_current_user_id(), 'locale' => '' ] );
+			wp_send_json_success();
+		}
+
+		if ( ! $this->router->context->is_valid_lang( $lang ) ) {
+			wp_send_json_error( 'Invalid language', 400 );
+		}
+
+		$locale = $this->router->locale_from_lang( $lang );
+		wp_update_user( [ 'ID' => get_current_user_id(), 'locale' => $locale ] );
+		wp_send_json_success( [ 'locale' => $locale ] );
 	}
 }

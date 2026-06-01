@@ -218,21 +218,26 @@ class QueryFilter {
 	 * when arm_page_list_lang_filter() has already set the pending language.
 	 */
 	public function filter_page_list_frontend( array $pages, array $args ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $args required by get_pages filter signature.
-		if ( is_admin() ) return $pages;
-		// Skip REST requests unless arm_page_list_lang_filter() has already armed
-		// the language — that means we are inside a block-renderer render of a
-		// core/navigation block and the filter is intentionally needed.
-		if ( defined( 'REST_REQUEST' ) && REST_REQUEST && $this->pending_page_list_lang === null ) return $pages;
 		if ( defined( 'WP_CLI' ) && WP_CLI ) return $pages;
+		// Allow through when arm_page_list_lang_filter() has armed a language —
+		// this covers the Site Editor canvas (is_admin() + REST_REQUEST) where the
+		// navigation block renders server-side and core/page-list calls get_pages().
+		if ( $this->pending_page_list_lang !== null ) {
+			// fall through to filtering below
+		} elseif ( is_admin() ) {
+			return $pages; // admin context without a pending nav lang — nothing to filter
+		} elseif ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return $pages; // REST request without a pending nav lang — nothing to filter
+		}
 
 		if ( $this->pending_page_list_lang !== null ) {
 			// Consume-once: clear immediately so that if block rendering is
-			// interrupted (exception, early return from a later filter) and
-			// clear_nav_lang_after_render() never fires, the pending lang
-			// cannot bleed into a subsequent unrelated get_pages() call.
-			$lang                          = $this->pending_page_list_lang;
-			$this->pending_page_list_lang  = null;
+			// interrupted and clear_nav_lang_after_render() never fires, the
+			// pending lang cannot bleed into a subsequent unrelated get_pages() call.
+			$lang                         = $this->pending_page_list_lang;
+			$this->pending_page_list_lang = null;
 		} elseif ( defined( 'LF_LANG' ) ) {
+			// Frontend (non-admin, non-REST) — filter by the active site language.
 			$lang = LF_LANG;
 		} else {
 			return $pages;
