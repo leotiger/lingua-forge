@@ -304,6 +304,25 @@ class Sync {
 		$pto = get_post_type_object( $post->post_type );
 		if ( ! $pto || ! $pto->public || in_array( $post->post_type, $this->internal_post_types(), true ) ) return;
 
+		// ── Manual template selection — write BEFORE auto-assignment ──────────
+		// The lf_page_template POST field must be flushed to the DB before
+		// assign_template_if_needed() runs so that method reads the user's
+		// explicit choice as $current, not the stale DB value.
+		//
+		// Previous ordering had this block at the end of the function, which
+		// caused a hard overwrite: force_lang_template / assign_template_if_needed
+		// correctly assigned 'single-product-ca', then the POST block ran last
+		// and wrote 'default' back, winning on every classic-editor save.
+		$has_tpl_nonce = isset( $_POST['lf_template_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_template_nonce'] ) ), 'lf_template_save' );
+		if ( $has_tpl_nonce && isset( $_POST['lf_page_template'] ) ) {
+			update_post_meta(
+				$post_id,
+				'_wp_page_template',
+				sanitize_text_field( wp_unslash( $_POST['lf_page_template'] ) )
+			);
+		}
+
 		// Template auto-assignment.
 		//
 		// Fires whenever the post's language has changed OR when this is the
@@ -329,13 +348,15 @@ class Sync {
 		// Two paths for template assignment:
 		//
 		// • $has_lang_nonce  → explicit user action via the Language metabox.
-		//   The metabox POST fires after the REST PATCH (Gutenberg's save order),
-		//   so this is the authoritative, last-write.  Skip every guard and force
-		//   the template that matches the new language.
+		//   force_lang_template() runs after the manual POST write above and
+		//   always wins — correct: a language change should auto-assign the
+		//   matching template regardless of what the template dropdown showed.
 		//
 		// • no nonce         → REST save, autosave, or programmatic insert.
-		//   Use the conservative assign_template_if_needed() which respects the
-		//   user-chosen-template guard and the _lf_auto_template tracking key.
+		//   assign_template_if_needed() reads the now-committed _wp_page_template
+		//   value: if 'default' (user left it unchanged), it upgrades to the
+		//   language-specific slug; if the user explicitly chose a template,
+		//   the guard in assign_template_if_needed() leaves it alone.
 		if ( $has_lang_nonce ) {
 			$this->force_lang_template( $post_id, $post, $lang );
 		} else {
@@ -417,15 +438,5 @@ class Sync {
 
 		// Search index
 		$this->router->search_index->build_search_content( $post_id );
-
-		// Template selection (manual)
-		if ( ! isset( $_POST['lf_template_nonce'] ) ||
-			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_template_nonce'] ) ), 'lf_template_save' ) ) {
-			return;
-		}
-		if ( ! isset( $_POST['lf_page_template'] ) ) return;
-
-		$template = sanitize_text_field( wp_unslash( $_POST['lf_page_template'] ) );
-		update_post_meta( $post_id, '_wp_page_template', $template );
 	}
 }

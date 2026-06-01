@@ -193,6 +193,8 @@ tests_add_filter(
 // generating a warning that PHPUnit promotes to an error. The warning is
 // harmless — the value is identical — so we narrow error_reporting around
 // the include and restore it immediately after.
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_error_reporting, WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting -- Intentional: narrowing error_reporting around WP bootstrap to suppress a harmless WP_MEMORY_LIMIT redefinition warning in child processes spawned by @runInSeparateProcess.
 $lf_prev_error_reporting = error_reporting( error_reporting() & ~E_WARNING );
 require $wp_tests_dir . '/includes/bootstrap.php';
 error_reporting( $lf_prev_error_reporting );
+// phpcs:enable WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_error_reporting, WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting

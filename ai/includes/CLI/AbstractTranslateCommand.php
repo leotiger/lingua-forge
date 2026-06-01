@@ -314,6 +314,10 @@ abstract class AbstractTranslateCommand {
             $update_args['post_name']  = sanitize_title( (string) $result['translated_title'] );
         }
 
+        if ( isset( $result['translated_excerpt'] ) ) {
+            $update_args['post_excerpt'] = (string) $result['translated_excerpt'];
+        }
+
         // Bypass our own save-post handler so this content-only update doesn't
         // touch the TRID group, language metadata, or outdated flag — those
         // were correct as the editor set them.

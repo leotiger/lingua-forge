@@ -556,6 +556,10 @@ class PostListColumn {
 			$update['post_name']  = sanitize_title( (string) $result['translated_title'] );
 		}
 
+		if ( isset( $result['translated_excerpt'] ) ) {
+			$update['post_excerpt'] = (string) $result['translated_excerpt'];
+		}
+
 		$updated = wp_update_post( $update, true );
 
 		if ( is_wp_error( $updated ) ) {

@@ -113,6 +113,10 @@ class TranslationTrigger {
 			$post_data['post_title'] = (string) $result['translated_title'];
 		}
 
+		if ( isset( $result['translated_excerpt'] ) ) {
+			$post_data['post_excerpt'] = (string) $result['translated_excerpt'];
+		}
+
 		$updated = wp_update_post( $post_data, true );
 
 		if ( is_wp_error( $updated ) ) {

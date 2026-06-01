@@ -222,12 +222,13 @@ class QueryFilter {
 		// Allow through when arm_page_list_lang_filter() has armed a language —
 		// this covers the Site Editor canvas (is_admin() + REST_REQUEST) where the
 		// navigation block renders server-side and core/page-list calls get_pages().
-		if ( $this->pending_page_list_lang !== null ) {
-			// fall through to filtering below
-		} elseif ( is_admin() ) {
-			return $pages; // admin context without a pending nav lang — nothing to filter
-		} elseif ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-			return $pages; // REST request without a pending nav lang — nothing to filter
+		if ( $this->pending_page_list_lang === null ) {
+			if ( is_admin() ) {
+				return $pages; // admin context without a pending nav lang — nothing to filter
+			}
+			if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+				return $pages; // REST request without a pending nav lang — nothing to filter
+			}
 		}
 
 		if ( $this->pending_page_list_lang !== null ) {

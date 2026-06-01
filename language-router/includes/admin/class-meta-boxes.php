@@ -118,15 +118,32 @@ class MetaBoxes {
 		$post_lang   = $this->router->trid_group->get_lang( $post->ID );
 		$valid_langs = $this->router->context->languages();
 
+		// ── Determine the relevant template bases for this post type ──────────
+		// For `page` → ['page', 'singular']
+		// For `post` → ['single', 'singular']
+		// For CPT (e.g. product) → ['single-product', 'single', 'singular']
+		// These are the base slugs (without lang suffix) we accept. A template
+		// whose base is not in this list is for a different post type and is
+		// silently excluded so products don't see page-ca, etc.
+		if ( $post->post_type === 'page' ) {
+			$bases = [ 'page', 'singular' ];
+		} elseif ( $post->post_type === 'post' ) {
+			$bases = [ 'single', 'singular' ];
+		} else {
+			$bases = [ 'single-' . $post->post_type, 'single', 'singular' ];
+		}
+
 		wp_nonce_field( 'lf_template_save', 'lf_template_nonce' );
 		echo '<select name="lf_page_template" style="width:100%">';
 		echo '<option value="default"' . selected( $current, 'default', false ) . '>Default</option>';
+
+		$current_rendered = false;
 
 		foreach ( $templates as $tpl ) {
 			$slug = $tpl->slug;
 
 			// Extract any recognised language suffix from the slug
-			// (e.g. "order-confirmation-ca" → "ca", "page-wide" → no match).
+			// (e.g. "single-product-ca" → lang "ca", base "single-product").
 			// Same {2,3}-char cap used in extractLangFromSlug() JS / class-scripts.php.
 			$tpl_lang = '';
 			if ( preg_match( '/-([a-z]{2,3}(?:-[a-z]{2,4})?)$/', $slug, $m )
@@ -134,12 +151,30 @@ class MetaBoxes {
 				$tpl_lang = $m[1];
 			}
 
-			// Skip templates belonging to a different language; generic templates
-			// (no lang suffix) are always included.
+			// Language filter: skip templates that belong to a different language.
 			if ( $tpl_lang !== '' && $tpl_lang !== $post_lang ) continue;
+
+			// Post-type filter: derive the base slug (strip lang suffix if present)
+			// and check it against the relevant bases for this post type.
+			$base = $tpl_lang !== ''
+				? substr( $slug, 0, -( strlen( $tpl_lang ) + 1 ) )
+				: $slug;
+			if ( ! in_array( $base, $bases, true ) ) continue;
+
+			if ( $slug === $current ) {
+				$current_rendered = true;
+			}
 
 			$label = $tpl->title ?: $slug;
 			echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $current, $slug, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+
+		// If the assigned template was not in the filtered list (e.g. it was
+		// created after this page load or belongs to a plugin not yet active),
+		// add it as an explicit selected option so the UI reflects reality
+		// rather than silently falling back to "Default" visually.
+		if ( ! $current_rendered && $current !== 'default' ) {
+			echo '<option value="' . esc_attr( $current ) . '" selected="selected">' . esc_html( $current ) . ' *</option>';
 		}
 
 		echo '</select>';
@@ -254,14 +289,29 @@ class MetaBoxes {
 	// =========================================================
 
 	public function add_source_footnotes_meta_box(): void {
-		add_meta_box(
-			'lf_source_footnotes',
-			'Source Footnotes',
-			[ $this, 'render_source_footnotes_meta_box' ],
-			null,
-			'normal',
-			'default'
+
+		// Footnotes are a Gutenberg-only feature (UUID-based block state).
+		// Exclude post types that never use the block editor — WooCommerce
+		// products being the primary case — to avoid a confusing empty box.
+		// Filterable so third-party CPTs can opt in or out as needed.
+		$excluded = (array) apply_filters( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+			'linguaforge_source_footnotes_excluded_post_types',
+			[ 'product' ]
 		);
+
+		foreach ( get_post_types( [ 'public' => true ], 'names' ) as $type ) {
+			if ( in_array( $type, $excluded, true ) ) {
+				continue;
+			}
+			add_meta_box(
+				'lf_source_footnotes',
+				'Source Footnotes',
+				[ $this, 'render_source_footnotes_meta_box' ],
+				$type,
+				'normal',
+				'default'
+			);
+		}
 	}
 
 	/**
@@ -423,6 +473,7 @@ class MetaBoxes {
 			'ID'           => $target_id,
 			'post_title'   => $source->post_title,
 			'post_content' => $content,
+			'post_excerpt' => $source->post_excerpt,
 		] );
 
 		// Reset footnotes meta to an empty array so the block editor starts from
@@ -517,7 +568,7 @@ class MetaBoxes {
 			'id'    => 'lf-locale-switcher',
 			'title' => '<span class="ab-icon dashicons dashicons-translation" aria-hidden="true"></span>'
 			           . '<span class="ab-label">' . esc_html( strtoupper( $current_lang ) ) . '</span>',
-			'href'  => false,
+			'href'  => '',
 			'meta'  => [ 'class' => 'lf-admin-locale-node' ],
 		] );
 

@@ -238,7 +238,7 @@ class Translation implements FeatureInterface {
      *
      * @return array<string, mixed>  JSON-schema-shaped associative array.
      */
-    private static function build_translation_schema(bool $has_footnotes, bool $has_attrs): array {
+    private static function build_translation_schema(bool $has_footnotes, bool $has_attrs, bool $has_excerpt = false): array {
 
         $properties = [
             'title'   => [
@@ -252,6 +252,14 @@ class Translation implements FeatureInterface {
         ];
 
         $required = ['title', 'content'];
+
+        if ($has_excerpt) {
+            $properties['excerpt'] = [
+                'type'        => 'string',
+                'description' => 'Translated product short description / post excerpt. Translate all visible text; preserve any HTML tags exactly as they appear in the source.',
+            ];
+            $required[] = 'excerpt';
+        }
 
         if ($has_footnotes) {
             $properties['footnotes'] = [
@@ -814,7 +822,8 @@ class Translation implements FeatureInterface {
             ];
         }
 
-        // ── Detect optional payloads (footnotes, block attribute placeholders)
+        // ── Detect optional payloads (footnotes, block attribute placeholders,
+        // and post_excerpt / WooCommerce Short Description).
         // Their presence drives both the prompt's {{extra_output}} blocks AND
         // the required-keys list in the JSON-envelope response schema.
         $has_footnotes = false;
@@ -827,6 +836,10 @@ class Translation implements FeatureInterface {
         }
 
         $has_attrs = !empty($attr_map);
+
+        // post_excerpt — WooCommerce stores the Product Short Description here.
+        // Treat as plain HTML (may contain <strong>, <em>, etc. from classic editor).
+        $has_excerpt = trim($post->post_excerpt) !== '';
 
         // ── Build per-section prompt inserts ─────────────────────────────────
         // These inject the source payloads into the prompt body so the model
@@ -850,6 +863,14 @@ class Translation implements FeatureInterface {
                 . wp_json_encode($attr_map, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             $extra_output_doc .=
                 "\n  - \"attrs\": object whose keys are the __WPAI_N__ placeholders from the source and whose values are their translations.";
+        }
+
+        if ($has_excerpt) {
+            $extra_sections[] =
+                "Source short description (post excerpt — translate all visible text; preserve any HTML tags exactly):\n"
+                . $post->post_excerpt;
+            $extra_output_doc .=
+                "\n  - \"excerpt\": translated short description / post excerpt (HTML preserved, only visible text translated).";
         }
 
         $extra_output = !empty($extra_sections)
@@ -897,6 +918,7 @@ class Translation implements FeatureInterface {
         $tm_eligible = TranslationMemory::enabled()
             && ! $force                                            // force_refresh / debug mode bypass TM cache
             && empty($attr_map)                                    // v1 doesn't handle block attribute placeholders
+            && ! $has_excerpt                                      // TM path doesn't translate post_excerpt; fall through to JSON envelope
             && $source_lang !== '';                                // need known source for TM keys
             // TM cache is keyed on block content + language pair — post type is irrelevant to cache validity.
 
@@ -933,7 +955,7 @@ class Translation implements FeatureInterface {
             model:           $base->model,
             max_tokens:      $base->max_tokens,
             temperature:     $base->temperature,
-            response_schema: self::build_translation_schema($has_footnotes, $has_attrs),
+            response_schema: self::build_translation_schema($has_footnotes, $has_attrs, $has_excerpt),
         );
 
         // Per-invocation overrides — used by the WP-CLI translate command for
@@ -1041,6 +1063,9 @@ class Translation implements FeatureInterface {
         $translated_title     = isset($envelope['title']) ? trim((string) $envelope['title']) : null;
         $translated_content   = isset($envelope['content']) ? trim((string) $envelope['content']) : '';
         $translated_footnotes = null;
+        $translated_excerpt   = ($has_excerpt && isset($envelope['excerpt']))
+            ? (string) $envelope['excerpt']
+            : null;
 
         if ($translated_content === '') {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for empty content in an otherwise valid envelope.
@@ -1095,6 +1120,10 @@ class Translation implements FeatureInterface {
 
         if ($translated_footnotes !== null) {
             $payload['footnotes'] = $translated_footnotes;
+        }
+
+        if ($translated_excerpt !== null) {
+            $payload['translated_excerpt'] = $translated_excerpt;
         }
 
         /**

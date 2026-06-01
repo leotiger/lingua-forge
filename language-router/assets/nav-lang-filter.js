@@ -1,3 +1,4 @@
+/* global lfNavLang */
 /**
  * nav-lang-filter.js
  *

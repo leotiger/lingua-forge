@@ -107,17 +107,36 @@ document.addEventListener('click', (event) => {
 
     if (!button) return;
 
-    const panel           = button.closest('.lingua-forge-panel');
-    const result          = button.closest('.lingua-forge-content-result');
-    const textarea        = panel.querySelector('.lingua-forge-textarea');
-    const translatedTitle = result?.dataset.translatedTitle  || '';
-    const footnotesJson   = result?.dataset.footnotes        || '';
-    const metaDescription = result?.dataset.metaDescription  || '';
-    const targetLang      = result?.dataset.targetLang       || '';
+    const panel             = button.closest('.lingua-forge-panel');
+    const result            = button.closest('.lingua-forge-content-result');
+    const textarea          = panel.querySelector('.lingua-forge-textarea');
+    const translatedTitle   = result?.dataset.translatedTitle   || '';
+    const footnotesJson     = result?.dataset.footnotes         || '';
+    const metaDescription   = result?.dataset.metaDescription   || '';
+    const translatedExcerpt = result?.dataset.translatedExcerpt || '';
+    const targetLang        = result?.dataset.targetLang        || '';
 
     if (!textarea) return;
 
     clearApplyError(button);
+
+    // ── Classic editor (TinyMCE) fast path ───────────────────────────────────
+    // The diff modal relies on snapshotCurrentEditorState() reading the hidden
+    // #content textarea, which TinyMCE never syncs until save — so the "current"
+    // side would be empty or stale. Skip the modal and apply directly instead.
+    // Use isGutenbergActive() not getEditorStore(): wp.data is loaded on classic
+    // editor screens too (e.g. WooCommerce product pages), so a non-null store
+    // does not mean the block editor is actually mounted.
+    if (!isGutenbergActive()) {
+        applyToClassicEditor({
+            translatedContent: textarea.value,
+            translatedTitle,
+            translatedExcerpt,
+            metaDescription,
+            button,
+        });
+        return;
+    }
 
     openApplyDiffModal({
         button,
@@ -125,13 +144,18 @@ document.addEventListener('click', (event) => {
         translatedTitle,
         footnotesJson,
         metaDescription,
+        translatedExcerpt,
         targetLang,
     });
 });
 
 /**
  * Resolve the live editor store from whichever side of the meta-box iframe
- * boundary the code is running on. Returns null on classic-editor screens.
+ * boundary the code is running on. Returns null when wp.data is unavailable.
+ *
+ * NOTE: wp.data is loaded as a JS dependency on almost every admin screen,
+ * so a non-null return does NOT mean Gutenberg is active. Use
+ * isGutenbergActive() to test whether core/editor is actually editing a post.
  */
 function getEditorStore() {
 
@@ -142,6 +166,29 @@ function getEditorStore() {
         return window.wp.data;
     }
     return null;
+}
+
+/**
+ * Return true only when the block editor (Gutenberg) is actually mounted and
+ * managing a post on the current screen.
+ *
+ * wp.data / core/editor are loaded as JS dependencies on many admin pages
+ * (including classic WooCommerce product edit screens), so getEditorStore()
+ * being non-null is not sufficient. We confirm by checking that core/editor
+ * has a real post ID — that selector returns 0 / undefined on screens where
+ * the block editor is not active.
+ */
+function isGutenbergActive() {
+
+    const store = getEditorStore();
+    if (!store) return false;
+
+    try {
+        const postId = store.select('core/editor')?.getCurrentPostId();
+        return !! postId;
+    } catch (_) {
+        return false;
+    }
 }
 
 /**
@@ -175,10 +222,8 @@ function findInIframes(id) {
  */
 function snapshotCurrentEditorState() {
 
-    const data = getEditorStore();
-
-    if (data) {
-        const sel = data.select('core/editor');
+    if (isGutenbergActive()) {
+        const sel = getEditorStore().select('core/editor');
         return {
             title:   String(sel.getEditedPostAttribute('title')   ?? ''),
             content: String(sel.getEditedPostAttribute('content') ?? ''),
@@ -291,7 +336,7 @@ function wireDiffModalEvents(modal) {
  * The pending-apply context (button, translated payload) is stored on the
  * modal node itself so the Apply handler can reach it without globals.
  */
-function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson, metaDescription = '', targetLang = '' }) {
+function openApplyDiffModal({ button, translatedContent, translatedTitle, footnotesJson, metaDescription = '', translatedExcerpt = '', targetLang = '' }) {
 
     const modal   = ensureDiffModal();
     const current = snapshotCurrentEditorState();
@@ -347,7 +392,7 @@ function openApplyDiffModal({ button, translatedContent, translatedTitle, footno
         metaDescRow.hidden = true;
     }
 
-    modal._lfPending = { button, translatedContent, translatedTitle, footnotesJson, metaDescription };
+    modal._lfPending = { button, translatedContent, translatedTitle, footnotesJson, metaDescription, translatedExcerpt };
     modal.hidden = false;
 }
 
@@ -711,6 +756,69 @@ function lfSlugify(str) {
 }
 
 /**
+ * Apply translated content directly to the classic (TinyMCE) editor,
+ * bypassing the diff modal which cannot snapshot TinyMCE state reliably.
+ *
+ * Uses tinyMCE.get('content').setContent() when TinyMCE is active so the
+ * visual canvas updates immediately. Falls back to writing the hidden
+ * #content textarea directly (e.g. when TinyMCE is temporarily disabled).
+ */
+function applyToClassicEditor({ translatedContent, translatedTitle, translatedExcerpt, metaDescription, button }) {
+
+    // ── Content ───────────────────────────────────────────────────────────────
+    /* global tinyMCE */
+    if (typeof tinyMCE !== 'undefined' && tinyMCE.get('content')) {
+        tinyMCE.get('content').setContent(translatedContent);
+        // Keep the hidden textarea in sync so WP picks up the value on save.
+        const ta = document.querySelector('#content');
+        if (ta) ta.value = tinyMCE.get('content').getContent();
+    } else {
+        const ta = document.querySelector('#content');
+        if (ta) ta.value = translatedContent;
+    }
+
+    // ── Title ─────────────────────────────────────────────────────────────────
+    if (translatedTitle) {
+        const titleEl = document.querySelector('#title');
+        if (titleEl) titleEl.value = translatedTitle;
+    }
+
+    // ── Excerpt / Short Description ───────────────────────────────────────────
+    // WooCommerce Short Description renders a separate TinyMCE instance with
+    // id 'excerpt'. Try that first; fall back to the plain <textarea id="excerpt">.
+    if (translatedExcerpt) {
+        if (typeof tinyMCE !== 'undefined' && tinyMCE.get('excerpt')) {
+            tinyMCE.get('excerpt').setContent(translatedExcerpt);
+            const ea = document.querySelector('#excerpt');
+            if (ea) ea.value = tinyMCE.get('excerpt').getContent();
+        } else {
+            const ea = document.querySelector('#excerpt');
+            if (ea) ea.value = translatedExcerpt;
+        }
+    }
+
+    // ── Meta description ──────────────────────────────────────────────────────
+    if (metaDescription) {
+        const metaField = document.getElementById('lf_meta_description_field')
+            || findInIframes('lf_meta_description_field');
+        if (metaField) {
+            metaField.value = metaDescription;
+            metaField.dispatchEvent(new Event('input'));
+        }
+    }
+
+    // ── Feedback on the button ────────────────────────────────────────────────
+    if (button) {
+        button.disabled    = true;
+        button.textContent = __( 'Applied ✓', 'lingua-forge' );
+        setTimeout(() => {
+            button.disabled    = false;
+            button.textContent = __( 'Apply to Editor', 'lingua-forge' );
+        }, 2000);
+    }
+}
+
+/**
  * The actual editor write. Same logic as the previous direct-apply path,
  * lifted into its own function so it only runs when the user confirms.
  */
@@ -719,7 +827,7 @@ async function performApplyFromModal(modal) {
     const ctx = modal._lfPending;
     if (!ctx) return;
 
-    const { button, translatedContent, translatedTitle, footnotesJson, metaDescription } = ctx;
+    const { button, translatedContent, translatedTitle, footnotesJson, metaDescription, translatedExcerpt } = ctx;
 
     const applyBtn = modal.querySelector('.lingua-forge-diff-modal__apply');
     applyBtn.disabled    = true;
@@ -727,7 +835,7 @@ async function performApplyFromModal(modal) {
 
     try {
 
-        const data = getEditorStore();
+        const data = isGutenbergActive() ? getEditorStore() : null;
 
         if (data) {
 
@@ -740,7 +848,8 @@ async function performApplyFromModal(modal) {
                 // sanitize_title() + wp_unique_post_slug() on save.
                 payload.slug  = lfSlugify(translatedTitle);
             }
-            if (footnotesJson)   payload.meta  = { footnotes: footnotesJson };
+            if (translatedExcerpt) payload.excerpt = translatedExcerpt;
+            if (footnotesJson)     payload.meta    = { footnotes: footnotesJson };
 
             const editorSelect  = data.select('core/editor');
             const beforeContent = editorSelect.getEditedPostAttribute('content') ?? '';
@@ -760,16 +869,9 @@ async function performApplyFromModal(modal) {
 
         } else {
 
-            // Classic-editor fallback.
-            const classicEditor = document.querySelector('#content');
-            if (!classicEditor) throw new Error( __( 'Classic editor element not found.', 'lingua-forge' ) );
-
-            classicEditor.value = translatedContent;
-
-            if (translatedTitle) {
-                const classicTitle = document.querySelector('#title');
-                if (classicTitle) classicTitle.value = translatedTitle;
-            }
+            // Classic-editor fallback — uses applyToClassicEditor() which
+            // handles TinyMCE instances for both content and excerpt.
+            applyToClassicEditor({ translatedContent, translatedTitle, translatedExcerpt, metaDescription: '' });
         }
 
         // If the translation was accompanied by a generated meta description,
@@ -1080,6 +1182,10 @@ function renderContentResult(container, data, featureKey, postId, targetLang = '
         ? ` data-meta-description="${escapeAttr(data.meta_description)}"`
         : '';
 
+    const excerptAttr = data.translated_excerpt
+        ? ` data-translated-excerpt="${escapeAttr(data.translated_excerpt)}"`
+        : '';
+
     const targetLangAttr = targetLang
         ? ` data-target-lang="${escapeAttr(targetLang)}"`
         : '';
@@ -1126,7 +1232,7 @@ function renderContentResult(container, data, featureKey, postId, targetLang = '
     const copyLabel  = __( 'Copy',            'lingua-forge' );
 
     container.innerHTML = `
-        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}${metaDescAttr}${targetLangAttr}>
+        <div class="lingua-forge-content-result"${footnotesAttr}${titleAttr}${metaDescAttr}${excerptAttr}${targetLangAttr}>
             <p class="lingua-forge-result-meta">
                 ${metaSummary}${cachedBadge}
             </p>
@@ -1503,10 +1609,11 @@ function showTranslationDiffInOverlay(overlay, data, params) {
     const current       = snapshotCurrentEditorState();
     const targetLang    = params.target_language || '';
     const rtl           = isRtlLang(targetLang);
-    const transContent  = data.output;
-    const transTitle    = data.translated_title  || '';
-    const footnotesJson = data.footnotes         || '';
-    const metaDesc      = data.meta_description  || '';
+    const transContent   = data.output;
+    const transTitle     = data.translated_title    || '';
+    const footnotesJson  = data.footnotes           || '';
+    const metaDesc       = data.meta_description    || '';
+    const transExcerpt   = data.translated_excerpt  || '';
 
     // Widen the panel for two-column content.
     overlay.classList.add('lf-feature-overlay--wide');
@@ -1591,7 +1698,7 @@ function showTranslationDiffInOverlay(overlay, data, params) {
         resultSection.querySelector('[data-lf-odiff="meta-desc"]').textContent = metaDesc;
     }
 
-    overlay._lfPending = { transContent, transTitle, footnotesJson, metaDesc };
+    overlay._lfPending = { transContent, transTitle, footnotesJson, metaDesc, transExcerpt };
 
     // Back button — restore config view.
     resultSection.querySelector('[data-lf-odiff="back"]').addEventListener('click', () => {
@@ -1611,23 +1718,24 @@ function showTranslationDiffInOverlay(overlay, data, params) {
 
         try {
 
-            const store = getEditorStore();
+            const store = isGutenbergActive() ? getEditorStore() : null;
 
             if (store) {
                 const payload = { content: ctx.transContent };
-                if (ctx.transTitle) {
+                if (ctx.transTitle)    {
                     payload.title = ctx.transTitle;
                     payload.slug  = lfSlugify(ctx.transTitle);
                 }
-                if (ctx.footnotesJson) payload.meta = { footnotes: ctx.footnotesJson };
+                if (ctx.transExcerpt)  payload.excerpt = ctx.transExcerpt;
+                if (ctx.footnotesJson) payload.meta    = { footnotes: ctx.footnotesJson };
                 await store.dispatch('core/editor').editPost(payload);
             } else {
-                const classicContent = document.querySelector('#content');
-                if (classicContent) classicContent.value = ctx.transContent;
-                if (ctx.transTitle) {
-                    const classicTitle = document.querySelector('#title');
-                    if (classicTitle) classicTitle.value = ctx.transTitle;
-                }
+                applyToClassicEditor({
+                    translatedContent: ctx.transContent,
+                    translatedTitle:   ctx.transTitle,
+                    translatedExcerpt: ctx.transExcerpt,
+                    metaDescription:   '',
+                });
             }
 
             if (ctx.metaDesc) {
