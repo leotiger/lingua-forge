@@ -254,7 +254,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Fixed: `lf_lang_filter` user meta now cleared on logout and user deletion to prevent stale filter preferences leaking to recycled user IDs.
 * Fixed: `glob()` calls in MaintenanceTab now guarded with `is_readable()` to avoid undefined behaviour on restrictive server configurations.
 * Fixed: WooCommerce template glob order in `TemplateDefinitions::get()` is now stable across Linux and macOS via `natsort()`.
-* Added: Built-in translations for 26 locales (ar, ca, de_DE, el, en_US, es_ES, eu, fa_IR, fr_FR, hi_IN, hu_HU, id_ID, it_IT, ja, km, ko_KR, nl_NL, pl_PL, pt_PT, ru_RU, sv_SE, sw, th, tr_TR, ur, zh_CN) — bundled, no separate download needed.
+* Added: Lingua Forge interface translated into 26 languages (ar, ca, de_DE, el, en_US, es_ES, eu, fa_IR, fr_FR, hi_IN, hu_HU, id_ID, it_IT, ja, km, ko_KR, nl_NL, pl_PL, pt_PT, ru_RU, sv_SE, sw, th, tr_TR, ur, zh_CN) — use the plugin in your own language right out of the box.
 * Dev: New unit test `FeatureControllerCapabilityTest` — asserts `required_capability()` never returns an empty string for any feature slug.
 
 = 2.1.0 =
