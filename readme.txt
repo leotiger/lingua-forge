@@ -250,7 +250,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 == Changelog ==
 
 = 2.1.1 =
-* Fixed: Hardcoded `'ca'` (Catalan) fallback in `Context::source_language()` — fresh installs routed silently as Catalan before first-time setup was completed. Both defaults changed to empty string.
+* Fixed: Hardcoded `'ca'` (Catalan) fallback in `Context::source_language()` — fresh installs were silently routed as Catalan before first-time setup was completed. Fallback now uses the WordPress site locale so unconfigured installs behave consistently with the rest of the instance.
 * Fixed: `lf_lang_filter` user meta now cleared on logout and user deletion to prevent stale filter preferences leaking to recycled user IDs.
 * Fixed: `glob()` calls in MaintenanceTab now guarded with `is_readable()` to avoid undefined behaviour on restrictive server configurations.
 * Fixed: WooCommerce template glob order in `TemplateDefinitions::get()` is now stable across Linux and macOS via `natsort()`.

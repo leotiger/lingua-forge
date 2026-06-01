@@ -35,26 +35,22 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.0/lingua-forge-2.1.0.zip';
+	$version      = '2.1.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.1/lingua-forge-2.1.1.zip';
 	$last_updated = '2026-06-01';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.0 — 2026-06-01</h4>' .
+		'<h4>2.1.1 — 2026-06-01</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> CPT-scoped block pattern translation. The Router tab now shows a Patterns section listing every block pattern whose <code>postTypes</code> metadata includes a public Custom Post Type. Each pattern can be AI-translated per language, with the result stored and displayed as a copy-paste-ready preview. Patterns scoped only to built-in types (<code>post</code>, <code>page</code>, etc.) are excluded. New classes: <code>PatternDiscovery</code>, <code>PatternHandler</code>, <code>PatternsSection</code>. New script: <code>fse-patterns.js</code>.</li>' .
-			'<li><strong>Added:</strong> Router tab FSE panel split — <code>RouterTab</code> refactored into a thin dispatcher with four section renderers and nine <code>FseLocalisation\</code> handler classes; router-tab JS split into five purpose-specific scripts.</li>' .
-			'<li><strong>Added:</strong> Loco Translate — copy to safe storage. When Loco Translate is active, <strong>Settings → Maintenance → Language Overrides</strong> lists all custom <code>.mo</code>/<code>.po</code> files from <code>wp-content/languages/loco/</code> and provides a one-click copy into the Lingua Forge i18n-overrides directory, which survives WP core updates and plugin reinstalls.</li>' .
-			'<li><strong>Added:</strong> Site Editor navigation language filtering — the canvas and Inserter sidebar now show only the current language\'s pages when editing a navigation. Language is resolved synchronously in PHP from the Site Editor URL and injected as an inline data object; <code>nav-lang-filter.js</code> appends <code>?lf_lang=&lt;code&gt;</code> to <code>/wp/v2/pages</code> REST requests with a history-patch guard to avoid redundant fetches on internal SPA transitions.</li>' .
-			'<li><strong>Fixed:</strong> <code>add_post_type_support(\'wp_navigation\',\'custom-fields\')</code> was firing on unauthenticated REST requests, potentially exposing registered postmeta of other plugins in public navigation REST responses. Now gated on <code>current_user_can(\'edit_posts\')</code>.</li>' .
-			'<li><strong>Fixed:</strong> Site Editor navigation language detection silently failed for multi-character language codes (<code>zh-tw</code>, <code>pt-br</code>) in the async SPA-navigation path — regex updated to <code>/-([a-z]{2,}(?:-[a-z]{2,})?)$/</code>.</li>' .
-			'<li><strong>Fixed:</strong> Search template override caused infinite recursion and 512 MB memory exhaustion on sites with a language-specific search template — a reentrancy guard in <code>Search\Query::override_search_template()</code> now short-circuits re-entrant <code>get_block_templates</code> calls immediately.</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce stock writes on translated products — <code>StockRouter</code> now intercepts WooCommerce\'s direct-SQL stock update path (<code>woocommerce_update_product_stock_query</code>) so stock decrements triggered by order processing are correctly routed to the source product and the <code>wc_product_meta_lookup</code> denormalised table is kept in sync.</li>' .
-			'<li><strong>Fixed:</strong> Glossary table recreated automatically if dropped while the DB version option is still present — prevents silent failures on Settings → Glossary after a DB restore or server migration.</li>' .
-			'<li><strong>Fixed:</strong> <code>product_variation</code> added to the WooCommerce post-type skip list in the admin query filter, preventing erroneous <code>meta_query</code> injection into variation list queries.</li>' .
+			'<li><strong>Added:</strong> Lingua Forge\'s own interface is now translated into 26 languages (ar, ca, de_DE, el, en_US, es_ES, eu, fa_IR, fr_FR, hi_IN, hu_HU, id_ID, it_IT, ja, km, ko_KR, nl_NL, pl_PL, pt_PT, ru_RU, sv_SE, sw, th, tr_TR, ur, zh_CN) — use the plugin in your own language right out of the box.</li>' .
+			'<li><strong>Fixed:</strong> Hardcoded <code>\'ca\'</code> (Catalan) fallback in <code>Context::source_language()</code> — on a fresh install, any request before first-time setup was completed was silently routed as if Catalan were the source language. The fallback now uses the WordPress site locale (<code>get_locale()</code>), so unconfigured installs behave consistently with the rest of the WordPress instance.</li>' .
+			'<li><strong>Fixed:</strong> <code>lf_lang_filter</code> user meta not cleared on logout or user deletion — the admin list-screen language filter preference could leak into a recycled user ID. <code>Admin\Filters</code> now hooks <code>wp_logout</code> and <code>delete_user</code> to clean up.</li>' .
+			'<li><strong>Fixed:</strong> <code>glob()</code> calls in <code>MaintenanceTab</code> now guarded with <code>is_readable()</code> to avoid undefined behaviour on restrictive server configurations.</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce template glob order in <code>TemplateDefinitions::get()</code> is now stable across Linux and macOS via <code>natsort()</code>.</li>' .
+			'<li><strong>Fixed:</strong> <code>readme.txt</code> server-timeout FAQ entry updated from 120 s to 300 s.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

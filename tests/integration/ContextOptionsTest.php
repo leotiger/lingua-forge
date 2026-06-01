@@ -47,9 +47,10 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 
 	// ── source_language() ─────────────────────────────────────────────────────
 
-	public function test_source_language_returns_empty_when_option_absent(): void {
+	public function test_source_language_falls_back_to_wp_locale_when_option_absent(): void {
 		delete_option( 'linguaforge_primary_language' );
-		$this->assertSame( '', $this->ctx()->source_language() );
+		$expected = sanitize_key( substr( get_locale(), 0, 2 ) );
+		$this->assertSame( $expected, $this->ctx()->source_language() );
 	}
 
 	public function test_source_language_returns_stored_value(): void {
@@ -57,10 +58,11 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 		$this->assertSame( 'en', $this->ctx()->source_language() );
 	}
 
-	public function test_source_language_returns_empty_when_option_is_empty(): void {
-		// sanitize_key( '' ) → ''; no hardcoded fallback since 2.1.1.
+	public function test_source_language_falls_back_to_wp_locale_when_option_is_empty(): void {
+		// Empty stored value → falls back to the WordPress site locale (first two chars).
 		update_option( 'linguaforge_primary_language', '', false );
-		$this->assertSame( '', $this->ctx()->source_language() );
+		$expected = sanitize_key( substr( get_locale(), 0, 2 ) );
+		$this->assertSame( $expected, $this->ctx()->source_language() );
 	}
 
 	public function test_source_language_is_cached_on_repeated_calls(): void {

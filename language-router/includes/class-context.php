@@ -69,6 +69,11 @@ class Context {
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
 		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', '' ) );
+		// Fall back to the WordPress site locale (first two characters) so that an
+		// unconfigured install behaves sensibly rather than returning an empty string.
+		if ( $stored === '' ) {
+			$stored = sanitize_key( substr( get_locale(), 0, 2 ) );
+		}
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $this->cached_source_language = apply_filters( 'lf_primary_language', $stored );
 	}
