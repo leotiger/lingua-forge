@@ -337,15 +337,15 @@ class MaintenanceTab extends Tab {
 
         <?php endif; // loco_is_active ?>
 
-        <!-- ── AI Cache ─────────────────────────────────────────────── -->
+        <!-- ── Translation Caching ──────────────────────────────────── -->
         <hr>
 
-        <h2><?php esc_html_e( 'AI Cache', 'lingua-forge' ); ?></h2>
+        <h2><?php esc_html_e( 'Translation Caching', 'lingua-forge' ); ?></h2>
 
         <p>
             <?php
             esc_html_e(
-                'Lingua Forge caches AI-generated translations, meta descriptions, excerpts, and generated content per-post so unchanged inputs do not re-trigger a paid API call. Cached entries are automatically invalidated when their inputs change. Clear the cache manually to reclaim database space, force a resync after switching providers or editing prompt templates, or troubleshoot a cache-related issue.',
+                'Lingua Forge uses two independent caching layers to avoid redundant AI API calls. Use the tabs below to inspect and manage each one.',
                 'lingua-forge'
             );
             ?>
@@ -375,21 +375,227 @@ class MaintenanceTab extends Tab {
             </div>
         <?php endif; ?>
 
-        <form
-            method="post"
-            action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
-            onsubmit="return confirm('<?php echo esc_js( __( 'Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds.', 'lingua-forge' ) ); ?>');"
-        >
-            <input type="hidden" name="action" value="linguaforge_clear_ai_cache">
-            <?php wp_nonce_field( 'linguaforge_clear_ai_cache', 'linguaforge_clear_ai_cache_nonce' ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect after the clear action.
+        if ( isset( $_GET['lf_tm_cleared'] ) ) :
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag; absint() bounds it.
+            $linguaforge_tm_removed = absint( $_GET['lf_tm_cleared'] );
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p>
+                    <?php
+                    echo esc_html( sprintf(
+                        /* translators: %d is the number of removed cached blocks. */
+                        _n(
+                            'Translation Memory cleared. %d cached block was removed.',
+                            'Translation Memory cleared. %d cached blocks were removed.',
+                            $linguaforge_tm_removed,
+                            'lingua-forge'
+                        ),
+                        $linguaforge_tm_removed
+                    ) );
+                    ?>
+                </p>
+            </div>
+        <?php endif; ?>
 
-            <?php submit_button(
-                __( 'Clear AI Cache', 'lingua-forge' ),
-                'secondary',
-                'submit',
-                false
-            ); ?>
-        </form>
+        <?php
+        $linguaforge_cache_stats = CacheStore::stats();
+        $linguaforge_tm_enabled  = (bool) get_option( 'linguaforge_translation_memory_enabled', false );
+        $linguaforge_tm_stats    = TranslationMemory::stats();
+
+        $linguaforge_tm_status_label = $linguaforge_tm_enabled
+            ? '<span class="lingua-forge-key-badge lingua-forge-badge--ok">' . esc_html__( '✓ Enabled', 'lingua-forge' ) . '</span>'
+            : '<span class="lingua-forge-key-badge lingua-forge-badge--missing">' . esc_html__( '✗ Disabled', 'lingua-forge' ) . '</span>'
+              . ' <span style="color:#646970">' . esc_html__( '— toggle in Settings → Behavior.', 'lingua-forge' ) . '</span>';
+        ?>
+
+        <nav class="nav-tab-wrapper lf-cache-tabs" style="margin-bottom:1.5em;">
+            <a href="#lf-tab-api-cache" class="nav-tab nav-tab-active" data-lf-tab="api-cache">
+                <?php esc_html_e( 'API Response Cache', 'lingua-forge' ); ?>
+            </a>
+            <a href="#lf-tab-tm" class="nav-tab" data-lf-tab="tm">
+                <?php esc_html_e( 'Translation Memory', 'lingua-forge' ); ?>
+                <?php if ( ! $linguaforge_tm_enabled ) : ?>
+                    <span style="color:#999;font-size:11px;margin-left:4px;"><?php esc_html_e( '(disabled)', 'lingua-forge' ); ?></span>
+                <?php endif; ?>
+            </a>
+        </nav>
+
+        <!-- ── Tab: API Response Cache ───────────────────────────── -->
+        <div id="lf-tab-api-cache" class="lf-cache-tab-panel">
+
+            <p class="description" style="margin-bottom:1em;">
+                <?php
+                esc_html_e(
+                    'Per-post cache for AI-generated translations, meta descriptions, excerpts, and content. Always active — no separate toggle required. Entries are invalidated automatically when the content or AI provider/model changes. Use the toolbar "↺ Re-translate" button or click Clear below to force a fresh API call.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+
+            <table class="widefat striped" style="max-width:480px;margin-bottom:1em;">
+                <tbody>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Cached API responses', 'lingua-forge' ); ?></th>
+                        <td><strong><?php echo esc_html( number_format_i18n( $linguaforge_cache_stats['rows'] ) ); ?></strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'API calls saved by cache', 'lingua-forge' ); ?></th>
+                        <td>
+                            <strong><?php echo esc_html( number_format_i18n( $linguaforge_cache_stats['total_hits'] ) ); ?></strong>
+                            <?php if ( $linguaforge_cache_stats['rows'] > 0 ) : ?>
+                                <?php
+                                echo esc_html( sprintf(
+                                    /* translators: %s is the average hits per cached entry. */
+                                    __( '(avg %.1f hits/entry)', 'lingua-forge' ),
+                                    $linguaforge_cache_stats['total_hits'] / $linguaforge_cache_stats['rows']
+                                ) );
+                                ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php if ( $linguaforge_cache_stats['oldest'] ) : ?>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Oldest cached response', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_cache_stats['oldest'] ); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Most recent cached response', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_cache_stats['newest'] ); ?></td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                onsubmit="return confirm('<?php echo esc_js( __( 'Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds.', 'lingua-forge' ) ); ?>');"
+            >
+                <input type="hidden" name="action" value="linguaforge_clear_ai_cache">
+                <?php wp_nonce_field( 'linguaforge_clear_ai_cache', 'linguaforge_clear_ai_cache_nonce' ); ?>
+
+                <?php submit_button(
+                    __( 'Clear API Response Cache', 'lingua-forge' ),
+                    'secondary',
+                    'submit',
+                    false
+                ); ?>
+            </form>
+
+        </div><!-- #lf-tab-api-cache -->
+
+        <!-- ── Tab: Translation Memory ───────────────────────────── -->
+        <div id="lf-tab-tm" class="lf-cache-tab-panel" style="display:none;">
+
+            <p class="description" style="margin-bottom:1em;">
+                <?php
+                esc_html_e(
+                    'Block-level translation cache shared across posts. When enabled, identical blocks (same markup, language pair, and glossary) are served from memory instead of calling the AI again. Configure in Settings → Behavior.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+
+            <table class="widefat striped" style="max-width:480px;margin-bottom:1em;">
+                <tbody>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Status', 'lingua-forge' ); ?></th>
+                        <td><?php echo wp_kses_post( $linguaforge_tm_status_label ); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Cached block translations', 'lingua-forge' ); ?></th>
+                        <td><strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['rows'] ) ); ?></strong></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Block translation reuses', 'lingua-forge' ); ?></th>
+                        <td>
+                            <strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['total_hits'] ) ); ?></strong>
+                            <?php if ( $linguaforge_tm_stats['rows'] > 0 ) : ?>
+                                <span style="color:#646970"><?php echo esc_html( sprintf(
+                                    /* translators: %s is the average hits per cached block. */
+                                    __( '(avg %.1f hits/block)', 'lingua-forge' ),
+                                    $linguaforge_tm_stats['total_hits'] / $linguaforge_tm_stats['rows']
+                                ) ); ?></span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php if ( $linguaforge_tm_stats['oldest'] !== '' ) : ?>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Oldest cached block', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_tm_stats['oldest'] ); ?></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Most recent cached block', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( $linguaforge_tm_stats['newest'] ); ?></td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <th scope="row"><?php esc_html_e( 'Approximate size', 'lingua-forge' ); ?></th>
+                        <td><?php echo esc_html( size_format( $linguaforge_tm_stats['bytes_estimate'] ) ?: '0 B' ); ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                onsubmit="return confirm('<?php echo esc_js( __( 'Clear the entire Translation Memory? Future translations will rebuild the cache as they run.', 'lingua-forge' ) ); ?>');"
+            >
+                <input type="hidden" name="action" value="linguaforge_clear_translation_memory">
+                <?php wp_nonce_field( 'linguaforge_clear_translation_memory', 'linguaforge_clear_tm_nonce' ); ?>
+
+                <?php submit_button(
+                    __( 'Clear Translation Memory', 'lingua-forge' ),
+                    'secondary',
+                    'submit',
+                    false,
+                    $linguaforge_tm_stats['rows'] > 0 ? [] : ['disabled' => 'disabled']
+                ); ?>
+            </form>
+
+        </div><!-- #lf-tab-tm -->
+
+        <script>
+        ( function () {
+            var LS_KEY   = 'lf_cache_tab';
+            var nav      = document.querySelector( '.lf-cache-tabs' );
+            var panels   = document.querySelectorAll( '.lf-cache-tab-panel' );
+
+            if ( ! nav ) { return; }
+
+            function activate( tabId ) {
+                nav.querySelectorAll( '[data-lf-tab]' ).forEach( function ( a ) {
+                    a.classList.toggle( 'nav-tab-active', a.dataset.lfTab === tabId );
+                } );
+                panels.forEach( function ( panel ) {
+                    panel.style.display = ( panel.id === 'lf-tab-' + tabId ) ? '' : 'none';
+                } );
+                try { localStorage.setItem( LS_KEY, tabId ); } catch (e) {}
+            }
+
+            // Restore from localStorage, or detect which tab should be active after a
+            // form-submit redirect (lf_cache_cleared → api-cache, lf_tm_cleared → translation-memory).
+            var params   = new URLSearchParams( window.location.search );
+            var initial  = 'api-cache';
+            if ( params.has( 'lf_tm_cleared' ) ) {
+                initial = 'tm';
+            } else if ( params.has( 'lf_cache_cleared' ) ) {
+                initial = 'api-cache';
+            } else {
+                try { initial = localStorage.getItem( LS_KEY ) || 'api-cache'; } catch (e) {}
+            }
+            activate( initial );
+
+            nav.addEventListener( 'click', function ( e ) {
+                var a = e.target.closest( '[data-lf-tab]' );
+                if ( ! a ) { return; }
+                e.preventDefault();
+                activate( a.dataset.lfTab );
+            } );
+        } )();
+        </script>
 
         <!-- ── Debug Files ─────────────────────────────────────────── -->
         <hr>
@@ -565,123 +771,6 @@ class MaintenanceTab extends Tab {
             ); ?>
         </form>
 
-        <!-- ── Translation Memory ──────────────────────────────────── -->
-        <hr>
-
-        <h2><?php esc_html_e( 'Translation Memory', 'lingua-forge' ); ?></h2>
-
-        <p>
-            <?php
-            esc_html_e(
-                'Per-block translation cache shared across posts. Configure on/off in Settings → Behavior. Stats below show what is currently cached; clearing forces every block to be re-translated on next request (useful after upgrading models or to recover database space).',
-                'lingua-forge'
-            );
-            ?>
-        </p>
-
-        <?php
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag set by wp_safe_redirect after the clear action.
-        if ( isset( $_GET['lf_tm_cleared'] ) ) :
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same read-only flag; absint() bounds it.
-            $linguaforge_tm_removed = absint( $_GET['lf_tm_cleared'] );
-            ?>
-            <div class="notice notice-success is-dismissible">
-                <p>
-                    <?php
-                    echo esc_html( sprintf(
-                        /* translators: %d is the number of removed cached blocks. */
-                        _n(
-                            'Translation Memory cleared. %d cached block was removed.',
-                            'Translation Memory cleared. %d cached blocks were removed.',
-                            $linguaforge_tm_removed,
-                            'lingua-forge'
-                        ),
-                        $linguaforge_tm_removed
-                    ) );
-                    ?>
-                </p>
-            </div>
-        <?php endif; ?>
-
-        <?php
-        $linguaforge_tm_enabled = (bool) get_option( 'linguaforge_translation_memory_enabled', false );
-        $linguaforge_tm_stats   = TranslationMemory::stats();
-        ?>
-
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Status', 'lingua-forge' ); ?></th>
-                <td>
-                    <?php if ( $linguaforge_tm_enabled ) : ?>
-                        <span class="lingua-forge-key-badge lingua-forge-badge--ok">
-                            <?php esc_html_e( '✓ Enabled', 'lingua-forge' ); ?>
-                        </span>
-                    <?php else : ?>
-                        <span class="lingua-forge-key-badge lingua-forge-badge--missing">
-                            <?php esc_html_e( '✗ Disabled', 'lingua-forge' ); ?>
-                        </span>
-                        <?php esc_html_e( '— toggle in Settings → Behavior.', 'lingua-forge' ); ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Cached blocks', 'lingua-forge' ); ?></th>
-                <td>
-                    <strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['rows'] ) ); ?></strong>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Cumulative cache hits', 'lingua-forge' ); ?></th>
-                <td>
-                    <strong><?php echo esc_html( number_format_i18n( $linguaforge_tm_stats['total_hits'] ) ); ?></strong>
-                    <?php
-                    if ( $linguaforge_tm_stats['rows'] > 0 ) {
-                        $avg = $linguaforge_tm_stats['total_hits'] / $linguaforge_tm_stats['rows'];
-                        echo ' <span style="color:#646970">' . esc_html( sprintf(
-                            /* translators: %s is the average hits per cached block. */
-                            __( '(avg %.1f hits/block)', 'lingua-forge' ),
-                            $avg
-                        ) ) . '</span>';
-                    }
-                    ?>
-                </td>
-            </tr>
-            <?php if ( $linguaforge_tm_stats['oldest'] !== '' ) : ?>
-                <tr>
-                    <th scope="row"><?php esc_html_e( 'Oldest entry', 'lingua-forge' ); ?></th>
-                    <td><?php echo esc_html( $linguaforge_tm_stats['oldest'] ); ?></td>
-                </tr>
-                <tr>
-                    <th scope="row"><?php esc_html_e( 'Newest entry', 'lingua-forge' ); ?></th>
-                    <td><?php echo esc_html( $linguaforge_tm_stats['newest'] ); ?></td>
-                </tr>
-            <?php endif; ?>
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Approximate size', 'lingua-forge' ); ?></th>
-                <td>
-                    <?php
-                    echo esc_html( size_format( $linguaforge_tm_stats['bytes_estimate'] ) ?: '0 B' );
-                    ?>
-                </td>
-            </tr>
-        </table>
-
-        <form
-            method="post"
-            action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
-            onsubmit="return confirm('<?php echo esc_js( __( 'Clear the entire Translation Memory? Future translations will rebuild the cache as they run.', 'lingua-forge' ) ); ?>');"
-        >
-            <input type="hidden" name="action" value="linguaforge_clear_translation_memory">
-            <?php wp_nonce_field( 'linguaforge_clear_translation_memory', 'linguaforge_clear_tm_nonce' ); ?>
-
-            <?php submit_button(
-                __( 'Clear Translation Memory', 'lingua-forge' ),
-                'secondary',
-                'submit',
-                false,
-                $linguaforge_tm_stats['rows'] > 0 ? [] : ['disabled' => 'disabled']
-            ); ?>
-        </form>
 
         <!-- ── Uninstall Behaviour ──────────────────────────────── -->
         <hr>

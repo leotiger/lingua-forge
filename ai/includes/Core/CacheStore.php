@@ -37,7 +37,7 @@ class CacheStore {
      * compares this to the linguaforge_ai_cache_db_version option and re-runs
      * dbDelta on a mismatch.
      */
-    private const DB_VERSION        = '1.0';
+    private const DB_VERSION        = '1.1';
     private const DB_VERSION_OPTION = 'linguaforge_ai_cache_db_version';
 
     /**
@@ -88,7 +88,26 @@ class CacheStore {
         }
 
         $payload = json_decode((string) $row['payload'], true);
-        return is_array($payload) ? $payload : null;
+
+        if (!is_array($payload)) {
+            return null;
+        }
+
+        // Bookkeeping: bump hit_count + last_hit_at. Non-critical — payload already
+        // decoded so we return it even if the UPDATE fails.
+        $now = time();
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- UPDATE on the plugin's own table; table name is built from $wpdb->prefix and a hardcoded suffix.
+        $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$table} SET hit_count = hit_count + 1, last_hit_at = %d WHERE post_id = %d AND feature_key = %s",
+                $now,
+                $post_id,
+                $feature_key
+            )
+        );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+        return $payload;
     }
 
     /**
@@ -201,6 +220,45 @@ class CacheStore {
     }
 
     /**
+     * Return overall cache stats for the Maintenance UI:
+     *   - rows: number of cached entries
+     *   - total_hits: cumulative hit_count across all rows
+     *   - oldest: earliest cached_at (UTC Y-m-d), empty when no rows
+     *   - newest: latest cached_at
+     */
+    public static function stats(): array {
+
+        self::ensure_table();
+
+        global $wpdb;
+
+        $table = self::table_name();
+
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Read-only aggregate on the plugin's own table; table name is built from $wpdb->prefix and a hardcoded suffix.
+        $row = $wpdb->get_row(
+            "SELECT
+                COUNT(*)                    AS rows_count,
+                COALESCE(SUM(hit_count), 0) AS total_hits,
+                COALESCE(MIN(cached_at), 0) AS oldest_ts,
+                COALESCE(MAX(cached_at), 0) AS newest_ts
+             FROM {$table}",
+            ARRAY_A
+        );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+        if (!is_array($row)) {
+            return ['rows' => 0, 'total_hits' => 0, 'oldest' => '', 'newest' => ''];
+        }
+
+        return [
+            'rows'       => (int) $row['rows_count'],
+            'total_hits' => (int) $row['total_hits'],
+            'oldest'     => $row['oldest_ts'] > 0 ? gmdate('Y-m-d', (int) $row['oldest_ts']) : '',
+            'newest'     => $row['newest_ts'] > 0 ? gmdate('Y-m-d', (int) $row['newest_ts']) : '',
+        ];
+    }
+
+    /**
      * Compute a deterministic SHA-256 hash from an ordered list of inputs.
      * All values are cast to string before hashing.
      *
@@ -250,8 +308,11 @@ class CacheStore {
             hash CHAR(64) NOT NULL,
             payload LONGTEXT NOT NULL,
             cached_at INT UNSIGNED NOT NULL,
+            hit_count INT UNSIGNED NOT NULL DEFAULT 0,
+            last_hit_at INT UNSIGNED NOT NULL DEFAULT 0,
             PRIMARY KEY  (post_id, feature_key),
-            KEY cached_at (cached_at)
+            KEY cached_at (cached_at),
+            KEY last_hit_at (last_hit_at)
         ) {$charset_collate};";
 
         dbDelta($sql);
@@ -287,8 +348,10 @@ class CacheStore {
                 'hash'        => $hash,
                 'payload'     => (string) wp_json_encode($payload),
                 'cached_at'   => $cached_at,
+                'hit_count'   => 0,
+                'last_hit_at' => 0,
             ],
-            ['%d', '%s', '%s', '%s', '%d']
+            ['%d', '%s', '%s', '%s', '%d', '%d', '%d']
         );
     }
 

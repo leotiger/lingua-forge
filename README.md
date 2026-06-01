@@ -135,6 +135,8 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 **Optional — WooCommerce integration:** WooCommerce 9.0 or later is required (which in turn requires WordPress 6.9 or later). The core plugin — language routing, hreflang, AI tools — works on WordPress 6.4 without WooCommerce. If WooCommerce is not active the integration layer is silently skipped.
 
+**Multisite:** Lingua Forge is not tested on WordPress Multisite. Per-site activation — each site in the network manages its own languages, settings, and AI credentials independently — is expected to work. Network-wide activation is not supported and may produce unexpected behaviour.
+
 ---
 
 ## Translations

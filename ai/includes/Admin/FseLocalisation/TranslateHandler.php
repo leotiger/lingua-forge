@@ -2,6 +2,7 @@
 
 namespace LinguaForge\AI\Admin\FseLocalisation;
 
+use LinguaForge\AI\Core\Glossary;
 use LinguaForge\AI\REST\RateLimiter;
 
 defined( 'ABSPATH' ) || exit;
@@ -135,6 +136,11 @@ class TranslateHandler {
             . "7. Do not add, remove, or reorder any blocks.\n"
             . "8. Return ONLY the translated template content — no preamble, no explanation, no code fences.";
 
+        $glossary_section = Glossary::format_for_prompt( $source_lang, $lang );
+        if ( $glossary_section !== '' ) {
+            $system_prompt .= "\n\n" . $glossary_section;
+        }
+
         // Run the translation via the configured AI provider.
         try {
             $config   = new \LinguaForge\AI\Providers\WorkerConfig(
@@ -264,6 +270,11 @@ class TranslateHandler {
             . "4. Preserve ALL JSON structure exactly — braces, brackets, colons, commas.\n"
             . "5. Do NOT translate URLs, slugs, post IDs, or any key other than 'label'.\n"
             . "6. Return ONLY the translated block content — no preamble, no explanation, no code fences.";
+
+        $glossary_section = Glossary::format_for_prompt( $source_lang, $lang );
+        if ( $glossary_section !== '' ) {
+            $system_prompt .= "\n\n" . $glossary_section;
+        }
 
         try {
             $config   = new \LinguaForge\AI\Providers\WorkerConfig(

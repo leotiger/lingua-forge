@@ -1147,7 +1147,7 @@ async function runFeature(featureKey, postId, params, resultEl) {
 
         } else if (data.type === 'chunk') {
 
-            renderChunkResult(resultEl, data, params.target_language);
+            renderChunkResult(resultEl, data, featureKey, postId, params.target_language);
 
         } else {
 
@@ -1261,11 +1261,19 @@ function renderContentResult(container, data, featureKey, postId, targetLang = '
  * No "Apply to Editor" button — the user copies and pastes the translated
  * snippet manually wherever it belongs (e.g. into a footnote field).
  */
-function renderChunkResult(container, data, targetLang = '') {
+function renderChunkResult(container, data, featureKey, postId, targetLang = '') {
 
-    const lang = data.language
+    const langLabel = data.language
         ? `${ __( 'Chunk translated to:', 'lingua-forge' ) } <strong>${escapeHtml(data.language)}</strong>`
         : __( 'Chunk translated', 'lingua-forge' );
+
+    const cachedBadge = data.cached
+        ? ` <span class="lingua-forge-cached-badge">${ __( 'cached', 'lingua-forge' ) }</span>`
+        : '';
+
+    const refreshRow = data.cached
+        ? renderRefreshRow(featureKey, postId)
+        : '';
 
     const chunkHint = __( 'Copy the result and paste it wherever needed (e.g. directly into the footnote field).', 'lingua-forge' );
     const copyLabel = __( 'Copy', 'lingua-forge' );
@@ -1273,7 +1281,7 @@ function renderChunkResult(container, data, targetLang = '') {
 
     container.innerHTML = `
         <div class="lingua-forge-content-result lingua-forge-chunk-result">
-            <p class="lingua-forge-result-meta">${lang}</p>
+            <p class="lingua-forge-result-meta">${langLabel}${cachedBadge}</p>
             <p class="lingua-forge-chunk-hint">
                 ${chunkHint}
             </p>
@@ -1287,6 +1295,7 @@ function renderChunkResult(container, data, targetLang = '') {
                     class="button button-secondary lingua-forge-copy"
                 >${copyLabel}</button>
             </div>
+            ${refreshRow}
         </div>`;
 }
 

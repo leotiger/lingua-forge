@@ -35,22 +35,21 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.1/lingua-forge-2.1.1.zip';
+	$version      = '2.1.2';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.2/lingua-forge-2.1.2.zip';
 	$last_updated = '2026-06-01';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.1 — 2026-06-01</h4>' .
+		'<h4>2.1.2 — 2026-06-01</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Lingua Forge\'s own interface is now translated into 26 languages (ar, ca, de_DE, el, en_US, es_ES, eu, fa_IR, fr_FR, hi_IN, hu_HU, id_ID, it_IT, ja, km, ko_KR, nl_NL, pl_PL, pt_PT, ru_RU, sv_SE, sw, th, tr_TR, ur, zh_CN) — use the plugin in your own language right out of the box.</li>' .
-			'<li><strong>Fixed:</strong> Hardcoded <code>\'ca\'</code> (Catalan) fallback in <code>Context::source_language()</code> — on a fresh install, any request before first-time setup was completed was silently routed as if Catalan were the source language. The fallback now uses the WordPress site locale (<code>get_locale()</code>), so unconfigured installs behave consistently with the rest of the WordPress instance.</li>' .
-			'<li><strong>Fixed:</strong> <code>lf_lang_filter</code> user meta not cleared on logout or user deletion — the admin list-screen language filter preference could leak into a recycled user ID. <code>Admin\Filters</code> now hooks <code>wp_logout</code> and <code>delete_user</code> to clean up.</li>' .
-			'<li><strong>Fixed:</strong> <code>glob()</code> calls in <code>MaintenanceTab</code> now guarded with <code>is_readable()</code> to avoid undefined behaviour on restrictive server configurations.</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce template glob order in <code>TemplateDefinitions::get()</code> is now stable across Linux and macOS via <code>natsort()</code>.</li>' .
-			'<li><strong>Fixed:</strong> <code>readme.txt</code> server-timeout FAQ entry updated from 120 s to 300 s.</li>' .
+			'<li><strong>Fixed:</strong> Admin Toolbar Quick Translate no longer calls the AI API on every request — identical chunk + language combinations are now served from <code>CacheStore</code>. Refinement requests remain uncached by design.</li>' .
+			'<li><strong>Fixed:</strong> AI provider and model are now included in the cache hash for all features — switching provider or model in Settings correctly invalidates cached results instead of silently serving stale translations.</li>' .
+			'<li><strong>Fixed:</strong> <code>ExcerptGenerator</code> cache hash now includes <code>post_title</code>; a title-only edit previously returned a stale excerpt generated from the old title.</li>' .
+			'<li><strong>Added:</strong> Glossary terminology constraints now applied to FSE template, navigation, and block pattern translation — previously only post-level translations respected the glossary.</li>' .
+			'<li><strong>Added:</strong> Maintenance → AI Cache now shows cached entries, cumulative hits, average hits per entry, and oldest/newest entry dates. <code>CacheStore</code> schema updated to record <code>hit_count</code> and <code>last_hit_at</code> — applied automatically on upgrade.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

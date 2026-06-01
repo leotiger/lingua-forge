@@ -786,7 +786,7 @@ class Translation implements FeatureInterface {
             ? $param_footnotes
             : (string) get_post_meta($post_id, 'footnotes', true);
         $cache_key     = $this->get_key() . '_' . $target_language;
-        $hash          = CacheStore::hash([$post->post_title, $post->post_content, $footnotes_raw, $target_language]);
+        $hash          = CacheStore::hash([$post->post_title, $post->post_content, $footnotes_raw, $target_language, Config::provider(), Config::model(Config::translation_tier())]);
         // When debug mode is active, skip the cache so every click triggers a
         // live API call and the source/response files are always written.
         $force = !empty($params['force_refresh']) || TranslationDebug::debug_enabled();
@@ -1280,6 +1280,25 @@ class Translation implements FeatureInterface {
         $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
         $is_refinement   = $refine_hint !== '' && $previous_output !== '';
 
+        // ── Cache check (non-refinement only) ─────────────────────────────────
+        // run_chunk() is not post-bound, so we use post_id = 0 as a synthetic
+        // key and derive the feature key from the target language code.
+        // Refinements are intentionally excluded — they depend on a prior
+        // output that is not part of the hash and must never be served stale.
+        $chunk_cache_key = 'chunk_' . sanitize_key( $target_code ?: $language_name );
+        $chunk_hash      = CacheStore::hash([
+            $chunk_text,
+            $language_name,
+            Config::provider(),
+            Config::model( Config::quick_translate_tier() ),
+        ]);
+        if ( ! $is_refinement ) {
+            $chunk_cached = CacheStore::get( 0, $chunk_cache_key, $chunk_hash );
+            if ( $chunk_cached !== null ) {
+                return array_merge( [ 'success' => true, 'cached' => true ], $chunk_cached );
+            }
+        }
+
         if ( $is_refinement ) {
             $messages = [
                 [ 'role' => 'system',    'content' => $system_prompt ],
@@ -1305,12 +1324,18 @@ class Translation implements FeatureInterface {
             ];
         }
 
-        return [
-            'success'  => true,
+        $chunk_payload = [
             'output'   => trim($result),
             'type'     => 'chunk',
             'language' => $language_name,
         ];
+
+        // Persist to cache for non-refinement requests only.
+        if ( ! $is_refinement ) {
+            CacheStore::set( 0, $chunk_cache_key, $chunk_hash, $chunk_payload );
+        }
+
+        return array_merge( [ 'success' => true ], $chunk_payload );
     }
 
 }

@@ -72,7 +72,7 @@ class ExcerptGenerator implements FeatureInterface {
         $language  = Translation::get_languages()[$lang_code] ?? $locale;
 
         // ── Cache check ───────────────────────────────────────────────────────
-        $hash   = CacheStore::hash([$post->post_content, $locale]);
+        $hash   = CacheStore::hash([$post->post_title, $post->post_content, $locale, Config::provider(), Config::model('light')]);
         $cached = empty($params['force_refresh'])
             ? CacheStore::get($post_id, $this->get_key(), $hash)
             : null;

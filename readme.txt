@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -75,6 +75,8 @@ Source code and issue tracker: https://github.com/leotiger/lingua-forge
 **WooCommerce integration:** The built-in WooCommerce integration (shared-stock delegation, translated category and attribute names) requires WordPress 6.9 or later and WooCommerce 9.0 or later. The integration is inactive and causes no errors on earlier versions; it is simply not loaded.
 
 **PHP:** 8.1 or later is required regardless of which features are used.
+
+**Multisite:** Lingua Forge is not tested on WordPress Multisite. Per-site activation (each site manages its own languages and settings independently) is expected to work. Network-wide activation is not supported and may produce unexpected behaviour.
 
 == Installation ==
 
@@ -249,6 +251,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.2 =
+* Fixed: Admin Toolbar Quick Translate no longer calls the AI API on every request — identical chunk+language combinations are now served from cache. Refinement requests remain uncached by design.
+* Fixed: AI provider and model are now included in the cache hash for all features — switching provider or model in Settings correctly invalidates cached results.
+* Fixed: ExcerptGenerator cache hash now includes post_title; a title-only edit previously returned a stale excerpt.
+* Added: Glossary terminology constraints now applied to FSE template, navigation, and block pattern translation — previously only post-level translations respected the glossary.
+* Added: Maintenance → AI Cache now shows cached entries, cumulative hits, average hits per entry, and oldest/newest entry dates. CacheStore schema updated to record hit_count and last_hit_at (applied automatically on upgrade).
+
 = 2.1.1 =
 * Fixed: Hardcoded `'ca'` (Catalan) fallback in `Context::source_language()` — fresh installs were silently routed as Catalan before first-time setup was completed. Fallback now uses the WordPress site locale so unconfigured installs behave consistently with the rest of the instance.
 * Fixed: `lf_lang_filter` user meta now cleared on logout and user deletion to prevent stale filter preferences leaking to recycled user IDs.
@@ -291,6 +300,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.2 =
+Cache fixes, glossary in FSE translations, and Maintenance AI Cache stats. Recommended update.
 
 = 2.1.1 =
 Security/hardening update: fixes a hardcoded language fallback that could silently override site settings, clears stale user-language meta on logout, and adds a missing readability guard. Recommended for all installs.

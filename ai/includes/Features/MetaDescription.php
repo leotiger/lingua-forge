@@ -97,7 +97,7 @@ class MetaDescription implements FeatureInterface {
         // Skip the cache entirely when content is passed directly — the
         // description corresponds to content not yet saved to the DB, so a
         // DB-keyed cache entry would be wrong.  Also skip writing to cache.
-        $hash   = CacheStore::hash([$post->post_content, $post->post_title, $locale]);
+        $hash   = CacheStore::hash([$post->post_content, $post->post_title, $locale, Config::provider(), Config::model('light')]);
         $cached = (!$use_passed && empty($params['force_refresh']))
             ? CacheStore::get($post_id, $this->get_key(), $hash)
             : null;

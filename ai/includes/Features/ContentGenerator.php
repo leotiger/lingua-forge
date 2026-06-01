@@ -168,6 +168,8 @@ class ContentGenerator implements FeatureInterface {
             $tone,
             $content_type,
             $hints,
+            Config::provider(),
+            Config::model('quality'),
         ]);
 
         $cached = (!$is_refinement && empty($params['force_refresh']))

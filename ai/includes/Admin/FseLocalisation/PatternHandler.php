@@ -2,6 +2,7 @@
 
 namespace LinguaForge\AI\Admin\FseLocalisation;
 
+use LinguaForge\AI\Core\Glossary;
 use LinguaForge\AI\REST\RateLimiter;
 
 defined( 'ABSPATH' ) || exit;
@@ -94,6 +95,11 @@ class PatternHandler {
             . "6. Preserve ALL JSON structure exactly — braces, brackets, colons, commas.\n"
             . "7. Do not add, remove, or reorder any blocks.\n"
             . "8. Return ONLY the translated block content — no preamble, no explanation, no code fences.";
+
+        $glossary_section = Glossary::format_for_prompt( $source_lang, $lang );
+        if ( $glossary_section !== '' ) {
+            $system_prompt .= "\n\n" . $glossary_section;
+        }
 
         try {
             $config   = new \LinguaForge\AI\Providers\WorkerConfig(

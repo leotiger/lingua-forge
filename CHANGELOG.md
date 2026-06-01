@@ -2,6 +2,28 @@
 
 ---
 
+## [2.1.2] — 2026-06-01
+
+### Fixed
+
+- **Cached result in toolbar and chunk mode showed no "cached" badge and no re-translate button** — `toolbar-translate.js` and `renderChunkResult` in `admin.js` both ignored `data.cached` in the response. The toolbar now shows the "cached" badge in the result meta line and a "↺ Re-translate" button that force-refreshes the result; `renderChunkResult` in the editor meta box does the same via the existing `renderRefreshRow` helper.
+- **Admin Toolbar Quick Translate (`run_chunk()`) made an API call on every request** — the chunk translation endpoint had no cache at all, so translating the same snippet twice always triggered a new API call. `CacheStore` is now used with `post_id = 0` as a synthetic key; the hash covers the chunk text, target language, provider, and model. Refinement (multi-turn improve) requests are correctly excluded. Note: Translation Memory does not update from toolbar translations — the toolbar has no source-language context, which is required to key TM entries. (`Translation.php`)
+- **`CacheStore` hash did not include AI provider or model** — switching provider (Anthropic → OpenAI → Gemini) or changing the model in Settings left stale cached results until post content changed. `Config::provider()` and `Config::model($tier)` are now included in the hash inputs for all four caching features (Translation, MetaDescription, ExcerptGenerator, ContentGenerator).
+- **`ExcerptGenerator` omitted `post_title` from its cache hash** — a title-only edit returned an excerpt generated from the previous title. `post_title` is now the first hash input, consistent with all other features. (`ExcerptGenerator.php`)
+
+### Added
+
+- **Glossary applied to FSE template, navigation, and pattern translation** — `TranslateHandler` (templates/template parts and navigations) and `PatternHandler` (CPT block patterns) did not call `Glossary::format_for_prompt()`, so user-defined terminology constraints were silently ignored for all FSE localisation operations. All three handlers now append the glossary segment to their system prompt when entries exist for the active language pair. (`TranslateHandler.php`, `PatternHandler.php`)
+- **`CacheStore` hit tracking and Maintenance stats** — `wp_lingua_forge_ai_cache` now records `hit_count` and `last_hit_at` per entry (schema version 1.1, applied automatically via `dbDelta`). The Maintenance → AI Cache section shows cached entries count, cumulative hits, average hits per entry, and oldest/newest entry dates — matching the existing Translation Memory stats panel. (`CacheStore.php`, `MaintenanceTab.php`)
+- **Maintenance → Translation Caching unified view** — the previously separate "AI Cache" and "Translation Memory" sections are now consolidated under a single "Translation Caching" `<h2>` with two tabs: **API Response Cache** and **Translation Memory**. Each tab carries its own description, stats table, and clear button. Stat labels are now distinct across tabs (e.g. "API calls saved by cache" vs "Block translation reuses") to prevent confusion between the two systems. The Translation Memory tab shows an "(disabled)" hint in the tab label when TM is off. (`MaintenanceTab.php`)
+- **Multisite compatibility note** — `README.md` and `readme.txt` now document that per-site activation is expected to work and network-wide activation is not supported, preventing .org reviewers from flagging the absence of `is_multisite()` guards as a bug.
+
+### Fixed (JS / tooling)
+
+- **`toolbar-translate.js` ESLint errors** — unused variable `tab` (assigned but never read) removed from the re-translate click handler; inner `const reTranslateBtn` declaration removed from the `try` block to eliminate the `no-shadow` violation against the outer declaration in `fetchResult`. (`toolbar-translate.js`)
+
+---
+
 ## [2.1.1] — 2026-06-01
 
 ### Fixed

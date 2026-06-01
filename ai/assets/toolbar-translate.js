@@ -102,6 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
         await runRefine(popover);
     });
 
+    // ── Re-translate button — force-refresh a cached result ──────────────────
+
+    popover.querySelector('.lingua-forge-tp__btn-retranslate').addEventListener('click', async () => {
+        if (!lastMode || !lastParams) return;
+        const forceParams = { ...lastParams, force_refresh: true };
+        const endpoint = lastMode === 'create' ? '/create-chunk' : '/translate-chunk';
+        refineCount = 0;
+        await fetchResult(popover, endpoint, forceParams, lastMode, 0);
+    });
+
     // ── Copy button (delegated — result area rebuilt on each run) ────────────
 
     popover.addEventListener('click', async (e) => {
@@ -317,6 +327,16 @@ function buildPopover() {
             <div class="lingua-forge-tp__result-actions">
                 <button type="button" class="button button-secondary lingua-forge-tp__btn-copy">${ __( 'Copy', 'lingua-forge' ) }</button>
                 <button type="button" class="button lingua-forge-tp__btn-clear-all">${ __( 'Clear All', 'lingua-forge' ) }</button>
+            </div>
+
+            <!-- Re-translate button — shown only when result came from cache -->
+            <div class="lingua-forge-refresh-row" hidden>
+                <button
+                    type="button"
+                    class="button lingua-forge-tp__btn-retranslate"
+                    hidden
+                >${ __( '↺ Re-translate', 'lingua-forge' ) }</button>
+                <span class="lingua-forge-refresh-hint">${ __( 'Re-generates and updates the cached result.', 'lingua-forge' ) }</span>
             </div>
 
             <!-- Refine row — appears after any result -->
@@ -589,6 +609,11 @@ async function fetchResult(popover, endpointPath, bodyParams, mode, refinement) 
     resultMeta.innerHTML   = `<span class="lingua-forge-tp__status">${escHtml(loadingLabel)}</span>`;
     outputArea.value       = '';
 
+    // Hide re-translate button while loading — it will be shown again if the
+    // response comes back with data.cached = true.
+    const reTranslateBtn = popover.querySelector('.lingua-forge-tp__btn-retranslate');
+    if (reTranslateBtn) reTranslateBtn.hidden = true;
+
     if (primaryBtn && refinement === 0) {
         primaryBtn.disabled    = true;
         primaryBtn.textContent = loadingLabel;
@@ -640,6 +665,10 @@ async function fetchResult(popover, endpointPath, bodyParams, mode, refinement) 
                 parts.push( __( 'Refinement', 'lingua-forge' ) + ` #${refinement}` );
             }
 
+            if (data.cached) {
+                parts.push( `<span class="lingua-forge-cached-badge">${ __( 'cached', 'lingua-forge' ) }</span>` );
+            }
+
             const metaText = parts.length
                 ? parts.join( ' &nbsp;·&nbsp; ' )
                 : __( 'Done', 'lingua-forge' );
@@ -647,6 +676,13 @@ async function fetchResult(popover, endpointPath, bodyParams, mode, refinement) 
             resultMeta.innerHTML = `<span class="lingua-forge-tp__success">${metaText}</span>`;
             outputArea.value     = data.output;
             outputArea.dir       = isRtlLang(bodyParams.target_language) ? 'rtl' : '';
+
+            // Show / hide the re-translate button depending on whether this
+            // result came from cache. When cached, the editor should be able
+            // to force a fresh API call.
+            if (reTranslateBtn) {
+                reTranslateBtn.hidden = !data.cached;
+            }
         }
 
     } catch (_) {

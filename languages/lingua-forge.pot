@@ -2,21 +2,21 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 2.1.0\n"
+"Project-Id-Version: Lingua Forge 2.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
+"POT-Creation-Date: 2026-06-01T22:19:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
 
 #. Plugin Name of the plugin
 #: lingua-forge.php
-#: ai/assets/toolbar-translate.js:197
+#: ai/assets/toolbar-translate.js:207
 msgid "Lingua Forge"
 msgstr ""
 
@@ -55,9 +55,9 @@ msgstr ""
 #: ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255
 #: ai/assets/editor-translate.js:748
-#: ai/assets/toolbar-translate.js:214
-#: ai/assets/toolbar-translate.js:250
-#: ai/assets/toolbar-translate.js:665
+#: ai/assets/toolbar-translate.js:224
+#: ai/assets/toolbar-translate.js:260
+#: ai/assets/toolbar-translate.js:701
 msgid "Translate"
 msgstr ""
 
@@ -106,14 +106,14 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:761
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:831
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:916
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:984
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1006
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1027
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1052
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1077
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:798
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:868
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:953
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1021
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1043
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1064
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1089
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1114
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:416
 msgid "Permission denied."
 msgstr ""
@@ -398,7 +398,7 @@ msgstr ""
 #: ai/includes/Admin/SettingsPage.php:229
 #: ai/includes/Admin/SettingsPage.php:235
 #: ai/assets/editor-translate.js:682
-#: ai/assets/toolbar-translate.js:584
+#: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr ""
 
@@ -670,7 +670,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:571
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:608
 msgid "Translation Memory"
 msgstr ""
 
@@ -1076,7 +1076,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:160
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:287
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:533
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:570
 msgid "Files"
 msgstr ""
 
@@ -1161,180 +1161,193 @@ msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:381
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:384
+msgid "Cached entries"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:388
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:671
+msgid "Cumulative cache hits"
+msgstr ""
+
+#. translators: %s is the average hits per cached entry.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:395
+#, php-format
+msgid "(avg %.1f hits/entry)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:404
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:688
+msgid "Oldest entry"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:408
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:692
+msgid "Newest entry"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:418
 msgid "Clear all cached AI results? Future requests will trigger fresh API calls until the cache rebuilds."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:387
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:424
 msgid "Clear AI Cache"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:397
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:434
 msgid "Debug Files"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:401
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:438
 msgid "When debug logging is enabled (via the toggle below or by defining LINGUAFORGE_AI_DEBUG in wp-config.php), the Translation and FSE template translation features write their raw AI prompts and responses to disk for troubleshooting. Use this section to monitor that output and clear it once you have what you need — the files can grow quickly on large pages. Configure the destination directory via the linguaforge_debug_dir filter."
 msgstr ""
 
 #. translators: %d is the number of removed debug files.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:428
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:465
 #, php-format
 msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:449
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:486
 msgid "Debug logging enabled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:451
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:488
 msgid "Debug logging disabled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:467
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:504
 msgid "Debug logging"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:478
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:499
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:515
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:536
 msgid "Write AI prompts and responses to disk for troubleshooting"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:483
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:520
 msgid "Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:485
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:522
 msgid "Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that line to control this toggle from here."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:503
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:540
 msgid "Files land in the directory below. Useful for diagnosing translation issues — turn off once you have what you need so the files do not accumulate. You can also force this from wp-config.php with `define( 'LINGUAFORGE_AI_DEBUG', true );` which overrides the toggle."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:510
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:547
 msgid "Currently:"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:513
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:617
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:550
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:654
 msgid "✓ Enabled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:517
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:621
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:554
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:658
 msgid "✗ Disabled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:524
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:561
 msgid "Directory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:528
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:565
 msgid "Filter with linguaforge_debug_dir to redirect debug output to a non-public location."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:536
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:573
 msgid ".txt file(s) in the directory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:543
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:580
 msgid "Save Debug Setting"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:554
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:591
 msgid "Delete all .txt files in the debug directory? The directory itself will remain so future debug writes still land cleanly."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:560
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:597
 msgid "Clear Debug Files"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:575
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:612
 msgid "Per-block translation cache shared across posts. Configure on/off in Settings → Behavior. Stats below show what is currently cached; clearing forces every block to be re-translated on next request (useful after upgrading models or to recover database space)."
 msgstr ""
 
 #. translators: %d is the number of removed cached blocks.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:593
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:630
 #, php-format
 msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:650
 msgid "Status"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:623
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:660
 msgid "— toggle in Settings → Behavior."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:628
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:665
 msgid "Cached blocks"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:634
-msgid "Cumulative cache hits"
-msgstr ""
-
 #. translators: %s is the average hits per cached block.
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:642
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:679
 #, php-format
 msgid "(avg %.1f hits/block)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:651
-msgid "Oldest entry"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:655
-msgid "Newest entry"
-msgstr ""
-
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:660
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:697
 msgid "Approximate size"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:672
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:709
 msgid "Clear the entire Translation Memory? Future translations will rebuild the cache as they run."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:678
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:715
 msgid "Clear Translation Memory"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:689
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:726
 msgid "Uninstall Behaviour"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:693
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:730
 msgid "Controls what happens when an administrator deletes the plugin from Plugins → Installed Plugins → Delete. Plugin settings and AI caches are always removed. Language assignments and translation relationships are kept by default so an accidental uninstall or a reinstall can pick up where it left off."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:704
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:741
 msgid "Uninstall setting saved."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:717
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:754
 msgid "Delete content data on uninstall"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:726
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:763
 msgid "Also delete language assignments, translation relationships, meta descriptions, glossary, and Translation Memory when the plugin is uninstalled"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:729
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:766
 msgid "Warning:"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:731
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:768
 msgid "If checked, uninstalling the plugin will permanently delete all language assignments, translation relationships, meta descriptions, per-page presets, the AI glossary, and Translation Memory for every post on this site. This cannot be undone. Leave unchecked unless you are fully removing multilingual support from the site."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:742
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:779
 msgid "Save Uninstall Setting"
 msgstr ""
 
@@ -1567,7 +1580,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
 #: ai/assets/editor-translate.js:230
-#: ai/assets/toolbar-translate.js:221
+#: ai/assets/toolbar-translate.js:231
 msgid "Create"
 msgstr ""
 
@@ -1798,7 +1811,7 @@ msgstr ""
 
 #: ai/includes/Features/ContentGenerator.php:95
 #: ai/assets/editor-translate.js:280
-#: ai/assets/toolbar-translate.js:276
+#: ai/assets/toolbar-translate.js:286
 msgid "Tone"
 msgstr ""
 
@@ -1834,13 +1847,13 @@ msgstr ""
 #: ai/assets/block-action.js:253
 #: ai/assets/block-action.js:292
 #: ai/assets/editor-translate.js:238
-#: ai/assets/toolbar-translate.js:228
+#: ai/assets/toolbar-translate.js:238
 msgid "Target Language"
 msgstr ""
 
 #: ai/includes/Features/Translation.php:694
 #: ai/assets/editor-translate.js:244
-#: ai/assets/toolbar-translate.js:237
+#: ai/assets/toolbar-translate.js:247
 msgid "Text to translate"
 msgstr ""
 
@@ -2148,39 +2161,39 @@ msgid "Review translation before applying"
 msgstr ""
 
 #: ai/assets/admin.js:266
-#: ai/assets/admin.js:1624
+#: ai/assets/admin.js:1633
 msgid "Current title"
 msgstr ""
 
 #: ai/assets/admin.js:270
-#: ai/assets/admin.js:1628
+#: ai/assets/admin.js:1637
 msgid "Translated title"
 msgstr ""
 
 #: ai/assets/admin.js:277
-#: ai/assets/admin.js:1654
+#: ai/assets/admin.js:1663
 msgid "Current content (will be overwritten)"
 msgstr ""
 
 #: ai/assets/admin.js:281
-#: ai/assets/admin.js:1658
+#: ai/assets/admin.js:1667
 msgid "Translated content"
 msgstr ""
 
 #: ai/assets/admin.js:288
-#: ai/assets/admin.js:1636
+#: ai/assets/admin.js:1645
 msgid "Footnotes payload (advanced)"
 msgstr ""
 
 #: ai/assets/admin.js:294
 #: ai/assets/admin.js:450
-#: ai/assets/admin.js:1643
-#: ai/assets/admin.js:1798
+#: ai/assets/admin.js:1652
+#: ai/assets/admin.js:1807
 msgid "Generated meta description"
 msgstr ""
 
 #: ai/assets/admin.js:296
-#: ai/assets/admin.js:1645
+#: ai/assets/admin.js:1654
 msgid "Saved to the meta description field when you apply."
 msgstr ""
 
@@ -2191,8 +2204,8 @@ msgstr ""
 
 #: ai/assets/admin.js:304
 #: ai/assets/admin.js:914
-#: ai/assets/admin.js:1669
-#: ai/assets/admin.js:1763
+#: ai/assets/admin.js:1678
+#: ai/assets/admin.js:1772
 msgid "Apply translation"
 msgstr ""
 
@@ -2201,7 +2214,7 @@ msgid "Generated Content"
 msgstr ""
 
 #: ai/assets/admin.js:456
-#: ai/assets/admin.js:1813
+#: ai/assets/admin.js:1822
 msgid "Refine further:"
 msgstr ""
 
@@ -2210,16 +2223,16 @@ msgid "Add instructions to improve the draft — e.g. make it shorter, add a con
 msgstr ""
 
 #: ai/assets/admin.js:466
-#: ai/assets/admin.js:1823
+#: ai/assets/admin.js:1832
 #: ai/assets/editor-translate.js:335
 #: ai/assets/editor-translate.js:665
-#: ai/assets/toolbar-translate.js:331
-#: ai/assets/toolbar-translate.js:564
+#: ai/assets/toolbar-translate.js:351
+#: ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
 msgstr ""
 
 #: ai/assets/admin.js:477
-#: ai/assets/admin.js:1833
+#: ai/assets/admin.js:1842
 msgid "Copy markup"
 msgstr ""
 
@@ -2227,24 +2240,24 @@ msgstr ""
 #: ai/assets/admin.js:530
 #: ai/assets/admin.js:816
 #: ai/assets/admin.js:1231
-#: ai/assets/admin.js:1836
+#: ai/assets/admin.js:1845
 msgid "Apply to Editor"
 msgstr ""
 
 #: ai/assets/admin.js:570
 #: ai/assets/admin.js:1029
 #: ai/assets/admin.js:1039
-#: ai/assets/admin.js:1868
+#: ai/assets/admin.js:1877
 #: ai/assets/block-action.js:444
 #: ai/assets/editor-translate.js:383
-#: ai/assets/toolbar-translate.js:118
+#: ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr ""
 
 #: ai/assets/admin.js:607
 #: ai/assets/admin.js:834
-#: ai/assets/admin.js:1717
-#: ai/assets/admin.js:1882
+#: ai/assets/admin.js:1726
+#: ai/assets/admin.js:1891
 msgid "Applying…"
 msgstr ""
 
@@ -2252,40 +2265,40 @@ msgstr ""
 #: ai/assets/admin.js:813
 #: ai/assets/admin.js:905
 #: ai/assets/admin.js:1084
-#: ai/assets/admin.js:1754
-#: ai/assets/admin.js:1905
+#: ai/assets/admin.js:1763
+#: ai/assets/admin.js:1914
 #: ai/assets/block-action.js:958
 #: ai/assets/block-action.js:983
 msgid "Applied ✓"
 msgstr ""
 
 #: ai/assets/admin.js:664
-#: ai/assets/admin.js:1929
+#: ai/assets/admin.js:1938
 #: ai/assets/editor-translate.js:656
-#: ai/assets/toolbar-translate.js:554
+#: ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr ""
 
 #: ai/assets/admin.js:692
-#: ai/assets/admin.js:1952
+#: ai/assets/admin.js:1961
 msgid "Refinement failed — please try again."
 msgstr ""
 
 #. translators: %d is the refinement iteration number
 #: ai/assets/admin.js:716
-#: ai/assets/admin.js:1971
+#: ai/assets/admin.js:1980
 #: ai/assets/editor-translate.js:727
-#: ai/assets/toolbar-translate.js:640
+#: ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr ""
 
 #: ai/assets/admin.js:721
-#: ai/assets/admin.js:1975
+#: ai/assets/admin.js:1984
 msgid "✓ Refined — review the updated draft above."
 msgstr ""
 
 #: ai/assets/admin.js:730
-#: ai/assets/admin.js:1980
+#: ai/assets/admin.js:1989
 msgid "Request failed — please try again."
 msgstr ""
 
@@ -2298,32 +2311,32 @@ msgid "Save the post to persist changes."
 msgstr ""
 
 #: ai/assets/admin.js:923
-#: ai/assets/admin.js:1771
+#: ai/assets/admin.js:1780
 msgid "Apply failed — please try again."
 msgstr ""
 
 #: ai/assets/admin.js:1031
 #: ai/assets/admin.js:1041
 #: ai/assets/admin.js:1232
-#: ai/assets/admin.js:1271
-#: ai/assets/admin.js:1317
+#: ai/assets/admin.js:1279
+#: ai/assets/admin.js:1326
 #: ai/assets/block-action.js:325
 #: ai/assets/block-action.js:445
 #: ai/assets/editor-translate.js:319
 #: ai/assets/editor-translate.js:384
-#: ai/assets/toolbar-translate.js:119
-#: ai/assets/toolbar-translate.js:318
+#: ai/assets/toolbar-translate.js:129
+#: ai/assets/toolbar-translate.js:328
 msgid "Copy"
 msgstr ""
 
 #: ai/assets/admin.js:1088
-#: ai/assets/admin.js:1325
+#: ai/assets/admin.js:1334
 msgid "Apply to Meta Description"
 msgstr ""
 
 #: ai/assets/admin.js:1101
 #: ai/assets/editor-translate.js:681
-#: ai/assets/toolbar-translate.js:583
+#: ai/assets/toolbar-translate.js:603
 msgid "Generating…"
 msgstr ""
 
@@ -2340,7 +2353,9 @@ msgid "Request failed."
 msgstr ""
 
 #: ai/assets/admin.js:1196
-#: ai/assets/admin.js:1306
+#: ai/assets/admin.js:1271
+#: ai/assets/admin.js:1315
+#: ai/assets/toolbar-translate.js:669
 msgid "cached"
 msgstr ""
 
@@ -2348,7 +2363,7 @@ msgstr ""
 #: ai/assets/block-action.js:705
 #: ai/assets/block-action.js:903
 #: ai/assets/editor-translate.js:720
-#: ai/assets/toolbar-translate.js:628
+#: ai/assets/toolbar-translate.js:653
 msgid "Translated to:"
 msgstr ""
 
@@ -2376,54 +2391,55 @@ msgstr ""
 msgid "Chunk translated"
 msgstr ""
 
-#: ai/assets/admin.js:1270
+#: ai/assets/admin.js:1278
 msgid "Copy the result and paste it wherever needed (e.g. directly into the footnote field)."
 msgstr ""
 
 #. translators: %d is replaced by the number of characters
-#: ai/assets/admin.js:1360
+#: ai/assets/admin.js:1369
 msgid "chars"
 msgstr ""
 
-#: ai/assets/admin.js:1364
+#: ai/assets/admin.js:1373
 msgid "✓ Good length"
 msgstr ""
 
-#: ai/assets/admin.js:1369
+#: ai/assets/admin.js:1378
 msgid "⚠ Borderline"
 msgstr ""
 
-#: ai/assets/admin.js:1375
+#: ai/assets/admin.js:1384
 msgid "✗ Too short"
 msgstr ""
 
-#: ai/assets/admin.js:1376
+#: ai/assets/admin.js:1385
 msgid "✗ Too long"
 msgstr ""
 
-#: ai/assets/admin.js:1380
+#: ai/assets/admin.js:1389
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr ""
 
-#: ai/assets/admin.js:1387
+#: ai/assets/admin.js:1396
 msgid "SEO character-count info"
 msgstr ""
 
-#: ai/assets/admin.js:1402
+#: ai/assets/admin.js:1411
 msgid "↺ Refresh"
 msgstr ""
 
-#: ai/assets/admin.js:1403
+#: ai/assets/admin.js:1412
+#: ai/assets/toolbar-translate.js:339
 msgid "Re-generates and updates the cached result."
 msgstr ""
 
-#: ai/assets/admin.js:1666
-#: ai/assets/admin.js:1830
+#: ai/assets/admin.js:1675
+#: ai/assets/admin.js:1839
 #: ai/assets/block-action.js:328
 msgid "← Back"
 msgstr ""
 
-#: ai/assets/admin.js:1820
+#: ai/assets/admin.js:1829
 msgid "Add instructions to improve the draft — e.g. make it shorter, add a conclusion section, use a more formal register…"
 msgstr ""
 
@@ -2525,7 +2541,7 @@ msgstr ""
 #: ai/assets/block-action.js:631
 #: ai/assets/block-action.js:786
 #: ai/assets/editor-translate.js:504
-#: ai/assets/toolbar-translate.js:403
+#: ai/assets/toolbar-translate.js:423
 msgid "↑ Detected from current post"
 msgstr ""
 
@@ -2542,7 +2558,7 @@ msgstr ""
 #: ai/assets/block-action.js:732
 #: ai/assets/block-action.js:923
 #: ai/assets/editor-translate.js:740
-#: ai/assets/toolbar-translate.js:654
+#: ai/assets/toolbar-translate.js:690
 msgid "Request failed. Check your connection."
 msgstr ""
 
@@ -2563,103 +2579,107 @@ msgid "Paste text, or select text in the editor first…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:257
-#: ai/assets/toolbar-translate.js:254
+#: ai/assets/toolbar-translate.js:264
 msgid "Clear input"
 msgstr ""
 
 #: ai/assets/editor-translate.js:258
 #: ai/assets/editor-translate.js:300
-#: ai/assets/toolbar-translate.js:255
-#: ai/assets/toolbar-translate.js:300
+#: ai/assets/toolbar-translate.js:265
+#: ai/assets/toolbar-translate.js:310
 msgid "Clear"
 msgstr ""
 
 #: ai/assets/editor-translate.js:268
-#: ai/assets/toolbar-translate.js:264
+#: ai/assets/toolbar-translate.js:274
 msgid "Instructions / key points"
 msgstr ""
 
 #: ai/assets/editor-translate.js:274
-#: ai/assets/toolbar-translate.js:270
+#: ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:286
-#: ai/assets/toolbar-translate.js:282
+#: ai/assets/toolbar-translate.js:292
 msgid "Language (optional)"
 msgstr ""
 
 #: ai/assets/editor-translate.js:289
-#: ai/assets/toolbar-translate.js:285
+#: ai/assets/toolbar-translate.js:295
 msgid "— auto-detect —"
 msgstr ""
 
 #: ai/assets/editor-translate.js:297
 #: ai/assets/editor-translate.js:747
-#: ai/assets/toolbar-translate.js:295
-#: ai/assets/toolbar-translate.js:664
+#: ai/assets/toolbar-translate.js:305
+#: ai/assets/toolbar-translate.js:700
 msgid "Generate"
 msgstr ""
 
 #: ai/assets/editor-translate.js:299
-#: ai/assets/toolbar-translate.js:299
+#: ai/assets/toolbar-translate.js:309
 msgid "Clear hints"
 msgstr ""
 
 #: ai/assets/editor-translate.js:322
-#: ai/assets/toolbar-translate.js:319
+#: ai/assets/toolbar-translate.js:329
 msgid "Clear All"
 msgstr ""
 
 #: ai/assets/editor-translate.js:332
-#: ai/assets/toolbar-translate.js:328
+#: ai/assets/toolbar-translate.js:348
 msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:586
-#: ai/assets/toolbar-translate.js:482
+#: ai/assets/toolbar-translate.js:502
 msgid "Please enter some text first…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:611
-#: ai/assets/toolbar-translate.js:507
+#: ai/assets/toolbar-translate.js:527
 msgid "Please enter some instructions first…"
 msgstr ""
 
 #: ai/assets/editor-translate.js:711
-#: ai/assets/toolbar-translate.js:617
+#: ai/assets/toolbar-translate.js:642
 msgid "Request failed. Please try again."
 msgstr ""
 
 #: ai/assets/editor-translate.js:723
-#: ai/assets/toolbar-translate.js:632
+#: ai/assets/toolbar-translate.js:657
 msgid "Tone:"
 msgstr ""
 
 #: ai/assets/editor-translate.js:724
-#: ai/assets/toolbar-translate.js:635
+#: ai/assets/toolbar-translate.js:660
 msgid "Language:"
 msgstr ""
 
 #: ai/assets/editor-translate.js:732
-#: ai/assets/toolbar-translate.js:645
+#: ai/assets/toolbar-translate.js:674
 msgid "Done"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:189
+#: ai/assets/toolbar-translate.js:199
 msgid "Lingua Forge AI Tools"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:202
+#: ai/assets/toolbar-translate.js:212
 msgid "Close popover"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:243
+#: ai/assets/toolbar-translate.js:253
 msgid "Paste text, or select text on the page first…"
 msgstr ""
 
-#: ai/assets/toolbar-translate.js:314
+#: ai/assets/toolbar-translate.js:324
 msgid "Result will appear here…"
+msgstr ""
+
+#: ai/assets/toolbar-translate.js:338
+msgid "↺ Re-translate"
 msgstr ""
 
 #: language-router/blocks/missing-translation-notice/index.js:56
