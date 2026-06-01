@@ -12,6 +12,10 @@
 - **`TemplateDefinitions::get()` WooCommerce template glob order not deterministic** — `glob()` returns files in filesystem order, which differs between Linux and macOS. The WooCommerce template directory scan result is now passed through `natsort()` before iteration, guaranteeing stable alphabetical order across environments. (`TemplateDefinitions.php`)
 - **`readme.txt` server-timeout entry still cited 120-second timeout** — the FAQ entry "AI requests time out on long content" referenced the old 120 s value. Updated to 300 s and added a note about the `linguaforge_ai_retry_policy` filter. (`readme.txt`)
 
+### Added
+
+- **Built-in translations for 25 locales** — the plugin now ships `.po` / `.mo` / `.l10n.php` files for Arabic (`ar`), Basque (`eu`), Catalan (`ca`), Chinese Simplified (`zh_CN`), Dutch (`nl_NL`), English US (`en_US`), French (`fr_FR`), German (`de_DE`), Greek (`el`), Hindi (`hi_IN`), Hungarian (`hu_HU`), Indonesian (`id_ID`), Italian (`it_IT`), Japanese (`ja`), Khmer (`km`), Korean (`ko_KR`), Persian (`fa_IR`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Spanish (`es_ES`), Swahili (`sw`), Swedish (`sv_SE`), Thai (`th`), Turkish (`tr_TR`), and Urdu (`ur`). No language pack download from WordPress.org is needed for these locales. (`languages/`)
+
 ### Dev tooling
 
 - **`FeatureControllerCapabilityTest`** — new unit test asserting that `FeatureController::required_capability()` never returns an empty string for any registered feature slug or endpoint, and that the `edit_posts` safety net catches both an empty stored option and a filter returning `''`. (`tests/unit/FeatureControllerCapabilityTest.php`)

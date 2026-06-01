@@ -137,6 +137,32 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 
 ---
 
+## Translations
+
+Lingua Forge ships built-in translations for 25 locales — no language pack download from WordPress.org is required for these languages:
+
+| Code | Language | Code | Language |
+|------|----------|------|----------|
+| `ar` | Arabic | `ko_KR` | Korean |
+| `ca` | Catalan | `nl_NL` | Dutch |
+| `de_DE` | German | `pl_PL` | Polish |
+| `el` | Greek | `pt_PT` | Portuguese |
+| `en_US` | English (US) | `ru_RU` | Russian |
+| `es_ES` | Spanish | `sv_SE` | Swedish |
+| `eu` | Basque | `sw` | Swahili |
+| `fa_IR` | Persian | `th` | Thai |
+| `fr_FR` | French | `tr_TR` | Turkish |
+| `hi_IN` | Hindi | `ur` | Urdu |
+| `hu_HU` | Hungarian | `zh_CN` | Chinese (Simplified) |
+| `id_ID` | Indonesian | | |
+| `it_IT` | Italian | | |
+| `ja` | Japanese | | |
+| `km` | Khmer | | |
+
+All translation files (`languages/lingua-forge-{locale}.po/.mo/.l10n.php`) are bundled in the plugin. To contribute a new translation or improve an existing one, open a pull request against the `languages/` directory.
+
+---
+
 ## Recommended companions
 
 **[Loco Translate](https://wordpress.org/plugins/loco-translate/)** — for translating third-party plugin and theme strings (`.po`/`.mo` editing, automatic language-pack sync, developer extraction). Integrates cleanly alongside Lingua Forge with no conflicts.
