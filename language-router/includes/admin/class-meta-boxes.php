@@ -34,6 +34,9 @@ class MetaBoxes {
 		add_action( 'wp_ajax_lf_import_translation', [ $this, 'ajax_import_translation' ] );
 		add_action( 'wp_ajax_lf_set_language',       [ $this, 'ajax_set_language' ] );
 		add_action( 'wp_ajax_lf_set_user_locale',    [ $this, 'ajax_set_user_locale' ] );
+		// Admin-bar locale switcher — quick locale toggle without visiting User Profile.
+		add_action( 'admin_bar_menu', [ $this, 'add_locale_admin_bar_node' ], 999 );
+		add_action( 'admin_head',     [ $this, 'output_locale_admin_bar_script' ] );
 	}
 
 	// =========================================================
@@ -473,5 +476,105 @@ class MetaBoxes {
 		$locale = $this->router->locale_from_lang( $lang );
 		wp_update_user( [ 'ID' => get_current_user_id(), 'locale' => $locale ] );
 		wp_send_json_success( [ 'locale' => $locale ] );
+	}
+
+	// =========================================================
+	// ADMIN BAR — LOCALE SWITCHER
+	// =========================================================
+
+	/**
+	 * Add a "Preview Language" node to the WP admin bar so any logged-in editor
+	 * can switch their user locale from any admin page — without visiting their
+	 * User Profile. Reuses the existing lf_set_user_locale AJAX endpoint.
+	 *
+	 * Appears as a globe icon + two-letter code in the top-right bar cluster,
+	 * with a flyout listing every active language. A ✓ marks the current one.
+	 */
+	public function add_locale_admin_bar_node( \WP_Admin_Bar $wp_admin_bar ): void {
+		if ( ! is_admin() || ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		$languages = $this->router->context->languages();
+		if ( count( $languages ) < 2 ) {
+			return;
+		}
+
+		$user_locale  = get_user_locale();
+		$source_lang  = $this->router->context->source_language();
+		$current_lang = $source_lang;
+
+		foreach ( $languages as $lang ) {
+			$locale = $this->router->locale_from_lang( $lang );
+			if ( $locale === $user_locale || ( $lang === $source_lang && $user_locale === '' ) ) {
+				$current_lang = $lang;
+				break;
+			}
+		}
+
+		// Parent node — globe icon + active language code.
+		$wp_admin_bar->add_node( [
+			'id'    => 'lf-locale-switcher',
+			'title' => '<span class="ab-icon dashicons dashicons-translation" aria-hidden="true"></span>'
+			           . '<span class="ab-label">' . esc_html( strtoupper( $current_lang ) ) . '</span>',
+			'href'  => false,
+			'meta'  => [ 'class' => 'lf-admin-locale-node' ],
+		] );
+
+		$nonce    = wp_create_nonce( 'lf_set_user_locale_nonce' );
+		$ajax_url = admin_url( 'admin-ajax.php' );
+
+		foreach ( $languages as $lang ) {
+			$locale    = $this->router->locale_from_lang( $lang );
+			$is_active = ( $locale === $user_locale ) || ( $lang === $source_lang && $user_locale === '' );
+
+			$wp_admin_bar->add_node( [
+				'parent' => 'lf-locale-switcher',
+				'id'     => 'lf-locale-' . $lang,
+				'title'  => ( $is_active ? '&#10003;&nbsp;' : '&nbsp;&nbsp;&nbsp;' ) . esc_html( strtoupper( $lang ) ),
+				'href'   => '#',
+				'meta'   => [
+					'class'   => 'lf-locale-item' . ( $is_active ? ' lf-locale-current' : '' ),
+					'onclick' => 'lfSetAdminLocale('
+					             . wp_json_encode( $lang ) . ','
+					             . wp_json_encode( $nonce ) . ','
+					             . wp_json_encode( $ajax_url )
+					             . ');return false;',
+				],
+			] );
+		}
+	}
+
+	/**
+	 * Output the tiny JS helper used by the admin-bar locale nodes.
+	 * POSTs to lf_set_user_locale and reloads on success.
+	 */
+	public function output_locale_admin_bar_script(): void {
+		if ( ! is_admin() || ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+		if ( count( $this->router->context->languages() ) < 2 ) {
+			return;
+		}
+		?>
+		<script>
+		function lfSetAdminLocale( lang, nonce, ajaxUrl ) {
+			var body = new URLSearchParams( { action: 'lf_set_user_locale', nonce: nonce, lang: lang } );
+			fetch( ajaxUrl, { method: 'POST', body: body, credentials: 'same-origin' } )
+				.then( function() { location.reload(); } );
+		}
+		</script>
+		<style>
+		#wpadminbar #wp-admin-bar-lf-locale-switcher .ab-icon.dashicons {
+			font: 400 20px/1 dashicons;
+			vertical-align: middle;
+			margin-right: 4px;
+			top: 2px;
+			position: relative;
+		}
+		#wpadminbar #wp-admin-bar-lf-locale-switcher > .ab-item { font-weight: 600; }
+		#wpadminbar .lf-locale-current > .ab-item { font-weight: 700; }
+		</style>
+		<?php
 	}
 }

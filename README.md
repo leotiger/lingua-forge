@@ -86,6 +86,7 @@ If you want to understand where this plugin came from and why it exists as a fre
 - **Full FSE template localisation** — language-specific templates (`page-de`, `single-fr`, `search-en`) are auto-assigned when a post's language is set. From **Settings → Router** you can scaffold a language copy of any template or template part in one click, AI-translate it, fix all internal links to point at the correct language equivalents, fix template-part slug references (`footer` → `footer-ca`), and fix `wp:navigation` ref IDs so each header and footer loads the correct language menu — all without CLI or manual database work.
 - **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version.
 - **Language navigation menus** — create per-language `wp_navigation` copies with AI-translated link labels and language-prefixed internal URLs. The Fix Nav action rewrites `wp:navigation` ref IDs inside template parts to point at the correct copy.
+- **Site Editor page-list language filter** — when the Site Editor is opened on a navigation or template post, the sidebar page-list picker automatically scopes its `/wp/v2/pages` REST requests to the current navigation's language. The filter is resolved synchronously at PHP render time (no race condition on the initial load) and corrects itself asynchronously when the navigation ID is not in the initial URL.
 - hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
 - Language switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic `Lsflr_Switcher_Widget` (Appearance → Widgets). All three produce identical output and support the same `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three entry points so themes and third-party plugins can customise the HTML without touching templates
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
@@ -149,7 +150,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 1. Download the latest `lingua-forge-{version}.zip` from the [Releases page](https://github.com/leotiger/lingua-forge/releases)
 2. In your WordPress admin go to **Plugins → Add New → Upload Plugin**, choose the ZIP, and click **Install Now**
 3. Activate **Lingua Forge** from **Plugins → Installed Plugins**
-4. Go to **Settings → Lingua Forge**, select a provider, and enter your API key
+4. Go to **Lingua Forge** in the admin sidebar, select a provider, and enter your API key
 
 **After the first install, updates are automatic.** WordPress checks for new releases every 12 hours and displays the standard update badge in **Plugins → Installed Plugins** when one is available — one-click update from there, no manual download required.
 
@@ -592,6 +593,10 @@ A language filter dropdown and an "Outdated only" filter are added to the post l
 The **Translations** sidebar meta box shows each language's linked post and an **Override** button that pulls the source content into the translation via AJAX.
 
 Quick Edit includes a language selector for posts, pages, and navigation items.
+
+**Editor Preview Language Switcher** — a globe-icon button injected into the Gutenberg / Site Editor top-bar (`.interface-pinned-items`, same slot as Quick Translate) lets editors switch their WP user locale without leaving the editor. Selecting a language updates the canvas locale instantly — template previews, FSE translations, and plugin strings all render in the chosen language. Available on the post editor and the Site Editor. Clicking the active language resets to the site default.
+
+**Admin Bar Locale Switcher** — a globe-icon node in the WP admin toolbar provides the same locale switching on every admin screen. The current language is shown in the toolbar; the flyout lists all active languages with a ✓ on the active one. Useful for quickly toggling between languages when working outside the editor.
 
 #### Link Fixer
 
