@@ -1,0 +1,2941 @@
+# Copyright (C) 2026 Uli Hake
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Lingua Forge 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
+"Last-Translator: admin\n"
+"Language-Team: Chinese (China)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
+"PO-Revision-Date: 2026-06-01 20:23+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: lingua-forge\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Loco-Version: 2.8.5; wp-7.0; php-8.3.31"
+
+#. Plugin Name of the plugin
+#: lingua-forge.php ai/assets/toolbar-translate.js:197
+msgid "Lingua Forge"
+msgstr "Lingua Forge"
+
+#. Plugin URI of the plugin
+#: lingua-forge.php
+msgid "https://github.com/leotiger/lingua-forge"
+msgstr "https://github.com/leotiger/lingua-forge"
+
+#. Description of the plugin
+#: lingua-forge.php
+msgid ""
+"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
+"Combines language detection, URL routing, hreflang, meta descriptions, and "
+"AI-powered excerpt, meta, and translation features."
+msgstr ""
+"多语言路由、SEO元标签和AI内容工具，适用于WordPress。结合语言检测、URL路由、hreflang、元描述，以及由AI驱动的摘要、元信息和翻译功能。"
+
+#. Author of the plugin
+#: lingua-forge.php
+msgid "Uli Hake"
+msgstr "Uli Hake"
+
+#. Author URI of the plugin
+#: lingua-forge.php
+msgid "https://lingua-forge.com"
+msgstr "https://lingua-forge.com"
+
+#: ai/includes/Admin/AdminToolbar.php:63
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
+#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:228
+#: ai/includes/Admin/SettingsPage.php:234 ai/assets/block-action.js:243
+#: ai/assets/block-action.js:262 ai/assets/block-action.js:286
+#: ai/assets/block-action.js:299 ai/assets/editor-translate.js:227
+#: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
+#: ai/assets/toolbar-translate.js:214 ai/assets/toolbar-translate.js:250
+#: ai/assets/toolbar-translate.js:665
+msgid "Translate"
+msgstr "翻译"
+
+#: ai/includes/Admin/AdminToolbar.php:67
+msgid "Lingua Forge — Quick Translate"
+msgstr "Lingua Forge — 快速翻译"
+
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:218
+#: ai/includes/Features/ContentGenerator.php:35
+msgid "Informative"
+msgstr "信息性"
+
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:219
+#: ai/includes/Features/ContentGenerator.php:36
+msgid "Persuasive"
+msgstr "说服性"
+
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:220
+#: ai/includes/Features/ContentGenerator.php:37
+msgid "Storytelling"
+msgstr "讲故事"
+
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:221
+#: ai/includes/Features/ContentGenerator.php:38
+msgid "Technical"
+msgstr "技术性"
+
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:222
+#: ai/includes/Features/ContentGenerator.php:39
+msgid "Conversational"
+msgstr "对话性"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:34
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:149
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:41
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:214
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:761
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:831
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:916
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:984
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1006
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1027
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1052
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1077
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:416
+msgid "Permission denied."
+msgstr "权限被拒绝。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:49
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:77
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:222
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:60
+msgid "Cannot determine target language from slug."
+msgstr "无法从slug中确定目标语言。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:54
+msgid "Invalid post type."
+msgstr "无效的帖子类型。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:61
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:57
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:160
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:68
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:229
+msgid "Invalid or primary language."
+msgstr "无效或主要语言。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:93
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:81
+msgid "Template not found or not stored in the database."
+msgstr "未找到模板或未存储在数据库中。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:75
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:104
+msgid "Template has no content."
+msgstr "模板没有内容。"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:138
+msgid "No internal links found to update."
+msgstr "未找到要更新的内部链接。"
+
+#. translators: %d: number of links rewritten
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:146
+#, php-format
+msgid "%d link updated."
+msgid_plural "%d links updated."
+msgstr[0] "%d 个链接已更新。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
+msgid "No language-specific template parts found to map."
+msgstr "未找到要映射的特定语言模板部分。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:167
+msgid "No template part references needed updating."
+msgstr "无需更新的模板部分引用。"
+
+#. translators: %d: number of template part references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:185
+#, php-format
+msgid "%d part reference updated."
+msgid_plural "%d part references updated."
+msgstr[0] "%d 个模板部分引用已更新。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:233
+msgid "Invalid language."
+msgstr "无效的语言。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:241
+msgid "Template part not found or not stored in the database."
+msgstr "未找到模板部分或未存储在数据库中。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:252
+msgid "Template part has no content."
+msgstr "模板部分没有内容。"
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:324
+msgid "No navigation references needed updating."
+msgstr "无需更新的导航引用。"
+
+#. translators: %d: number of navigation block references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:342
+#, php-format
+msgid "%d navigation reference updated."
+msgid_plural "%d navigation references updated."
+msgstr[0] "%d 个导航引用已更新。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:38
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:45
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:218
+msgid "No AI provider configured."
+msgstr "未配置AI提供商。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:50
+msgid "Missing pattern name or language."
+msgstr "缺少模式名称或语言。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:63
+msgid "Pattern not found."
+msgstr "未找到模式。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:70
+msgid "Pattern has no content to translate."
+msgstr "模式没有内容可翻译。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:114
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:155
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:284
+msgid "AI provider returned an empty response."
+msgstr "AI提供商返回空响应。"
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:126
+msgid ""
+"Pattern translated and saved. Copy the content into your CPT post via the "
+"block editor Pattern inserter or use it as a starting point for a Reusable "
+"Block."
+msgstr "模式已翻译并保存。通过块编辑器模式插入器将内容复制到您的CPT帖子中，或用作可重用块的起点。"
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:51
+msgid "Invalid template type."
+msgstr "无效的模板类型。"
+
+#. translators: %s: template slug such as page-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:60
+#, php-format
+msgid "Template \"%s\" already exists."
+msgstr "模板“%s”已存在。"
+
+#. translators: %s: template title such as "Page DE"
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:127
+#, php-format
+msgid "\"%s\" created."
+msgstr "“%s”已创建。"
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:167
+msgid "Invalid template part."
+msgstr "无效的模板部分。"
+
+#. translators: %s: template part slug such as header-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:176
+#, php-format
+msgid "Template part \"%s\" already exists."
+msgstr "模板部分“%s”已存在。"
+
+#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:249
+#, php-format
+msgid "\"%1$s\" created. %2$d template updated."
+msgid_plural "\"%1$s\" created. %2$d templates updated."
+msgstr[0] "“%1$s”已创建。%2$d 个模板已更新。"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
+msgid "Page"
+msgstr "页面"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:47
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:48
+msgid "Single"
+msgstr "单一"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:51
+msgid "Search"
+msgstr "搜索"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:52
+msgid "Search Results"
+msgstr "搜索结果"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:55
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:56
+msgid "Archive"
+msgstr "存档"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:59
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:60
+msgid "Front Page"
+msgstr "首页"
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:114
+#, php-format
+msgid "Single: %s"
+msgstr "单一：%s"
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:119
+#, php-format
+msgid "Single %s"
+msgstr "单一 %s"
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:129
+#, php-format
+msgid "Archive: %s"
+msgstr "存档：%s"
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:134
+#, php-format
+msgid "%s Archive"
+msgstr "%s 存档"
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:103
+msgid "No source content found to translate."
+msgstr "未找到可翻译的源内容。"
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:192
+msgid ""
+"Translated. Review in the Site Editor — internal links, navigation URLs, and "
+"template slugs are not updated automatically."
+msgstr "已翻译。在站点编辑器中查看——内部链接、导航URL和模板别名不会自动更新。"
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:234
+msgid "Navigation not found."
+msgstr "未找到导航。"
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:239
+msgid "Navigation has no content to translate."
+msgstr "导航没有内容可翻译。"
+
+#. translators: 1: navigation title e.g. "Primary Navigation", 2: language code e.g. "DE"
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:379
+#, php-format
+msgid "\"%1$s %2$s\" saved."
+msgstr "\"%1$s %2$s\" 已保存。"
+
+#: ai/includes/Admin/MetaBox.php:481
+msgid "Translate page…"
+msgstr "翻译页面…"
+
+#: ai/includes/Admin/MetaBox.php:482
+msgid "Generate content…"
+msgstr "生成内容…"
+
+#: ai/includes/Admin/MetaBox.php:502
+msgid "AI Behaviour Preset"
+msgstr "AI行为预设"
+
+#: ai/includes/Admin/MetaBox.php:508
+msgid "Custom"
+msgstr "自定义"
+
+#. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
+#: ai/includes/Admin/MetaBox.php:513
+#, php-format
+msgid "Global default (%s)"
+msgstr "全局默认 (%s)"
+
+#: ai/includes/Admin/MetaBox.php:525
+msgid ""
+"Overrides the AI preset for Translation and Content Generation on this page. "
+"Site-wide custom prompt instructions (Settings → Behavior) are always "
+"appended to every request regardless of this selection."
+msgstr "覆盖此页面的AI预设，用于翻译和内容生成。站点范围的自定义提示指令（设置 → 行为）始终会附加到每个请求，无论此选择如何。"
+
+#: ai/includes/Admin/MetaBox.php:530
+msgid ""
+"Overrides the AI preset for Translation and Content Generation on this page. "
+"All other features always use the global preset."
+msgstr "覆盖此页面的AI预设，用于翻译和内容生成。所有其他功能始终使用全局预设。"
+
+#: ai/includes/Admin/MetaBox.php:611
+#: language-router/includes/class-lsflr-link-fixer.php:782
+#: ai/assets/admin.js:261 ai/assets/admin.js:442 ai/assets/block-action.js:249
+#: ai/assets/editor-translate.js:222
+msgid "Close"
+msgstr "关闭"
+
+#: ai/includes/Admin/PostListColumn.php:86
+msgid "Translate missing"
+msgstr "缺失翻译"
+
+#. translators: label prefix for the retranslate language picker
+#: ai/includes/Admin/PostListColumn.php:127
+msgid "From"
+msgstr "来自"
+
+#: ai/includes/Admin/PostListColumn.php:137
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:67
+msgid "Retranslate"
+msgstr "重新翻译"
+
+#: ai/includes/Admin/PostListColumn.php:181
+#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:235 ai/assets/editor-translate.js:682
+#: ai/assets/toolbar-translate.js:584
+msgid "Translating…"
+msgstr "翻译中…"
+
+#: ai/includes/Admin/PostListColumn.php:182
+msgid "Retranslating…"
+msgstr "重新翻译中…"
+
+#: ai/includes/Admin/PostListColumn.php:183
+msgid "✓ Done"
+msgstr "✓ 完成"
+
+#: ai/includes/Admin/PostListColumn.php:184
+msgid "Error"
+msgstr "错误"
+
+#: ai/includes/Admin/PostListColumn.php:226
+msgid "Navigation posts are translated via the Router tab, not this button."
+msgstr "导航文章通过路由标签进行翻译，而不是通过此按钮。"
+
+#. translators: %s: post type slug
+#: ai/includes/Admin/PostListColumn.php:265
+#, php-format
+msgid ""
+"Creating translations for post type \"%s\" requires an active integration. "
+"Please ensure the required integration is installed and active."
+msgstr "为\"%s\"类型的文章创建翻译需要激活的集成。请确保已安装并激活所需的集成。"
+
+#. translators: %s: language code
+#: ai/includes/Admin/PostListColumn.php:394
+#, php-format
+msgid "No %s version found in this translation group."
+msgstr "在此翻译组中未找到%s版本。"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:22
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:88
+#: ai/includes/Admin/SettingsPage.php:554
+msgid "AI Usage"
+msgstr "AI使用情况"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:37
+msgid "Today"
+msgstr "今天"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:41
+msgid "Last 7 days"
+msgstr "过去7天"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:45
+msgid "Last 30 days"
+msgstr "过去30天"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:49
+msgid "All time"
+msgstr "全部时间"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:92
+msgid ""
+"Token consumption rolled up by feature, provider, and model. Recorded on "
+"every successful AI call; Test Connection pings are deliberately excluded so "
+"they don't skew the totals. The underlying table aggregates daily — pick a "
+"window below to view it."
+msgstr ""
+"按功能、提供者和模型统计的令牌消耗。每次成功的AI调用都会记录；测试连接的ping会被刻意排除，以免影响总数。底层表格按天汇总——请选择下面的时间窗口查看。"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:116
+msgid ""
+"No AI usage recorded yet. Once an editor runs a translation, generates a "
+"meta description, or uses any other AI feature, totals will appear here."
+msgstr "尚未记录AI使用情况。一旦编辑器执行翻译、生成元描述或使用任何其他AI功能，统计数据将显示在这里。"
+
+#. translators: %s is a date-range label like "Today" or "Last 7 days".
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:131
+#, php-format
+msgid ""
+"No AI usage recorded in the selected window (%s). Pick a wider range above."
+msgstr "在所选时间窗口（%s）内未记录AI使用情况。请在上方选择更宽的时间范围。"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:143
+msgid "Feature"
+msgstr "功能"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:144
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+msgid "Provider"
+msgstr "提供者"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:145
+msgid "Model"
+msgstr "模型"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:146
+msgid "Requests"
+msgstr "请求数"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:147
+msgid "Input tokens"
+msgstr "输入令牌"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:148
+msgid "Output tokens"
+msgstr "输出令牌"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:149
+msgid "Total tokens"
+msgstr "总令牌"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:167
+msgid "Total"
+msgstr "总计"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
+#: ai/includes/Admin/SettingsPage.php:549
+msgid "API Keys"
+msgstr "API密钥"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+msgid ""
+"Keys are encrypted with AES-256-CBC before being stored in the WordPress "
+"database. The encryption secret is derived from your WordPress auth salts "
+"(wp-config.php), so plaintext keys never touch the database."
+msgstr ""
+"密钥在存入WordPress数据库前会用AES-256-CBC加密。加密密钥来自您的WordPress认证盐（wp-config."
+"php），因此明文密钥永远不会触及数据库。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+msgid "API Key"
+msgstr "API密钥"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+msgid "Paste your API key…"
+msgstr "粘贴您的API密钥…"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+msgid "✓ Configured"
+msgstr "✓ 已配置"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+msgid "✗ Not configured"
+msgstr "✗ 未配置"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+msgid "Test connection"
+msgstr "测试连接"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+msgid "Leave blank to keep the existing key. Enter a new value to replace it."
+msgstr "留空以保持现有密钥。输入新值以替换它。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+msgid "Remove stored key"
+msgstr "移除存储的密钥"
+
+#. translators: %s is the key source: either "environment variable" or "PHP constant".
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#, php-format
+msgid ""
+"This key is currently supplied by a server %s and cannot be removed here. "
+"Enter a new key above to override it with a database value."
+msgstr "此密钥目前由服务器%s提供，无法在此处移除。请在上方输入新密钥以用数据库中的值覆盖它。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+msgid "environment variable"
+msgstr "环境变量"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+msgid "PHP constant"
+msgstr "PHP 常量"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+msgid "Alternative (server-side):"
+msgstr "备用（服务器端）："
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+msgid ""
+"You can also define keys as constants or environment variables (e.g. in wp-"
+"config.php). Those sources are used automatically as a fallback when no "
+"database key is stored."
+msgstr "你也可以将键定义为常量或环境变量（例如在 wp-config.php 中）。当没有存储数据库键时，这些来源会自动用作后备方案。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+msgid ""
+"To use a custom encryption secret (instead of the derived wp_salt value), "
+"add this to wp-config.php:"
+msgstr "要使用自定义加密密钥（而不是派生的 wp_salt 值），请将其添加到 wp-config.php："
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+msgid "Unknown provider."
+msgstr "未知提供者。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+msgid "No API key configured for this provider."
+msgstr "此提供者未配置 API 密钥。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+msgid "Could not instantiate the provider."
+msgstr "无法实例化提供者。"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
+msgid ""
+"Provider returned no text. Check the WordPress error log for the detailed "
+"failure reason."
+msgstr "提供者未返回文本。请检查 WordPress 错误日志以获取详细的失败原因。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
+#: ai/includes/Admin/SettingsPage.php:551
+msgid "Behavior"
+msgstr "行为"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:29
+msgid "Block Editor"
+msgstr "块编辑器"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:33
+msgid ""
+"Lingua Forge restricts two Gutenberg features by default to keep editorial "
+"behavior consistent across languages. Opt in here when you need full "
+"Gutenberg / FSE capabilities."
+msgstr ""
+"Lingua Forge 默认限制两个 Gutenberg 功能，以保持跨语言的编辑行为一致。当你需要完整的 Gutenberg / FSE "
+"功能时，请在此选择加入。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:40
+msgid "Block locking"
+msgstr "块锁定"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:50
+msgid "Allow editors to lock individual blocks"
+msgstr "允许编辑者锁定单个块"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:53
+msgid ""
+"Re-enables Gutenberg's canLockBlocks. Useful for editorial templates that "
+"need to prevent contributors from moving or deleting specific blocks."
+msgstr "重新启用 Gutenberg 的 canLockBlocks。适用于需要防止贡献者移动或删除特定块的编辑模板。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:59
+msgid "Template mode"
+msgstr "模板模式"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:69
+msgid "Allow Gutenberg template-editing mode on post screens"
+msgstr "允许在文章屏幕上使用 Gutenberg 模板编辑模式"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:72
+msgid ""
+"Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where "
+"post-level template overrides are intentional."
+msgstr "重新启用 supportsTemplateMode。这是完整站点编辑工作流程的核心，适用于有意进行文章级模板覆盖的情况。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:79
+msgid "Compliance Preset"
+msgstr "合规预设"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:83
+msgid ""
+"Strict-preservation mode for legal, regulatory, medical, or technical "
+"content. When on, every AI feature uses a low sampling temperature and "
+"appends the addendum below to its system prompt — terminology, article "
+"numbers, units, brand names, and regulatory language are preserved verbatim "
+"rather than paraphrased."
+msgstr ""
+"用于法律、监管、医疗或技术内容的严格保存模式。开启后，每个 AI "
+"功能都使用较低的采样温度，并在系统提示中附加以下补充内容——术语、文章编号、单位、品牌名称和监管语言将逐字保留，而非意译。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:91
+msgid "Global AI preset"
+msgstr "全局 AI 预设"
+
+#. translators: %s: sampling temperature value, e.g. 0.2
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:106
+#, php-format
+msgid "T=%s"
+msgstr "T=%s"
+
+#. translators: temperature range shown for the Standard preset, e.g. "T=0.2–0.6, per feature"
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:111
+msgid "T=0.2–0.6, per feature"
+msgstr "每个功能的 T=0.2–0.6"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:118
+msgid ""
+"Sets the default AI behaviour for all features site-wide. Individual posts "
+"can override this for Translation and Content Generation via the Lingua "
+"Forge meta box."
+msgstr "设置整个站点所有功能的默认 AI 行为。单个文章可以通过 Lingua Forge 元框覆盖此设置，用于翻译和内容生成。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
+msgid ""
+"Standard uses each feature's own tuned temperature: Translation T=0.2 "
+"(precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The "
+"other presets apply a single fixed temperature across all features."
+msgstr ""
+"标准使用每个功能的调优温度：翻译 T=0.2（精准），快速翻译 T=0.4，内容生成 T=0.6（创造性）。其他预设在所有功能中应用单一固定温度。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:129
+msgid "Technical / Scientific instructions"
+msgstr "技术/科学指令"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
+msgid "Legal / Compliance instructions"
+msgstr "法律/合规指令"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
+msgid "Creative / Marketing instructions"
+msgstr "创意/营销指令"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:154
+msgid ""
+"Leave blank to use the built-in default. Clearing a saved override restores "
+"the default on next save."
+msgstr "留空以使用内置默认值。清除已保存的覆盖将恢复默认值，下一次保存时生效。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:157
+msgid "View built-in default"
+msgstr "查看内置默认值"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:571
+msgid "Translation Memory"
+msgstr "翻译记忆"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
+msgid ""
+"Cache translated equivalents at the block level so reusable content (shared "
+"footers, sidebars, accordions, boilerplate-heavy legal sections) does not "
+"pay an API call every time. When enabled, the translation flow parses each "
+"post into blocks, looks each block up in the cache, and sends only uncached "
+"blocks to the AI in a single batched request. Glossary edits and Compliance "
+"preset changes automatically invalidate affected cached translations. View "
+"statistics and clear the cache under Maintenance."
+msgstr ""
+"在块级缓存已翻译的等价内容，以避免每次调用 "
+"API（如共享页脚、侧边栏、手风琴、法律条款）都要支付一次调用费用。启用后，翻译流程会将每篇文章拆分为块，查找缓存中的内容，只将未缓存的块批量发送给 "
+"AI。词汇表编辑和合规预设更改会自动使受影响的缓存翻译失效。可在维护中查看统计信息和清除缓存。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:187
+msgid "Enable block-level translation cache reuse across posts"
+msgstr "启用跨文章块级翻译缓存重用"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
+msgid ""
+"Currently skipped for posts that use block-comment attribute placeholders "
+"(wp:details summary fields, etc.) — they fall through to the existing single-"
+"call translation path."
+msgstr "目前跳过使用块注释属性占位符（如 wp:details summary 字段等）的文章——它们会走现有的单次调用翻译路径。"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
+#: ai/includes/Admin/SettingsPage.php:548
+msgid "General"
+msgstr "通用"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
+#: ai/includes/Admin/SettingsPage.php:67
+msgid "Light"
+msgstr "轻量"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:68
+msgid "Meta Description, Excerpt Generator"
+msgstr "元描述、摘要生成器"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
+#: ai/includes/Admin/SettingsPage.php:71
+msgid "Quality"
+msgstr "质量"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:72
+msgid "Translation, Content Generator"
+msgstr "翻译、内容生成"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+msgid "Active Provider"
+msgstr "当前提供者"
+
+#. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#, php-format
+msgid ""
+"Currently inherited from the %s constant. Selecting a value here will "
+"override it."
+msgstr "目前继承自 %s 常量。这里选择的值将覆盖它。"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+msgid "Models"
+msgstr "模型"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+msgid ""
+"Features are grouped into two tiers. Enter the exact model identifier for "
+"each tier and provider. Leave a field blank to use the built-in default "
+"(shown as placeholder). Only the active provider's models are called at "
+"runtime — configure the others in advance if you plan to switch."
+msgstr ""
+"功能分为两个层级。输入每个层级和提供者的确切模型标识符。留空使用内置默认（显示为占位符）。只有激活的提供者模型在运行时调用——如果计划切换，请提前配置其他模型。"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+msgid "active"
+msgstr "激活"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+msgid "overridden"
+msgstr "已覆盖"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+msgid ""
+"Tip: to reset a model to the built-in default, clear the field and save."
+msgstr "提示：要将模型重置为内置默认值，清空字段并保存。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
+#: ai/includes/Admin/SettingsPage.php:553
+msgid "Glossary"
+msgstr "词汇表"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:64
+msgid ""
+"User-managed terminology table per language pair. Entries are appended to "
+"the translation system prompt so the AI uses preferred terms consistently — "
+"critical for domain vocabulary (\"kWp\", \"PPA\", \"interconnection point\"),"
+" brand names that must not translate, and standardised regulatory phrasing. "
+"Both language fields are optional: leave \"Source language\" blank to apply "
+"the entry regardless of which language you are translating from; leave "
+"\"Target language\" blank to apply it to all target languages at once."
+msgstr ""
+"每个语言对的用户管理术语表。条目会附加到翻译系统提示中，使 AI "
+"始终使用偏好的术语——这对于领域词汇（“kWp”、“PPA”、“互联系点”）、不得翻译的品牌名和标准化的监管措辞至关重要。两个语言字段都是可选的：留空“源语言”以在任何翻译源语言时应用该条目；留空“目标语言”以同时应用于所有目标语言。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:75
+msgid "Glossary entry added."
+msgstr "词汇表条目已添加。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:80
+msgid "Glossary entry removed."
+msgstr "词汇表条目已删除。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:90
+msgid "Could not add entry: source term and target term are required."
+msgstr "添加条目失败：需要源术语和目标术语。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:92
+msgid "Could not save the glossary entry."
+msgstr "无法保存词汇表条目。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:104
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:228
+msgid "Source language"
+msgstr "源语言"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:107
+msgid "— Any —"
+msgstr "— 任意 —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:116
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:242
+msgid "Target language"
+msgstr "目标语言"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:119
+msgid "— Any target —"
+msgstr "— 任意目标 —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:127
+msgid "Filter"
+msgstr "筛选"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:128
+msgid "Reset"
+msgstr "重置"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:137
+msgid ""
+"No glossary entries match the current filter. Clear the filter to see all "
+"entries, or add a new entry below."
+msgstr "没有符合当前筛选条件的词汇表条目。清除筛选以查看所有条目，或在下方添加新条目。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:139
+msgid ""
+"No glossary entries yet. Add one below to start enforcing terminology in "
+"translations."
+msgstr "还没有词汇表条目。请在下方添加以开始在翻译中强制执行术语。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:148
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:210
+msgid "Source term"
+msgstr "源术语"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:149
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:219
+msgid "Target term"
+msgstr "目标术语"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:150
+msgid "Source lang"
+msgstr "源语言"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:151
+msgid "Target lang"
+msgstr "目标语言"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
+msgid "Notes"
+msgstr "备注"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
+msgid "any"
+msgstr "任意"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:188
+msgid "Delete this glossary entry?"
+msgstr "是否删除此词汇表条目？"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:190
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:190
+msgid "Delete"
+msgstr "删除"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:201
+msgid "Add new entry"
+msgstr "添加新条目"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:214
+msgid "The phrase as it appears in the source text."
+msgstr "在源文本中出现的短语。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:223
+msgid ""
+"How it should appear in the translation. Type the same value as the source "
+"term to instruct the AI to preserve it verbatim."
+msgstr "在翻译中应如何显示。输入与源术语相同的值，以指示AI逐字保留。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
+msgid "— Any source language —"
+msgstr "— 任意源语言 —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:237
+msgid ""
+"Leave blank for brand names and language-agnostic terms that should be "
+"enforced regardless of which language we are translating from."
+msgstr "对于品牌名称和应无论翻译自哪种语言都应强制保留的术语，留空即可。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:246
+msgid "— Any target language —"
+msgstr "— 任意目标语言 —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:251
+msgid ""
+"Leave blank to apply this entry to all target languages — ideal for brand "
+"names, abbreviations, and terms that must be preserved verbatim in every "
+"translation."
+msgstr "留空以将此条目应用于所有目标语言——非常适合品牌名称、缩写和必须逐字保留的术语。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
+msgid ""
+"Optional context for editors (e.g. \"ASIC = Application-Specific Integrated "
+"Circuit; preserve in English in technical contexts\")."
+msgstr "编辑者的可选上下文（例如“ASIC = 应用特定集成电路；在技术上下文中保留英文”）。"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:265
+msgid "Add entry"
+msgstr "添加条目"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
+#: ai/includes/Admin/SettingsPage.php:550
+msgid "Limits"
+msgstr "限制"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:39
+msgid "Authors and above (edit_published_posts)"
+msgstr "作者及以上（编辑已发布的文章）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:40
+msgid "Contributors and above — default (edit_posts)"
+msgstr "贡献者及以上——默认（编辑文章）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:41
+msgid "Editors and above (edit_others_posts)"
+msgstr "编辑者及以上（编辑他人文章）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:42
+msgid "Administrators only (manage_options)"
+msgstr "仅管理员（管理选项）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:52
+msgid "AI Limits & Security"
+msgstr "AI 限制与安全"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:56
+msgid ""
+"Cap how much AI usage the site can generate and restrict which user roles "
+"may trigger paid AI calls. Sits on top of the per-user rate limit (30 "
+"requests / minute, hardcoded) that already protects against single-user "
+"runaway loops."
+msgstr ""
+"限制网站生成的AI使用量，并限制哪些用户角色可以触发付费AI调用。位于每用户速率限制（每分钟30请求，硬编码）之上，已保护免受单一用户无限循环的影响。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:65
+msgid "Daily request limit"
+msgstr "每日请求限制"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:80
+msgid ""
+"Site-wide ceiling on AI requests per UTC day (counts both Toolbar "
+"translations and block revisions). Counter resets at UTC midnight. Set to 0 "
+"to disable the cap."
+msgstr "每个UTC日的全站AI请求上限（包括工具栏翻译和块修订）。计数器在UTC午夜重置。设置为0以禁用限制。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:89
+msgid "Minimum role"
+msgstr "最低角色"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:109
+msgid ""
+"Lowest WordPress capability allowed to trigger AI features. Tightening this "
+"on multi-author sites prevents Contributors or trial accounts from running "
+"paid AI calls. Override per-feature via the linguaforge_required_capability "
+"filter."
+msgstr ""
+"允许触发AI功能的最低WordPress权限。对多作者站点收紧此权限可以防止贡献者或试用账户运行付费AI调用。通过`linguaforge_required_capability`过滤器覆盖每个功能。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:118
+msgid "Translation Limits"
+msgstr "翻译限制"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:122
+msgid ""
+"Control how much content is sent to the AI and how large the response can be."
+" Leave a field blank to use the built-in default (shown as placeholder). "
+"Raise these values if large pages are being cut off; lower them to reduce "
+"API costs."
+msgstr ""
+"控制向AI发送的内容量以及响应的最大大小。留空使用内置默认值（显示为占位符）。如果页面内容被截断，请提高这些值；如果想降低API成本，请降低它们。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
+msgid "Model tier"
+msgstr "模型层级"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:143
+msgid "Quality (default — Sonnet / GPT-4o / Gemini Pro)"
+msgstr "质量（默认——Sonnet / GPT-4o / Gemini Pro）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:146
+msgid "Light (fast and cost-effective — Haiku / Flash)"
+msgstr "轻量（快速且成本效益高——Haiku / Flash）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:151
+msgid ""
+"Which model tier to use for full-page translation. Quality uses the model "
+"configured in the Models table above and is recommended for accurate, long-"
+"form translation. Switch to Light only if speed or cost is the priority and "
+"the content is short."
+msgstr "用于全文翻译的模型层级。质量使用上表中配置的模型，适合准确的长篇翻译。仅当速度或成本优先且内容较短时切换到轻量。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:160
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:254
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:315
+msgid "Max output tokens"
+msgstr "最大输出标记数"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:177
+msgid ""
+"Maximum number of tokens the AI may produce in a single translation response."
+" If a translation is silently cut off at the end, increase this value. "
+"Default: 16 000."
+msgstr "AI在单次翻译响应中可能生成的最大标记数。如果翻译在末尾被静默截断，请增加此值。默认：16000。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:186
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:278
+msgid "Max input characters"
+msgstr "最大输入字符数"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:203
+msgid ""
+"Maximum number of characters of post content forwarded to the AI. 0 means no "
+"limit — the full content is always sent (recommended). Set a non-zero value "
+"only if your provider has a tight context window. A warning is written to "
+"the PHP error log whenever the content is trimmed."
+msgstr ""
+"转发给AI的最大字符数。0表示无限制——始终发送完整内容（推荐）。仅在提供商有严格的上下文窗口时设置非零值。内容被截断时，PHP错误日志会有警告。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:212
+msgid "Quick Translation"
+msgstr "快速翻译"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:216
+msgid ""
+"Quick Translation is used for snippet/chunk mode — short passages translated "
+"on demand from the toolbar, editor, or block popovers. It uses a separate, "
+"lighter configuration from the full-page translation to keep responses fast "
+"and cost-effective."
+msgstr "快速翻译用于片段/块模式——从工具栏、编辑器或块弹出窗口按需翻译短段落。它使用与全文翻译不同的轻量配置，以保持响应速度快且成本低。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:237
+msgid "Light (default — fast and cost-effective)"
+msgstr "轻量（默认——快速且成本效益高）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:240
+msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
+msgstr "质量（十四行诗 / GPT-4o / Gemini Pro）"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:245
+msgid ""
+"The Light tier uses the fast model configured in the Models table above "
+"(default: Haiku / Flash). Switch to Quality if you need the same translation "
+"accuracy as full-page mode for snippets."
+msgstr ""
+"Light 级别使用上面模型表中配置的快速模型（默认：Haiku / Flash）。如果你需要与全页模式相同的翻译准确度，请切换到 Quality 级别。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:270
+msgid ""
+"Maximum tokens the AI may produce per quick translation. Default: 2 000."
+msgstr "每次快速翻译，AI 可能生成的最大令牌数。默认：2000。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:294
+msgid "Maximum characters accepted from the input field. Default: 8 000."
+msgstr "输入字段接受的最大字符数。默认：8000。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
+msgid "Content Generator"
+msgstr "内容生成器"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:306
+msgid ""
+"Controls the token budget and input limits for the AI Content Generator "
+"feature. Leave fields blank to use the built-in defaults."
+msgstr "控制 AI 内容生成器功能的令牌预算和输入限制。留空字段以使用内置默认值。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:331
+msgid ""
+"Maximum tokens the AI may produce per generation run. Raise this if full "
+"articles are being cut off. Default: 8 192."
+msgstr "每次生成运行，AI 可能生成的最大令牌数。如果完整文章被截断，请增加此值。默认：8192。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:339
+msgid "Max hints characters"
+msgstr "最大提示字符数"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:355
+msgid "Maximum characters read from the Hints field. Default: 2 000."
+msgstr "从提示字段读取的最大字符数。默认：2000。"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:363
+msgid "Max context characters"
+msgstr "最大上下文字符数"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:379
+msgid ""
+"Maximum characters of existing post content passed to the AI as seed context "
+"when no Hints are provided. Default: 6 000."
+msgstr "在未提供提示的情况下，传递给 AI 的现有帖子内容的最大字符数，作为种子上下文。默认：6000。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:28
+#: ai/includes/Admin/SettingsPage.php:555
+msgid "Maintenance"
+msgstr "维护"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:100
+msgid "Language Overrides"
+msgstr "语言覆盖"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:104
+msgid ""
+"Upload compiled .mo files to override third-party plugin strings for "
+"specific locales — for example, a custom VikBooking translation that uses "
+"\"apartment\" instead of \"room\". Files must follow the WordPress naming "
+"convention: {textdomain}-{locale}.mo (e.g. vikbooking-ca.mo). They are "
+"stored in the uploads folder and survive plugin updates."
+msgstr ""
+"上传已编译的 .mo 文件以覆盖特定地区的第三方插件字符串——例如，使用“公寓”而非“房间”的自定义 VikBooking 翻译。文件必须遵循 "
+"WordPress 命名规范：{textdomain}-{locale}.mo（例如 vikbooking-ca."
+"mo）。它们存储在上传文件夹中，并在插件更新时保持不变。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:113
+msgid "Override file uploaded successfully."
+msgstr "覆盖文件上传成功。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:118
+msgid "Override file deleted."
+msgstr "覆盖文件已删除。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:123
+msgid "No file was selected."
+msgstr "未选择文件。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:124
+msgid "Only .mo files are accepted."
+msgstr "只接受 .mo 文件。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:125
+msgid "The upload failed — please try again."
+msgstr "上传失败——请重试。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:126
+msgid "Could not save the file. Check that the uploads folder is writable."
+msgstr "无法保存文件。请检查上传文件夹是否可写。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:127
+msgid "Invalid filename."
+msgstr "文件名无效。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:128
+msgid "Security check failed — file path is not permitted."
+msgstr "安全检查失败——文件路径不允许。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:131
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:273
+msgid "An unknown error occurred."
+msgstr "发生未知错误。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:159
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:285
+msgid "Text domain / locale"
+msgstr "文本域 / 语言环境"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:160
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:287
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:533
+msgid "Files"
+msgstr "文件"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:161
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:288
+msgid "Size"
+msgstr "大小"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:184
+msgid "Delete all files for this override (both .mo and .po)?"
+msgstr "是否删除此覆盖的所有文件（包括 .mo 和 .po）？"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:202
+msgid "No override files uploaded yet."
+msgstr "尚未上传任何覆盖文件。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:220
+msgid "Upload .mo file"
+msgstr "上传 .mo 文件"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:232
+msgid ""
+"Accepts compiled .mo files only. Filename must follow the pattern "
+"{textdomain}-{locale}.mo. Uploading a file with the same name as an existing "
+"one will replace it."
+msgstr "只接受已编译的 .mo 文件。文件名必须遵循 {textdomain}-{locale}.mo 的模式。上传同名文件将覆盖现有文件。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:239
+msgid "Upload Override"
+msgstr "上传覆盖"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:248
+msgid "Loco Translate — Copy to Safe Storage"
+msgstr "Loco Translate — 复制到安全存储"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:252
+msgid ""
+"Loco Translate stores its custom translations in wp-content/languages/loco/ "
+"— a location that can be silently wiped by a WP core update, plugin "
+"reinstall, or if Loco Translate itself is removed. Copying files here moves "
+"them into the Lingua Forge i18n-overrides directory, which persists through "
+"all of those events and is loaded automatically on every request."
+msgstr ""
+"Loco Translate 将其自定义翻译存储在 wp-content/languages/loco/ 目录中——该位置可能在 WordPress "
+"核心更新、插件重装或删除 Loco Translate 时被静默清除。将文件复制到此处会将它们移动到 Lingua Forge i18n-"
+"overrides 目录，该目录在所有这些事件中都能持续存在，并在每次请求时自动加载。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:263
+msgid "File copied to safe storage successfully."
+msgstr "文件成功复制到安全存储。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:268
+msgid "Source file not found."
+msgstr "未找到源文件。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:269
+msgid "Could not copy the file. Check that the uploads folder is writable."
+msgstr "无法复制文件。请检查上传文件夹是否可写。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:270
+msgid "Invalid file reference."
+msgstr "文件引用无效。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:286
+msgid "Type"
+msgstr "类型"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:307
+msgid "✓ In safe storage"
+msgstr "✓ 在安全存储中"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:320
+msgid "Copy to safe storage"
+msgstr "复制到安全存储"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:333
+msgid ""
+"No custom Loco Translate files found yet. They appear here once you save a "
+"translation in Loco Translate."
+msgstr "尚未找到自定义 Loco Translate 文件。保存翻译后，它们会显示在这里。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:343
+msgid "AI Cache"
+msgstr "AI 缓存"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:347
+msgid ""
+"Lingua Forge caches AI-generated translations, meta descriptions, excerpts, "
+"and generated content per-post so unchanged inputs do not re-trigger a paid "
+"API call. Cached entries are automatically invalidated when their inputs "
+"change. Clear the cache manually to reclaim database space, force a resync "
+"after switching providers or editing prompt templates, or troubleshoot a "
+"cache-related issue."
+msgstr ""
+"Lingua Forge 缓存 AI 生成的翻译、元描述、摘要和每帖生成的内容，以避免未更改的输入重新触发付费 API "
+"调用。缓存条目在输入更改时会自动失效。手动清除缓存可以回收数据库空间，在切换提供商或编辑提示模板后强制重新同步，或排查缓存相关问题。"
+
+#. translators: %d is the number of cleared cache entries.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:365
+#, php-format
+msgid "AI cache cleared. %d entry was removed."
+msgid_plural "AI cache cleared. %d entries were removed."
+msgstr[0] "AI 缓存已清除。%d 条目已移除。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:381
+msgid ""
+"Clear all cached AI results? Future requests will trigger fresh API calls "
+"until the cache rebuilds."
+msgstr "清除所有缓存的 AI 结果？未来请求将触发新的 API 调用，直到缓存重建。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:387
+msgid "Clear AI Cache"
+msgstr "清除 AI 缓存"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:397
+msgid "Debug Files"
+msgstr "调试文件"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:401
+msgid ""
+"When debug logging is enabled (via the toggle below or by defining "
+"LINGUAFORGE_AI_DEBUG in wp-config.php), the Translation and FSE template "
+"translation features write their raw AI prompts and responses to disk for "
+"troubleshooting. Use this section to monitor that output and clear it once "
+"you have what you need — the files can grow quickly on large pages. "
+"Configure the destination directory via the linguaforge_debug_dir filter."
+msgstr ""
+"启用调试日志（通过下面的切换或在 wp-config.php 中定义 LINGUAFORGE_AI_DEBUG），翻译和 FSE 模板翻译功能会将其原始 "
+"AI 提示和响应写入磁盘以进行故障排除。使用此部分监控输出，完成后清除——文件在大页面上可能快速增长。通过 linguaforge_debug_dir "
+"过滤器配置目标目录。"
+
+#. translators: %d is the number of removed debug files.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:428
+#, php-format
+msgid "Debug files cleared. %d file was removed."
+msgid_plural "Debug files cleared. %d files were removed."
+msgstr[0] "调试文件已清除。%d 个文件已删除。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:449
+msgid "Debug logging enabled."
+msgstr "调试日志已启用。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:451
+msgid "Debug logging disabled."
+msgstr "调试日志已禁用。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:467
+msgid "Debug logging"
+msgstr "调试日志"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:478
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:499
+msgid "Write AI prompts and responses to disk for troubleshooting"
+msgstr "将AI提示和响应写入磁盘以进行故障排除"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:483
+msgid ""
+"Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that "
+"line to control this toggle from here."
+msgstr "由wp-config.php中的LINGUAFORGE_AI_DEBUG常量强制开启。删除该行即可从这里控制此切换。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:485
+msgid ""
+"Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove "
+"that line to control this toggle from here."
+msgstr "由wp-config.php中的LINGUAFORGE_AI_DEBUG常量强制关闭。删除该行即可从这里控制此切换。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:503
+msgid ""
+"Files land in the directory below. Useful for diagnosing translation issues "
+"— turn off once you have what you need so the files do not accumulate. You "
+"can also force this from wp-config.php with `define( 'LINGUAFORGE_AI_DEBUG', "
+"true );` which overrides the toggle."
+msgstr ""
+"文件存放在以下目录中。用于诊断翻译问题——在你获得所需内容后关闭，以免文件堆积。你也可以在wp-config.php中使用`define( "
+"'LINGUAFORGE_AI_DEBUG', true );`强制开启，此设置会覆盖切换。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:510
+msgid "Currently:"
+msgstr "当前："
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:513
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:617
+msgid "✓ Enabled"
+msgstr "✓ 已启用"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:517
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:621
+msgid "✗ Disabled"
+msgstr "✗ 已禁用"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:524
+msgid "Directory"
+msgstr "目录"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:528
+msgid ""
+"Filter with linguaforge_debug_dir to redirect debug output to a non-public "
+"location."
+msgstr "使用linguaforge_debug_dir过滤，将调试输出重定向到非公共位置。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:536
+msgid ".txt file(s) in the directory"
+msgstr ".txt文件在目录中"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:543
+msgid "Save Debug Setting"
+msgstr "保存调试设置"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:554
+msgid ""
+"Delete all .txt files in the debug directory? The directory itself will "
+"remain so future debug writes still land cleanly."
+msgstr ""
+"是否删除调试目录中的所有.txt文件？目录本身将保持不变，以便未来的调试写入仍然可以正常存放。你也可以在wp-config.php中使用`define( "
+"'LINGUAFORGE_AI_DEBUG', true );`强制开启，此设置会覆盖切换。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:560
+msgid "Clear Debug Files"
+msgstr "清除调试文件"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:575
+msgid ""
+"Per-block translation cache shared across posts. Configure on/off in "
+"Settings → Behavior. Stats below show what is currently cached; clearing "
+"forces every block to be re-translated on next request (useful after "
+"upgrading models or to recover database space)."
+msgstr ""
+"跨帖子共享的每块翻译缓存。在设置→行为中配置开关。下面的统计显示当前缓存的内容；清除后，下一次请求时每块都将重新翻译（升级模型后或为了回收数据库空间非常有用）。"
+
+#. translators: %d is the number of removed cached blocks.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:593
+#, php-format
+msgid "Translation Memory cleared. %d cached block was removed."
+msgid_plural "Translation Memory cleared. %d cached blocks were removed."
+msgstr[0] "翻译记忆已清除。%d个缓存块已被移除。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
+msgid "Status"
+msgstr "状态"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:623
+msgid "— toggle in Settings → Behavior."
+msgstr "— 在设置→行为中切换。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:628
+msgid "Cached blocks"
+msgstr "缓存块"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:634
+msgid "Cumulative cache hits"
+msgstr "累计缓存命中"
+
+#. translators: %s is the average hits per cached block.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:642
+#, php-format
+msgid "(avg %.1f hits/block)"
+msgstr "（平均 %.1f 次/块）"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:651
+msgid "Oldest entry"
+msgstr "最旧的条目"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:655
+msgid "Newest entry"
+msgstr "最新的条目"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:660
+msgid "Approximate size"
+msgstr "大致大小"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:672
+msgid ""
+"Clear the entire Translation Memory? Future translations will rebuild the "
+"cache as they run."
+msgstr "清除整个翻译记忆？未来的翻译将重新构建缓存。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:678
+msgid "Clear Translation Memory"
+msgstr "清除翻译记忆"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:689
+msgid "Uninstall Behaviour"
+msgstr "卸载行为"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:693
+msgid ""
+"Controls what happens when an administrator deletes the plugin from Plugins "
+"→ Installed Plugins → Delete. Plugin settings and AI caches are always "
+"removed. Language assignments and translation relationships are kept by "
+"default so an accidental uninstall or a reinstall can pick up where it left "
+"off."
+msgstr ""
+"控制管理员从插件→已安装插件→删除中删除插件时的行为。插件设置和AI缓存总是会被删除。默认会保留语言分配和翻译关系，以便意外卸载或重新安装时可以继续之前的状态。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:704
+msgid "Uninstall setting saved."
+msgstr "卸载设置已保存。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:717
+msgid "Delete content data on uninstall"
+msgstr "卸载时删除内容数据"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:726
+msgid ""
+"Also delete language assignments, translation relationships, meta "
+"descriptions, glossary, and Translation Memory when the plugin is uninstalled"
+msgstr "卸载插件时也删除语言分配、翻译关系、元描述、词汇表和翻译记忆"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:729
+msgid "Warning:"
+msgstr "警告："
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:731
+msgid ""
+"If checked, uninstalling the plugin will permanently delete all language "
+"assignments, translation relationships, meta descriptions, per-page presets, "
+"the AI glossary, and Translation Memory for every post on this site. This "
+"cannot be undone. Leave unchecked unless you are fully removing multilingual "
+"support from the site."
+msgstr ""
+"如果勾选，卸载插件将永久删除所有语言分配、翻译关系、元描述、每页预设、AI词汇表和每个帖子的翻译记忆。这无法撤销。除非你完全移除网站的多语言支持，否则请不要勾选。"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:742
+msgid "Save Uninstall Setting"
+msgstr "保存卸载设置"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:37
+#: ai/includes/Admin/SettingsPage.php:552
+msgid "Router"
+msgstr "路由器"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:92
+msgid "Primary language saved."
+msgstr "主要语言已保存。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:97
+msgid "Permalink rules flushed successfully."
+msgstr "永久链接规则已成功刷新。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:102
+msgid "Primary Language"
+msgstr "主要语言"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:105
+msgid ""
+"The primary language is always served at the root of your site — no URL "
+"prefix in path mode, no language subdomain in subdomain mode. All other "
+"languages use either a /lang/ path prefix (e.g. example.com/de/) or a "
+"language subdomain (e.g. de.example.com), depending on the URL structure "
+"setting below."
+msgstr ""
+"主要语言始终在你网站的根目录提供——在路径模式下没有URL前缀，在子域名模式下没有语言子域名。其他所有语言使用/语言/路径前缀（例如example."
+"com/de/）或语言子域名（例如de.example.com），具体取决于下面的URL结构设置。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:116
+msgid "Primary language"
+msgstr "主要语言"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:128
+msgid ""
+"After changing the primary language, flush permalinks (section below) for "
+"the URL routing to update."
+msgstr "更改主要语言后，刷新永久链接（下节）以更新URL路由。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:135
+msgid "URL structure"
+msgstr "URL结构"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
+msgid "Path prefix — example.com/de/"
+msgstr "路径前缀——example.com/de/"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:144
+msgid "Subdomain — de.example.com/"
+msgstr "子域名——de.example.com/"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:148
+msgid ""
+"Subdomain mode requires your web server to point all language subdomains (e."
+"g. de.example.com) to this WordPress installation. After switching modes, "
+"flush permalink rules and clear any caches. If your home URL includes www (e."
+"g. www.example.com), use the lf_base_domain filter to set the bare apex "
+"domain so subdomains are constructed correctly."
+msgstr ""
+"子域名模式要求你的Web服务器将所有语言子域名（例如de.example."
+"com）指向此WordPress安装。切换模式后，刷新永久链接规则并清除任何缓存。如果你的主页URL包含www（例如www.example."
+"com），请使用lf_base_domain过滤器设置裸露的顶级域名，以确保子域名正确构建。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:154
+msgid "Browser language redirect"
+msgstr "浏览器语言重定向"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:164
+msgid ""
+"Redirect visitors to their preferred language based on the browser's Accept-"
+"Language header"
+msgstr "根据浏览器的Accept-Language头，将访客重定向到其偏好的语言版本"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:167
+msgid ""
+"When enabled, first-time visitors with no language cookie and no language "
+"prefix in the URL are redirected to the closest matching language version. "
+"The redirect is skipped if the browser's preferred language is not among the "
+"active router languages. Once a visitor selects a language via the switcher, "
+"the cookie takes priority and the browser header is ignored on all future "
+"visits."
+msgstr ""
+"启用后，没有语言Cookie且URL中没有语言前缀的首次访问者将被重定向到最接近的匹配语言版本。如果浏览器首选语言不在激活的路由器语言中，则跳过重定向。一旦访客通过切换器选择了语言，Cookie将优先，未来的访问将忽略浏览器头信息。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:173
+msgid "Save Router Settings"
+msgstr "保存路由器设置"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:177
+msgid "Flush Permalinks"
+msgstr "刷新固定链接"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:180
+msgid ""
+"Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
+" and archive rewrites are all in sync. Necessary after changing the primary "
+"language or adding new language support."
+msgstr "重新生成WordPress重写规则，以确保URL前缀、特定语言的别名和存档重写保持同步。更改主要语言或添加新语言支持后需要执行此操作。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:186
+msgid "Flush Permalink Rules"
+msgstr "刷新永久链接规则"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:190
+msgid "Active Languages"
+msgstr "活动语言"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:193
+msgid ""
+"Languages currently known to the router (derived from installed WordPress "
+"locale packs plus the primary language). Install additional language packs "
+"in the section below to make more languages available for routing and "
+"translation."
+msgstr "路由器当前已知的语言（由已安装的WordPress区域包和主要语言派生）。在下面的部分安装额外的语言包，以使更多语言可用于路由和翻译。"
+
+#. translators: %d: count of installed locale packs
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:207
+#, php-format
+msgid "%d locale pack installed."
+msgid_plural "%d locale packs installed."
+msgstr[0] "已安装%d个区域包。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Install a Language"
+msgstr "安装语言"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Download and install a WordPress core language pack directly from WordPress."
+"org. Once installed, the locale becomes available for URL routing and the AI "
+"translation workflow. The list of available languages is fetched on demand — "
+"click the button below to load it."
+msgstr ""
+"直接从WordPress."
+"org下载并安装WordPress核心语言包。安装后，区域成为URL路由和AI翻译工作流程的可用选项。可用语言列表按需获取——点击下面的按钮加载。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:223
+msgid ""
+"Language installation is disabled on this server. The DISALLOW_FILE_MODS "
+"constant is set in wp-config.php. Install language packs manually via WP-CLI:"
+" wp language core install de_DE"
+msgstr ""
+"此服务器禁用语言安装。wp-config.php中设置了DISALLOW_FILE_MODS常量。通过WP-CLI手动安装语言包：wp language "
+"core install de_DE"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:228
+msgid "Load available languages"
+msgstr "加载可用语言"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/SettingsPage.php:207
+msgid "— select a language —"
+msgstr "— 选择一种语言 —"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:237
+msgid "Install"
+msgstr "安装"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
+msgid "Language Setup"
+msgstr "语言设置"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:272
+msgid ""
+"No secondary languages configured. Install a language pack above to enable "
+"template scaffolding."
+msgstr "未配置次要语言。请在上方安装语言包以启用模板脚手架。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:277
+msgid ""
+"Select a language to manage its FSE templates, template parts, and "
+"navigation menus."
+msgstr "选择一种语言以管理其FSE模板、模板部分和导航菜单。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:321
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:350
+msgid "Forbidden"
+msgstr "禁止访问"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/SettingsPage.php:208
+msgid ""
+"Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
+msgstr "此服务器禁用语言安装（设置了DISALLOW_FILE_MODS）。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:425
+msgid "Invalid locale code."
+msgstr "无效的区域代码。"
+
+#. translators: %s: locale code such as de_DE
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:451
+#, php-format
+msgid "Language %s installed successfully."
+msgstr "语言%s已成功安装。"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:454
+msgid ""
+"Language pack installation failed. The language may already be installed, "
+"the locale code may be incorrect, or your server may block file writes."
+msgstr "语言包安装失败。可能是已安装该语言、区域代码错误，或服务器阻止文件写入。"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:70
+msgid "Navigations"
+msgstr "导航"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:74
+msgid ""
+"Navigation translation requires an active AI provider. Configure an API key "
+"in the API Keys tab."
+msgstr "导航翻译需要激活的AI提供商。在API密钥标签中配置API密钥。"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:81
+msgid "Navigation"
+msgstr "导航"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:51
+msgid "Action"
+msgstr "操作"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
+#: ai/includes/Admin/SettingsPage.php:227
+msgid "Re-translate"
+msgstr "重新翻译"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:40
+msgid "CPT Block Patterns"
+msgstr "CPT块模式"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:43
+msgid ""
+"Block patterns registered for custom post types. Use the Translate button to "
+"produce a language variant. The translated content is saved here and can be "
+"copied into any CPT post from the block editor Pattern inserter or used as a "
+"starting point for a Synced Pattern (Reusable Block)."
+msgstr ""
+"为自定义文章类型注册的块模式。使用“翻译”按钮生成语言变体。翻译内容保存在此处，可从块编辑器的模式插入器复制到任何CPT文章中，或用作同步模式（可重用块）的起点。"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:49
+msgid "Pattern"
+msgstr "模式"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
+msgid "Post Types"
+msgstr "文章类型"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
+#: ai/includes/Admin/SettingsPage.php:238
+msgid "✓ Translation saved"
+msgstr "✓ 翻译已保存"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
+#: ai/includes/Admin/SettingsPage.php:239
+msgid "View"
+msgstr "查看"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:36
+msgid "Template Parts"
+msgstr "模板部分"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:37
+msgid ""
+"Language-specific copies of the theme's template parts. Once scaffolded, "
+"templates are updated to reference the language-specific part."
+msgstr "主题模板部分的特定语言副本。脚手架完成后，模板会更新以引用特定语言的部分。"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:42
+msgid "Part"
+msgstr "部分"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:43
+msgid "Status / Actions"
+msgstr "状态 / 操作"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
+#: ai/includes/Admin/SettingsPage.php:219
+msgid "Fix Links"
+msgstr "修复链接"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
+#: ai/includes/Admin/SettingsPage.php:230
+msgid "Fix Nav"
+msgstr "修复导航"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
+#: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:221
+msgid "Create"
+msgstr "创建"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:39
+msgid "Templates"
+msgstr "模板"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:40
+msgid ""
+"FSE templates seeded from the active theme. Create then customise in the "
+"Site Editor."
+msgstr "从激活的主题播种的FSE模板。在站点编辑器中创建并自定义。"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:48
+msgid "Actions"
+msgstr "操作"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
+#: ai/includes/Admin/SettingsPage.php:223
+msgid "Fix Parts"
+msgstr "修复部分"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
+msgid "Create missing"
+msgstr "创建缺失部分"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:104
+msgid "Translate all"
+msgstr "全部翻译"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+msgid "Fix all parts"
+msgstr "修复所有部分"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
+msgid "Fix all links"
+msgstr "修复所有链接"
+
+#: ai/includes/Admin/SettingsPage.php:51
+msgid "Anthropic (Claude)"
+msgstr "Anthropic（Claude）"
+
+#: ai/includes/Admin/SettingsPage.php:52
+msgid "OpenAI (GPT)"
+msgstr "OpenAI（GPT）"
+
+#: ai/includes/Admin/SettingsPage.php:53
+msgid "Google (Gemini)"
+msgstr "Google（Gemini）"
+
+#: ai/includes/Admin/SettingsPage.php:172
+msgid "Testing…"
+msgstr "测试中…"
+
+#: ai/includes/Admin/SettingsPage.php:173
+msgid "✓ Connection OK"
+msgstr "✓ 连接正常"
+
+#: ai/includes/Admin/SettingsPage.php:174
+msgid "✗ Failed:"
+msgstr "✗ 失败："
+
+#: ai/includes/Admin/SettingsPage.php:175
+msgid "No response from provider — check the error log for details."
+msgstr "没有收到提供者的响应 — 请检查错误日志以获取详细信息。"
+
+#: ai/includes/Admin/SettingsPage.php:176
+msgid "Network error — could not reach the WordPress AJAX endpoint."
+msgstr "网络错误 — 无法连接到 WordPress AJAX 端点。"
+
+#: ai/includes/Admin/SettingsPage.php:203
+msgid "Loading…"
+msgstr "加载中…"
+
+#: ai/includes/Admin/SettingsPage.php:204
+msgid "Installing…"
+msgstr "安装中…"
+
+#: ai/includes/Admin/SettingsPage.php:205
+msgid "✓ Language installed."
+msgstr "✓ 语言已安装。"
+
+#: ai/includes/Admin/SettingsPage.php:206
+msgid "✗ Error:"
+msgstr "✗ 错误："
+
+#: ai/includes/Admin/SettingsPage.php:209
+msgid "Creating…"
+msgstr "创建中…"
+
+#: ai/includes/Admin/SettingsPage.php:210
+msgid "✓ All templates created."
+msgstr "✓ 所有模板已创建。"
+
+#: ai/includes/Admin/SettingsPage.php:211
+msgid "Some templates could not be created."
+msgstr "部分模板无法创建。"
+
+#: ai/includes/Admin/SettingsPage.php:212
+msgid "✓ All parts created."
+msgstr "✓ 所有部分已创建。"
+
+#: ai/includes/Admin/SettingsPage.php:213
+msgid "Some parts could not be created."
+msgstr "部分部分无法创建。"
+
+#: ai/includes/Admin/SettingsPage.php:216
+msgid "✓ All translated."
+msgstr "✓ 所有已翻译。"
+
+#: ai/includes/Admin/SettingsPage.php:217
+msgid "Some translations failed."
+msgstr "部分翻译失败。"
+
+#: ai/includes/Admin/SettingsPage.php:218
+msgid "Review carefully — links and slugs not updated."
+msgstr "请仔细检查 — 链接和别名未更新。"
+
+#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:224
+#: ai/includes/Admin/SettingsPage.php:231
+#: language-router/includes/class-lsflr-link-fixer.php:96
+#: language-router/includes/class-lsflr-link-fixer.php:122
+msgid "Fixing…"
+msgstr "修复中…"
+
+#: ai/includes/Admin/SettingsPage.php:221
+msgid "✓ Links fixed."
+msgstr "✓ 链接已修复。"
+
+#: ai/includes/Admin/SettingsPage.php:222
+msgid "Some link fixes failed."
+msgstr "部分链接修复失败。"
+
+#: ai/includes/Admin/SettingsPage.php:225
+msgid "✓ Parts fixed."
+msgstr "✓ 部分已修复。"
+
+#: ai/includes/Admin/SettingsPage.php:226
+msgid "Some part fixes failed."
+msgstr "部分修复失败。"
+
+#: ai/includes/Admin/SettingsPage.php:232
+msgid "✓ Nav refs fixed."
+msgstr "✓ 导航引用已修复。"
+
+#: ai/includes/Admin/SettingsPage.php:233
+msgid "Some nav ref fixes failed."
+msgstr "部分导航引用修复失败。"
+
+#: ai/includes/Admin/SettingsPage.php:236
+msgid "✓ Pattern translated."
+msgstr "✓ 模式已翻译。"
+
+#: ai/includes/Admin/SettingsPage.php:237
+msgid "Pattern translation failed."
+msgstr "模式翻译失败。"
+
+#: ai/includes/Admin/SettingsPage.php:240
+msgid "Hide"
+msgstr "隐藏"
+
+#: ai/includes/Admin/SettingsPage.php:286
+msgid "Built-in preset instructions:"
+msgstr "内置预设指令："
+
+#: ai/includes/Admin/SettingsPage.php:287
+msgid ""
+"No built-in instructions — each AI feature uses its own tuned defaults. Fill "
+"in the Custom prompt instructions field below to add your own site-wide "
+"rules."
+msgstr "没有内置指令 — 每个 AI 功能使用其自己的调优默认值。请在下面的自定义提示指令字段中添加您的站点规则。"
+
+#: ai/includes/Admin/SettingsPage.php:325
+msgid "Settings"
+msgstr "设置"
+
+#: ai/includes/Admin/SettingsPage.php:337
+msgid "You do not have permission to manage these settings."
+msgstr "您没有权限管理这些设置。"
+
+#: ai/includes/Admin/SettingsPage.php:537
+msgid "Lingua Forge — Settings"
+msgstr "Lingua Forge — 设置"
+
+#: ai/includes/Admin/SettingsPage.php:542
+msgid "Settings saved."
+msgstr "设置已保存。"
+
+#: ai/includes/Admin/SettingsPage.php:590
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: ai/includes/Core/Config.php:51
+msgid "Standard"
+msgstr "标准"
+
+#: ai/includes/Core/Config.php:56
+msgid "Technical / Scientific"
+msgstr "技术 / 科学"
+
+#: ai/includes/Core/Config.php:61
+msgid "Legal / Compliance"
+msgstr "法律 / 合规"
+
+#: ai/includes/Core/Config.php:66
+msgid "Creative / Marketing"
+msgstr "创意 / 营销"
+
+#: ai/includes/Features/ContentGenerator.php:52
+msgid "Full Article"
+msgstr "完整文章"
+
+#: ai/includes/Features/ContentGenerator.php:53
+msgid "Introduction only"
+msgstr "仅介绍"
+
+#: ai/includes/Features/ContentGenerator.php:54
+msgid "Structured Outline"
+msgstr "结构化大纲"
+
+#: ai/includes/Features/ContentGenerator.php:65
+msgid "Generate Content"
+msgstr "生成内容"
+
+#: ai/includes/Features/ContentGenerator.php:89
+msgid "Hints"
+msgstr "提示"
+
+#: ai/includes/Features/ContentGenerator.php:90
+msgid "Key points, ideas, or structure to build from…"
+msgstr "关键点、想法或结构基础…"
+
+#: ai/includes/Features/ContentGenerator.php:95
+#: ai/assets/editor-translate.js:280 ai/assets/toolbar-translate.js:276
+msgid "Tone"
+msgstr "语调"
+
+#: ai/includes/Features/ContentGenerator.php:101
+msgid "Output"
+msgstr "输出"
+
+#: ai/includes/Features/ExcerptGenerator.php:24
+msgid "Generate Excerpt"
+msgstr "生成摘要"
+
+#: ai/includes/Features/MetaDescription.php:24
+msgid "Generate Meta Description"
+msgstr "生成元描述"
+
+#: ai/includes/Features/Translation.php:207
+msgid "Translate Content"
+msgstr "翻译内容"
+
+#: ai/includes/Features/Translation.php:672
+msgid "Mode"
+msgstr "模式"
+
+#: ai/includes/Features/Translation.php:674
+msgid "Full post"
+msgstr "完整帖子"
+
+#: ai/includes/Features/Translation.php:675
+msgid "Translate chunk"
+msgstr "翻译块"
+
+#: ai/includes/Features/Translation.php:681 ai/assets/block-action.js:253
+#: ai/assets/block-action.js:292 ai/assets/editor-translate.js:238
+#: ai/assets/toolbar-translate.js:228
+msgid "Target Language"
+msgstr "目标语言"
+
+#: ai/includes/Features/Translation.php:694 ai/assets/editor-translate.js:244
+#: ai/assets/toolbar-translate.js:237
+msgid "Text to translate"
+msgstr "待翻译文本"
+
+#: ai/includes/Features/Translation.php:695
+msgid "Paste a footnote, sentence, or any snippet here…"
+msgstr "在此粘贴脚注、句子或任何片段…"
+
+#: ai/includes/Features/Translation.php:702
+msgid "Also generate meta description"
+msgstr "也生成元描述"
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:109
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:150
+msgid "Translated Names"
+msgstr "已翻译的名称"
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
+msgid "Name displayed in this language. Leave empty to use the source name."
+msgstr "在此语言中显示的名称。留空以使用源名称。"
+
+#. translators: %d is seconds until the next AI request is allowed.
+#: ai/includes/REST/RateLimiter.php:103
+#, php-format
+msgid "Too many AI requests. Please retry in %d seconds."
+msgstr "请求次数过多。请在%d秒后重试。"
+
+#. translators: 1: quota number, 2: reset time.
+#: ai/includes/REST/RateLimiter.php:169
+#, php-format
+msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
+msgstr "每日AI配额已达上限（%1$d请求）。将在%2$s UTC重置。"
+
+#: includes/class-updater.php:281
+msgid "View Lingua Forge details"
+msgstr "查看Lingua Forge详情"
+
+#: includes/class-updater.php:282
+msgid "View details"
+msgstr "查看详情"
+
+#: includes/class-updater.php:293
+msgid "Visit plugin site"
+msgstr "访问插件网站"
+
+#. translators: %d: number of languages without a translation post
+#: language-router/includes/admin/class-meta-boxes.php:264
+#, php-format
+msgid "%d language not yet linked"
+msgid_plural "%d languages not yet linked"
+msgstr[0] "还未关联%d种语言"
+
+#: language-router/includes/admin/class-meta-boxes.php:329
+msgid ""
+"This is the source page. Footnotes are edited directly in the block editor."
+msgstr "这是源页面。脚注在块编辑器中直接编辑。"
+
+#: language-router/includes/admin/class-meta-boxes.php:337
+msgid "No source page linked yet."
+msgstr "尚未链接源页面。"
+
+#: language-router/includes/admin/class-meta-boxes.php:344
+#: language-router/includes/admin/class-meta-boxes.php:351
+msgid "The source page has no footnotes."
+msgstr "源页面没有脚注。"
+
+#: language-router/includes/admin/class-meta-boxes.php:356
+msgid ""
+"These footnotes come from the source page and are shown here for reference "
+"only. Add them to this page using the block editor."
+msgstr "这些脚注来自源页面，仅供参考。请使用块编辑器将它们添加到此页面。"
+
+#. translators: 1: number of localized templates, 2: previous theme name
+#: language-router/includes/class-language-router.php:294
+#, php-format
+msgid ""
+"<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"
+"%2$s&#8221; theme are preserved in the database but are currently inactive. "
+"They will become active again if you reactivate that theme. To carry your "
+"translations to the new theme, regenerate them via <strong>Settings → Lingua "
+"Forge → Router → FSE scaffold</strong>."
+msgstr ""
+"<strong>Lingua Forge：</strong>"
+"来自“%2$s”主题的%1$d个本地化模板已保存在数据库中，但目前处于非激活状态。如果你重新激活该主题，它们将再次变为激活状态。要将你的翻译迁移到新主题，请通过<strong"
+">设置 → Lingua Forge → 路由器 → FSE 脚手架</strong>重新生成它们。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:81
+msgid "Scanning posts for broken language links…"
+msgstr "扫描帖子以查找断链…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:82
+msgid "Re-scanning…"
+msgstr "重新扫描…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:83
+msgid "Scan failed: "
+msgstr "扫描失败："
+
+#: language-router/includes/class-lsflr-link-fixer.php:84
+msgid "unknown error"
+msgstr "未知错误"
+
+#: language-router/includes/class-lsflr-link-fixer.php:85
+msgid "Scan request failed. Please try again."
+msgstr "扫描请求失败。请重试。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:86
+msgid ""
+"⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts "
+"have their Language meta set to <strong>{lang}</strong> in the Language "
+"metabox."
+msgstr "⚠ 未找到<强>{lang}</强>帖子。确保所有翻译帖子在“语言”元框中将其语言元设置为<强>{lang}</强>。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:87
+msgid ""
+"✅ No broken links or template mismatches found for <strong>{lang}</strong>. "
+"Scanned <strong>{scanned}</strong> post(s) and page(s) — all checks passed. "
+"Template part links (header, footer, sidebar) are not included here — use "
+"the Fix Template Parts button to check those separately."
+msgstr ""
+"✅ 未发现<强>{lang}</强>的断链或模板不匹配。已扫描<强>{scanned}</强>"
+"个帖子和页面——所有检查通过。模板部分链接（头部、底部、侧边栏）未包括在内——请使用“修复模板部分”按钮单独检查。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:88
+msgid "<strong>{n}</strong> auto-fixable link(s)"
+msgstr "<强>{n}</强>个可自动修复的链接"
+
+#: language-router/includes/class-lsflr-link-fixer.php:89
+msgid "<strong>{n}</strong> link(s) needing manual review"
+msgstr "<强>{n}</强>个需要手动检查的链接"
+
+#: language-router/includes/class-lsflr-link-fixer.php:90
+msgid "and"
+msgstr "和"
+
+#: language-router/includes/class-lsflr-link-fixer.php:91
+msgid ""
+"Found {parts} across <strong>{total}</strong> of <strong>{scanned}</strong> "
+"scanned post(s) for <strong>{lang}</strong>."
+msgstr ""
+"在<强>{total}</强>个已扫描的帖子中发现<强>{parts}</强>个部分，涉及<强>{scanned}</强>个帖子，语言为<强>{lang}"
+"</强>。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:92
+msgid "Post"
+msgstr "帖子"
+
+#: language-router/includes/class-lsflr-link-fixer.php:93
+msgid "Links"
+msgstr "链接"
+
+#: language-router/includes/class-lsflr-link-fixer.php:94
+msgid "link(s)"
+msgstr "链接"
+
+#: language-router/includes/class-lsflr-link-fixer.php:95
+msgid "Fix"
+msgstr "修复"
+
+#: language-router/includes/class-lsflr-link-fixer.php:97
+msgid "✅ Fixed ({n})"
+msgstr "✅ 已修复（{n}）"
+
+#: language-router/includes/class-lsflr-link-fixer.php:98
+msgid "⚠ No changes — re-scan?"
+msgstr "⚠ 无更改——重新扫描？"
+
+#: language-router/includes/class-lsflr-link-fixer.php:99
+msgid "⚠ No changes"
+msgstr "⚠ 无更改"
+
+#: language-router/includes/class-lsflr-link-fixer.php:100
+#: language-router/includes/class-lsflr-link-fixer.php:124
+msgid "❌ Failed"
+msgstr "❌ 失败"
+
+#: language-router/includes/class-lsflr-link-fixer.php:101
+msgid "Done — {done} of {total} post(s) fixed."
+msgstr "完成——已修复{done}个帖子（共{total}个）。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:102
+msgid "({skipped} had no replaceable links — re-scan to investigate)"
+msgstr "（{skipped}没有可替换的链接——重新扫描以调查）"
+
+#: language-router/includes/class-lsflr-link-fixer.php:103
+msgid "Fixing {n} / {total}…"
+msgstr "正在修复{n} / {total}…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:106
+msgid "URL could not be mapped to a post — check the link target exists"
+msgstr "URL无法映射到帖子——请检查链接目标是否存在"
+
+#: language-router/includes/class-lsflr-link-fixer.php:107
+msgid "No {lang} translation registered (TRID missing)"
+msgstr "未注册{lang}翻译（TRID缺失）"
+
+#: language-router/includes/class-lsflr-link-fixer.php:108
+msgid "Translation found but permalink could not be generated"
+msgstr "找到翻译但无法生成永久链接"
+
+#: language-router/includes/class-lsflr-link-fixer.php:111
+msgid "<strong>{n}</strong> stale path(s)"
+msgstr "<强>{n}</强>个过时路径"
+
+#: language-router/includes/class-lsflr-link-fixer.php:112
+msgid "📍 Stale path (page moved)"
+msgstr "📍 过时路径（页面已移动）"
+
+#: language-router/includes/class-lsflr-link-fixer.php:113
+msgid "{n} stale path(s)"
+msgstr "{n}个过时路径"
+
+#: language-router/includes/class-lsflr-link-fixer.php:116
+msgid "<strong>{n}</strong> template issue(s)"
+msgstr "<强>{n}</强>个模板问题"
+
+#: language-router/includes/class-lsflr-link-fixer.php:117
+msgid "📄 Wrong template"
+msgstr "📄 错误的模板"
+
+#: language-router/includes/class-lsflr-link-fixer.php:118
+msgid "Expected: {expected}"
+msgstr "预期：{expected}"
+
+#: language-router/includes/class-lsflr-link-fixer.php:119
+msgid "Current: {current}"
+msgstr "当前：{current}"
+
+#: language-router/includes/class-lsflr-link-fixer.php:120
+msgid ""
+"Template \"{expected}\" does not exist — create it in the Site Editor first."
+msgstr "模板“{expected}”不存在——请先在站点编辑器中创建。"
+
+#: language-router/includes/class-lsflr-link-fixer.php:121
+msgid "Fix Template"
+msgstr "修复模板"
+
+#: language-router/includes/class-lsflr-link-fixer.php:123
+msgid "✅ Template fixed"
+msgstr "✅ 模板已修复"
+
+#: language-router/includes/class-lsflr-link-fixer.php:784
+msgid "Internal Link Fixer"
+msgstr "内部链接修复器"
+
+#: language-router/includes/class-lsflr-link-fixer.php:792
+msgid "Fix All"
+msgstr "全部修复"
+
+#: language-router/includes/class-lsflr-link-fixer.php:795
+msgid "Re-scan"
+msgstr "重新扫描"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:25
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:26
+msgid "Displays the Lingua Forge language switcher."
+msgstr "显示Lingua Forge语言切换器。"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:40
+msgid "Language"
+msgstr "语言"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:61
+msgid "Display"
+msgstr "显示"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:64
+msgid "Language label"
+msgstr "语言标签"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:65
+msgid "Icon only"
+msgstr "仅图标"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:66
+msgid "Icon + label"
+msgstr "图标 + 标签"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:70
+msgid "Dropdown direction"
+msgstr "下拉方向"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:73
+msgid "Down"
+msgstr "向下"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:74
+msgid "Up"
+msgstr "向上"
+
+#: language-router/includes/rest/class-data-endpoints.php:86
+msgid "You do not have permission to read this post."
+msgstr "你没有权限阅读此帖子。"
+
+#: language-router/includes/rest/class-data-endpoints.php:125
+msgid "Post not found."
+msgstr "未找到帖子。"
+
+#: language-router/includes/rewrite/class-query-filter.php:94
+msgid "Limit results to pages in the given Lingua Forge language code."
+msgstr "限制结果仅显示给定Lingua Forge语言代码的页面。"
+
+#: meta-description/meta-description.php:67
+#: meta-description/meta-description.php:96
+msgid "Meta Description"
+msgstr "Meta描述"
+
+#: meta-description/meta-description.php:107
+msgid "Using custom meta description."
+msgstr "使用自定义Meta描述。"
+
+#: meta-description/meta-description.php:109
+msgid "Prefilled from excerpt. Edit to override."
+msgstr "预填自摘录。编辑以覆盖。"
+
+#: meta-description/meta-description.php:114
+msgid "Aim for 120–160 characters. Leave empty to use the excerpt fallback."
+msgstr "目标字符数为120–160个。留空以使用摘录备用。"
+
+#: ai/assets/admin.js:88
+msgid "↺ Refreshing…"
+msgstr "↺ 正在刷新…"
+
+#: ai/assets/admin.js:260
+msgid "Review translation before applying"
+msgstr "在应用前审查翻译"
+
+#: ai/assets/admin.js:266 ai/assets/admin.js:1624
+msgid "Current title"
+msgstr "当前标题"
+
+#: ai/assets/admin.js:270 ai/assets/admin.js:1628
+msgid "Translated title"
+msgstr "翻译后的标题"
+
+#: ai/assets/admin.js:277 ai/assets/admin.js:1654
+msgid "Current content (will be overwritten)"
+msgstr "当前内容（将被覆盖）"
+
+#: ai/assets/admin.js:281 ai/assets/admin.js:1658
+msgid "Translated content"
+msgstr "翻译内容"
+
+#: ai/assets/admin.js:288 ai/assets/admin.js:1636
+msgid "Footnotes payload (advanced)"
+msgstr "脚注负载（高级）"
+
+#: ai/assets/admin.js:294 ai/assets/admin.js:450 ai/assets/admin.js:1643
+#: ai/assets/admin.js:1798
+msgid "Generated meta description"
+msgstr "生成的Meta描述"
+
+#: ai/assets/admin.js:296 ai/assets/admin.js:1645
+msgid "Saved to the meta description field when you apply."
+msgstr "应用时保存到Meta描述字段。"
+
+#: ai/assets/admin.js:301 ai/assets/admin.js:474
+msgid "Cancel"
+msgstr "取消"
+
+#: ai/assets/admin.js:304 ai/assets/admin.js:914 ai/assets/admin.js:1669
+#: ai/assets/admin.js:1763
+msgid "Apply translation"
+msgstr "应用翻译"
+
+#: ai/assets/admin.js:438
+msgid "Generated Content"
+msgstr "生成内容"
+
+#: ai/assets/admin.js:456 ai/assets/admin.js:1813
+msgid "Refine further:"
+msgstr "进一步完善："
+
+#: ai/assets/admin.js:463
+msgid ""
+"Add instructions to improve the draft — e.g. make it shorter, add a "
+"conclusion section, use a more formal register, include an FAQ block…"
+msgstr "添加指令以改进草稿——例如使其更短，添加结论部分，使用更正式的语体，包含常见问题块……"
+
+#: ai/assets/admin.js:466 ai/assets/admin.js:1823
+#: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
+#: ai/assets/toolbar-translate.js:331 ai/assets/toolbar-translate.js:564
+msgid "↺ Refine"
+msgstr "↺ 重新完善"
+
+#: ai/assets/admin.js:477 ai/assets/admin.js:1833
+msgid "Copy markup"
+msgstr "复制标记"
+
+#: ai/assets/admin.js:480 ai/assets/admin.js:530 ai/assets/admin.js:816
+#: ai/assets/admin.js:1231 ai/assets/admin.js:1836
+msgid "Apply to Editor"
+msgstr "应用到编辑器"
+
+#: ai/assets/admin.js:570 ai/assets/admin.js:1029 ai/assets/admin.js:1039
+#: ai/assets/admin.js:1868 ai/assets/block-action.js:444
+#: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:118
+msgid "Copied ✓"
+msgstr "已复制 ✓"
+
+#: ai/assets/admin.js:607 ai/assets/admin.js:834 ai/assets/admin.js:1717
+#: ai/assets/admin.js:1882
+msgid "Applying…"
+msgstr "正在应用…"
+
+#: ai/assets/admin.js:637 ai/assets/admin.js:813 ai/assets/admin.js:905
+#: ai/assets/admin.js:1084 ai/assets/admin.js:1754 ai/assets/admin.js:1905
+#: ai/assets/block-action.js:958 ai/assets/block-action.js:983
+msgid "Applied ✓"
+msgstr "已应用 ✓"
+
+#: ai/assets/admin.js:664 ai/assets/admin.js:1929
+#: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:554
+msgid "Refining…"
+msgstr "正在完善…"
+
+#: ai/assets/admin.js:692 ai/assets/admin.js:1952
+msgid "Refinement failed — please try again."
+msgstr "完善失败——请重试。"
+
+#. translators: %d is the refinement iteration number
+#: ai/assets/admin.js:716 ai/assets/admin.js:1971
+#: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:640
+msgid "Refinement"
+msgstr "完善（%d为完善迭代次数）"
+
+#: ai/assets/admin.js:721 ai/assets/admin.js:1975
+msgid "✓ Refined — review the updated draft above."
+msgstr "✓ 已完善——请审查上方更新的草稿。"
+
+#: ai/assets/admin.js:730 ai/assets/admin.js:1980
+msgid "Request failed — please try again."
+msgstr "请求失败——请重试。"
+
+#: ai/assets/admin.js:867
+msgid "The editor did not accept the content — please try again."
+msgstr "编辑未接受内容——请重试。"
+
+#: ai/assets/admin.js:907
+msgid "Save the post to persist changes."
+msgstr "保存帖子以持久化更改。"
+
+#: ai/assets/admin.js:923 ai/assets/admin.js:1771
+msgid "Apply failed — please try again."
+msgstr "应用失败——请重试。"
+
+#: ai/assets/admin.js:1031 ai/assets/admin.js:1041 ai/assets/admin.js:1232
+#: ai/assets/admin.js:1271 ai/assets/admin.js:1317
+#: ai/assets/block-action.js:325 ai/assets/block-action.js:445
+#: ai/assets/editor-translate.js:319 ai/assets/editor-translate.js:384
+#: ai/assets/toolbar-translate.js:119 ai/assets/toolbar-translate.js:318
+msgid "Copy"
+msgstr "复制"
+
+#: ai/assets/admin.js:1088 ai/assets/admin.js:1325
+msgid "Apply to Meta Description"
+msgstr "应用到Meta描述"
+
+#: ai/assets/admin.js:1101 ai/assets/editor-translate.js:681
+#: ai/assets/toolbar-translate.js:583
+msgid "Generating…"
+msgstr "生成中…"
+
+#: ai/assets/admin.js:1121
+msgid "Generation failed."
+msgstr "生成失败。"
+
+#: ai/assets/admin.js:1139
+msgid "✓ Content generated — see the overlay to review, refine, and apply."
+msgstr "✓ 内容已生成 — 查看覆盖层以审查、完善和应用。"
+
+#: ai/assets/admin.js:1159
+msgid "Request failed."
+msgstr "请求失败。"
+
+#: ai/assets/admin.js:1196 ai/assets/admin.js:1306
+msgid "cached"
+msgstr "已缓存"
+
+#: ai/assets/admin.js:1204 ai/assets/block-action.js:705
+#: ai/assets/block-action.js:903 ai/assets/editor-translate.js:720
+#: ai/assets/toolbar-translate.js:628
+msgid "Translated to:"
+msgstr "翻译为："
+
+#: ai/assets/admin.js:1210
+msgid "tone"
+msgstr "语气"
+
+#: ai/assets/admin.js:1213
+msgid "Content generated"
+msgstr "内容已生成"
+
+#: ai/assets/admin.js:1217
+msgid "Content ready"
+msgstr "内容已准备好"
+
+#: ai/assets/admin.js:1223
+msgid "footnote(s) translated — applied together with content."
+msgstr "脚注已翻译 — 与内容一同应用。"
+
+#: ai/assets/admin.js:1267
+msgid "Chunk translated to:"
+msgstr "已翻译的块："
+
+#: ai/assets/admin.js:1268
+msgid "Chunk translated"
+msgstr "已翻译的块"
+
+#: ai/assets/admin.js:1270
+msgid ""
+"Copy the result and paste it wherever needed (e.g. directly into the "
+"footnote field)."
+msgstr "复制结果并粘贴到需要的地方（例如直接粘贴到脚注字段中）。"
+
+#. translators: %d is replaced by the number of characters
+#: ai/assets/admin.js:1360
+msgid "chars"
+msgstr "字符数"
+
+#: ai/assets/admin.js:1364
+msgid "✓ Good length"
+msgstr "✓ 长度合适"
+
+#: ai/assets/admin.js:1369
+msgid "⚠ Borderline"
+msgstr "⚠ 边界线"
+
+#: ai/assets/admin.js:1375
+msgid "✗ Too short"
+msgstr "✗ 太短"
+
+#: ai/assets/admin.js:1376
+msgid "✗ Too long"
+msgstr "✗ 太长"
+
+#: ai/assets/admin.js:1380
+msgid "Target: 140–160 chars for optimal SERP display"
+msgstr "目标：140–160字符以获得最佳SERP显示"
+
+#: ai/assets/admin.js:1387
+msgid "SEO character-count info"
+msgstr "SEO字符数信息"
+
+#: ai/assets/admin.js:1402
+msgid "↺ Refresh"
+msgstr "↺ 刷新"
+
+#: ai/assets/admin.js:1403
+msgid "Re-generates and updates the cached result."
+msgstr "重新生成并更新缓存结果。"
+
+#: ai/assets/admin.js:1666 ai/assets/admin.js:1830
+#: ai/assets/block-action.js:328
+msgid "← Back"
+msgstr "← 返回"
+
+#: ai/assets/admin.js:1820
+msgid ""
+"Add instructions to improve the draft — e.g. make it shorter, add a "
+"conclusion section, use a more formal register…"
+msgstr "添加改进草稿的指示 — 例如使其更短，添加结论部分，使用更正式的语体…"
+
+#: ai/assets/block-action.js:66
+msgid "Improve writing"
+msgstr "改进写作"
+
+#: ai/assets/block-action.js:67
+msgid "Make formal"
+msgstr "使其正式"
+
+#: ai/assets/block-action.js:68
+msgid "Make casual"
+msgstr "使其随意"
+
+#: ai/assets/block-action.js:69
+msgid "Make concise"
+msgstr "使其简洁"
+
+#: ai/assets/block-action.js:70
+msgid "Expand"
+msgstr "扩展"
+
+#: ai/assets/block-action.js:71
+msgid "Bulletize (•-prefixed)"
+msgstr "项目符号（•-前缀）"
+
+#: ai/assets/block-action.js:72
+msgid "Lead paragraph (≤60 w)"
+msgstr "引导段（≤60字）"
+
+#: ai/assets/block-action.js:73
+msgid "Mark citations needed"
+msgstr "标记需要引用"
+
+#: ai/assets/block-action.js:74
+msgid "Plain language"
+msgstr "简明语言"
+
+#: ai/assets/block-action.js:146 ai/assets/block-action.js:166
+#: ai/assets/block-action.js:167
+msgid "Translate / Revise"
+msgstr "翻译/修订"
+
+#: ai/assets/block-action.js:237
+msgid "Translate / Revise block"
+msgstr "块翻译/修订"
+
+#: ai/assets/block-action.js:245 ai/assets/block-action.js:288
+msgid "Revision"
+msgstr "修订"
+
+#: ai/assets/block-action.js:247
+msgid "Footnotes"
+msgstr "脚注"
+
+#: ai/assets/block-action.js:257 ai/assets/block-action.js:271
+msgid "Block Content"
+msgstr "块内容"
+
+#: ai/assets/block-action.js:268 ai/assets/block-action.js:305
+msgid "Revision Type"
+msgstr "修订类型"
+
+#: ai/assets/block-action.js:276 ai/assets/block-action.js:311
+msgid "Revise"
+msgstr "修订"
+
+#: ai/assets/block-action.js:295 ai/assets/block-action.js:307
+msgid "Footnote Content"
+msgstr "脚注内容"
+
+#: ai/assets/block-action.js:322 ai/assets/block-action.js:511
+#: ai/assets/block-action.js:716 ai/assets/block-action.js:984
+msgid "Apply to Block"
+msgstr "应用到块"
+
+#: ai/assets/block-action.js:351 ai/assets/block-action.js:370
+msgid "Instructions (optional)"
+msgstr "指示（可选）"
+
+#: ai/assets/block-action.js:357
+msgid "Extra guidance — tone, style, constraints, target audience…"
+msgstr "额外指导 — 语气、风格、约束、目标受众…"
+
+#: ai/assets/block-action.js:376
+msgid "Extra guidance — tone, style, constraints…"
+msgstr "额外指导 — 语气、风格、约束…"
+
+#: ai/assets/block-action.js:631 ai/assets/block-action.js:786
+#: ai/assets/editor-translate.js:504 ai/assets/toolbar-translate.js:403
+msgid "↑ Detected from current post"
+msgstr "↑ 从当前帖子检测到"
+
+#: ai/assets/block-action.js:668 ai/assets/block-action.js:869
+msgid "Processing…"
+msgstr "处理中…"
+
+#: ai/assets/block-action.js:724 ai/assets/block-action.js:915
+msgid "Failed. Please try again."
+msgstr "失败。请重试。"
+
+#: ai/assets/block-action.js:732 ai/assets/block-action.js:923
+#: ai/assets/editor-translate.js:740 ai/assets/toolbar-translate.js:654
+msgid "Request failed. Check your connection."
+msgstr "请求失败。请检查您的连接。"
+
+#: ai/assets/block-action.js:911 ai/assets/block-action.js:959
+msgid "Apply to Footnote"
+msgstr "应用到脚注"
+
+#: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
+#: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
+msgid "Quick Translate"
+msgstr "快速翻译"
+
+#: ai/assets/editor-translate.js:250
+msgid "Paste text, or select text in the editor first…"
+msgstr "粘贴文本，或先在编辑器中选择文本…"
+
+#: ai/assets/editor-translate.js:257 ai/assets/toolbar-translate.js:254
+msgid "Clear input"
+msgstr "清除输入"
+
+#: ai/assets/editor-translate.js:258 ai/assets/editor-translate.js:300
+#: ai/assets/toolbar-translate.js:255 ai/assets/toolbar-translate.js:300
+msgid "Clear"
+msgstr "清除"
+
+#: ai/assets/editor-translate.js:268 ai/assets/toolbar-translate.js:264
+msgid "Instructions / key points"
+msgstr "说明 / 重点"
+
+#: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:270
+msgid "Describe what to write — topic, key points, structure…"
+msgstr "描述要写的内容——主题、重点、结构…"
+
+#: ai/assets/editor-translate.js:286 ai/assets/toolbar-translate.js:282
+msgid "Language (optional)"
+msgstr "语言（可选）"
+
+#: ai/assets/editor-translate.js:289 ai/assets/toolbar-translate.js:285
+msgid "— auto-detect —"
+msgstr "— 自动检测 —"
+
+#: ai/assets/editor-translate.js:297 ai/assets/editor-translate.js:747
+#: ai/assets/toolbar-translate.js:295 ai/assets/toolbar-translate.js:664
+msgid "Generate"
+msgstr "生成"
+
+#: ai/assets/editor-translate.js:299 ai/assets/toolbar-translate.js:299
+msgid "Clear hints"
+msgstr "清除提示"
+
+#: ai/assets/editor-translate.js:322 ai/assets/toolbar-translate.js:319
+msgid "Clear All"
+msgstr "全部清除"
+
+#: ai/assets/editor-translate.js:332 ai/assets/toolbar-translate.js:328
+msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
+msgstr "进一步优化——例如“使其更短”或“使用正式语气”…"
+
+#: ai/assets/editor-translate.js:586 ai/assets/toolbar-translate.js:482
+msgid "Please enter some text first…"
+msgstr "请先输入一些文本…"
+
+#: ai/assets/editor-translate.js:611 ai/assets/toolbar-translate.js:507
+msgid "Please enter some instructions first…"
+msgstr "请先输入一些说明…"
+
+#: ai/assets/editor-translate.js:711 ai/assets/toolbar-translate.js:617
+msgid "Request failed. Please try again."
+msgstr "请求失败。请再试一次。"
+
+#: ai/assets/editor-translate.js:723 ai/assets/toolbar-translate.js:632
+msgid "Tone:"
+msgstr "语气："
+
+#: ai/assets/editor-translate.js:724 ai/assets/toolbar-translate.js:635
+msgid "Language:"
+msgstr "语言："
+
+#: ai/assets/editor-translate.js:732 ai/assets/toolbar-translate.js:645
+msgid "Done"
+msgstr "完成"
+
+#: ai/assets/toolbar-translate.js:189
+msgid "Lingua Forge AI Tools"
+msgstr "Lingua Forge AI工具"
+
+#: ai/assets/toolbar-translate.js:202
+msgid "Close popover"
+msgstr "关闭弹出窗口"
+
+#: ai/assets/toolbar-translate.js:243
+msgid "Paste text, or select text on the page first…"
+msgstr "先粘贴文本，或在页面上选择文本…"
+
+#: ai/assets/toolbar-translate.js:314
+msgid "Result will appear here…"
+msgstr "结果将显示在这里…"
+
+#: language-router/blocks/missing-translation-notice/index.js:56
+msgid "Notice settings"
+msgstr "通知设置"
+
+#: language-router/blocks/missing-translation-notice/index.js:62
+msgid "Notice message"
+msgstr "通知信息"
+
+#: language-router/blocks/missing-translation-notice/index.js:63
+msgid "Shown when no translation exists for the visitor's language."
+msgstr "当没有对应访客语言的翻译时显示。"
+
+#: language-router/blocks/missing-translation-notice/index.js:73
+msgid "Show home link"
+msgstr "显示主页链接"
+
+#: language-router/blocks/missing-translation-notice/index.js:74
+msgid "Adds a link to the home page so visitors can browse in their language."
+msgstr "添加一个指向主页的链接，方便访客用他们的语言浏览。"
+
+#: language-router/blocks/missing-translation-notice/index.js:85
+msgid "Home link text"
+msgstr "主页链接文本"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block title"
+msgid "Missing Translation Notice"
+msgstr "缺少翻译通知"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block description"
+msgid ""
+"Renders a polite notice when the current page is being shown in its source "
+"language because no translation exists for the visitor's language. Driven by "
+"the Lingua Forge router's LINGUAFORGE_LANG_FALLBACK_ACTIVE signal — emits "
+"nothing when a translation exists for the request locale."
+msgstr ""
+"当当前页面以其源语言显示，且没有访客语言的翻译时，会显示一个礼貌的通知。由Lingua "
+"Forge路由器的LINGUAFORGE_LANG_FALLBACK_ACTIVE信号驱动——当请求区域存在翻译时不发出任何信号。"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "language"
+msgstr "语言"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "translation"
+msgstr "翻译"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "fallback"
+msgstr "回退"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "i18n"
+msgstr "国际化（i18n）"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "linguaforge"
+msgstr "linguaforge"

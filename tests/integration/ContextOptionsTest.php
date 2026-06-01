@@ -47,9 +47,9 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 
 	// ── source_language() ─────────────────────────────────────────────────────
 
-	public function test_source_language_returns_ca_when_option_absent(): void {
+	public function test_source_language_returns_empty_when_option_absent(): void {
 		delete_option( 'linguaforge_primary_language' );
-		$this->assertSame( 'ca', $this->ctx()->source_language() );
+		$this->assertSame( '', $this->ctx()->source_language() );
 	}
 
 	public function test_source_language_returns_stored_value(): void {
@@ -57,10 +57,10 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 		$this->assertSame( 'en', $this->ctx()->source_language() );
 	}
 
-	public function test_source_language_falls_back_to_ca_when_option_is_empty(): void {
-		// sanitize_key( '' ) → '', and '' ?: 'ca' falls back to 'ca'.
+	public function test_source_language_returns_empty_when_option_is_empty(): void {
+		// sanitize_key( '' ) → ''; no hardcoded fallback since 2.1.1.
 		update_option( 'linguaforge_primary_language', '', false );
-		$this->assertSame( 'ca', $this->ctx()->source_language() );
+		$this->assertSame( '', $this->ctx()->source_language() );
 	}
 
 	public function test_source_language_is_cached_on_repeated_calls(): void {

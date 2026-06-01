@@ -147,7 +147,9 @@ class TemplateDefinitions {
         if ( defined( 'WC_ABSPATH' ) ) {
             $wc_tpl_dir = WC_ABSPATH . 'templates/templates/';
             if ( is_dir( $wc_tpl_dir ) ) {
-                foreach ( glob( $wc_tpl_dir . '*.html' ) ?: [] as $file ) {
+                $wc_files = glob( $wc_tpl_dir . '*.html' ) ?: [];
+                natsort( $wc_files );
+                foreach ( $wc_files as $file ) {
                     $slug = basename( $file, '.html' );
                     if ( isset( $defs[ $slug ] ) ) {
                         continue; // already covered by CPT loop (e.g. single-product)

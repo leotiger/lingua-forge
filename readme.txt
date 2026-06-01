@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -158,7 +158,7 @@ Place a compiled `.mo` file named `{textdomain}-{locale}.mo` (e.g. `vikbooking-c
 
 = AI requests time out or cause a white screen on long content. =
 
-Managed hosting plans often cap PHP execution time at 30–60 seconds. Lingua Forge uses a 120-second timeout for AI API calls, but PHP kills the process first if the server limit is lower. Fix options: add `set_time_limit( 180 );` to `wp-config.php`, add `php_value max_execution_time 180` to `.htaccess`, or ask your host to raise the limit. As a workaround without server changes, use **Chunk mode** to translate individual blocks rather than the full page at once.
+Managed hosting plans often cap PHP execution time at 30–60 seconds. Lingua Forge uses a 300-second HTTP timeout for AI API calls (configurable via the `linguaforge_ai_retry_policy` filter), but PHP kills the process first if the server limit is lower. Fix options: add `set_time_limit( 300 );` to `wp-config.php`, add `php_value max_execution_time 300` to `.htaccess`, or ask your host to raise the limit. As a workaround without server changes, use **Chunk mode** to translate individual blocks rather than the full page at once.
 
 = The AI returns "generation failed" with no explanation. =
 
@@ -249,6 +249,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.1 =
+* Fixed: Hardcoded `'ca'` (Catalan) fallback in `Context::source_language()` — fresh installs routed silently as Catalan before first-time setup was completed. Both defaults changed to empty string.
+* Fixed: `lf_lang_filter` user meta now cleared on logout and user deletion to prevent stale filter preferences leaking to recycled user IDs.
+* Fixed: `glob()` calls in MaintenanceTab now guarded with `is_readable()` to avoid undefined behaviour on restrictive server configurations.
+* Fixed: WooCommerce template glob order in `TemplateDefinitions::get()` is now stable across Linux and macOS via `natsort()`.
+* Dev: New unit test `FeatureControllerCapabilityTest` — asserts `required_capability()` never returns an empty string for any feature slug.
+
 = 2.1.0 =
 * Refactored: RouterTab god class (2,015 lines) split into focused classes — seven FseLocalisation\* handlers (TemplateDefinitions, PartDiscovery, PatternExpander, ScaffoldHandler, TranslateHandler, LinkFixer, PartRefFixer) and three Sections\* render classes (TemplatesSection, TemplatePartsSection, NavigationsSection). RouterTab is now ~350 lines of tab plumbing and language-pack UI only.
 * Added: CPT-specific FSE template scaffold slots — single-{cpt} and archive-{cpt} rows appear automatically in the Language Setup table for any public CPT whose base template is shipped by the active theme.
@@ -283,6 +290,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.1 =
+Security/hardening update: fixes a hardcoded language fallback that could silently override site settings, clears stale user-language meta on logout, and adds a missing readability guard. Recommended for all installs.
 
 = 2.1.0 =
 Recommended update: Site Editor navigation language filtering, editor Preview Language Switcher (globe icon, top-right toolbar), language-aware template picker, WooCommerce stock-write fix, and memory exhaustion fix. No schema changes — safe to update in place.

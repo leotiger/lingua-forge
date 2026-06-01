@@ -1,0 +1,3245 @@
+# Copyright (C) 2026 Uli Hake
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Lingua Forge 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
+"Last-Translator: admin\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
+"PO-Revision-Date: 2026-06-01 17:31+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: lingua-forge\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.5; wp-7.0; php-8.3.31"
+
+#. Plugin Name of the plugin
+#: lingua-forge.php ai/assets/toolbar-translate.js:197
+msgid "Lingua Forge"
+msgstr "Lingua Forge"
+
+#. Plugin URI of the plugin
+#: lingua-forge.php
+msgid "https://github.com/leotiger/lingua-forge"
+msgstr "https://github.com/leotiger/lingua-forge"
+
+#. Description of the plugin
+#: lingua-forge.php
+msgid ""
+"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
+"Combines language detection, URL routing, hreflang, meta descriptions, and "
+"AI-powered excerpt, meta, and translation features."
+msgstr ""
+"Mehrsprachiges Routing, SEO-Meta-Tags und KI-Inhaltstools für WordPress. "
+"Kombiniert Spracherkennung, URL-Routing, hreflang, Meta-Beschreibungen sowie "
+"KI-gestützte Auszüge, Meta- und Übersetzungsfunktionen."
+
+#. Author of the plugin
+#: lingua-forge.php
+msgid "Uli Hake"
+msgstr "Uli Hake"
+
+#. Author URI of the plugin
+#: lingua-forge.php
+msgid "https://lingua-forge.com"
+msgstr "https://lingua-forge.com"
+
+#: ai/includes/Admin/AdminToolbar.php:63
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
+#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:228
+#: ai/includes/Admin/SettingsPage.php:234 ai/assets/block-action.js:243
+#: ai/assets/block-action.js:262 ai/assets/block-action.js:286
+#: ai/assets/block-action.js:299 ai/assets/editor-translate.js:227
+#: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
+#: ai/assets/toolbar-translate.js:214 ai/assets/toolbar-translate.js:250
+#: ai/assets/toolbar-translate.js:665
+msgid "Translate"
+msgstr "Übersetzen"
+
+#: ai/includes/Admin/AdminToolbar.php:67
+msgid "Lingua Forge — Quick Translate"
+msgstr "Lingua Forge — Schnelles Übersetzen"
+
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:218
+#: ai/includes/Features/ContentGenerator.php:35
+msgid "Informative"
+msgstr "Informativ"
+
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:219
+#: ai/includes/Features/ContentGenerator.php:36
+msgid "Persuasive"
+msgstr "Überzeugend"
+
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:220
+#: ai/includes/Features/ContentGenerator.php:37
+msgid "Storytelling"
+msgstr "Storytelling"
+
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:221
+#: ai/includes/Features/ContentGenerator.php:38
+msgid "Technical"
+msgstr "Technisch"
+
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:222
+#: ai/includes/Features/ContentGenerator.php:39
+msgid "Conversational"
+msgstr "Gesprächig"
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:34
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:149
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:41
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:214
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:761
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:831
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:916
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:984
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1006
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1027
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1052
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:1077
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:416
+msgid "Permission denied."
+msgstr "Zugriff verweigert."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:49
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:77
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:222
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:60
+msgid "Cannot determine target language from slug."
+msgstr "Ziel-Sprache kann aus dem Slug nicht bestimmt werden."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:54
+msgid "Invalid post type."
+msgstr "Ungültiger Beitragstyp."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:61
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:57
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:160
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:68
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:229
+msgid "Invalid or primary language."
+msgstr "Ungültige oder primäre Sprache."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:68
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:93
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:81
+msgid "Template not found or not stored in the database."
+msgstr "Vorlage nicht gefunden oder nicht in der Datenbank gespeichert."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:75
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:104
+msgid "Template has no content."
+msgstr "Vorlage hat keinen Inhalt."
+
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:138
+msgid "No internal links found to update."
+msgstr "Keine internen Links zum Aktualisieren gefunden."
+
+#. translators: %d: number of links rewritten
+#: ai/includes/Admin/FseLocalisation/LinkFixer.php:146
+#, php-format
+msgid "%d link updated."
+msgid_plural "%d links updated."
+msgstr[0] "%d Link aktualisiert."
+msgstr[1] "%d Links aktualisiert."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
+msgid "No language-specific template parts found to map."
+msgstr "Keine sprachspezifischen Vorlage-Teile zum Abbilden gefunden."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:167
+msgid "No template part references needed updating."
+msgstr "Keine Vorlage-Teile-Referenzen zum Aktualisieren erforderlich."
+
+#. translators: %d: number of template part references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:185
+#, php-format
+msgid "%d part reference updated."
+msgid_plural "%d part references updated."
+msgstr[0] "%d Teil-Referenz aktualisiert."
+msgstr[1] "%d Teil-Referenzen aktualisiert."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:233
+msgid "Invalid language."
+msgstr "Ungültige Sprache."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:241
+msgid "Template part not found or not stored in the database."
+msgstr "Vorlage-Teil nicht gefunden oder nicht in der Datenbank gespeichert."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:252
+msgid "Template part has no content."
+msgstr "Vorlage-Teil hat keinen Inhalt."
+
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:324
+msgid "No navigation references needed updating."
+msgstr "Keine Navigationsreferenzen zum Aktualisieren erforderlich."
+
+#. translators: %d: number of navigation block references rewritten
+#: ai/includes/Admin/FseLocalisation/PartRefFixer.php:342
+#, php-format
+msgid "%d navigation reference updated."
+msgid_plural "%d navigation references updated."
+msgstr[0] "%d Navigationsreferenz aktualisiert."
+msgstr[1] "%d Navigationsreferenzen aktualisiert."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:38
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:45
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:218
+msgid "No AI provider configured."
+msgstr "Kein KI-Anbieter konfiguriert."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:50
+msgid "Missing pattern name or language."
+msgstr "Fehlender Mustername oder Sprache."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:63
+msgid "Pattern not found."
+msgstr "Muster nicht gefunden."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:70
+msgid "Pattern has no content to translate."
+msgstr "Muster hat keinen zu übersetzenden Inhalt."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:114
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:155
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:284
+msgid "AI provider returned an empty response."
+msgstr "KI-Anbieter hat eine leere Antwort zurückgegeben."
+
+#: ai/includes/Admin/FseLocalisation/PatternHandler.php:126
+msgid ""
+"Pattern translated and saved. Copy the content into your CPT post via the "
+"block editor Pattern inserter or use it as a starting point for a Reusable "
+"Block."
+msgstr ""
+"Muster übersetzt und gespeichert. Kopiere den Inhalt in deinen CPT-Beitrag "
+"über den Block-Editor Muster-Insertor oder nutze es als Ausgangspunkt für "
+"einen wiederverwendbaren Block."
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:51
+msgid "Invalid template type."
+msgstr "Ungültiger Vorlage-Typ."
+
+#. translators: %s: template slug such as page-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:60
+#, php-format
+msgid "Template \"%s\" already exists."
+msgstr "Vorlage \"%s\" existiert bereits."
+
+#. translators: %s: template title such as "Page DE"
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:127
+#, php-format
+msgid "\"%s\" created."
+msgstr "\"%s\" erstellt."
+
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:167
+msgid "Invalid template part."
+msgstr "Ungültiger Vorlage-Teil."
+
+#. translators: %s: template part slug such as header-de
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:176
+#, php-format
+msgid "Template part \"%s\" already exists."
+msgstr "Vorlage-Teil \"%s\" existiert bereits."
+
+#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:249
+#, php-format
+msgid "\"%1$s\" created. %2$d template updated."
+msgid_plural "\"%1$s\" created. %2$d templates updated."
+msgstr[0] "\"%1$s\" erstellt. %2$d Vorlage aktualisiert."
+msgstr[1] "\"%1$s\" erstellt. %2$d Vorlagen aktualisiert."
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
+msgid "Page"
+msgstr "Seite"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:47
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:48
+msgid "Single"
+msgstr "Einzeln"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:51
+msgid "Search"
+msgstr "Suche"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:52
+msgid "Search Results"
+msgstr "Suchergebnisse"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:55
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:56
+msgid "Archive"
+msgstr "Archiv"
+
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:59
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:60
+msgid "Front Page"
+msgstr "Startseite"
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:114
+#, php-format
+msgid "Single: %s"
+msgstr "Einzeln: %s"
+
+#. translators: %s: CPT singular label, e.g. "Product"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:119
+#, php-format
+msgid "Single %s"
+msgstr "Einzeln %s"
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:129
+#, php-format
+msgid "Archive: %s"
+msgstr "Archiv: %s"
+
+#. translators: %s: CPT plural label, e.g. "Products"
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:134
+#, php-format
+msgid "%s Archive"
+msgstr "%s Archiv"
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:103
+msgid "No source content found to translate."
+msgstr "Kein Quellinhalt zum Übersetzen gefunden."
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:192
+msgid ""
+"Translated. Review in the Site Editor — internal links, navigation URLs, and "
+"template slugs are not updated automatically."
+msgstr ""
+"Übersetzt. Überprüfe im Site Editor — interne Links, Navigations-URLs und "
+"Template-Slugs werden nicht automatisch aktualisiert."
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:234
+msgid "Navigation not found."
+msgstr "Navigation nicht gefunden."
+
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:239
+msgid "Navigation has no content to translate."
+msgstr "Navigation hat keinen Inhalt zum Übersetzen."
+
+#. translators: 1: navigation title e.g. "Primary Navigation", 2: language code e.g. "DE"
+#: ai/includes/Admin/FseLocalisation/TranslateHandler.php:379
+#, php-format
+msgid "\"%1$s %2$s\" saved."
+msgstr "\"%1$s %2$s\" gespeichert."
+
+#: ai/includes/Admin/MetaBox.php:481
+msgid "Translate page…"
+msgstr "Seite übersetzen…"
+
+#: ai/includes/Admin/MetaBox.php:482
+msgid "Generate content…"
+msgstr "Inhalt generieren…"
+
+#: ai/includes/Admin/MetaBox.php:502
+msgid "AI Behaviour Preset"
+msgstr "KI-Verhaltensvorgabe"
+
+#: ai/includes/Admin/MetaBox.php:508
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+
+#. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
+#: ai/includes/Admin/MetaBox.php:513
+#, php-format
+msgid "Global default (%s)"
+msgstr "Globale Standardeinstellung (%s)"
+
+#: ai/includes/Admin/MetaBox.php:525
+msgid ""
+"Overrides the AI preset for Translation and Content Generation on this page. "
+"Site-wide custom prompt instructions (Settings → Behavior) are always "
+"appended to every request regardless of this selection."
+msgstr ""
+"Überschreibt die KI-Voreinstellung für Übersetzung und Inhaltserstellung auf "
+"dieser Seite. Site-weite benutzerdefinierte Anweisungen (Einstellungen → "
+"Verhalten) werden immer an jede Anfrage angehängt, unabhängig von dieser "
+"Auswahl."
+
+#: ai/includes/Admin/MetaBox.php:530
+msgid ""
+"Overrides the AI preset for Translation and Content Generation on this page. "
+"All other features always use the global preset."
+msgstr ""
+"Überschreibt die KI-Voreinstellung für Übersetzung und Inhaltserstellung auf "
+"dieser Seite. Alle anderen Funktionen verwenden immer die globale "
+"Voreinstellung."
+
+#: ai/includes/Admin/MetaBox.php:611
+#: language-router/includes/class-lsflr-link-fixer.php:782
+#: ai/assets/admin.js:261 ai/assets/admin.js:442 ai/assets/block-action.js:249
+#: ai/assets/editor-translate.js:222
+msgid "Close"
+msgstr "Schließen"
+
+#: ai/includes/Admin/PostListColumn.php:86
+msgid "Translate missing"
+msgstr "Fehlende Übersetzung"
+
+#. translators: label prefix for the retranslate language picker
+#: ai/includes/Admin/PostListColumn.php:127
+msgid "From"
+msgstr "Von"
+
+#: ai/includes/Admin/PostListColumn.php:137
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:67
+msgid "Retranslate"
+msgstr "Erneut übersetzen"
+
+#: ai/includes/Admin/PostListColumn.php:181
+#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:235 ai/assets/editor-translate.js:682
+#: ai/assets/toolbar-translate.js:584
+msgid "Translating…"
+msgstr "Übersetze…"
+
+#: ai/includes/Admin/PostListColumn.php:182
+msgid "Retranslating…"
+msgstr "Erneut übersetzen…"
+
+#: ai/includes/Admin/PostListColumn.php:183
+msgid "✓ Done"
+msgstr "✓ Fertig"
+
+#: ai/includes/Admin/PostListColumn.php:184
+msgid "Error"
+msgstr "Fehler"
+
+#: ai/includes/Admin/PostListColumn.php:226
+msgid "Navigation posts are translated via the Router tab, not this button."
+msgstr ""
+"Navigation-Posts werden über den Router-Tab übersetzt, nicht über diese "
+"Schaltfläche."
+
+#. translators: %s: post type slug
+#: ai/includes/Admin/PostListColumn.php:265
+#, php-format
+msgid ""
+"Creating translations for post type \"%s\" requires an active integration. "
+"Please ensure the required integration is installed and active."
+msgstr ""
+"Das Erstellen von Übersetzungen für den Beitragstyp \"%s\" erfordert eine "
+"aktive Integration. Bitte stelle sicher, dass die erforderliche Integration "
+"installiert und aktiviert ist."
+
+#. translators: %s: language code
+#: ai/includes/Admin/PostListColumn.php:394
+#, php-format
+msgid "No %s version found in this translation group."
+msgstr "Keine %s-Version in dieser Übersetzungsgruppe gefunden."
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:22
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:88
+#: ai/includes/Admin/SettingsPage.php:554
+msgid "AI Usage"
+msgstr "KI-Nutzung"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:37
+msgid "Today"
+msgstr "Heute"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:41
+msgid "Last 7 days"
+msgstr "Letzte 7 Tage"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:45
+msgid "Last 30 days"
+msgstr "Letzte 30 Tage"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:49
+msgid "All time"
+msgstr "Alle Zeiten"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:92
+msgid ""
+"Token consumption rolled up by feature, provider, and model. Recorded on "
+"every successful AI call; Test Connection pings are deliberately excluded so "
+"they don't skew the totals. The underlying table aggregates daily — pick a "
+"window below to view it."
+msgstr ""
+"Token-Verbrauch nach Funktion, Anbieter und Modell zusammengefasst. "
+"Aufgezeichnet bei jedem erfolgreichen KI-Aufruf; Testverbindungspings sind "
+"absichtlich ausgeschlossen, damit sie die Gesamtsumme nicht verfälschen. Die "
+"zugrunde liegende Tabelle aggregiert täglich — wähle unten ein Zeitfenster, "
+"um sie anzuzeigen."
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:116
+msgid ""
+"No AI usage recorded yet. Once an editor runs a translation, generates a "
+"meta description, or uses any other AI feature, totals will appear here."
+msgstr ""
+"Noch keine KI-Nutzung aufgezeichnet. Sobald ein Editor eine Übersetzung "
+"durchführt, eine Meta-Beschreibung generiert oder eine andere KI-Funktion "
+"nutzt, erscheinen hier die Gesamtsummen."
+
+#. translators: %s is a date-range label like "Today" or "Last 7 days".
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:131
+#, php-format
+msgid ""
+"No AI usage recorded in the selected window (%s). Pick a wider range above."
+msgstr ""
+"Keine KI-Nutzung im ausgewählten Zeitraum (%s) aufgezeichnet. Wähle oben "
+"einen größeren Zeitraum."
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:143
+msgid "Feature"
+msgstr "Funktion"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:144
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+msgid "Provider"
+msgstr "Anbieter"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:145
+msgid "Model"
+msgstr "Modell"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:146
+msgid "Requests"
+msgstr "Anfragen"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:147
+msgid "Input tokens"
+msgstr "Eingabe-Token"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:148
+msgid "Output tokens"
+msgstr "Ausgabe-Token"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:149
+msgid "Total tokens"
+msgstr "Gesamt-Token"
+
+#: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:167
+msgid "Total"
+msgstr "Gesamt"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
+#: ai/includes/Admin/SettingsPage.php:549
+msgid "API Keys"
+msgstr "API-Schlüssel"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+msgid ""
+"Keys are encrypted with AES-256-CBC before being stored in the WordPress "
+"database. The encryption secret is derived from your WordPress auth salts "
+"(wp-config.php), so plaintext keys never touch the database."
+msgstr ""
+"Schlüssel werden vor der Speicherung in der WordPress-Datenbank mit AES-256-"
+"CBC verschlüsselt. Das Verschlüsselungsgeheimnis wird aus deinen WordPress-"
+"Auth-Salzen (wp-config.php) abgeleitet, sodass Klartext-Schlüssel die "
+"Datenbank nie berühren."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+msgid "API Key"
+msgstr "API-Schlüssel"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+msgid "Paste your API key…"
+msgstr "Füge deinen API-Schlüssel ein…"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+msgid "✓ Configured"
+msgstr "✓ Konfiguriert"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+msgid "✗ Not configured"
+msgstr "✗ Nicht konfiguriert"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+msgid "Test connection"
+msgstr "Verbindung testen"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+msgid "Leave blank to keep the existing key. Enter a new value to replace it."
+msgstr ""
+"Lass es frei, um den bestehenden Schlüssel beizubehalten. Gib einen neuen "
+"Wert ein, um ihn zu ersetzen."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+msgid "Remove stored key"
+msgstr "Gespeicherten Schlüssel entfernen"
+
+#. translators: %s is the key source: either "environment variable" or "PHP constant".
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#, php-format
+msgid ""
+"This key is currently supplied by a server %s and cannot be removed here. "
+"Enter a new key above to override it with a database value."
+msgstr ""
+"Dieser Schlüssel wird derzeit von einem Server %s bereitgestellt und kann "
+"hier nicht entfernt werden. Gib oben einen neuen Schlüssel ein, um ihn mit "
+"einem Datenbankwert zu überschreiben."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+msgid "environment variable"
+msgstr "Umweltvariable"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+msgid "PHP constant"
+msgstr "PHP-Konstante"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+msgid "Alternative (server-side):"
+msgstr "Alternativ (Server-seitig):"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+msgid ""
+"You can also define keys as constants or environment variables (e.g. in wp-"
+"config.php). Those sources are used automatically as a fallback when no "
+"database key is stored."
+msgstr ""
+"Du kannst Schlüssel auch als Konstanten oder Umweltvariablen definieren (z.B."
+" in wp-config.php). Diese Quellen werden automatisch als Fallback verwendet, "
+"wenn kein Datenbankschlüssel gespeichert ist."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+msgid ""
+"To use a custom encryption secret (instead of the derived wp_salt value), "
+"add this to wp-config.php:"
+msgstr ""
+"Um einen benutzerdefinierten Verschlüsselungsgeheimnis zu verwenden (anstatt "
+"des abgeleiteten wp_salt-Werts), füge dies in wp-config.php hinzu:"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+msgid "Unknown provider."
+msgstr "Unbekannter Anbieter."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+msgid "No API key configured for this provider."
+msgstr "Für diesen Anbieter ist kein API-Schlüssel konfiguriert."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+msgid "Could not instantiate the provider."
+msgstr "Der Anbieter konnte nicht instanziiert werden."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
+msgid ""
+"Provider returned no text. Check the WordPress error log for the detailed "
+"failure reason."
+msgstr ""
+"Der Anbieter hat keinen Text zurückgegeben. Überprüfe das WordPress-"
+"Fehlerprotokoll für die detaillierte Fehlerursache."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
+#: ai/includes/Admin/SettingsPage.php:551
+msgid "Behavior"
+msgstr "Verhalten"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:29
+msgid "Block Editor"
+msgstr "Block-Editor"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:33
+msgid ""
+"Lingua Forge restricts two Gutenberg features by default to keep editorial "
+"behavior consistent across languages. Opt in here when you need full "
+"Gutenberg / FSE capabilities."
+msgstr ""
+"Lingua Forge beschränkt standardmäßig zwei Gutenberg-Funktionen, um das "
+"redaktionelle Verhalten in allen Sprachen konsistent zu halten. Hier kannst "
+"du dich anmelden, wenn du volle Gutenberg / FSE-Fähigkeiten benötigst."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:40
+msgid "Block locking"
+msgstr "Block-Sperre"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:50
+msgid "Allow editors to lock individual blocks"
+msgstr "Erlaube Redakteuren, einzelne Blöcke zu sperren"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:53
+msgid ""
+"Re-enables Gutenberg's canLockBlocks. Useful for editorial templates that "
+"need to prevent contributors from moving or deleting specific blocks."
+msgstr ""
+"Aktiviert wieder Gutenberg's canLockBlocks. Nützlich für redaktionelle "
+"Vorlagen, die verhindern sollen, dass Mitwirkende bestimmte Blöcke "
+"verschieben oder löschen."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:59
+msgid "Template mode"
+msgstr "Vorlagenmodus"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:69
+msgid "Allow Gutenberg template-editing mode on post screens"
+msgstr "Erlaube Gutenberg-Vorlagenbearbeitungsmodus auf Beitragsseiten"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:72
+msgid ""
+"Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where "
+"post-level template overrides are intentional."
+msgstr ""
+"Aktiviert supportsTemplateMode. Kern für Full-Site-Editing-Workflows, bei "
+"denen Beitragsübergreifende Vorlagenüberschreibungen beabsichtigt sind."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:79
+msgid "Compliance Preset"
+msgstr "Compliance-Voreinstellung"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:83
+msgid ""
+"Strict-preservation mode for legal, regulatory, medical, or technical "
+"content. When on, every AI feature uses a low sampling temperature and "
+"appends the addendum below to its system prompt — terminology, article "
+"numbers, units, brand names, and regulatory language are preserved verbatim "
+"rather than paraphrased."
+msgstr ""
+"Strenger Erhaltungsmodus für rechtliche, regulatorische, medizinische oder "
+"technische Inhalte. Wenn aktiviert, verwendet jede KI-Funktion eine niedrige "
+"Abtasttemperatur und fügt die nachstehende Ergänzung an den Systemprompt an "
+"— Terminologie, Artikelnumer, Einheiten, Markennamen und regulatorische "
+"Sprache werden wortwörtlich beibehalten, anstatt umformuliert zu werden."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:91
+msgid "Global AI preset"
+msgstr "Globale KI-Voreinstellung"
+
+#. translators: %s: sampling temperature value, e.g. 0.2
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:106
+#, php-format
+msgid "T=%s"
+msgstr "T=%s"
+
+#. translators: temperature range shown for the Standard preset, e.g. "T=0.2–0.6, per feature"
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:111
+msgid "T=0.2–0.6, per feature"
+msgstr "T=0.2–0.6, pro Funktion"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:118
+msgid ""
+"Sets the default AI behaviour for all features site-wide. Individual posts "
+"can override this for Translation and Content Generation via the Lingua "
+"Forge meta box."
+msgstr ""
+"Legt das Standardverhalten der KI für alle Funktionen site-weit fest. "
+"Einzelne Beiträge können dies für Übersetzungen und Inhaltserstellung über "
+"die Meta-Box von Lingua Forge überschreiben."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
+msgid ""
+"Standard uses each feature's own tuned temperature: Translation T=0.2 "
+"(precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The "
+"other presets apply a single fixed temperature across all features."
+msgstr ""
+"Standard verwendet die eigene abgestimmte Temperatur jeder Funktion: "
+"Übersetzung T=0.2 (präzise), Schnelle Übersetzung T=0.4, Inhaltserstellung "
+"T=0.6 (kreativ). Die anderen Voreinstellungen verwenden eine einzelne feste "
+"Temperatur für alle Funktionen."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:129
+msgid "Technical / Scientific instructions"
+msgstr "Technische / Wissenschaftliche Anweisungen"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
+msgid "Legal / Compliance instructions"
+msgstr "Rechtliche / Compliance-Anweisungen"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
+msgid "Creative / Marketing instructions"
+msgstr "Kreative / Marketing-Anweisungen"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:154
+msgid ""
+"Leave blank to use the built-in default. Clearing a saved override restores "
+"the default on next save."
+msgstr ""
+"Lass es frei, um den integrierten Standard zu verwenden. Das Löschen einer "
+"gespeicherten Überschreibung stellt den Standard beim nächsten Speichern "
+"wieder her."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:157
+msgid "View built-in default"
+msgstr "Integrierten Standard anzeigen"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:571
+msgid "Translation Memory"
+msgstr "Übersetzungsspeicher"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
+msgid ""
+"Cache translated equivalents at the block level so reusable content (shared "
+"footers, sidebars, accordions, boilerplate-heavy legal sections) does not "
+"pay an API call every time. When enabled, the translation flow parses each "
+"post into blocks, looks each block up in the cache, and sends only uncached "
+"blocks to the AI in a single batched request. Glossary edits and Compliance "
+"preset changes automatically invalidate affected cached translations. View "
+"statistics and clear the cache under Maintenance."
+msgstr ""
+"Übersetze die Äquivalente auf Blockebene zwischen, damit wiederverwendbare "
+"Inhalte (gemeinsame Fußzeilen, Seitenleisten, Akkordeons, rechtlich schwere "
+"Standardabschnitte) bei jedem API-Aufruf nicht erneut bezahlt werden müssen. "
+"Wenn aktiviert, zerlegt der Übersetzungsfluss jeden Beitrag in Blöcke, sucht "
+"jeden Block im Cache und sendet nur nicht gecachte Blöcke in einer einzigen "
+"Batch-Anfrage an die KI. Glossar-Änderungen und Änderungen an der Compliance-"
+"Voreinstellung invalidieren automatisch betroffene zwischengespeicherte "
+"Übersetzungen. Statistiken anzeigen und Cache unter Wartung löschen."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:187
+msgid "Enable block-level translation cache reuse across posts"
+msgstr ""
+"Blockebenen-Übersetzungscache-Wiederverwendung über Beiträge hinweg "
+"aktivieren"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
+msgid ""
+"Currently skipped for posts that use block-comment attribute placeholders "
+"(wp:details summary fields, etc.) — they fall through to the existing single-"
+"call translation path."
+msgstr ""
+"Derzeit übersprungen für Beiträge, die Block-Kommentar-Attribut-Platzhalter "
+"verwenden (wp:details Zusammenfassungsfelder usw.) — sie fallen auf den "
+"bestehenden Einzel-Aufruf-Übersetzungsweg zurück."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
+#: ai/includes/Admin/SettingsPage.php:548
+msgid "General"
+msgstr "Allgemein"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
+#: ai/includes/Admin/SettingsPage.php:67
+msgid "Light"
+msgstr "Leicht"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:68
+msgid "Meta Description, Excerpt Generator"
+msgstr "Meta-Beschreibung, Exzerpt-Generator"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
+#: ai/includes/Admin/SettingsPage.php:71
+msgid "Quality"
+msgstr "Qualität"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:72
+msgid "Translation, Content Generator"
+msgstr "Übersetzung, Inhaltserstellung"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+msgid "Active Provider"
+msgstr "Aktueller Anbieter"
+
+#. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#, php-format
+msgid ""
+"Currently inherited from the %s constant. Selecting a value here will "
+"override it."
+msgstr ""
+"Derzeit geerbt vom %s-Konstanten. Die Auswahl eines Werts hier überschreibt "
+"ihn."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+msgid "Models"
+msgstr "Modelle"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+msgid ""
+"Features are grouped into two tiers. Enter the exact model identifier for "
+"each tier and provider. Leave a field blank to use the built-in default "
+"(shown as placeholder). Only the active provider's models are called at "
+"runtime — configure the others in advance if you plan to switch."
+msgstr ""
+"Funktionen sind in zwei Ebenen gruppiert. Gib die genaue Modellkennung für "
+"jede Ebene und jeden Anbieter ein. Lasse ein Feld leer, um den integrierten "
+"Standard zu verwenden (als Platzhalter angezeigt). Nur die aktiven Anbieter-"
+"Modelle werden zur Laufzeit aufgerufen — konfiguriere die anderen im Voraus, "
+"wenn du planst zu wechseln."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+msgid "active"
+msgstr "aktiv"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+msgid "overridden"
+msgstr "überschrieben"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+msgid ""
+"Tip: to reset a model to the built-in default, clear the field and save."
+msgstr ""
+"Tipp: Um ein Modell auf den integrierten Standard zurückzusetzen, lösche das "
+"Feld und speichere."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
+#: ai/includes/Admin/SettingsPage.php:553
+msgid "Glossary"
+msgstr "Glossar"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:64
+msgid ""
+"User-managed terminology table per language pair. Entries are appended to "
+"the translation system prompt so the AI uses preferred terms consistently — "
+"critical for domain vocabulary (\"kWp\", \"PPA\", \"interconnection point\"),"
+" brand names that must not translate, and standardised regulatory phrasing. "
+"Both language fields are optional: leave \"Source language\" blank to apply "
+"the entry regardless of which language you are translating from; leave "
+"\"Target language\" blank to apply it to all target languages at once."
+msgstr ""
+"Benutzerverwaltete Terminologietabelle pro Sprachpaar. Einträge werden an "
+"den Übersetzungssystemprompt angehängt, damit die KI bevorzugte Begriffe "
+"konsequent verwendet – entscheidend für Fachvokabular (\"kWp\", \"PPA\", "
+"\"Anschlussstelle\"), Markennamen, die nicht übersetzt werden dürfen, und "
+"standardisierte regulatorische Formulierungen. Beide Sprachfelder sind "
+"optional: Lass \"Quellsprache\" leer, um den Eintrag unabhängig von der "
+"Sprache, aus der du übersetzt, anzuwenden; lass \"Zielsprache\" leer, um ihn "
+"auf alle Zielsprache gleichzeitig anzuwenden."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:75
+msgid "Glossary entry added."
+msgstr "Glossareintrag hinzugefügt."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:80
+msgid "Glossary entry removed."
+msgstr "Glossareintrag entfernt."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:90
+msgid "Could not add entry: source term and target term are required."
+msgstr ""
+"Eintrag konnte nicht hinzugefügt werden: Quell- und Zielbegriff sind "
+"erforderlich."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:92
+msgid "Could not save the glossary entry."
+msgstr "Das Glossareintrag konnte nicht gespeichert werden."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:104
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:228
+msgid "Source language"
+msgstr "Quellsprache"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:107
+msgid "— Any —"
+msgstr "— Beliebig —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:116
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:242
+msgid "Target language"
+msgstr "Zielsprache"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:119
+msgid "— Any target —"
+msgstr "— Beliebige Zielsprache —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:127
+msgid "Filter"
+msgstr "Filter"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:128
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:137
+msgid ""
+"No glossary entries match the current filter. Clear the filter to see all "
+"entries, or add a new entry below."
+msgstr ""
+"Keine Glossareinträge entsprechen dem aktuellen Filter. Entferne den Filter, "
+"um alle Einträge zu sehen, oder füge unten einen neuen Eintrag hinzu."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:139
+msgid ""
+"No glossary entries yet. Add one below to start enforcing terminology in "
+"translations."
+msgstr ""
+"Noch keine Glossareinträge. Füge unten einen hinzu, um die Terminologie in "
+"Übersetzungen durchzusetzen."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:148
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:210
+msgid "Source term"
+msgstr "Quellbegriff"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:149
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:219
+msgid "Target term"
+msgstr "Zielbegriff"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:150
+msgid "Source lang"
+msgstr "Quell-Sprache"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:151
+msgid "Target lang"
+msgstr "Ziel-Sprache"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
+msgid "Notes"
+msgstr "Notizen"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
+msgid "any"
+msgstr "beliebig"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:188
+msgid "Delete this glossary entry?"
+msgstr "Diesen Glossareintrag löschen?"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:190
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:190
+msgid "Delete"
+msgstr "Löschen"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:201
+msgid "Add new entry"
+msgstr "Neuen Eintrag hinzufügen"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:214
+msgid "The phrase as it appears in the source text."
+msgstr "Der Ausdruck, wie er im Quelltext erscheint."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:223
+msgid ""
+"How it should appear in the translation. Type the same value as the source "
+"term to instruct the AI to preserve it verbatim."
+msgstr ""
+"So soll er in der Übersetzung erscheinen. Gib denselben Wert wie den "
+"Quellbegriff ein, um die KI anzuweisen, ihn wortwörtlich zu bewahren."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
+msgid "— Any source language —"
+msgstr "— Beliebige Quellsprache —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:237
+msgid ""
+"Leave blank for brand names and language-agnostic terms that should be "
+"enforced regardless of which language we are translating from."
+msgstr ""
+"Lass es leer für Markennamen und sprachunabhängige Begriffe, die unabhängig "
+"von der Sprache, aus der wir übersetzen, durchgesetzt werden sollen."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:246
+msgid "— Any target language —"
+msgstr "— Beliebige Zielsprache —"
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:251
+msgid ""
+"Leave blank to apply this entry to all target languages — ideal for brand "
+"names, abbreviations, and terms that must be preserved verbatim in every "
+"translation."
+msgstr ""
+"Lass es leer, um diesen Eintrag auf alle Zielsprache anzuwenden – ideal für "
+"Markennamen, Abkürzungen und Begriffe, die in jeder Übersetzung wortwörtlich "
+"erhalten bleiben müssen."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
+msgid ""
+"Optional context for editors (e.g. \"ASIC = Application-Specific Integrated "
+"Circuit; preserve in English in technical contexts\")."
+msgstr ""
+"Optionaler Kontext für Redakteure (z.B. \"ASIC = Application-Specific "
+"Integrated Circuit; in technischen Kontexten auf Englisch belassen\")."
+
+#: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:265
+msgid "Add entry"
+msgstr "Eintrag hinzufügen"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
+#: ai/includes/Admin/SettingsPage.php:550
+msgid "Limits"
+msgstr "Grenzen"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:39
+msgid "Authors and above (edit_published_posts)"
+msgstr "Autoren und höher (edit_published_posts)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:40
+msgid "Contributors and above — default (edit_posts)"
+msgstr "Mitwirkende und höher – Standard (edit_posts)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:41
+msgid "Editors and above (edit_others_posts)"
+msgstr "Redakteure und höher (edit_others_posts)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:42
+msgid "Administrators only (manage_options)"
+msgstr "Nur Administratoren (manage_options)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:52
+msgid "AI Limits & Security"
+msgstr "KI-Grenzen & Sicherheit"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:56
+msgid ""
+"Cap how much AI usage the site can generate and restrict which user roles "
+"may trigger paid AI calls. Sits on top of the per-user rate limit (30 "
+"requests / minute, hardcoded) that already protects against single-user "
+"runaway loops."
+msgstr ""
+"Begrenze die Nutzung der KI auf der Seite und beschränke, welche "
+"Benutzerrollen kostenpflichtige KI-Anfragen auslösen dürfen. Überlagert die "
+"pro-Benutzer-Grenze (30 Anfragen / Minute, fest codiert), die bereits vor "
+"unkontrollierten Schleifen schützt."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:65
+msgid "Daily request limit"
+msgstr "Tägliches Anfrage-Limit"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:80
+msgid ""
+"Site-wide ceiling on AI requests per UTC day (counts both Toolbar "
+"translations and block revisions). Counter resets at UTC midnight. Set to 0 "
+"to disable the cap."
+msgstr ""
+"Gesamtgrenze für KI-Anfragen pro UTC-Tag (zählt sowohl Toolbar-Übersetzungen "
+"als auch Block-Revisionen). Zählt bei UTC-Midnight zurück. Setze auf 0, um "
+"die Begrenzung zu deaktivieren."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:89
+msgid "Minimum role"
+msgstr "Mindestrolle"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:109
+msgid ""
+"Lowest WordPress capability allowed to trigger AI features. Tightening this "
+"on multi-author sites prevents Contributors or trial accounts from running "
+"paid AI calls. Override per-feature via the linguaforge_required_capability "
+"filter."
+msgstr ""
+"Niedrigste WordPress-Fähigkeit, die zum Auslösen von KI-Funktionen erlaubt "
+"ist. Das Verschärfen auf Multi-Autor-Websites verhindert, dass Mitwirkende "
+"oder Testkonten kostenpflichtige KI-Anfragen ausführen. Überschreibe pro "
+"Funktion via den linguaforge_required_capability-Filter."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:118
+msgid "Translation Limits"
+msgstr "Übersetzungsbegrenzungen"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:122
+msgid ""
+"Control how much content is sent to the AI and how large the response can be."
+" Leave a field blank to use the built-in default (shown as placeholder). "
+"Raise these values if large pages are being cut off; lower them to reduce "
+"API costs."
+msgstr ""
+"Steuere, wie viel Inhalt an die KI gesendet wird und wie groß die Antwort "
+"sein darf. Lass ein Feld leer, um den integrierten Standard zu verwenden "
+"(als Platzhalter angezeigt). Erhöhe diese Werte, wenn große Seiten "
+"abgeschnitten werden; senke sie, um API-Kosten zu reduzieren."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
+msgid "Model tier"
+msgstr "Modellstufe"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:143
+msgid "Quality (default — Sonnet / GPT-4o / Gemini Pro)"
+msgstr "Qualität (Standard – Sonnet / GPT-4o / Gemini Pro)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:146
+msgid "Light (fast and cost-effective — Haiku / Flash)"
+msgstr "Licht (schnell und kosteneffizient – Haiku / Flash)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:151
+msgid ""
+"Which model tier to use for full-page translation. Quality uses the model "
+"configured in the Models table above and is recommended for accurate, long-"
+"form translation. Switch to Light only if speed or cost is the priority and "
+"the content is short."
+msgstr ""
+"Welche Modellstufe für die Vollseitenübersetzung verwenden. Qualität nutzt "
+"das im obigen Modelle-Tabelle konfigurierte Modell und wird für genaue, "
+"längere Übersetzungen empfohlen. Wechsle nur zu Licht, wenn Geschwindigkeit "
+"oder Kosten Priorität haben und der Inhalt kurz ist."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:160
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:254
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:315
+msgid "Max output tokens"
+msgstr "Maximale Ausgaben-Tokens"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:177
+msgid ""
+"Maximum number of tokens the AI may produce in a single translation response."
+" If a translation is silently cut off at the end, increase this value. "
+"Default: 16 000."
+msgstr ""
+"Maximale Anzahl an Tokens, die die KI in einer einzigen Übersetzungsantwort "
+"produzieren darf. Wenn eine Übersetzung am Ende stillschweigend "
+"abgeschnitten wird, erhöhe diesen Wert. Standard: 16.000."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:186
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:278
+msgid "Max input characters"
+msgstr "Maximale Eingabebuchstaben"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:203
+msgid ""
+"Maximum number of characters of post content forwarded to the AI. 0 means no "
+"limit — the full content is always sent (recommended). Set a non-zero value "
+"only if your provider has a tight context window. A warning is written to "
+"the PHP error log whenever the content is trimmed."
+msgstr ""
+"Maximale Anzahl der Zeichen des Beitragsinhalts, die an die KI "
+"weitergeleitet werden. 0 bedeutet kein Limit – der vollständige Inhalt wird "
+"immer gesendet (empfohlen). Stelle nur einen nicht-null Wert ein, wenn dein "
+"Anbieter ein enges Kontextfenster hat. Eine Warnung wird in das PHP-"
+"Fehlerprotokoll geschrieben, wenn der Inhalt gekürzt wird."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:212
+msgid "Quick Translation"
+msgstr "Schnelle Übersetzung"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:216
+msgid ""
+"Quick Translation is used for snippet/chunk mode — short passages translated "
+"on demand from the toolbar, editor, or block popovers. It uses a separate, "
+"lighter configuration from the full-page translation to keep responses fast "
+"and cost-effective."
+msgstr ""
+"Schnelle Übersetzung wird im Snippet-/Chunk-Modus verwendet – kurze Passagen,"
+" die auf Abruf aus der Symbolleiste, dem Editor oder den Block-Popovers "
+"übersetzt werden. Es verwendet eine separate, leichtere Konfiguration als "
+"die Vollseitenübersetzung, um schnelle und kostengünstige Antworten zu "
+"gewährleisten."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:237
+msgid "Light (default — fast and cost-effective)"
+msgstr "Light (Standard – schnell und kostengünstig)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:240
+msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
+msgstr "Qualität (Sonnet / GPT-4o / Gemini Pro)"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:245
+msgid ""
+"The Light tier uses the fast model configured in the Models table above "
+"(default: Haiku / Flash). Switch to Quality if you need the same translation "
+"accuracy as full-page mode for snippets."
+msgstr ""
+"Die Light-Stufe verwendet das schnelle Modell, das in der oben stehenden "
+"Modellauswahl konfiguriert ist (Standard: Haiku / Flash). Wechsle zu "
+"Qualität, wenn du die gleiche Übersetzungsgenauigkeit wie im Vollseitenmodus "
+"für Snippets benötigst."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:270
+msgid ""
+"Maximum tokens the AI may produce per quick translation. Default: 2 000."
+msgstr ""
+"Maximale Tokens, die die KI pro schnelle Übersetzung produzieren darf. "
+"Standard: 2.000."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:294
+msgid "Maximum characters accepted from the input field. Default: 8 000."
+msgstr "Maximale akzeptierte Zeichen vom Eingabefeld. Standard: 8.000."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
+msgid "Content Generator"
+msgstr "Content-Generator"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:306
+msgid ""
+"Controls the token budget and input limits for the AI Content Generator "
+"feature. Leave fields blank to use the built-in defaults."
+msgstr ""
+"Steuert das Token-Budget und die Eingabebegrenzungen für die Funktion des KI-"
+"Content-Generators. Lasse die Felder leer, um die integrierten Standardwerte "
+"zu verwenden."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:331
+msgid ""
+"Maximum tokens the AI may produce per generation run. Raise this if full "
+"articles are being cut off. Default: 8 192."
+msgstr ""
+"Maximale Tokens, die die KI pro Generationslauf produzieren darf. Erhöhe "
+"dies, wenn vollständige Artikel abgeschnitten werden. Standard: 8.192."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:339
+msgid "Max hints characters"
+msgstr "Max. Hinweise-Zeichen"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:355
+msgid "Maximum characters read from the Hints field. Default: 2 000."
+msgstr ""
+"Maximale Zeichen, die aus dem Hinweise-Feld gelesen werden. Standard: 2.000."
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:363
+msgid "Max context characters"
+msgstr "Max. Kontextzeichen"
+
+#: ai/includes/Admin/Settings/Tabs/LimitsTab.php:379
+msgid ""
+"Maximum characters of existing post content passed to the AI as seed context "
+"when no Hints are provided. Default: 6 000."
+msgstr ""
+"Maximale Zeichen des bestehenden Beitragsinhalts, die an die KI als "
+"Saatkontext übergeben werden, wenn keine Hinweise bereitgestellt werden. "
+"Standard: 6.000."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:28
+#: ai/includes/Admin/SettingsPage.php:555
+msgid "Maintenance"
+msgstr "Wartung"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:100
+msgid "Language Overrides"
+msgstr "Sprachüberschreibungen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:104
+msgid ""
+"Upload compiled .mo files to override third-party plugin strings for "
+"specific locales — for example, a custom VikBooking translation that uses "
+"\"apartment\" instead of \"room\". Files must follow the WordPress naming "
+"convention: {textdomain}-{locale}.mo (e.g. vikbooking-ca.mo). They are "
+"stored in the uploads folder and survive plugin updates."
+msgstr ""
+"Kompilierte .mo-Dateien hochladen, um Strings von Drittanbieter-Plugins für "
+"bestimmte Sprachen zu überschreiben – zum Beispiel eine benutzerdefinierte "
+"VikBooking-Übersetzung, die \"Apartment\" anstelle von \"Zimmer\" verwendet. "
+"Dateien müssen dem WordPress-Namensschema folgen: {textdomain}-{locale}.mo "
+"(z.B. vikbooking-ca.mo). Sie werden im Upload-Ordner gespeichert und "
+"überleben Plugin-Updates."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:113
+msgid "Override file uploaded successfully."
+msgstr "Überschreibungsdatei erfolgreich hochgeladen."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:118
+msgid "Override file deleted."
+msgstr "Überschreibungsdatei gelöscht."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:123
+msgid "No file was selected."
+msgstr "Keine Datei ausgewählt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:124
+msgid "Only .mo files are accepted."
+msgstr "Nur .mo-Dateien werden akzeptiert."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:125
+msgid "The upload failed — please try again."
+msgstr "Der Upload ist fehlgeschlagen – bitte versuche es erneut."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:126
+msgid "Could not save the file. Check that the uploads folder is writable."
+msgstr ""
+"Datei konnte nicht gespeichert werden. Überprüfe, ob der Upload-Ordner "
+"beschreibbar ist."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:127
+msgid "Invalid filename."
+msgstr "Ungültiger Dateiname."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:128
+msgid "Security check failed — file path is not permitted."
+msgstr "Sicherheitsüberprüfung fehlgeschlagen – Dateipfad ist nicht erlaubt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:131
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:273
+msgid "An unknown error occurred."
+msgstr "Ein unbekannter Fehler ist aufgetreten."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:159
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:285
+msgid "Text domain / locale"
+msgstr "Textdomain / Sprache"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:160
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:287
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:533
+msgid "Files"
+msgstr "Dateien"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:161
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:288
+msgid "Size"
+msgstr "Größe"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:184
+msgid "Delete all files for this override (both .mo and .po)?"
+msgstr ""
+"Alle Dateien für diese Überschreibung löschen (sowohl .mo- als auch .po-"
+"Dateien)?"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:202
+msgid "No override files uploaded yet."
+msgstr "Noch keine Überschreibungsdateien hochgeladen."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:220
+msgid "Upload .mo file"
+msgstr ".mo-Datei hochladen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:232
+msgid ""
+"Accepts compiled .mo files only. Filename must follow the pattern "
+"{textdomain}-{locale}.mo. Uploading a file with the same name as an existing "
+"one will replace it."
+msgstr ""
+"Akzeptiert nur kompilierte .mo-Dateien. Der Dateiname muss dem Muster "
+"{textdomain}-{locale}.mo folgen. Das Hochladen einer Datei mit demselben "
+"Namen wie eine bestehende ersetzt sie."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:239
+msgid "Upload Override"
+msgstr "Überschreibung hochladen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:248
+msgid "Loco Translate — Copy to Safe Storage"
+msgstr "Loco Translate – In sicheren Speicher kopieren"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:252
+msgid ""
+"Loco Translate stores its custom translations in wp-content/languages/loco/ "
+"— a location that can be silently wiped by a WP core update, plugin "
+"reinstall, or if Loco Translate itself is removed. Copying files here moves "
+"them into the Lingua Forge i18n-overrides directory, which persists through "
+"all of those events and is loaded automatically on every request."
+msgstr ""
+"Loco Translate speichert seine benutzerdefinierten Übersetzungen im "
+"Verzeichnis wp-content/languages/loco/ – ein Ort, der bei einem WP-Kern-"
+"Update, Plugin-Neuinstallation oder bei Entfernung von Loco Translate still "
+"gelöscht werden kann. Das Kopieren der Dateien hier verschiebt sie in das "
+"Lingua Forge i18n-overrides-Verzeichnis, das all diesen Ereignissen "
+"standhält und bei jeder Anfrage automatisch geladen wird."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:263
+msgid "File copied to safe storage successfully."
+msgstr "Datei erfolgreich in sicheren Speicher kopiert."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:268
+msgid "Source file not found."
+msgstr "Quelldatei nicht gefunden."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:269
+msgid "Could not copy the file. Check that the uploads folder is writable."
+msgstr ""
+"Datei konnte nicht kopiert werden. Überprüfe, ob der Upload-Ordner "
+"beschreibbar ist."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:270
+msgid "Invalid file reference."
+msgstr "Ungültige Dateireferenz."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:286
+msgid "Type"
+msgstr "Typ"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:307
+msgid "✓ In safe storage"
+msgstr "✓ Im sicheren Speicher"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:320
+msgid "Copy to safe storage"
+msgstr "In sicheren Speicher kopieren"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:333
+msgid ""
+"No custom Loco Translate files found yet. They appear here once you save a "
+"translation in Loco Translate."
+msgstr ""
+"Noch keine benutzerdefinierten Loco Translate-Dateien gefunden. Sie "
+"erscheinen hier, sobald du eine Übersetzung in Loco Translate speicherst."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:343
+msgid "AI Cache"
+msgstr "KI-Cache"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:347
+msgid ""
+"Lingua Forge caches AI-generated translations, meta descriptions, excerpts, "
+"and generated content per-post so unchanged inputs do not re-trigger a paid "
+"API call. Cached entries are automatically invalidated when their inputs "
+"change. Clear the cache manually to reclaim database space, force a resync "
+"after switching providers or editing prompt templates, or troubleshoot a "
+"cache-related issue."
+msgstr ""
+"Lingua Forge cached KI-generierte Übersetzungen, Meta-Beschreibungen, "
+"Auszüge und generierte Inhalte pro Beitrag, sodass unveränderte Eingaben "
+"keine kostenpflichtige API-Anfrage auslösen. Cache-Einträge werden "
+"automatisch ungültig, wenn sich ihre Eingaben ändern. Lösche den Cache "
+"manuell, um Datenbankplatz freizugeben, nach Anbieterwechsel oder "
+"Bearbeitung von Prompt-Vorlagen eine Synchronisation zu erzwingen oder bei "
+"einem cachebezogenen Problem."
+
+#. translators: %d is the number of cleared cache entries.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:365
+#, php-format
+msgid "AI cache cleared. %d entry was removed."
+msgid_plural "AI cache cleared. %d entries were removed."
+msgstr[0] "KI-Cache gelöscht. %d Eintrag wurde entfernt."
+msgstr[1] "KI-Cache gelöscht. %d Einträge wurden entfernt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:381
+msgid ""
+"Clear all cached AI results? Future requests will trigger fresh API calls "
+"until the cache rebuilds."
+msgstr ""
+"Alle zwischengespeicherten KI-Ergebnisse löschen? Zukünftige Anfragen lösen "
+"neue API-Aufrufe aus, bis der Cache neu aufgebaut ist."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:387
+msgid "Clear AI Cache"
+msgstr "AI-Cache löschen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:397
+msgid "Debug Files"
+msgstr "Debug-Dateien"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:401
+msgid ""
+"When debug logging is enabled (via the toggle below or by defining "
+"LINGUAFORGE_AI_DEBUG in wp-config.php), the Translation and FSE template "
+"translation features write their raw AI prompts and responses to disk for "
+"troubleshooting. Use this section to monitor that output and clear it once "
+"you have what you need — the files can grow quickly on large pages. "
+"Configure the destination directory via the linguaforge_debug_dir filter."
+msgstr ""
+"Wenn das Debug-Logging aktiviert ist (über den Schalter unten oder durch die "
+"Definition von LINGUAFORGE_AI_DEBUG in wp-config.php), schreiben die "
+"Übersetzungs- und FSE-Template-Übersetzungsfunktionen ihre rohen AI-"
+"Aufforderungen und Antworten zur Fehlerbehebung auf die Festplatte. Nutze "
+"diesen Abschnitt, um diese Ausgabe zu überwachen und sie zu löschen, sobald "
+"du hast, was du brauchst — die Dateien können bei großen Seiten schnell "
+"wachsen. Konfiguriere das Zielverzeichnis über den linguaforge_debug_dir-"
+"Filter."
+
+#. translators: %d is the number of removed debug files.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:428
+#, php-format
+msgid "Debug files cleared. %d file was removed."
+msgid_plural "Debug files cleared. %d files were removed."
+msgstr[0] "Debug-Datei gelöscht. %d Datei wurde entfernt."
+msgstr[1] "Debug-Dateien gelöscht. %d Dateien wurden entfernt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:449
+msgid "Debug logging enabled."
+msgstr "Debug-Logging aktiviert."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:451
+msgid "Debug logging disabled."
+msgstr "Debug-Logging deaktiviert."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:467
+msgid "Debug logging"
+msgstr "Debug-Logging"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:478
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:499
+msgid "Write AI prompts and responses to disk for troubleshooting"
+msgstr ""
+"AI-Aufforderungen und Antworten zur Fehlerbehebung auf die Festplatte "
+"schreiben"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:483
+msgid ""
+"Forced ON by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove that "
+"line to control this toggle from here."
+msgstr ""
+"Erzwungen EIN durch die Konstante LINGUAFORGE_AI_DEBUG in wp-config.php. "
+"Entferne diese Zeile, um diesen Schalter von hier aus zu steuern."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:485
+msgid ""
+"Forced OFF by the LINGUAFORGE_AI_DEBUG constant in wp-config.php. Remove "
+"that line to control this toggle from here."
+msgstr ""
+"Erzwungen AUS durch die Konstante LINGUAFORGE_AI_DEBUG in wp-config.php. "
+"Entferne diese Zeile, um diesen Schalter von hier aus zu steuern."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:503
+msgid ""
+"Files land in the directory below. Useful for diagnosing translation issues "
+"— turn off once you have what you need so the files do not accumulate. You "
+"can also force this from wp-config.php with `define( 'LINGUAFORGE_AI_DEBUG', "
+"true );` which overrides the toggle."
+msgstr ""
+"Dateien landen im unten stehenden Verzeichnis. Nützlich zur Diagnose von "
+"Übersetzungsproblemen — schalte es aus, sobald du hast, was du brauchst, "
+"damit die Dateien sich nicht anhäufen. Du kannst dies auch in wp-config.php "
+"erzwingen mit `define( 'LINGUAFORGE_AI_DEBUG', true );`, was den Schalter "
+"überschreibt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:510
+msgid "Currently:"
+msgstr "Derzeit:"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:513
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:617
+msgid "✓ Enabled"
+msgstr "✓ Aktiviert"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:517
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:621
+msgid "✗ Disabled"
+msgstr "✗ Deaktiviert"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:524
+msgid "Directory"
+msgstr "Verzeichnis"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:528
+msgid ""
+"Filter with linguaforge_debug_dir to redirect debug output to a non-public "
+"location."
+msgstr ""
+"Mit linguaforge_debug_dir filtern, um Debug-Ausgaben an einen nicht-"
+"öffentlichen Ort umzuleiten."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:536
+msgid ".txt file(s) in the directory"
+msgstr ".txt-Datei(en) im Verzeichnis"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:543
+msgid "Save Debug Setting"
+msgstr "Debug-Einstellung speichern"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:554
+msgid ""
+"Delete all .txt files in the debug directory? The directory itself will "
+"remain so future debug writes still land cleanly."
+msgstr ""
+"Alle .txt-Dateien im Debug-Verzeichnis löschen? Das Verzeichnis selbst "
+"bleibt erhalten, damit zukünftige Debug-Schreibvorgänge weiterhin sauber "
+"landen."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:560
+msgid "Clear Debug Files"
+msgstr "Debug-Dateien löschen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:575
+msgid ""
+"Per-block translation cache shared across posts. Configure on/off in "
+"Settings → Behavior. Stats below show what is currently cached; clearing "
+"forces every block to be re-translated on next request (useful after "
+"upgrading models or to recover database space)."
+msgstr ""
+"Pro-Block-Übersetzungscache, der über Beiträge hinweg geteilt wird. In den "
+"Einstellungen → Verhalten konfigurieren. Die unten stehenden Statistiken "
+"zeigen, was derzeit zwischengespeichert ist; das Löschen erzwingt, dass "
+"jeder Block bei der nächsten Anfrage neu übersetzt wird (nützlich nach "
+"Modell-Updates oder um Datenbankplatz freizugeben)."
+
+#. translators: %d is the number of removed cached blocks.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:593
+#, php-format
+msgid "Translation Memory cleared. %d cached block was removed."
+msgid_plural "Translation Memory cleared. %d cached blocks were removed."
+msgstr[0] ""
+"Übersetzungsspeicher gelöscht. %d zwischengespeicherter Block wurde entfernt."
+msgstr[1] ""
+"Übersetzungsspeicher gelöscht. %d zwischengespeicherte Blöcke wurden "
+"entfernt."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:613
+msgid "Status"
+msgstr "Status"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:623
+msgid "— toggle in Settings → Behavior."
+msgstr "— Schalter in Einstellungen → Verhalten."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:628
+msgid "Cached blocks"
+msgstr "Zwischengespeicherte Blöcke"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:634
+msgid "Cumulative cache hits"
+msgstr "Kumulative Cache-Hits"
+
+#. translators: %s is the average hits per cached block.
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:642
+#, php-format
+msgid "(avg %.1f hits/block)"
+msgstr "(ø %.1f Treffer/Block)"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:651
+msgid "Oldest entry"
+msgstr "Ältester Eintrag"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:655
+msgid "Newest entry"
+msgstr "Neuster Eintrag"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:660
+msgid "Approximate size"
+msgstr "Ungefähre Größe"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:672
+msgid ""
+"Clear the entire Translation Memory? Future translations will rebuild the "
+"cache as they run."
+msgstr ""
+"Gesamten Übersetzungsspeicher löschen? Zukünftige Übersetzungen bauen den "
+"Cache beim Ausführen neu auf."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:678
+msgid "Clear Translation Memory"
+msgstr "Übersetzungsspeicher löschen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:689
+msgid "Uninstall Behaviour"
+msgstr "Deinstallationsverhalten"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:693
+msgid ""
+"Controls what happens when an administrator deletes the plugin from Plugins "
+"→ Installed Plugins → Delete. Plugin settings and AI caches are always "
+"removed. Language assignments and translation relationships are kept by "
+"default so an accidental uninstall or a reinstall can pick up where it left "
+"off."
+msgstr ""
+"Steuert, was passiert, wenn ein Administrator das Plugin in Plugins → "
+"Installierte Plugins → Löschen entfernt. Plugin-Einstellungen und AI-Caches "
+"werden immer entfernt. Sprachzuweisungen und Übersetzungsbeziehungen bleiben "
+"standardmäßig erhalten, damit eine versehentliche Deinstallation oder "
+"Neuinstallation dort anknüpfen kann, wo sie aufgehört hat."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:704
+msgid "Uninstall setting saved."
+msgstr "Deinstallations-Einstellung gespeichert."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:717
+msgid "Delete content data on uninstall"
+msgstr "Inhalt bei Deinstallation löschen"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:726
+msgid ""
+"Also delete language assignments, translation relationships, meta "
+"descriptions, glossary, and Translation Memory when the plugin is uninstalled"
+msgstr ""
+"Auch Sprachzuweisungen, Übersetzungsbeziehungen, Meta-Beschreibungen, "
+"Glossar und Übersetzungsspeicher löschen, wenn das Plugin deinstalliert wird."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:729
+msgid "Warning:"
+msgstr "Warnung:"
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:731
+msgid ""
+"If checked, uninstalling the plugin will permanently delete all language "
+"assignments, translation relationships, meta descriptions, per-page presets, "
+"the AI glossary, and Translation Memory for every post on this site. This "
+"cannot be undone. Leave unchecked unless you are fully removing multilingual "
+"support from the site."
+msgstr ""
+"Wenn aktiviert, werden bei der Deinstallation alle Sprachzuweisungen, "
+"Übersetzungsbeziehungen, Meta-Beschreibungen, Seiten-Voreinstellungen, das "
+"AI-Glossar und der Übersetzungsspeicher für jede Seite auf dieser Seite "
+"dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden. Nicht "
+"aktivieren, wenn du den mehrsprachigen Support vollständig entfernen "
+"möchtest."
+
+#: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:742
+msgid "Save Uninstall Setting"
+msgstr "Deinstallations-Einstellung speichern"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:37
+#: ai/includes/Admin/SettingsPage.php:552
+msgid "Router"
+msgstr "Router"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:92
+msgid "Primary language saved."
+msgstr "Primärsprache gespeichert."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:97
+msgid "Permalink rules flushed successfully."
+msgstr "Permalink-Regeln erfolgreich gelöscht."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:102
+msgid "Primary Language"
+msgstr "Primärsprache"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:105
+msgid ""
+"The primary language is always served at the root of your site — no URL "
+"prefix in path mode, no language subdomain in subdomain mode. All other "
+"languages use either a /lang/ path prefix (e.g. example.com/de/) or a "
+"language subdomain (e.g. de.example.com), depending on the URL structure "
+"setting below."
+msgstr ""
+"Die primäre Sprache wird immer an der Wurzel deiner Seite bedient — kein URL-"
+"Präfix im Pfadmodus, keine Sprach-Subdomain im Subdomain-Modus. Alle anderen "
+"Sprachen verwenden entweder ein /lang/ Pfadpräfix (z.B. example.com/de/) "
+"oder eine Sprach-Subdomain (z.B. de.example.com), abhängig von der unten "
+"stehenden URL-Struktur-Einstellung."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:116
+msgid "Primary language"
+msgstr "Primärsprache"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:128
+msgid ""
+"After changing the primary language, flush permalinks (section below) for "
+"the URL routing to update."
+msgstr ""
+"Nach Änderung der primären Sprache die Permalinks (Abschnitt unten) "
+"aktualisieren, damit die URL-Routing-Änderungen wirksam werden."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:135
+msgid "URL structure"
+msgstr "URL-Struktur"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
+msgid "Path prefix — example.com/de/"
+msgstr "Pfadpräfix — example.com/de/"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:144
+msgid "Subdomain — de.example.com/"
+msgstr "Subdomain — de.example.com/"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:148
+msgid ""
+"Subdomain mode requires your web server to point all language subdomains (e."
+"g. de.example.com) to this WordPress installation. After switching modes, "
+"flush permalink rules and clear any caches. If your home URL includes www (e."
+"g. www.example.com), use the lf_base_domain filter to set the bare apex "
+"domain so subdomains are constructed correctly."
+msgstr ""
+"Der Subdomain-Modus erfordert, dass dein Webserver alle Sprach-Subdomains (z."
+"B. de.example.com) auf diese WordPress-Installation zeigt. Nach dem Wechsel "
+"des Modus, leere die Permalink-Regeln und lösche alle Caches. Wenn deine "
+"Start-URL www enthält (z.B. www.example.com), verwende den lf_base_domain "
+"Filter, um die reine Domain festzulegen, damit die Subdomains korrekt "
+"aufgebaut werden."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:154
+msgid "Browser language redirect"
+msgstr "Browser-Sprachumleitung"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:164
+msgid ""
+"Redirect visitors to their preferred language based on the browser's Accept-"
+"Language header"
+msgstr ""
+"Leite Besucher basierend auf dem Accept-Language-Header ihres Browsers auf "
+"ihre bevorzugte Sprache um"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:167
+msgid ""
+"When enabled, first-time visitors with no language cookie and no language "
+"prefix in the URL are redirected to the closest matching language version. "
+"The redirect is skipped if the browser's preferred language is not among the "
+"active router languages. Once a visitor selects a language via the switcher, "
+"the cookie takes priority and the browser header is ignored on all future "
+"visits."
+msgstr ""
+"Wenn aktiviert, werden Erstbesucher ohne Sprach-Cookie und ohne Sprachpräfix "
+"in der URL auf die nächstgelegene passende Sprachversion umgeleitet. Die "
+"Umleitung wird übersprungen, wenn die bevorzugte Sprache des Browsers nicht "
+"zu den aktiven Router-Sprachen gehört. Sobald ein Besucher eine Sprache über "
+"den Schalter auswählt, hat das Cookie Vorrang und der Browser-Header wird "
+"bei zukünftigen Besuchen ignoriert."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:173
+msgid "Save Router Settings"
+msgstr "Router-Einstellungen speichern"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:177
+msgid "Flush Permalinks"
+msgstr "Permalinks leeren"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:180
+msgid ""
+"Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
+" and archive rewrites are all in sync. Necessary after changing the primary "
+"language or adding new language support."
+msgstr ""
+"Regeneriert die Rewrite-Regeln von WordPress, sodass URL-Präfixe, "
+"sprachspezifische Slugs und Archiv-Umleitungen synchron sind. Notwendig nach "
+"Änderung der Primärsprache oder Hinzufügen neuer Sprachunterstützung."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:186
+msgid "Flush Permalink Rules"
+msgstr "Permalink-Regeln leeren"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:190
+msgid "Active Languages"
+msgstr "Aktive Sprachen"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:193
+msgid ""
+"Languages currently known to the router (derived from installed WordPress "
+"locale packs plus the primary language). Install additional language packs "
+"in the section below to make more languages available for routing and "
+"translation."
+msgstr ""
+"Sprachen, die dem Router derzeit bekannt sind (abgeleitet von installierten "
+"WordPress-Lokalisierungspaketen plus der Primärsprache). Installiere "
+"zusätzliche Sprachpakete im unteren Abschnitt, um mehr Sprachen für Routing "
+"und Übersetzung verfügbar zu machen."
+
+#. translators: %d: count of installed locale packs
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:207
+#, php-format
+msgid "%d locale pack installed."
+msgid_plural "%d locale packs installed."
+msgstr[0] "%d Lokalisierungspaket installiert."
+msgstr[1] "%d Lokalisierungspakete installiert."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Install a Language"
+msgstr "Eine Sprache installieren"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Download and install a WordPress core language pack directly from WordPress."
+"org. Once installed, the locale becomes available for URL routing and the AI "
+"translation workflow. The list of available languages is fetched on demand — "
+"click the button below to load it."
+msgstr ""
+"Lade und installiere ein WordPress-Kern-Lokalisierungspaket direkt von "
+"WordPress.org. Nach der Installation steht die Lokalisierung für URL-Routing "
+"und den KI-Übersetzungsworkflow zur Verfügung. Die Liste der verfügbaren "
+"Sprachen wird bei Bedarf abgerufen — klicke auf die Schaltfläche unten, um "
+"sie zu laden."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:223
+msgid ""
+"Language installation is disabled on this server. The DISALLOW_FILE_MODS "
+"constant is set in wp-config.php. Install language packs manually via WP-CLI:"
+" wp language core install de_DE"
+msgstr ""
+"Die Sprachinstallation ist auf diesem Server deaktiviert. Die Konstante "
+"DISALLOW_FILE_MODS ist in wp-config.php gesetzt. Installiere Sprachpakete "
+"manuell via WP-CLI: wp language core install de_DE"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:228
+msgid "Load available languages"
+msgstr "Verfügbare Sprachen laden"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/SettingsPage.php:207
+msgid "— select a language —"
+msgstr "— wähle eine Sprache —"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:237
+msgid "Install"
+msgstr "Installieren"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
+msgid "Language Setup"
+msgstr "Sprachsetup"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:272
+msgid ""
+"No secondary languages configured. Install a language pack above to enable "
+"template scaffolding."
+msgstr ""
+"Keine sekundären Sprachen konfiguriert. Installiere ein Sprachpaket oben, um "
+"die Vorlagenerstellung zu aktivieren."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:277
+msgid ""
+"Select a language to manage its FSE templates, template parts, and "
+"navigation menus."
+msgstr ""
+"Wähle eine Sprache, um ihre FSE-Vorlagen, Vorlage-Teile und Navigationsmenüs "
+"zu verwalten."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:321
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:350
+msgid "Forbidden"
+msgstr "Verboten"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/SettingsPage.php:208
+msgid ""
+"Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
+msgstr ""
+"Die Sprachinstallation ist auf diesem Server deaktiviert (DISALLOW_FILE_MODS "
+"ist gesetzt)."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:425
+msgid "Invalid locale code."
+msgstr "Ungültiger Lokalisierungscode."
+
+#. translators: %s: locale code such as de_DE
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:451
+#, php-format
+msgid "Language %s installed successfully."
+msgstr "Sprache %s erfolgreich installiert."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:454
+msgid ""
+"Language pack installation failed. The language may already be installed, "
+"the locale code may be incorrect, or your server may block file writes."
+msgstr ""
+"Die Installation des Sprachpakets ist fehlgeschlagen. Die Sprache ist "
+"möglicherweise bereits installiert, der Lokalisierungscode ist falsch oder "
+"dein Server blockiert Dateischreibrechte."
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:70
+msgid "Navigations"
+msgstr "Navigationen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:74
+msgid ""
+"Navigation translation requires an active AI provider. Configure an API key "
+"in the API Keys tab."
+msgstr ""
+"Navigation-Übersetzung erfordert einen aktiven KI-Anbieter. Konfiguriere "
+"einen API-Schlüssel im Tab API-Schlüssel."
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:81
+msgid "Navigation"
+msgstr "Navigation"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:51
+msgid "Action"
+msgstr "Aktion"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
+#: ai/includes/Admin/SettingsPage.php:227
+msgid "Re-translate"
+msgstr "Neu übersetzen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:40
+msgid "CPT Block Patterns"
+msgstr "CPT-Blockmuster"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:43
+msgid ""
+"Block patterns registered for custom post types. Use the Translate button to "
+"produce a language variant. The translated content is saved here and can be "
+"copied into any CPT post from the block editor Pattern inserter or used as a "
+"starting point for a Synced Pattern (Reusable Block)."
+msgstr ""
+"Blockmuster, die für benutzerdefinierte Beitragstypen registriert sind. "
+"Verwende die Übersetzen-Schaltfläche, um eine Sprachvariante zu erstellen. "
+"Der übersetzte Inhalt wird hier gespeichert und kann vom Block-Editor "
+"Pattern-Inserter in jeden CPT-Beitrag kopiert oder als Ausgangspunkt für ein "
+"synchronisiertes Muster (Wiederverwendeter Block) verwendet werden."
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:49
+msgid "Pattern"
+msgstr "Muster"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
+msgid "Post Types"
+msgstr "Beitragstypen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
+#: ai/includes/Admin/SettingsPage.php:238
+msgid "✓ Translation saved"
+msgstr "✓ Übersetzung gespeichert"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
+#: ai/includes/Admin/SettingsPage.php:239
+msgid "View"
+msgstr "Ansicht"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:36
+msgid "Template Parts"
+msgstr "Vorlagen-Teile"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:37
+msgid ""
+"Language-specific copies of the theme's template parts. Once scaffolded, "
+"templates are updated to reference the language-specific part."
+msgstr ""
+"Sprachspezifische Kopien der Vorlagen-Teile des Themes. Nach der Erstellung "
+"werden die Vorlagen aktualisiert, um auf den sprachspezifischen Teil zu "
+"verweisen."
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:42
+msgid "Part"
+msgstr "Teil"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:43
+msgid "Status / Actions"
+msgstr "Status / Aktionen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
+#: ai/includes/Admin/SettingsPage.php:219
+msgid "Fix Links"
+msgstr "Links reparieren"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
+#: ai/includes/Admin/SettingsPage.php:230
+msgid "Fix Nav"
+msgstr "Navigation reparieren"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
+#: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:221
+msgid "Create"
+msgstr "Erstellen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:39
+msgid "Templates"
+msgstr "Vorlagen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:40
+msgid ""
+"FSE templates seeded from the active theme. Create then customise in the "
+"Site Editor."
+msgstr ""
+"FSE-Vorlagen, die vom aktiven Theme vorgegeben sind. Erstelle sie und passe "
+"sie im Site Editor an."
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:48
+msgid "Actions"
+msgstr "Aktionen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
+#: ai/includes/Admin/SettingsPage.php:223
+msgid "Fix Parts"
+msgstr "Teile reparieren"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
+msgid "Create missing"
+msgstr "Erstellen, was fehlt"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:104
+msgid "Translate all"
+msgstr "Alles übersetzen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+msgid "Fix all parts"
+msgstr "Alle Teile reparieren"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
+msgid "Fix all links"
+msgstr "Alle Links reparieren"
+
+#: ai/includes/Admin/SettingsPage.php:51
+msgid "Anthropic (Claude)"
+msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/SettingsPage.php:52
+msgid "OpenAI (GPT)"
+msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/SettingsPage.php:53
+msgid "Google (Gemini)"
+msgstr "Google (Gemini)"
+
+#: ai/includes/Admin/SettingsPage.php:172
+msgid "Testing…"
+msgstr "Wird getestet…"
+
+#: ai/includes/Admin/SettingsPage.php:173
+msgid "✓ Connection OK"
+msgstr "✓ Verbindung OK"
+
+#: ai/includes/Admin/SettingsPage.php:174
+msgid "✗ Failed:"
+msgstr "✗ Fehler: "
+
+#: ai/includes/Admin/SettingsPage.php:175
+msgid "No response from provider — check the error log for details."
+msgstr ""
+"Keine Antwort vom Anbieter — Überprüfe das Fehlerprotokoll für Details."
+
+#: ai/includes/Admin/SettingsPage.php:176
+msgid "Network error — could not reach the WordPress AJAX endpoint."
+msgstr ""
+"Netzwerkfehler — konnte die WordPress AJAX-Schnittstelle nicht erreichen."
+
+#: ai/includes/Admin/SettingsPage.php:203
+msgid "Loading…"
+msgstr "Lädt…"
+
+#: ai/includes/Admin/SettingsPage.php:204
+msgid "Installing…"
+msgstr "Installiert…"
+
+#: ai/includes/Admin/SettingsPage.php:205
+msgid "✓ Language installed."
+msgstr "✓ Sprache installiert."
+
+#: ai/includes/Admin/SettingsPage.php:206
+msgid "✗ Error:"
+msgstr "✗ Fehler:"
+
+#: ai/includes/Admin/SettingsPage.php:209
+msgid "Creating…"
+msgstr "Wird erstellt…"
+
+#: ai/includes/Admin/SettingsPage.php:210
+msgid "✓ All templates created."
+msgstr "✓ Alle Vorlagen erstellt."
+
+#: ai/includes/Admin/SettingsPage.php:211
+msgid "Some templates could not be created."
+msgstr "Einige Vorlagen konnten nicht erstellt werden."
+
+#: ai/includes/Admin/SettingsPage.php:212
+msgid "✓ All parts created."
+msgstr "✓ Alle Teile erstellt."
+
+#: ai/includes/Admin/SettingsPage.php:213
+msgid "Some parts could not be created."
+msgstr "Einige Teile konnten nicht erstellt werden."
+
+#: ai/includes/Admin/SettingsPage.php:216
+msgid "✓ All translated."
+msgstr "✓ Alle übersetzt."
+
+#: ai/includes/Admin/SettingsPage.php:217
+msgid "Some translations failed."
+msgstr "Einige Übersetzungen sind fehlgeschlagen."
+
+#: ai/includes/Admin/SettingsPage.php:218
+msgid "Review carefully — links and slugs not updated."
+msgstr "Überprüfe sorgfältig — Links und Slugs wurden nicht aktualisiert."
+
+#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:224
+#: ai/includes/Admin/SettingsPage.php:231
+#: language-router/includes/class-lsflr-link-fixer.php:96
+#: language-router/includes/class-lsflr-link-fixer.php:122
+msgid "Fixing…"
+msgstr "Wird repariert…"
+
+#: ai/includes/Admin/SettingsPage.php:221
+msgid "✓ Links fixed."
+msgstr "✓ Links repariert."
+
+#: ai/includes/Admin/SettingsPage.php:222
+msgid "Some link fixes failed."
+msgstr "Einige Link-Reparaturen sind fehlgeschlagen."
+
+#: ai/includes/Admin/SettingsPage.php:225
+msgid "✓ Parts fixed."
+msgstr "✓ Teile repariert."
+
+#: ai/includes/Admin/SettingsPage.php:226
+msgid "Some part fixes failed."
+msgstr "Einige Teile-Reparaturen sind fehlgeschlagen."
+
+#: ai/includes/Admin/SettingsPage.php:232
+msgid "✓ Nav refs fixed."
+msgstr "✓ Navigationsreferenzen repariert."
+
+#: ai/includes/Admin/SettingsPage.php:233
+msgid "Some nav ref fixes failed."
+msgstr "Einige Navigationsreferenz-Reparaturen sind fehlgeschlagen."
+
+#: ai/includes/Admin/SettingsPage.php:236
+msgid "✓ Pattern translated."
+msgstr "✓ Muster übersetzt."
+
+#: ai/includes/Admin/SettingsPage.php:237
+msgid "Pattern translation failed."
+msgstr "Musterübersetzung fehlgeschlagen."
+
+#: ai/includes/Admin/SettingsPage.php:240
+msgid "Hide"
+msgstr "Verbergen"
+
+#: ai/includes/Admin/SettingsPage.php:286
+msgid "Built-in preset instructions:"
+msgstr "Integrierte Voreinstellungen: "
+
+#: ai/includes/Admin/SettingsPage.php:287
+msgid ""
+"No built-in instructions — each AI feature uses its own tuned defaults. Fill "
+"in the Custom prompt instructions field below to add your own site-wide "
+"rules."
+msgstr ""
+"Keine integrierten Anweisungen — jede KI-Funktion verwendet ihre eigenen "
+"abgestimmten Standardwerte. Fülle das Feld für benutzerdefinierte "
+"Anweisungen unten aus, um eigene siteweite Regeln hinzuzufügen."
+
+#: ai/includes/Admin/SettingsPage.php:325
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: ai/includes/Admin/SettingsPage.php:337
+msgid "You do not have permission to manage these settings."
+msgstr "Du hast keine Berechtigung, diese Einstellungen zu verwalten."
+
+#: ai/includes/Admin/SettingsPage.php:537
+msgid "Lingua Forge — Settings"
+msgstr "Lingua Forge — Einstellungen"
+
+#: ai/includes/Admin/SettingsPage.php:542
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert."
+
+#: ai/includes/Admin/SettingsPage.php:590
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: ai/includes/Core/Config.php:51
+msgid "Standard"
+msgstr "Standard"
+
+#: ai/includes/Core/Config.php:56
+msgid "Technical / Scientific"
+msgstr "Technisch / Wissenschaftlich"
+
+#: ai/includes/Core/Config.php:61
+msgid "Legal / Compliance"
+msgstr "Rechtlich / Compliance"
+
+#: ai/includes/Core/Config.php:66
+msgid "Creative / Marketing"
+msgstr "Kreativ / Marketing"
+
+#: ai/includes/Features/ContentGenerator.php:52
+msgid "Full Article"
+msgstr "Vollständiger Artikel"
+
+#: ai/includes/Features/ContentGenerator.php:53
+msgid "Introduction only"
+msgstr "Nur Einführung"
+
+#: ai/includes/Features/ContentGenerator.php:54
+msgid "Structured Outline"
+msgstr "Strukturierte Gliederung"
+
+#: ai/includes/Features/ContentGenerator.php:65
+msgid "Generate Content"
+msgstr "Inhalt generieren"
+
+#: ai/includes/Features/ContentGenerator.php:89
+msgid "Hints"
+msgstr "Hinweise"
+
+#: ai/includes/Features/ContentGenerator.php:90
+msgid "Key points, ideas, or structure to build from…"
+msgstr ""
+"Wichtige Punkte, Ideen oder Strukturen, auf denen aufgebaut werden kann…"
+
+#: ai/includes/Features/ContentGenerator.php:95
+#: ai/assets/editor-translate.js:280 ai/assets/toolbar-translate.js:276
+msgid "Tone"
+msgstr "Ton"
+
+#: ai/includes/Features/ContentGenerator.php:101
+msgid "Output"
+msgstr "Ausgabe"
+
+#: ai/includes/Features/ExcerptGenerator.php:24
+msgid "Generate Excerpt"
+msgstr "Auszug generieren"
+
+#: ai/includes/Features/MetaDescription.php:24
+msgid "Generate Meta Description"
+msgstr "Meta-Beschreibung generieren"
+
+#: ai/includes/Features/Translation.php:207
+msgid "Translate Content"
+msgstr "Inhalt übersetzen"
+
+#: ai/includes/Features/Translation.php:672
+msgid "Mode"
+msgstr "Modus"
+
+#: ai/includes/Features/Translation.php:674
+msgid "Full post"
+msgstr "Vollständiger Beitrag"
+
+#: ai/includes/Features/Translation.php:675
+msgid "Translate chunk"
+msgstr "Abschnitt übersetzen"
+
+#: ai/includes/Features/Translation.php:681 ai/assets/block-action.js:253
+#: ai/assets/block-action.js:292 ai/assets/editor-translate.js:238
+#: ai/assets/toolbar-translate.js:228
+msgid "Target Language"
+msgstr "Zielsprache"
+
+#: ai/includes/Features/Translation.php:694 ai/assets/editor-translate.js:244
+#: ai/assets/toolbar-translate.js:237
+msgid "Text to translate"
+msgstr "Zu übersetzender Text"
+
+#: ai/includes/Features/Translation.php:695
+msgid "Paste a footnote, sentence, or any snippet here…"
+msgstr ""
+"Füge hier eine Fußnote, einen Satz oder einen beliebigen Ausschnitt ein…"
+
+#: ai/includes/Features/Translation.php:702
+msgid "Also generate meta description"
+msgstr "Meta-Beschreibung ebenfalls generieren"
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:109
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:150
+msgid "Translated Names"
+msgstr "Übersetzte Namen"
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
+msgid "Name displayed in this language. Leave empty to use the source name."
+msgstr ""
+"Name, der in dieser Sprache angezeigt wird. Leer lassen, um den Quellnamen "
+"zu verwenden."
+
+#. translators: %d is seconds until the next AI request is allowed.
+#: ai/includes/REST/RateLimiter.php:103
+#, php-format
+msgid "Too many AI requests. Please retry in %d seconds."
+msgstr "Zu viele KI-Anfragen. Bitte versuche es in %d Sekunden erneut."
+
+#. translators: 1: quota number, 2: reset time.
+#: ai/includes/REST/RateLimiter.php:169
+#, php-format
+msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
+msgstr ""
+"Tägliches KI-Kontingent erreicht (%1$d Anfragen). Setzt um %2$s UTC zurück."
+
+#: includes/class-updater.php:281
+msgid "View Lingua Forge details"
+msgstr "Details zu Lingua Forge anzeigen"
+
+#: includes/class-updater.php:282
+msgid "View details"
+msgstr "Details anzeigen"
+
+#: includes/class-updater.php:293
+msgid "Visit plugin site"
+msgstr "Plugin-Seite besuchen"
+
+#. translators: %d: number of languages without a translation post
+#: language-router/includes/admin/class-meta-boxes.php:264
+#, php-format
+msgid "%d language not yet linked"
+msgid_plural "%d languages not yet linked"
+msgstr[0] "%d Sprache noch nicht verknüpft"
+msgstr[1] "%d Sprachen noch nicht verknüpft"
+
+#: language-router/includes/admin/class-meta-boxes.php:329
+msgid ""
+"This is the source page. Footnotes are edited directly in the block editor."
+msgstr ""
+"Dies ist die Quellseite. Fußnoten werden direkt im Blockeditor bearbeitet."
+
+#: language-router/includes/admin/class-meta-boxes.php:337
+msgid "No source page linked yet."
+msgstr "Noch keine Quellseite verknüpft."
+
+#: language-router/includes/admin/class-meta-boxes.php:344
+#: language-router/includes/admin/class-meta-boxes.php:351
+msgid "The source page has no footnotes."
+msgstr "Die Quellseite hat keine Fußnoten."
+
+#: language-router/includes/admin/class-meta-boxes.php:356
+msgid ""
+"These footnotes come from the source page and are shown here for reference "
+"only. Add them to this page using the block editor."
+msgstr ""
+"Diese Fußnoten stammen von der Quellseite und werden hier nur zur Referenz "
+"angezeigt. Füge sie mit dem Blockeditor auf dieser Seite hinzu."
+
+#. translators: 1: number of localized templates, 2: previous theme name
+#: language-router/includes/class-language-router.php:294
+#, php-format
+msgid ""
+"<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"
+"%2$s&#8221; theme are preserved in the database but are currently inactive. "
+"They will become active again if you reactivate that theme. To carry your "
+"translations to the new theme, regenerate them via <strong>Settings → Lingua "
+"Forge → Router → FSE scaffold</strong>."
+msgstr ""
+"<strong>Lingua Forge:</strong> %1$d lokalisierte Vorlage(n) aus dem &#8220;"
+"%2$s&#8221;-Theme sind in der Datenbank erhalten, sind aber momentan inaktiv."
+" Sie werden wieder aktiv, wenn du dieses Theme erneut aktivierst. Um deine "
+"Übersetzungen auf das neue Theme zu übertragen, generiere sie erneut über "
+"<strong>Einstellungen → Lingua Forge → Router → FSE-Scaffold</strong>."
+
+#: language-router/includes/class-lsflr-link-fixer.php:81
+msgid "Scanning posts for broken language links…"
+msgstr "Suche nach defekten Sprachlinks in Beiträgen…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:82
+msgid "Re-scanning…"
+msgstr "Neu scannen…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:83
+msgid "Scan failed: "
+msgstr "Scan fehlgeschlagen: "
+
+#: language-router/includes/class-lsflr-link-fixer.php:84
+msgid "unknown error"
+msgstr "Unbekannter Fehler"
+
+#: language-router/includes/class-lsflr-link-fixer.php:85
+msgid "Scan request failed. Please try again."
+msgstr "Scan-Anfrage fehlgeschlagen. Bitte versuche es erneut."
+
+#: language-router/includes/class-lsflr-link-fixer.php:86
+msgid ""
+"⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts "
+"have their Language meta set to <strong>{lang}</strong> in the Language "
+"metabox."
+msgstr ""
+"⚠ Keine <strong>{lang}</strong>-Beiträge gefunden. Stelle sicher, dass alle "
+"übersetzten Beiträge ihre Sprach-Meta auf <strong>{lang}</strong> gesetzt "
+"haben."
+
+#: language-router/includes/class-lsflr-link-fixer.php:87
+msgid ""
+"✅ No broken links or template mismatches found for <strong>{lang}</strong>. "
+"Scanned <strong>{scanned}</strong> post(s) and page(s) — all checks passed. "
+"Template part links (header, footer, sidebar) are not included here — use "
+"the Fix Template Parts button to check those separately."
+msgstr ""
+"✅ Keine defekten Links oder Template-Fehler für <strong>{lang}</strong> "
+"gefunden. Es wurden <strong>{scanned}</strong> Beitrag(e) und Seite(n) "
+"gescannt — alle Prüfungen bestanden. Links zu Template-Teilen (Header, "
+"Footer, Sidebar) sind hier nicht enthalten — benutze die Schaltfläche "
+"\"Template-Teile reparieren\", um diese separat zu prüfen."
+
+#: language-router/includes/class-lsflr-link-fixer.php:88
+msgid "<strong>{n}</strong> auto-fixable link(s)"
+msgstr "<strong>{n}</strong> automatisch reparierbare Link(s)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:89
+msgid "<strong>{n}</strong> link(s) needing manual review"
+msgstr "<strong>{n}</strong> Link(s) zur manuellen Überprüfung"
+
+#: language-router/includes/class-lsflr-link-fixer.php:90
+msgid "and"
+msgstr "und"
+
+#: language-router/includes/class-lsflr-link-fixer.php:91
+msgid ""
+"Found {parts} across <strong>{total}</strong> of <strong>{scanned}</strong> "
+"scanned post(s) for <strong>{lang}</strong>."
+msgstr ""
+"Gefunden {parts} in <strong>{total}</strong> von <strong>{scanned}</strong> "
+"gescannten Beiträgen für <strong>{lang}</strong>."
+
+#: language-router/includes/class-lsflr-link-fixer.php:92
+msgid "Post"
+msgstr "Beitrag"
+
+#: language-router/includes/class-lsflr-link-fixer.php:93
+msgid "Links"
+msgstr "Links"
+
+#: language-router/includes/class-lsflr-link-fixer.php:94
+msgid "link(s)"
+msgstr "Link(s)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:95
+msgid "Fix"
+msgstr "Reparieren"
+
+#: language-router/includes/class-lsflr-link-fixer.php:97
+msgid "✅ Fixed ({n})"
+msgstr "✅ Behoben ({n})"
+
+#: language-router/includes/class-lsflr-link-fixer.php:98
+msgid "⚠ No changes — re-scan?"
+msgstr "⚠ Keine Änderungen — erneut scannen?"
+
+#: language-router/includes/class-lsflr-link-fixer.php:99
+msgid "⚠ No changes"
+msgstr "⚠ Keine Änderungen"
+
+#: language-router/includes/class-lsflr-link-fixer.php:100
+#: language-router/includes/class-lsflr-link-fixer.php:124
+msgid "❌ Failed"
+msgstr "❌ Fehlgeschlagen"
+
+#: language-router/includes/class-lsflr-link-fixer.php:101
+msgid "Done — {done} of {total} post(s) fixed."
+msgstr "Fertig — {done} von {total} Beiträgen repariert."
+
+#: language-router/includes/class-lsflr-link-fixer.php:102
+msgid "({skipped} had no replaceable links — re-scan to investigate)"
+msgstr ""
+"({skipped} hatten keine ersetzbaren Links — erneut scannen, um zu "
+"untersuchen)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:103
+msgid "Fixing {n} / {total}…"
+msgstr "Repariere {n} / {total}…"
+
+#: language-router/includes/class-lsflr-link-fixer.php:106
+msgid "URL could not be mapped to a post — check the link target exists"
+msgstr ""
+"URL konnte keinem Beitrag zugeordnet werden — überprüfe, ob das Ziel "
+"existiert"
+
+#: language-router/includes/class-lsflr-link-fixer.php:107
+msgid "No {lang} translation registered (TRID missing)"
+msgstr "Keine {lang}-Übersetzung registriert (TRID fehlt)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:108
+msgid "Translation found but permalink could not be generated"
+msgstr "Übersetzung gefunden, aber Permalink konnte nicht generiert werden"
+
+#: language-router/includes/class-lsflr-link-fixer.php:111
+msgid "<strong>{n}</strong> stale path(s)"
+msgstr "<strong>{n}</strong> veralteter Pfad(e)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:112
+msgid "📍 Stale path (page moved)"
+msgstr "📍 Veralteter Pfad (Seite verschoben)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:113
+msgid "{n} stale path(s)"
+msgstr "{n} veralteter Pfad(e)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:116
+msgid "<strong>{n}</strong> template issue(s)"
+msgstr "<strong>{n}</strong> Template-Problem(e)"
+
+#: language-router/includes/class-lsflr-link-fixer.php:117
+msgid "📄 Wrong template"
+msgstr "📄 Falsches Template"
+
+#: language-router/includes/class-lsflr-link-fixer.php:118
+msgid "Expected: {expected}"
+msgstr "Erwartet: {expected}"
+
+#: language-router/includes/class-lsflr-link-fixer.php:119
+msgid "Current: {current}"
+msgstr "Aktuell: {current}"
+
+#: language-router/includes/class-lsflr-link-fixer.php:120
+msgid ""
+"Template \"{expected}\" does not exist — create it in the Site Editor first."
+msgstr ""
+"Template \"{expected}\" existiert nicht — erstelle es zuerst im Site Editor."
+
+#: language-router/includes/class-lsflr-link-fixer.php:121
+msgid "Fix Template"
+msgstr "Template reparieren"
+
+#: language-router/includes/class-lsflr-link-fixer.php:123
+msgid "✅ Template fixed"
+msgstr "✅ Template repariert"
+
+#: language-router/includes/class-lsflr-link-fixer.php:784
+msgid "Internal Link Fixer"
+msgstr "Interner Link-Fehlerbeheber"
+
+#: language-router/includes/class-lsflr-link-fixer.php:792
+msgid "Fix All"
+msgstr "Alle reparieren"
+
+#: language-router/includes/class-lsflr-link-fixer.php:795
+msgid "Re-scan"
+msgstr "Neu scannen"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:25
+msgid "Language Switcher"
+msgstr "Sprachumschalter"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:26
+msgid "Displays the Lingua Forge language switcher."
+msgstr "Zeigt den Lingua Forge Sprachumschalter an."
+
+#: language-router/includes/class-lsflr-switcher-widget.php:40
+msgid "Language"
+msgstr "Sprache"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:61
+msgid "Display"
+msgstr "Anzeige"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:64
+msgid "Language label"
+msgstr "Sprachlabel"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:65
+msgid "Icon only"
+msgstr "Nur Icon"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:66
+msgid "Icon + label"
+msgstr "Icon + Label"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:70
+msgid "Dropdown direction"
+msgstr "Dropdown-Richtung"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:73
+msgid "Down"
+msgstr "Nach unten"
+
+#: language-router/includes/class-lsflr-switcher-widget.php:74
+msgid "Up"
+msgstr "Nach oben"
+
+#: language-router/includes/rest/class-data-endpoints.php:86
+msgid "You do not have permission to read this post."
+msgstr "Du hast keine Berechtigung, diesen Beitrag zu lesen."
+
+#: language-router/includes/rest/class-data-endpoints.php:125
+msgid "Post not found."
+msgstr "Beitrag nicht gefunden."
+
+#: language-router/includes/rewrite/class-query-filter.php:94
+msgid "Limit results to pages in the given Lingua Forge language code."
+msgstr ""
+"Ergebnisse auf Seiten im angegebenen Lingua Forge Sprachcode beschränken."
+
+#: meta-description/meta-description.php:67
+#: meta-description/meta-description.php:96
+msgid "Meta Description"
+msgstr "Meta-Beschreibung"
+
+#: meta-description/meta-description.php:107
+msgid "Using custom meta description."
+msgstr "Verwendung einer benutzerdefinierten Meta-Beschreibung."
+
+#: meta-description/meta-description.php:109
+msgid "Prefilled from excerpt. Edit to override."
+msgstr "Vordefiniert aus Auszug. Bearbeite, um zu überschreiben."
+
+#: meta-description/meta-description.php:114
+msgid "Aim for 120–160 characters. Leave empty to use the excerpt fallback."
+msgstr ""
+"Strebe 120–160 Zeichen an. Leer lassen, um den Auszug-Fallback zu verwenden."
+
+#: ai/assets/admin.js:88
+msgid "↺ Refreshing…"
+msgstr "↺ Aktualisieren…"
+
+#: ai/assets/admin.js:260
+msgid "Review translation before applying"
+msgstr "Überprüfung der Übersetzung vor dem Anwenden"
+
+#: ai/assets/admin.js:266 ai/assets/admin.js:1624
+msgid "Current title"
+msgstr "Aktueller Titel"
+
+#: ai/assets/admin.js:270 ai/assets/admin.js:1628
+msgid "Translated title"
+msgstr "Übersetzter Titel"
+
+#: ai/assets/admin.js:277 ai/assets/admin.js:1654
+msgid "Current content (will be overwritten)"
+msgstr "Aktueller Inhalt (wird überschrieben)"
+
+#: ai/assets/admin.js:281 ai/assets/admin.js:1658
+msgid "Translated content"
+msgstr "Übersetzter Inhalt"
+
+#: ai/assets/admin.js:288 ai/assets/admin.js:1636
+msgid "Footnotes payload (advanced)"
+msgstr "Fußnoten-Payload (fortgeschritten)"
+
+#: ai/assets/admin.js:294 ai/assets/admin.js:450 ai/assets/admin.js:1643
+#: ai/assets/admin.js:1798
+msgid "Generated meta description"
+msgstr "Generierte Meta-Beschreibung"
+
+#: ai/assets/admin.js:296 ai/assets/admin.js:1645
+msgid "Saved to the meta description field when you apply."
+msgstr "Beim Anwenden im Meta-Beschreibungsfeld gespeichert."
+
+#: ai/assets/admin.js:301 ai/assets/admin.js:474
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ai/assets/admin.js:304 ai/assets/admin.js:914 ai/assets/admin.js:1669
+#: ai/assets/admin.js:1763
+msgid "Apply translation"
+msgstr "Übersetzung anwenden"
+
+#: ai/assets/admin.js:438
+msgid "Generated Content"
+msgstr "Generierter Inhalt"
+
+#: ai/assets/admin.js:456 ai/assets/admin.js:1813
+msgid "Refine further:"
+msgstr "Weiter verfeinern:"
+
+#: ai/assets/admin.js:463
+msgid ""
+"Add instructions to improve the draft — e.g. make it shorter, add a "
+"conclusion section, use a more formal register, include an FAQ block…"
+msgstr ""
+"Anweisungen hinzufügen, um den Entwurf zu verbessern — z.B. kürzer machen, "
+"einen Abschlussabschnitt hinzufügen, einen formelleren Stil verwenden, eine "
+"FAQ-Block einfügen…"
+
+#: ai/assets/admin.js:466 ai/assets/admin.js:1823
+#: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
+#: ai/assets/toolbar-translate.js:331 ai/assets/toolbar-translate.js:564
+msgid "↺ Refine"
+msgstr "↺ Verfeinern"
+
+#: ai/assets/admin.js:477 ai/assets/admin.js:1833
+msgid "Copy markup"
+msgstr "Markup kopieren"
+
+#: ai/assets/admin.js:480 ai/assets/admin.js:530 ai/assets/admin.js:816
+#: ai/assets/admin.js:1231 ai/assets/admin.js:1836
+msgid "Apply to Editor"
+msgstr "Auf Editor anwenden"
+
+#: ai/assets/admin.js:570 ai/assets/admin.js:1029 ai/assets/admin.js:1039
+#: ai/assets/admin.js:1868 ai/assets/block-action.js:444
+#: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:118
+msgid "Copied ✓"
+msgstr "Kopiert ✓"
+
+#: ai/assets/admin.js:607 ai/assets/admin.js:834 ai/assets/admin.js:1717
+#: ai/assets/admin.js:1882
+msgid "Applying…"
+msgstr "Wird angewendet…"
+
+#: ai/assets/admin.js:637 ai/assets/admin.js:813 ai/assets/admin.js:905
+#: ai/assets/admin.js:1084 ai/assets/admin.js:1754 ai/assets/admin.js:1905
+#: ai/assets/block-action.js:958 ai/assets/block-action.js:983
+msgid "Applied ✓"
+msgstr "Angewandt ✓"
+
+#: ai/assets/admin.js:664 ai/assets/admin.js:1929
+#: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:554
+msgid "Refining…"
+msgstr "Verfeinere…"
+
+#: ai/assets/admin.js:692 ai/assets/admin.js:1952
+msgid "Refinement failed — please try again."
+msgstr "Verfeinerung fehlgeschlagen — bitte versuche es erneut."
+
+#. translators: %d is the refinement iteration number
+#: ai/assets/admin.js:716 ai/assets/admin.js:1971
+#: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:640
+msgid "Refinement"
+msgstr "Verfeinerung"
+
+#: ai/assets/admin.js:721 ai/assets/admin.js:1975
+msgid "✓ Refined — review the updated draft above."
+msgstr "✓ Verfeinert — überprüfe den aktualisierten Entwurf oben."
+
+#: ai/assets/admin.js:730 ai/assets/admin.js:1980
+msgid "Request failed — please try again."
+msgstr "Anfrage fehlgeschlagen — bitte versuche es erneut."
+
+#: ai/assets/admin.js:867
+msgid "The editor did not accept the content — please try again."
+msgstr "Der Editor hat den Inhalt nicht akzeptiert — bitte versuche es erneut."
+
+#: ai/assets/admin.js:907
+msgid "Save the post to persist changes."
+msgstr "Der Beitrag wird gespeichert, um Änderungen zu sichern."
+
+#: ai/assets/admin.js:923 ai/assets/admin.js:1771
+msgid "Apply failed — please try again."
+msgstr "Anwendung fehlgeschlagen — bitte versuche es erneut."
+
+#: ai/assets/admin.js:1031 ai/assets/admin.js:1041 ai/assets/admin.js:1232
+#: ai/assets/admin.js:1271 ai/assets/admin.js:1317
+#: ai/assets/block-action.js:325 ai/assets/block-action.js:445
+#: ai/assets/editor-translate.js:319 ai/assets/editor-translate.js:384
+#: ai/assets/toolbar-translate.js:119 ai/assets/toolbar-translate.js:318
+msgid "Copy"
+msgstr "Kopieren"
+
+#: ai/assets/admin.js:1088 ai/assets/admin.js:1325
+msgid "Apply to Meta Description"
+msgstr "Auf Meta-Beschreibung anwenden"
+
+#: ai/assets/admin.js:1101 ai/assets/editor-translate.js:681
+#: ai/assets/toolbar-translate.js:583
+msgid "Generating…"
+msgstr "Erzeuge…"
+
+#: ai/assets/admin.js:1121
+msgid "Generation failed."
+msgstr "Erstellung fehlgeschlagen."
+
+#: ai/assets/admin.js:1139
+msgid "✓ Content generated — see the overlay to review, refine, and apply."
+msgstr ""
+"✓ Inhalt erstellt — siehe die Überlagerung, um zu überprüfen, zu verfeinern "
+"und anzuwenden."
+
+#: ai/assets/admin.js:1159
+msgid "Request failed."
+msgstr "Anfrage fehlgeschlagen."
+
+#: ai/assets/admin.js:1196 ai/assets/admin.js:1306
+msgid "cached"
+msgstr "zwischengespeichert"
+
+#: ai/assets/admin.js:1204 ai/assets/block-action.js:705
+#: ai/assets/block-action.js:903 ai/assets/editor-translate.js:720
+#: ai/assets/toolbar-translate.js:628
+msgid "Translated to:"
+msgstr "Übersetzt nach:"
+
+#: ai/assets/admin.js:1210
+msgid "tone"
+msgstr "Ton"
+
+#: ai/assets/admin.js:1213
+msgid "Content generated"
+msgstr "Inhalt erstellt"
+
+#: ai/assets/admin.js:1217
+msgid "Content ready"
+msgstr "Inhalt fertig"
+
+#: ai/assets/admin.js:1223
+msgid "footnote(s) translated — applied together with content."
+msgstr "Fußnoten übersetzt — zusammen mit dem Inhalt angewendet."
+
+#: ai/assets/admin.js:1267
+msgid "Chunk translated to:"
+msgstr "Abschnitt übersetzt zu:"
+
+#: ai/assets/admin.js:1268
+msgid "Chunk translated"
+msgstr "Abschnitt übersetzt"
+
+#: ai/assets/admin.js:1270
+msgid ""
+"Copy the result and paste it wherever needed (e.g. directly into the "
+"footnote field)."
+msgstr ""
+"Kopiere das Ergebnis und füge es bei Bedarf ein (z.B. direkt in das "
+"Fußnotefeld)."
+
+#. translators: %d is replaced by the number of characters
+#: ai/assets/admin.js:1360
+msgid "chars"
+msgstr "Zeichen"
+
+#: ai/assets/admin.js:1364
+msgid "✓ Good length"
+msgstr "✓ Gutes Format"
+
+#: ai/assets/admin.js:1369
+msgid "⚠ Borderline"
+msgstr "⚠ Grenzwertig"
+
+#: ai/assets/admin.js:1375
+msgid "✗ Too short"
+msgstr "✗ Zu kurz"
+
+#: ai/assets/admin.js:1376
+msgid "✗ Too long"
+msgstr "✗ Zu lang"
+
+#: ai/assets/admin.js:1380
+msgid "Target: 140–160 chars for optimal SERP display"
+msgstr "Ziel: 140–160 Zeichen für optimale SERP-Anzeige"
+
+#: ai/assets/admin.js:1387
+msgid "SEO character-count info"
+msgstr "SEO-Zeichenzählinfo"
+
+#: ai/assets/admin.js:1402
+msgid "↺ Refresh"
+msgstr "↺ Aktualisieren"
+
+#: ai/assets/admin.js:1403
+msgid "Re-generates and updates the cached result."
+msgstr "Erzeugt und aktualisiert das zwischengespeicherte Ergebnis."
+
+#: ai/assets/admin.js:1666 ai/assets/admin.js:1830
+#: ai/assets/block-action.js:328
+msgid "← Back"
+msgstr "← Zurück"
+
+#: ai/assets/admin.js:1820
+msgid ""
+"Add instructions to improve the draft — e.g. make it shorter, add a "
+"conclusion section, use a more formal register…"
+msgstr ""
+"Füge Anweisungen hinzu, um den Entwurf zu verbessern — z.B. kürzer machen, "
+"einen Abschlussabschnitt hinzufügen, einen formelleren Stil verwenden…"
+
+#: ai/assets/block-action.js:66
+msgid "Improve writing"
+msgstr "Schreiben verbessern"
+
+#: ai/assets/block-action.js:67
+msgid "Make formal"
+msgstr "Formell machen"
+
+#: ai/assets/block-action.js:68
+msgid "Make casual"
+msgstr "Umgangssprachlich machen"
+
+#: ai/assets/block-action.js:69
+msgid "Make concise"
+msgstr "Kurz und bündig machen"
+
+#: ai/assets/block-action.js:70
+msgid "Expand"
+msgstr "Erweitern"
+
+#: ai/assets/block-action.js:71
+msgid "Bulletize (•-prefixed)"
+msgstr "Aufzählung (•-Präfix)"
+
+#: ai/assets/block-action.js:72
+msgid "Lead paragraph (≤60 w)"
+msgstr "Einleitung (≤60 Wörter)"
+
+#: ai/assets/block-action.js:73
+msgid "Mark citations needed"
+msgstr "Zitate als notwendig markieren"
+
+#: ai/assets/block-action.js:74
+msgid "Plain language"
+msgstr "Einfache Sprache"
+
+#: ai/assets/block-action.js:146 ai/assets/block-action.js:166
+#: ai/assets/block-action.js:167
+msgid "Translate / Revise"
+msgstr "Übersetzen / Überarbeiten"
+
+#: ai/assets/block-action.js:237
+msgid "Translate / Revise block"
+msgstr "Block übersetzen / überarbeiten"
+
+#: ai/assets/block-action.js:245 ai/assets/block-action.js:288
+msgid "Revision"
+msgstr "Überarbeitung"
+
+#: ai/assets/block-action.js:247
+msgid "Footnotes"
+msgstr "Fußnoten"
+
+#: ai/assets/block-action.js:257 ai/assets/block-action.js:271
+msgid "Block Content"
+msgstr "Blockinhalt"
+
+#: ai/assets/block-action.js:268 ai/assets/block-action.js:305
+msgid "Revision Type"
+msgstr "Überarbeitungsart"
+
+#: ai/assets/block-action.js:276 ai/assets/block-action.js:311
+msgid "Revise"
+msgstr "Überarbeiten"
+
+#: ai/assets/block-action.js:295 ai/assets/block-action.js:307
+msgid "Footnote Content"
+msgstr "Fußnoteninhalte"
+
+#: ai/assets/block-action.js:322 ai/assets/block-action.js:511
+#: ai/assets/block-action.js:716 ai/assets/block-action.js:984
+msgid "Apply to Block"
+msgstr "Auf Block anwenden"
+
+#: ai/assets/block-action.js:351 ai/assets/block-action.js:370
+msgid "Instructions (optional)"
+msgstr "Anweisungen (optional)"
+
+#: ai/assets/block-action.js:357
+msgid "Extra guidance — tone, style, constraints, target audience…"
+msgstr "Zusätzliche Hinweise — Ton, Stil, Einschränkungen, Zielgruppe…"
+
+#: ai/assets/block-action.js:376
+msgid "Extra guidance — tone, style, constraints…"
+msgstr "Zusätzliche Hinweise — Ton, Stil, Einschränkungen…"
+
+#: ai/assets/block-action.js:631 ai/assets/block-action.js:786
+#: ai/assets/editor-translate.js:504 ai/assets/toolbar-translate.js:403
+msgid "↑ Detected from current post"
+msgstr "↑ Erkannt vom aktuellen Beitrag"
+
+#: ai/assets/block-action.js:668 ai/assets/block-action.js:869
+msgid "Processing…"
+msgstr "Verarbeite…"
+
+#: ai/assets/block-action.js:724 ai/assets/block-action.js:915
+msgid "Failed. Please try again."
+msgstr "Fehlgeschlagen. Bitte versuche es erneut."
+
+#: ai/assets/block-action.js:732 ai/assets/block-action.js:923
+#: ai/assets/editor-translate.js:740 ai/assets/toolbar-translate.js:654
+msgid "Request failed. Check your connection."
+msgstr "Anfrage fehlgeschlagen. Überprüfe deine Verbindung."
+
+#: ai/assets/block-action.js:911 ai/assets/block-action.js:959
+msgid "Apply to Footnote"
+msgstr "Auf Fußnote anwenden"
+
+#: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
+#: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
+msgid "Quick Translate"
+msgstr "Schnelle Übersetzung"
+
+#: ai/assets/editor-translate.js:250
+msgid "Paste text, or select text in the editor first…"
+msgstr "Füge Text ein oder wähle zuerst Text im Editor aus…"
+
+#: ai/assets/editor-translate.js:257 ai/assets/toolbar-translate.js:254
+msgid "Clear input"
+msgstr "Eingabe löschen"
+
+#: ai/assets/editor-translate.js:258 ai/assets/editor-translate.js:300
+#: ai/assets/toolbar-translate.js:255 ai/assets/toolbar-translate.js:300
+msgid "Clear"
+msgstr "Löschen"
+
+#: ai/assets/editor-translate.js:268 ai/assets/toolbar-translate.js:264
+msgid "Instructions / key points"
+msgstr "Anweisungen / Schlüsselpunkte"
+
+#: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:270
+msgid "Describe what to write — topic, key points, structure…"
+msgstr ""
+"Beschreibe, was geschrieben werden soll — Thema, Schlüsselpunkte, Struktur…"
+
+#: ai/assets/editor-translate.js:286 ai/assets/toolbar-translate.js:282
+msgid "Language (optional)"
+msgstr "Sprache (optional)"
+
+#: ai/assets/editor-translate.js:289 ai/assets/toolbar-translate.js:285
+msgid "— auto-detect —"
+msgstr "— automatisches Erkennen —"
+
+#: ai/assets/editor-translate.js:297 ai/assets/editor-translate.js:747
+#: ai/assets/toolbar-translate.js:295 ai/assets/toolbar-translate.js:664
+msgid "Generate"
+msgstr "Generieren"
+
+#: ai/assets/editor-translate.js:299 ai/assets/toolbar-translate.js:299
+msgid "Clear hints"
+msgstr "Hinweise löschen"
+
+#: ai/assets/editor-translate.js:322 ai/assets/toolbar-translate.js:319
+msgid "Clear All"
+msgstr "Alles löschen"
+
+#: ai/assets/editor-translate.js:332 ai/assets/toolbar-translate.js:328
+msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
+msgstr ""
+"Weiter verfeinern — z.B. \"kürzer machen\" oder \"formelleren Ton "
+"verwenden\"…"
+
+#: ai/assets/editor-translate.js:586 ai/assets/toolbar-translate.js:482
+msgid "Please enter some text first…"
+msgstr "Bitte gib zuerst einen Text ein…"
+
+#: ai/assets/editor-translate.js:611 ai/assets/toolbar-translate.js:507
+msgid "Please enter some instructions first…"
+msgstr "Bitte gib zuerst Anweisungen ein…"
+
+#: ai/assets/editor-translate.js:711 ai/assets/toolbar-translate.js:617
+msgid "Request failed. Please try again."
+msgstr "Anfrage fehlgeschlagen. Bitte versuche es erneut."
+
+#: ai/assets/editor-translate.js:723 ai/assets/toolbar-translate.js:632
+msgid "Tone:"
+msgstr "Ton:"
+
+#: ai/assets/editor-translate.js:724 ai/assets/toolbar-translate.js:635
+msgid "Language:"
+msgstr "Sprache:"
+
+#: ai/assets/editor-translate.js:732 ai/assets/toolbar-translate.js:645
+msgid "Done"
+msgstr "Fertig"
+
+#: ai/assets/toolbar-translate.js:189
+msgid "Lingua Forge AI Tools"
+msgstr "Lingua Forge KI-Tools"
+
+#: ai/assets/toolbar-translate.js:202
+msgid "Close popover"
+msgstr "Popover schließen"
+
+#: ai/assets/toolbar-translate.js:243
+msgid "Paste text, or select text on the page first…"
+msgstr "Füge Text ein oder wähle zuerst Text auf der Seite aus…"
+
+#: ai/assets/toolbar-translate.js:314
+msgid "Result will appear here…"
+msgstr "Das Ergebnis erscheint hier…"
+
+#: language-router/blocks/missing-translation-notice/index.js:56
+msgid "Notice settings"
+msgstr "Hinweis-Einstellungen"
+
+#: language-router/blocks/missing-translation-notice/index.js:62
+msgid "Notice message"
+msgstr "Hinweisnachricht"
+
+#: language-router/blocks/missing-translation-notice/index.js:63
+msgid "Shown when no translation exists for the visitor's language."
+msgstr ""
+"Wird angezeigt, wenn keine Übersetzung für die Sprache des Besuchers "
+"vorhanden ist."
+
+#: language-router/blocks/missing-translation-notice/index.js:73
+msgid "Show home link"
+msgstr "Startseite-Link anzeigen"
+
+#: language-router/blocks/missing-translation-notice/index.js:74
+msgid "Adds a link to the home page so visitors can browse in their language."
+msgstr ""
+"Fügt einen Link zur Startseite hinzu, damit Besucher in ihrer Sprache "
+"browsen können."
+
+#: language-router/blocks/missing-translation-notice/index.js:85
+msgid "Home link text"
+msgstr "Startseiten-Link-Text"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block title"
+msgid "Missing Translation Notice"
+msgstr "Hinweis bei fehlender Übersetzung"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block description"
+msgid ""
+"Renders a polite notice when the current page is being shown in its source "
+"language because no translation exists for the visitor's language. Driven by "
+"the Lingua Forge router's LINGUAFORGE_LANG_FALLBACK_ACTIVE signal — emits "
+"nothing when a translation exists for the request locale."
+msgstr ""
+"Zeigt eine höfliche Mitteilung, wenn die aktuelle Seite in ihrer "
+"Originalsprache angezeigt wird, weil keine Übersetzung für die Sprache des "
+"Besuchers vorhanden ist. Gesteuert durch das "
+"LINGUAFORGE_LANG_FALLBACK_ACTIVE Signal des Lingua Forge Routers — gibt "
+"nichts aus, wenn eine Übersetzung für die Anfrage-Sprache existiert."
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "language"
+msgstr "Sprache"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "translation"
+msgstr "Übersetzung"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "fallback"
+msgstr "Fallback"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "i18n"
+msgstr "i18n"
+
+#: language-router/blocks/missing-translation-notice/block.json
+msgctxt "block keyword"
+msgid "linguaforge"
+msgstr "linguaforge"

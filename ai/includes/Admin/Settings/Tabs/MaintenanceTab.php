@@ -138,8 +138,8 @@ class MaintenanceTab extends Tab {
         <!-- ── Current override files ────────────────────────────────── -->
         <?php
         $dir      = self::overrides_dir();
-        $mo_files = array_map('basename', glob($dir . '*.mo') ?: []);
-        $po_files = array_map('basename', glob($dir . '*.po') ?: []);
+        $mo_files = is_readable( $dir ) ? array_map( 'basename', glob( $dir . '*.mo' ) ?: [] ) : [];
+        $po_files = is_readable( $dir ) ? array_map( 'basename', glob( $dir . '*.po' ) ?: [] ) : [];
 
         // Merge: show .mo files with a note if a matching .po source exists.
         // Also show any orphaned .po files (no compiled .mo yet).

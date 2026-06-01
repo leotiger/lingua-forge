@@ -68,9 +68,9 @@ class Context {
 
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
-		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', 'ca' ) );
+		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', '' ) );
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
-		return $this->cached_source_language = apply_filters( 'lf_primary_language', $stored ?: 'ca' );
+		return $this->cached_source_language = apply_filters( 'lf_primary_language', $stored );
 	}
 
 	public function languages(): array {
@@ -92,7 +92,10 @@ class Context {
 			$langs[] = strtolower( substr( $locale, 0, 2 ) );
 		}
 
-		$langs[] = $this->source_language();
+		$src = $this->source_language();
+		if ( $src !== '' ) {
+			$langs[] = $src;
+		}
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $this->cached_languages = apply_filters( 'lf_languages_list', array_values( array_unique( $langs ) ) );

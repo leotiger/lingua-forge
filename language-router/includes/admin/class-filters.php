@@ -33,6 +33,10 @@ class Filters {
 		// get_pages fires on both admin and frontend; the method guards on is_admin()
 		// and pagenow so it only applies to the edit.php list screen.
 		add_filter( 'get_pages',              [ $this, 'filter_pages_by_lang' ], 10, 2 );
+		// Clear the persisted language filter when a user logs out or is deleted
+		// so stale preferences don't carry over to the next user assigned that ID.
+		add_action( 'wp_logout',    [ $this, 'clear_lang_filter_on_logout' ] );
+		add_action( 'delete_user',  [ $this, 'clear_lang_filter_on_delete' ] );
 	}
 
 	// =========================================================
@@ -62,6 +66,27 @@ class Filters {
 			</script>
 			<?php
 		} );
+	}
+
+	// =========================================================
+	// LANG FILTER CLEANUP
+	// =========================================================
+
+	/** Clears the language filter preference when the current user logs out. */
+	public function clear_lang_filter_on_logout(): void {
+		$user_id = get_current_user_id();
+		if ( $user_id ) {
+			delete_user_meta( $user_id, 'lf_lang_filter' );
+		}
+	}
+
+	/**
+	 * Clears the language filter preference when a user is deleted.
+	 *
+	 * @param int $user_id ID of the user being deleted.
+	 */
+	public function clear_lang_filter_on_delete( int $user_id ): void {
+		delete_user_meta( $user_id, 'lf_lang_filter' );
 	}
 
 	// =========================================================
