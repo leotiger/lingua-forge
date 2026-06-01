@@ -27,11 +27,41 @@ class Filters {
 
 	public function register_hooks(): void {
 		add_action( 'load-edit.php',          [ $this, 'persist_admin_lang_filter' ] );
+		add_action( 'load-edit.php',          [ $this, 'enqueue_filter_ui_assets' ] );
 		add_action( 'restrict_manage_posts',  [ $this, 'render_lang_filter_dropdown' ] );
 		add_action( 'restrict_manage_posts',  [ $this, 'render_outdated_filter_dropdown' ] );
 		// get_pages fires on both admin and frontend; the method guards on is_admin()
 		// and pagenow so it only applies to the edit.php list screen.
 		add_filter( 'get_pages',              [ $this, 'filter_pages_by_lang' ], 10, 2 );
+	}
+
+	// =========================================================
+	// FILTER UI ASSETS
+	// =========================================================
+
+	/**
+	 * Hides the core "Filter" submit button and auto-submits the list-table
+	 * form when either LF filter dropdown changes.
+	 */
+	public function enqueue_filter_ui_assets(): void {
+		add_action( 'admin_head', function (): void {
+			?>
+			<style id="lf-filter-ui">#post-query-submit { display: none; }</style>
+			<script id="lf-filter-ui-js">
+			( function () {
+				document.addEventListener( 'DOMContentLoaded', function () {
+					document.querySelectorAll(
+						'select[name="lf_lang_filter"], select[name="lf_outdated_filter"]'
+					).forEach( function ( sel ) {
+						sel.addEventListener( 'change', function () {
+							sel.closest( 'form' ).submit();
+						} );
+					} );
+				} );
+			} )();
+			</script>
+			<?php
+		} );
 	}
 
 	// =========================================================

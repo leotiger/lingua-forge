@@ -255,6 +255,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Added: CPT-specific FSE template scaffold slots — single-{cpt} and archive-{cpt} rows appear automatically in the Language Setup table for any public CPT whose base template is shipped by the active theme.
 * Added: CPT-scoped block pattern translation — new Patterns section in the Router tab AI-translates patterns scoped to public CPTs and stores the results for copy-paste into CPT posts.
 * Added: Loco Translate integration — Settings > Maintenance > Language Overrides now lists Loco Translate custom files and provides one-click copy into the Lingua Forge durable i18n-overrides directory.
+* Added: Site Editor navigation language filtering — the canvas and Inserter sidebar now show only the current language's pages when editing a navigation. Language resolved synchronously in PHP from the Site Editor URL and injected via nav-lang-filter.js; a wp.apiFetch middleware filters /wp/v2/pages REST requests by language.
+* Fixed: add_post_type_support for wp_navigation was firing on unauthenticated REST requests, potentially exposing postmeta of other plugins in navigation REST responses. Now gated on edit_posts capability.
+* Fixed: Site Editor navigation language detection silently failed for multi-character language codes (zh-tw, pt-br) in the async SPA-navigation path. Regex updated to cover hyphenated regional variants.
+* Fixed: Search template override caused infinite recursion and 512 MB memory exhaustion — a reentrancy guard (in override_search_template flag) now short-circuits re-entrant get_block_templates calls.
+* Fixed: WooCommerce stock writes on translated products — StockRouter now intercepts WooCommerce's direct-SQL stock update path (woocommerce_update_product_stock_query) so stock decrements from order processing are correctly routed to the source product and the wc_product_meta_lookup table is kept in sync.
+* Fixed: Glossary table recreated automatically if dropped while the DB version option is still present — ensures Settings > Glossary works correctly after DB restores or server migrations.
+* Fixed: product_variation added to the WooCommerce post-type skip list in the admin query filter, preventing meta_query injection into variation list queries.
 
 = 2.0.1 =
 * Fixed: Translate / Review panel now closes automatically when the user focuses a different block. Previously the panel stayed open after switching blocks, requiring a manual dismiss.
@@ -276,7 +283,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 == Upgrade Notice ==
 
 = 2.1.0 =
-Internal refactor only — no user-facing changes, no schema changes. Safe to update in place.
+Recommended update: fixes a memory exhaustion / infinite recursion bug on sites with a language-specific search template, and a WooCommerce stock-write bypass on translated products. No schema changes — safe to update in place.
 
 = 2.0.1 =
 UX fix: Translate / Review panel now closes automatically on block focus change.

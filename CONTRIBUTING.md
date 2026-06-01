@@ -1062,6 +1062,67 @@ Run every command from the `dev/` directory:
 > fix that changes logic, removes a suppression pragma, or produces a
 > diff larger than the surrounding problem warrants.
 
+### Code coverage
+
+Coverage is measured with **pcov** (faster than Xdebug) and reported as
+Clover XML. Because unit tests run locally and integration tests run inside
+the wp-env Docker container, the two suites produce separate Clover files
+with different absolute paths. A custom PHP script (`dev/scripts/merge-coverage.php`)
+normalises the paths and merges them into a single combined report.
+
+**One-time setup** (after every `npm run env:start` or `npm run env:stop` /
+`npm run env:start` cycle):
+
+```bash
+cd dev/
+composer coverage:setup   # compiles + installs pcov inside the tests-cli container
+```
+
+**Running coverage:**
+
+| Goal                                | Command                      |
+| ----------------------------------- | ---------------------------- |
+| Unit coverage only (local, ~6 s)    | `composer test:unit` ¹       |
+| Full combined coverage              | `composer coverage`          |
+| Re-run both suites (no merge)       | `composer coverage:run`      |
+| Re-merge existing Clover XML files  | `composer coverage:merge`    |
+
+¹ With pcov active the unit suite already writes `coverage/unit/clover.xml`
+and `coverage/unit/coverage.txt`. Run `composer coverage:merge` afterward if
+you also have a fresh integration Clover file.
+
+**Output directories** (all inside `dev/`; gitignored):
+
+```
+coverage/
+├── unit/
+│   ├── clover.xml        ← PHPUnit Clover (local paths)
+│   ├── coverage.txt      ← human-readable text summary
+│   └── html/             ← HTML report
+├── integration/
+│   ├── clover.xml        ← copied out of the Docker container
+│   └── coverage.txt
+└── combined/
+    ├── clover.xml        ← merged, local absolute paths
+    └── summary.txt       ← per-file ✅/🔶/❌ table + totals
+```
+
+**Interpreting the numbers:** the overall percentage is low (~10 %) by design —
+the entire Admin UI layer, CLI commands, and AI provider classes can only be
+exercised end-to-end and aren't practical to unit or integration test against
+the wp-env install. The meaningful signal is the per-file column: the core
+business logic classes (`BlockTextExtractor`, `Config`, `JsonRepair`,
+`TaxonomyDelegate`, `MetaDelegate`, `StockRouter`, `TridGroup`, etc.) should
+stay green (≥ 80 %).
+
+**Docker must be running** for `coverage:setup` and `composer coverage` (the
+integration step calls `wp-env run tests-cli`). If Docker isn't in your
+`$PATH`, prefix the command:
+
+```bash
+PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH" composer coverage
+```
+
 ### What ruleset each tool uses
 
 - **PHPCS (`dev/phpcs.xml.dist`)** loads `WordPress` + `WordPress-Extra`

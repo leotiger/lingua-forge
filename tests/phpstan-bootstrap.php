@@ -21,3 +21,12 @@ defined( 'LF_LANG' )            || define( 'LF_LANG', 'en' );
 
 defined( 'WP_CLI' )             || define( 'WP_CLI', false );
 defined( 'WPINC' )              || define( 'WPINC', 'wp-includes' );
+
+// WooCommerce functions referenced by the WC integration layer.
+// The integration is gated on class_exists('WooCommerce') at runtime,
+// but PHPStan needs the symbols defined at analysis time.
+if ( ! function_exists( 'wc_stock_amount' ) ) {
+	function wc_stock_amount( mixed $qty ): float {
+		return (float) $qty;
+	}
+}

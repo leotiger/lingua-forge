@@ -330,28 +330,49 @@ class TranslateHandler {
         ] );
 
         if ( ! empty( $existing ) ) {
-            $result = wp_update_post( [
-                'ID'           => $existing[0]->ID,
+            $existing_id = (int) $existing[0]->ID;
+            $result      = wp_update_post( [
+                'ID'           => $existing_id,
                 'post_content' => $final,
             ], true );
+            $new_post_id = is_wp_error( $result ) ? 0 : $existing_id;
         } else {
-            $result = wp_insert_post( [
+            $result      = wp_insert_post( [
                 'post_name'    => $lang_post_name,
                 'post_title'   => $source_nav->post_title . ' ' . strtoupper( $lang ),
                 'post_content' => $final,
                 'post_status'  => 'publish',
                 'post_type'    => 'wp_navigation',
             ], true );
+            $new_post_id = is_wp_error( $result ) ? 0 : (int) $result;
         }
 
         if ( is_wp_error( $result ) ) {
             wp_send_json_error( $result->get_error_message() );
         }
 
+        // Tag the navigation post with its language and link it to the source
+        // navigation via TRID so the admin Translation column shows the group
+        // correctly (instead of treating each navigation as standalone).
+        if ( $new_post_id > 0 ) {
+            // Ensure the source navigation has a TRID, then share it.
+            $trid = $router->get_trid( $nav_id );
+            if ( ! $trid ) {
+                $trid = wp_generate_uuid4();
+                $router->set_trid( $nav_id, $trid );
+                // Also tag the source with its own language if not already set.
+                if ( ! $router->get_lang( $nav_id ) ) {
+                    $router->set_lang( $nav_id, $source_lang );
+                }
+            }
+            $router->set_trid( $new_post_id, $trid );
+            $router->set_lang( $new_post_id, $lang );
+        }
+
         wp_send_json_success( [
             'nav_id'   => $nav_id,
             'lang'     => $lang,
-            'new_id'   => (int) $result,
+            'new_id'   => $new_post_id,
             'nav_name' => $lang_post_name,
             'message'  => sprintf(
                 /* translators: 1: navigation title e.g. "Primary Navigation", 2: language code e.g. "DE" */

@@ -70,12 +70,12 @@ $WP language core install ca    || true
 # link-fixer, and the lang column can be exercised without manual setup.
 # Guard with a meta query so re-runs skip already-created posts.
 
+# Returns the page ID on stdout; progress goes to stderr.
 create_page_if_missing() {
     local title="$1"
     local lang="$2"
     local content="$3"
 
-    # Check whether a page with this title + lang meta already exists.
     local existing
     existing=$($WP post list \
         --post_type=page \
@@ -88,7 +88,8 @@ create_page_if_missing() {
         --quiet 2>/dev/null || true)
 
     if [ -n "$existing" ]; then
-        echo "    ↳ \"$title\" ($lang) already exists (ID $existing), skipping."
+        echo "    ↳ \"$title\" ($lang) already exists (ID $existing), skipping." >&2
+        echo "$existing"
         return
     fi
 
@@ -102,7 +103,27 @@ create_page_if_missing() {
         --quiet)
 
     $WP post meta set "$id" _lf_lang "$lang" --quiet
-    echo "    ↳ Created \"$title\" ($lang) → ID $id"
+    echo "    ↳ Created \"$title\" ($lang) → ID $id" >&2
+    echo "$id"
+}
+
+# Apply a shared TRID to a space-separated list of post IDs.
+# Reuses any existing TRID found in the group; generates a fresh UUID otherwise.
+link_translation_group() {
+    local ids="$*"
+    $WP eval '
+$ids  = array_filter( array_map( "intval", explode( " ", trim( "'"$ids"'" ) ) ) );
+$trid = "";
+foreach ( $ids as $pid ) {
+    $existing = get_post_meta( $pid, "_lf_trid", true );
+    if ( $existing ) { $trid = $existing; break; }
+}
+if ( ! $trid ) { $trid = wp_generate_uuid4(); }
+foreach ( $ids as $pid ) {
+    update_post_meta( $pid, "_lf_trid", $trid );
+}
+echo "    ↳ Linked IDs " . implode( ", ", $ids ) . " → trid=" . $trid . "\n";
+'
 }
 
 echo "  Creating sample pages …"
@@ -135,19 +156,25 @@ if ( $existing ) {
 '
 
 # English originals
-create_page_if_missing "Home"    "en" "<!-- wp:paragraph --><p>Welcome to the Lingua Forge dev site.</p><!-- /wp:paragraph -->"
-create_page_if_missing "About"   "en" "<!-- wp:paragraph --><p>About us — English version.</p><!-- /wp:paragraph -->"
-create_page_if_missing "Contact" "en" "<!-- wp:paragraph --><p>Contact us — English version.</p><!-- /wp:paragraph -->"
+EN_HOME=$(    create_page_if_missing "Home"    "en" "<!-- wp:paragraph --><p>Welcome to the Lingua Forge dev site.</p><!-- /wp:paragraph -->")
+EN_ABOUT=$(   create_page_if_missing "About"   "en" "<!-- wp:paragraph --><p>About us — English version.</p><!-- /wp:paragraph -->")
+EN_CONTACT=$( create_page_if_missing "Contact" "en" "<!-- wp:paragraph --><p>Contact us — English version.</p><!-- /wp:paragraph -->")
 
 # German translations
-create_page_if_missing "Startseite"    "de" "<!-- wp:paragraph --><p>Willkommen auf der Lingua Forge Entwicklungsseite.</p><!-- /wp:paragraph -->"
-create_page_if_missing "Über uns"      "de" "<!-- wp:paragraph --><p>Über uns — Deutsche Version.</p><!-- /wp:paragraph -->"
-create_page_if_missing "Kontakt"       "de" "<!-- wp:paragraph --><p>Kontaktieren Sie uns — Deutsche Version.</p><!-- /wp:paragraph -->"
+DE_HOME=$(    create_page_if_missing "Startseite" "de" "<!-- wp:paragraph --><p>Willkommen auf der Lingua Forge Entwicklungsseite.</p><!-- /wp:paragraph -->")
+DE_ABOUT=$(   create_page_if_missing "Über uns"   "de" "<!-- wp:paragraph --><p>Über uns — Deutsche Version.</p><!-- /wp:paragraph -->")
+DE_CONTACT=$( create_page_if_missing "Kontakt"    "de" "<!-- wp:paragraph --><p>Kontaktieren Sie uns — Deutsche Version.</p><!-- /wp:paragraph -->")
 
 # Catalan translations
-create_page_if_missing "Inici"    "ca" "<!-- wp:paragraph --><p>Benvinguts al lloc de desenvolupament de Lingua Forge.</p><!-- /wp:paragraph -->"
-create_page_if_missing "Qui som"  "ca" "<!-- wp:paragraph --><p>Qui som — Versió catalana.</p><!-- /wp:paragraph -->"
-create_page_if_missing "Contacte" "ca" "<!-- wp:paragraph --><p>Contacteu-nos — Versió catalana.</p><!-- /wp:paragraph -->"
+CA_HOME=$(    create_page_if_missing "Inici"    "ca" "<!-- wp:paragraph --><p>Benvinguts al lloc de desenvolupament de Lingua Forge.</p><!-- /wp:paragraph -->")
+CA_ABOUT=$(   create_page_if_missing "Qui som"  "ca" "<!-- wp:paragraph --><p>Qui som — Versió catalana.</p><!-- /wp:paragraph -->")
+CA_CONTACT=$( create_page_if_missing "Contacte" "ca" "<!-- wp:paragraph --><p>Contacteu-nos — Versió catalana.</p><!-- /wp:paragraph -->")
+
+# Link each translation group with a shared TRID.
+echo "  Linking page translation groups …"
+link_translation_group "$EN_HOME $DE_HOME $CA_HOME"
+link_translation_group "$EN_ABOUT $DE_ABOUT $CA_ABOUT"
+link_translation_group "$EN_CONTACT $DE_CONTACT $CA_CONTACT"
 
 # ── WooCommerce sample products ──────────────────────────────────────────────
 # Only runs when WooCommerce is active (requires .wp-env.override.json + env:start).

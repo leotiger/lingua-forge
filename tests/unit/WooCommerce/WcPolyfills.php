@@ -58,6 +58,7 @@ if ( ! class_exists( 'WP_Error' ) ) {
 
 		public function get_error_message( string $code = '' ): string { return $this->message; } // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- matches WP_Error signature; $code is unused in this minimal stub.
 		public function get_error_code(): string { return $this->code; }
+		public function get_error_data( string $code = '' ): mixed { return $this->data; } // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- matches WP_Error signature; $code is unused in this minimal stub.
 	}
 }
 
@@ -114,15 +115,71 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		/** @var array<string,mixed> option store for get_option() polyfill */
 		public static array $options = [];
 
+		/**
+		 * Cache-delete log — records every wp_cache_delete() call.
+		 * Each entry: [ 'key' => mixed, 'group' => string ].
+		 *
+		 * @var list<array{key:mixed,group:string}>
+		 */
+		public static array $cache_deletes = [];
+
+		/**
+		 * $wpdb->update() log — records every direct lookup-table update.
+		 * Each entry: [ 'table' => string, 'data' => array, 'where' => array ].
+		 *
+		 * @var list<array{table:string,data:array<string,mixed>,where:array<string,mixed>}>
+		 */
+		public static array $wpdb_updates = [];
+
 		public static function reset(): void {
-			self::$posts        = [];
-			self::$meta         = [];
-			self::$translations = [];
-			self::$object_terms = [];
-			self::$write_log    = [];
-			self::$options      = [];
+			self::$posts          = [];
+			self::$meta           = [];
+			self::$translations   = [];
+			self::$object_terms   = [];
+			self::$write_log      = [];
+			self::$options        = [];
+			self::$cache_deletes  = [];
+			self::$wpdb_updates   = [];
 		}
 	}
+}
+
+// =============================================================================
+// $wpdb stub
+// =============================================================================
+
+if ( ! class_exists( 'LfWpdb' ) ) {
+	/**
+	 * Minimal $wpdb stub covering the update() method used by StockRouter's
+	 * lookup-table sync. Logs calls to LfWcMocks::$wpdb_updates for assertions.
+	 */
+	class LfWpdb {
+		/** Table name exposed as a property, matching WC's $wpdb->wc_product_meta_lookup pattern. */
+		public string $wc_product_meta_lookup = 'wp_wc_product_meta_lookup';
+
+		/**
+		 * @param string               $table  Table name.
+		 * @param array<string,mixed>  $data   Column → value map.
+		 * @param array<string,mixed>  $where  WHERE column → value map.
+		 * @param string[]|null        $format Data format specifiers.
+		 * @param string[]|null        $where_format WHERE format specifiers.
+		 * @return int|false  Mocked rows-affected (always 1).
+		 */
+		public function update( string $table, array $data, array $where, ?array $format = null, ?array $where_format = null ): int|false { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- format args unused in stub
+			LfWcMocks::$wpdb_updates[] = [
+				'table' => $table,
+				'data'  => $data,
+				'where' => $where,
+			];
+			return 1;
+		}
+	}
+}
+
+// Register the global $wpdb stub once per process.
+// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- test bootstrap; intentionally seeds the $wpdb stub so unit tests can run without a real database.
+if ( ! isset( $GLOBALS['wpdb'] ) ) {
+	$GLOBALS['wpdb'] = new LfWpdb(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 }
 
 // =============================================================================
@@ -179,11 +236,17 @@ if ( ! function_exists( 'metadata_exists' ) ) {
 
 if ( ! function_exists( 'apply_filters' ) ) {
 	/**
-	 * Minimal apply_filters — returns $value unchanged (no registered callbacks).
-	 * This is correct for all apply_filters() calls in the WC integration classes
-	 * because the default $value is always the desired return for tests.
+	 * apply_filters polyfill — honours $GLOBALS['lf_test_filters'] overrides so
+	 * non-WC tests (Config, RateLimiter, …) can register filter callbacks
+	 * regardless of which polyfill file PHPUnit loaded first.
+	 * Falls through to returning $value unchanged when no override is registered,
+	 * which is the correct behaviour for all WC integration test calls.
 	 */
 	function apply_filters( string $hook, mixed $value, mixed ...$args ): mixed {
+		$cb = $GLOBALS['lf_test_filters'][ $hook ] ?? null;
+		if ( is_callable( $cb ) ) {
+			return $cb( $value, ...$args );
+		}
 		return $value;
 	}
 }
@@ -248,7 +311,42 @@ if ( ! function_exists( 'sanitize_key' ) ) {
 }
 
 if ( ! function_exists( 'get_option' ) ) {
-	function get_option( string $option, mixed $fallback = false ): mixed {
-		return LfWcMocks::$options[ $option ] ?? $fallback;
+	/**
+	 * get_option polyfill — checks LfWcMocks::$options first (for WC integration
+	 * tests), then falls back to $GLOBALS['lf_test_options'] (for non-WC unit
+	 * tests like Config, KeyStore, RateLimiter).  Uses array_key_exists so that
+	 * an explicitly stored false/null in either store is returned correctly.
+	 */
+	function get_option( string $option, mixed $fallback = false ): mixed { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- matches WP signature; renamed to $fallback.
+		if ( array_key_exists( $option, LfWcMocks::$options ) ) {
+			return LfWcMocks::$options[ $option ];
+		}
+		if ( isset( $GLOBALS['lf_test_options'] ) && array_key_exists( $option, $GLOBALS['lf_test_options'] ) ) {
+			return $GLOBALS['lf_test_options'][ $option ];
+		}
+		return $fallback;
+	}
+}
+
+if ( ! function_exists( 'wp_cache_delete' ) ) {
+	function wp_cache_delete( mixed $key, string $group = '' ): bool {
+		LfWcMocks::$cache_deletes[] = [ 'key' => $key, 'group' => $group ];
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_cache_set' ) ) {
+	function wp_cache_set( mixed $key, mixed $data, string $group = '', int $expire = 0 ): bool {
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wc_stock_amount' ) ) {
+	/**
+	 * Minimal wc_stock_amount polyfill — returns the value cast to float,
+	 * matching WC's behaviour for the common (non-decimal-configured) case.
+	 */
+	function wc_stock_amount( mixed $qty ): float {
+		return (float) $qty;
 	}
 }

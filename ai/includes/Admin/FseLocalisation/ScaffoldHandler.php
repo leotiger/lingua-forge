@@ -62,14 +62,31 @@ class ScaffoldHandler {
             ) );
         }
 
-        // Fetch source template content from the active theme.
-        // Falls back: base template → index template → empty string.
+        // Fetch source template content.
+        // Priority: active theme → any plugin that owns this slug (e.g. WooCommerce)
+        // → theme index → empty string.
         // An empty template is valid FSE — the Site Editor can populate it.
-        $theme   = get_stylesheet();
-        $source  = get_block_template( $theme . '//' . $base_slug );
+        $theme  = get_stylesheet();
+        $source = get_block_template( $theme . '//' . $base_slug );
+
         if ( ! $source ) {
+            // Theme doesn't own this slug — look for a plugin-registered template
+            // (e.g. woocommerce//cart, woocommerce//checkout).
+            $candidates = get_block_templates( [ 'slug__in' => [ $base_slug ] ] );
+            foreach ( $candidates as $candidate ) {
+                if ( 'plugin' === $candidate->source ) {
+                    $source = $candidate;
+                    break;
+                }
+            }
+        }
+
+        if ( ! $source ) {
+            // Last resort: copy the theme's index template so the scaffolded
+            // template at least has a valid block structure.
             $source = get_block_template( $theme . '//index' );
         }
+
         $content = $source ? (string) $source->content : '';
 
         // Build the human-readable title: e.g. "Search Results DE".
@@ -94,6 +111,13 @@ class ScaffoldHandler {
         // Associate the new template with the active theme so the Site Editor
         // can find and display it under that theme's template list.
         wp_set_post_terms( (int) $post_id, $theme, 'wp_theme' );
+
+        // Tag the template with its language so the theme-switch notice can
+        // count localized templates from the previous theme (class-language-router.php
+        // queries _lf_lang on wp_template / wp_template_part for this purpose).
+        // TridGroup explicitly excludes wp_template from translation groups so
+        // this does not affect post translation relationships.
+        update_post_meta( (int) $post_id, '_lf_lang', $lang );
 
         wp_send_json_success( [
             'slug'    => $lang_slug,
@@ -187,6 +211,11 @@ class ScaffoldHandler {
 
         // Associate with the correct area taxonomy (header, footer, sidebar, etc.).
         wp_set_post_terms( (int) $post_id, $area, 'wp_template_part_area' );
+
+        // Tag with language — needed by the theme-switch notice query in
+        // class-language-router.php which counts _lf_lang-tagged wp_template_part
+        // posts to warn editors when switching themes.
+        update_post_meta( (int) $post_id, '_lf_lang', $lang );
 
         // Update any existing DB-stored language templates for this language that
         // still reference the base part — swap the slug to the new localised one.

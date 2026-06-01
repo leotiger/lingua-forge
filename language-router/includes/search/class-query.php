@@ -30,13 +30,18 @@ class Query {
 	// SEARCH TEMPLATE
 	// =========================================================
 
+	private bool $in_override_search_template = false;
+
 	public function override_search_template( array $templates, $query, string $template_type ): array {
 		if ( $template_type !== 'wp_template' ) return $templates;
 		if ( ! defined( 'LF_LANG' ) ) return $templates;
 		if ( ! is_search() ) return $templates;
+		if ( $this->in_override_search_template ) return $templates;
 
+		$this->in_override_search_template = true;
 		$lang_slug = 'search-' . LF_LANG;
 		$found     = get_block_templates( [ 'slug__in' => [ $lang_slug ] ] );
+		$this->in_override_search_template = false;
 
 		if ( ! empty( $found ) ) {
 			return $found;

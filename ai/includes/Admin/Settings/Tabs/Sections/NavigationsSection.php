@@ -69,13 +69,6 @@ class NavigationsSection {
 
         <h3><?php esc_html_e( 'Navigations', 'lingua-forge' ); ?></h3>
 
-        <div class="notice notice-warning inline" style="margin:0 0 12px;">
-            <p>
-                <strong><?php esc_html_e( 'Known limitation — Page List block:', 'lingua-forge' ); ?></strong>
-                <?php esc_html_e( 'If a language navigation uses the Page List block, it lists all pages regardless of language. Workaround: open each language navigation in the Site Editor, convert to static links, then use Fix Links.', 'lingua-forge' ); ?>
-            </p>
-        </div>
-
         <?php if ( ! $ai_active ) : ?>
             <p class="description">
                 <?php esc_html_e( 'Navigation translation requires an active AI provider. Configure an API key in the API Keys tab.', 'lingua-forge' ); ?>

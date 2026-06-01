@@ -92,7 +92,7 @@ class TridGroup {
 			INNER JOIN $wpdb->posts p ON p.ID = pm.post_id
 			WHERE pm.meta_key='_lf_lang'
 			AND p.post_status != 'auto-draft'
-			AND p.post_type NOT IN ('wp_template','wp_template_part','wp_navigation','wp_global_styles','wp_block','nav_menu_item','revision','attachment')
+			AND p.post_type NOT IN ('wp_template','wp_template_part','wp_global_styles','wp_block','nav_menu_item','revision','attachment')
 			AND pm.post_id IN (
 				SELECT post_id FROM $wpdb->postmeta
 				WHERE meta_key='_lf_trid' AND meta_value=%s

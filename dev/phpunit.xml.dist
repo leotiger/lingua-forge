@@ -40,8 +40,14 @@
             <directory>node_modules</directory>
         </exclude>
         <report>
-            <html outputDirectory="coverage/html" lowUpperBound="50" highLowerBound="80"/>
-            <text outputFile="coverage/coverage.txt"/>
+            <!--
+                Default report dirs apply when running a single suite directly
+                (e.g. composer test:unit). The composer coverage command overrides
+                these via CLI flags and writes to coverage/unit/ or
+                coverage/integration/ so suites never overwrite each other.
+            -->
+            <html outputDirectory="coverage/unit/html" lowUpperBound="50" highLowerBound="80"/>
+            <text outputFile="coverage/unit/coverage.txt" showUncoveredFiles="false"/>
         </report>
     </coverage>
 

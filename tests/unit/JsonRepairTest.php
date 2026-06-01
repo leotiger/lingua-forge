@@ -201,6 +201,19 @@ final class JsonRepairTest extends TestCase {
         $this->assertSame( $json, $result, 'Clean JSON with inner {} must pass through unchanged.' );
     }
 
+    public function test_normalise_returns_partial_when_opening_brace_has_no_closing(): void {
+
+        // Input has an opening { with no matching } — the balanced scanner returns
+        // everything from { to end of string as a best-effort extraction.
+        $raw = "Some prose then {\"key\":\"value with no close brace";
+
+        $result = JsonRepair::normalise_json_response( $raw );
+
+        // Must start from the first { (the preamble is discarded).
+        $this->assertStringStartsWith( '{', $result );
+        $this->assertStringContainsString( 'key', $result );
+    }
+
     public function test_repair_german_ascii_closing_quote_before_comma(): void {
 
         // Real-world German AI response pattern: AI uses typographic „ (U+201E)

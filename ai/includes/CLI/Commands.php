@@ -411,4 +411,40 @@ class Commands {
     public function cache_clear( array $args, array $assoc_args ): void {
         ( new CacheClearCommand() )->execute( $args, $assoc_args );
     }
+
+    /**
+     * Backfill _lf_lang and _lf_trid on wp_navigation posts created by Lingua Forge.
+     *
+     * Navigation posts created before v2.1.0 are missing the _lf_lang post-meta
+     * that QueryFilter uses to scope the Page List block to the correct language,
+     * and the _lf_trid that links sibling navigations as translation pairs in the
+     * admin Translation column.
+     *
+     * Language tagging: infers the language from the post slug suffix (e.g.
+     * "primary-navigation-de" → "de"). Source-language navigations (whose slug
+     * is the base for sibling translations) are tagged with the site's source
+     * language code.
+     *
+     * TRID grouping: after tagging, navigations that share a base slug (e.g.
+     * "navigation", "navigation-de", "navigation-ca") are linked under a shared
+     * TRID UUID so the admin column shows them as a translation group.
+     *
+     * ## OPTIONS
+     *
+     * [--dry-run]
+     * : Print what would be changed without writing any meta.
+     *
+     * ## EXAMPLES
+     *
+     *   # Preview what would be tagged and linked.
+     *   $ wp linguaforge fix_nav_lang --dry-run
+     *
+     *   # Apply the fix.
+     *   $ wp linguaforge fix_nav_lang
+     *
+     * @when after_wp_load
+     */
+    public function fix_nav_lang( array $args, array $assoc_args ): void {
+        ( new FixNavLangCommand() )->execute( $args, $assoc_args );
+    }
 }

@@ -101,6 +101,61 @@ class Scripts {
 				true
 			);
 		}
+
+		// Site Editor — navigation language filter for the sidebar page-list picker.
+		// Injects ?lf_lang=<code> into /wp/v2/pages REST requests so the sidebar
+		// only shows pages in the navigation's language.
+		//
+		// DESIGN: two-pronged approach to avoid a race condition.
+		//
+		// The race: when the Site Editor opens a wp_navigation post, it fires
+		// /wp/v2/pages (to populate the page-list sidebar) before any async JS
+		// nav-meta fetch could complete. We resolve the navigation language here
+		// in PHP and pass it synchronously via wp_add_inline_script('before') so
+		// the wp.apiFetch middleware is registered before that first pages request.
+		//
+		// PHP covers two URL formats present on a hard-reload of a navigation post:
+		//   ?p=/wp_navigation/{id}         — primary WP 6.x Site Editor format
+		//   ?postType=wp_navigation&postId={id} — alternate / older routing
+		//
+		// LIMITATION: when the Site Editor is opened indirectly (e.g. from the
+		// Navigations list without a navigation ID in the initial URL), neither
+		// format is present at page load and $nav_lang remains ''. lfNavLang.lang
+		// is passed as '' and the middleware starts unfiltered. The async
+		// maybeInitAsync() call in nav-lang-filter.js corrects this after one
+		// REST round-trip — there is a brief window where all pages are shown.
+		// This is acceptable: the correction happens before the user can interact.
+		if ( 'site-editor.php' === $hook_suffix ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended
+			$nav_lang = '';
+			$p        = isset( $_GET['p'] ) ? sanitize_text_field( wp_unslash( $_GET['p'] ) ) : '';
+			if ( preg_match( '#^/wp_navigation/(\d+)$#', $p, $m ) ) {
+				$nav_lang = (string) get_post_meta( (int) $m[1], '_lf_lang', true );
+			}
+			if ( ! $nav_lang && isset( $_GET['postType'] ) && 'wp_navigation' === sanitize_key( wp_unslash( $_GET['postType'] ) ) ) {
+				$post_id  = isset( $_GET['postId'] ) ? (int) $_GET['postId'] : 0;
+				$nav_lang = $post_id ? (string) get_post_meta( $post_id, '_lf_lang', true ) : '';
+			}
+			// phpcs:enable
+
+			wp_enqueue_script(
+				'lf-nav-lang-filter',
+				$base_url . 'nav-lang-filter.js',
+				[ 'wp-api-fetch' ],
+				$version,
+				true
+			);
+
+			// Pass the resolved language synchronously so the middleware registers
+			// before the first /wp/v2/pages request fires (avoids race condition).
+			// Empty string when the navigation ID is not in the URL — the JS async
+			// fallback (maybeInitAsync) handles that case.
+			wp_add_inline_script(
+				'lf-nav-lang-filter',
+				'var lfNavLang = ' . wp_json_encode( [ 'lang' => $nav_lang ] ) . ';',
+				'before'
+			);
+		}
 	}
 
 	// =========================================================

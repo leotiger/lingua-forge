@@ -185,4 +185,14 @@ tests_add_filter(
 
 // Start the WordPress test framework. After this point, WP_UnitTestCase,
 // the factory APIs, and the full WordPress runtime are available.
+//
+// Suppress E_WARNING for constant redefinition: when a test runs with
+// @runInSeparateProcess, PHP spawns a child that re-runs this bootstrap
+// with the parent's environment (including WP_MEMORY_LIMIT already set).
+// WordPress's own bootstrap.php redefines WP_MEMORY_LIMIT unconditionally,
+// generating a warning that PHPUnit promotes to an error. The warning is
+// harmless — the value is identical — so we narrow error_reporting around
+// the include and restore it immediately after.
+$lf_prev_error_reporting = error_reporting( error_reporting() & ~E_WARNING );
 require $wp_tests_dir . '/includes/bootstrap.php';
+error_reporting( $lf_prev_error_reporting );

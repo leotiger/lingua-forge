@@ -18,11 +18,12 @@
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "php-stubs/wp-cli-stubs": "^2.10",
         "phpcompatibility/phpcompatibility-wp": "^2.1",
         "phpcsstandards/phpcsextra": "^1.2",
         "phpcsstandards/phpcsutils": "^1.0",
-        "php-stubs/wp-cli-stubs": "^2.10",
         "phpstan/phpstan": "^1.11",
+        "phpunit/phpcov": "^8.2",
         "phpunit/phpunit": "^9.6",
         "squizlabs/php_codesniffer": "^3.10",
         "szepeviktor/phpstan-wordpress": "^1.3",
@@ -41,8 +42,8 @@
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
         "analyse": "phpstan analyse --memory-limit=2G",
-        "test": "php -d pcov.directory=.. vendor/bin/phpunit",
-        "test:unit": "php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
+        "test": "@php -d pcov.directory=.. vendor/bin/phpunit",
+        "test:unit": "@php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
         "test:integration": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
@@ -50,6 +51,19 @@
         "test:integration:wc": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
+        ],
+        "coverage:setup": "bash scripts/setup-coverage.sh",
+        "coverage:run": [
+            "mkdir -p coverage/unit/html coverage/integration/html coverage/combined",
+            "@php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit --coverage-clover coverage/unit/clover.xml --coverage-html coverage/unit/html --coverage-text=coverage/unit/coverage.txt",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge'",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'mkdir -p /var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration/html && cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --coverage-clover coverage/integration/clover.xml --coverage-html coverage/integration/html --coverage-text=coverage/integration/coverage.txt'",
+            "bash scripts/copy-integration-coverage.sh"
+        ],
+        "coverage:merge": "@php scripts/merge-coverage.php",
+        "coverage": [
+            "@coverage:run",
+            "@coverage:merge"
         ],
         "plugin-check": [
             "@putenv WP_CLI_PHP_ARGS=-d memory_limit=512M",
@@ -71,6 +85,10 @@
         "test:unit": "Run only the unit suite (no WordPress required).",
         "test:integration": "Run the full integration suite (requires wp-env running). WC tests self-skip when WooCommerce is absent.",
         "test:integration:wc": "Run only the WooCommerce integration suite. Requires .wp-env.override.json with WooCommerce in its plugins list and npm run env:start. Activates WooCommerce in the test env automatically before running.",
+        "coverage:setup": "Install pcov in the wp-env tests-cli container. Run once after npm run env:start; repeat after env:stop/env:start.",
+        "coverage:run": "Run unit + integration suites with Clover coverage output. Requires wp-env running + pcov installed (composer coverage:setup).",
+        "coverage:merge": "Merge unit and integration Clover XMLs into coverage/combined/. Run after coverage:run.",
+        "coverage": "Full coverage pipeline: coverage:run → coverage:merge. Reports land in coverage/unit/, coverage/integration/, coverage/combined/.",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
         "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
         "make-pot": "Regenerate languages/lingua-forge.pot. Downloads wp-cli.phar to dev/ on first run (curl + php required); no Docker or global WP-CLI needed."

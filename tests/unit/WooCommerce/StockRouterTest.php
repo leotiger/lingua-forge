@@ -17,7 +17,7 @@
  *   5. Source ID resolution — no translation map.
  *   6. Routing — update and add both route to source, return true.
  *   7. No write to translated post after routing.
- *   8. All six STOCK_WRITE_KEYS are handled.
+ *   8. All five STOCK_WRITE_KEYS are handled (_stock_qty removed — WC 3.x+).
  *
  * @package LinguaForge\Tests\Unit\WooCommerce
  */
@@ -38,6 +38,7 @@ final class StockRouterTest extends WcUnitTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		self::reset_static_array( StockRouter::class, 'routing' );
+		self::reset_static_array( StockRouter::class, 'pending_cache_clear' );
 		// MetaDelegate::get_source_id_for() is shared; reset its cache too.
 		self::reset_static_array( MetaDelegate::class, 'source_cache' );
 		self::reset_static_array( MetaDelegate::class, 'delegating' );
@@ -203,6 +204,154 @@ final class StockRouterTest extends WcUnitTestCase {
 	}
 
 	// =========================================================================
+	// 9. rewrite_stock_sql — direct SQL interception
+	// =========================================================================
+
+	public function test_rewrite_sql_passes_through_for_source_language_product(): void {
+		$this->make_post( 100 );
+		$this->set_meta( 100, '_lf_lang', 'en' ); // source lang
+
+		$sql    = "UPDATE wp_postmeta SET meta_value = '5' WHERE post_id = 100 AND meta_key='_stock'";
+		$result = StockRouter::rewrite_stock_sql( $sql, 100, 5.0 );
+
+		$this->assertSame( $sql, $result, 'Source-language product SQL must not be rewritten.' );
+	}
+
+	public function test_rewrite_sql_passes_through_when_no_translation_map(): void {
+		$this->make_post( 42 );
+		$this->set_meta( 42, '_lf_lang', 'es' );
+		// No translation map → source_id = 0 → fail safe.
+
+		$sql    = "UPDATE wp_postmeta SET meta_value = '3' WHERE post_id = 42 AND meta_key='_stock'";
+		$result = StockRouter::rewrite_stock_sql( $sql, 42, 3.0 );
+
+		$this->assertSame( $sql, $result );
+	}
+
+	public function test_rewrite_sql_rewrites_post_id_to_source(): void {
+		$this->make_post( 42 );
+		$this->set_meta( 42, '_lf_lang', 'es' );
+		$this->set_translations( 42, [ 'en' => 100, 'es' => 42 ] );
+		$this->make_post( 100 );
+
+		$sql    = "UPDATE wp_postmeta SET meta_value = '4' WHERE post_id = 42 AND meta_key='_stock'";
+		$result = StockRouter::rewrite_stock_sql( $sql, 42, 4.0 );
+
+		$this->assertStringContainsString( 'post_id = 100', $result );
+		$this->assertStringNotContainsString( 'post_id = 42', $result );
+	}
+
+	public function test_rewrite_sql_populates_pending_cache_clear(): void {
+		$this->make_post( 42 );
+		$this->set_meta( 42, '_lf_lang', 'es' );
+		$this->set_translations( 42, [ 'en' => 100, 'es' => 42 ] );
+		$this->make_post( 100 );
+
+		$sql = "UPDATE wp_postmeta SET meta_value = '2' WHERE post_id = 42 AND meta_key='_stock'";
+		StockRouter::rewrite_stock_sql( $sql, 42, 2.0 );
+
+		$pending = self::read_static( StockRouter::class, 'pending_cache_clear' );
+		$this->assertArrayHasKey( 42, $pending );
+		$this->assertSame( 100, $pending[42]['source_id'] );
+		$this->assertSame( 2.0, $pending[42]['new_stock'] );
+	}
+
+	public function test_rewrite_sql_clears_source_cache_immediately(): void {
+		$this->make_post( 42 );
+		$this->set_meta( 42, '_lf_lang', 'es' );
+		$this->set_translations( 42, [ 'en' => 100, 'es' => 42 ] );
+		$this->make_post( 100 );
+		\LfWcMocks::$cache_deletes = [];
+
+		$sql = "UPDATE wp_postmeta SET meta_value = '1' WHERE post_id = 42 AND meta_key='_stock'";
+		StockRouter::rewrite_stock_sql( $sql, 42, 1.0 );
+
+		$groups   = array_column( \LfWcMocks::$cache_deletes, 'group' );
+		$post_ids = array_column( \LfWcMocks::$cache_deletes, 'key' );
+		$this->assertContains( 'post_meta', $groups );
+		$this->assertContains( 100, $post_ids );
+	}
+
+	// =========================================================================
+	// 10. clear_source_meta_cache — post-write cleanup and lookup sync
+	// =========================================================================
+
+	public function test_clear_cache_is_no_op_when_no_pending_entry(): void {
+		// No pending entry registered.
+		\LfWcMocks::$cache_deletes = [];
+		\LfWcMocks::$wpdb_updates  = [];
+
+		StockRouter::clear_source_meta_cache( 99 );
+
+		$this->assertEmpty( \LfWcMocks::$wpdb_updates, 'No DB update when no pending entry.' );
+	}
+
+	public function test_clear_cache_flushes_source_postmeta_cache(): void {
+		self::set_static( StockRouter::class, 'pending_cache_clear', [
+			42 => [ 'source_id' => 100, 'new_stock' => 5.0 ],
+		] );
+		$this->make_post( 100 );
+		$this->set_meta( 100, '_manage_stock', 'yes' );
+		$this->set_meta( 100, '_stock_status', 'instock' );
+		\LfWcMocks::$cache_deletes = [];
+
+		StockRouter::clear_source_meta_cache( 42 );
+
+		$post_meta_deletes = array_filter(
+			\LfWcMocks::$cache_deletes,
+			fn( $e ) => 'post_meta' === $e['group'] && 100 === $e['key']
+		);
+		$this->assertNotEmpty( $post_meta_deletes, 'Source postmeta cache must be flushed.' );
+	}
+
+	public function test_clear_cache_updates_lookup_table_for_source(): void {
+		self::set_static( StockRouter::class, 'pending_cache_clear', [
+			42 => [ 'source_id' => 100, 'new_stock' => 7.0 ],
+		] );
+		$this->make_post( 100 );
+		$this->set_meta( 100, '_manage_stock', 'yes' );
+		$this->set_meta( 100, '_stock_status', 'instock' );
+		\LfWcMocks::$wpdb_updates = [];
+
+		StockRouter::clear_source_meta_cache( 42 );
+
+		$this->assertCount( 1, \LfWcMocks::$wpdb_updates );
+		$update = \LfWcMocks::$wpdb_updates[0];
+		$this->assertSame( 'wp_wc_product_meta_lookup', $update['table'] );
+		$this->assertSame( [ 'product_id' => 100 ], $update['where'] );
+		$this->assertSame( 7.0, $update['data']['stock_quantity'] );
+		$this->assertSame( 'instock', $update['data']['stock_status'] );
+	}
+
+	public function test_clear_cache_sets_null_stock_when_not_managing(): void {
+		self::set_static( StockRouter::class, 'pending_cache_clear', [
+			42 => [ 'source_id' => 100, 'new_stock' => 7.0 ],
+		] );
+		$this->make_post( 100 );
+		$this->set_meta( 100, '_manage_stock', 'no' );
+		$this->set_meta( 100, '_stock_status', 'instock' );
+		\LfWcMocks::$wpdb_updates = [];
+
+		StockRouter::clear_source_meta_cache( 42 );
+
+		$this->assertNull( \LfWcMocks::$wpdb_updates[0]['data']['stock_quantity'] );
+	}
+
+	public function test_clear_cache_consumes_pending_entry(): void {
+		self::set_static( StockRouter::class, 'pending_cache_clear', [
+			42 => [ 'source_id' => 100, 'new_stock' => 3.0 ],
+		] );
+		$this->make_post( 100 );
+		$this->set_meta( 100, '_manage_stock', 'yes' );
+		$this->set_meta( 100, '_stock_status', 'instock' );
+
+		StockRouter::clear_source_meta_cache( 42 );
+
+		$pending = self::read_static( StockRouter::class, 'pending_cache_clear' );
+		$this->assertArrayNotHasKey( 42, $pending, 'Entry must be consumed to prevent double-update.' );
+	}
+
+	// =========================================================================
 	// 8. All STOCK_WRITE_KEYS are handled
 	// =========================================================================
 
@@ -222,11 +371,12 @@ final class StockRouterTest extends WcUnitTestCase {
 
 	public static function stock_key_provider(): array {
 		return [
-			'_stock'           => [ '_stock' ],
-			'_stock_qty'       => [ '_stock_qty' ],
-			'_stock_status'    => [ '_stock_status' ],
-			'_manage_stock'    => [ '_manage_stock' ],
-			'_backorders'      => [ '_backorders' ],
+			'_stock'             => [ '_stock' ],
+			// '_stock_qty' was removed from WooCommerce in 3.x (replaced by '_stock').
+			// It is no longer in STOCK_WRITE_KEYS and intentionally omitted here.
+			'_stock_status'      => [ '_stock_status' ],
+			'_manage_stock'      => [ '_manage_stock' ],
+			'_backorders'        => [ '_backorders' ],
 			'_sold_individually' => [ '_sold_individually' ],
 		];
 	}

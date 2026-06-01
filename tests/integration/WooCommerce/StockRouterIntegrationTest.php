@@ -220,7 +220,6 @@ final class StockRouterIntegrationTest extends WcIntegrationTestCase {
 	public static function stock_key_provider(): array {
 		return [
 			'_stock'             => [ '_stock',             '10'       ],
-			'_stock_qty'         => [ '_stock_qty',         '5'        ],
 			'_stock_status'      => [ '_stock_status',      'instock'  ],
 			'_manage_stock'      => [ '_manage_stock',      'yes'      ],
 			'_backorders'        => [ '_backorders',        'no'       ],

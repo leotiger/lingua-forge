@@ -71,6 +71,15 @@ class PostListColumn {
 	 *                           recalculates server-side to stay authoritative).
 	 */
 	public static function render_fill_button( int $post_id, array $missing ): void {
+		// wp_navigation posts are translated via the FSE navigation pipeline
+		// (Router tab → ajax_translate_fse_navigation), not the standard AI
+		// translate-missing flow. Skip the button so the wrong handler is never
+		// triggered from the Navigation List admin screen.
+		$post = get_post( $post_id );
+		if ( $post && $post->post_type === 'wp_navigation' ) {
+			return;
+		}
+
 		printf(
 			' <button type="button" class="button button-small lf-fill-missing" data-post-id="%d">%s</button>',
 			esc_attr( (string) $post_id ),
@@ -205,6 +214,17 @@ class PostListColumn {
 		$post = get_post( $post_id );
 		if ( ! $post instanceof \WP_Post ) {
 			wp_send_json_error( [ 'message' => 'Post not found.' ] );
+		}
+
+		// wp_navigation posts must be translated via the Router tab's FSE
+		// navigation pipeline (ajax_translate_fse_navigation), which applies
+		// label-only translation rules and URL rewriting. Reject here so a stale
+		// "Translate missing" button from before the TRID group was populated
+		// cannot trigger the generic AI pipeline on a navigation post.
+		if ( $post->post_type === 'wp_navigation' ) {
+			wp_send_json_error( [
+				'message' => __( 'Navigation posts are translated via the Router tab, not this button.', 'lingua-forge' ),
+			] );
 		}
 
 		// ── Determine which languages are missing ─────────────────────────────

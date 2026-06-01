@@ -296,12 +296,22 @@ class Glossary {
             return;
         }
 
-        if (get_option(self::DB_VERSION_OPTION) === self::DB_VERSION) {
-            self::$table_ensured = true;
-            return;
-        }
-
         global $wpdb;
+
+        if (get_option(self::DB_VERSION_OPTION) === self::DB_VERSION) {
+            // Option says the table is current, but verify the table physically
+            // exists — it may have been dropped (e.g. between wp-env restarts or
+            // in a test environment that resets the DB between runs).
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- table-existence check on plugin's own table; no user input.
+            $exists = $wpdb->get_var(
+                $wpdb->prepare( 'SHOW TABLES LIKE %s', self::table_name() )
+            );
+            if ($exists) {
+                self::$table_ensured = true;
+                return;
+            }
+            // Table is missing — fall through to dbDelta to recreate it.
+        }
 
         $table           = self::table_name();
         $charset_collate = $wpdb->get_charset_collate();
