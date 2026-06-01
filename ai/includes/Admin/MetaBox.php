@@ -510,7 +510,7 @@ class MetaBox {
                             $linguaforge_preset_label = esc_html( $presets[ $global_preset ]['label'] ?? $global_preset );
                         }
                         // translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-                        echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), $linguaforge_preset_label );
+                        echo sprintf( esc_html__( 'Global default (%s)', 'lingua-forge' ), $linguaforge_preset_label ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $linguaforge_preset_label is already esc_html'd above (lines 508/510).
                         ?>
                     </option>
                     <?php foreach ( $presets as $key => $meta ) : ?>
