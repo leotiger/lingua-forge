@@ -62,9 +62,29 @@
 
 - **Template picker shows all templates, filtered by post language** — the Template meta box in the block editor sidebar previously limited its list to templates whose slugs started with `page-` or `single-` and whose registered `post_type` matched the current post. WooCommerce templates (Order Confirmation, Cart, Checkout, etc.) and any other plugin-registered templates were invisible. The meta box now calls `get_block_templates()` with no `post_type` filter, shows human-readable template titles instead of raw slugs, and scopes the list to templates whose language suffix matches the current post's language (e.g. a CA page sees "Order Confirmation CA" but not "Order Confirmation DE"). Generic templates with no language suffix are always included. Implemented in `MetaBoxes::render_template_meta_box()`.
 
+- **WooCommerce product AI translation — `post_excerpt` (Short Description) propagated** — the AI translation pipeline now translates and applies the WooCommerce Short Description (`post_excerpt`) end-to-end. PHP side: `Translation::run()` extracts `post_excerpt` from the source post, includes it in the AI prompt, and stores `translated_excerpt` in the result; `TranslationTrigger` and `PostListColumn::ajax_fill_missing()` write it to the translated post on create/update; `AbstractTranslateCommand` handles it in the CLI path; `ajax_import_translation` writes it on manual import. JS side: `admin.js` reads `translated_excerpt` from the REST response, passes it through `renderContentResult()` → `openApplyDiffModal()` → `performApplyFromModal()`, and applies it to both Gutenberg (`editPost({ excerpt })`) and the classic TinyMCE `excerpt` editor instance.
+
+- **WooCommerce product AI translation — classic editor apply path fixed** — `admin.js` `isGutenbergActive()` now detects the Gutenberg editor by calling `getCurrentPostId()` on the `core/editor` store rather than checking for `wp.data` presence (which is truthy on all admin pages, including the WooCommerce classic product editor). A new `applyToClassicEditor()` helper consolidates all TinyMCE/textarea apply logic (content, title, excerpt, meta description). The diff preview modal is bypassed for non-Gutenberg screens, applying directly via TinyMCE `setContent()`.
+
+- **Source Footnotes meta box hidden on WooCommerce products** — `MetaBoxes::add_source_footnotes_meta_box()` now iterates public post types and skips those in the exclusion list (default: `['product']`). The list is filterable via `linguaforge_source_footnotes_excluded_post_types`. The Source Footnotes box is a Gutenberg-only feature; WooCommerce products use the classic editor and do not support it.
+
+### Fixed
+
+- **`QueryFilter` empty `if` body — PHPCS `EmptyStatement`** — the `if ($pending_page_list_lang !== null) { // fall-through }` guard in `filter_page_list_frontend()` had an empty body that PHPCS flagged. Condition inverted: the `is_admin()` and `REST_REQUEST` early-returns now sit inside `if ($pending_page_list_lang === null)`, eliminating the empty branch.
+
+- **`tests/bootstrap.php` `error_reporting()` PHPCS warnings** — the `error_reporting()` calls around the WP test bootstrap include (needed to suppress a harmless `E_WARNING` on `WP_MEMORY_LIMIT` redefinition in `@runInSeparateProcess` child processes) are now wrapped with scoped `phpcs:disable/enable` pragmas for `WordPress.PHP.DevelopmentFunctions.prevent_path_disclosure_error_reporting` and `WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting`.
+
+- **PHPStan: `add_locale_admin_bar_node()` `href` argument type** — `WP_Admin_Bar::add_node()` expects a `string` for `href`; passing `false` was a PHPStan type error. Changed `'href' => false` to `'href' => ''` in `class-meta-boxes.php`.
+
+- **ESLint `no-undef` for PHP-injected `lfNavLang` global** — `nav-lang-filter.js` lacked a `/* global lfNavLang */` declaration, causing ESLint to report `lfNavLang` as undefined. Declaration added at the top of the file.
+
+- **PHPCS `OutputNotEscaped` / `MissingTranslatorsComment` in `MetaBox.php`** — the `sprintf( esc_html__(…), $linguaforge_preset_label )` call was flagged because PHPCS cannot statically trace that `$linguaforge_preset_label` is already `esc_html`'d at the assignment site. Added an inline `phpcs:ignore` on the same line as the `echo` (so the `translators:` comment immediately above remains adjacent to `esc_html__()` as required by the `MissingTranslatorsComment` rule).
+
 ### Dev tooling
 
 - **Combined code coverage pipeline** — unit and integration coverage can now be merged into a single report. `composer coverage:setup` installs pcov in the wp-env `tests-cli` container (run once after `npm run env:start`). `composer coverage:run` runs both suites with Clover XML output to `coverage/unit/` and `coverage/integration/`. `composer coverage:merge` normalises the two Clover files (which have different absolute paths — local vs container) and writes a combined report to `coverage/combined/clover.xml` + `coverage/combined/summary.txt`. `composer coverage` runs the full pipeline end-to-end.
+
+- **E2E `ai-translation.spec.js` — self-contained fixture and timeout fixes** — Test 1 (REST translation endpoint) now sets `test.setTimeout(200_000)` and passes `timeout: 180_000` to `page.request.post()` to accommodate large-content AI calls that exceed Playwright's 30 s default. Test 2 ("Translate missing" button) creates a fixture `page` post via `POST /wp/v2/pages` with `_lf_lang: 'en'` and a unique `_lf_trid` at test start, targets the `lf-fill-missing` button by `data-post-id` of that specific post, and deletes the post in a `finally` block — eliminating the dependency on `npm run env:seed`. `SETTINGS_URL` corrected to `admin.php?page=lingua-forge`.
 
 ---
 
