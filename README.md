@@ -1,5 +1,8 @@
 # Lingua Forge
 
+> **Version 2.1.2 — stable, feature-frozen, open for testing.**
+> This release is considered stable and suitable for production use. The feature set is frozen: no new functionality will be added until community feedback and real-world usage on this version have been gathered. Bug reports, compatibility reports, and pull requests are very welcome.
+
 > **A note on WordPress.org.**
 > Multilingual support is a fundamental need for any publishing platform. Gutenberg's name honours Johannes Gutenberg not merely for inventing a press, but for making the dissemination of knowledge possible at scale — a mission that stops at a language boundary if the platform does not natively cross it. We believe first-class multilingual support belongs in WordPress Core and in Gutenberg itself, not perpetually deferred to a third-party plugin ecosystem.
 >
