@@ -199,17 +199,37 @@ class Context {
 		if ( $host_lang !== '' ) return $host_lang;
 
 		// 1. URL path prefix — path mode only; in subdomain mode there is no prefix.
+		// Parse only the PATH component of REQUEST_URI — trimming the raw value would
+		// include the query string (e.g. "?s=foo&lang=de") as a fake path segment and
+		// cause search requests at / to be misidentified as source-language pages.
 		if ( $this->routing_mode() === 'path' ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
-			$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
-			$seg = explode( '/', $uri );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied; only the path component is extracted and used for routing.
+			$path_only = trim( (string) ( wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH ) ?? '/' ), '/' );
+			$seg       = explode( '/', $path_only );
 			if ( ! empty( $seg[0] ) ) {
 				$url_lang = strtolower( $seg[0] );
-				if ( in_array( $url_lang, $langs, true ) ) return $url_lang;
+				if ( in_array( $url_lang, $langs, true ) ) {
+					// Persist the URL-detected language in a cookie so that a
+					// subsequent visit to / (no prefix) uses the cookie rather than
+					// the browser Accept-Language header and lands on the right homepage.
+					// Only write when the cookie is absent or stale to avoid a
+					// superfluous Set-Cookie header on every page load.
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value validated immediately via in_array above.
+					$existing = strtolower( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ?? '' ) ) );
+					if ( $existing !== $url_lang ) {
+						$this->set_lang_cookie( $url_lang );
+					}
+					return $url_lang;
+				}
 				// Non-empty path with no language prefix is authoritative in path mode:
-				// it can only be a source-language URL. Skip cookie / browser detection
-				// so a stale cross-language cookie never redirects the visitor away from
-				// a source-language page they navigated to intentionally.
+				// it can only be a source-language URL. Update the cookie so that
+				// a stale non-source cookie (e.g. lf_lang=en) cannot prevent the
+				// visitor from returning to the source-language homepage via /.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value compared against a known-safe default string.
+				$existing = strtolower( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ?? '' ) ) );
+				if ( $existing !== $default ) {
+					$this->set_lang_cookie( $default );
+				}
 				return $default;
 			}
 		}
@@ -219,7 +239,14 @@ class Context {
 		if ( ! empty( $_GET['lang'] ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Language detection reads URL parameters for routing; nonces are not applicable to public URL-based language switching.
 			$q_lang = strtolower( sanitize_key( wp_unslash( $_GET['lang'] ) ) );
-			if ( in_array( $q_lang, $langs, true ) ) return $q_lang;
+			if ( in_array( $q_lang, $langs, true ) ) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value validated immediately via in_array above.
+				$existing = strtolower( sanitize_key( wp_unslash( $_COOKIE['lf_lang'] ?? '' ) ) );
+				if ( $existing !== $q_lang ) {
+					$this->set_lang_cookie( $q_lang );
+				}
+				return $q_lang;
+			}
 		}
 
 		// 3. Cookie
@@ -233,13 +260,12 @@ class Context {
 			if ( in_array( $cookie_lang, $langs, true ) ) return $cookie_lang;
 		}
 
-		// 4. Browser Accept-Language header (opt-in, homepage visits only).
+		// 4. Browser Accept-Language header (opt-in).
 		// Only reachable when URL has no language prefix, no ?lang= param, and
 		// no lf_lang cookie — i.e. the genuine first visit of a new visitor.
-		// The existing redirect handlers (handle_homepage_redirect etc.) pick up
-		// the LF_LANG value set here and issue the actual redirect; no extra
-		// redirect code is needed. Once the visitor switches language via the
-		// switcher, set_lang_cookie() fires and step 3 wins on all future visits.
+		// The cookie written at steps 1/2 above ensures this step is skipped on
+		// all subsequent visits once the visitor has landed on any language-prefixed
+		// page, preventing the browser header from overriding their last URL choice.
 		if ( get_option( 'lf_browser_redirect', false ) ) {
 			$browser_lang = $this->detect_browser_lang( $langs );
 			if ( $browser_lang !== '' ) return $browser_lang;
@@ -258,9 +284,9 @@ class Context {
 
 		// 1. URL path prefix — path mode only.
 		if ( $this->routing_mode() === 'path' ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
-			$uri = trim( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), '/' );
-			$seg = explode( '/', $uri );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; only the path component is extracted via wp_parse_url to avoid treating query strings as path segments.
+			$path_only = trim( (string) ( wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH ) ?? '/' ), '/' );
+			$seg       = explode( '/', $path_only );
 			if ( ! empty( $seg[0] ) ) {
 				$url_lang = strtolower( $seg[0] );
 				if ( in_array( $url_lang, $langs, true ) ) return $url_lang;

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.3 =
+* Fixed: Homepage always redirected to browser-language version; source-language front page at / unreachable after switching away — detect_lang_safe() and detect_lang() now write the lf_lang cookie from URL detection; switcher pre-writes cookie client-side before navigating.
+* Fixed: Search returning source-language results for /?s=...&lang=de — detect_lang_safe() and detect_lang() now use wp_parse_url() to extract only the path, preventing query strings from being mistaken for path segments.
+* Fixed: Maintenance → Translation Memory tab showed no content — data-lf-tab attribute mismatch prevented the tab panel from becoming visible.
+
 = 2.1.2 =
 * Fixed: Admin Toolbar Quick Translate no longer calls the AI API on every request — identical chunk+language combinations are now served from cache. Refinement requests remain uncached by design.
 * Fixed: AI provider and model are now included in the cache hash for all features — switching provider or model in Settings correctly invalidates cached results.
@@ -300,6 +305,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.3 =
+Fixes homepage redirect loop, source-language front page unreachable after switching, search returning wrong-language results, and Maintenance TM tab showing no content. Recommended update.
 
 = 2.1.2 =
 Cache fixes, glossary in FSE translations, and Maintenance AI Cache stats. Recommended update.

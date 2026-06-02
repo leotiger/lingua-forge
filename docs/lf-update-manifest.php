@@ -35,23 +35,19 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.2';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.2/lingua-forge-2.1.2.zip';
-	$last_updated = '2026-06-01';
+	$version      = '2.1.3';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.3/lingua-forge-2.1.3.zip';
+	$last_updated = '2026-06-02';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.2 — 2026-06-01</h4>' .
+		'<h4>2.1.3 — 2026-06-02</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> Admin Toolbar Quick Translate no longer calls the AI API on every request — identical chunk + language combinations are now served from <code>CacheStore</code>. Refinement requests remain uncached by design.</li>' .
-			'<li><strong>Fixed:</strong> AI provider and model are now included in the cache hash for all features — switching provider or model in Settings correctly invalidates cached results instead of silently serving stale translations.</li>' .
-			'<li><strong>Fixed:</strong> <code>ExcerptGenerator</code> cache hash now includes <code>post_title</code>; a title-only edit previously returned a stale excerpt generated from the old title.</li>' .
-			'<li><strong>Added:</strong> Glossary terminology constraints now applied to FSE template, navigation, and block pattern translation — previously only post-level translations respected the glossary.</li>' .
-			'<li><strong>Added:</strong> Maintenance → AI Cache now shows cached entries, cumulative hits, average hits per entry, and oldest/newest entry dates. <code>CacheStore</code> schema updated to record <code>hit_count</code> and <code>last_hit_at</code> — applied automatically on upgrade.</li>' .
-			'<li><strong>Added:</strong> Maintenance → Translation Caching unified view with tabs (API Response Cache / Translation Memory) — no more page reload on tab switch; both panels always rendered, JS show/hide with <code>localStorage</code> persistence.</li>' .
-			'<li><strong>Fixed:</strong> Translation Memory tab showed no content — <code>data-lf-tab</code> mismatch prevented the panel from becoming visible.</li>' .
+			'<li><strong>Fixed:</strong> Homepage always redirected to browser-language version; source-language homepage unreachable after switching away — <code>detect_lang_safe()</code> now writes <code>lf_lang</code> cookie from URL-based detection, and the switcher pre-writes the cookie client-side before navigating.</li>' .
+			'<li><strong>Fixed:</strong> Search returning source-language results for <code>/?s=…&amp;lang=de</code> — <code>detect_lang_safe()</code> and <code>detect_lang()</code> now use <code>wp_parse_url()</code> to extract only the path, preventing query strings from being mistaken for path segments.</li>' .
+			'<li><strong>Fixed:</strong> Maintenance → Translation Memory tab showed no content — <code>data-lf-tab</code> attribute mismatch prevented the tab panel from becoming visible.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

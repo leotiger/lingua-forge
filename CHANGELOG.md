@@ -2,6 +2,21 @@
 
 ---
 
+## [2.1.3] — 2026-06-02
+
+### Fixed
+
+- **Homepage always redirected to browser-language version; source-language front page at `/` unreachable after switching away** — `detect_lang_safe()` now writes the `lf_lang` cookie from both language-prefixed URLs (`/en/…` → `lf_lang=en`) and source-language URLs (`/about/` → `lf_lang=ca`), so the visitor's last explicit URL choice always wins on `/`. The switcher's inline JS also pre-writes the cookie client-side before navigating. (`class-context.php`, `class-lsflr-switcher.php`)
+- **Search returning source-language results for `/?s=…&lang=de`** — `detect_lang_safe()` and `detect_lang()` used `trim(REQUEST_URI, '/')` which treated the entire query string (`?s=…&lang=de`) as the first path segment, causing step 1b to fire and return the source language before the `?lang=` GET param at step 2 was ever reached. Both methods now use `wp_parse_url(REQUEST_URI, PHP_URL_PATH)` to extract only the path component. (`class-context.php`)
+- **Maintenance → Translation Memory tab showed no content** — `data-lf-tab="translation-memory"` on the nav link did not match the panel id `lf-tab-tm`, so the JS tab switcher never made the Translation Memory panel visible. Attribute corrected to `data-lf-tab="tm"`; post-clear redirect restoration updated to match. (`MaintenanceTab.php`)
+
+### Docs
+
+- `README.md` — added **Translations** entry to the Table of Contents (the section existed but was not linked from the index).
+- `README.md` — added feature-freeze notice above the WordPress.org note: version 2.1.2/2.1.3 is considered stable and open for testing, with the feature set frozen until community feedback is gathered.
+
+---
+
 ## [2.1.2] — 2026-06-01
 
 ### Fixed
@@ -17,6 +32,8 @@
 - **`CacheStore` hit tracking and Maintenance stats** — `wp_lingua_forge_ai_cache` now records `hit_count` and `last_hit_at` per entry (schema version 1.1, applied automatically via `dbDelta`). The Maintenance → AI Cache section shows cached entries count, cumulative hits, average hits per entry, and oldest/newest entry dates — matching the existing Translation Memory stats panel. (`CacheStore.php`, `MaintenanceTab.php`)
 - **Maintenance → Translation Caching unified view** — the previously separate "AI Cache" and "Translation Memory" sections are now consolidated under a single "Translation Caching" `<h2>` with two tabs: **API Response Cache** and **Translation Memory**. Each tab carries its own description, stats table, and clear button. Stat labels are now distinct across tabs (e.g. "API calls saved by cache" vs "Block translation reuses") to prevent confusion between the two systems. The Translation Memory tab shows an "(disabled)" hint in the tab label when TM is off. (`MaintenanceTab.php`)
 - **Multisite compatibility note** — `README.md` and `readme.txt` now document that per-site activation is expected to work and network-wide activation is not supported, preventing .org reviewers from flagging the absence of `is_multisite()` guards as a bug.
+
+- **Homepage always redirected to browser-language version after visiting any other page** — `detect_lang_safe()` correctly read the active language from the URL prefix but never persisted it to the `lf_lang` cookie. On a subsequent visit to `/` (no URL prefix, no cookie), the browser `Accept-Language` header was the first signal available and overrode the visitor's last explicit URL choice. URL-detected language (step 1, path prefix) and `?lang=`-detected language (step 2) now write the `lf_lang` cookie when the existing cookie is absent or stale, so the cookie wins at step 3 on all future requests including the homepage. (`class-context.php`)
 
 ### Fixed (JS / tooling)
 

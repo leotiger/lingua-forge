@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.1.2 — stable, feature-frozen, open for testing.**
+> **Version 2.1.3 — stable, feature-frozen, open for testing.**
 > This release is considered stable and suitable for production use. The feature set is frozen: no new functionality will be added until community feedback and real-world usage on this version have been gathered. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**

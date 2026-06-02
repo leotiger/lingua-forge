@@ -177,7 +177,7 @@ class Switcher {
 
 		ob_start(); ?>
 
-		<ul id="<?php echo esc_attr( $switcher_id ); ?>" class="lsflr-switcher <?php echo esc_attr( $dir ); ?>">
+		<ul id="<?php echo esc_attr( $switcher_id ); ?>" class="lsflr-switcher <?php echo esc_attr( $dir ); ?>" title="<?php esc_attr_e( 'Language Switcher', 'lingua-forge' ); ?>">
 			<li class="lsflr-toggle" tabindex="0">
 
 				<div class="lsflr-current"><?php echo wp_kses( $toggle, [
@@ -205,6 +205,26 @@ class Switcher {
 		(function(){
 			var el = document.getElementById('<?php echo esc_js( $switcher_id ); ?>');
 			if (!el) return;
+
+			// Write lf_lang cookie before navigating so that detect_lang_safe() sees
+			// the correct language on the very first request to the target URL.
+			// This is critical when switching back to the source language whose front
+			// page lives at / — without the cookie, a stale non-source cookie would
+			// cause handle_init_redirects() to redirect the visitor back immediately.
+			el.addEventListener('click', function(e){
+				var a = e.target.closest('a[lang]');
+				if (!a) return;
+				var code   = a.getAttribute('lang');
+				var secure = <?php echo is_ssl() ? 'true' : 'false'; ?>;
+				var maxAge = <?php echo (int) MONTH_IN_SECONDS; ?>;
+				var cookie = 'lf_lang=' + encodeURIComponent(code) +
+					'; path=/' +
+					'; max-age=' + maxAge +
+					( secure ? '; secure' : '' ) +
+					'; samesite=lax';
+				document.cookie = cookie;
+			});
+
 			function reposition(){
 				var sub = el.querySelector('.lsflr-submenu');
 				if (!sub) return;
