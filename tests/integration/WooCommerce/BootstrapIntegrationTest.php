@@ -22,7 +22,9 @@ use LinguaForge\AI\Integrations\WooCommerce\MetaDelegate;
 use LinguaForge\AI\Integrations\WooCommerce\StockRouter;
 use LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate;
 use LinguaForge\AI\Integrations\WooCommerce\TermNameFilter;
+use LinguaForge\AI\Integrations\WooCommerce\RestWriteGuard;
 use LinguaForge\AI\Integrations\WooCommerce\VariationDelegate;
+use LinguaForge\AI\Integrations\WooCommerce\VariationSync;
 
 final class BootstrapIntegrationTest extends WcIntegrationTestCase {
 
@@ -68,6 +70,19 @@ final class BootstrapIntegrationTest extends WcIntegrationTestCase {
 	public function test_variation_delegate_action_is_registered(): void {
 		$priority = has_action( 'pre_get_posts', [ VariationDelegate::class, 'maybe_delegate_variation_query' ] );
 		$this->assertSame( 5, $priority, 'VariationDelegate must be registered on pre_get_posts at priority 5.' );
+	}
+
+	public function test_variation_sync_action_is_registered(): void {
+		$priority = has_action( 'wp_after_insert_post', [ VariationSync::class, 'maybe_sync_on_save' ] );
+		$this->assertSame( 30, $priority, 'VariationSync must be registered on wp_after_insert_post at priority 30.' );
+	}
+
+	public function test_rest_write_guard_filters_are_registered(): void {
+		$priority_product   = has_filter( 'woocommerce_rest_pre_insert_product_object', [ RestWriteGuard::class, 'guard_product_write' ] );
+		$priority_variation = has_filter( 'woocommerce_rest_pre_insert_product_variation_object', [ RestWriteGuard::class, 'guard_product_write' ] );
+
+		$this->assertSame( 10, $priority_product,   'RestWriteGuard must be registered on woocommerce_rest_pre_insert_product_object at priority 10.' );
+		$this->assertSame( 10, $priority_variation,  'RestWriteGuard must be registered on woocommerce_rest_pre_insert_product_variation_object at priority 10.' );
 	}
 
 	public function test_catalog_query_action_is_registered(): void {

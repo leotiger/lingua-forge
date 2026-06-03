@@ -2,6 +2,33 @@
 
 ---
 
+## [2.1.6] — 2026-06-04
+
+### Added — WooCommerce integration (complete variable product translation)
+
+- **`VariationSync`** (new class) — creates `product_variation` children on translated parent products, TRID-linked to source variations. Copies `_variation_description` (WC's description meta key — not `post_content`, which WC always leaves empty), `attribute_pa_*` meta (WC prefix, no leading underscore; required by `find_matching_product_variation()`), and clears the `wc_product_children_{id}` transient so WC sees new variations immediately. Editors retranslate descriptions via the standard Retranslate button. Idempotent. Closes audit §5.2.
+- **`VariationSync::sync_wc_taxonomies_from_source()`** (new method) — copies `product_type`, `pa_*` attribute term assignments, and `product_brand` directly from source to translated product in the DB at creation time. Without this, `WC_Product_Factory::get_product_type()` read an empty term cache and defaulted to `'simple'`, preventing variation form rendering. These are structural, not content — every translated version of a variable product must be variable in the DB.
+- **`VariationSync::propagate_wc_taxonomies_to_translations()`** (new method) — fires when the SOURCE product saves (`wp_after_insert_post` priority 30). Re-syncs `product_type`, `pa_*`, and `product_brand` to all translated products. A `variable → simple` type change on the source propagates immediately to all translations.
+- **`RestWriteGuard`** (new class) — hooks `woocommerce_rest_pre_insert_product_object` and `woocommerce_rest_pre_insert_product_variation_object` (priority 10). PUT/PATCH to translated products or variations returns HTTP 422 with error code `linguaforge_rest_write_to_translated_product` and `source_id` in the response body. CREATE requests are permitted. Closes audit §5.6.
+- **`product_brand` delegation** — native WooCommerce 10.x taxonomy added to `TaxonomyDelegate::WC_TAXONOMY_DEFAULTS`. New `linguaforge_wc_delegate_taxonomies` filter allows third-party brand taxonomies (`pwb-brand`, YITH, etc.) to be added without patching the plugin. Closes audit §5.7.
+
+### Fixed — WooCommerce delegation layer
+
+- **`MetaDelegate` bulk-read bypass** — WC's `read_product_data()` calls `get_post_meta($id)` with no key; the filter fired with `$meta_key = ''` and was not intercepted, so `wc_get_product($translated_id)->get_price()` / `->get_sku()` / `->get_stock_quantity()` returned empty. New `maybe_delegate_bulk()` intercepts the bulk read, fetches translated meta (reentrancy-guarded), overlays every `OPERATIONAL_KEY` with the source value, and returns the merged array. Covers both translated products and translated variations.
+- **`MetaDelegate` extended to `product_variation`** — `linguaforge_wc_delegate_post_types` default extended to `['product', 'product_variation']`. `_variation_description` is NOT in `OPERATIONAL_KEYS` and reads from the translated variation so descriptions can differ per language.
+- **`VariationDelegate` own-variation check** — before redirecting `product_variation` queries to the source parent, a direct SQL check confirms whether the translated parent has its own variation children. If yes, WC queries them directly; backwards-compatible fallback to source when no translated variations exist.
+- **`TaxonomyDelegate` — `object_id` rewrite** — WC's `_prime_post_caches()` fires a combined multi-taxonomy `wp_get_object_terms()` call; `update_object_term_cache()` distributes results by `$term->object_id`. Delegated source terms carried `object_id = source_id`, causing all delegated terms to land in the source product's cache bucket. The translated product's caches were stored as empty arrays — `get_the_terms(183, 'product_type')` returned the cached `[]` without calling `wp_get_object_terms()`, and WC defaulted to `'simple'`. Fixed by rewriting `object_id` on every returned term to the translated post ID.
+- **`TaxonomyDelegate` — `wp` / `the_post` cache clearing** — `WP_Query` primes term relationship caches from DB before plugin filters run; `setup_postdata()` (fired by `the_post`) re-primes them. Two hooks (`wp` priority 5, `the_post` priority 10) clear WC taxonomy caches so the next `get_the_terms()` call goes through `wp_get_object_terms()` → TaxonomyDelegate.
+- **`TermNameFilter` — Store API / block theme path** — WC 10.x block templates are served at `/product/{slug}/` (no language URL prefix), causing `detect_lang()` to return the source language for all product pages. Two new hooks translate `pa_*` attribute term names using `_lf_lang` from the queried product's postmeta: `get_term` filter (covers `WC_Product_Attribute::get_terms()` → Store API JSON / React block path, used by all store visitors) and `wp_get_object_terms` priority 15 (covers classic template path). Result: DE product page JSON contains "Rot"/"Blau"; EN retains "Red"/"Blue".
+
+### Tests
+
+- **Integration** — `VariationSyncIntegrationTest` (14 tests), `MetaDelegateWcApiIntegrationTest` (11 tests, exercises `wc_get_product()` API path), `VariationDelegateIntegrationTest` +2 cases, `TaxonomyDelegateIntegrationTest` +2 cases, `BootstrapIntegrationTest` +3 hook registration assertions, `RestWriteGuardIntegrationTest` (11 tests).
+- **Unit** — `VariationDelegateTest` +1 case (own-variations branch); `WcPolyfills` extended with `LfWpdb::prepare()`, `get_var()`, `esc_like()`, `$posts`, `$postmeta` properties.
+- **E2E** — `woocommerce-integration.spec.js` (new, 17 scenarios): admin list, frontend rendering, TermNameFilter (Rot/Blau on DE, Vermell/Blau on CA), product_brand, price delegation, and REST write guard on both product and variation endpoints. Suite: 7 spec files, 55 scenarios total.
+
+---
+
 ## [2.1.5] — 2026-06-03
 
 ### Changed

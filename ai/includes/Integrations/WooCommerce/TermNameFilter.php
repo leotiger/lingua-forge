@@ -62,6 +62,24 @@ class TermNameFilter {
 		//
 		// See Trac #45085 (open since 2018) — the discrepancy is a known WP issue.
 		add_filter( 'term_name', [ self::class, 'translate_term_name' ], 10, 4 );
+
+		// WooCommerce renders variation attribute option names via:
+		//   wc_dropdown_variation_attribute_options() → $term->name
+		//   → apply_filters('woocommerce_variation_option_name', $name, $term, $attribute, $product)
+		// This bypasses `term_name` (which only fires with 'display' sanitize context).
+		// Hook here to translate variation dropdown labels on translated product pages.
+		add_filter( 'woocommerce_variation_option_name', [ self::class, 'translate_variation_option_name' ], 10, 4 );
+
+		// Translate WP_Term names directly on the `wp_get_object_terms` result
+		// (covers wc_get_product_terms → classic template path).
+		add_filter( 'wp_get_object_terms', [ self::class, 'translate_term_objects' ], 15, 4 );
+
+		// WC Store API calls WC_Product_Attribute::get_terms() which maps term IDs
+		// through individual get_term($id, $taxonomy) calls — bypassing
+		// wp_get_object_terms entirely. The `get_term` filter fires after each
+		// individual term is fetched, giving us the correct hook point for the
+		// Store API JSON path (block themes, all store visitors).
+		add_filter( 'get_term', [ self::class, 'translate_single_term_name' ], 10, 2 );
 	}
 
 	// =========================================================================
@@ -131,6 +149,207 @@ class TermNameFilter {
 	}
 
 	// =========================================================================
+	// wp_get_object_terms — term object name translation (Store API + classic)
+	// =========================================================================
+
+	/**
+	 * Translate WP_Term name properties on the wp_get_object_terms result.
+	 *
+	 * This fires at priority 15 (after TaxonomyDelegate at 10, which handles
+	 * source-product delegation). For every pa_* attribute term returned, look
+	 * up `_lf_term_name_{lang}` termmeta and replace the name when a translation
+	 * is stored.
+	 *
+	 * Runs on both frontend code paths:
+	 *   - WC Store API (block themes): WC_Product_Attribute::get_terms()
+	 *     → wc_get_product_terms() → wp_get_object_terms() → here
+	 *     → ProductSchema::prepare_product_attribute_taxonomy_value($term)
+	 *     reads the now-translated $term->name → JSON has "Rot"/"Blau".
+	 *
+	 *   - Classic WC templates: wc_dropdown_variation_attribute_options()
+	 *     → wc_get_product_terms() → same path — also translated here.
+	 *
+	 * WP_Term objects are cloned before modification to avoid mutating
+	 * the WP object cache (the default in-memory cache passes objects by
+	 * reference; modifying them would corrupt cached names for subsequent reads).
+	 *
+	 * @param  array|\WP_Term[] $terms     Terms returned by wp_get_object_terms().
+	 * @param  int[]|string     $object_ids Object IDs (not used here).
+	 * @param  string[]|string  $taxonomies Taxonomy slugs queried.
+	 * @param  array            $args       Query args.
+	 * @return array  Terms with translated name properties where available.
+	 */
+	public static function translate_term_objects( mixed $terms, mixed $object_ids, mixed $taxonomies, array $args ): mixed { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $object_ids, $taxonomies, $args are required by the wp_get_object_terms filter signature; only $terms is used here.
+
+		if ( ! is_array( $terms ) || empty( $terms ) ) {
+			return $terms;
+		}
+
+		// ── 1. Resolve active language ─────────────────────────────────────────
+		$router      = Router::get_instance();
+		$source_lang = $router->source_language();
+
+		// Use _lf_lang from the queried product post (see translate_single_term_name).
+		$lang       = '';
+		$queried_id = get_queried_object_id();
+		if ( $queried_id ) {
+			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
+		}
+		if ( '' === $lang ) {
+			$lang = $router->detect_lang();
+		}
+
+		if ( '' === $lang || $lang === $source_lang ) {
+			return $terms; // Source language — no translation needed.
+		}
+
+		// ── 2. Translate term names ────────────────────────────────────────────
+		$translated = [];
+		foreach ( $terms as $term ) {
+			if ( ! ( $term instanceof WP_Term ) ) {
+				$translated[] = $term;
+				continue;
+			}
+
+			// Only pa_* attribute taxonomies carry translatable term labels.
+			// product_cat, product_type, etc. are NOT translated here (content
+			// category names are handled separately by TaxonomyDelegate/TermNameAdmin).
+			if ( ! str_starts_with( $term->taxonomy, 'pa_' ) ) {
+				$translated[] = $term;
+				continue;
+			}
+
+			$name = (string) get_term_meta( $term->term_id, self::META_PREFIX . $lang, true );
+			if ( '' === $name ) {
+				$translated[] = $term; // No translation stored — keep original.
+				continue;
+			}
+
+			// Clone to avoid mutating the WP object cache reference.
+			$clone       = clone $term;
+			$clone->name = $name;
+			$translated[] = $clone;
+		}
+
+		return $translated;
+	}
+
+	/**
+	 * Translate an individual WP_Term name when fetched via get_term().
+	 *
+	 * WC's Store API calls WC_Product_Attribute::get_terms() which maps stored
+	 * term IDs through array_map('get_term', $ids, $taxonomies). The `get_term`
+	 * filter fires for every individual term fetch — this is the correct hook
+	 * for the Store API/block path where wp_get_object_terms is never called.
+	 *
+	 * A clone is returned to avoid mutating the WP object-cache reference
+	 * (the default in-memory cache passes objects by reference).
+	 *
+	 * @param  mixed  $term      WP_Term or other value returned by get_term().
+	 * @param  string $taxonomy  The taxonomy slug.
+	 * @return mixed  Cloned WP_Term with translated name, or original on pass-through.
+	 */
+	public static function translate_single_term_name( mixed $term, string $taxonomy ): mixed {
+
+		if ( ! ( $term instanceof WP_Term ) ) {
+			return $term;
+		}
+
+		// Only pa_* attribute taxonomies have user-visible term names to translate.
+		$tax = $term->taxonomy ?: $taxonomy;
+		if ( ! str_starts_with( $tax, 'pa_' ) ) {
+			return $term;
+		}
+
+		$router      = Router::get_instance();
+		$source_lang = $router->source_language();
+
+		// Prefer _lf_lang from the queried product post over URL-prefix detection.
+		//
+		// WC product pages are served at /product/{slug}/ — no language prefix in the
+		// URL. detect_lang() reads the URL prefix and returns source lang for all WC
+		// product pages, making URL-prefix detection useless here. Reading _lf_lang
+		// directly from the current product post gives the correct language regardless
+		// of permalink structure.
+		$lang = '';
+		$queried_id = get_queried_object_id();
+		if ( $queried_id ) {
+			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
+		}
+
+		// Fallback to URL/cookie detection (e.g. for REST/Store API requests,
+		// archive pages, or any context where there is no queried product post).
+		if ( '' === $lang ) {
+			$lang = $router->detect_lang();
+		}
+
+		if ( '' === $lang || $lang === $source_lang ) {
+			return $term;
+		}
+
+		$name = (string) get_term_meta( $term->term_id, self::META_PREFIX . $lang, true );
+		if ( '' === $name ) {
+			return $term;
+		}
+
+		$clone       = clone $term;
+		$clone->name = $name;
+
+		return $clone;
+	}
+
+	// =========================================================================
+	// WooCommerce variation option name
+	// =========================================================================
+
+	/**
+	 * Translate a WooCommerce variation dropdown option name.
+	 *
+	 * `woocommerce_variation_option_name` fires inside wc_dropdown_variation_attribute_options()
+	 * for each term option. `term_name` (with 'display' context) does NOT fire in this path —
+	 * WC reads $term->name directly from the WP_Term object and passes it through this filter.
+	 *
+	 * @param  string        $name       The term name as it will appear in the dropdown.
+	 * @param  \WP_Term|null $term       The WP_Term object, or null for custom (non-taxonomy) attributes.
+	 * @param  string        $attribute  The attribute taxonomy slug (e.g. 'pa_color').
+	 * @param  mixed         $product    The WC_Product object (no PHPStan stubs; typed as mixed).
+	 * @return string  Translated name if available, original name otherwise.
+	 */
+	public static function translate_variation_option_name( string $name, mixed $term, string $attribute, mixed $product ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $product (WC_Product, no stubs) required by woocommerce_variation_option_name filter signature; unused here.
+
+		// Custom (non-taxonomy) attributes pass null for $term — nothing to translate.
+		if ( ! ( $term instanceof WP_Term ) ) {
+			return $name;
+		}
+
+		if ( ! self::is_wc_taxonomy( $attribute ) ) {
+			return $name;
+		}
+
+		$router      = Router::get_instance();
+		$source_lang = $router->source_language();
+
+		// Use _lf_lang from the queried product post — WC product pages at
+		// /product/{slug}/ have no URL prefix, so detect_lang() returns source lang.
+		$lang       = '';
+		$queried_id = get_queried_object_id();
+		if ( $queried_id ) {
+			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
+		}
+		if ( '' === $lang ) {
+			$lang = $router->detect_lang();
+		}
+
+		if ( '' === $lang || $lang === $source_lang ) {
+			return $name;
+		}
+
+		$translated = (string) get_term_meta( $term->term_id, self::META_PREFIX . $lang, true );
+
+		return '' !== $translated ? $translated : $name;
+	}
+
+	// =========================================================================
 	// Helpers
 	// =========================================================================
 
@@ -138,12 +357,12 @@ class TermNameFilter {
 	 * Returns true when $taxonomy is a WooCommerce taxonomy that participates
 	 * in term name translation.
 	 *
-	 * Covers product_cat, product_tag, product_type, and all pa_* attribute
-	 * taxonomies (WooCommerce registers one per product attribute).
+	 * Covers product_cat, product_tag, product_type, product_brand (native WC 10.x),
+	 * and all pa_* attribute taxonomies (WooCommerce registers one per product attribute).
 	 */
 	public static function is_wc_taxonomy( string $taxonomy ): bool {
 
-		static $exact = [ 'product_cat', 'product_tag', 'product_type' ];
+		static $exact = [ 'product_cat', 'product_tag', 'product_type', 'product_brand' ];
 
 		if ( in_array( $taxonomy, $exact, true ) ) {
 			return true;

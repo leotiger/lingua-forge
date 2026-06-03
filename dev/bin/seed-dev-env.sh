@@ -52,18 +52,19 @@ $mu_dir = WPMU_PLUGIN_DIR;
 if ( ! is_dir( $mu_dir ) ) {
     wp_mkdir_p( $mu_dir );
 }
-$php = "<?php\n/**\n * Dev-only mu-plugin — forces DE and CA into the router language list.\n * Written by seed-dev-env.sh; never ships to production.\n */\nadd_filter( \"lf_languages_list\", function ( array \$langs ): array {\n    return array_values( array_unique( array_merge( \$langs, [ \"de\", \"ca\" ] ) ) );\n} );\n";
+$php = "<?php\n/**\n * Dev-only mu-plugin — forces DE, CA, and ES into the router language list.\n * Written by seed-dev-env.sh; never ships to production.\n */\nadd_filter( \"lf_languages_list\", function ( array \$langs ): array {\n    return array_values( array_unique( array_merge( \$langs, [ \"de\", \"ca\", \"es\" ] ) ) );\n} );\n";
 file_put_contents( $mu_dir . "/lf-dev-env.php", $php );
 echo "  ✓ lf-dev-env.php written to " . $mu_dir . "\n";
 '
 
-# ── Install language packs so the router discovers DE + CA ───────────────────
+# ── Install language packs so the router discovers DE, CA, ES ────────────────
 # The router auto-discovers active languages from get_available_languages().
-# The mu-plugin above guarantees DE/CA appear in the language list even when
+# The mu-plugin above guarantees DE/CA/ES appear in the language list even when
 # pack downloads fail (e.g. slow container network).
-echo "  Installing language packs (de_DE, ca) …"
+echo "  Installing language packs (de_DE, ca, es_ES) …"
 $WP language core install de_DE || true
 $WP language core install ca    || true
+$WP language core install es_ES || true
 
 # ── Sample content ────────────────────────────────────────────────────────────
 # Create a small set of pages in each language so translation workflows,
@@ -271,6 +272,210 @@ if $WP plugin is-active woocommerce --quiet 2>/dev/null; then
     echo "    ↳ Product group TRID: $PRODUCT_TRID"
     echo "    ↳ Source (EN, with price/stock): ID $EN_ID"
     echo "    ↳ Translations (DE, CA) delegate operational meta to EN at runtime."
+
+    # ── Ensure pa_color exists as a proper WC attribute (persistent, not just registered) ─
+    # register_taxonomy() is session-only. wc_create_attribute() writes to
+    # wc_attribute_taxonomies so WC re-registers pa_color on every init.
+    # This block always runs — idempotent because it checks before creating.
+    echo "  Ensuring pa_color WC attribute exists …"
+    $WP eval '
+global $wpdb;
+$exists = $wpdb->get_var("SELECT attribute_id FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = \"color\"");
+if ( ! $exists ) {
+    $id = wc_create_attribute([
+        "name"         => "Color",
+        "slug"         => "color",
+        "type"         => "select",
+        "order_by"     => "menu_order",
+        "has_archives" => false,
+    ]);
+    if ( is_wp_error( $id ) ) {
+        echo "  ERROR creating pa_color: " . $id->get_error_message() . "\n";
+    } else {
+        echo "  ↳ Created pa_color WC attribute (ID $id)\n";
+        // Flush rewrite rules so pa_color archive URLs resolve.
+        delete_option( "rewrite_rules" );
+    }
+} else {
+    echo "  ↳ pa_color WC attribute already exists (ID $exists), skipping.\n";
+}
+
+// wc_create_attribute() stores in DB but does NOT register the taxonomy for this request.
+// Register it manually so wp_insert_term() works in the same eval call.
+register_taxonomy( "pa_color", ["product"], ["label" => "Color"] );
+foreach ( [ "Red", "Blue" ] as $name ) {
+    if ( ! term_exists( $name, "pa_color" ) ) {
+        $result = wp_insert_term( $name, "pa_color" );
+        echo is_wp_error( $result )
+            ? "  ERROR inserting $name: " . $result->get_error_message() . "\n"
+            : "  ↳ Created pa_color term: $name\n";
+    } else {
+        echo "  ↳ pa_color term $name already exists.\n";
+    }
+}
+'
+
+    # ── Translated term names for pa_color — exercises TermNameFilter ─────────
+    # TermNameFilter reads _lf_term_name_{lang} termmeta to display colour names
+    # in the visitor's language. Always runs — idempotent via get_term_meta check.
+    echo "  Seeding translated pa_color term names …"
+    $WP eval '
+$translations = [
+    "Red"  => [ "de" => "Rot",   "ca" => "Vermell", "es" => "Rojo"  ],
+    "Blue" => [ "de" => "Blau",  "ca" => "Blau",    "es" => "Azul"  ],
+];
+foreach ( $translations as $en_name => $langs ) {
+    $term = get_term_by( "name", $en_name, "pa_color" );
+    if ( ! $term ) { echo "  ↳ Term $en_name not found in pa_color — run env:seed again after WC registers the attribute.\n"; continue; }
+    foreach ( $langs as $lang => $translated_name ) {
+        $existing = get_term_meta( $term->term_id, "_lf_term_name_$lang", true );
+        if ( ! $existing ) {
+            add_term_meta( $term->term_id, "_lf_term_name_$lang", $translated_name );
+            echo "  ↳ " . $en_name . " → $lang: $translated_name (term_id=" . $term->term_id . ")\n";
+        } else {
+            echo "  ↳ " . $en_name . " → $lang: already set ($existing), skipping.\n";
+        }
+    }
+}
+'
+
+    # ── Variable product with variations ─────────────────────────────────────
+    # Tests: VariationSync, MetaDelegate bulk-read (wc_get_product()->get_price()),
+    #        attribute matching (find_matching_product_variation), _variation_description,
+    #        TermNameFilter (colour names in DE/CA), and product_brand delegation.
+    echo "  Creating variable product with variations …"
+    $WP eval '
+// ── Skip if already seeded ──────────────────────────────────────────────
+$existing = get_posts([
+    "post_type"   => "product",
+    "post_status" => "publish",
+    "meta_key"    => "_lf_lang",
+    "meta_value"  => "en",
+    "name"        => "test-shirt",
+    "fields"      => "ids",
+    "numberposts" => 1,
+]);
+if ( $existing ) {
+    $src_id = $existing[0];
+    echo "  ↳ Variable product already exists (ID $src_id) — ensuring WC taxonomies are synced.\n";
+    if ( class_exists( "LinguaForge\AI\Integrations\WooCommerce\VariationSync" ) ) {
+        LinguaForge\AI\Integrations\WooCommerce\VariationSync::propagate_wc_taxonomies_to_translations( $src_id );
+        echo "  ↳ WC taxonomies propagated to all translations.\n";
+    }
+    return;
+}
+
+// ── Resolve pa_color term slugs (attribute created above, registered by WC) ─
+$red_term  = get_term_by( "name", "Red",  "pa_color" );
+$blue_term = get_term_by( "name", "Blue", "pa_color" );
+if ( ! $red_term || ! $blue_term ) {
+    echo "  ERROR: pa_color terms not found — ensure env:seed ran the attribute creation block first.\n";
+    return;
+}
+$red_slug  = $red_term->slug;
+$blue_slug = $blue_term->slug;
+
+// ── Register product_brand taxonomy ─────────────────────────────────────
+if ( ! taxonomy_exists( "product_brand" ) ) {
+    register_taxonomy( "product_brand", ["product"], ["label" => "Brand"] );
+}
+$brand = wp_insert_term( "Acme", "product_brand" );
+$brand_id = is_wp_error( $brand ) ? get_term_by( "name", "Acme", "product_brand" )->term_id : $brand["term_id"];
+
+// ── Create source variable product (EN) ──────────────────────────────────
+$src_id = wp_insert_post([
+    "post_type"    => "product",
+    "post_status"  => "publish",
+    "post_title"   => "Test Shirt",
+    "post_name"    => "test-shirt",
+    "post_content" => "<!-- wp:paragraph --><p>A sample variable product for testing Lingua Forge WooCommerce integration.</p><!-- /wp:paragraph -->",
+], true);
+if ( is_wp_error( $src_id ) ) { echo "ERROR: " . $src_id->get_error_message() . "\n"; return; }
+
+// Mark as variable product + assign pa_color + product_brand terms.
+wp_set_object_terms( $src_id, "variable", "product_type" );
+wp_set_object_terms( $src_id, [ "pa_color" ], "product_brand", false ); // reset — using correct call below
+wp_set_object_terms( $src_id, [ $brand_id ], "product_brand", false );
+wp_set_object_terms( $src_id, [ "Red", "Blue" ], "pa_color", false );
+
+// _product_attributes: one taxonomy attribute (pa_color), used for variations.
+update_post_meta( $src_id, "_product_attributes", [
+    "pa_color" => [
+        "name"         => "pa_color",
+        "value"        => "",
+        "position"     => 0,
+        "is_visible"   => 1,
+        "is_variation" => 1,
+        "is_taxonomy"  => 1,
+    ],
+]);
+update_post_meta( $src_id, "_visibility",   "visible" );
+update_post_meta( $src_id, "_stock_status", "instock" );
+update_post_meta( $src_id, "_lf_lang",      "en" );
+$trid = wp_generate_uuid4();
+update_post_meta( $src_id, "_lf_trid", $trid );
+
+// ── Create source variations ──────────────────────────────────────────────
+foreach ( [
+    "red"  => [ "slug" => $red_slug,  "price" => "19.99", "stock" => 10, "desc" => "The red version — bold and vibrant." ],
+    "blue" => [ "slug" => $blue_slug, "price" => "21.99", "stock" => 5,  "desc" => "The blue version — cool and calm." ],
+] as $color => $data ) {
+    $var_id = wp_insert_post([
+        "post_type"   => "product_variation",
+        "post_status" => "publish",
+        "post_parent" => $src_id,
+        "post_title"  => "Test Shirt - " . ucfirst( $color ),
+    ]);
+    update_post_meta( $var_id, "attribute_pa_color",   $data["slug"] );
+    update_post_meta( $var_id, "_price",               $data["price"] );
+    update_post_meta( $var_id, "_regular_price",       $data["price"] );
+    update_post_meta( $var_id, "_stock",               $data["stock"] );
+    update_post_meta( $var_id, "_stock_status",        "instock" );
+    update_post_meta( $var_id, "_manage_stock",        "yes" );
+    update_post_meta( $var_id, "_variation_description", $data["desc"] );
+    // LF language + TRID so VariationSync can link translations to this variation.
+    update_post_meta( $var_id, "_lf_lang",  "en" );
+    update_post_meta( $var_id, "_lf_trid",  wp_generate_uuid4() );
+    echo "  ↳ Source variation (en/$color) → ID $var_id price=" . $data["price"] . "\n";
+}
+
+// ── Create translated product stubs (DE, CA) ──────────────────────────────
+foreach ( [
+    "de" => [ "title" => "Test-Hemd",       "desc" => "<!-- wp:paragraph --><p>Ein Muster-Produkt für die WooCommerce-Integration.</p><!-- /wp:paragraph -->" ],
+    "ca" => [ "title" => "Samarreta de prova", "desc" => "<!-- wp:paragraph --><p>Un producte de prova per a la integració de WooCommerce.</p><!-- /wp:paragraph -->" ],
+] as $lang => $data ) {
+    $trans_id = wp_insert_post([
+        "post_type"    => "product",
+        "post_status"  => "publish",
+        "post_title"   => $data["title"],
+        "post_name"    => "test-shirt-$lang",
+        "post_content" => $data["desc"],
+    ], true);
+    if ( is_wp_error( $trans_id ) ) { echo "ERROR ($lang): " . $trans_id->get_error_message() . "\n"; continue; }
+    update_post_meta( $trans_id, "_visibility",   "visible" );
+    update_post_meta( $trans_id, "_stock_status", "instock" );
+    update_post_meta( $trans_id, "_lf_lang",  $lang );
+    update_post_meta( $trans_id, "_lf_trid",  $trid );
+    echo "  ↳ Translated product ($lang) → ID $trans_id\n";
+
+    // ── Trigger VariationSync: create variation children + inherit WC taxonomies ─
+    // sync_wc_taxonomies_from_source copies product_type, pa_* attribute terms,
+    // and product_brand directly onto the translated product so WC recognises it
+    // as a variable product without relying on runtime TaxonomyDelegate delegation.
+    if ( class_exists( "LinguaForge\AI\Integrations\WooCommerce\VariationSync" ) ) {
+        LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_variations_for( $trans_id );
+        LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_wc_taxonomies_from_source( $src_id, $trans_id );
+        echo "  ↳ VariationSync ran for ID $trans_id — variations created + WC taxonomies inherited.\n";
+    } else {
+        echo "  ↳ VariationSync not available — run sync manually or via Retranslate.\n";
+    }
+}
+
+echo "  ↳ Variable product seeded. Source ID: $src_id  TRID: $trid\n";
+echo "  ↳ Brand \"Acme\" (product_brand) assigned to source product.\n";
+echo "  ↳ pa_color terms: Red ($red_slug) / Blue ($blue_slug)\n";
+echo "  ↳ _variation_description set on each source variation.\n";
+'
 
 else
     echo "  WooCommerce not active — skipping product seed."

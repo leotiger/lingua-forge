@@ -95,6 +95,8 @@ Spec files and what they cover:
 | `e2e/lang-column.spec.js` | Lang column header + filter dropdown, EN/DE/CA filter returns correct cells, WC products (auto-skipped when WC not active) | No |
 | `e2e/ai-translation.spec.js` | Meta box "Translate" button (REST `/feature/translation/{id}`), "Translate missing" in the Lang column (AJAX `lf_fill_missing`), AI Usage tab shows token rows | **Yes — costs tokens** |
 | `e2e/fse-localisation.spec.js` | Router tab smoke (no errors, DE/CA scaffold table rows); full DE pipeline: Scaffold → Translate → Fix links → Fix parts (auto-skipped if FSE theme not active) | **Yes — costs tokens** |
+| `e2e/admin-metabox.spec.js` | `window.LfAdmin` namespace present; `admin-diff-modal.js` / `admin-content-gen-modal.js` exports; meta box in DOM; AJAX dispatch on button click | No |
+| `e2e/woocommerce-integration.spec.js` | Variable product admin list (EN/DE/CA); product type + attribute delegation; TermNameFilter (Rot/Blau on DE, Vermell/Blau on CA); price delegation; brand; REST write guard (HTTP 422 on translated product and variation); auto-skipped when WC not active | No |
 
 **Reset for a clean scaffold run:**
 ```bash
@@ -107,7 +109,7 @@ Only needed when you want to re-test scaffold from an empty state.
 
 | Command                       | Expands to                                                         | Docker needed |
 | ----------------------------- | ------------------------------------------------------------------ | ------------- |
-| `npm run env:seed`            | Sets permalinks, router options, installs DE/CA language packs, creates sample pages + WC product group, prompts for AI provider + API key (written to gitignored `.wp-env.override.json` as a PHP constant — no UI entry needed). Safe to re-run. | Yes |
+| `npm run env:seed`            | Sets permalinks, router options, installs DE/CA/ES language packs, creates sample pages, simple WC product group, and a **variable WC product** (Test Shirt EN/DE/CA with `pa_color` attribute, Red/Blue variations with `_variation_description`, translated term names Rot/Blau/Vermell, and product_brand "Acme"). Prompts for AI provider + API key. Safe to re-run — all creation steps are idempotent. | Yes |
 | `npm run test:e2e`            | Playwright E2E suite: routing, Settings page, lang column, WC product list, AI translation, FSE localisation pipeline. Requires `env:start` (keep running) + `env:seed`. | Yes |
 | `composer test`               | `test:unit` + `test:integration`                                   | Yes           |
 | `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |

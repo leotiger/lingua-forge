@@ -18,6 +18,7 @@
  *   7. Parent with no source translation is ignored.
  *   8. Translated parent → post_parent substituted with source product ID.
  *   9. Array post_type including 'product_variation' is handled.
+ *  10. Translated parent with own variation children is NOT redirected.
  *
  * @package LinguaForge\Tests\Unit\WooCommerce
  */
@@ -188,5 +189,28 @@ final class VariationDelegateTest extends WcUnitTestCase {
 		VariationDelegate::maybe_delegate_variation_query( $query );
 
 		$this->assertSame( 100, (int) $query->get( 'post_parent' ), 'Array post_type with product_variation must trigger delegation.' );
+	}
+
+	// =========================================================================
+	// 10. Translated parent with own variation children is NOT redirected
+	// =========================================================================
+
+	public function test_translated_parent_with_own_variations_is_not_redirected(): void {
+		$this->make_post( 42 );
+		$this->set_meta( 42, '_lf_lang', 'es' );
+		$this->set_translations( 42, [ 'en' => 100, 'es' => 42 ] );
+		$this->make_post( 100 );
+
+		// Simulate $wpdb->get_var() returning a row — own variations exist.
+		\LfWcMocks::$wpdb_get_var = '1';
+
+		$query = $this->make_query( 'product_variation', 42 );
+		VariationDelegate::maybe_delegate_variation_query( $query );
+
+		$this->assertSame(
+			42,
+			(int) $query->get( 'post_parent' ),
+			'Translated parent with own variations must NOT have post_parent rewritten to source.'
+		);
 	}
 }

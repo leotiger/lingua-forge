@@ -83,6 +83,7 @@ abstract class WcIntegrationTestCase extends WP_UnitTestCase {
 		// WP_UnitTestCase rolls back the DB, but PHP statics persist.
 		$this->reset_static_array( MetaDelegate::class, 'source_cache' );
 		$this->reset_static_array( MetaDelegate::class, 'delegating' );
+		$this->reset_static_array( MetaDelegate::class, 'bulk_delegating' );
 		$this->reset_static_array( StockRouter::class, 'routing' );
 	}
 
@@ -90,6 +91,7 @@ abstract class WcIntegrationTestCase extends WP_UnitTestCase {
 		// Clean up delegation statics after each test to be safe.
 		$this->reset_static_array( MetaDelegate::class, 'source_cache' );
 		$this->reset_static_array( MetaDelegate::class, 'delegating' );
+		$this->reset_static_array( MetaDelegate::class, 'bulk_delegating' );
 		$this->reset_static_array( StockRouter::class, 'routing' );
 
 		remove_all_filters( 'lf_languages_list' );

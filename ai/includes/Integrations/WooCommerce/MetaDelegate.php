@@ -111,6 +111,17 @@ class MetaDelegate {
 	 */
 	private static array $delegating = [];
 
+	/**
+	 * Reentrancy guard for the bulk-read path (get_post_meta($id) with no key).
+	 *
+	 * Keyed by object ID. Set before we re-fetch the translated post's own meta
+	 * inside maybe_delegate_bulk() so the recursive filter call returns null and
+	 * WP proceeds to its normal cache/DB fetch instead of looping.
+	 *
+	 * @var array<int,true>
+	 */
+	private static array $bulk_delegating = [];
+
 	// =========================================================================
 	// Boot
 	// =========================================================================
@@ -134,6 +145,7 @@ class MetaDelegate {
 	 * short-circuits the DB lookup:
 	 *   • When $single = true, return [ $value ] — WP unwraps to $value.
 	 *   • When $single = false, return the raw metadata array from $wpdb.
+	 *   • When $meta_key = '' (bulk all-meta fetch) — see maybe_delegate_bulk().
 	 *
 	 * @param  mixed  $value     Current filter value (null = not yet filtered).
 	 * @param  int    $object_id Post ID being queried.
@@ -142,6 +154,16 @@ class MetaDelegate {
 	 * @return mixed  null to pass through, or the delegated value from the source product.
 	 */
 	public static function maybe_delegate( mixed $value, int $object_id, string $meta_key, bool $single ): mixed {
+
+		// ── 0. Bulk read path ──────────────────────────────────────────────────
+		// WC's read_product_data() calls get_post_meta($id) with no key, which fires
+		// this filter with $meta_key = ''. The per-key guard below would bail on '',
+		// so the bulk call would bypass delegation entirely and WC would load empty
+		// operational meta for translated products. Intercept here and return a merged
+		// array with source-product values injected for every OPERATIONAL_KEY.
+		if ( '' === $meta_key && ! $single ) {
+			return self::maybe_delegate_bulk( $value, $object_id );
+		}
 
 		// ── 1. Quick key guard ─────────────────────────────────────────────────
 		if ( ! in_array( $meta_key, self::OPERATIONAL_KEYS, true ) ) {
@@ -161,7 +183,7 @@ class MetaDelegate {
 			return $value;
 		}
 
-		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product' ] );
+		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product', 'product_variation' ] );
 		if ( ! in_array( $post->post_type, $delegate_types, true ) ) {
 			return $value;
 		}
@@ -213,6 +235,100 @@ class MetaDelegate {
 		//   • $single=true  → return [ $value ]; WP unwraps to $value on return.
 		//   • $single=false → return the raw array (all stored values for this key).
 		return $single ? [ $source_value ] : (array) $source_value;
+	}
+
+	// =========================================================================
+	// Bulk read delegation (WC CRUD path)
+	// =========================================================================
+
+	/**
+	 * Handle bulk `get_post_meta($id)` calls from WC's read_product_data().
+	 *
+	 * WC's data store fetches ALL meta in a single call and extracts individual
+	 * props from the returned PHP array, bypassing per-key filter invocations.
+	 * This method fetches the translated post's own meta, then overlays every
+	 * OPERATIONAL_KEY with the corresponding source product/variation value, so
+	 * `wc_get_product($translated_id)->get_price()` etc. return correct data.
+	 *
+	 * Reentrancy is handled by $bulk_delegating: the inner get_post_meta($object_id)
+	 * call sees the guard set and returns null, causing WP to fetch from cache/DB
+	 * without re-entering this method.
+	 *
+	 * @param  mixed $value     Current filter value (null).
+	 * @param  int   $object_id Post ID being read.
+	 * @return mixed  null to pass through, or merged metadata array.
+	 */
+	private static function maybe_delegate_bulk( mixed $value, int $object_id ): mixed {
+
+		// ── Reentrancy guard ───────────────────────────────────────────────────
+		if ( isset( self::$bulk_delegating[ $object_id ] ) ) {
+			return $value; // null → WP fetches translated post's own meta normally.
+		}
+
+		// ── Post type guard ────────────────────────────────────────────────────
+		$post = get_post( $object_id );
+		if ( ! $post ) {
+			return $value;
+		}
+
+		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product', 'product_variation' ] );
+		if ( ! in_array( $post->post_type, $delegate_types, true ) ) {
+			return $value;
+		}
+
+		// ── Language guard ─────────────────────────────────────────────────────
+		// _lf_lang is not in OPERATIONAL_KEYS so the per-key path won't recurse.
+		$lang = (string) get_post_meta( $object_id, '_lf_lang', true );
+		if ( '' === $lang ) {
+			return $value;
+		}
+
+		$source_lang = Router::get_instance()->source_language();
+		if ( $lang === $source_lang ) {
+			return $value;
+		}
+
+		// ── Source ID ──────────────────────────────────────────────────────────
+		$source_id = self::get_source_id_for( $object_id );
+		if ( ! $source_id || $source_id === $object_id ) {
+			return $value;
+		}
+
+		// ── Fetch translated post's own meta (with guard) ──────────────────────
+		// Setting the guard before the recursive get_post_meta() call ensures that
+		// when the filter fires again for $object_id with $meta_key = '', it returns
+		// null and WP proceeds to its normal cache/DB lookup.
+		self::$bulk_delegating[ $object_id ] = true;
+		$translated_meta = get_post_meta( $object_id );
+		unset( self::$bulk_delegating[ $object_id ] );
+
+		if ( ! is_array( $translated_meta ) ) {
+			return $value;
+		}
+
+		// ── Overlay OPERATIONAL_KEYS with source values ────────────────────────
+		foreach ( self::OPERATIONAL_KEYS as $key ) {
+
+			// _product_attributes exception: if the translated post already has its
+			// own value (AI-translated custom attribute strings), preserve it.
+			if ( '_product_attributes' === $key && ! empty( $translated_meta[ $key ] ) ) {
+				continue;
+			}
+
+			// Individual source read. The source post's language equals $source_lang,
+			// so the per-key path returns null for it and WP reads the source's own
+			// stored value — no recursive delegation.
+			$source_values = get_post_meta( $source_id, $key, false );
+
+			// get_post_meta($id, $key, false) returns [] when the key is absent.
+			// Only override when the source actually has a value — an absent source
+			// key means the product has no value for that field, which is correct.
+			if ( ! empty( $source_values ) ) {
+				$translated_meta[ $key ] = $source_values;
+			}
+		}
+
+		return $translated_meta;
 	}
 
 	// =========================================================================

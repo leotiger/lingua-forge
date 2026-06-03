@@ -513,6 +513,18 @@ class PostListColumn {
 			Router::get_instance()->sync->assign_template_if_needed( $new_id, $new_post, $lang );
 		}
 
+		// Sync translated variation children for WooCommerce variable products.
+		// This path bypasses the wp_after_insert_post hook because ajax_fill_missing
+		// removes that hook for the duration of the batch; call explicitly here
+		// after TRID/lang meta is written so MetaDelegate::get_source_id_for() works.
+		if ( 'product' === $source->post_type
+			&& class_exists( 'WooCommerce' )
+			&& class_exists( \LinguaForge\AI\Integrations\WooCommerce\VariationSync::class )
+		) {
+			\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_variations_for( $new_id );
+			\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_wc_taxonomies_from_source( $source->ID, $new_id );
+		}
+
 		return [
 			'status'   => 'created',
 			'id'       => $new_id,

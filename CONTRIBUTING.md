@@ -539,44 +539,82 @@ from the source-language product at runtime:
 
 | Class | Hook | Responsibility |
 |---|---|---|
-| `MetaDelegate` | `get_post_metadata` priority 1 | Price, SKU, stock, images, etc. transparently read from source |
+| `MetaDelegate` | `get_post_metadata` priority 1 + bulk `get_post_metadata` (`$meta_key=''`) | Price, SKU, stock, images, etc. transparently read from source for both individual and bulk `get_post_meta()` reads |
 | `StockRouter` | `update/add_post_metadata` priority 1 | Stock writes routed to source; translated post stays clean |
-| `VariationDelegate` | `pre_get_posts` priority 5 | `product_variation` children delegated to source product |
-| `TaxonomyDelegate` | `wp_get_object_terms` priority 10 | Term assignments delegated to source product |
+| `VariationDelegate` | `pre_get_posts` priority 5 | `product_variation` children — serves translated variations if present, falls back to source |
+| `VariationSync` | `wp_after_insert_post` priority 30 | Creates `product_variation` children on translated products; copies `_variation_description`, `attribute_pa_*` meta, structural WC taxonomies, and propagates type changes from source to all translations |
+| `TaxonomyDelegate` | `wp_get_object_terms` priority 10 + `wp`/`the_post` cache clearing | Term assignments delegated to source; `object_id` rewritten on returned terms so `update_object_term_cache()` primes the correct bucket |
 | `CatalogQuery` | `woocommerce_product_query` | Language filter for secondary WC product queries |
+| `RestWriteGuard` | `woocommerce_rest_pre_insert_product_object` + `…_variation_object` | Returns HTTP 422 for PUT/PATCH to translated products/variations; includes source_id in response |
+
+### WC structural taxonomy inheritance
+
+Translated variable products must have `product_type = variable`, `pa_*` attribute terms,
+and `product_brand` assigned **directly in the DB** — not only delegated at runtime. WC's
+`_prime_post_caches()` fires a combined multi-taxonomy `wp_get_object_terms()` call that
+distributes results by `$term->object_id` BEFORE our filter can correct the empty caches.
+Without the DB assignments, WC defaults to `'simple'` product type.
+
+`VariationSync::sync_wc_taxonomies_from_source($source_id, $translated_id)` handles this at
+creation time. `propagate_wc_taxonomies_to_translations($source_id)` re-syncs when the source
+product saves — so a `variable → simple` change on the source propagates immediately.
 
 ### Translated term names (Phase 1b)
 
 Category, tag, and attribute term names display in the visitor's language:
 
-| Class | Hook | Responsibility |
+| Class | Hooks | Responsibility |
 |---|---|---|
-| `TermNameFilter` | `term_name` priority 10 | Swaps name from `_lf_term_name_{lang}` termmeta for WC taxonomies |
+| `TermNameFilter` | `term_name` priority 10; `get_term` priority 10; `wp_get_object_terms` priority 15; `woocommerce_variation_option_name` priority 10 | Translates `pa_*` term names in all rendering paths: classic templates, WC blocks, and Store API JSON. Language resolved from `_lf_lang` on the queried product post (WC product pages have no URL language prefix). |
 | `TermNameAdmin` | `init` priority 15 + taxonomy hooks | Term edit/add screen fields; saves/deletes termmeta |
 
 `TermNameAdmin::init()` is a no-op on non-admin requests. It registers
 form hooks after WooCommerce has registered its `pa_*` attribute
 taxonomies (WC registers them at `init` priority 5; we run at priority 15).
 
+**WC block / Store API path:** `WC_Product_Attribute::get_terms()` calls individual
+`get_term($id, $taxonomy)` for each term. The `get_term` filter fires even on cache
+hits. Language is detected from `get_post_meta(get_queried_object_id(), '_lf_lang', true)`
+rather than the URL prefix, since WC product permalinks (`/product/{slug}/`) carry no
+language prefix.
+
 ### Filters
 
 | Filter | Default | Purpose |
 |---|---|---|
-| `linguaforge_wc_delegate_post_types` | `['product']` | Which post types participate in meta/taxonomy delegation and stock routing |
+| `linguaforge_wc_delegate_post_types` | `['product', 'product_variation']` | Which post types participate in meta/taxonomy delegation and stock routing |
+| `linguaforge_wc_delegate_taxonomies` | `['product_cat', 'product_tag', 'product_type', 'product_brand']` | Which WC taxonomy slugs are delegated by `TaxonomyDelegate` (pa_* handled separately by prefix match) |
 | `linguaforge_cpt_create_allowed` | `true` | Gates translated-post creation in `PostListColumn::ajax_fill_missing()` — return `false` for a post type until its delegation layer is confirmed active |
 
 ### Extending the delegation layer
 
-To delegate a new meta key, add it to `MetaDelegate::OPERATIONAL_KEYS`.
-To add delegation for a new post type, use the
-`linguaforge_wc_delegate_post_types` filter — the five delegation classes
-all read from this filter.
+To delegate a new **meta key**, add it to `MetaDelegate::OPERATIONAL_KEYS`.
 
-To add a new taxonomy to the term-name translation system, no code change
-is needed: `TermNameFilter::is_wc_taxonomy()` and
-`TermNameAdmin::active_wc_taxonomies()` both check the registered taxonomy
-list at runtime, so any taxonomy that passes `is_wc_taxonomy()` is
-automatically covered.
+To add delegation for a **new post type**, use the `linguaforge_wc_delegate_post_types`
+filter — all delegation classes read from this filter.
+
+To add a **new taxonomy** (e.g. a third-party brand taxonomy) to the delegation layer:
+```php
+add_filter( 'linguaforge_wc_delegate_taxonomies', function( array $taxonomies ): array {
+    $taxonomies[] = 'pwb-brand';
+    return $taxonomies;
+} );
+```
+Term-name translation is automatic for any taxonomy that passes
+`TermNameFilter::is_wc_taxonomy()` (pa_* prefix) or is in the
+`linguaforge_wc_delegate_taxonomies` list.
+
+### REST API write guard
+
+External integrations that write product data **must always target the source-language
+product ID**. Translated product IDs are read-only for external systems. To resolve
+the source ID from a translated ID:
+```
+GET /wp-json/lingua-forge/v1/post/{translated_id}/translations
+```
+The LF REST endpoint returns the full translation group including the source post ID.
+A PUT/PATCH to a translated product returns HTTP 422 with `linguaforge_rest_write_to_translated_product`
+and `data.source_id` in the response body.
 
 ### Integration tests
 
@@ -585,9 +623,9 @@ and requires Docker + wp-env with WooCommerce active:
 
 ```bash
 cd dev/
-npm run env:start          # boots wp-env (only needed if stopped)
-composer test:integration:wc   # WC-only suite (~83 test cases)
-composer test:integration      # full suite including WC tests
+npm run env:start               # boots wp-env (only needed if stopped)
+composer test:integration:wc    # WC-only suite (~93 test cases)
+composer test:integration       # full suite including WC tests
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes

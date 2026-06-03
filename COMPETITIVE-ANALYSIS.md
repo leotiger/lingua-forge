@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** May 2026 · Lingua Forge 2.0.0
+**Date:** June 2026 · Lingua Forge 2.1.6
 
 ---
 
@@ -31,7 +31,7 @@ Lingua Forge sits in the post-based camp alongside WPML and Polylang, but diverg
 | **Mid plan** | — | €99/yr (CMS, 1 site) | €149/yr (Business, 3 sites) | ≈ €156/yr (Business, 3 sites) | ≈ €276/yr (Business) | Scales by site count |
 | **Agency / unlimited** | — | €199/yr (Agency) | — | ≈ €252/yr (Developer, unlimited) | ≈ €758–€2 868/yr (Pro/Advanced) | Custom |
 | **AI / auto-translation cost** | Your API key, provider rates (~€0.002–€0.01 per 1 000 tokens) | WPML Credits: 2 000 free/mo then top-up; ~€0.90 per 1 000 words | DeepL or Google subscription (separate) | Included word quota per plan (50 k–500 k AI words/yr) | Included (machine translation, then billed by word count) | DeepL / GPT4 / Google via AutoTranslate (API key, provider rates) |
-| **WooCommerce** | ✅ Phase 1 (shared-stock delegation — price, SKU, stock, images, variations, taxonomy) | Add-on (bundled in Agency) | Separate add-on | ✅ included | ✅ included (cloud handles dynamic content) | ✅ included |
+| **WooCommerce** | ✅ Full variable product translation — shared-stock delegation (price, SKU, stock, images), translatable variation descriptions, translated attribute term names in block + classic themes, product_brand delegation, REST write guard | Add-on (bundled in Agency) | Separate add-on | ✅ included | ✅ included (cloud handles dynamic content) | ✅ included |
 | **True zero-cost path** | ✅ Manual translation — no API key, no limit | ❌ Annual license required | ❌ Pro required for FSE template translation/hreflang | ✅ Manual translation free | ❌ Word count limit on free tier | ❌ |
 | **WordPress.org listing** | 🗓 Planned | ❌ Not listed (commercial only) | ✅ Free tier listed | ✅ Free tier listed | ✅ Connector plugin listed | ❌ Not listed (v2 retired early 2025; current version commercial only) |
 
@@ -201,11 +201,20 @@ Feature tables show what a plugin can do — not what it costs in actual effort 
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| Product / variation / category translation | ✅ Phase 1+1b — shared-stock model (title, description, price, stock, images, variations, categories all work; category and attribute term names translated via termmeta, editable on term edit screen) | ✅ (add-on; requires CMS plan or higher) | ✅ paid add-on | ✅ included | ✅ (cloud, including JS-rendered cart/checkout) | ✅ included |
+| Product / variation / category translation | ✅ Full — shared-stock model (title, description, price, stock, images, variations with translatable descriptions, categories, attribute term names in block + classic themes, product_brand) | ✅ (add-on; requires CMS plan or higher) | ✅ paid add-on | ✅ included | ✅ (cloud, including JS-rendered cart/checkout) | ✅ included |
 | WooCommerce UI string translation (cart labels, notices, button text) | ✅ via Loco Translate companion (.mo/.po layer) | ✅ | ✅ | ✅ (string-intercept) | ✅ (cloud) | ✅ |
 | Multi-currency | Via WooCommerce / 3rd-party | ✅ (WPML Multi-Currency add-on) | Via WooCommerce / 3rd-party | ❌ | ❌ | ✅ (separate store per language) |
 
-**Assessment (v2.0.0):** Lingua Forge supports WooCommerce products via a shared-stock delegation model: translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, variations, and taxonomy assignments are delegated transparently from the source product at runtime. No meta copying, no SKU uniqueness issues, no stock sync complexity. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta — entered directly on the term edit screen, no CLI or code required (Phase 1b, shipped v2.0.0). WooCommerce UI strings (cart labels, checkout headers, button text, notices) live in `.po`/`.mo` files and are translated via Loco Translate, the recommended free companion. This is not a Lingua Forge architecture gap — price and stock data are delegated from the source product at runtime, so there are no dynamic price recalculations on translated products to intercept. The `.mo` layer covers the full WooCommerce string surface cleanly. Multi-currency is not a translation-plugin concern: WooCommerce core manages the store currency; per-language or per-country currency conversion is handled by WC Payments' built-in multi-currency feature or a standalone currency plugin. Lingua Forge's price delegation operates at the product meta level and is transparent to whichever currency layer is active.
+**Assessment (v2.1.6):** Lingua Forge supports the full WooCommerce variable product stack:
+
+- **Translated product variations** — `product_variation` children are created automatically on translated parent products, TRID-linked to source variations. `_variation_description` (the per-variation description field) is translatable via the standard Retranslate button. Attribute assignments (`attribute_pa_color = 'red'`) are copied so WooCommerce's variation matching (`find_matching_product_variation()`) works correctly.
+- **Operational data delegation** — price, SKU, stock, dimensions, and images are served transparently from source variations at runtime via `get_post_metadata` interception (both individual and bulk reads, covering WC's `read_product_data()` path). No meta copying, no SKU uniqueness issues, no stock sync complexity.
+- **Structural taxonomy inheritance** — translated products have `product_type = variable`, `pa_*` attribute term assignments, and `product_brand` written directly in the DB at creation time and re-synced when the source is saved. Type changes (simple ↔ variable) propagate instantly to all translations.
+- **Attribute term name translation** — `pa_*` attribute term names (Red/Blue → Rot/Blau on DE pages, Vermell/Blau on CA pages) are translated in all rendering paths: WC block themes (Store API JSON / React), classic PHP templates, and the admin. Language is detected from the queried product's `_lf_lang` postmeta since WC product pages carry no URL language prefix.
+- **Product brand** — native WC 10.x `product_brand` taxonomy delegated by default; third-party brands (`pwb-brand`, YITH, etc.) registerable via the `linguaforge_wc_delegate_taxonomies` filter.
+- **REST write guard** — PUT/PATCH to translated products or variations returns HTTP 422 with the source product ID, preventing external integrations from corrupting translated posts.
+
+WooCommerce UI strings (cart labels, checkout headers, button text, notices) live in `.po`/`.mo` files and are translated via Loco Translate. Dynamic cart and checkout JavaScript (rendered client-side after page load) remains outside scope — Weglot and TranslatePress handle that via cloud-proxy and render-time interception respectively. Multi-currency is not a translation-plugin concern.
 
 ---
 
@@ -385,18 +394,18 @@ The following items are out of current scope by design, not competitive gaps:
 
 | Plugin | Best fit | Core strength | Core limitation |
 |---|---|---|---|
-| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects, WooCommerce stores | Zero cost + AI editorial depth + WP-CLI + FSE-native + full CPT support + WooCommerce (shared-stock delegation + translated category/attribute names) + post-list AI translate/retranslate | Separate-domain routing not yet supported; WooCommerce dynamic cart/checkout JS not translated |
+| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects, WooCommerce stores | Zero cost + AI editorial depth + WP-CLI + FSE-native + full CPT support + full variable product translation (variations, translated attribute names in block + classic themes, brand, REST guard) + post-list AI translate/retranslate | Separate-domain routing not yet supported; WooCommerce dynamic cart/checkout JS not translated |
 | **WPML** | Plugin-ecosystem-dependent sites, agencies, WooCommerce at scale | Market leader, widest compatibility, agency/CAT workflows | High cost, plugin bloat, metered AI credits |
 | **Polylang** | Budget post-based sites where Lingua Forge is overkill | Lightweight, clean, widely understood | Free tier severely limited; Pro still needs DeepL separately |
 | **TranslatePress** | Teams where visual front-end editing is priority | Front-end editor UX, transparent WooCommerce, predictable pricing | Render-time overhead + parallel string storage layer, no FSE template support |
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.0.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.1.6 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in, a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches, and a native-block architecture that carries none of the overhead that string-interception or cloud-proxy tools require.**
 
-As of 2.0.0, Lingua Forge covers the full WooCommerce product translation stack: translated products display the correct price, stock, images, and variations with translated title and description, and category/attribute term names display in the visitor's language via translated names entered on the term edit screen. Dynamic cart and checkout JavaScript translation remains out of scope; Weglot and TranslatePress handle that use case via cloud-proxy and render-time interception respectively. For everything else in the competitive surface — path-prefix and subdomain routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, full CPT support, block-level granularity with refinement and rewrite, WooCommerce product and category content, and post-list AI translate/retranslate actions — Lingua Forge is fully covered at zero licensing cost.
+As of 2.1.6, Lingua Forge covers the full WooCommerce variable product stack: translated variable products display correct prices, stock, images, and variations; variation descriptions are translatable; attribute term names (colour swatches etc.) display in the visitor's language in both block themes and classic templates; product brands are delegated automatically; and a REST write guard protects translated posts from external integration accidents. Dynamic cart and checkout JavaScript translation remains out of scope; Weglot and TranslatePress handle that use case via cloud-proxy and render-time interception respectively. For everything else in the competitive surface — path-prefix and subdomain routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, full CPT support, block-level granularity with refinement and rewrite, WooCommerce product and category content, and post-list AI translate/retranslate actions — Lingua Forge is fully covered at zero licensing cost.
 
 ---
 

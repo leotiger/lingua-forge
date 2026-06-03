@@ -131,6 +131,16 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		 */
 		public static array $wpdb_updates = [];
 
+		/**
+		 * Return value for $wpdb->get_var() calls.
+		 *
+		 * null  = no row found (the normal "no own variations" state).
+		 * '1'   = row found (simulates "translated parent has own variations").
+		 *
+		 * @var mixed
+		 */
+		public static mixed $wpdb_get_var = null;
+
 		public static function reset(): void {
 			self::$posts          = [];
 			self::$meta           = [];
@@ -140,6 +150,7 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 			self::$options        = [];
 			self::$cache_deletes  = [];
 			self::$wpdb_updates   = [];
+			self::$wpdb_get_var   = null;
 		}
 	}
 }
@@ -150,11 +161,24 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 
 if ( ! class_exists( 'LfWpdb' ) ) {
 	/**
-	 * Minimal $wpdb stub covering the update() method used by StockRouter's
-	 * lookup-table sync. Logs calls to LfWcMocks::$wpdb_updates for assertions.
+	 * Minimal $wpdb stub covering the methods used by WooCommerce integration
+	 * classes in unit tests.
+	 *
+	 * • update()  — StockRouter lookup-table sync. Logs to LfWcMocks::$wpdb_updates.
+	 * • prepare() — Returns the SQL template unchanged; SQL is never executed in
+	 *               unit tests so the placeholder substitution is irrelevant.
+	 * • get_var() — Returns LfWcMocks::$wpdb_get_var (null by default = no row
+	 *               found). Used by VariationDelegate's own-variations existence
+	 *               check. Tests that need a non-null result can set this value.
+	 * • esc_like() — Returns the string unchanged; no real DB escaping needed.
+	 *
+	 * Table-name properties ($posts, $postmeta, $wc_product_meta_lookup) are
+	 * exposed so SQL strings that interpolate {$wpdb->posts} do not produce
+	 * undefined-property notices.
 	 */
 	class LfWpdb {
-		/** Table name exposed as a property, matching WC's $wpdb->wc_product_meta_lookup pattern. */
+		public string $posts                 = 'wp_posts';
+		public string $postmeta              = 'wp_postmeta';
 		public string $wc_product_meta_lookup = 'wp_wc_product_meta_lookup';
 
 		/**
@@ -172,6 +196,47 @@ if ( ! class_exists( 'LfWpdb' ) ) {
 				'where' => $where,
 			];
 			return 1;
+		}
+
+		/**
+		 * Simulates $wpdb->prepare() — returns the query template as-is.
+		 * Unit tests never execute the SQL; placeholder substitution is irrelevant.
+		 *
+		 * @param string $query   SQL template with %s / %d placeholders.
+		 * @param mixed  ...$args Replacement values (ignored in stub).
+		 * @return string  The template string unchanged.
+		 */
+		public function prepare( string $query, mixed ...$args ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- args intentionally ignored; stub never executes SQL.
+			return $query;
+		}
+
+		/**
+		 * Simulates $wpdb->get_var() — returns LfWcMocks::$wpdb_get_var.
+		 *
+		 * Default is null (no row found), which makes VariationDelegate's
+		 * "has own variations?" check return false and proceed to the normal
+		 * source-parent delegation path — keeping all existing delegation
+		 * tests passing unchanged.
+		 *
+		 * Tests that need to simulate "own variations exist" can set
+		 * LfWcMocks::$wpdb_get_var = '1' before calling the method under test.
+		 *
+		 * @param mixed $query Ignored in the stub.
+		 * @return mixed  LfWcMocks::$wpdb_get_var (null by default).
+		 */
+		public function get_var( mixed $query = null ): mixed { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- query intentionally ignored; stub returns mock value.
+			return LfWcMocks::$wpdb_get_var;
+		}
+
+		/**
+		 * Simulates $wpdb->esc_like() — returns the string unchanged.
+		 * No real DB escaping is needed in unit tests.
+		 *
+		 * @param string $text  Input string.
+		 * @return string  Unchanged input.
+		 */
+		public function esc_like( string $text ): string {
+			return $text;
 		}
 	}
 }

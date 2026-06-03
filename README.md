@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.1.5 — stable, open for testing.**
+> **Version 2.1.6 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -60,7 +60,7 @@ The short version: Lingua Forge covers the full multilingual workflow that the p
 
 The competitive landscape splits into three architectural camps. **Post-based plugins** (WPML, Polylang, MultilingualPress, Lingua Forge) create a distinct post record per language — the same approach Lingua Forge uses. **String-replacement plugins** (TranslatePress) intercept page output at render time and swap strings in place; no separate posts, but adds render overhead and can be brittle in complex block-template contexts. **Cloud-proxy SaaS** (Weglot) stores translations externally and serves them via CDN — fast setup, but your content lives in their infrastructure and pricing scales with word count.
 
-Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with full support for any public Custom Post Type out of the box (Lang column, AI metabox, FSE template routing, and link fixer — all CPTs, zero configuration), the only one with a complete WooCommerce integration at zero cost (shared-stock delegation for price, stock, images, variations, categories, and translated category/attribute names), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
+Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with full support for any public Custom Post Type out of the box (Lang column, AI metabox, FSE template routing, and link fixer — all CPTs, zero configuration), the only one with a complete WooCommerce integration at zero cost (shared-stock delegation for price, stock, images, variations with translatable descriptions, categories, attribute term names translated in both block and classic themes, and product brand), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
 
 Current gaps worth knowing: A general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) is not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — full-page Translation dispatches the translated title via the Gutenberg Apply modal and WordPress derives the slug automatically; CLI commands set `post_name` from the translated title on every run.
 
@@ -96,7 +96,7 @@ If you want to understand where this plugin came from and why it exists as a fre
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
 - Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge → Language Overrides** or drop them in directly via FTP/SFTP.
 - **Full Custom Post Type support** — every public CPT (WooCommerce `product`, any third-party CPT) automatically receives the full admin layer: Lang column with outdated/missing indicators and Retranslate/Translate-missing buttons, language and status filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. No configuration required. Three opt-out filters available: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`
-- **WooCommerce integration** — translated products carry only content fields (title, description, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime via a `get_post_metadata` delegation filter. Category and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta, editable from the term edit screen. No meta copying, no SKU uniqueness issues, no stock sync complexity. Requires WooCommerce 9.0+ and WordPress 6.9+
+- **WooCommerce integration** — translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, and taxonomy assignments are served transparently from the source-language product at runtime. Variable products are fully supported: translated product variations are created automatically with their descriptions (`_variation_description`) translatable via the standard Retranslate button, while operational meta (price, stock) delegates from source variations. Attribute term names display in the visitor's language (e.g. "Rot"/"Blau" on DE pages) via `_lf_term_name_{lang}` termmeta in both classic templates and WC block themes. Product brand (`product_brand`, native WC 10.x) is delegated automatically; third-party brand taxonomies are registerable via the `linguaforge_wc_delegate_taxonomies` filter. REST API writes to translated products return HTTP 422 with the source product ID for safe resolution. Requires WooCommerce 9.0+ and WordPress 6.9+
 - DB index on `wp_postmeta (meta_key, meta_value)` created on activation for fast `_lang` queries
 
 ### Meta Description
@@ -378,13 +378,15 @@ lingua-forge/
       Integrations/
         WooCommerce/
           Bootstrap.php              ← Entry point: wires all WC hooks on plugins_loaded priority 20
-          MetaDelegate.php           ← get_post_metadata filter: operational meta read from source product
+          MetaDelegate.php           ← get_post_metadata filter (individual + bulk): operational meta read from source
           StockRouter.php            ← update/add_post_metadata filter: stock writes routed to source
-          VariationDelegate.php      ← pre_get_posts: product_variation children delegated to source
-          TaxonomyDelegate.php       ← wp_get_object_terms: category/tag/pa_* delegated to source
+          VariationDelegate.php      ← pre_get_posts: translated variation children served directly, fallback to source
+          VariationSync.php          ← wp_after_insert_post: creates translated variations; syncs WC structural taxonomies
+          TaxonomyDelegate.php       ← wp_get_object_terms: category/tag/pa_*/brand delegated; object_id rewrite for cache
           CatalogQuery.php           ← woocommerce_product_query: language filter for WC catalog queries
-          TermNameFilter.php         ← term_name filter: translated category/attribute names via termmeta
+          TermNameFilter.php         ← term_name / get_term / wp_get_object_terms: translated attribute names (all paths)
           TermNameAdmin.php          ← Term edit/add screen fields for _lf_term_name_{lang} termmeta
+          RestWriteGuard.php         ← woocommerce_rest_pre_insert_*: HTTP 422 on PUT/PATCH to translated products
       CLI/
         Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / cache_clear
       REST/
@@ -966,7 +968,7 @@ The filter applies everywhere the directory is read — both the file loader and
 
 **SEO plugins** — Lingua Forge outputs its own hreflang tags and suppresses duplicate output from SEO plugins by default. Hreflang suppression is confirmed for **Yoast SEO**, **Rank Math**, **AIOSEO**, and **SEOPress**. To hand hreflang control back to your SEO plugin instead, filter `lf_hreflang_mode` to `'off'` (or any value other than `'custom'`).
 
-**WooCommerce** — product, variation, and category translation is supported via a shared-stock delegation model (v2.0.0+). See the [WooCommerce integration](#language-router) entry in the Features section for details.
+**WooCommerce** — full variable product translation supported (v2.1.6+): translated variations with translatable descriptions, delegated prices/stock/SKU, translated attribute term names in both block and classic themes, product brand delegation, and a REST write guard. Simple and variable products, all CPTs, WooCommerce 9.0+. See the WooCommerce integration entry in the Features section for details.
 
 **Locale-aware plugins** — plugins that read the `locale` filter directly (booking plugins, form plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
 

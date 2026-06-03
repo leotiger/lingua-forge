@@ -19,6 +19,8 @@
  *   8. Product without language assignment is not delegated.
  *   9. Unlinked translated product (no TRID) returns its own (empty) terms.
  *  10. Two groups do not bleed taxonomy terms.
+ *  11. product_brand (native WC 10.x taxonomy) is delegated by default.
+ *  12. linguaforge_wc_delegate_taxonomies filter adds third-party brand taxonomy.
  *
  * Run via: composer test:integration:wc  (requires wp-env running).
  *
@@ -241,5 +243,62 @@ final class TaxonomyDelegateIntegrationTest extends WcIntegrationTestCase {
 
 		$this->assertContains( $term_b, $terms_b, 'Translated B must inherit term B.' );
 		$this->assertNotContains( $term_a, $terms_b, 'Translated B must NOT inherit term A from a different group.' );
+	}
+
+	// =========================================================================
+	// 11. product_brand (native WC 10.x taxonomy) is delegated by default
+	// =========================================================================
+
+	public function test_product_brand_is_delegated_by_default(): void {
+		// product_brand is registered by WooCommerce 10.x. Register it here so the
+		// test works regardless of whether WC loaded it in the test environment.
+		if ( ! taxonomy_exists( 'product_brand' ) ) {
+			register_taxonomy( 'product_brand', [ 'product' ] );
+		}
+
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+		$term_id = $this->insert_term( 'Nike ' . uniqid(), 'product_brand' );
+		$this->assign_terms( $source_id, [ $term_id ], 'product_brand' );
+		// Translated product has NO product_brand assigned.
+
+		$result = $this->get_term_ids( $translated_id, 'product_brand' );
+
+		$this->assertContains(
+			$term_id,
+			$result,
+			'product_brand must be delegated by default — it is a native WC 10.x taxonomy.'
+		);
+	}
+
+	// =========================================================================
+	// 12. linguaforge_wc_delegate_taxonomies filter adds third-party taxonomy
+	// =========================================================================
+
+	public function test_delegate_taxonomies_filter_adds_third_party_brand_taxonomy(): void {
+		$custom_tax = 'pwb-brand';
+		if ( ! taxonomy_exists( $custom_tax ) ) {
+			register_taxonomy( $custom_tax, [ 'product' ] );
+		}
+
+		// Add pwb-brand via the filter.
+		$filter = static function ( array $taxonomies ) use ( $custom_tax ): array {
+			$taxonomies[] = $custom_tax;
+			return $taxonomies;
+		};
+		add_filter( 'linguaforge_wc_delegate_taxonomies', $filter );
+
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+		$term_id = $this->insert_term( 'Adidas ' . uniqid(), $custom_tax );
+		$this->assign_terms( $source_id, [ $term_id ], $custom_tax );
+
+		$result = $this->get_term_ids( $translated_id, $custom_tax );
+
+		remove_filter( 'linguaforge_wc_delegate_taxonomies', $filter );
+
+		$this->assertContains(
+			$term_id,
+			$result,
+			'Third-party brand taxonomy added via linguaforge_wc_delegate_taxonomies filter must be delegated.'
+		);
 	}
 }

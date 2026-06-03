@@ -256,4 +256,54 @@ final class VariationDelegateIntegrationTest extends WcIntegrationTestCase {
 			'Array post_type containing product_variation must still trigger VariationDelegate rewrite.'
 		);
 	}
+
+	// =========================================================================
+	// 10. Translated parent with own variation children is NOT redirected to source
+	// =========================================================================
+
+	public function test_translated_parent_with_own_variations_is_not_redirected(): void {
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+
+		// Source variation — would normally be served to translated parent via redirect.
+		$source_variation_id = $this->make_variation( $source_id );
+
+		// Translated variation — directly attached to the translated parent.
+		$translated_variation_id = $this->make_variation( $translated_id );
+
+		$found = $this->query_variations( $translated_id );
+
+		// Must find the translated variation, not the source variation.
+		$this->assertContains(
+			$translated_variation_id,
+			$found,
+			'When translated parent has own variations, WP_Query must return those directly.'
+		);
+		$this->assertNotContains(
+			$source_variation_id,
+			$found,
+			'When translated parent has own variations, the source variation must NOT appear in the result.'
+		);
+	}
+
+	// =========================================================================
+	// 11. Translated parent with own variations still falls back to source
+	//     when its own variations are trashed
+	// =========================================================================
+
+	public function test_trashed_own_variation_still_redirects_to_source(): void {
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+		$source_variation_id = $this->make_variation( $source_id );
+
+		// Create a translated variation, then trash it.
+		$translated_variation_id = $this->make_variation( $translated_id );
+		wp_trash_post( $translated_variation_id );
+
+		$found = $this->query_variations( $translated_id );
+
+		$this->assertContains(
+			$source_variation_id,
+			$found,
+			'After trashing own translated variations, VariationDelegate must fall back to source variations.'
+		);
+	}
 }

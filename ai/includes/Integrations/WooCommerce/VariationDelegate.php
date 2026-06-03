@@ -13,14 +13,17 @@
  *   SELECT … FROM wp_posts
  *   WHERE post_type = 'product_variation' AND post_parent = {product_id}
  *
- * When {product_id} is a translated product, this query returns zero results
- * because no variations are attached to the translated post. This class hooks
- * `pre_get_posts` to intercept `product_variation` queries whose post_parent
- * is a translated product and substitutes the source product ID instead, so
- * WooCommerce finds the shared variations and displays the variable product
- * correctly in all languages.
+ * When {product_id} is a translated product, this class hooks `pre_get_posts`
+ * to intercept `product_variation` queries whose post_parent is a translated
+ * product and, if the translated product has no variation children of its own,
+ * substitutes the source product ID so WooCommerce finds the shared source
+ * variations.
  *
- * No variation posts need to be created or TRID-linked.
+ * Since 2.1.6 translated products CAN have their own variation children (created
+ * by VariationSync). When own variations exist the redirect is skipped and
+ * WooCommerce queries them directly, allowing variation descriptions (post_content)
+ * to be translated. Operational meta (price, stock, SKU …) is still served from
+ * the source variation by MetaDelegate.
  *
  * @package LinguaForge\AI\Integrations\WooCommerce
  * @since   2.0.0
@@ -94,7 +97,26 @@ class VariationDelegate {
 			return; // Parent is already the source — its own variations will be found.
 		}
 
-		// ── 5. Resolve source product ID and repoint the query ────────────────
+		// ── 5. If translated parent already has own variation children, serve
+		//      them directly without redirecting to the source product.
+		//      Direct SQL avoids triggering WP_Query → pre_get_posts → this
+		//      callback recursively.
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- existence check, one row; result consumed immediately.
+		$has_own_variations = (bool) $wpdb->get_var( $wpdb->prepare(
+			"SELECT 1 FROM {$wpdb->posts}
+			 WHERE post_type = 'product_variation'
+			   AND post_parent = %d
+			   AND post_status != 'trash'
+			 LIMIT 1",
+			$post_parent
+		) );
+
+		if ( $has_own_variations ) {
+			return; // Translated variations exist — WC will find them directly.
+		}
+
+		// ── 6. Resolve source product ID and repoint the query ────────────────
 		$source_id = MetaDelegate::get_source_id_for( $post_parent );
 		if ( ! $source_id || $source_id === $post_parent ) {
 			return;

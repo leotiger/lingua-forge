@@ -30,11 +30,11 @@ tests/
 │   ├── WorkerConfigTest.php                       ← WorkerConfig readonly value object
 │   └── WooCommerce/
 │       ├── WcUnitTestCase.php                     ← base: WcPolyfills + Router stub
-│       ├── WcPolyfills.php                        ← get/update_post_meta + WC function stubs
-│       ├── MetaDelegateTest.php                   ← price/stock/image delegation logic
+│       ├── WcPolyfills.php                        ← get/update_post_meta + LfWpdb stub (prepare/get_var/esc_like)
+│       ├── MetaDelegateTest.php                   ← price/stock/image delegation logic (individual + bulk reads)
 │       ├── StockRouterTest.php                    ← stock write routing to source
 │       ├── TaxonomyDelegateTest.php               ← wp_get_object_terms delegation
-│       └── VariationDelegateTest.php              ← product_variation pre_get_posts filter
+│       └── VariationDelegateTest.php              ← pre_get_posts filter; own-variations bypass
 │
 └── integration/                                   ← runs inside wp-env / WP test framework
     ├── ConfigPresetAddendumIntegrationTest.php    ← preset_addendum + apply_compliance
@@ -46,17 +46,21 @@ tests/
     ├── TridGroupTest.php                          ← set/get lang+trid, get_translations SQL, cache clear
     └── WooCommerce/
         ├── WcIntegrationTestCase.php              ← base: WC bootstrap + product factory helpers
-        ├── BootstrapIntegrationTest.php           ← WC module wiring + hook registration
+        ├── BootstrapIntegrationTest.php           ← WC module wiring + hook registration (incl. VariationSync, RestWriteGuard)
         ├── HposOrderIsolationTest.php             ← shop_order never gets _lf_lang; MetaDelegate not triggered
-        ├── MetaDelegateIntegrationTest.php        ← full delegation round-trip against real postmeta
+        ├── MetaDelegateIntegrationTest.php        ← per-key delegation round-trip against real postmeta
+        ├── MetaDelegateWcApiIntegrationTest.php   ← wc_get_product() API path: price/SKU/stock on translated products/variations
+        ├── RestWriteGuardIntegrationTest.php      ← HTTP 422 on PUT/PATCH to translated products and variations
         ├── StockRouterIntegrationTest.php         ← stock write routing in WP runtime
-        ├── TaxonomyDelegateIntegrationTest.php    ← term delegation with real taxonomy tables
+        ├── TaxonomyDelegateIntegrationTest.php    ← term delegation + product_brand + linguaforge_wc_delegate_taxonomies filter
         ├── TermNameIntegrationTest.php            ← _lf_term_name_{lang} swap at render time
-        └── VariationDelegateIntegrationTest.php   ← variation query scoping
+        ├── VariationDelegateIntegrationTest.php   ← variation query scoping; translated variations not redirected
+        └── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, price delegation
 ```
 
 Latest counts (test methods; data-provider variants add a few more test cases each):
-**~345 unit**, **~91 non-WC integration**, **~83 WC integration** — approximately **519 total**.
+**~422 unit**, **~116 non-WC integration**, **~113 WC integration** — approximately **651 total**.
+E2E: **7 spec files, 55 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 
 ## Running

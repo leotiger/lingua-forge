@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.5
+Stable tag: 2.1.6
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,15 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.6 =
+* Added: WooCommerce variable product variations fully translatable — translated products now have product_variation children (VariationSync), TRID-linked to source, with _variation_description and attribute_pa_* meta copied at creation. Retranslate descriptions via the standard Retranslate button.
+* Added: WC structural taxonomy inheritance — product_type (variable/simple), pa_* attribute terms, and product_brand are copied from source to translated products at creation and re-synced when the source product is saved. Type changes on the source propagate instantly to all translations.
+* Added: REST API write guard — PUT/PATCH to translated products or variations returns HTTP 422 with the source product ID in the response body so integrations can resolve the correct write target.
+* Added: product_brand delegation — native WC 10.x brand taxonomy delegated by default; third-party brands (pwb-brand, YITH, etc.) registerable via the new linguaforge_wc_delegate_taxonomies filter.
+* Fixed: MetaDelegate bulk-read bypass — wc_get_product()->get_price() / get_sku() / get_stock_quantity() now correctly return source values for translated products and variations (previously returned empty because WC's read_product_data() uses bulk get_post_meta with no key, bypassing the per-key filter).
+* Fixed: TaxonomyDelegate object_id rewrite — delegated term caches were stored in the source product's bucket instead of the translated product's, causing WC to default to product type 'simple' on translated product pages.
+* Fixed: pa_* attribute term names (e.g. Red/Blue) now display correctly translated (Rot/Blau, Vermell/Blau) on translated product pages including WC block themes — both Store API JSON path and classic template path covered.
+
 = 2.1.5 =
 * Changed: admin.js split — diff modal extracted to admin-diff-modal.js (297 lines), content-gen modal to admin-content-gen-modal.js (351 lines). admin.js reduced from 2,064 to 1,493 lines. Shared utilities exposed via window.LfAdmin namespace.
 * Changed: Translation::run() refactored from a 427-line mega-method into a ~65-line orchestrator plus four focused private helpers (build_system_prompt, prepare_full_post_inputs, run_json_envelope, parse_full_post_envelope). No behaviour change.
@@ -324,6 +333,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.6 =
+Adds WooCommerce product variation description translation. Translated products get variation children automatically; retranslate descriptions via the standard Retranslate button. No schema changes.
 
 = 2.1.5 =
 Internal refactor only — pure-function extraction across Translation, ContentGenerator, ExcerptGenerator, and TranslationMemory; 596 tests (421 unit + 175 integration) and 38 E2E scenarios all green. No behaviour change, no schema changes, no migration needed.

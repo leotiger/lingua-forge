@@ -46,10 +46,12 @@ class Bootstrap {
 		MetaDelegate::init();
 		StockRouter::init();
 		VariationDelegate::init();
+		VariationSync::init();
 		TaxonomyDelegate::init();
 		CatalogQuery::init();
 		TermNameFilter::init();
 		TermNameAdmin::init();
+		RestWriteGuard::init();
 
 		self::$active = true;
 
