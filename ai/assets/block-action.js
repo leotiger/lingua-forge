@@ -177,10 +177,16 @@
                         const currentText = ( ( value && value.text ) || '' ).trim();
                         const meta        = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
                         const allFn       = JSON.parse( ( meta && meta.footnotes ) || '[]' );
+                        // Strip HTML from footnote content for plain-text comparison.
+                        // DOMParser is used instead of a regex so that edge cases like
+                        // nested or malformed tags cannot defeat the extraction.
+                        // The parsed document is never inserted into the live DOM so
+                        // this assignment does not constitute an XSS risk.
+                        const fnPlainText = ( html ) =>
+                            ( new DOMParser().parseFromString( String( html ), 'text/html' ).body.textContent || '' ).trim();
+
                         const matchedFn   = Array.isArray( allFn ) && currentText
-                            ? allFn.find( ( f ) =>
-                                ( f.content || '' ).replace( /<[^>]*>/g, '' ).trim() === currentText
-                              )
+                            ? allFn.find( ( f ) => fnPlainText( f.content || '' ) === currentText )
                             : null;
 
                         if ( matchedFn ) {

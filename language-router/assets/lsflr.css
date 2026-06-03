@@ -258,3 +258,199 @@
         transition: none;
     }
 }
+
+/* =========================================
+   OVERLAY MODE
+   Activated by overlayMode="always"|"auto"
+   The wrapper becomes a relative block;
+   the panel floats above all content as a
+   dialog-style overlay with a responsive
+   CSS grid of language links.
+========================================= */
+.lsflr-overlay-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+/* Trigger button inherits switcher colours */
+.lsflr-overlay-wrap .lsflr-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+
+    padding: 0.3em 0.6em;
+    border: 1px solid var(--lsflr-border);
+    border-radius: var(--lsflr-radius);
+    background: transparent;
+    color: var(--lsflr-color);
+    font: inherit;
+    cursor: pointer;
+
+    transition: background var(--lsflr-speed) ease;
+}
+
+.lsflr-overlay-wrap .lsflr-trigger:hover,
+.lsflr-overlay-wrap .lsflr-trigger:focus-visible {
+    background: var(--lsflr-hover);
+    outline: 2px solid rgba(100, 100, 255, 0.4);
+    outline-offset: 2px;
+}
+
+/* Arrow on trigger — mirrors .lsflr-current::after */
+.lsflr-overlay-wrap .lsflr-trigger .lsflr-current::after {
+    content: "▾";
+    font-size: 1.7em;
+    opacity: 0.6;
+    transition: transform var(--lsflr-speed) ease;
+}
+
+.lsflr-overlay-wrap .lsflr-trigger[aria-expanded="true"] .lsflr-current::after {
+    transform: rotate(180deg);
+}
+
+/* Inline SVG sizing inside the trigger */
+.lsflr-overlay-wrap .lsflr-trigger svg {
+    width: 1.2em;
+    height: 1.2em;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+/* Panel — fixed so it escapes any stacking context and can use full viewport
+   width. top/left/width/max-height are set at open-time by positionPanel(). */
+.lsflr-panel {
+    position: fixed;
+    z-index: 9999;
+
+    /* Fallback dimensions; JS overrides these each time the panel opens */
+    width: 90vw;
+    max-height: 40vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 1em;
+    background: var(--lsflr-bg);
+    color: var(--lsflr-color);
+    border: 1px solid var(--lsflr-border);
+    border-radius: var(--lsflr-radius);
+    box-shadow: var(--lsflr-shadow);
+
+    /* Animate in */
+    animation: lsflr-panel-in var(--lsflr-speed) cubic-bezier(.2,.7,.3,1) both;
+}
+
+@keyframes lsflr-panel-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* Close button — top-right corner */
+.lsflr-panel-close {
+    position: absolute;
+    top: 0.4em;
+    right: 0.5em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6em;
+    height: 1.6em;
+
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--lsflr-color);
+    font-size: 1em;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.55;
+
+    transition: background var(--lsflr-speed) ease, opacity var(--lsflr-speed) ease;
+}
+
+.lsflr-panel-close:hover,
+.lsflr-panel-close:focus-visible {
+    background: var(--lsflr-hover);
+    opacity: 1;
+    outline: 2px solid rgba(100, 100, 255, 0.4);
+    outline-offset: 2px;
+}
+
+/* Responsive grid of language items.
+   clamp(4.5em, 28vw, 10em) keeps column width viewport-relative so that:
+   - mobile ~390px → 28vw ≈ 109px ≈ 6.8em → 3 columns inside 90vw panel
+   - tablet ~768px → 28vw ≈ 215px clipped to 10em=160px → 4 columns
+   - desktop →10em → 6+ columns */
+.lsflr-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(4.5em, 28vw, 10em), 1fr));
+    gap: 0.25em;
+    /* Indent top edge so grid clears the absolute-positioned close button */
+    margin-top: 1.8em;
+}
+
+.lsflr-lang-item {
+    display: flex;
+    align-items: center;
+    padding: 0.45em 0.7em;
+    border-radius: calc(var(--lsflr-radius) - 2px);
+    text-decoration: none;
+    color: inherit;
+    /* Scale text so labels fit in narrower columns on small screens.
+       clamp: floor 0.8rem, fluid 3.5vw, cap 1rem */
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+    white-space: nowrap;
+
+    transition: background 0.14s ease, transform 0.12s ease;
+}
+
+.lsflr-lang-item:hover,
+.lsflr-lang-item:focus-visible {
+    background: var(--lsflr-hover);
+    outline: none;
+}
+
+.lsflr-lang-item:active {
+    transform: scale(0.97);
+}
+
+/* Current language — muted / de-emphasised so the user knows where they are */
+.lsflr-panel-current {
+    opacity: 0.55;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* auto mode: when ResizeObserver determines there is enough room, revert to
+   inline flow by hiding the trigger and showing links directly.
+   JS adds .lsflr-overlay-auto-expanded when the container is wide enough. */
+.lsflr-overlay-wrap.lsflr-overlay-auto-expanded .lsflr-trigger {
+    display: none;
+}
+
+.lsflr-overlay-wrap.lsflr-overlay-auto-expanded .lsflr-panel {
+    position: static;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    animation: none;
+}
+
+.lsflr-overlay-wrap.lsflr-overlay-auto-expanded .lsflr-panel-close {
+    display: none;
+}
+
+.lsflr-overlay-wrap.lsflr-overlay-auto-expanded .lsflr-panel[hidden] {
+    display: block; /* override [hidden] when auto-expanded */
+}
+
+/* Reduce panel animation for motion-sensitive users */
+@media (prefers-reduced-motion: reduce) {
+    .lsflr-panel {
+        animation: none;
+    }
+}

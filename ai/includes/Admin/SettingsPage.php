@@ -129,6 +129,9 @@ class SettingsPage {
         // capability check inside the handler.
         add_action('wp_ajax_linguaforge_test_provider', [ApiKeysTab::class, 'ajax_test_provider']);
 
+        // Contextual help tabs (WP_Screen::add_help_tab).
+        SettingsHelp::init();
+
         // Settings-screen-only asset enqueue.
         add_action('admin_enqueue_scripts', [self::class, 'enqueue_settings_assets']);
     }
@@ -422,6 +425,13 @@ class SettingsPage {
         update_option(
             'linguaforge_translation_memory_enabled',
             !empty($_POST['linguaforge_translation_memory_enabled']) ? 1 : 0,
+            false
+        );
+
+        // ── Behavior — API Response Cache (§10.16) ────────────────────────────
+        update_option(
+            'linguaforge_api_cache_enabled',
+            !empty($_POST['linguaforge_api_cache_enabled']) ? 1 : 0,
             false
         );
 

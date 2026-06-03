@@ -192,6 +192,37 @@ class BehaviorTab extends Tab {
                 </td>
             </tr>
         </table>
+
+        <!-- ── API Response Cache (§10.16) ──────────────────────── -->
+        <h2><?php esc_html_e('API Response Cache', 'lingua-forge'); ?></h2>
+
+        <p>
+            <?php
+            esc_html_e( 'The API Response Cache stores the raw result of every AI request — translation, meta description, excerpt, and content generation — keyed by a hash of the inputs (content, language pair, provider, model). Subsequent requests with identical inputs are served from the cache with no API call. The cache is different from Translation Memory: Translation Memory operates at the block level and is shared across posts; the API Response Cache operates at the feature level and is keyed per post.', 'lingua-forge' );
+            ?>
+        </p>
+
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row">
+                    <?php esc_html_e('API Response Cache', 'lingua-forge'); ?>
+                </th>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="linguaforge_api_cache_enabled"
+                            value="1"
+                            <?php checked( (bool) get_option('linguaforge_api_cache_enabled', true) ); ?>
+                        >
+                        <?php esc_html_e('Enable API response caching', 'lingua-forge'); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e('Disable during prompt tuning or when you need every request to reach the AI provider. Disabling does not delete cached entries — re-enabling restores them. Increasing API spend immediately on busy sites is expected when disabled.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
         <?php
     }
 }

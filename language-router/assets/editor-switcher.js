@@ -34,7 +34,8 @@
 			direction:   { type: 'string', default: 'down' },
 			show:        { type: 'string', default: 'label' },
 			customLabel: { type: 'string', default: 'Language' },
-			iconHtml:    { type: 'string', default: '🌐' }
+			iconHtml:    { type: 'string', default: '🌐' },
+			overlayMode: { type: 'string', default: 'never' }
 		},
 
 		edit: function ( props ) {
@@ -51,15 +52,6 @@
 			return el( 'div', blockProps,
 				el( InspectorControls, {},
 					el( PanelBody, { title: 'Settings' },
-						el( SelectControl, {
-							label:   'Direction',
-							value:   attributes.direction,
-							options: [
-								{ label: 'Dropdown', value: 'down' },
-								{ label: 'Dropup',   value: 'up' }
-							],
-							onChange: function ( v ) { setAttributes( { direction: v } ); }
-						} ),
 						el( SelectControl, {
 							label:   'Toggle Display',
 							value:   attributes.show,
@@ -82,6 +74,31 @@
 							label:    'Icon (emoji or SVG)',
 							value:    attributes.iconHtml,
 							onChange: function ( v ) { setAttributes( { iconHtml: v } ); }
+						} ),
+						el( SelectControl, {
+							label:   'List style',
+							value:   attributes.overlayMode,
+							help:    attributes.overlayMode === 'never'
+								? 'Inline dropdown list (default).'
+								: attributes.overlayMode === 'always'
+									? 'Trigger button opens a grid overlay panel — recommended for 6+ languages.'
+									: 'Grid overlay on narrow containers; inline when space allows.',
+							options: [
+								{ label: 'Dropdown list',          value: 'never'  },
+								{ label: 'Grid overlay — always',  value: 'always' },
+								{ label: 'Grid overlay — auto',    value: 'auto'   }
+							],
+							onChange: function ( v ) { setAttributes( { overlayMode: v } ); }
+						} ),
+						attributes.overlayMode === 'never' &&
+						el( SelectControl, {
+							label:   'Direction',
+							value:   attributes.direction,
+							options: [
+								{ label: 'Dropdown', value: 'down' },
+								{ label: 'Dropup',   value: 'up' }
+							],
+							onChange: function ( v ) { setAttributes( { direction: v } ); }
 						} )
 					)
 				),

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.3
+Stable tag: 2.1.4
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.4 =
+* Fixed: Switching back to the source language redirected to the previously active language — lf_lang cookie was set HttpOnly, preventing the JS switcher from overwriting it. Cookie is now non-HttpOnly; JS writes also include an explicit domain= attribute to match the server-written cookie.
+* Fixed: Language switcher overlay panel collapsed to a single column on all screen sizes — panel is now position:fixed at 90 vw, grid columns use clamp() so mobile renders 3 columns and desktop 6+.
+* Security: Fixed CodeQL js/xss-through-dom findings in admin.js — all innerHTML assignments receiving network or DOM-sourced HTML now pass through a sanitizeHtml() helper that strips scripts, event handlers, and javascript: URLs.
+* Security: Fixed CodeQL js/incomplete-multi-character-sanitization in block-action.js — regex tag-strip replaced with DOMParser + textContent extraction.
+* Added: API Response Cache on/off toggle in Settings → Behavior, mirroring the Translation Memory toggle. Defaults to enabled; disable during prompt tuning to bypass the cache.
+* Added: Contextual help panels — WordPress-native Help tab on the settings screen with topic-level explanations for every section and sidebar links to the documentation guides.
+* Added: Language switcher overlay mode — new overlayMode attribute (always / auto) renders languages in a responsive CSS grid panel instead of a dropdown list. Recommended for sites with 6+ active languages.
+* Updated: Localisation refreshed for all 26 supplied languages — new strings from 2.1.4 (overlay mode, help panels, cache toggle) are covered.
+
 = 2.1.3 =
 * Fixed: Homepage always redirected to browser-language version; source-language front page at / unreachable after switching away — detect_lang_safe() and detect_lang() now write the lf_lang cookie from URL detection; switcher pre-writes cookie client-side before navigating.
 * Fixed: Search returning source-language results for /?s=...&lang=de — detect_lang_safe() and detect_lang() now use wp_parse_url() to extract only the path, preventing query strings from being mistaken for path segments.
@@ -305,6 +315,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.4 =
+Fixes language switcher redirect loop on source-language switch (HttpOnly cookie bug), two CodeQL security findings, and overlay grid layout on mobile. Adds overlay switcher mode, contextual help panels, and API cache toggle. Localisation updated for all 26 languages. No schema changes.
 
 = 2.1.3 =
 Fixes homepage redirect loop, source-language front page unreachable after switching, search returning wrong-language results, and Maintenance TM tab showing no content. Recommended update.

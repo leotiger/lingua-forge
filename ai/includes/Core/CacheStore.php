@@ -51,6 +51,18 @@ class CacheStore {
     // ── Public API ────────────────────────────────────────────────────────────
 
     /**
+     * Whether the API Response Cache is enabled.
+     *
+     * Defaults to true so existing installs continue caching without any
+     * migration. An administrator can disable it in Settings → Behavior when
+     * they want every AI request to go to the provider without a cache hit
+     * (e.g. during prompt tuning).
+     */
+    public static function is_enabled(): bool {
+        return (bool) get_option( 'linguaforge_api_cache_enabled', true );
+    }
+
+    /**
      * Return the cached payload if the stored hash matches, or null on miss.
      *
      * @return array<string, mixed>|null
@@ -60,6 +72,10 @@ class CacheStore {
         string $feature,
         string $hash
     ): ?array {
+
+        if ( ! self::is_enabled() ) {
+            return null;
+        }
 
         self::ensure_table();
 
@@ -122,6 +138,10 @@ class CacheStore {
         string $hash,
         array  $payload
     ): void {
+
+        if ( ! self::is_enabled() ) {
+            return;
+        }
 
         self::ensure_table();
 

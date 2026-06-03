@@ -413,7 +413,9 @@ class Context {
 			'/',
 			$domain,
 			is_ssl(),
-			true
+			false  // Must NOT be HttpOnly — the JS switcher needs to overwrite this cookie
+			       // when switching back to the source language (whose homepage has no URL
+			       // prefix, so the cookie is the only detection signal for bare '/' requests).
 		);
 	}
 

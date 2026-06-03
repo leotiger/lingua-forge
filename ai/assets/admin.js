@@ -357,15 +357,11 @@ function openApplyDiffModal({ button, translatedContent, translatedTitle, footno
     // Content panes — rendered as HTML so block markup displays close to how
     // it'll look post-apply. Block comments are HTML comments so they're
     // invisible; the actual <p>, <h2>, <ul>, etc. structure renders.
-    //
-    // Trust model: both sides are admin-authored (current editor state) or
-    // admin-triggered (AI translation requested by an editor). Anyone who can
-    // edit a post can already inject HTML/JS via the regular editor, so the
-    // preview pane doesn't broaden attack surface. A future hardening pass
-    // could move these into sandbox="allow-same-origin" iframes.
-    modal.querySelector('[data-lf-pane="current-content"]').innerHTML = current.content;
+    // Content is sanitized via sanitizeHtml() before assignment to satisfy
+    // the CodeQL js/xss-through-dom rule.
+    modal.querySelector('[data-lf-pane="current-content"]').innerHTML = sanitizeHtml( current.content );
     const newContentPane = modal.querySelector('[data-lf-pane="new-content"]');
-    newContentPane.innerHTML = translatedContent;
+    newContentPane.innerHTML = sanitizeHtml( translatedContent );
     newContentPane.dir       = rtl ? 'rtl' : '';
 
     // Footnotes — collapsible JSON dump, only when the translation produced one.
@@ -505,7 +501,8 @@ function openContentGenOverlay(data, params, postId) {
     modal.querySelector('[data-lf-cg="meta"]').textContent = parts.join(' · ');
 
     // Render content as HTML so block markup displays naturally in the preview.
-    modal.querySelector('[data-lf-cg="preview"]').innerHTML = data.output;
+    // Sanitized to satisfy the CodeQL js/xss-through-dom rule.
+    modal.querySelector('[data-lf-cg="preview"]').innerHTML = sanitizeHtml( data.output );
 
     // Meta description — shown when the server chained one from the generation.
     const metaDescSection = modal.querySelector('[data-lf-cg="meta-desc-section"]');
@@ -698,7 +695,7 @@ async function runContentGenRefinement(modal) {
             state.generation++;
 
             // Update preview with the refined content.
-            preview.innerHTML = data.output;
+            preview.innerHTML = sanitizeHtml( data.output );
 
             // Update meta description alongside the preview.
             const metaDescSection = modal.querySelector('[data-lf-cg="meta-desc-section"]');
@@ -935,6 +932,66 @@ function escHtml(v) {
         .replace(/>/g,  '&gt;')
         .replace(/"/g,  '&quot;')
         .replace(/'/g,  '&#39;');
+}
+
+/**
+ * Sanitize an HTML string before assigning to innerHTML.
+ *
+ * Parses via DOMParser (no script execution during parsing), walks the result
+ * tree to strip dangerous elements and attributes, then serialises back to a
+ * string via body.innerHTML.  Preserves all structural content markup needed
+ * for diff and preview panes (<p>, <h2>, <ul>, block comments, etc.).
+ *
+ * Applied to every innerHTML assignment whose value originates from the
+ * network (AI provider response) or the DOM (editor state) to resolve the
+ * CodeQL js/xss-through-dom findings.
+ *
+ * @param {string} html  Untrusted HTML string.
+ * @returns {string}     Sanitized HTML string safe for innerHTML assignment.
+ */
+function sanitizeHtml( html ) {
+    const doc = new DOMParser().parseFromString( String( html ), 'text/html' );
+
+    // Tags whose presence — regardless of content — constitutes a risk.
+    const DANGEROUS_TAGS = new Set( [
+        'script', 'style', 'iframe', 'object', 'embed',
+        'base', 'form', 'input', 'button', 'select',
+        'textarea', 'noscript', 'template', 'link', 'meta',
+    ] );
+
+    // Attributes whose name starts with "on" are event handlers.
+    const IS_HANDLER = /^on/i;
+
+    // Attributes that carry a URL where javascript: is dangerous.
+    const URL_ATTRS = new Set( [ 'href', 'src', 'action', 'formaction', 'data' ] );
+
+    ( function walk( node ) {
+        let child = node.firstChild;
+        while ( child ) {
+            const next = child.nextSibling;
+            if ( child.nodeType === Node.ELEMENT_NODE ) {
+                if ( DANGEROUS_TAGS.has( child.tagName.toLowerCase() ) ) {
+                    node.removeChild( child );
+                } else {
+                    // Strip event-handler attributes and javascript: URLs.
+                    for ( const attr of Array.from( child.attributes ) ) {
+                        if ( IS_HANDLER.test( attr.name ) ) {
+                            child.removeAttribute( attr.name );
+                        } else if (
+                            URL_ATTRS.has( attr.name.toLowerCase() ) &&
+                            /^\s*javascript\s*:/i.test( attr.value )
+                        ) {
+                            child.removeAttribute( attr.name );
+                        }
+                    }
+                    walk( child );
+                }
+            }
+            child = next;
+        }
+    } )( doc.body );
+
+    return doc.body.innerHTML;
 }
 
 function escAttr(v) {
@@ -1688,9 +1745,9 @@ function showTranslationDiffInOverlay(overlay, data, params) {
         newTitleEl.dir         = rtl ? 'rtl' : '';
     }
 
-    resultSection.querySelector('[data-lf-odiff="current-content"]').innerHTML = current.content;
+    resultSection.querySelector('[data-lf-odiff="current-content"]').innerHTML = sanitizeHtml( current.content );
     const newContentEl = resultSection.querySelector('[data-lf-odiff="new-content"]');
-    newContentEl.innerHTML = transContent;
+    newContentEl.innerHTML = sanitizeHtml( transContent );
     newContentEl.dir       = rtl ? 'rtl' : '';
 
     if (footnotesJson) {
@@ -1847,7 +1904,7 @@ function showContentGenInOverlay(overlay, data, params, postId) {
         </footer>`;
 
     // Populate preview.
-    resultSection.querySelector('[data-lf-ocg="preview"]').innerHTML = data.output;
+    resultSection.querySelector('[data-lf-ocg="preview"]').innerHTML = sanitizeHtml( data.output );
     if (data.meta_description) {
         resultSection.querySelector('[data-lf-ocg="meta-desc"]').textContent = data.meta_description;
     }
@@ -1963,7 +2020,7 @@ function showContentGenInOverlay(overlay, data, params, postId) {
             } else {
                 state.currentOutput = refined.output;
                 state.generation++;
-                preview.innerHTML   = refined.output;
+                preview.innerHTML   = sanitizeHtml( refined.output );
 
                 if (refined.meta_description) {
                     const mdSection = resultSection.querySelector('[data-lf-ocg="meta-desc-section"]');
