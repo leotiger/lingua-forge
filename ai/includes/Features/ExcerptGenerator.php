@@ -52,6 +52,18 @@ class ExcerptGenerator implements FeatureInterface {
         return current_user_can('edit_post', $post_id);
     }
 
+    /**
+     * Extracts the two-letter language code from a WordPress locale string.
+     *
+     * Examples: 'en_US' → 'en', 'zh_TW' → 'zh', 'de' → 'de'.
+     *
+     * @internal Public for unit tests.
+     */
+    public static function locale_to_lang_code( string $locale ): string {
+
+        return strtolower( explode( '_', $locale )[0] );
+    }
+
     public function run(int $post_id, array $params = []): array {
 
         $post = get_post($post_id);
@@ -68,7 +80,7 @@ class ExcerptGenerator implements FeatureInterface {
 
         // Convert WordPress locale (e.g. 'it_IT') or short code (e.g. 'it')
         // to a human-readable name the model can reliably act on.
-        $lang_code = strtolower(explode('_', $locale)[0]);
+        $lang_code = self::locale_to_lang_code( $locale );
         $language  = Translation::get_languages()[$lang_code] ?? $locale;
 
         // ── Cache check ───────────────────────────────────────────────────────

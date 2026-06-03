@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.4
+Stable tag: 2.1.5
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.5 =
+* Changed: admin.js split — diff modal extracted to admin-diff-modal.js (297 lines), content-gen modal to admin-content-gen-modal.js (351 lines). admin.js reduced from 2,064 to 1,493 lines. Shared utilities exposed via window.LfAdmin namespace.
+* Changed: Translation::run() refactored from a 427-line mega-method into a ~65-line orchestrator plus four focused private helpers (build_system_prompt, prepare_full_post_inputs, run_json_envelope, parse_full_post_envelope). No behaviour change.
+* Changed: build_system_prompt() and prepare_full_post_inputs() are now pure functions — all WP resolution (Config, Glossary, get_post_meta, file_get_contents) moved to the run() caller. No behaviour change.
+* Tests: 34 pure unit tests for Translation helpers (build_translation_schema 6, parse_full_post_envelope 11, build_system_prompt 7, prepare_full_post_inputs 10). No WP stubs required. Total suite: 389 tests, 758 assertions.
+
 = 2.1.4 =
 * Fixed: Switching back to the source language redirected to the previously active language — lf_lang cookie was set HttpOnly, preventing the JS switcher from overwriting it. Cookie is now non-HttpOnly; JS writes also include an explicit domain= attribute to match the server-written cookie.
 * Fixed: Language switcher overlay panel collapsed to a single column on all screen sizes — panel is now position:fixed at 90 vw, grid columns use clamp() so mobile renders 3 columns and desktop 6+.
@@ -315,6 +321,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.5 =
+Internal refactor only — Translation helpers made pure, 34 new unit tests. No behaviour change, no schema changes, no migration needed.
 
 = 2.1.4 =
 Fixes language switcher redirect loop on source-language switch (HttpOnly cookie bug), two CodeQL security findings, and overlay grid layout on mobile. Adds overlay switcher mode, contextual help panels, and API cache toggle. Localisation updated for all 26 languages. No schema changes.

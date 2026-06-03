@@ -354,6 +354,17 @@ if ( ! function_exists( 'parse_blocks' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	/**
+	 * WordPress wp_json_encode polyfill — wraps json_encode.
+	 * Used by Glossary::format_for_prompt() and Translation::parse_full_post_envelope().
+	 */
+	function wp_json_encode( mixed $data, int $flags = 0, int $depth = 512 ): string|false { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature.
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- polyfill
+		return json_encode( $data, $flags );
+	}
+}
+
 if ( ! function_exists( 'serialize_blocks' ) ) {
 	/**
 	 * Minimal serialize_blocks polyfill for unit tests.

@@ -3,7 +3,7 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, SEO meta tags, and AI content tools for WordPress. Combines language detection, URL routing, hreflang, meta descriptions, and AI-powered excerpt, meta, and translation features.
- * Version:           2.1.4
+ * Version:           2.1.5
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Uli Hake
@@ -32,7 +32,7 @@ if ( defined( 'LINGUAFORGE_FILE' ) ) {
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '2.1.4' );
+define( 'LINGUAFORGE_VERSION', '2.1.5' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION

@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.1.4 — stable, open for testing.**
+> **Version 2.1.5 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**

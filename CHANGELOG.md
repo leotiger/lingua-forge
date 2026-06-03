@@ -2,6 +2,17 @@
 
 ---
 
+## [2.1.5] — 2026-06-03
+
+### Changed
+
+- **`Translation::run()` refactored** — the 427-line mega-method is now a ~65-line orchestrator that delegates to four focused private helpers. `build_system_prompt()` de-duplicates the shared system-prompt construction used by both the TM path and the main translation path. `prepare_full_post_inputs()` handles attribute extraction, prompt loading, footnote/excerpt detection, and input-cap enforcement (~75 lines). `run_json_envelope()` owns the WorkerConfig/provider setup, API call, result caching, and meta-description chain. `parse_full_post_envelope()` covers JSON decode, field validation, attribute reinsertion, and payload assembly. No behaviour change; existing integration-test coverage passes unchanged. (`ai/includes/Features/Translation.php`)
+- **`admin.js` split: diff modal and content-gen modal extracted** — `admin.js` reduced from 2,064 to 1,493 lines (−571). Diff/apply modal (`ensureDiffModal`, `wireDiffModalEvents`, `openApplyDiffModal`, `closeDiffModal`, `performApplyFromModal`) moved to `admin-diff-modal.js` (297 lines). Standalone content-generation modal (`ensureContentGenOverlay`, `openContentGenOverlay`, `wireContentGenOverlay`, `closeContentGenOverlay`, `applyContentGenToEditor`, `runContentGenRefinement`) moved to `admin-content-gen-modal.js` (351 lines). Both files are loaded via `wp_enqueue_script` with `lingua-forge-admin` as a dependency and read shared utilities from a new `window.LfAdmin` namespace set by `admin.js`. Inline overlay variants (`showTranslationDiffInOverlay`, `showContentGenInOverlay`) remain in `admin.js` as they are tightly coupled to overlay state. (`ai/assets/admin.js`, `ai/assets/admin-diff-modal.js`, `ai/assets/admin-content-gen-modal.js`, `ai/includes/Admin/MetaBox.php`)
+- **`build_system_prompt()` and `prepare_full_post_inputs()` are now pure functions** — all WP-dependent resolution (`Config::apply_compliance_to_system`, `Glossary::format_for_prompt`, `get_post_meta`, `file_get_contents`) moved out of these helpers and into the `run()` caller. A new thin private wrapper `resolve_compliance_addendum(int $post_id): string` is the only WP call at the helper boundary. `run_json_envelope()` and `try_translate_with_tm()` now pass resolved plain strings. No behaviour change. (`ai/includes/Features/Translation.php`)
+- **Unit tests for `Translation` helpers expanded to 34 pure tests** — `TranslationTest.php` rewritten with no WP stubs required: `build_translation_schema()` (6 cases: baseline, each optional flag, combined, footnote item shape), `parse_full_post_envelope()` (11 cases: invalid JSON, truncation hint, empty content, happy path, missing title, footnotes in/out, attrs reinsert, excerpt, `<br>` strip, Markdown-fenced input), `build_system_prompt()` (7 pure cases — passes compliance addendum and glossary as plain strings), `prepare_full_post_inputs()` (10 cases: excerpt/footnote detection, attr extraction with placeholder substitution, `max_input` cap, source-lang propagation). Also adds `wp_json_encode` polyfill to `ApiPolyfills.php`. Total suite: 389 tests, 758 assertions. (`tests/unit/TranslationTest.php`, `tests/unit/ApiPolyfills.php`)
+
+---
+
 ## [2.1.4] — 2026-06-03
 
 ### Fixed

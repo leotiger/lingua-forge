@@ -35,19 +35,17 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.4';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.4/lingua-forge-2.1.4.zip';
+	$version      = '2.1.5';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.5/lingua-forge-2.1.5.zip';
 	$last_updated = '2026-06-03';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.4 — 2026-06-03</h4>' .
+		'<h4>2.1.5 — 2026-06-03</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> API Response Cache on/off toggle in Settings → Behavior — disable to bypass the cache during prompt tuning. Defaults to enabled; no migration needed.</li>' .
-			'<li><strong>Added:</strong> Contextual help panels — WordPress-native Help tab on the settings screen with topic-level explanations for every section (Router, API Keys, Models, Translation, Glossary, Maintenance) and sidebar links to the documentation.</li>' .
-			'<li><strong>Added:</strong> Language switcher overlay mode — new <code>overlayMode</code> attribute (<code>always</code> / <code>auto</code>) renders languages in a responsive CSS grid panel instead of a dropdown. Keyboard-navigable, ARIA-labelled, inherits FSE colour tokens. Recommended for sites with 6+ active languages.</li>' .
+			'<li><strong>Changed:</strong> <code>Translation::run()</code> refactored from a 427-line mega-method into a slim orchestrator (~65 lines) plus four focused private helpers: <code>build_system_prompt()</code>, <code>prepare_full_post_inputs()</code>, <code>run_json_envelope()</code>, and <code>parse_full_post_envelope()</code>. No behaviour change.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

@@ -153,6 +153,26 @@ class MetaBox {
 
         wp_set_script_translations( 'lingua-forge-admin', 'lingua-forge', LINGUAFORGE_PATH . 'languages' );
 
+        wp_enqueue_script(
+            'lingua-forge-admin-diff-modal',
+            LINGUAFORGE_AI_URL . '/assets/admin-diff-modal.js',
+            ['lingua-forge-admin', 'wp-i18n'],
+            LINGUAFORGE_VERSION,
+            true
+        );
+
+        wp_set_script_translations( 'lingua-forge-admin-diff-modal', 'lingua-forge', LINGUAFORGE_PATH . 'languages' );
+
+        wp_enqueue_script(
+            'lingua-forge-admin-content-gen-modal',
+            LINGUAFORGE_AI_URL . '/assets/admin-content-gen-modal.js',
+            ['lingua-forge-admin', 'wp-i18n'],
+            LINGUAFORGE_VERSION,
+            true
+        );
+
+        wp_set_script_translations( 'lingua-forge-admin-content-gen-modal', 'lingua-forge', LINGUAFORGE_PATH . 'languages' );
+
         wp_localize_script(
             'lingua-forge-admin',
             'LinguaForgeAI',

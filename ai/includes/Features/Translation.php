@@ -470,23 +470,12 @@ class Translation implements FeatureInterface {
         $tm_provider = ProviderFactory::make( $tm_worker_config );
 
         // System prompt with glossary injection.
-        $system_prompt = Config::apply_compliance_to_system(
-            'You are a professional translator. ' .
-            'Preserve all WordPress block comments (<!-- wp:... /-->), HTML tags, shortcodes, ' .
-            'and attributes exactly as they appear. ' .
-            'Only translate the visible text content. ' .
-            'Do NOT add any new HTML tags — especially not <br> or <br/> — ' .
-            'that are not already present in the source. ' .
-            'You will receive an array of blocks; return their translations as an array of the same length and order. ' .
-            'CRITICAL JSON RULE: within every JSON string value, any double-quote character " ' .
-            '(used for direct speech, technical terms, or any other purpose) ' .
-            'MUST be escaped as \" — bare " inside a string breaks the JSON.',
-            $post_id
+        // TM path adds the array-of-blocks instruction on top of the shared base.
+        $system_prompt = $this->build_system_prompt(
+            $this->resolve_compliance_addendum( $post_id ),
+            Glossary::format_for_prompt( $source_lang, $target_language ),
+            'You will receive an array of blocks; return their translations as an array of the same length and order.'
         );
-        $glossary_section = Glossary::format_for_prompt( $source_lang, $target_language );
-        if ( $glossary_section !== '' ) {
-            $system_prompt .= "\n\n" . $glossary_section;
-        }
 
         // ── Debug log of the source payload (TM mode) ─────────────────────
         if ( TranslationDebug::debug_enabled() ) {
@@ -663,6 +652,183 @@ class Translation implements FeatureInterface {
         ), 0, 16 );
     }
 
+    // =========================================================================
+    // SHARED HELPERS — used by both the TM and JSON-envelope code paths
+    // =========================================================================
+
+    /**
+     * Build the translation system prompt, injecting compliance preset and glossary.
+     *
+     * Shared by both the main JSON-envelope path and the Translation Memory path
+     * to avoid duplication. The optional $extra_instruction is appended before the
+     * CRITICAL JSON RULE sentence so the AI sees it in context.
+     *
+     * @param int    $post_id           Source post ID (for per-post preset overrides).
+     * @param string $source_lang       Two-letter source language code.
+     * @param string $target_language   Two-letter target language code.
+     * @param string $extra_instruction Optional extra instruction sentence (no trailing space needed).
+     * @return string
+     */
+    /**
+     * Build the system prompt for a translation request.
+     *
+     * Pure function — all WP-dependent values (compliance addendum, glossary text)
+     * must be resolved by the caller and passed in as plain strings. This makes the
+     * method fully unit-testable without any WordPress stubs.
+     *
+     * @param  string $compliance_addendum  Output of Config::active_preset_addendum() — '' for standard.
+     * @param  string $glossary_text        Output of Glossary::format_for_prompt() — '' when empty.
+     * @param  string $extra_instruction    Optional sentence inserted before the CRITICAL JSON RULE.
+     * @return string
+     */
+    private function build_system_prompt(
+        string $compliance_addendum,
+        string $glossary_text,
+        string $extra_instruction = ''
+    ): string {
+
+        $extra = $extra_instruction !== '' ? ' ' . rtrim( $extra_instruction, '.' ) . '.' : '';
+
+        $base = 'You are a professional translator. ' .
+            'Preserve all WordPress block comments (<!-- wp:... /-->), HTML tags, shortcodes, ' .
+            'and attributes exactly as they appear. ' .
+            'Only translate the visible text content. ' .
+            'Do NOT add any new HTML tags — especially not <br> or <br/> — ' .
+            'that are not already present in the source.' .
+            $extra .
+            ' CRITICAL JSON RULE: within every JSON string value, any double-quote character " ' .
+            '(used for direct speech, technical terms, or any other purpose) ' .
+            'MUST be escaped as \" — bare " inside a string breaks the JSON.';
+
+        $prompt = $compliance_addendum !== '' ? trim( $base ) . "\n\n" . $compliance_addendum : $base;
+
+        if ( $glossary_text !== '' ) {
+            $prompt .= "\n\n" . $glossary_text;
+        }
+
+        return $prompt;
+    }
+
+    /**
+     * Resolve the compliance addendum for a post and return it as a plain string.
+     *
+     * Thin WP-aware helper so callers can obtain the addendum without importing
+     * Config — and so unit tests can bypass this method entirely.
+     *
+     * @param  int $post_id  Pass 0 for the global preset.
+     * @return string  The addendum text, or '' for the standard (no-addendum) preset.
+     */
+    private function resolve_compliance_addendum( int $post_id ): string {
+
+        $preset = Config::active_preset( $post_id );
+        if ( $preset === 'standard' ) {
+            return '';
+        }
+        return Config::preset_addendum( $preset );
+    }
+
+    /**
+     * Prepare all inputs needed for a full-post translation request.
+     *
+     * Pure function — all WP-dependent values (post fields, source language,
+     * input-length cap) must be resolved by the caller and passed in as plain
+     * scalars. This makes the method fully unit-testable without any WordPress
+     * stubs or a real post object.
+     *
+     * On failure returns an error payload array (success => false).
+     * On success returns a context array with '_success' => true plus all
+     * the derived values the caller needs.
+     *
+     * @param  string $title            Post title (plain text).
+     * @param  string $content          Raw post_content (block markup).
+     * @param  string $excerpt          Post excerpt / short description (may be '').
+     * @param  string $source_lang      Two-letter source language code (e.g. 'en').
+     * @param  string $footnotes_raw    Raw footnotes JSON string ('' when absent).
+     * @param  string $language_name    Human-readable target language (e.g. 'French').
+     * @param  string $prompt_template  Contents of the translation.txt prompt template.
+     * @param  int    $max_input        Max content chars (0 = no limit) from Config.
+     * @param  int    $post_id          Post ID — used only in the trim diagnostic log.
+     * @return array
+     */
+    private function prepare_full_post_inputs(
+        string $title,
+        string $content,
+        string $excerpt,
+        string $source_lang,
+        string $footnotes_raw,
+        string $language_name,
+        string $prompt_template,
+        int    $max_input,
+        int    $post_id = 0
+    ): array {
+
+        // Block attribute extraction — pull translatable strings out of block
+        // comment JSON and replace them with __WPAI_N__ placeholders.
+        [ $placeholder_content, $attr_map ] = BlockTextExtractor::extract( $content );
+
+        // Detect optional payloads.
+        $has_footnotes = false;
+        if ( $footnotes_raw !== '' ) {
+            $decoded = json_decode( $footnotes_raw, true );
+            if ( is_array( $decoded ) && ! empty( $decoded ) ) {
+                $has_footnotes = true;
+            }
+        }
+        $has_attrs   = ! empty( $attr_map );
+        $has_excerpt = trim( $excerpt ) !== '';
+
+        // Build per-section prompt inserts.
+        $extra_sections   = [];
+        $extra_output_doc = '';
+
+        if ( $has_footnotes ) {
+            $extra_sections[]  = "Source footnotes JSON (translate only each \"content\" value; leave every \"id\" unchanged):\n" . $footnotes_raw;
+            $extra_output_doc .= "\n  - \"footnotes\": translated footnotes array; every \"id\" preserved verbatim, every \"content\" translated.";
+        }
+        if ( $has_attrs ) {
+            $extra_sections[]  = "Source block attribute strings (translate only the values; every key must remain exactly as shown):\n"
+                . wp_json_encode( $attr_map, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+            $extra_output_doc .= "\n  - \"attrs\": object whose keys are the __WPAI_N__ placeholders from the source and whose values are their translations.";
+        }
+        if ( $has_excerpt ) {
+            $extra_sections[]  = "Source short description (post excerpt — translate all visible text; preserve any HTML tags exactly):\n" . $excerpt;
+            $extra_output_doc .= "\n  - \"excerpt\": translated short description / post excerpt (HTML preserved, only visible text translated).";
+        }
+
+        $extra_output = ! empty( $extra_sections ) ? "\n\n" . implode( "\n\n", $extra_sections ) : '';
+
+        // Apply configurable input-length cap (0 = no limit).
+        $content_to_translate = $placeholder_content;
+
+        if ( $max_input > 0 && mb_strlen( $placeholder_content ) > $max_input ) {
+            $content_to_translate = mb_substr( $placeholder_content, 0, $max_input );
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
+            error_log( sprintf(
+                'Lingua Forge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
+                $post_id,
+                $max_input
+            ) );
+        }
+
+        // Render prompt template.
+        $rendered_prompt = str_replace(
+            [ '{{language}}', '{{title}}', '{{content}}', '{{extra_output}}', '{{extra_output_doc}}' ],
+            [ $language_name, $title, $content_to_translate, $extra_output, $extra_output_doc ],
+            $prompt_template
+        );
+
+        return [
+            '_success'             => true,
+            'content_to_translate' => $content_to_translate,
+            'attr_map'             => $attr_map,
+            'has_footnotes'        => $has_footnotes,
+            'has_attrs'            => $has_attrs,
+            'has_excerpt'          => $has_excerpt,
+            'prompt'               => $rendered_prompt,
+            'source_lang'          => $source_lang,
+        ];
+    }
+
     public function get_ui_fields(): array {
 
         return [
@@ -734,396 +900,172 @@ class Translation implements FeatureInterface {
 
     public function run(int $post_id, array $params = []): array {
 
-        $target_language = sanitize_text_field(
-            $params['target_language'] ?? 'en'
-        );
-
-        if (!array_key_exists($target_language, self::get_languages())) {
-
-            return [
-                'success' => false,
-                'error'   => 'Invalid target language.',
-            ];
+        // ── Validate params + chunk fork ──────────────────────────────────────
+        $target_language = sanitize_text_field( $params['target_language'] ?? 'en' );
+        if ( ! array_key_exists( $target_language, self::get_languages() ) ) {
+            return [ 'success' => false, 'error' => 'Invalid target language.' ];
+        }
+        $language_name  = self::get_languages()[ $target_language ];
+        $translate_mode = sanitize_text_field( $params['translate_mode'] ?? 'full' );
+        if ( $translate_mode === 'chunk' ) {
+            return $this->run_chunk( $language_name, $params );
         }
 
-        $language_name = self::get_languages()[$target_language];
-
-        // ── Chunk mode ────────────────────────────────────────────────────────
-        // Translate an arbitrary text snippet instead of the full post.
-        // Useful as a manual workaround for footnotes or any passage that the
-        // full-post path struggles with (long content, complex footnotes, etc.).
-        $translate_mode = sanitize_text_field($params['translate_mode'] ?? 'full');
-
-        if ($translate_mode === 'chunk') {
-            return $this->run_chunk($language_name, $params);
+        // ── Post load ─────────────────────────────────────────────────────────
+        $post = get_post( $post_id );
+        if ( ! $post ) {
+            return [ 'success' => false, 'error' => 'Post not found.' ];
         }
 
-        // ── Full-post mode ────────────────────────────────────────────────────
-        $post = get_post($post_id);
-
-        if (!$post) {
-
-            return [
-                'success' => false,
-                'error'   => 'Post not found.',
-            ];
-        }
-
-        // ── Cache check ───────────────────────────────────────────────────────
-        // Cache key is per-language so multiple translations of the same post
-        // can coexist (e.g. feature_key column = translation_fr, …_ca, …_de
-        // in the wp_lingua_forge_ai_cache table).
-        //
+        // ── Cache key / hash ──────────────────────────────────────────────────
         // Prefer the footnotes value forwarded by the JS client from the live
-        // Gutenberg meta store — this captures unsaved footnotes that have not
-        // yet been written to the database.  Fall back to get_post_meta() for
-        // classic-editor requests or when the param is absent / invalid JSON.
-        $param_footnotes = isset($params['footnotes_meta']) && is_string($params['footnotes_meta'])
-            ? wp_unslash($params['footnotes_meta'])
+        // Gutenberg meta store — captures unsaved footnotes not yet in the DB.
+        $param_footnotes = isset( $params['footnotes_meta'] ) && is_string( $params['footnotes_meta'] )
+            ? wp_unslash( $params['footnotes_meta'] )
             : '';
-
-        $footnotes_raw = ($param_footnotes !== '' && json_decode($param_footnotes) !== null)
+        $footnotes_raw = ( $param_footnotes !== '' && json_decode( $param_footnotes ) !== null )
             ? $param_footnotes
-            : (string) get_post_meta($post_id, 'footnotes', true);
-        $cache_key     = $this->get_key() . '_' . $target_language;
-        $hash          = CacheStore::hash([$post->post_title, $post->post_content, $footnotes_raw, $target_language, Config::provider(), Config::model(Config::translation_tier())]);
-        // When debug mode is active, skip the cache so every click triggers a
-        // live API call and the source/response files are always written.
-        $force = !empty($params['force_refresh']) || TranslationDebug::debug_enabled();
-        $cached = $force
-            ? null
-            : CacheStore::get($post_id, $cache_key, $hash);
+            : (string) get_post_meta( $post_id, 'footnotes', true );
 
-        if ($cached !== null) {
-            return array_merge(['success' => true, 'cached' => true], $cached);
+        $cache_key = $this->get_key() . '_' . $target_language;
+        $hash      = CacheStore::hash( [ $post->post_title, $post->post_content, $footnotes_raw, $target_language, Config::provider(), Config::model( Config::translation_tier() ) ] );
+
+        // Debug mode bypasses cache so every click triggers a live API call.
+        $force  = ! empty( $params['force_refresh'] ) || TranslationDebug::debug_enabled();
+        $cached = $force ? null : CacheStore::get( $post_id, $cache_key, $hash );
+        if ( $cached !== null ) {
+            return array_merge( [ 'success' => true, 'cached' => true ], $cached );
         }
 
-        // ── Block attribute extraction ────────────────────────────────────────
-        // Pull translatable strings out of block comment JSON attributes
-        // (e.g. the "summary" field of wp:details) and replace them with
-        // __WPAI_N__ placeholders.  The placeholders survive translation
-        // unchanged; the translated values are reinserted afterwards.
-        // When no translatable attrs are found this is a cheap no-op.
-        [$placeholder_content, $attr_map] = BlockTextExtractor::extract(
-            $post->post_content
+        // ── Resolve WP-dependent values before calling the pure helper ────────
+        $source_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local read from plugin assets; not a remote URL.
+        $prompt_template = file_get_contents( LINGUAFORGE_AI_PATH . '/templates/prompts/translation.txt' );
+        if ( $prompt_template === false ) {
+            return [ 'success' => false, 'error' => 'Prompt template not found.' ];
+        }
+
+        // ── Prepare content inputs ────────────────────────────────────────────
+        $ctx = $this->prepare_full_post_inputs(
+            $post->post_title,
+            $post->post_content,
+            (string) $post->post_excerpt,
+            $source_lang,
+            $footnotes_raw,
+            $language_name,
+            $prompt_template,
+            Config::translation_max_input_chars(),
+            $post_id
         );
-
-        // ── Build prompt ──────────────────────────────────────────────────────
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL. The sniff's wp_remote_get() suggestion only applies to HTTP fetches.
-        $prompt = file_get_contents(
-            LINGUAFORGE_AI_PATH .
-            '/templates/prompts/translation.txt'
-        );
-
-        if ($prompt === false) {
-            return [
-                'success' => false,
-                'error'   => 'Prompt template not found.',
-            ];
+        if ( empty( $ctx['_success'] ) ) {
+            return $ctx; // propagate error payload
         }
 
-        // ── Detect optional payloads (footnotes, block attribute placeholders,
-        // and post_excerpt / WooCommerce Short Description).
-        // Their presence drives both the prompt's {{extra_output}} blocks AND
-        // the required-keys list in the JSON-envelope response schema.
-        $has_footnotes = false;
-
-        if ($footnotes_raw !== '') {
-            $decoded = json_decode($footnotes_raw, true);
-            if (is_array($decoded) && !empty($decoded)) {
-                $has_footnotes = true;
-            }
-        }
-
-        $has_attrs = !empty($attr_map);
-
-        // post_excerpt — WooCommerce stores the Product Short Description here.
-        // Treat as plain HTML (may contain <strong>, <em>, etc. from classic editor).
-        $has_excerpt = trim($post->post_excerpt) !== '';
-
-        // ── Build per-section prompt inserts ─────────────────────────────────
-        // These inject the source payloads into the prompt body so the model
-        // can see the data it needs to translate. Per-key instructions are
-        // captured in the JSON schema "description" fields, so we only need
-        // to surface the raw inputs here.
-        $extra_sections     = [];
-        $extra_output_doc   = '';
-
-        if ($has_footnotes) {
-            $extra_sections[] =
-                "Source footnotes JSON (translate only each \"content\" value; leave every \"id\" unchanged):\n"
-                . $footnotes_raw;
-            $extra_output_doc .=
-                "\n  - \"footnotes\": translated footnotes array; every \"id\" preserved verbatim, every \"content\" translated.";
-        }
-
-        if ($has_attrs) {
-            $extra_sections[] =
-                "Source block attribute strings (translate only the values; every key must remain exactly as shown):\n"
-                . wp_json_encode($attr_map, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $extra_output_doc .=
-                "\n  - \"attrs\": object whose keys are the __WPAI_N__ placeholders from the source and whose values are their translations.";
-        }
-
-        if ($has_excerpt) {
-            $extra_sections[] =
-                "Source short description (post excerpt — translate all visible text; preserve any HTML tags exactly):\n"
-                . $post->post_excerpt;
-            $extra_output_doc .=
-                "\n  - \"excerpt\": translated short description / post excerpt (HTML preserved, only visible text translated).";
-        }
-
-        $extra_output = !empty($extra_sections)
-            ? "\n\n" . implode("\n\n", $extra_sections)
-            : '';
-
-        // ── Apply configurable input-length cap ───────────────────────────────
-        // 0 means "no limit" — the full content is forwarded.
-        // A non-zero value from Settings caps the input and logs a warning so
-        // administrators know the content was trimmed.
-        $max_input = Config::translation_max_input_chars();
-        $content_to_translate = $placeholder_content;
-
-        if ($max_input > 0 && mb_strlen($placeholder_content) > $max_input) {
-            $content_to_translate = mb_substr($placeholder_content, 0, $max_input);
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations are cut off.
-            error_log(sprintf(
-                'Lingua Forge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
-                $post_id,
-                $max_input
-            ));
-        }
-
-        $prompt = str_replace(
-            ['{{language}}', '{{title}}', '{{content}}', '{{extra_output}}', '{{extra_output_doc}}'],
-            [
-                $language_name,
-                $post->post_title,
-                $content_to_translate,
-                $extra_output,
-                $extra_output_doc,
-            ],
-            $prompt
-        );
-
-        // ── Translation Memory fork (§4.5) ─────────────────────────────────
-        //
-        // When TM is enabled and the post is TM-compatible, attempt block-
-        // level lookup and a batched API call covering only uncached blocks
-        // + title + footnotes. Falls back to the existing JSON-envelope flow
-        // when TM doesn't apply (block attrs present, unknown source lang,
-        // unsupported post type, or a TM parse failure).
-        $source_lang = (string) get_post_meta($post_id, '_lf_lang', true);
-
+        // ── Translation Memory fork (§4.5) ────────────────────────────────────
+        // Block-level cache + batched API. Falls back to JSON-envelope when TM
+        // doesn't apply or returns null on any recoverable failure.
         $tm_eligible = TranslationMemory::enabled()
-            && ! $force                                            // force_refresh / debug mode bypass TM cache
-            && empty($attr_map)                                    // v1 doesn't handle block attribute placeholders
-            && ! $has_excerpt                                      // TM path doesn't translate post_excerpt; fall through to JSON envelope
-            && $source_lang !== '';                                // need known source for TM keys
-            // TM cache is keyed on block content + language pair — post type is irrelevant to cache validity.
+            && ! $force
+            && empty( $ctx['attr_map'] )     // v1 doesn't handle block-attr placeholders
+            && ! $ctx['has_excerpt']          // TM path skips post_excerpt
+            && $ctx['source_lang'] !== '';    // need known source for TM keys
 
-        if ($tm_eligible) {
-
+        if ( $tm_eligible ) {
             $tm_result = $this->try_translate_with_tm(
-                $post,
-                $post_id,
-                $cache_key,
-                $hash,
-                $target_language,
-                $language_name,
-                $source_lang,
-                $content_to_translate,
-                $footnotes_raw,
-                $has_footnotes,
+                $post, $post_id, $cache_key, $hash,
+                $target_language, $language_name, $ctx['source_lang'],
+                $ctx['content_to_translate'], $footnotes_raw, $ctx['has_footnotes'],
                 $params
             );
-
-            if (is_array($tm_result)) {
-                if (!empty($params['with_meta_description'])) {
-                    $tm_result = $this->chain_meta_description($tm_result, $post_id, $target_language);
+            if ( is_array( $tm_result ) ) {
+                if ( ! empty( $params['with_meta_description'] ) ) {
+                    $tm_result = $this->chain_meta_description( $tm_result, $post_id, $target_language );
                 }
                 return $tm_result;
             }
-            // null return — TM failed gracefully; fall through to existing flow.
+            // null → TM failed gracefully; fall through to JSON-envelope path.
         }
 
-        // Build a schema-constrained WorkerConfig for this request. The base
-        // config still controls model / max_tokens / temperature; the schema
-        // is added on top so each provider can enforce JSON output its own way.
-        $base = $this->get_worker_config($post_id);
+        return $this->run_json_envelope(
+            $post, $post_id, $ctx, $cache_key, $hash, $language_name, $target_language, $params
+        );
+    }
+
+    // =========================================================================
+    // JSON-ENVELOPE PATH — full-post translation via structured AI response
+    // =========================================================================
+
+    /**
+     * Execute the full-post translation via the JSON-envelope AI path.
+     *
+     * Builds the WorkerConfig with a dynamic response schema, runs the API call,
+     * delegates response parsing to parse_full_post_envelope(), applies the
+     * linguaforge_translation_content filter, writes the cache, and optionally
+     * chains a meta description request.
+     *
+     * @param  \WP_Post $post            Source post object.
+     * @param  int      $post_id         Source post ID.
+     * @param  array    $ctx             Context array from prepare_full_post_inputs().
+     * @param  string   $cache_key       Cache feature key (e.g. 'translation_fr').
+     * @param  string   $hash            Cache content hash.
+     * @param  string   $language_name   Human-readable target language (e.g. 'French').
+     * @param  string   $target_language Two-letter target language code (e.g. 'fr').
+     * @param  array    $params          Original request parameters.
+     * @return array
+     */
+    private function run_json_envelope(
+        \WP_Post $post,
+        int      $post_id,
+        array    $ctx,
+        string   $cache_key,
+        string   $hash,
+        string   $language_name,
+        string   $target_language,
+        array    $params
+    ): array {
+
+        // Build schema-constrained WorkerConfig. The base controls model /
+        // max_tokens / temperature; the schema is added so each provider can
+        // enforce JSON output its own way. Per-invocation overrides (CLI flags,
+        // per-post-type tuning) are applied via the filter.
+        $base          = $this->get_worker_config( $post_id );
         $worker_config = new WorkerConfig(
             model:           $base->model,
             max_tokens:      $base->max_tokens,
             temperature:     $base->temperature,
-            response_schema: self::build_translation_schema($has_footnotes, $has_attrs, $has_excerpt),
+            response_schema: self::build_translation_schema( $ctx['has_footnotes'], $ctx['has_attrs'], $ctx['has_excerpt'] ),
+        );
+        $worker_config = apply_filters( 'linguaforge_translation_worker_config', $worker_config, $post_id, $params );
+
+        $provider      = ProviderFactory::make( $worker_config );
+        $system_prompt = $this->build_system_prompt(
+            $this->resolve_compliance_addendum( $post_id ),
+            Glossary::format_for_prompt( $ctx['source_lang'], $target_language )
         );
 
-        // Per-invocation overrides — used by the WP-CLI translate command for
-        // --temperature / --max-tokens / --model, and available to user code
-        // wanting per-post-type or per-language tuning (REVIEW §4.12).
-        $worker_config = apply_filters(
-            'linguaforge_translation_worker_config',
-            $worker_config,
-            $post_id,
-            $params
-        );
-
-        $provider = ProviderFactory::make($worker_config);
-
-        // ── Debug: log source sent to AI ──────────────────────────────────────
-        if (TranslationDebug::debug_enabled()) {
-            TranslationDebug::debug_write(
-                $post_id,
-                $target_language,
-                'source',
-                $prompt
-            );
+        if ( TranslationDebug::debug_enabled() ) {
+            TranslationDebug::debug_write( $post_id, $target_language, 'source', $ctx['prompt'] );
         }
 
-        $system_prompt = Config::apply_compliance_to_system(
-            'You are a professional translator. ' .
-            'Preserve all WordPress block comments ' .
-            '(<!-- wp:... /-->), HTML tags, shortcodes, ' .
-            'and attributes exactly as they appear. ' .
-            'Only translate the visible text content. ' .
-            'Do NOT add any new HTML tags — especially not <br> or <br/> — ' .
-            'that are not already present in the source. ' .
-            'CRITICAL JSON RULE: within every JSON string value, any double-quote character " ' .
-            '(used for direct speech, technical terms, or any other purpose) ' .
-            'MUST be escaped as \" — bare " inside a string breaks the JSON.',
-            $post_id
-        );
+        $result = UsageRecorder::tracked( 'translation', static fn() => $provider->chat( [
+            [ 'role' => 'system', 'content' => $system_prompt ],
+            [ 'role' => 'user',   'content' => $ctx['prompt'] ],
+        ] ) );
 
-        // Glossary injection (§4.6) — the post's `_lang` meta is the source.
-        // get_for_pair() returns wildcard rows: source_lang='' (any source)
-        // and target_lang='' (any target), so brand names and language-agnostic
-        // terms entered once are enforced across all language pairs.
-        $glossary = Glossary::format_for_prompt( $source_lang, $target_language );
-        if ( $glossary !== '' ) {
-            $system_prompt .= "\n\n" . $glossary;
+        if ( TranslationDebug::debug_enabled() ) {
+            TranslationDebug::debug_write( $post_id, $target_language, 'response', (string) $result );
         }
 
-        $result = UsageRecorder::tracked( 'translation', static fn() => $provider->chat([
-            ['role' => 'system', 'content' => $system_prompt],
-            ['role' => 'user',   'content' => $prompt],
-        ]) );
-
-        // ── Debug: log raw AI response ────────────────────────────────────────
-        if (TranslationDebug::debug_enabled()) {
-            TranslationDebug::debug_write(
-                $post_id,
-                $target_language,
-                'response',
-                (string) $result
-            );
+        if ( empty( $result ) ) {
+            return [ 'success' => false, 'error' => 'Translation failed. Please try again.' ];
         }
 
-        if (empty($result)) {
+        $ctx['language_name'] = $language_name;
+        $payload = $this->parse_full_post_envelope( (string) $result, $post_id, $ctx );
 
-            return [
-                'success' => false,
-                'error'   => 'Translation failed. Please try again.',
-            ];
-        }
-
-        // ── Parse the JSON envelope ──────────────────────────────────────────
-        // The provider returned a single JSON object conforming to the schema
-        // we built above. Replaces the prior ===TITLE=== / ===FOOTNOTES=== /
-        // ===ATTRS=== sentinel-marker format that was REVIEW §2.2's headline
-        // fragility complaint. OpenAI and Gemini enforce the schema server-
-        // side; Anthropic produces it via prefill + system directive.
-        //
-        // JsonRepair::normalise_json_response() strips any Markdown code fences
-        // that the model may wrap around the JSON despite instructions — this is
-        // the most common cause of an "unparseable response" error with footnotes.
-        $normalised    = JsonRepair::normalise_json_response((string) $result);
-        $envelope = json_decode($normalised, true);
-
-        if (!is_array($envelope)) {
-            $looks_truncated = str_starts_with($normalised, '{') && !str_ends_with($normalised, '}');
-
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users to the PHP error log when translations fail.
-            error_log(sprintf(
-                'Lingua Forge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
-                $post_id,
-                $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
-                mb_substr($normalised, 0, 200)
-            ));
-
-            return [
-                'success' => false,
-                'error'   => $looks_truncated
-                    ? 'Translation output truncated — the translated content exceeded the output token limit. '
-                      . 'Raise "Max output tokens" in Settings → Lingua Forge → Translation Limits, '
-                      . 'or pass --max-tokens=20000 on the CLI.'
-                    : 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
-            ];
-        }
-
-        $translated_title     = isset($envelope['title']) ? trim((string) $envelope['title']) : null;
-        $translated_content   = isset($envelope['content']) ? trim((string) $envelope['content']) : '';
-        $translated_footnotes = null;
-        $translated_excerpt   = ($has_excerpt && isset($envelope['excerpt']))
-            ? (string) $envelope['excerpt']
-            : null;
-
-        if ($translated_content === '') {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for empty content in an otherwise valid envelope.
-            error_log(sprintf(
-                'Lingua Forge AI [Translation] post %d: JSON envelope decoded but "content" was empty.',
-                $post_id
-            ));
-
-            return [
-                'success' => false,
-                'error'   => 'Translation failed: empty translated content. Please try again.',
-            ];
-        }
-
-        // ── Footnotes ────────────────────────────────────────────────────────
-        // The schema validated the shape; we still re-encode here because the
-        // rest of the plugin (cache, REST, JS client) treats footnotes as a
-        // JSON string.
-        if ($has_footnotes && isset($envelope['footnotes']) && is_array($envelope['footnotes'])) {
-            $translated_footnotes = wp_json_encode(
-                $envelope['footnotes'],
-                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-            );
-        }
-
-        // ── Block attribute placeholders ─────────────────────────────────────
-        if ($has_attrs && isset($envelope['attrs']) && is_array($envelope['attrs'])) {
-            $translated_content = BlockTextExtractor::reinsert(
-                $translated_content,
-                $envelope['attrs']
-            );
-        }
-
-        // ── Strip stray inter-block <br> tags ────────────────────────────────
-        // Models reliably hallucinate <br> tags *between* block-comment
-        // delimiters to "preserve" the appearance of newlines, breaking the
-        // Gutenberg block parser.  strip_interblock_br() removes <br> only
-        // from the whitespace-only connector zones between block comments
-        // (after <!-- /wp:... --> or <!-- wp:... /-->) and leaves <br> tags
-        // that appear inside block HTML (e.g. soft line breaks in <p>) intact.
-        $translated_content = BlockTextExtractor::strip_interblock_br($translated_content);
-
-        $payload = [
-            'output'   => $translated_content,
-            'type'     => 'content',
-            'language' => $language_name,
-        ];
-
-        if ($translated_title !== null && $translated_title !== '') {
-            $payload['translated_title'] = $translated_title;
-        }
-
-        if ($translated_footnotes !== null) {
-            $payload['footnotes'] = $translated_footnotes;
-        }
-
-        if ($translated_excerpt !== null) {
-            $payload['translated_excerpt'] = $translated_excerpt;
+        if ( empty( $payload['output'] ) ) {
+            return $payload; // error array from parser
         }
 
         /**
@@ -1135,29 +1077,111 @@ class Translation implements FeatureInterface {
          * Changes made here are reflected in the cache, in the REST response (editor
          * flow), and in the post saved server-side (CLI flow).
          *
-         * @param array  $payload          Associative array with keys:
-         *                                 `output` (string — translated post content),
-         *                                 `type` ('content'),
-         *                                 `language` (human-readable language name),
-         *                                 and optionally `translated_title` (string)
-         *                                 and `footnotes` (JSON string).
+         * @param array  $payload          Keys: `output`, `type`, `language`, and
+         *                                 optionally `translated_title`, `footnotes`.
          * @param int    $post_id          Source post ID being translated.
-         * @param string $target_language  Two-letter target language code (e.g. 'es').
+         * @param string $target_language  Two-letter target language code.
          */
         $payload = (array) apply_filters( 'linguaforge_translation_content', $payload, $post_id, $target_language );
 
-        // Cache the translation payload before chaining meta description —
-        // the meta description is ephemeral (content not yet saved to DB)
-        // and must not be stored in the translation cache entry.
-        CacheStore::set($post_id, $cache_key, $hash, $payload);
+        // Cache before chaining meta description — the meta description is
+        // ephemeral (content not yet saved to DB) and must not be cached here.
+        CacheStore::set( $post_id, $cache_key, $hash, $payload );
 
-        $return_payload = array_merge(['success' => true], $payload);
-
-        if (!empty($params['with_meta_description'])) {
-            $return_payload = $this->chain_meta_description($return_payload, $post_id, $target_language);
+        $return_payload = array_merge( [ 'success' => true ], $payload );
+        if ( ! empty( $params['with_meta_description'] ) ) {
+            $return_payload = $this->chain_meta_description( $return_payload, $post_id, $target_language );
         }
 
         return $return_payload;
+    }
+
+    /**
+     * Decode and validate the JSON envelope returned by the AI provider for a
+     * full-post translation, then assemble the payload array.
+     *
+     * Strips Markdown code fences via JsonRepair, validates the decoded shape,
+     * extracts all fields, reinserts block-attribute placeholder translations,
+     * and strips stray inter-block <br> tags.
+     *
+     * Returns the assembled payload (output, type, language, + optional fields)
+     * on success. Returns a standard error array (success => false) on failure.
+     *
+     * @param  string $result   Raw string returned by the AI provider.
+     * @param  int    $post_id  Source post ID (for error logging).
+     * @param  array  $ctx      Context from prepare_full_post_inputs() + 'language_name'.
+     * @return array
+     */
+    private function parse_full_post_envelope( string $result, int $post_id, array $ctx ): array {
+
+        // JsonRepair strips any Markdown code fences the model wraps around the
+        // JSON despite instructions — the most common cause of parse failure.
+        $normalised = JsonRepair::normalise_json_response( $result );
+        $envelope   = json_decode( $normalised, true );
+
+        if ( ! is_array( $envelope ) ) {
+            $looks_truncated = str_starts_with( $normalised, '{' ) && ! str_ends_with( $normalised, '}' );
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
+            error_log( sprintf(
+                'Lingua Forge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
+                $post_id,
+                $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
+                mb_substr( $normalised, 0, 200 )
+            ) );
+            return [
+                'success' => false,
+                'error'   => $looks_truncated
+                    ? 'Translation output truncated — the translated content exceeded the output token limit. '
+                      . 'Raise "Max output tokens" in Settings → Lingua Forge → Translation Limits, '
+                      . 'or pass --max-tokens=20000 on the CLI.'
+                    : 'Translation failed: provider returned an unparseable response. Check the PHP error log.',
+            ];
+        }
+
+        $translated_title     = isset( $envelope['title'] )   ? trim( (string) $envelope['title'] )   : null;
+        $translated_content   = isset( $envelope['content'] ) ? trim( (string) $envelope['content'] ) : '';
+        $translated_footnotes = null;
+        $translated_excerpt   = ( $ctx['has_excerpt'] && isset( $envelope['excerpt'] ) )
+            ? (string) $envelope['excerpt']
+            : null;
+
+        if ( $translated_content === '' ) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for empty content.
+            error_log( sprintf( 'Lingua Forge AI [Translation] post %d: JSON envelope decoded but "content" was empty.', $post_id ) );
+            return [ 'success' => false, 'error' => 'Translation failed: empty translated content. Please try again.' ];
+        }
+
+        // Footnotes — re-encode to JSON string (the rest of the plugin treats
+        // footnotes as a JSON string, not a decoded array).
+        if ( $ctx['has_footnotes'] && isset( $envelope['footnotes'] ) && is_array( $envelope['footnotes'] ) ) {
+            $translated_footnotes = wp_json_encode( $envelope['footnotes'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+        }
+
+        // Reinsert block-attribute placeholder translations.
+        if ( $ctx['has_attrs'] && isset( $envelope['attrs'] ) && is_array( $envelope['attrs'] ) ) {
+            $translated_content = BlockTextExtractor::reinsert( $translated_content, $envelope['attrs'] );
+        }
+
+        // Strip stray inter-block <br> tags that models hallucinate between
+        // block-comment delimiters. Leaves <br> inside block HTML intact.
+        $translated_content = BlockTextExtractor::strip_interblock_br( $translated_content );
+
+        $payload = [
+            'output'   => $translated_content,
+            'type'     => 'content',
+            'language' => $ctx['language_name'],
+        ];
+        if ( $translated_title !== null && $translated_title !== '' ) {
+            $payload['translated_title'] = $translated_title;
+        }
+        if ( $translated_footnotes !== null ) {
+            $payload['footnotes'] = $translated_footnotes;
+        }
+        if ( $translated_excerpt !== null ) {
+            $payload['translated_excerpt'] = $translated_excerpt;
+        }
+
+        return $payload;
     }
 
     // ── Meta description chaining ─────────────────────────────────────────────

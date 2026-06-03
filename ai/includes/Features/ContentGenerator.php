@@ -55,6 +55,102 @@ class ContentGenerator implements FeatureInterface {
         ];
     }
 
+    // ── Pure helpers (public for unit tests) ─────────────────────────────────
+
+    /**
+     * Builds the seed section appended to the generation prompt.
+     *
+     * When $hints is non-empty it is used directly (truncation to
+     * max_hints_chars is the caller's responsibility).  Otherwise the
+     * existing post content is trimmed and truncated to $max_context_chars.
+     *
+     * @internal Public for unit tests.
+     */
+    public static function build_seed_section(
+        string $hints,
+        string $existing_content,
+        int    $max_context_chars
+    ): string {
+
+        if ( $hints !== '' ) {
+            return "\n\nHints and key points to build from:\n" . $hints;
+        }
+
+        $existing_content = trim( $existing_content );
+
+        return $existing_content !== ''
+            ? "\n\nExisting content (use as context or rewrite as needed):\n" .
+              mb_substr( $existing_content, 0, $max_context_chars )
+            : '';
+    }
+
+    /**
+     * Substitutes the four prompt-template placeholders and returns the
+     * fully rendered prompt string.
+     *
+     * @internal Public for unit tests.
+     */
+    public static function build_prompt(
+        string $template,
+        string $title,
+        string $tone_label,
+        string $content_type_label,
+        string $seed_section
+    ): string {
+
+        return str_replace(
+            [ '{{title}}', '{{tone}}', '{{content_type}}', '{{existing_content}}' ],
+            [ $title, $tone_label, $content_type_label, $seed_section ],
+            $template
+        );
+    }
+
+    /**
+     * Returns true when the request is a multi-turn iterative refinement.
+     *
+     * @internal Public for unit tests.
+     */
+    public static function is_refinement( string $refine_hint, string $previous_output ): bool {
+
+        return $refine_hint !== '' && $previous_output !== '';
+    }
+
+    /**
+     * Assembles the provider message array.
+     *
+     * Single-turn: [system, user].
+     * Multi-turn refinement: [system, user, assistant (prior draft), user (refine instruction)].
+     *
+     * @return list<array{role:string,content:string}>
+     * @internal Public for unit tests.
+     */
+    public static function build_messages(
+        string $system_prompt,
+        string $prompt,
+        bool   $is_refinement,
+        string $previous_output,
+        string $refine_hint
+    ): array {
+
+        if ( $is_refinement ) {
+            return [
+                [ 'role' => 'system',    'content' => $system_prompt ],
+                [ 'role' => 'user',      'content' => $prompt ],
+                [ 'role' => 'assistant', 'content' => $previous_output ],
+                [ 'role' => 'user',      'content' =>
+                    "Please refine the content above based on these additional instructions:\n\n" .
+                    $refine_hint ],
+            ];
+        }
+
+        return [
+            [ 'role' => 'system', 'content' => $system_prompt ],
+            [ 'role' => 'user',   'content' => $prompt ],
+        ];
+    }
+
+    // ── FeatureInterface implementation ───────────────────────────────────────
+
     public function get_key(): string {
 
         return 'content-generator';
@@ -157,7 +253,7 @@ class ContentGenerator implements FeatureInterface {
         // content hash would corrupt the initial-generation cache entry.
         $refine_hint     = mb_substr( trim( sanitize_textarea_field( $params['refine_hint'] ?? '' ) ), 0, 2000 );
         $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
-        $is_refinement   = $refine_hint !== '' && $previous_output !== '';
+        $is_refinement   = self::is_refinement( $refine_hint, $previous_output );
 
         // ── Cache check (skip for refinements) ───────────────────────────────
         // Cache is keyed per tone + content_type combination.
@@ -195,26 +291,13 @@ class ContentGenerator implements FeatureInterface {
 
         // Use hints as the seed when provided; otherwise fall back to the
         // existing post body so the model can rewrite / extend it.
-        if ($hints !== '') {
-            $seed_section = "\n\nHints and key points to build from:\n" . $hints;
-        } else {
-            $existing_content = trim(wp_strip_all_tags($post->post_content));
-            $seed_section     = $existing_content !== ''
-                ? "\n\nExisting content (use as context or rewrite as needed):\n" .
-                  mb_substr($existing_content, 0, Config::content_generator_max_context_chars())
-                : '';
-        }
-
-        $prompt = str_replace(
-            ['{{title}}', '{{tone}}', '{{content_type}}', '{{existing_content}}'],
-            [
-                $post->post_title,
-                $tone_label,
-                $content_type_label,
-                $seed_section,
-            ],
-            $prompt_tpl
+        $seed_section = self::build_seed_section(
+            $hints,
+            wp_strip_all_tags( $post->post_content ),
+            Config::content_generator_max_context_chars()
         );
+
+        $prompt = self::build_prompt( $prompt_tpl, $post->post_title, $tone_label, $content_type_label, $seed_section );
 
         // ── API call ──────────────────────────────────────────────────────────
         $provider = ProviderFactory::make($this->get_worker_config($post_id));
@@ -230,24 +313,10 @@ class ContentGenerator implements FeatureInterface {
         );
 
         // ── Build messages (single-turn or multi-turn refinement) ─────────────
-        if ( $is_refinement ) {
-            // Multi-turn: supply the original prompt + prior draft as assistant
-            // turn, then the refinement instruction as the next user turn.  The
-            // model improves its own output rather than starting from scratch.
-            $messages = [
-                [ 'role' => 'system',    'content' => $system_prompt ],
-                [ 'role' => 'user',      'content' => $prompt ],
-                [ 'role' => 'assistant', 'content' => $previous_output ],
-                [ 'role' => 'user',      'content' =>
-                    "Please refine the content above based on these additional instructions:\n\n" .
-                    $refine_hint ],
-            ];
-        } else {
-            $messages = [
-                [ 'role' => 'system', 'content' => $system_prompt ],
-                [ 'role' => 'user',   'content' => $prompt ],
-            ];
-        }
+        // Multi-turn: supply the original prompt + prior draft as assistant
+        // turn, then the refinement instruction as the next user turn.  The
+        // model improves its own output rather than starting from scratch.
+        $messages = self::build_messages( $system_prompt, $prompt, $is_refinement, $previous_output, $refine_hint );
 
         $result = UsageRecorder::tracked( 'content-generator', static fn() => $provider->chat( $messages ) );
 
