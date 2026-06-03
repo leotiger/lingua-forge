@@ -1,4 +1,4 @@
-# G-01 — Server setup for subdomain routing
+# G-02 — Server setup for subdomain routing
 
 This guide is for site owners and server administrators who want to run Lingua Forge in **subdomain mode**, where each language gets its own subdomain (`es.example.com`, `ca.example.com`) rather than a path prefix (`example.com/es/`).
 
