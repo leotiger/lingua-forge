@@ -10,12 +10,22 @@ tests/
 ├── unit/                                          ← no WordPress; pure-PHP units
 │   ├── ApiPolyfills.php                           ← recording stubs for do_action, get/update_post_meta
 │   ├── BlockTextExtractorTest.php                 ← reinsert + strip_interblock_br
+│   ├── CacheStoreHashTest.php                     ← CacheStore::hash() input coverage
 │   ├── ConfigDefaultModelsTest.php                ← Config::default_model / all_model_defaults
 │   ├── ConfigPresetAddendumTest.php               ← Config::default_preset_addendum
+│   ├── ConfigTest.php                             ← Config provider/model/tier resolution
 │   ├── DataEndpointsTest.php                      ← REST /languages + /post/{id}/translations handlers
+│   ├── FeatureControllerCapabilityTest.php        ← required_capability() exhaustiveness
 │   ├── JsonRepairTest.php                         ← normalise + repair_unescaped_quotes
 │   ├── KeyStoreEnvelopeTest.php                   ← v1/v2 AES envelope + AAD + tamper
+│   ├── KeyStorePublicApiTest.php                  ← KeyStore public API contracts
+│   ├── LocaleDetectorTest.php                     ← LocaleDetector language resolution
+│   ├── MetaDescriptionCleanOutputTest.php         ← MetaDescription::clean_output()
+│   ├── RateLimiterTest.php                        ← RateLimiter gate + quota logic
+│   ├── RegressionContractsTest.php                ← pin critical string constants + key shapes
 │   ├── RouterSingletonTest.php                    ← Router::reset_instance contract
+│   ├── TranslationLanguagesTest.php               ← Translation::LANGUAGES + get_languages()
+│   ├── TridGroupAccessorsTest.php                 ← TridGroup get/set accessors
 │   ├── TridGroupHooksTest.php                     ← linguaforge_trid_changed action firing
 │   ├── WorkerConfigTest.php                       ← WorkerConfig readonly value object
 │   └── WooCommerce/
@@ -31,11 +41,13 @@ tests/
     ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang
     ├── GlossaryHashForPairTest.php                ← Glossary::hash_for_pair stability
     ├── MissingTranslationNoticeBlockTest.php      ← FSE block render gating + escaping
+    ├── PatternDiscoveryIntegrationTest.php        ← PatternDiscovery CPT pattern expansion
     ├── PluginBootTest.php                         ← constants + autoloader + class load
     ├── TridGroupTest.php                          ← set/get lang+trid, get_translations SQL, cache clear
     └── WooCommerce/
         ├── WcIntegrationTestCase.php              ← base: WC bootstrap + product factory helpers
         ├── BootstrapIntegrationTest.php           ← WC module wiring + hook registration
+        ├── HposOrderIsolationTest.php             ← shop_order never gets _lf_lang; MetaDelegate not triggered
         ├── MetaDelegateIntegrationTest.php        ← full delegation round-trip against real postmeta
         ├── StockRouterIntegrationTest.php         ← stock write routing in WP runtime
         ├── TaxonomyDelegateIntegrationTest.php    ← term delegation with real taxonomy tables
@@ -43,7 +55,9 @@ tests/
         └── VariationDelegateIntegrationTest.php   ← variation query scoping
 ```
 
-Latest counts: **146 total** (unit + integration), **76 WC-only** (`composer test:integration:wc`).
+Latest counts (test methods; data-provider variants add a few more test cases each):
+**~345 unit**, **~91 non-WC integration**, **~83 WC integration** — approximately **519 total**.
+Run `composer test` for the exact PHPUnit count.
 
 ## Running
 

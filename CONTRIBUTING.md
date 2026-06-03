@@ -586,7 +586,7 @@ and requires Docker + wp-env with WooCommerce active:
 ```bash
 cd dev/
 npm run env:start          # boots wp-env (only needed if stopped)
-composer test:integration:wc   # 76 tests, WC-only suite
+composer test:integration:wc   # WC-only suite (~83 test cases)
 composer test:integration      # full suite including WC tests
 ```
 
