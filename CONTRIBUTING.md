@@ -360,7 +360,7 @@ meta-description/             Meta Description module — LinguaForge\MetaDescri
 Architectural review and audit notes live **outside** the public
 plugin tree — in a maintainer-only `lingua-forge-audit/` sibling
 folder (not tracked in this repo). The current snapshot is
-`AUDIT-2026-05-29.md`; older documents (`AUDIT-2026-05-23.md`,
+`AUDIT-2026-06-01.md`; older documents (`AUDIT-2026-05-29.md`, `AUDIT-2026-05-23.md`,
 `REVIEW.md`, `AUDIT-2026-05-19.md`) are kept as historical record only. Contributors don't
 need to read them to ship a correct change — the conventions they
 codify all live in this file.

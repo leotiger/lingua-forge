@@ -255,6 +255,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Changed: admin.js split — diff modal extracted to admin-diff-modal.js (297 lines), content-gen modal to admin-content-gen-modal.js (351 lines). admin.js reduced from 2,064 to 1,493 lines. Shared utilities exposed via window.LfAdmin namespace.
 * Changed: Translation::run() refactored from a 427-line mega-method into a ~65-line orchestrator plus four focused private helpers (build_system_prompt, prepare_full_post_inputs, run_json_envelope, parse_full_post_envelope). No behaviour change.
 * Changed: build_system_prompt() and prepare_full_post_inputs() are now pure functions — all WP resolution (Config, Glossary, get_post_meta, file_get_contents) moved to the run() caller. No behaviour change.
+* Changed: Pure-function extraction across ContentGenerator (build_seed_section, build_prompt, is_refinement, build_messages), ExcerptGenerator (locale_to_lang_code), and TranslationMemory (compute_hash already public). No behaviour change.
+* Tests: 29 new pure unit tests — ContentGeneratorTest (17), TranslationMemoryHashTest (8), ExcerptGeneratorTest (4). Translation helpers expanded to 34. Suite: 421 unit + 175 integration = 596 total.
+* Tests: E2E suite expanded to 6 spec files, 38 scenarios. New admin-metabox.spec.js verifies window.LfAdmin namespace and the admin.js split end-to-end.
 * Tests: 34 pure unit tests for Translation helpers (build_translation_schema 6, parse_full_post_envelope 11, build_system_prompt 7, prepare_full_post_inputs 10). No WP stubs required. Total suite: 389 tests, 758 assertions.
 
 = 2.1.4 =
@@ -323,7 +326,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 == Upgrade Notice ==
 
 = 2.1.5 =
-Internal refactor only — Translation helpers made pure, 34 new unit tests. No behaviour change, no schema changes, no migration needed.
+Internal refactor only — pure-function extraction across Translation, ContentGenerator, ExcerptGenerator, and TranslationMemory; 596 tests (421 unit + 175 integration) and 38 E2E scenarios all green. No behaviour change, no schema changes, no migration needed.
 
 = 2.1.4 =
 Fixes language switcher redirect loop on source-language switch (HttpOnly cookie bug), two CodeQL security findings, and overlay grid layout on mobile. Adds overlay switcher mode, contextual help panels, and API cache toggle. Localisation updated for all 26 languages. No schema changes.
