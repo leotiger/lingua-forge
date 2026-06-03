@@ -274,12 +274,12 @@ Generate a value with `openssl rand -base64 48`. Note: changing this constant in
 
 Navigate to **Settings → Lingua Forge → Models** to override the model string for any provider and tier:
 
-| Tier | Default (Anthropic) | Used by |
-|---|---|---|
-| **Light** | `claude-haiku-4-5-20251001` | Meta Description, Excerpt Generator |
-| **Quality** | `claude-sonnet-4-6` | Translation, Content Generator |
+| Tier | Anthropic | OpenAI | Gemini | Used by |
+|---|---|---|---|---|
+| **Light** | `claude-haiku-4-5-20251001` | `gpt-4o-mini` | `gemini-2.0-flash` | Meta Description, Excerpt Generator |
+| **Quality** | `claude-sonnet-4-6` | `gpt-4o` | `gemini-1.5-pro` | Translation, Content Generator |
 
-Leave a field blank to use the built-in default. To update to a new model version when one ships, enter the new identifier in Settings — no code change or deployment needed.
+These are the built-in defaults for each provider. Leave a field blank to use the built-in default for your active provider. To update to a new model version when one ships, enter the new identifier in Settings — no code change or deployment needed.
 
 Token budgets and input limits for Translation are configured separately under **Translation Limits** — see the Content Translation section below.
 
@@ -650,13 +650,13 @@ Any `.mo` file placed in `language-router/languages/` is loaded automatically at
 
 Generates a ready-to-use SEO meta description from the post title and content. Language-aware via the `_lang` post meta field. Output is 140–160 characters with a character-count tooltip showing SEO quality (green/amber/red).
 
-Uses the **Light** model tier (default: `claude-haiku-4-5-20251001`, 384 token budget, temperature 0.4).
+Uses the **Light** model tier (384 token budget, temperature 0.4). See the Models table above for per-provider defaults.
 
 ### Excerpt Generator
 
 Produces a concise editorial excerpt of up to 240 characters, language-aware.
 
-Uses the **Light** model tier (default: `claude-haiku-4-5-20251001`, 512 token budget, temperature 0.4).
+Uses the **Light** model tier (512 token budget, temperature 0.4). See the Models table above for per-provider defaults.
 
 ### Content Translation
 
@@ -675,7 +675,7 @@ Translates full post or page content while preserving all WordPress block commen
 | **Max output tokens** | 16 000 | Maximum tokens the AI may produce per translation response. Increase if very large pages are cut off at the end. |
 | **Max input characters** | 0 (no limit) | Maximum characters of post content forwarded to the AI. `0` means the full content is always sent, which is the recommended setting. Set a non-zero value only when a provider has a tight context window — a PHP error log warning is written whenever content is trimmed. |
 
-Uses the **Quality** model tier (default: `claude-sonnet-4-6`, 16 000 token budget, temperature 0.2).
+Uses the **Quality** model tier (16 000 token budget, temperature 0.2). See the Models table above for per-provider defaults.
 
 Supported target languages (38 out of the box, grouped by region):
 
@@ -711,7 +711,7 @@ The filter applies everywhere the language list is used: the target language dro
 
 Drafts or rewrites post content from three controls: **Hints** (key points or rough structure), **Tone** (Informative, Persuasive, Storytelling, Technical, Conversational), and **Output type** (Full Article, Introduction only, Structured Outline). Generated output uses native Gutenberg block markup and slots directly into the block editor.
 
-Uses the **Quality** model tier (default: `claude-sonnet-4-6`, temperature 0.6).
+Uses the **Quality** model tier (temperature 0.6). See the Models table above for per-provider defaults.
 
 #### Dedicated overlay
 
