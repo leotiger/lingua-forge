@@ -950,6 +950,10 @@ function escHtml(v) {
  * @returns {string}     Sanitized HTML string safe for innerHTML assignment.
  */
 function sanitizeHtml( html ) {
+    // codeql[js/xss-through-dom] -- Intentional: this IS the sanitizer. DOMParser parses
+    // the untrusted string in a detached document (no script execution, no live DOM
+    // attachment). The walk below removes all dangerous elements and attributes before
+    // doc.body.innerHTML is returned. Suppressing the false-positive sink detection here.
     const doc = new DOMParser().parseFromString( String( html ), 'text/html' );
 
     // Tags whose presence — regardless of content — constitutes a risk.
