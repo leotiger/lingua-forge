@@ -16,6 +16,7 @@ const { defineConfig, devices } = require( '@playwright/test' );
 
 module.exports = defineConfig( {
     testDir:             './e2e',
+    globalTeardown:      './e2e/global-teardown.js',
     timeout:             30_000,
     expect:              { timeout: 8_000 },
     fullyParallel:       false, // wp-env is a single shared container

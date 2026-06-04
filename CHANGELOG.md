@@ -2,6 +2,33 @@
 
 ---
 
+## [2.1.7] — 2026-06-04
+
+### Security
+
+- **`TermNameAdmin::save_fields()`** — capability check (`manage_categories`) now runs before nonce verification, matching WordPress coding standards ordering. (§2.1)
+
+### Fixed — WooCommerce
+
+- **`VariationSync::sync_variations_for()` — attribute update on existing variations** — step 2 previously skipped (via `continue`) when a translated variation already existed, leaving `attribute_pa_*` meta stale if attributes were added or changed on the source variation after initial creation. The idempotency check now runs a full `attribute_pa_*` re-sync pass from the source before continuing, so new attributes propagate immediately on the next `sync_variations_for()` call. (§5.4)
+- **`TermNameFilter::is_wc_taxonomy()`** — now also checks the `linguaforge_wc_delegate_taxonomies` filter after the static list. Custom taxonomies added via the filter (e.g. `pwb-brand`) now receive translated term names in both the classic and Store API/block paths. (§5.3)
+- **`translate_single_term_name()` and `translate_term_objects()`** — extended from `pa_*` only to all taxonomies covered by `is_wc_taxonomy()` (`product_cat`, `product_tag`, `product_brand`, and custom delegated taxonomies). `product_cat` category names on block product pages and in Store API JSON now display in the visitor's language. (§5.5)
+
+### Changed
+
+- **`Translation::run_chunk()` delegated to `ChunkTranslation`** — all quick-translate logic extracted to `ai/includes/Features/ChunkTranslation.php`. Constructor-injected `AIProviderInterface` makes the class fully testable without a WordPress runtime. `Translation::run_chunk()` is now a 4-line delegator that creates the provider via `ProviderFactory` and hands off. `FeatureController` is unchanged. (§10.6 / §6.2)
+
+### Tests
+
+- **`ChunkTranslationTest`** (18 tests) — unit tests for `ChunkTranslation::run()` and pure helpers: empty input guard, whitespace-only guard, provider null/empty failure, success payload shape, output trimming, 2-message non-refinement array, 4-message refinement array, refinement message content, missing-hint/output edge cases, input capping via `quick_translate_max_input_chars`, `resolve_language_code()` (known/unknown/case-sensitive), and `build_messages()` both paths.
+- **`UsageRecorderContextTest`** (13 tests) — unit tests for `UsageRecorder` context stack: push/pop/current stack mechanics, nested push returns innermost key, pop restores previous context, pop on empty stack is safe, `tracked()` sets context during callback, restores after, restores outer context after nested call, pops on exception (`try/finally` guarantee), propagates exception, returns callback value, `record()` no-op when no context active. (§6.7)
+
+### Developer
+
+- **PHPStan WC stubs** — `php-stubs/woocommerce-stubs ^9.0` added to `dev/composer.json`; `woocommerce-stubs.php` added to `phpstan.neon.dist` `scanFiles`. Three `@phpstan-ignore-next-line` suppressions in `RestWriteGuard.php` (×2) and `VariationSync.php` removed. Run `composer update` in `dev/` to install. (§8.1)
+
+---
+
 ## [2.1.6] — 2026-06-04
 
 ### Added — WooCommerce integration (complete variable product translation)

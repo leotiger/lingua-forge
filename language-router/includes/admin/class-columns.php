@@ -52,6 +52,8 @@ class Columns {
 	 * @return string[]
 	 */
 	private function cpt_post_types(): array {
+		// Standard internal-types exclusion list. See class-sync.php for the
+		// intentional wp_navigation omission that exists only in that file.
 		$internal = [
 			'attachment', 'revision', 'nav_menu_item',
 			'wp_template', 'wp_template_part', 'wp_navigation',

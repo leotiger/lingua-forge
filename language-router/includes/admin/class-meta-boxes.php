@@ -102,6 +102,8 @@ class MetaBoxes {
 		// Show for post, page, and any public CPT managed by Lingua Forge.
 		$pto = get_post_type_object( $post->post_type );
 		if ( ! $pto || ! $pto->public ) return;
+		// wp_navigation_fallback is intentionally absent: the `! $pto->public`
+		// guard two lines above already rejects it before this list is reached.
 		$internal = [
 			'attachment', 'revision', 'nav_menu_item',
 			'wp_template', 'wp_template_part', 'wp_navigation',

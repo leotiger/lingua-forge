@@ -163,7 +163,25 @@ class VariationSync {
 			// ── 2. Check for existing translated variation ─────────────────────
 			$existing = $trid_group->get_translations( $source_var_id );
 			if ( ! empty( $existing[ $trans_lang ] ) ) {
-				continue; // Already translated — idempotent.
+				// Already translated — sync attribute_pa_* in case attributes were
+				// added or changed on the source variation since initial creation.
+				// (Creation copies attributes once; without this update pass, new
+				// attributes added to the source variation are never propagated.)
+				$existing_var_id = (int) $existing[ $trans_lang ];
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- attribute keys fetched once per variation on update; result used immediately.
+				$attr_metas = $wpdb->get_results( $wpdb->prepare(
+					"SELECT meta_key, meta_value FROM {$wpdb->postmeta}
+					 WHERE post_id = %d AND meta_key LIKE %s",
+					$source_var_id,
+					$wpdb->esc_like( 'attribute_' ) . '%'
+				) );
+
+				foreach ( $attr_metas as $attr ) {
+					update_post_meta( $existing_var_id, $attr->meta_key, $attr->meta_value );
+				}
+
+				continue;
 			}
 
 			// ── 3. Create translated variation ─────────────────────────────────
@@ -304,7 +322,6 @@ class VariationSync {
 		if ( function_exists( 'wc_delete_product_transients' ) ) {
 			wc_delete_product_transients( $translated_id );
 		}
-		// @phpstan-ignore-next-line -- WC_Cache_Helper has no PHPStan stubs in this project.
 		\WC_Cache_Helper::invalidate_cache_group( 'product_' . $translated_id );
 	}
 

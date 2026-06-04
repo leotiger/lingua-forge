@@ -176,6 +176,11 @@ class TermNameAdmin {
 	 */
 	public static function save_fields( int $term_id ): void {
 
+		// ── Capability check (fast-fail before any nonce work) ────────────────
+		if ( ! current_user_can( 'manage_categories' ) ) {
+			return;
+		}
+
 		// ── Nonce verification ────────────────────────────────────────────────
 		$nonce = isset( $_POST['lf_term_name_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['lf_term_name_nonce'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified two lines below
 
@@ -189,11 +194,6 @@ class TermNameAdmin {
 		}
 
 		if ( ! $valid_edit && ! $valid_add ) {
-			return;
-		}
-
-		// ── Capability check ─────────────────────────────────────────────────
-		if ( ! current_user_can( 'manage_categories' ) ) {
 			return;
 		}
 

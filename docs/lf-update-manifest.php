@@ -35,23 +35,22 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.6';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.6/lingua-forge-2.1.6.zip';
+	$version      = '2.1.7';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.7/lingua-forge-2.1.7.zip';
 	$last_updated = '2026-06-04';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.6 — 2026-06-04</h4>' .
+		'<h4>2.1.7 — 2026-06-04</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> WooCommerce variable product variations fully translatable — translated products get <code>product_variation</code> children with <code>_variation_description</code> and attribute meta copied at creation. Retranslate descriptions via the standard Retranslate button.</li>' .
-			'<li><strong>Added:</strong> WC structural taxonomy inheritance — <code>product_type</code>, <code>pa_*</code> attribute terms, and <code>product_brand</code> copied from source to translations at creation and re-synced when source is saved. Type changes (simple ↔ variable) propagate instantly.</li>' .
-			'<li><strong>Added:</strong> REST API write guard — PUT/PATCH to translated products returns HTTP 422 with the source product ID in the response.</li>' .
-			'<li><strong>Added:</strong> <code>product_brand</code> (native WC 10.x taxonomy) delegated by default; <code>linguaforge_wc_delegate_taxonomies</code> filter for third-party brands.</li>' .
-			'<li><strong>Fixed:</strong> <code>wc_get_product()->get_price()</code> / <code>->get_sku()</code> / <code>->get_stock_quantity()</code> now correctly return source values for translated products (bulk <code>get_post_meta()</code> read interception).</li>' .
-			'<li><strong>Fixed:</strong> Translated variable products no longer render as simple products — <code>product_type</code> term cache correctly distributed after WC internal cache priming.</li>' .
-			'<li><strong>Fixed:</strong> Attribute term names (Red/Blue) now display in the visitor\'s language (Rot/Blau, Vermell/Blau) on translated product pages including WC block themes.</li>' .
+			'<li><strong>Security:</strong> Capability check in <code>TermNameAdmin::save_fields()</code> now runs before nonce verification, matching WordPress coding standards ordering.</li>' .
+			'<li><strong>Fixed (WooCommerce):</strong> <code>attribute_pa_*</code> meta now updated on existing translated variations when source variation attributes change — previously only copied at creation time.</li>' .
+			'<li><strong>Fixed (WooCommerce):</strong> Custom taxonomies added via <code>linguaforge_wc_delegate_taxonomies</code> filter (e.g. <code>pwb-brand</code>) now also receive translated term names in the UI and Store API JSON.</li>' .
+			'<li><strong>Fixed (WooCommerce):</strong> <code>product_cat</code> and <code>product_tag</code> names now display in the visitor\'s language on block product pages and in the WC Store API JSON — previously only <code>pa_*</code> attribute terms were translated.</li>' .
+			'<li><strong>Changed:</strong> Quick Translate logic extracted to <code>ChunkTranslation</code> class with injectable AI provider — improves testability and reduces <code>Translation.php</code> from 1,365 to 1,248 lines.</li>' .
+			'<li><strong>Developer:</strong> PHPStan WooCommerce stubs added (<code>php-stubs/woocommerce-stubs</code>) — WC classes now fully type-checked at PHPStan level 5; three <code>@phpstan-ignore</code> suppressions removed.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

@@ -246,6 +246,13 @@ class Sync {
 	 * WordPress-internal post types that must never be treated as translatable
 	 * content, regardless of their 'public' flag.
 	 *
+	 * INTENTIONAL DIVERGENCE — wp_navigation is NOT in this list.
+	 * FSE navigation posts (wp_navigation) are public=>false, so they would
+	 * normally be skipped by the `$pto->public` check in handle_save_post().
+	 * However, the caller explicitly allows them through before this guard so
+	 * they receive `_lf_lang` / `_lf_trid` assignment. Adding wp_navigation
+	 * here would silently break FSE navigation translation.
+	 *
 	 * @return string[]
 	 */
 	private function internal_post_types(): array {

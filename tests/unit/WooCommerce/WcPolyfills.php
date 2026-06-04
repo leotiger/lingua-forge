@@ -177,8 +177,9 @@ if ( ! class_exists( 'LfWpdb' ) ) {
 	 * undefined-property notices.
 	 */
 	class LfWpdb {
-		public string $posts                 = 'wp_posts';
-		public string $postmeta              = 'wp_postmeta';
+		public string $prefix                 = 'wp_';
+		public string $posts                  = 'wp_posts';
+		public string $postmeta               = 'wp_postmeta';
 		public string $wc_product_meta_lookup = 'wp_wc_product_meta_lookup';
 
 		/**
@@ -237,6 +238,19 @@ if ( ! class_exists( 'LfWpdb' ) ) {
 		 */
 		public function esc_like( string $text ): string {
 			return $text;
+		}
+
+		/**
+		 * Simulates $wpdb->get_results() — always returns an empty array.
+		 * Used by Glossary::get_for_pair() in unit tests where no glossary
+		 * entries exist; format arg matches the real $wpdb signature.
+		 *
+		 * @param mixed $query  Ignored in stub.
+		 * @param mixed $output Ignored in stub.
+		 * @return array<int, mixed>  Always empty.
+		 */
+		public function get_results( mixed $query = null, mixed $output = null ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found,Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- stub; args intentionally ignored.
+			return [];
 		}
 	}
 }

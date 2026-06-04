@@ -56,13 +56,10 @@ class RestWriteGuard {
 		}
 
 		// ── 3. Must be a WC data object with a valid post ID.
-		// WC_Data has no PHPStan stubs in this project — suppress the two WC-specific errors.
-		// @phpstan-ignore-next-line
 		if ( ! ( $product instanceof \WC_Data ) ) {
 			return $product;
 		}
 
-		// @phpstan-ignore-next-line
 		$post_id = $product->get_id();
 		if ( $post_id <= 0 ) {
 			return $product;

@@ -12,7 +12,13 @@ defined( 'ABSPATH' ) || exit;
 class PatternDiscovery {
 
     /**
-     * Internal WP post types that are never treated as CPTs in this context.
+     * Post types excluded from CPT pattern discovery.
+     *
+     * INTENTIONAL DIVERGENCE — 'post' and 'page' are listed here but not in
+     * the equivalent lists in other classes. This class builds a list of
+     * *custom* post types only; 'post' and 'page' are WP built-ins and must
+     * be excluded. Other classes start from `get_post_types(['public'=>true])`
+     * where 'post' and 'page' are wanted and must NOT be filtered out.
      */
     private const INTERNAL_TYPES = [
         'post', 'page', 'attachment', 'revision', 'nav_menu_item',

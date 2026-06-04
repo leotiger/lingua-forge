@@ -211,10 +211,10 @@ class TermNameFilter {
 				continue;
 			}
 
-			// Only pa_* attribute taxonomies carry translatable term labels.
-			// product_cat, product_type, etc. are NOT translated here (content
-			// category names are handled separately by TaxonomyDelegate/TermNameAdmin).
-			if ( ! str_starts_with( $term->taxonomy, 'pa_' ) ) {
+			// Translate all WC taxonomies that carry user-visible term labels
+			// (pa_*, product_cat, product_tag, product_brand, and any added via
+			// the linguaforge_wc_delegate_taxonomies filter).
+			if ( ! self::is_wc_taxonomy( $term->taxonomy ) ) {
 				$translated[] = $term;
 				continue;
 			}
@@ -255,9 +255,10 @@ class TermNameFilter {
 			return $term;
 		}
 
-		// Only pa_* attribute taxonomies have user-visible term names to translate.
+		// Translate all WC taxonomies with user-visible term labels (pa_*, product_cat,
+		// product_tag, product_brand, and any added via linguaforge_wc_delegate_taxonomies).
 		$tax = $term->taxonomy ?: $taxonomy;
-		if ( ! str_starts_with( $tax, 'pa_' ) ) {
+		if ( ! self::is_wc_taxonomy( $tax ) ) {
 			return $term;
 		}
 
@@ -368,6 +369,13 @@ class TermNameFilter {
 			return true;
 		}
 
-		return str_starts_with( $taxonomy, 'pa_' );
+		if ( str_starts_with( $taxonomy, 'pa_' ) ) {
+			return true;
+		}
+
+		// Also cover any taxonomies registered via the TaxonomyDelegate filter
+		// (e.g. pwb-brand from Perfect Brands for WooCommerce).
+		$custom = (array) apply_filters( 'linguaforge_wc_delegate_taxonomies', [] );
+		return in_array( $taxonomy, $custom, true );
 	}
 }

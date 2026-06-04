@@ -22,7 +22,7 @@ class SettingsHelp {
 	 *
 	 * @var string
 	 */
-	private const DOCS_BASE = 'https://lingua-forge.com/docs/';
+	private const DOCS_BASE = 'https://github.com/leotiger/lingua-forge/tree/main/docs/';
 
 	// ── Bootstrap ─────────────────────────────────────────────────────────────
 

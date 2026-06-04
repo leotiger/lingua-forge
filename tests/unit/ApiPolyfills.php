@@ -15,6 +15,23 @@
 // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- polyfill functions match WP signatures; unused trailing parameters are expected.
 
 // =============================================================================
+// WordPress DB output-type constants (used by $wpdb->get_results() etc.)
+// =============================================================================
+
+if ( ! defined( 'ARRAY_A' ) ) {
+	define( 'ARRAY_A', 'ARRAY_A' );
+}
+if ( ! defined( 'ARRAY_N' ) ) {
+	define( 'ARRAY_N', 'ARRAY_N' );
+}
+if ( ! defined( 'OBJECT' ) ) {
+	define( 'OBJECT', 'OBJECT' );
+}
+if ( ! defined( 'OBJECT_K' ) ) {
+	define( 'OBJECT_K', 'OBJECT_K' );
+}
+
+// =============================================================================
 // do_action — recording version
 // =============================================================================
 
@@ -397,5 +414,34 @@ if ( ! function_exists( 'serialize_blocks' ) ) {
 		}
 
 		return $out;
+	}
+}
+
+// =============================================================================
+// String-sanitisation polyfills (used by ChunkTranslation and other classes
+// that run in unit tests without a WordPress runtime)
+// =============================================================================
+
+if ( ! function_exists( 'wp_unslash' ) ) {
+	function wp_unslash( mixed $value ): mixed {
+		return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( (string) $value );
+	}
+}
+
+if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+	function sanitize_textarea_field( string $str ): string {
+		return implode( "\n", array_map( 'strip_tags', explode( "\n", $str ) ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- polyfill; wp_strip_all_tags() is not available without WP.
+	}
+}
+
+if ( ! function_exists( 'sanitize_key' ) ) {
+	function sanitize_key( string $key ): string {
+		return strtolower( (string) preg_replace( '/[^a-z0-9_\-]/i', '', $key ) );
+	}
+}
+
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	function sanitize_text_field( string $str ): string {
+		return trim( strip_tags( $str ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- polyfill; wp_strip_all_tags() is not available without WP.
 	}
 }

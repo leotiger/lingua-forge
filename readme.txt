@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.6
+Stable tag: 2.1.7
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -333,6 +333,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.7 =
+Security hardening, WC taxonomy filter parity, product_cat/tag names in Store API, dead code removal, PHPStan WC stubs. No schema changes.
 
 = 2.1.6 =
 Adds WooCommerce product variation description translation. Translated products get variation children automatically; retranslate descriptions via the standard Retranslate button. No schema changes.

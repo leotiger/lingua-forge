@@ -1226,13 +1226,9 @@ class Translation implements FeatureInterface {
     /**
      * Translate a free-form text snippet rather than the full post.
      *
-     * Chunk mode is a manual workaround for cases where the full-post path
-     * fails — most commonly long footnotes or complex HTML passages.  The user
-     * pastes the snippet, clicks Translate, gets back the translated text, and
-     * copies it wherever it is needed.
-     *
-     * No block-comment preservation, no ===FOOTNOTES=== parsing, no cache.
-     * The result is intentionally kept plain so it is easy to copy-paste.
+     * Delegates to ChunkTranslation, which is extracted into its own class so
+     * the logic can be unit-tested with a mock AIProviderInterface. This method
+     * owns only provider creation; all business logic lives in ChunkTranslation::run().
      *
      * @param  string $language_name  Human-readable language name (e.g. "French").
      * @param  array  $params         Request parameters; chunk_text is required.
@@ -1240,126 +1236,13 @@ class Translation implements FeatureInterface {
      */
     public function run_chunk(string $language_name, array $params): array {
 
-        $chunk_text = trim(wp_unslash($params['chunk_text'] ?? ''));
-
-        if ($chunk_text === '') {
-            return [
-                'success' => false,
-                'error'   => 'No text provided. Paste a snippet into the "Text to translate" field.',
-            ];
-        }
-
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local prompt-template read from the plugin's own assets directory; not a remote URL.
-        $prompt_template = file_get_contents(
-            LINGUAFORGE_AI_PATH . '/templates/prompts/translation_chunk.txt'
-        );
-
-        if ($prompt_template === false) {
-            return [
-                'success' => false,
-                'error'   => 'Chunk prompt template not found.',
-            ];
-        }
-
-        $prompt = str_replace(
-            ['{{language}}', '{{chunk_text}}'],
-            [$language_name, mb_substr($chunk_text, 0, Config::quick_translate_max_input_chars())],
-            $prompt_template
-        );
-
-        $provider = ProviderFactory::make(Config::apply_compliance(new WorkerConfig(
-            model:       Config::model(Config::quick_translate_tier()),
+        $provider = ProviderFactory::make( Config::apply_compliance( new WorkerConfig(
+            model:       Config::model( Config::quick_translate_tier() ),
             max_tokens:  Config::quick_translate_max_tokens(),
             temperature: 0.2,
-        )));
+        ) ) );
 
-        $system_prompt = Config::apply_compliance_to_system(
-            'You are a professional translator. ' .
-            'Output only the translated text — no commentary, no preamble.'
-        );
-
-        // Glossary injection — chunk mode doesn't know the source language
-        // (the AI auto-detects it), so we only pull wildcard entries
-        // (source_lang='') that apply regardless of source: brand names,
-        // language-agnostic abbreviations like "kWp".
-        $target_code = '';
-        foreach ( self::get_languages() as $code => $label ) {
-            if ( $label === $language_name ) {
-                $target_code = $code;
-                break;
-            }
-        }
-        if ( $target_code !== '' ) {
-            $glossary = Glossary::format_for_prompt( '', $target_code );
-            if ( $glossary !== '' ) {
-                $system_prompt .= "\n\n" . $glossary;
-            }
-        }
-
-        // ── Refinement detection ──────────────────────────────────────────────
-        // When the JS sends back the previous output + a refinement instruction
-        // we build a multi-turn conversation so the model improves its own prior
-        // translation rather than starting from scratch.
-        $refine_hint     = mb_substr( trim( sanitize_textarea_field( $params['refine_hint'] ?? '' ) ), 0, 2000 );
-        $previous_output = trim( (string) ( $params['previous_output'] ?? '' ) );
-        $is_refinement   = $refine_hint !== '' && $previous_output !== '';
-
-        // ── Cache check (non-refinement only) ─────────────────────────────────
-        // run_chunk() is not post-bound, so we use post_id = 0 as a synthetic
-        // key and derive the feature key from the target language code.
-        // Refinements are intentionally excluded — they depend on a prior
-        // output that is not part of the hash and must never be served stale.
-        $chunk_cache_key = 'chunk_' . sanitize_key( $target_code ?: $language_name );
-        $chunk_hash      = CacheStore::hash([
-            $chunk_text,
-            $language_name,
-            Config::provider(),
-            Config::model( Config::quick_translate_tier() ),
-        ]);
-        if ( ! $is_refinement ) {
-            $chunk_cached = CacheStore::get( 0, $chunk_cache_key, $chunk_hash );
-            if ( $chunk_cached !== null ) {
-                return array_merge( [ 'success' => true, 'cached' => true ], $chunk_cached );
-            }
-        }
-
-        if ( $is_refinement ) {
-            $messages = [
-                [ 'role' => 'system',    'content' => $system_prompt ],
-                [ 'role' => 'user',      'content' => $prompt ],
-                [ 'role' => 'assistant', 'content' => $previous_output ],
-                [ 'role' => 'user',      'content' =>
-                    "Please refine the translation above based on these additional instructions:\n\n" .
-                    $refine_hint ],
-            ];
-        } else {
-            $messages = [
-                [ 'role' => 'system', 'content' => $system_prompt ],
-                [ 'role' => 'user',   'content' => $prompt ],
-            ];
-        }
-
-        $result = UsageRecorder::tracked( 'translation-chunk', static fn() => $provider->chat( $messages ) );
-
-        if (empty($result)) {
-            return [
-                'success' => false,
-                'error'   => 'Translation failed. Please try again.',
-            ];
-        }
-
-        $chunk_payload = [
-            'output'   => trim($result),
-            'type'     => 'chunk',
-            'language' => $language_name,
-        ];
-
-        // Persist to cache for non-refinement requests only.
-        if ( ! $is_refinement ) {
-            CacheStore::set( 0, $chunk_cache_key, $chunk_hash, $chunk_payload );
-        }
-
-        return array_merge( [ 'success' => true ], $chunk_payload );
+        return ( new ChunkTranslation( $provider ) )->run( $language_name, $params );
     }
 
 }

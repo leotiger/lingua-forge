@@ -177,6 +177,25 @@ link_translation_group "$EN_HOME $DE_HOME $CA_HOME"
 link_translation_group "$EN_ABOUT $DE_ABOUT $CA_ABOUT"
 link_translation_group "$EN_CONTACT $DE_CONTACT $CA_CONTACT"
 
+# ── Language switcher block — append to EN Home ───────────────────────────────
+# The switcher only renders when the current page has translation siblings in the
+# TRID group (get_languages() returns [] otherwise). The EN Home page already has
+# DE and CA translations, so appending the block there gives a reliable test surface.
+# The E2E test navigates to /en/home and asserts .lsflr-switcher is present.
+echo "  Appending language switcher block to EN Home page …"
+$WP eval '
+$page = get_page_by_path( "home", OBJECT, "page" );
+if ( ! $page ) {
+    echo "    Home page not found — skipping switcher block.\n";
+} elseif ( strpos( $page->post_content, "lsflr-switcher" ) !== false ) {
+    echo "    Switcher block already present in Home page (ID " . $page->ID . "), skipping.\n";
+} else {
+    $new_content = $page->post_content . "\n<!-- wp:custom/lsflr-switcher /-->";
+    wp_update_post( [ "ID" => $page->ID, "post_content" => $new_content ] );
+    echo "    Added lsflr-switcher block to Home page (ID " . $page->ID . ")\n";
+}
+'
+
 # ── WooCommerce sample products ──────────────────────────────────────────────
 # Only runs when WooCommerce is active (requires .wp-env.override.json + env:start).
 # Creates one source EN product and DE/CA translation stubs linked by a shared

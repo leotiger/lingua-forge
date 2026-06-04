@@ -88,6 +88,8 @@ class TemplateDefinitions {
         // Checked against ALL available templates (theme + plugin) so that
         // plugin-registered CPT templates (e.g. WooCommerce's single-product,
         // archive-product) are included even when the theme doesn't ship them.
+        // Standard internal-types exclusion list. See class-sync.php for the
+        // intentional wp_navigation omission that exists only in that file.
         $internal = [
             'attachment', 'revision', 'nav_menu_item',
             'wp_template', 'wp_template_part', 'wp_navigation',
