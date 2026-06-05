@@ -262,6 +262,20 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 }
 
 // =============================================================================
+// WordPress locale polyfill (used by LanguageUninstaller::is_protected())
+// =============================================================================
+
+if ( ! function_exists( 'get_locale' ) ) {
+	/**
+	 * Returns $GLOBALS['lf_test_locale'] so tests can control the WP instance
+	 * locale without a WordPress runtime.  Defaults to 'en_US'.
+	 */
+	function get_locale(): string {
+		return $GLOBALS['lf_test_locale'] ?? 'en_US';
+	}
+}
+
+// =============================================================================
 // WP function polyfills
 // =============================================================================
 

@@ -121,6 +121,7 @@ class SettingsPage {
         // Language Router tab
         add_action('admin_post_linguaforge_save_router_settings', [RouterTab::class, 'handle_save_router_settings']);
         add_action('admin_post_linguaforge_flush_permalinks',      [RouterTab::class, 'handle_flush_permalinks']);
+        add_action('admin_post_linguaforge_uninstall_language',    [RouterTab::class, 'handle_uninstall_language']);
         add_action('wp_ajax_linguaforge_get_available_languages',  [RouterTab::class, 'ajax_get_available_languages']);
         add_action('wp_ajax_linguaforge_install_language',         [RouterTab::class, 'ajax_install_language']);
         RouterTab::register_fse_hooks();

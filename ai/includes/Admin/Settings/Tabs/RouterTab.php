@@ -11,6 +11,7 @@ use LinguaForge\AI\Admin\Settings\Tabs\Sections\NavigationsSection;
 use LinguaForge\AI\Admin\Settings\Tabs\Sections\PatternsSection;
 use LinguaForge\AI\Admin\Settings\Tabs\Sections\TemplatePartsSection;
 use LinguaForge\AI\Admin\Settings\Tabs\Sections\TemplatesSection;
+use LinguaForge\AI\Admin\Language\LanguageUninstaller;
 use LinguaForge\AI\Admin\SettingsPage;
 
 defined('ABSPATH') || exit;
@@ -96,6 +97,46 @@ class RouterTab extends Tab {
             <div class="notice notice-success is-dismissible">
                 <p><?php esc_html_e( 'Permalink rules flushed successfully.', 'lingua-forge' ); ?></p>
             </div>
+        <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        elseif ( ! empty( $_GET['lf_lang_uninstalled'] ) ) :
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read-only integer GET flags set by wp_safe_redirect() after uninstall; (int) cast is the effective sanitization.
+            $lf_posts   = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_posts']   ?? '0' ) );
+            $lf_files   = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_files']   ?? '0' ) );
+            $lf_skipped = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_skipped'] ?? '0' ) );
+            // phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        ?>
+            <div class="notice notice-success is-dismissible">
+                <p>
+                    <?php echo esc_html( sprintf(
+                        /* translators: %d: number of posts deleted */
+                        _n( 'Language uninstalled. %d post deleted.', 'Language uninstalled. %d posts deleted.', $lf_posts, 'lingua-forge' ),
+                        $lf_posts
+                    ) ); ?>
+                    <?php if ( $lf_files > 0 ) : ?>
+                        <?php echo esc_html( sprintf(
+                            /* translators: %d: number of locale files removed */
+                            _n( '%d locale file removed.', '%d locale files removed.', $lf_files, 'lingua-forge' ),
+                            $lf_files
+                        ) ); ?>
+                    <?php endif; ?>
+                </p>
+            </div>
+        <?php if ( $lf_skipped > 0 ) : ?>
+            <div class="notice notice-warning is-dismissible">
+                <p>
+                    <?php echo esc_html( sprintf(
+                        /* translators: %d: number of locale files that could not be removed */
+                        _n(
+                            '%d locale file could not be removed automatically (DISALLOW_FILE_MODS is set). Delete it manually via your server or WP-CLI: wp language core uninstall <locale>',
+                            '%d locale files could not be removed automatically (DISALLOW_FILE_MODS is set). Delete them manually via your server or WP-CLI: wp language core uninstall <locale>',
+                            $lf_skipped,
+                            'lingua-forge'
+                        ),
+                        $lf_skipped
+                    ) ); ?>
+                </p>
+            </div>
+        <?php endif; ?>
         <?php endif; ?>
 
         <!-- ── Primary Language ────────────────────────────────────────────── -->
@@ -262,6 +303,7 @@ class RouterTab extends Tab {
         $router          = \LinguaForge\Router\Router::get_instance();
         $source_lang     = $router->source_language();
         $secondary_langs = array_values( array_filter( $router->languages(), fn( $l ) => $l !== $source_lang ) );
+        $wp_locale_lang  = strtolower( substr( (string) get_locale(), 0, 2 ) );
         ?>
 
         <!-- ── Language Setup ────────────────────────────────────────────── -->
@@ -303,6 +345,7 @@ class RouterTab extends Tab {
             TemplatePartsSection::render( $lang );
             NavigationsSection::render( $lang );
             PatternsSection::render( $lang );
+            self::render_danger_zone( $lang, $lang === $wp_locale_lang );
             ?>
         </div>
         <?php endforeach; ?>
@@ -353,6 +396,124 @@ class RouterTab extends Tab {
         flush_rewrite_rules();
 
         wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . SettingsPage::PAGE_SLUG . '&lf_permalinks_flushed=1#router' );
+        exit;
+    }
+
+    // ── Danger zone ───────────────────────────────────────────────────────────
+
+    /**
+     * Render the "Danger Zone" section at the bottom of a language panel.
+     *
+     * Collapsed by default via <details> — requires deliberate expansion before
+     * the confirmation dialog appears. When $is_wp_locale is true the button is
+     * disabled and a note explains why.
+     *
+     * @param string $lang           Two-character language code.
+     * @param bool   $is_wp_locale   True when $lang matches the WP instance locale.
+     */
+    private static function render_danger_zone( string $lang, bool $is_wp_locale ): void {
+        ?>
+        <hr style="margin:32px 0 16px;">
+
+        <details class="lf-danger-zone">
+            <summary class="lf-danger-zone__summary">
+                <?php esc_html_e( 'Danger Zone', 'lingua-forge' ); ?>
+            </summary>
+
+            <div class="lf-danger-zone__body">
+                <h4 style="margin:0 0 6px;"><?php
+                    echo esc_html( sprintf(
+                        /* translators: %s: two-character language code, e.g. DE */
+                        __( 'Uninstall %s', 'lingua-forge' ),
+                        strtoupper( $lang )
+                    ) );
+                ?></h4>
+
+                <p class="description" style="margin:0 0 10px;"><?php
+                    esc_html_e(
+                        'Permanently deletes all templates, template parts, patterns, navigation menus, posts, pages, custom post types, products, and product variations associated with this language. Also removes the WordPress locale pack files so this language no longer appears in the router. This action cannot be undone.',
+                        'lingua-forge'
+                    );
+                ?></p>
+
+                <?php if ( $is_wp_locale ) : ?>
+
+                    <p class="description" style="color:#b32d2e;">
+                        <?php esc_html_e(
+                            'This language matches the WordPress instance locale and cannot be uninstalled.',
+                            'lingua-forge'
+                        ); ?>
+                    </p>
+
+                <?php else : ?>
+
+                    <form
+                        method="post"
+                        action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                        onsubmit="return confirm( '<?php echo esc_js( sprintf(
+                            /* translators: %s: upper-case language code, e.g. DE */
+                            __( 'Permanently uninstall %s? This will delete all translated content for this language and cannot be undone.', 'lingua-forge' ),
+                            strtoupper( $lang )
+                        ) ); ?>' )"
+                    >
+                        <input type="hidden" name="action"           value="linguaforge_uninstall_language">
+                        <input type="hidden" name="lf_uninstall_lang" value="<?php echo esc_attr( $lang ); ?>">
+                        <?php wp_nonce_field( 'linguaforge_uninstall_language_' . $lang, 'linguaforge_uninstall_nonce' ); ?>
+                        <button type="submit" class="button" style="color:#b32d2e;border-color:#b32d2e;">
+                            <?php echo esc_html( sprintf(
+                                /* translators: %s: upper-case language code */
+                                __( 'Uninstall %s', 'lingua-forge' ),
+                                strtoupper( $lang )
+                            ) ); ?>
+                        </button>
+                    </form>
+
+                <?php endif; ?>
+            </div>
+        </details>
+        <?php
+    }
+
+    /**
+     * Handle the linguaforge_uninstall_language admin-post action.
+     *
+     * Delegates all business logic to LanguageUninstaller; this method is
+     * responsible only for auth, input sanitisation, and redirect building.
+     */
+    public static function handle_uninstall_language(): void {
+
+        $lang = sanitize_key( wp_unslash( $_POST['lf_uninstall_lang'] ?? '' ) );
+
+        check_admin_referer( 'linguaforge_uninstall_language_' . $lang, 'linguaforge_uninstall_nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Forbidden', 'lingua-forge' ), 403 );
+        }
+
+        if ( $lang === '' ) {
+            wp_die( esc_html__( 'Invalid language code.', 'lingua-forge' ), 400 );
+        }
+
+        $uninstaller = new LanguageUninstaller( $GLOBALS['wpdb'], \LinguaForge\Router\Router::get_instance() );
+
+        if ( $uninstaller->is_protected( $lang ) ) {
+            wp_die( esc_html__( 'This language is protected and cannot be uninstalled.', 'lingua-forge' ), 403 );
+        }
+
+        $result = $uninstaller->uninstall( $lang );
+
+        $redirect = add_query_arg(
+            [
+                'page'                 => SettingsPage::PAGE_SLUG,
+                'lf_lang_uninstalled'  => '1',
+                'lf_uninstall_posts'   => $result->posts_deleted,
+                'lf_uninstall_files'   => count( $result->files_deleted ),
+                'lf_uninstall_skipped' => count( $result->files_skipped ),
+            ],
+            admin_url( 'options-general.php' )
+        ) . '#router';
+
+        wp_safe_redirect( $redirect );
         exit;
     }
 

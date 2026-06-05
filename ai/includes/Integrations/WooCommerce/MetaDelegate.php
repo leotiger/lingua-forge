@@ -307,6 +307,15 @@ class MetaDelegate {
 		}
 
 		// ── Overlay OPERATIONAL_KEYS with source values ────────────────────────
+		// One bulk read instead of one get_post_meta() call per key. Each individual
+		// call would re-enter the get_post_metadata filter and traverse maybe_delegate()
+		// (bailing at the language guard, but still ~33 filter traversals per product).
+		// get_post_meta($source_id) fires maybe_delegate_bulk() for the source, hits
+		// the language guard immediately, returns null, and WP serves the source's own
+		// meta normally — no recursion. Format: array<string, array>, identical to
+		// the get_post_meta($id, $key, false) shape used in the per-key loop.
+		$source_all_meta = get_post_meta( $source_id );
+
 		foreach ( self::OPERATIONAL_KEYS as $key ) {
 
 			// _product_attributes exception: if the translated post already has its
@@ -315,16 +324,10 @@ class MetaDelegate {
 				continue;
 			}
 
-			// Individual source read. The source post's language equals $source_lang,
-			// so the per-key path returns null for it and WP reads the source's own
-			// stored value — no recursive delegation.
-			$source_values = get_post_meta( $source_id, $key, false );
-
-			// get_post_meta($id, $key, false) returns [] when the key is absent.
 			// Only override when the source actually has a value — an absent source
 			// key means the product has no value for that field, which is correct.
-			if ( ! empty( $source_values ) ) {
-				$translated_meta[ $key ] = $source_values;
+			if ( ! empty( $source_all_meta[ $key ] ) ) {
+				$translated_meta[ $key ] = $source_all_meta[ $key ];
 			}
 		}
 

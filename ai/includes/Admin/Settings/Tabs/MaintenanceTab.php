@@ -153,48 +153,50 @@ class MaintenanceTab extends Tab {
 
         <?php if (!empty($files)): ?>
 
-            <table class="widefat striped" style="max-width:680px;margin-bottom:20px;">
-                <thead>
-                    <tr>
-                        <th><?php esc_html_e('Text domain / locale', 'lingua-forge'); ?></th>
-                        <th><?php esc_html_e('Files', 'lingua-forge'); ?></th>
-                        <th><?php esc_html_e('Size', 'lingua-forge'); ?></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($files as $base):
-                        $has_mo   = in_array($base . '.mo', $mo_files, true);
-                        $has_po   = in_array($base . '.po', $po_files, true);
-                        $mo_path  = $dir . $base . '.mo';
-                        $size     = $has_mo ? size_format(filesize($mo_path)) : '—';
-                        $badges   = [];
-                        if ($has_mo) $badges[] = '<code>.mo</code>';
-                        if ($has_po) $badges[] = '<code>.po</code>';
-                    ?>
+            <div class="lf-scrollable-table">
+                <table class="widefat striped">
+                    <thead>
                         <tr>
-                            <td><code><?php echo esc_html($base); ?></code></td>
-                            <td><?php echo wp_kses( implode( ' ', $badges ), [ 'code' => [] ] ); ?></td>
-                            <td><?php echo esc_html($size); ?></td>
-                            <td>
-                                <form
-                                    method="post"
-                                    action="<?php echo esc_url(admin_url('admin-post.php')); ?>"
-                                    style="display:inline;"
-                                    onsubmit="return confirm('<?php echo esc_js(__('Delete all files for this override (both .mo and .po)?', 'lingua-forge')); ?>')"
-                                >
-                                    <input type="hidden" name="action" value="linguaforge_delete_i18n_override">
-                                    <input type="hidden" name="linguaforge_override_file" value="<?php echo esc_attr($base . '.mo'); ?>">
-                                    <?php wp_nonce_field('linguaforge_delete_override', 'linguaforge_override_nonce'); ?>
-                                    <button type="submit" class="button button-link-delete">
-                                        <?php esc_html_e('Delete', 'lingua-forge'); ?>
-                                    </button>
-                                </form>
-                            </td>
+                            <th><?php esc_html_e('Text domain / locale', 'lingua-forge'); ?></th>
+                            <th><?php esc_html_e('Files', 'lingua-forge'); ?></th>
+                            <th><?php esc_html_e('Size', 'lingua-forge'); ?></th>
+                            <th></th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($files as $base):
+                            $has_mo   = in_array($base . '.mo', $mo_files, true);
+                            $has_po   = in_array($base . '.po', $po_files, true);
+                            $mo_path  = $dir . $base . '.mo';
+                            $size     = $has_mo ? size_format(filesize($mo_path)) : '—';
+                            $badges   = [];
+                            if ($has_mo) $badges[] = '<code>.mo</code>';
+                            if ($has_po) $badges[] = '<code>.po</code>';
+                        ?>
+                            <tr>
+                                <td><code><?php echo esc_html($base); ?></code></td>
+                                <td><?php echo wp_kses( implode( ' ', $badges ), [ 'code' => [] ] ); ?></td>
+                                <td><?php echo esc_html($size); ?></td>
+                                <td>
+                                    <form
+                                        method="post"
+                                        action="<?php echo esc_url(admin_url('admin-post.php')); ?>"
+                                        style="display:inline;"
+                                        onsubmit="return confirm('<?php echo esc_js(__('Delete all files for this override (both .mo and .po)?', 'lingua-forge')); ?>')"
+                                    >
+                                        <input type="hidden" name="action" value="linguaforge_delete_i18n_override">
+                                        <input type="hidden" name="linguaforge_override_file" value="<?php echo esc_attr($base . '.mo'); ?>">
+                                        <?php wp_nonce_field('linguaforge_delete_override', 'linguaforge_override_nonce'); ?>
+                                        <button type="submit" class="button button-link-delete">
+                                            <?php esc_html_e('Delete', 'lingua-forge'); ?>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
 
         <?php else: ?>
 
@@ -279,7 +281,8 @@ class MaintenanceTab extends Tab {
 
         <?php if ( ! empty( $linguaforge_loco_files ) ) : ?>
 
-            <table class="widefat striped" style="max-width:680px;margin-bottom:20px;">
+            <div class="lf-scrollable-table">
+                <table class="widefat striped">
                 <thead>
                     <tr>
                         <th><?php esc_html_e( 'Text domain / locale', 'lingua-forge' ); ?></th>
@@ -325,7 +328,8 @@ class MaintenanceTab extends Tab {
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
 
         <?php else : ?>
 

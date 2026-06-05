@@ -43,6 +43,20 @@ async function goToFirstPageEdit( page ) {
         { timeout: 10_000 }
     );
 
+    // Dismiss the "Welcome to the editor" guide if it is open.
+    // On a fresh WordPress install this modal appears on first editor load.
+    // While open, Gutenberg marks background content aria-hidden which causes
+    // Playwright's toBeVisible() to report meta-box buttons as hidden.
+    // The seed sets wp_persisted_preferences to dismiss it, but WP 6.9 may
+    // fetch preferences asynchronously after initial render, so we close it
+    // here as a belt-and-suspenders guard for the first run.
+    const guide = page.getByRole( 'dialog', { name: 'Welcome to the editor' } );
+    if ( await guide.isVisible( { timeout: 2_000 } ).catch( () => false ) ) {
+        await page.getByRole( 'button', { name: 'Close' } ).first().click();
+        // Wait for the dialog to close before proceeding.
+        await guide.waitFor( { state: 'hidden', timeout: 3_000 } ).catch( () => {} );
+    }
+
     return page.url();
 }
 
@@ -142,10 +156,25 @@ test.describe( 'Lingua Forge meta box', () => {
             { timeout: 15_000 }
         );
 
-        // Find any action button that is visible and click it.
-        // Prefer a non-AI button to avoid real API costs; fall back to any.
+        // Gutenberg collapses the entire "Meta Boxes" section by default.
+        // Check aria-expanded so we only open it when it's actually collapsed —
+        // toggling an already-open panel would hide the buttons instead.
+        // The resize-handle separator overlays the button and intercepts pointer
+        // events, so JS-dispatch the click to avoid interception.
+        const metaBoxesToggle = page.getByRole( 'region', { name: 'Editor content' } )
+            .getByRole( 'button', { name: 'Meta Boxes' } );
+        const isCollapsed = await metaBoxesToggle
+            .getAttribute( 'aria-expanded', { timeout: 5_000 } )
+            .then( v => v === 'false' )
+            .catch( () => false );
+        if ( isCollapsed ) {
+            await metaBoxesToggle.evaluate( el => el.click() );
+            await expect( metaBoxesToggle ).toHaveAttribute( 'aria-expanded', 'true', { timeout: 3_000 } )
+                .catch( () => {} );
+        }
+
         const btn = page.locator( '.lingua-forge-action[data-feature]' ).first();
-        await expect( btn ).toBeVisible( { timeout: 10_000 } );
+        await expect( btn ).toBeVisible( { timeout: 8_000 } );
         await btn.click();
 
         // Verify the AJAX request was dispatched.

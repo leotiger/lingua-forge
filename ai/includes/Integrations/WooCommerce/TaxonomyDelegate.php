@@ -253,28 +253,18 @@ class TaxonomyDelegate {
 			return; // Source product — its own cached terms are correct.
 		}
 
-		// Bust the term relationship caches for every WC taxonomy we delegate.
-		// product_type (not in WC_TAXONOMY_DEFAULTS) is the critical one.
-		$taxonomies = array_merge( self::WC_TAXONOMY_DEFAULTS, [ 'product_type' ] );
-		foreach ( $taxonomies as $taxonomy ) {
+		foreach ( self::get_taxonomies_to_clear() as $taxonomy ) {
 			wp_cache_delete( $post_id, $taxonomy . '_relationships' );
-		}
-
-		// Also bust registered pa_* attribute taxonomies.
-		$registered = get_object_taxonomies( 'product' );
-		foreach ( $registered as $taxonomy ) {
-			if ( str_starts_with( $taxonomy, 'pa_' ) ) {
-				wp_cache_delete( $post_id, $taxonomy . '_relationships' );
-			}
 		}
 	}
 
 	/**
-	 * Called by `the_post` (fires immediately after setup_postdata() in the loop).
-	 * setup_postdata() calls update_object_term_cache() which re-primes the term
-	 * relationship cache from the DB — overwriting the caches we cleared at `wp`.
-	 * Clear them again here so subsequent get_the_terms() calls for this post go
-	 * through wp_get_object_terms() → TaxonomyDelegate.
+	 * Called by `the_post`, which fires at the start of each loop iteration before
+	 * any template code runs. This ensures the term relationship cache is clear
+	 * immediately before WC reads the product object (and its type) for this post,
+	 * so get_the_terms() falls through to wp_get_object_terms() → TaxonomyDelegate
+	 * rather than returning the cached empty array written by update_object_term_cache()
+	 * during WP_Query::get_posts().
 	 *
 	 * @param \WP_Post $post  The post being set up.
 	 */
@@ -295,16 +285,35 @@ class TaxonomyDelegate {
 			return;
 		}
 
-		foreach ( array_merge( self::WC_TAXONOMY_DEFAULTS, [ 'product_type' ] ) as $taxonomy ) {
+		foreach ( self::get_taxonomies_to_clear() as $taxonomy ) {
 			wp_cache_delete( $post->ID, $taxonomy . '_relationships' );
 		}
+	}
 
-		$registered = get_object_taxonomies( 'product' );
-		foreach ( $registered as $taxonomy ) {
-			if ( str_starts_with( $taxonomy, 'pa_' ) ) {
-				wp_cache_delete( $post->ID, $taxonomy . '_relationships' );
+	/**
+	 * Returns the full list of taxonomy slugs whose term relationship caches must be
+	 * cleared for translated products. Computed once per request and cached statically.
+	 *
+	 * Covers WC_TAXONOMY_DEFAULTS, product_type, and all registered pa_* attribute
+	 * taxonomies. Called by both clear_translated_product_term_cache() (singular page,
+	 * `wp` action) and clear_translated_product_term_cache_on_post() (`the_post` loop).
+	 *
+	 * @return string[]
+	 */
+	private static function get_taxonomies_to_clear(): array {
+
+		static $taxonomies = null;
+
+		if ( null === $taxonomies ) {
+			$taxonomies = array_merge( self::WC_TAXONOMY_DEFAULTS, [ 'product_type' ] );
+			foreach ( get_object_taxonomies( 'product' ) as $taxonomy ) {
+				if ( str_starts_with( $taxonomy, 'pa_' ) ) {
+					$taxonomies[] = $taxonomy;
+				}
 			}
 		}
+
+		return $taxonomies;
 	}
 
 	/**

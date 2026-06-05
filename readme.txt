@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.7
+Stable tag: 2.1.8
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,20 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.8 =
+* Added: Language uninstall — each secondary language panel in the Router tab now has a collapsible Danger Zone section with a confirmation-gated Uninstall button. Deletes all translated content (templates, template parts, patterns, navigations, posts, pages, CPTs, products, product variations) and removes the WordPress locale pack files so the language no longer appears in the router. Protected languages (primary content language, WP instance locale) cannot be uninstalled. If DISALLOW_FILE_MODS is set, a warning notice lists the locale files for manual deletion. No schema changes.
+* Performance: MetaDelegate bulk source read — per-key loop in maybe_delegate_bulk() replaced with a single get_post_meta() bulk call, reducing filter traversals from O(n_keys) to O(1) per translated product load.
+* Performance: TaxonomyDelegate taxonomy list cached per-request via a shared helper, eliminating repeated get_object_taxonomies() + array_merge passes on every the_post loop iteration.
+* UI: Language Overrides and Loco Translate file list tables in the Maintenance tab now cap at 50 vh with overflow-y: auto — long file lists no longer push the rest of the tab off-screen.
+
+= 2.1.7 =
+* Security: Capability check in TermNameAdmin::save_fields() now runs before nonce verification, matching WordPress coding standards ordering.
+* Fixed (WooCommerce): attribute_pa_* meta now updated on existing translated variations when source variation attributes change — previously only copied at creation time.
+* Fixed (WooCommerce): Custom taxonomies added via linguaforge_wc_delegate_taxonomies filter (e.g. pwb-brand) now also receive translated term names in both the UI and Store API JSON.
+* Fixed (WooCommerce): product_cat and product_tag names now display in the visitor's language on block product pages and in the WC Store API JSON.
+* Changed: Quick Translate logic extracted to ChunkTranslation class with injectable AI provider — improves testability, reduces Translation.php from 1,365 to 1,248 lines.
+* Developer: PHPStan WooCommerce stubs added — WC classes fully type-checked at level 5; three @phpstan-ignore suppressions removed.
+
 = 2.1.6 =
 * Added: WooCommerce variable product variations fully translatable — translated products now have product_variation children (VariationSync), TRID-linked to source, with _variation_description and attribute_pa_* meta copied at creation. Retranslate descriptions via the standard Retranslate button.
 * Added: WC structural taxonomy inheritance — product_type (variable/simple), pa_* attribute terms, and product_brand are copied from source to translated products at creation and re-synced when the source product is saved. Type changes on the source propagate instantly to all translations.
@@ -333,6 +347,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.8 =
+Adds language uninstall via the Router tab Danger Zone. Performance improvements for translated WooCommerce catalog pages. Maintenance tab UI fix for large file lists. No schema changes.
 
 = 2.1.7 =
 Security hardening, WC taxonomy filter parity, product_cat/tag names in Store API, dead code removal, PHPStan WC stubs. No schema changes.

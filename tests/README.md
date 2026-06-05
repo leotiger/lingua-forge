@@ -59,8 +59,8 @@ tests/
 ```
 
 Latest counts (test methods; data-provider variants add a few more test cases each):
-**~422 unit**, **~116 non-WC integration**, **~113 WC integration** — approximately **651 total**.
-E2E: **7 spec files, 55 scenarios** (Playwright, `npm run test:e2e`).
+**~441 unit**, **~116 non-WC integration**, **~113 WC integration** — approximately **670 total**.
+E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 
 ## Running

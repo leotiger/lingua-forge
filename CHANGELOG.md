@@ -2,6 +2,42 @@
 
 ---
 
+## [2.1.8] — 2026-06-04
+
+### Performance
+
+- **`MetaDelegate::maybe_delegate_bulk()` — bulk source read** — the overlay loop previously called `get_post_meta($source_id, $key, false)` individually for each of the 33 `OPERATIONAL_KEYS`, producing ~33 filter traversals per translated product load (each re-entering `maybe_delegate()` and bailing at the language guard). Replaced with a single `get_post_meta($source_id)` bulk read; keys are extracted from the returned `array<string, array>`. Reduces filter traversals from O(n_keys) to O(1) per product load — measurable on catalog pages with many translated products. (§7.1)
+- **`TaxonomyDelegate::get_taxonomies_to_clear()`** — new private static helper that computes the merged WC taxonomy list (`WC_TAXONOMY_DEFAULTS + ['product_type'] + pa_*` attribute taxonomies) once per request via `static $taxonomies` and returns the cached result on subsequent calls. Both `clear_translated_product_term_cache()` and `clear_translated_product_term_cache_on_post()` now call this helper, eliminating repeated `get_object_taxonomies() + array_merge + str_starts_with` passes on every `the_post` loop iteration. (§7.2)
+
+### Fixed
+
+- **`TaxonomyDelegate::clear_translated_product_term_cache_on_post()` — corrected docblock** — the previous comment incorrectly attributed the term cache re-priming to `setup_postdata()`. The actual source is `WP_Query::get_posts()` calling `update_object_term_cache()` once for the whole query before the loop starts. The `the_post` hook is needed to clear caches immediately before WC reads each product in the loop iteration, not because `setup_postdata()` re-primes them. (§7.2)
+
+### Added
+
+- **Language uninstall** (`LanguageUninstaller`) — new class at `ai/includes/Admin/Language/LanguageUninstaller.php`. Each secondary language panel in the Router tab now has a collapsible "Danger Zone" section with a confirmation-gated Uninstall button. Deletes all posts of any type carrying `_lf_lang = $lang` (templates, template parts, patterns, navigations, posts, pages, CPTs, products, product variations) via `wp_delete_post($id, true)`. Also removes WordPress locale pack files (`WP_LANG_DIR/*.mo|po`, `plugins/`, `themes/`) so the language is fully removed from the router. If `DISALLOW_FILE_MODS` is set, a warning notice lists the file paths for manual deletion. Two languages are permanently protected: the primary content language and the WP instance locale — blocked in the UI and enforced server-side. Introduces `UninstallResult` readonly value object carrying `posts_deleted`, `files_deleted`, `files_skipped`, and `mods_allowed`. (§9.4 / §10.1)
+
+### Tests
+
+- **`LanguageUninstallerTest`** (19 unit tests) — covers `is_protected()`: source-language guard, WP-locale guard (including case-insensitive locale handling), unprotected secondary language, and edge case where source lang and WP locale coincide. `collect_post_ids()`: empty result, integer casting from string rows, postmeta table name in SQL, `_lf_lang` key in query, language value in query. `collect_locale_files()`: empty dir, root `.mo` prefix matching, `.po` files, `plugins/` subdir, `themes/` subdir, non-matching files excluded, aggregation across all three dirs.
+
+### Dev tooling
+
+- **`bin/seed-dev-env.sh` — robust page creation** — `wp post list --search` silently returns all posts when WooCommerce is active, causing `create_page_if_missing` to skip creation of every page that matched any existing post with `_lf_lang`. Replaced `--search="$title"` with `--name="$slug"` (direct `post_name` lookup); added explicit `--post_name` to all `wp post create` calls. All 9 seeded pages (EN/DE/CA Home, About, Contact) now receive correct slugs and are reliably created on a fresh environment. Function signature gains a required 4th `slug` parameter.
+- **`bin/seed-dev-env.sh` — second rewrite flush** — added a final `wp rewrite flush` at the end of the script, after LF options (`linguaforge_primary_language`, `linguaforge_routing_mode`) and language packs are all in place. The early flush at line 23 runs before options exist, so language-prefix rewrite rules (`/en/`, `/de/`, `/ca/`) were never registered on a fresh install.
+- **`bin/seed-dev-env.sh` — welcome guide + meta box preferences** — dismisses the Gutenberg block editor welcome guide via `wp_persisted_preferences` (`core/edit-post.welcomeGuide = false`) and clears `closedpostboxes_page` / `metaboxhidden_page` user meta so meta boxes are open by default in E2E runs.
+- **`bin/seed-dev-env.sh` — switcher block target fix** — the language-switcher block injection now uses `get_posts(['name'=>'home','meta_key'=>'_lf_lang','meta_value'=>'en'])` instead of `get_page_by_path('home')`, preventing misdirection to a temporary test page that shares the same slug.
+
+### E2E
+
+- **`e2e/admin-metabox.spec.js` — meta box interaction hardening** — `goToFirstPageEdit` now closes the WordPress editor welcome guide if present (2 s grace window; guide dismissal uses role selectors rather than CSS). The "clicking a feature action button" test now expands the Gutenberg "Meta Boxes" panel before interacting: reads `aria-expanded` to avoid toggling an already-open panel, JS-dispatches the click to bypass the resize-handle separator that intercepts pointer events. Removed "avoid AI costs" comment — AI provider is available in E2E.
+
+### UI
+
+- **Maintenance Tab — scrollable file lists** — the Language Overrides and Loco Translate file list tables now cap at `50vh` with `overflow-y: auto`. Long file lists no longer push the rest of the tab off-screen. Implemented via the new `.lf-scrollable-table` CSS utility class.
+
+---
+
 ## [2.1.7] — 2026-06-04
 
 ### Security

@@ -72,10 +72,15 @@ $WP language core install es_ES || true
 # Guard with a meta query so re-runs skip already-created posts.
 
 # Returns the page ID on stdout; progress goes to stderr.
+# Usage: create_page_if_missing "Title" "lang" "content" "slug"
+# The slug parameter is required.  WP-CLI's --search is unreliable when
+# WooCommerce is active (it ignores the search term and returns all posts),
+# so we use --name (post_name / slug) for the existence check instead.
 create_page_if_missing() {
     local title="$1"
     local lang="$2"
     local content="$3"
+    local slug="$4"
 
     local existing
     existing=$($WP post list \
@@ -85,11 +90,11 @@ create_page_if_missing() {
         --meta_value="$lang" \
         --fields=ID \
         --format=ids \
-        --search="$title" \
+        --name="$slug" \
         --quiet 2>/dev/null || true)
 
     if [ -n "$existing" ]; then
-        echo "    ↳ \"$title\" ($lang) already exists (ID $existing), skipping." >&2
+        echo "    ↳ \"$title\" ($lang, slug=$slug) already exists (ID $existing), skipping." >&2
         echo "$existing"
         return
     fi
@@ -99,12 +104,13 @@ create_page_if_missing() {
         --post_type=page \
         --post_status=publish \
         --post_title="$title" \
+        --post_name="$slug" \
         --post_content="$content" \
         --porcelain \
         --quiet)
 
     $WP post meta set "$id" _lf_lang "$lang" --quiet
-    echo "    ↳ Created \"$title\" ($lang) → ID $id" >&2
+    echo "    ↳ Created \"$title\" ($lang, slug=$slug) → ID $id" >&2
     echo "$id"
 }
 
@@ -157,19 +163,19 @@ if ( $existing ) {
 '
 
 # English originals
-EN_HOME=$(    create_page_if_missing "Home"    "en" "<!-- wp:paragraph --><p>Welcome to the Lingua Forge dev site.</p><!-- /wp:paragraph -->")
-EN_ABOUT=$(   create_page_if_missing "About"   "en" "<!-- wp:paragraph --><p>About us — English version.</p><!-- /wp:paragraph -->")
-EN_CONTACT=$( create_page_if_missing "Contact" "en" "<!-- wp:paragraph --><p>Contact us — English version.</p><!-- /wp:paragraph -->")
+EN_HOME=$(    create_page_if_missing "Home"    "en" "<!-- wp:paragraph --><p>Welcome to the Lingua Forge dev site.</p><!-- /wp:paragraph -->"    "home")
+EN_ABOUT=$(   create_page_if_missing "About"   "en" "<!-- wp:paragraph --><p>About us — English version.</p><!-- /wp:paragraph -->"             "about")
+EN_CONTACT=$( create_page_if_missing "Contact" "en" "<!-- wp:paragraph --><p>Contact us — English version.</p><!-- /wp:paragraph -->"            "contact")
 
 # German translations
-DE_HOME=$(    create_page_if_missing "Startseite" "de" "<!-- wp:paragraph --><p>Willkommen auf der Lingua Forge Entwicklungsseite.</p><!-- /wp:paragraph -->")
-DE_ABOUT=$(   create_page_if_missing "Über uns"   "de" "<!-- wp:paragraph --><p>Über uns — Deutsche Version.</p><!-- /wp:paragraph -->")
-DE_CONTACT=$( create_page_if_missing "Kontakt"    "de" "<!-- wp:paragraph --><p>Kontaktieren Sie uns — Deutsche Version.</p><!-- /wp:paragraph -->")
+DE_HOME=$(    create_page_if_missing "Startseite" "de" "<!-- wp:paragraph --><p>Willkommen auf der Lingua Forge Entwicklungsseite.</p><!-- /wp:paragraph -->" "startseite")
+DE_ABOUT=$(   create_page_if_missing "Über uns"   "de" "<!-- wp:paragraph --><p>Über uns — Deutsche Version.</p><!-- /wp:paragraph -->"                       "uber-uns")
+DE_CONTACT=$( create_page_if_missing "Kontakt"    "de" "<!-- wp:paragraph --><p>Kontaktieren Sie uns — Deutsche Version.</p><!-- /wp:paragraph -->"            "kontakt")
 
 # Catalan translations
-CA_HOME=$(    create_page_if_missing "Inici"    "ca" "<!-- wp:paragraph --><p>Benvinguts al lloc de desenvolupament de Lingua Forge.</p><!-- /wp:paragraph -->")
-CA_ABOUT=$(   create_page_if_missing "Qui som"  "ca" "<!-- wp:paragraph --><p>Qui som — Versió catalana.</p><!-- /wp:paragraph -->")
-CA_CONTACT=$( create_page_if_missing "Contacte" "ca" "<!-- wp:paragraph --><p>Contacteu-nos — Versió catalana.</p><!-- /wp:paragraph -->")
+CA_HOME=$(    create_page_if_missing "Inici"    "ca" "<!-- wp:paragraph --><p>Benvinguts al lloc de desenvolupament de Lingua Forge.</p><!-- /wp:paragraph -->" "inici")
+CA_ABOUT=$(   create_page_if_missing "Qui som"  "ca" "<!-- wp:paragraph --><p>Qui som — Versió catalana.</p><!-- /wp:paragraph -->"                             "qui-som")
+CA_CONTACT=$( create_page_if_missing "Contacte" "ca" "<!-- wp:paragraph --><p>Contacteu-nos — Versió catalana.</p><!-- /wp:paragraph -->"                       "contacte")
 
 # Link each translation group with a shared TRID.
 echo "  Linking page translation groups …"
@@ -184,9 +190,19 @@ link_translation_group "$EN_CONTACT $DE_CONTACT $CA_CONTACT"
 # The E2E test navigates to /en/home and asserts .lsflr-switcher is present.
 echo "  Appending language switcher block to EN Home page …"
 $WP eval '
-$page = get_page_by_path( "home", OBJECT, "page" );
+// Look up the EN Home page by slug AND _lf_lang meta so slug conflicts with
+// temporary test pages never misdirect the switcher to the wrong post.
+$pages = get_posts( [
+    "post_type"   => "page",
+    "post_status" => "publish",
+    "name"        => "home",
+    "meta_key"    => "_lf_lang",
+    "meta_value"  => "en",
+    "numberposts" => 1,
+] );
+$page = $pages ? $pages[0] : null;
 if ( ! $page ) {
-    echo "    Home page not found — skipping switcher block.\n";
+    echo "    EN Home page (slug=home, _lf_lang=en) not found — skipping switcher block.\n";
 } elseif ( strpos( $page->post_content, "lsflr-switcher" ) !== false ) {
     echo "    Switcher block already present in Home page (ID " . $page->ID . "), skipping.\n";
 } else {
@@ -574,6 +590,43 @@ NODE
     fi
 
 fi
+
+# ── Final rewrite flush ───────────────────────────────────────────────────────
+# Must run AFTER linguaforge_primary_language, linguaforge_routing_mode, and
+# language packs are all in place so the router registers its language-prefix
+# rewrite rules (e.g. /en/, /de/, /ca/) before the E2E tests run.
+# The flush at the top of this script runs too early (before LF options exist)
+# and does not produce language-prefix rules on a fresh environment.
+echo "  Flushing rewrite rules (post-seed, with LF options active) …"
+$WP rewrite flush --quiet
+
+# ── Open Lingua Forge meta box for the admin user ─────────────────────────────
+# In a fresh WordPress environment the admin user has no stored Gutenberg panel
+# preferences.  The Lingua Forge meta box is registered with context 'normal',
+# which places it in the collapsible section at the bottom of the block editor.
+# WordPress stores hidden/closed meta boxes in user meta; clearing those keys
+# ensures the meta box is visible (open) on first visit — required for E2E tests
+# that expect .lingua-forge-action buttons to be visible.
+echo "  Ensuring Lingua Forge meta box is open for admin user …"
+$WP user meta delete 1 closedpostboxes_page  2>/dev/null || true
+$WP user meta delete 1 metaboxhidden_page    2>/dev/null || true
+
+# ── Dismiss block-editor welcome guide ────────────────────────────────────────
+# On a fresh WordPress install the block editor shows a 4-page "Welcome to the
+# editor" modal on first open.  While this dialog is visible, Gutenberg sets
+# aria-hidden on the rest of the page, causing Playwright's toBeVisible() to
+# report meta-box buttons as hidden.  Persist the "guide dismissed" preference
+# so the dialog never appears during E2E runs.
+echo "  Dismissing block editor welcome guide for admin user …"
+$WP eval '
+$prefs = get_user_meta( 1, "wp_persisted_preferences", true );
+if ( ! is_array( $prefs ) ) { $prefs = []; }
+if ( ! isset( $prefs["core/edit-post"] ) ) { $prefs["core/edit-post"] = []; }
+$prefs["core/edit-post"]["welcomeGuide"] = false;
+$prefs["_modified"] = gmdate( "c" );
+update_user_meta( 1, "wp_persisted_preferences", $prefs );
+echo "  ✓ Welcome guide dismissed\n";
+'
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""

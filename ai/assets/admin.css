@@ -964,6 +964,54 @@
     font-size: 13px;
 }
 
+/* ── Router Tab — language panel danger zone ─────────────────────────────── */
+
+.lf-danger-zone {
+    border: 1px solid #d63638;
+    border-radius: 4px;
+    padding: 0;
+    margin-top: 8px;
+}
+
+.lf-danger-zone__summary {
+    cursor: pointer;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #b32d2e;
+    list-style: none; /* hide default marker in Firefox */
+    user-select: none;
+}
+
+.lf-danger-zone__summary::-webkit-details-marker {
+    display: none; /* hide default marker in Chrome/Safari */
+}
+
+.lf-danger-zone__summary::before {
+    content: '▶ ';
+    font-size: 10px;
+}
+
+details[open] .lf-danger-zone__summary::before {
+    content: '▼ ';
+}
+
+.lf-danger-zone__body {
+    padding: 14px 16px 16px;
+    border-top: 1px solid #f0b8b8;
+    background: #fdf2f2;
+}
+
+/* ── Maintenance Tab — scrollable table wrapper ──────────────────────────── */
+
+/* Caps the language-overrides and Loco Translate file-list tables at 50 vh   */
+/* so they don't push the rest of the tab off-screen on large file sets.      */
+.lf-scrollable-table {
+    max-height: 50vh;
+    overflow-y: auto;
+    max-width: 680px;
+    margin-bottom: 20px;
+}
+
 /* ── Lang column width ───────────────────────────────────────────────────── */
 
 .fixed .column-lang {
