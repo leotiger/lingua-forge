@@ -8,46 +8,71 @@ tests/
 ├── phpstan-bootstrap.php                          ← phpstan.neon.dist points here
 │
 ├── unit/                                          ← no WordPress; pure-PHP units
-│   ├── ApiPolyfills.php                           ← recording stubs for do_action, get/update_post_meta
+│   ├── ApiPolyfills.php                           ← WP function stubs: WP_Post, WP_Screen, is_admin, get_current_screen,
+│   │                                               ← is_singular, get_queried_object_id, get_post_meta, get_locale,
+│   │                                               ← parse_blocks, serialize_blocks, serialize_block, wp_strip_all_tags,
+│   │                                               ← size_format, untrailingslashit, sanitize_* and many more
 │   ├── BlockTextExtractorTest.php                 ← reinsert + strip_interblock_br
 │   ├── CacheStoreHashTest.php                     ← CacheStore::hash() input coverage
+│   ├── ChunkTranslationTest.php                   ← ChunkTranslation pure helpers (split/merge/clean)
 │   ├── ConfigDefaultModelsTest.php                ← Config::default_model / all_model_defaults
 │   ├── ConfigPresetAddendumTest.php               ← Config::default_preset_addendum
 │   ├── ConfigTest.php                             ← Config provider/model/tier resolution
+│   ├── ContentGeneratorTest.php                   ← ContentGenerator prompt-building + cache-skip logic
 │   ├── DataEndpointsTest.php                      ← REST /languages + /post/{id}/translations handlers
+│   ├── ExcerptGeneratorTest.php                   ← ExcerptGenerator prompt-building
 │   ├── FeatureControllerCapabilityTest.php        ← required_capability() exhaustiveness
 │   ├── JsonRepairTest.php                         ← normalise + repair_unescaped_quotes
 │   ├── KeyStoreEnvelopeTest.php                   ← v1/v2 AES envelope + AAD + tamper
 │   ├── KeyStorePublicApiTest.php                  ← KeyStore public API contracts
+│   ├── LanguageOverridesPanelTest.php             ← loco_custom_files(), overrides_dir(), loco_is_active() with temp dirs
+│   ├── LanguageUninstallerTest.php                ← is_protected, collect_post_ids, collect_locale_files
+│   ├── LinkFixerTest.php                          ← alt_scheme(), extract_internal_links(), fix_data_id_attr()
 │   ├── LocaleDetectorTest.php                     ← LocaleDetector language resolution
+│   ├── MetaBoxTest.php                            ← inject_instance_languages() Locale branch + fallback
 │   ├── MetaDescriptionCleanOutputTest.php         ← MetaDescription::clean_output()
 │   ├── RateLimiterTest.php                        ← RateLimiter gate + quota logic
 │   ├── RegressionContractsTest.php                ← pin critical string constants + key shapes
+│   ├── RouterPureHelpersTest.php                  ← Manager::rewrite_lang_permalink(), Switcher::build_translated_url()
 │   ├── RouterSingletonTest.php                    ← Router::reset_instance contract
 │   ├── TranslationLanguagesTest.php               ← Translation::LANGUAGES + get_languages()
+│   ├── TranslationMemoryHashTest.php              ← TranslationMemory hash stability
+│   ├── TranslationTest.php                        ← Translation pure helpers + detect_post_language() + run() early exits
+│   ├── TranslationTmHelpersTest.php               ← TranslationMemoryTranslator 6 public static helpers (26 tests)
 │   ├── TridGroupAccessorsTest.php                 ← TridGroup get/set accessors
 │   ├── TridGroupHooksTest.php                     ← linguaforge_trid_changed action firing
+│   ├── UsageRecorderContextTest.php               ← UsageRecorder context + provider recording
 │   ├── WorkerConfigTest.php                       ← WorkerConfig readonly value object
 │   └── WooCommerce/
 │       ├── WcUnitTestCase.php                     ← base: WcPolyfills + Router stub
-│       ├── WcPolyfills.php                        ← get/update_post_meta + LfWpdb stub (prepare/get_var/esc_like)
+│       ├── WcPolyfills.php                        ← WP_Query/WP_Post stubs; get/update_post_meta; is_admin; LfWpdb stub
+│       ├── CatalogQueryTest.php                   ← apply_language_filter: append, double-application guard, admin skip
 │       ├── MetaDelegateTest.php                   ← price/stock/image delegation logic (individual + bulk reads)
 │       ├── StockRouterTest.php                    ← stock write routing to source
 │       ├── TaxonomyDelegateTest.php               ← wp_get_object_terms delegation
 │       └── VariationDelegateTest.php              ← pre_get_posts filter; own-variations bypass
 │
 └── integration/                                   ← runs inside wp-env / WP test framework
+    ├── Stubs/
+    │   └── StubProvider.php                       ← AIProviderInterface stub with response-queue support; no live API key needed
+    ├── CacheStoreTest.php                         ← stats() shape, row count, date strings, hit_count, clear_all()
     ├── ConfigPresetAddendumIntegrationTest.php    ← preset_addendum + apply_compliance
     ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang
+    ├── FeatureControllerRestTest.php              ← REST HTTP layer: 401/403/400/404/429 via rest_do_request()
     ├── GlossaryHashForPairTest.php                ← Glossary::hash_for_pair stability
+    ├── LinkFixerScanTest.php                      ← scan_post(): wrong-language/no-translation/unresolved/correct-lang/shape
     ├── MissingTranslationNoticeBlockTest.php      ← FSE block render gating + escaping
     ├── PatternDiscoveryIntegrationTest.php        ← PatternDiscovery CPT pattern expansion
     ├── PluginBootTest.php                         ← constants + autoloader + class load
+    ├── RedirectorSwitcherTest.php                 ← allow_lang_subdomains(), fix_site_logo_link(), translate_menu_items()
+    ├── TranslationIntegrationTest.php             ← Translation::run() via StubProvider: cache hit, JSON-envelope, TM path, etc.
+    ├── TranslationMemoryTest.php                  ← stats() shape, bytes_estimate, idempotent store(), clear_all()
     ├── TridGroupTest.php                          ← set/get lang+trid, get_translations SQL, cache clear
+    ├── UsageRecorderTest.php                      ← record()+query() round-trip, ON DUPLICATE KEY, quota, row_count(), clear_all()
     └── WooCommerce/
         ├── WcIntegrationTestCase.php              ← base: WC bootstrap + product factory helpers
         ├── BootstrapIntegrationTest.php           ← WC module wiring + hook registration (incl. VariationSync, RestWriteGuard)
-        ├── HposOrderIsolationTest.php             ← shop_order never gets _lf_lang; MetaDelegate not triggered
+        ├── HposOrderIsolationTest.php             ← shop_order/shop_booking never get _lf_lang; MetaDelegate not triggered
         ├── MetaDelegateIntegrationTest.php        ← per-key delegation round-trip against real postmeta
         ├── MetaDelegateWcApiIntegrationTest.php   ← wc_get_product() API path: price/SKU/stock on translated products/variations
         ├── RestWriteGuardIntegrationTest.php      ← HTTP 422 on PUT/PATCH to translated products and variations
@@ -59,7 +84,7 @@ tests/
 ```
 
 Latest counts (test methods; data-provider variants add a few more test cases each):
-**~441 unit**, **~116 non-WC integration**, **~113 WC integration** — approximately **670 total**.
+**~520 unit**, **~180 non-WC integration**, **~113 WC integration** — approximately **810 total**.
 E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 
@@ -81,6 +106,59 @@ composer test
 ```
 
 All commands run from `../dev/` (the dev-tooling folder).
+
+## Coverage
+
+Code coverage is split into three stages. All commands run from `../dev/`.
+
+```bash
+# Optional: install pcov for faster coverage collection.
+# xdebug (pre-installed in wp-env) is used automatically when pcov is absent.
+# pcov is faster but lost on container rebuild — re-run after env:stop / env:start.
+composer coverage:setup
+
+# Run unit + integration suites with Clover XML + HTML output.
+# Requires wp-env running (npm run env:start) + pcov installed.
+# Activates lingua-forge + woocommerce before the integration run
+# so the full WC delegation layer is exercised.
+composer coverage:run
+
+# Merge unit/integration Clovers into a single combined report.
+# Can be re-run without re-running the suites (useful after adding tests).
+composer coverage:merge
+
+# Full pipeline: coverage:run → coverage:merge
+composer coverage
+```
+
+Reports land in `../dev/coverage/`:
+
+```
+dev/coverage/
+├── unit/
+│   ├── clover.xml        ← machine-readable; consumed by coverage:merge
+│   ├── coverage.txt      ← human-readable per-file summary
+│   └── html/             ← browse index.html for line-level detail
+├── integration/
+│   ├── clover.xml        ← copied from wp-env tests-cli container
+│   ├── coverage.txt
+│   └── html/
+└── combined/
+    ├── clover.xml        ← union of unit + integration (path-normalised)
+    └── summary.txt       ← ✅/🔶/❌ per-file table + overall percentage
+```
+
+The `combined/summary.txt` is the primary human-readable output — it lists every
+tracked file with its merged coverage percentage. `coverage:merge` prints the
+last few lines (total %) directly to the terminal as a quick sanity check.
+
+**Notes:**
+- The integration suite runs inside Docker; its clover is written to the container
+  and then copied out by `scripts/copy-integration-coverage.sh`. If the container
+  run fails, the old clover remains and a stale merged report is produced silently.
+- `processUncoveredFiles` is not set — files never loaded during a suite simply
+  won't appear in that suite's clover (but will appear if the Composer classmap
+  triggers them). The combined report shows all files across both suites.
 
 ## Unit vs integration — where does a new test go?
 

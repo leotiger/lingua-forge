@@ -35,20 +35,21 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.8';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.8/lingua-forge-2.1.8.zip';
-	$last_updated = '2026-06-04';
+	$version      = '2.1.9';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.9/lingua-forge-2.1.9.zip';
+	$last_updated = '2026-06-05';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.8 — 2026-06-04</h4>' .
+		'<h4>2.1.9 — 2026-06-05</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Language uninstall — each secondary language panel in the Router tab has a collapsible Danger Zone section with a confirmation-gated Uninstall button. Deletes all translated content and removes WordPress locale pack files. Protected languages (primary content language, WP instance locale) cannot be uninstalled. No schema changes.</li>' .
-			'<li><strong>Performance:</strong> <code>MetaDelegate::maybe_delegate_bulk()</code> now uses a single <code>get_post_meta()</code> bulk call instead of a per-key loop — reduces <code>get_post_metadata</code> filter traversals from O(n_keys) to O(1) per translated product load.</li>' .
-			'<li><strong>Performance:</strong> <code>TaxonomyDelegate</code> taxonomy list cached per-request via <code>get_taxonomies_to_clear()</code> helper — eliminates repeated <code>get_object_taxonomies()</code> calls on every <code>the_post</code> iteration.</li>' .
-			'<li><strong>UI:</strong> Language Overrides and Loco Translate file list tables in the Maintenance tab now cap at 50 vh with <code>overflow-y: auto</code>.</li>' .
+			'<li><strong>Fixed:</strong> Plugin Check compliance — <code>%i</code> identifier placeholder for table name in <code>LanguageUninstaller</code>; GET parameters in <code>RouterTab</code> unslashed and sanitized.</li>' .
+			'<li><strong>Fixed:</strong> WC Bookings (<code>shop_booking</code>) added to <code>QueryFilter</code> skip lists — a main query for that post type would silently return zero results.</li>' .
+			'<li><strong>UI:</strong> AI cache and Translation Memory stats moved from Maintenance to the AI Usage &amp; Cache tab — all AI performance metrics in one place.</li>' .
+			'<li><strong>Developer:</strong> <code>linguaforge_ai_provider</code> filter added to all AI call paths — swap the provider without modifying plugin code (custom providers, test stubs).</li>' .
+			'<li><strong>Developer:</strong> Translation.php refactored into three focused classes; Maintenance tab into panel classes. ~140 new tests added; total ~810 PHPUnit tests.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

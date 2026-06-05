@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.8
+Stable tag: 2.1.9
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,14 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.9 =
+* Fixed: Plugin Check compliance — prepared SQL uses %i identifier placeholder for table name in LanguageUninstaller; GET parameters in RouterTab unslashed and sanitized before use.
+* Fixed: WC Bookings (shop_booking) added to QueryFilter skip lists — a main query for that post type would silently return zero results due to a spurious _lf_lang meta condition.
+* UI: AI Usage & Cache tab — cache statistics and Translation Memory stats moved from the Maintenance tab to the AI Usage tab, which is now the single place for all AI performance metrics.
+* Developer: Translation.php refactored into three focused classes — TranslationMemoryTranslator, JsonEnvelopeTranslator (file dropped from 1,376 to 648 lines). Maintenance tab similarly refactored into panel classes.
+* Developer: linguaforge_ai_provider filter added to all AI call paths — allows custom AI provider injection without modifying plugin code.
+* Developer: Major test suite expansion — ~140 new tests added (unit + integration) covering Translation orchestration, REST endpoints, CacheStore, TranslationMemory, UsageRecorder, LinkFixer, and routing helpers. Total ~810 tests.
+
 = 2.1.8 =
 * Added: Language uninstall — each secondary language panel in the Router tab now has a collapsible Danger Zone section with a confirmation-gated Uninstall button. Deletes all translated content (templates, template parts, patterns, navigations, posts, pages, CPTs, products, product variations) and removes the WordPress locale pack files so the language no longer appears in the router. Protected languages (primary content language, WP instance locale) cannot be uninstalled. If DISALLOW_FILE_MODS is set, a warning notice lists the locale files for manual deletion. No schema changes.
 * Performance: MetaDelegate bulk source read — per-key loop in maybe_delegate_bulk() replaced with a single get_post_meta() bulk call, reducing filter traversals from O(n_keys) to O(1) per translated product load.
@@ -347,6 +355,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.9 =
+Plugin Check compliance fixes. AI cache and TM stats moved to AI Usage & Cache tab. Major internal refactoring for testability (no functional changes). New linguaforge_ai_provider filter for custom providers. No schema changes.
 
 = 2.1.8 =
 Adds language uninstall via the Router tab Danger Zone. Performance improvements for translated WooCommerce catalog pages. Maintenance tab UI fix for large file lists. No schema changes.

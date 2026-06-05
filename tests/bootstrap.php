@@ -141,6 +141,8 @@ if ( ! $wp_tests_dir || ! file_exists( $wp_tests_dir . '/includes/functions.php'
 $lf_integration_classmap = [
     'LinguaForge\Tests\Integration\WooCommerce\WcIntegrationTestCase' =>
         __DIR__ . '/integration/WooCommerce/WcIntegrationTestCase.php',
+    'LinguaForge\Tests\Integration\Stubs\StubProvider' =>
+        __DIR__ . '/integration/Stubs/StubProvider.php',
 ];
 spl_autoload_register(
     static function ( string $class ) use ( $lf_integration_classmap ): void {

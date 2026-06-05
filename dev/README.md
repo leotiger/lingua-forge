@@ -57,6 +57,10 @@ composer test:integration:wc  # WooCommerce integration suite only (needs WC in 
 composer test                 # both suites
 composer qa                   # lint + analyse + unit tests
 composer plugin-check         # the official .org checker (inside wp-env)
+composer coverage:setup       # one-time: install pcov in the wp-env tests-cli container
+composer coverage:run         # unit + integration suites with Clover + HTML output
+composer coverage:merge       # merge unit + integration Clovers → combined/
+composer coverage             # full pipeline: coverage:run → coverage:merge
 
 # JS / CSS side
 npm run lint:js
@@ -116,11 +120,20 @@ Only needed when you want to re-test scaffold from an empty state.
 | `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |
 | `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |
 | `composer plugin-check`       | starts wp-env CLI, runs the WP Plugin Check tool inside it         | Yes           |
+| `composer coverage:setup`     | optionally installs pcov in the tests-cli container (faster than xdebug) — once per `env:start` | Yes |
+| `composer coverage:run`       | unit + integration suites with Clover + HTML; copies integration report out of container | Yes |
+| `composer coverage:merge`     | merges `coverage/unit/clover.xml` + `coverage/integration/clover.xml` → `coverage/combined/` | No |
+| `composer coverage`           | `coverage:run` → `coverage:merge`; summary.txt + combined clover land in `coverage/combined/` | Yes |
 
 Notes:
 - `composer qa` runs only the **unit** suite — intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
-- `composer test:integration` and `composer test:integration:wc` require wp-env to be running (`npm run env:start`) and Docker Desktop to be open.
+- `composer test:integration` and `composer test:integration:wc` require wp-env to be running (`npm run env:start`) and Docker Desktop to be open. Both commands include a `wp eval` step that creates the plugin's custom DB tables (Glossary, CacheStore, TranslationMemory, UsageRecorder) before phpunit runs — the activation hook does not create these tables, and `admin_init` never fires in a CLI context.
+- **Integration tests that touch AI endpoints** need `Registry::init()` and `FeatureController::init()` called explicitly in `setUp()` — `Plugin::boot()` is guarded by `should_boot()` which returns false in CLI context (not admin, REST, or WP-CLI). See `FeatureControllerRestTest` for the pattern.
+- **Integration tests for the REST layer** use `rest_do_request()` with a fresh `WP_REST_Server` instance created in `setUp()` and reset to `null` in `tearDown()` — the standard WP REST test pattern.
+- **Tests that use AI providers** inject a `StubProvider` via the `linguaforge_ai_provider` filter rather than needing a live API key. The stub supports a response queue for multi-call scenarios. See `tests/integration/Stubs/StubProvider.php`.
 - `composer plugin-check` also requires Docker Desktop + wp-env.
+- `composer coverage:run` activates both `lingua-forge` and `woocommerce` before the integration suite so the full WC delegation layer is instrumented. If the integration run fails inside the container, the old `coverage/integration/clover.xml` is silently reused — check `coverage/combined/summary.txt`'s timestamp to detect a stale merge.
+- `composer coverage:merge` can be re-run standalone after adding new tests without re-running the full suites.
 
 ## ⚠️ `composer lint:fix` caution
 

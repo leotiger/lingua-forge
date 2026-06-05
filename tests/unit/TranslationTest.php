@@ -37,6 +37,11 @@ if ( ! defined( 'LINGUAFORGE_AI_PATH' ) ) {
 	define( 'LINGUAFORGE_AI_PATH', dirname( __DIR__, 2 ) . '/ai' );
 }
 
+// WcPolyfills must load before ApiPolyfills so that is_admin(), get_post_meta(),
+// and get_locale() come from WcPolyfills (controlled via LfWcMocks). ApiPolyfills
+// function_exists() guards then skip re-defining those three, and only add the
+// non-WC-overlapping stubs (WP_Screen, get_current_screen, is_singular, etc.).
+require_once __DIR__ . '/WooCommerce/WcPolyfills.php';
 require_once __DIR__ . '/ApiPolyfills.php';
 
 // Real source classes the methods under test depend on.
@@ -44,12 +49,17 @@ require_once LINGUAFORGE_AI_PATH . '/includes/Core/JsonRepair.php';
 require_once LINGUAFORGE_AI_PATH . '/includes/Core/BlockTextExtractor.php';
 require_once LINGUAFORGE_AI_PATH . '/includes/Providers/WorkerConfig.php';
 require_once LINGUAFORGE_AI_PATH . '/includes/Features/Contracts/FeatureInterface.php';
+require_once LINGUAFORGE_AI_PATH . '/includes/Features/TranslationMemoryTranslator.php';
+require_once LINGUAFORGE_AI_PATH . '/includes/Features/JsonEnvelopeTranslator.php';
 require_once LINGUAFORGE_AI_PATH . '/includes/Features/Translation.php';
 
 // ---------------------------------------------------------------------------
 
+use LinguaForge\AI\Features\JsonEnvelopeTranslator;
+
 /**
  * @covers \LinguaForge\AI\Features\Translation
+ * @covers \LinguaForge\AI\Features\JsonEnvelopeTranslator
  */
 final class TranslationTest extends TestCase {
 
@@ -81,7 +91,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_baseline_has_title_and_content_only(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ false, false, false ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( false, false, false );
 
 		$this->assertSame( [ 'title', 'content' ], $schema['required'] );
 		$this->assertArrayHasKey( 'title',   $schema['properties'] );
@@ -94,7 +104,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_includes_footnotes_when_flag_set(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ true, false, false ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( true, false, false );
 
 		$this->assertContains( 'footnotes', $schema['required'] );
 		$this->assertArrayHasKey( 'footnotes', $schema['properties'] );
@@ -103,7 +113,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_includes_attrs_when_flag_set(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ false, true, false ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( false, true, false );
 
 		$this->assertContains( 'attrs', $schema['required'] );
 		$this->assertArrayHasKey( 'attrs', $schema['properties'] );
@@ -112,7 +122,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_includes_excerpt_when_flag_set(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ false, false, true ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( false, false, true );
 
 		$this->assertContains( 'excerpt', $schema['required'] );
 		$this->assertArrayHasKey( 'excerpt', $schema['properties'] );
@@ -120,7 +130,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_all_flags_produces_five_properties(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ true, true, true ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( true, true, true );
 
 		// title + content + excerpt + footnotes + attrs = 5 required fields.
 		$this->assertCount( 5, $schema['required'] );
@@ -132,7 +142,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_schema_footnotes_item_requires_id_and_content(): void {
 
-		$schema = $this->callPrivate( Translation::class, 'build_translation_schema', [ true, false ] );
+		$schema = JsonEnvelopeTranslator::build_translation_schema( true, false );
 		$items  = $schema['properties']['footnotes']['items'];
 
 		$this->assertContains( 'id',      $items['required'] );
@@ -160,11 +170,7 @@ final class TranslationTest extends TestCase {
 
 	public function test_parse_returns_error_for_invalid_json(): void {
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ 'this is not json', 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( 'this is not json', 1, $this->makeCtx() );
 
 		$this->assertFalse( $result['success'] );
 		$this->assertStringContainsString( 'unparseable', $result['error'] );
@@ -175,11 +181,7 @@ final class TranslationTest extends TestCase {
 		// Starts with '{' but does not end with '}' — triggers truncation hint.
 		$truncated = '{"title":"Hallo","content":"Inh';
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $truncated, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $truncated, 1, $this->makeCtx() );
 
 		$this->assertFalse( $result['success'] );
 		$this->assertStringContainsString( 'truncated',        $result['error'] );
@@ -190,11 +192,7 @@ final class TranslationTest extends TestCase {
 
 		$json = wp_json_encode( [ 'title' => 'Hallo', 'content' => '   ' ] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx() );
 
 		$this->assertFalse( $result['success'] );
 		$this->assertStringContainsString( 'empty', $result['error'] );
@@ -207,11 +205,7 @@ final class TranslationTest extends TestCase {
 			'content' => '<!-- wp:paragraph --><p>Inhalt</p><!-- /wp:paragraph -->',
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx() );
 
 		$this->assertSame( '<!-- wp:paragraph --><p>Inhalt</p><!-- /wp:paragraph -->', $result['output'] );
 		$this->assertSame( 'content', $result['type'] );
@@ -225,11 +219,7 @@ final class TranslationTest extends TestCase {
 
 		$json = wp_json_encode( [ 'content' => '<p>Text</p>' ] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx() );
 
 		$this->assertSame( '<p>Text</p>', $result['output'] );
 		$this->assertArrayNotHasKey( 'translated_title', $result );
@@ -244,11 +234,7 @@ final class TranslationTest extends TestCase {
 			'footnotes' => $footnotes,
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx( [ 'has_footnotes' => true ] ) ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx( [ 'has_footnotes' => true ] ) );
 
 		$this->assertArrayHasKey( 'footnotes', $result );
 		$decoded = json_decode( $result['footnotes'], true );
@@ -264,11 +250,7 @@ final class TranslationTest extends TestCase {
 			'footnotes' => [ [ 'id' => 'fn-1', 'content' => 'ignored' ] ],
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx( [ 'has_footnotes' => false ] ) ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx( [ 'has_footnotes' => false ] ) );
 
 		$this->assertArrayNotHasKey( 'footnotes', $result );
 	}
@@ -282,11 +264,7 @@ final class TranslationTest extends TestCase {
 			'attrs'   => [ '__WPAI_0__' => 'Eine Katze' ],
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx( [ 'has_attrs' => true ] ) ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx( [ 'has_attrs' => true ] ) );
 
 		$this->assertStringContainsString(    'Eine Katze',  $result['output'] );
 		$this->assertStringNotContainsString( '__WPAI_0__', $result['output'] );
@@ -300,11 +278,7 @@ final class TranslationTest extends TestCase {
 			'excerpt' => 'Kurzbeschreibung',
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx( [ 'has_excerpt' => true ] ) ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx( [ 'has_excerpt' => true ] ) );
 
 		$this->assertArrayHasKey( 'translated_excerpt', $result );
 		$this->assertSame( 'Kurzbeschreibung', $result['translated_excerpt'] );
@@ -317,11 +291,7 @@ final class TranslationTest extends TestCase {
 			'content' => "<!-- wp:paragraph --><p>A</p><!-- /wp:paragraph -->\n<br>\n<!-- wp:paragraph --><p>B</p><!-- /wp:paragraph -->",
 		] );
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $json, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $json, 1, $this->makeCtx() );
 
 		$this->assertStringNotContainsString( '<br>',     $result['output'] );
 		$this->assertStringContainsString(    '<p>A</p>', $result['output'] );
@@ -333,11 +303,7 @@ final class TranslationTest extends TestCase {
 
 		$fenced = "```json\n{\"title\":\"T\",\"content\":\"<p>C</p>\"}\n```";
 
-		$result = $this->callPrivate(
-			$this->makeTranslation(),
-			'parse_full_post_envelope',
-			[ $fenced, 1, $this->makeCtx() ]
-		);
+		$result = JsonEnvelopeTranslator::parse_full_post_envelope( $fenced, 1, $this->makeCtx() );
 
 		$this->assertSame( '<p>C</p>', $result['output'] );
 		$this->assertSame( 'T',       $result['translated_title'] );
@@ -580,5 +546,138 @@ final class TranslationTest extends TestCase {
 		$ctx = $this->callPrepare( [ 'source_lang' => 'ca' ] );
 
 		$this->assertSame( 'ca', $ctx['source_lang'] );
+	}
+
+	// =========================================================================
+	// run() — early-exit branches (unit-testable without WP runtime)
+	// =========================================================================
+
+	public function test_run_returns_error_for_invalid_target_language(): void {
+
+		$result = $this->makeTranslation()->run( 1, [ 'target_language' => 'xx' ] );
+
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'Invalid target language', $result['error'] );
+	}
+
+	public function test_run_returns_error_when_post_not_found(): void {
+
+		// LfWcMocks::$posts is empty after setUp → get_post() returns null.
+		$result = $this->makeTranslation()->run( 999, [ 'target_language' => 'de' ] );
+
+		$this->assertFalse( $result['success'] );
+		$this->assertStringContainsString( 'Post not found', $result['error'] );
+	}
+
+	// =========================================================================
+	// detect_post_language()
+	// =========================================================================
+	//
+	// Five logical paths:
+	//   A. Admin, screen base = 'post', valid _lf_lang meta   → returns lang
+	//   B. Admin, screen base = 'post', Polylang function     → returns lang
+	//   C. Admin, screen base = 'post', locale fallback       → returns 2-char code
+	//   D. Admin, screen base = 'post', no lang resolvable    → returns null
+	//   E. Admin, screen base ≠ 'post'                        → returns null
+	//   F. Not admin, is_singular, valid _lf_lang meta        → returns lang
+	//   G. Not admin, not singular                            → returns null
+	//   H. Not admin, is_singular, get_queried_object_id = 0  → returns null
+
+	protected function setUp(): void {
+		parent::setUp();
+		// Reset all LfWcMocks state (covers is_admin, get_post_meta, get_locale)
+		// and the globals used by ApiPolyfills stubs (get_current_screen,
+		// is_singular, get_queried_object_id).
+		\LfWcMocks::reset();
+		unset( $GLOBALS['lf_test_screen_base'] );
+		$GLOBALS['lf_test_is_singular']       = false;
+		$GLOBALS['lf_test_queried_object_id'] = 0;
+		$GLOBALS['lf_test_locale']            = 'en_US';
+		unset( $GLOBALS['post'] );
+	}
+
+	public function test_detect_admin_post_screen_returns_lf_lang_meta(): void {
+
+		$post     = new \WP_Post();
+		$post->ID = 42;
+		$GLOBALS['post']               = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- test bootstrap; $post must be set to simulate an admin post-edit screen without a real WP runtime.
+		\LfWcMocks::$is_admin          = true;
+		$GLOBALS['lf_test_screen_base'] = 'post';
+		\LfWcMocks::$meta[42]['_lf_lang'] = 'de';
+
+		$this->assertSame( 'de', Translation::detect_post_language() );
+	}
+
+	public function test_detect_admin_post_screen_falls_back_to_locale(): void {
+
+		$post     = new \WP_Post();
+		$post->ID = 7;
+		$GLOBALS['post']                = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- test bootstrap; see above.
+		\LfWcMocks::$is_admin           = true;
+		$GLOBALS['lf_test_screen_base'] = 'post';
+		// No _lf_lang meta; no pll_get_post_language defined.
+		$GLOBALS['lf_test_locale']      = 'de_DE';
+
+		$this->assertSame( 'de', Translation::detect_post_language() );
+	}
+
+	public function test_detect_admin_post_screen_returns_null_for_unknown_locale(): void {
+
+		$post     = new \WP_Post();
+		$post->ID = 7;
+		$GLOBALS['post']                = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- test bootstrap; see above.
+		\LfWcMocks::$is_admin           = true;
+		$GLOBALS['lf_test_screen_base'] = 'post';
+		$GLOBALS['lf_test_locale']      = 'xx_XX'; // not in LANGUAGES
+
+		$this->assertNull( Translation::detect_post_language() );
+	}
+
+	public function test_detect_admin_non_post_screen_returns_null(): void {
+
+		\LfWcMocks::$is_admin           = true;
+		$GLOBALS['lf_test_screen_base'] = 'edit'; // list table — no single $post
+
+		$this->assertNull( Translation::detect_post_language() );
+	}
+
+	public function test_detect_admin_null_screen_returns_null(): void {
+
+		\LfWcMocks::$is_admin = true;
+		// lf_test_screen_base already unset in setUp → get_current_screen() returns null
+
+		$this->assertNull( Translation::detect_post_language() );
+	}
+
+	public function test_detect_admin_post_screen_no_wp_post_global_returns_null(): void {
+
+		\LfWcMocks::$is_admin           = true;
+		$GLOBALS['lf_test_screen_base'] = 'post';
+		$GLOBALS['post']                = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- test bootstrap; $post must be null to simulate missing global post.
+
+		$this->assertNull( Translation::detect_post_language() );
+	}
+
+	public function test_detect_frontend_singular_returns_lf_lang_meta(): void {
+
+		$GLOBALS['lf_test_is_singular']       = true;
+		$GLOBALS['lf_test_queried_object_id'] = 55;
+		\LfWcMocks::$meta[55]['_lf_lang']     = 'fr';
+
+		$this->assertSame( 'fr', Translation::detect_post_language() );
+	}
+
+	public function test_detect_frontend_singular_zero_object_id_returns_null(): void {
+
+		$GLOBALS['lf_test_is_singular']       = true;
+		$GLOBALS['lf_test_queried_object_id'] = 0;
+
+		$this->assertNull( Translation::detect_post_language() );
+	}
+
+	public function test_detect_frontend_non_singular_returns_null(): void {
+
+		// lf_test_is_singular already false in setUp
+		$this->assertNull( Translation::detect_post_language() );
 	}
 }

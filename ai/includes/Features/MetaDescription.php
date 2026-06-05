@@ -2,6 +2,7 @@
 
 namespace LinguaForge\AI\Features;
 
+use LinguaForge\AI\Contracts\AIProviderInterface;
 use LinguaForge\AI\Features\Contracts\FeatureInterface;
 use LinguaForge\AI\Providers\ProviderFactory;
 use LinguaForge\AI\Providers\WorkerConfig;
@@ -129,9 +130,20 @@ class MetaDescription implements FeatureInterface {
             $prompt
         );
 
-        $provider = ProviderFactory::make(
-            $this->get_worker_config()
-        );
+        $worker_config = $this->get_worker_config();
+
+        /**
+         * Filters the AI provider instance for the meta description feature.
+         *
+         * Allows integration tests and site code to substitute a custom
+         * AIProviderInterface implementation without a live API key.
+         *
+         * @param AIProviderInterface $provider     The default provider.
+         * @param int                 $post_id      Source post ID.
+         * @param WorkerConfig        $config       Worker config for this call.
+         */
+        /** @var AIProviderInterface $provider */
+        $provider = apply_filters( 'linguaforge_ai_provider', ProviderFactory::make( $worker_config ), $post_id, $worker_config );
 
         $result = UsageRecorder::tracked( 'meta-description', static fn() => $provider->chat([
             ['role' => 'system', 'content' => Config::apply_compliance_to_system('You are an SEO copywriter.')],

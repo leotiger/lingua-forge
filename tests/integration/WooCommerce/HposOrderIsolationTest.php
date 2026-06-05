@@ -80,6 +80,7 @@ final class HposOrderIsolationTest extends WcIntegrationTestCase {
 			'shop_order'        => [ 'shop_order' ],
 			'shop_coupon'       => [ 'shop_coupon' ],
 			'shop_subscription' => [ 'shop_subscription' ],
+			'shop_booking'      => [ 'shop_booking' ],
 			'product_variation' => [ 'product_variation' ],
 		];
 	}

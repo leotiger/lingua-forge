@@ -624,8 +624,8 @@ and requires Docker + wp-env with WooCommerce active:
 ```bash
 cd dev/
 npm run env:start               # boots wp-env (only needed if stopped)
-composer test:integration:wc    # WC-only suite (~93 test cases)
-composer test:integration       # full suite including WC tests
+composer test:integration:wc    # WC-only suite (~113 test cases)
+composer test:integration       # full suite including WC tests (~180 non-WC + ~113 WC)
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes
@@ -701,6 +701,7 @@ add_action( 'linguaforge_loaded', function () {
 |---|---|---|
 | `linguaforge_translation_content` | `(array $payload, int $post_id, string $lang)` | Modify translated content before cache/return |
 | `linguaforge_translation_worker_config` | `(WorkerConfig $cfg, int $post_id, array $params)` | Override AI model / temperature / max_tokens |
+| `linguaforge_ai_provider` | `(AIProviderInterface $provider, int $post_id, WorkerConfig $cfg)` | Swap the AI provider instance — inject a custom provider or a test stub |
 | `linguaforge_wc_delegate_post_types` | `(string[] $types)` | Add post types to WC shared-stock delegation |
 | `linguaforge_cpt_create_allowed` | `(bool $allowed, string $post_type)` | Prevent translation creation for a post type |
 | `linguaforge_switcher_output` | `(string $html, array $langs, array $atts)` | Customise language-switcher HTML |

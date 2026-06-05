@@ -58,6 +58,17 @@
             are picked up via getenv() in tests/bootstrap.php.
         -->
         <ini name="memory_limit" value="512M"/>
+        <!--
+            Suppress error_log() output during test runs. Several unit tests deliberately
+            pass malformed AI responses (bad JSON, truncated envelopes, wrong block counts)
+            to exercise error-path branches in parse_full_post_envelope() and
+            parse_tm_envelope(). Those methods call error_log() for diagnostic purposes,
+            which PHP routes to stdout in some environments, polluting test output with
+            expected-but-noisy lines like "response was not valid JSON". Redirecting to
+            /dev/null keeps the output clean without suppressing real PHP errors (those
+            are captured by PHPUnit's own error handler independently of error_log).
+        -->
+        <ini name="error_log" value="/dev/null"/>
         <env name="WP_TESTS_DIR" value="/wordpress-phpunit" force="false"/>
         <env name="WP_PHPUNIT__DIR" value="/wordpress-phpunit" force="false"/>
         <env name="WP_TESTS_DOMAIN" value="example.org" force="false"/>

@@ -141,6 +141,9 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		 */
 		public static mixed $wpdb_get_var = null;
 
+		/** @var bool Return value for the is_admin() polyfill. Default false (frontend). */
+		public static bool $is_admin = false;
+
 		public static function reset(): void {
 			self::$posts          = [];
 			self::$meta           = [];
@@ -151,6 +154,7 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 			self::$cache_deletes  = [];
 			self::$wpdb_updates   = [];
 			self::$wpdb_get_var   = null;
+			self::$is_admin       = false;
 		}
 	}
 }
@@ -264,6 +268,16 @@ if ( ! isset( $GLOBALS['wpdb'] ) ) {
 // =============================================================================
 // WordPress locale polyfill (used by LanguageUninstaller::is_protected())
 // =============================================================================
+
+if ( ! function_exists( 'is_admin' ) ) {
+	/**
+	 * Returns LfWcMocks::$is_admin so tests can simulate admin vs. frontend
+	 * context without a WordPress runtime.  Defaults to false (frontend).
+	 */
+	function is_admin(): bool {
+		return LfWcMocks::$is_admin;
+	}
+}
 
 if ( ! function_exists( 'get_locale' ) ) {
 	/**

@@ -147,7 +147,7 @@ class QueryFilter {
 			// Skip WC post types on the frontend — same reason as admin: WC has its own
 			// query pipeline and a meta_query JOIN on products is prohibitively expensive.
 			$queried_type = (string) $q->get( 'post_type' );
-			$wc_types     = [ 'product', 'shop_order', 'shop_coupon', 'shop_subscription', 'product_variation' ];
+			$wc_types     = [ 'product', 'shop_order', 'shop_coupon', 'shop_subscription', 'shop_booking', 'product_variation' ];
 			if ( in_array( $queried_type, $wc_types, true ) ) return;
 
 			if ( $q->is_search() ) {
@@ -175,7 +175,7 @@ class QueryFilter {
 		// or be unset at this point on some WC versions, making in_array() unreliable.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL post_type param; no data is modified.
 		$screen_post_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : (string) $q->get( 'post_type' );
-		$wc_non_content   = [ 'shop_order', 'shop_coupon', 'shop_subscription' ];
+		$wc_non_content   = [ 'shop_order', 'shop_coupon', 'shop_subscription', 'shop_booking' ];
 		$wc_content_types = [ 'product', 'product_variation' ];
 		if ( in_array( $screen_post_type, $wc_non_content, true ) ) return;
 		$has_lang_filter  = (bool) get_user_meta( get_current_user_id(), 'lf_lang_filter', true );

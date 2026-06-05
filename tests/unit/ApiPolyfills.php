@@ -276,9 +276,27 @@ if ( ! function_exists( 'get_available_languages' ) ) {
 	}
 }
 
+if ( ! function_exists( 'size_format' ) ) {
+	/**
+	 * Polyfill for WP's size_format() — converts bytes to a human-readable string.
+	 * Used by LanguageOverridesPanel::loco_custom_files() for display purposes.
+	 */
+	function size_format( int $bytes, int $decimals = 0 ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature; $decimals unused in this simplified stub.
+		if ( $bytes >= 1048576 ) return round( $bytes / 1048576, 1 ) . ' MB';
+		if ( $bytes >= 1024 )    return round( $bytes / 1024,    1 ) . ' KB';
+		return $bytes . ' B';
+	}
+}
+
 if ( ! function_exists( 'trailingslashit' ) ) {
 	function trailingslashit( string $str ): string { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.stringFound -- matches WP signature.
 		return rtrim( $str, '/\\' ) . '/';
+	}
+}
+
+if ( ! function_exists( 'untrailingslashit' ) ) {
+	function untrailingslashit( string $str ): string { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.stringFound -- matches WP signature.
+		return rtrim( $str, '/\\' );
 	}
 }
 
@@ -382,6 +400,30 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	/**
+	 * Polyfill for wp_strip_all_tags() — strips HTML/PHP tags and optionally
+	 * line breaks.  The unit-test version only strips tags; the $remove_breaks
+	 * flag is accepted for signature compatibility but ignored.
+	 */
+	function wp_strip_all_tags( string $str, bool $remove_breaks = false ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature; $remove_breaks unused in this stub.
+		return strip_tags( $str ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- polyfill; wp_strip_all_tags() is what this function provides.
+	}
+}
+
+if ( ! function_exists( 'serialize_block' ) ) {
+	/**
+	 * Polyfill for WP's serialize_block() — serialises a single parsed block
+	 * back to Gutenberg block-comment markup.  Delegates to serialize_blocks()
+	 * which is defined below.
+	 *
+	 * @param array{blockName:string,attrs:array<string,mixed>,innerBlocks:array,innerHTML:string} $block
+	 */
+	function serialize_block( array $block ): string {
+		return serialize_blocks( [ $block ] );
+	}
+}
+
 if ( ! function_exists( 'serialize_blocks' ) ) {
 	/**
 	 * Minimal serialize_blocks polyfill for unit tests.
@@ -445,3 +487,79 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 		return trim( strip_tags( $str ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- polyfill; wp_strip_all_tags() is not available without WP.
 	}
 }
+
+// =============================================================================
+// WP_Post stub (shared; also defined in WcPolyfills — guarded to avoid
+// "Cannot redeclare" when both files are loaded in the same PHPUnit process)
+// =============================================================================
+
+if ( ! class_exists( 'WP_Post' ) ) {
+	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound -- WP stub must coexist with polyfill functions in this bootstrap file.
+	class WP_Post {
+		public int    $ID          = 0;
+		public string $post_type   = 'post';
+		public string $post_status = 'publish';
+		public string $post_title  = '';
+		public string $post_content = '';
+		public string $post_excerpt = '';
+		public int    $post_author = 0;
+	}
+}
+
+// =============================================================================
+// WP_Screen stub — minimal object for get_current_screen() polyfill
+// =============================================================================
+
+if ( ! class_exists( 'WP_Screen' ) ) {
+	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound
+	class WP_Screen {
+		public string $base = '';
+	}
+}
+
+// =============================================================================
+// Admin-context polyfills (detect_post_language and other admin-aware helpers)
+//
+// is_admin() is intentionally NOT defined here — it is provided by WcPolyfills
+// (controlled via LfWcMocks::$is_admin) which TranslationTest loads first.
+// The function_exists() guard would skip this definition anyway when both
+// files are loaded, but the comment makes the intent explicit.
+// =============================================================================
+
+if ( ! function_exists( 'get_current_screen' ) ) {
+	/**
+	 * Returns a WP_Screen stub whose base equals $GLOBALS['lf_test_screen_base'],
+	 * or null when that global is absent — matching WP's own null return on
+	 * non-admin and REST requests.
+	 */
+	function get_current_screen(): ?WP_Screen {
+		if ( ! isset( $GLOBALS['lf_test_screen_base'] ) ) {
+			return null;
+		}
+		$screen       = new WP_Screen();
+		$screen->base = (string) $GLOBALS['lf_test_screen_base'];
+		return $screen;
+	}
+}
+
+// =============================================================================
+// Frontend context polyfills (singular page, queried object)
+// =============================================================================
+
+if ( ! function_exists( 'is_singular' ) ) {
+	/** Returns $GLOBALS['lf_test_is_singular'] (default false). */
+	function is_singular( mixed $post_types = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- matches WP signature; $post_types unused in stub.
+		return (bool) ( $GLOBALS['lf_test_is_singular'] ?? false );
+	}
+}
+
+if ( ! function_exists( 'get_queried_object_id' ) ) {
+	/** Returns $GLOBALS['lf_test_queried_object_id'] (default 0). */
+	function get_queried_object_id(): int {
+		return (int) ( $GLOBALS['lf_test_queried_object_id'] ?? 0 );
+	}
+}
+
+// get_post_meta() and get_locale() are intentionally NOT defined here — both
+// are provided by WcPolyfills (LfWcMocks::$meta and $GLOBALS['lf_test_locale']
+// respectively). Tests that need them should load WcPolyfills first.

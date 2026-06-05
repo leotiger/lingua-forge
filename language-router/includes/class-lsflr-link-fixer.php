@@ -149,14 +149,24 @@ class LinkFixer {
 	 *
 	 * @return array<array{ url: string, id: int }> De-duplicated by post ID.
 	 */
-	private function extract_internal_links( string $content ): array {
+	/**
+	 * Extract all internal post links from HTML content.
+	 *
+	 * Public static so unit tests can call it directly with a controlled $home URL.
+	 * In production, the caller passes untrailingslashit( home_url() ).
+	 *
+	 * @param  string $content  Post HTML content.
+	 * @param  string $home     Site home URL without trailing slash.
+	 * @return list<array{url:string,id:int}>
+	 */
+	public static function extract_internal_links( string $content, string $home ): array {
 		// Capture the full attribute string of every <a …> opening tag.
 		if ( ! preg_match_all( '/<a\s([^>]*)>/i', $content, $tag_matches ) ) {
 			return [];
 		}
 
-		$home     = untrailingslashit( home_url() );
-		$home_alt = $this->alt_scheme( $home );
+		$home     = \untrailingslashit( $home );
+		$home_alt = self::alt_scheme( $home );
 
 		$links = []; // keyed by post ID to de-duplicate
 
@@ -196,8 +206,9 @@ class LinkFixer {
 
 	/**
 	 * Return the http↔https counterpart of $url, or null if not applicable.
+	 * Public static for direct unit testing.
 	 */
-	private function alt_scheme( string $url ): ?string {
+	public static function alt_scheme( string $url ): ?string {
 		if ( str_starts_with( $url, 'https://' ) ) {
 			return 'http://' . substr( $url, 8 );
 		}
@@ -282,7 +293,7 @@ class LinkFixer {
 		$stale_fixes   = [];
 		$flagged       = [];
 
-		foreach ( $this->extract_internal_links( $post->post_content ) as $link ) {
+		foreach ( self::extract_internal_links( $post->post_content, home_url() ) as $link ) {
 			$url = $link['url'];
 
 			// ── Correct language prefix — verify the path hasn't gone stale ──────
@@ -482,7 +493,7 @@ class LinkFixer {
 			if ( empty( $fix['from_data_id'] ) || empty( $fix['to_data_id'] ) ) {
 				continue;
 			}
-			$content = $this->fix_data_id_attr(
+			$content = self::fix_data_id_attr(
 				$content,
 				$fix['to'],
 				(int) $fix['from_data_id'],
@@ -524,7 +535,11 @@ class LinkFixer {
 	 * Called by fix_post() after the href replacement loop, so $href is the
 	 * already-updated (new) permalink, not the old one.
 	 */
-	private function fix_data_id_attr(
+	/**
+	 * Rewrite the data-id attribute on a specific link within HTML content.
+	 * Public static for direct unit testing.
+	 */
+	public static function fix_data_id_attr(
 		string $content,
 		string $href,
 		int    $old_id,

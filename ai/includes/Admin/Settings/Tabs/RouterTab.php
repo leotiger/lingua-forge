@@ -423,7 +423,7 @@ class RouterTab extends Tab {
             <div class="lf-danger-zone__body">
                 <h4 style="margin:0 0 6px;"><?php
                     echo esc_html( sprintf(
-                        /* translators: %s: two-character language code, e.g. DE */
+                        /* translators: %s: two-character language code displayed in upper case, e.g. DE */
                         __( 'Uninstall %s', 'lingua-forge' ),
                         strtoupper( $lang )
                     ) );
@@ -461,7 +461,7 @@ class RouterTab extends Tab {
                         <?php wp_nonce_field( 'linguaforge_uninstall_language_' . $lang, 'linguaforge_uninstall_nonce' ); ?>
                         <button type="submit" class="button" style="color:#b32d2e;border-color:#b32d2e;">
                             <?php echo esc_html( sprintf(
-                                /* translators: %s: upper-case language code */
+                                /* translators: %s: two-character language code displayed in upper case, e.g. DE */
                                 __( 'Uninstall %s', 'lingua-forge' ),
                                 strtoupper( $lang )
                             ) ); ?>

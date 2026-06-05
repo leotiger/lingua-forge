@@ -83,46 +83,90 @@ class Switcher {
 	public function translate_current_url( string $target_lang, ?int $post_id = null ): string {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set value used only for URL path parsing; home_url() encodes the result.
 		$current_url = home_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/' );
-		$langs       = $this->router->languages();
-		$source      = $this->router->source_language();
 
-		$parsed  = wp_parse_url( $current_url );
-		$path    = trim( $parsed['path'] ?? '', '/' );
-		$query   = isset( $parsed['query'] ) ? '?' . $parsed['query'] : '';
+		return self::build_translated_url(
+			$current_url,
+			$target_lang,
+			$this->router->source_language(),
+			$this->router->languages(),
+			$this->router->context->routing_mode(),
+			is_search(),
+			(string) get_query_var( 's' ),
+			is_singular() && (bool) $post_id,
+			$post_id ? (string) get_permalink( $post_id ) : '',
+			$this->router->context->lang_base_url( $target_lang ),
+			home_url()
+		);
+	}
+
+	/**
+	 * Build the translated URL for a given language — pure, WP-free.
+	 *
+	 * Public static so unit tests can call it directly with controlled inputs.
+	 * Called by translate_current_url() after all WP-dependent values are resolved.
+	 *
+	 * @param  string   $current_url   Full current URL (home_url + REQUEST_URI).
+	 * @param  string   $target_lang   Language to translate to.
+	 * @param  string   $source_lang   Site source language.
+	 * @param  string[] $langs         All active language codes.
+	 * @param  string   $routing_mode  'path' or 'subdomain'.
+	 * @param  bool     $is_search     Whether the current page is a search results page.
+	 * @param  string   $search_term   Search query (get_query_var('s')).
+	 * @param  bool     $is_singular   True when current page is singular AND $permalink is known.
+	 * @param  string   $permalink     get_permalink($post_id), or '' when not applicable.
+	 * @param  string   $lang_base_url Subdomain base URL for $target_lang.
+	 * @param  string   $home_url      Site home URL.
+	 * @return string
+	 */
+	public static function build_translated_url(
+		string $current_url,
+		string $target_lang,
+		string $source_lang,
+		array  $langs,
+		string $routing_mode,
+		bool   $is_search,
+		string $search_term,
+		bool   $is_singular,
+		string $permalink,
+		string $lang_base_url,
+		string $home_url
+	): string {
+		$parsed   = \parse_url( $current_url ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url -- pure static helper; wp_parse_url() is not available without WP runtime.
+		$path     = trim( $parsed['path'] ?? '', '/' );
+		$query    = isset( $parsed['query'] ) ? '?' . $parsed['query'] : '';
+		$home_url = \untrailingslashit( $home_url );
 
 		$segments = explode( '/', $path );
 		if ( ! empty( $segments[0] ) && in_array( $segments[0], $langs, true ) ) {
 			array_shift( $segments );
 		}
-
 		$new_path = implode( '/', $segments );
 
-		// Search
-		if ( is_search() ) {
-			$s = get_query_var( 's' );
-			if ( $this->router->context->routing_mode() === 'subdomain' ) {
-				return $this->router->context->lang_base_url( $target_lang ) . '?s=' . rawurlencode( $s );
+		// Search results page.
+		if ( $is_search ) {
+			if ( $routing_mode === 'subdomain' ) {
+				return $lang_base_url . '?s=' . rawurlencode( $search_term );
 			}
-			return home_url( '/?lang=' . $target_lang . '&s=' . rawurlencode( $s ) );
+			return $home_url . '/?lang=' . $target_lang . '&s=' . rawurlencode( $search_term );
 		}
 
-		// Singular
-		if ( is_singular() && $post_id ) {
-			$url = get_permalink( $post_id );
-			return $url . $query;
+		// Singular — use the pre-resolved permalink.
+		if ( $is_singular && $permalink !== '' ) {
+			return $permalink . $query;
 		}
 
-		// Non-singular
-		if ( $target_lang === $source ) {
-			return home_url( '/' . trim( $new_path, '/' ) . '/' ) . $query;
+		// Non-singular: switching to source language → strip prefix only.
+		if ( $target_lang === $source_lang ) {
+			return $home_url . '/' . trim( $new_path, '/' ) . '/' . $query;
 		}
 
-		if ( $this->router->context->routing_mode() === 'subdomain' ) {
-			$base = $this->router->context->lang_base_url( $target_lang );
-			return $base . ( $new_path ? trailingslashit( $new_path ) : '' ) . $query;
+		// Non-singular: subdomain mode.
+		if ( $routing_mode === 'subdomain' ) {
+			return $lang_base_url . ( $new_path ? \trailingslashit( $new_path ) : '' ) . $query;
 		}
 
-		return home_url( '/' . $target_lang . '/' . $new_path . '/' ) . $query;
+		// Non-singular: path-prefix mode.
+		return $home_url . '/' . $target_lang . '/' . $new_path . '/' . $query;
 	}
 
 	// =========================================================

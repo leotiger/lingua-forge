@@ -241,3 +241,12 @@
 .lf-area-footer     { background: #f0f6fc; color: #2271b1; border-color: #b9d9f0; }
 .lf-area-navigation { background: #edfaef; color: #00a32a; border-color: #9dd9a8; }
 .lf-area-sidebar    { background: #fef8e7; color: #996800; border-color: #f0c33c; }
+
+/* Caps the Language Overrides and Loco Translate file-list tables at 50 vh   */
+/* so they don't push the rest of the Maintenance tab off-screen.             */
+.lf-scrollable-table {
+    max-height: 50vh;
+    overflow-y: auto;
+    max-width: 680px;
+    margin-bottom: 20px;
+}

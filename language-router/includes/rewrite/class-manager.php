@@ -105,21 +105,50 @@ class Manager {
 		$lang = $this->router->trid_group->get_lang( $post->ID );
 		if ( ! $lang || $lang === $this->router->context->source_language() ) return $url;
 
-		$path        = wp_parse_url( $url, PHP_URL_PATH );
+		$path = wp_parse_url( $url, PHP_URL_PATH );
 		if ( ! $path ) return $url;
 
-		$langs_regex = implode( '|', array_map( 'preg_quote', $this->router->context->languages() ) );
+		return self::rewrite_lang_permalink(
+			$path,
+			$lang,
+			$this->router->context->languages(),
+			$this->router->context->routing_mode(),
+			$this->router->context->lang_base_url( $lang ),
+			\home_url()
+		);
+	}
 
-		if ( $this->router->context->routing_mode() === 'subdomain' ) {
-			// Replace scheme+host with the language subdomain; strip any stale
-			// path-prefix that may have been baked into the URL.
+	/**
+	 * Rewrite a URL path to the given language — pure, WP-free.
+	 *
+	 * Public static so unit tests can call it directly with controlled inputs.
+	 * Called by lang_permalink() after all WP-dependent lookups are resolved.
+	 *
+	 * @param  string   $path          The URL path component (e.g. '/en/about/').
+	 * @param  string   $lang          Target language code (e.g. 'de').
+	 * @param  string[] $langs         All active language codes.
+	 * @param  string   $routing_mode  'path' or 'subdomain'.
+	 * @param  string   $lang_base_url Subdomain base URL for $lang (e.g. 'https://de.example.org/').
+	 * @param  string   $home_url      Site home URL (e.g. 'https://example.org').
+	 * @return string   Rewritten absolute URL.
+	 */
+	public static function rewrite_lang_permalink(
+		string $path,
+		string $lang,
+		array  $langs,
+		string $routing_mode,
+		string $lang_base_url,
+		string $home_url
+	): string {
+		$langs_regex = implode( '|', array_map( 'preg_quote', $langs ) );
+
+		if ( $routing_mode === 'subdomain' ) {
 			$path = (string) preg_replace( '#^/(' . $langs_regex . ')/#', '/', $path );
-			return $this->router->context->lang_base_url( $lang ) . ltrim( $path, '/' );
+			return $lang_base_url . ltrim( $path, '/' );
 		}
 
-		// Path mode: prepend /lang/ prefix.
 		$path = trim( $path, '/' );
 		$path = (string) preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
-		return home_url( '/' . $lang . '/' . $path . '/' );
+		return \untrailingslashit( $home_url ) . '/' . $lang . '/' . $path . '/';
 	}
 }

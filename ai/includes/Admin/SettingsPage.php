@@ -2,6 +2,10 @@
 
 namespace LinguaForge\AI\Admin;
 
+use LinguaForge\AI\Admin\Settings\Panels\CacheStatsPanel;
+use LinguaForge\AI\Admin\Settings\Panels\DebugFilesPanel;
+use LinguaForge\AI\Admin\Settings\Panels\LanguageOverridesPanel;
+use LinguaForge\AI\Admin\Settings\Panels\UninstallSettingsPanel;
 use LinguaForge\AI\Admin\Settings\Tabs\AiUsageTab;
 use LinguaForge\AI\Admin\Settings\Tabs\ApiKeysTab;
 use LinguaForge\AI\Admin\Settings\Tabs\BehaviorTab;
@@ -98,25 +102,25 @@ class SettingsPage {
             [ self::class, 'add_action_links' ]
         );
 
-        // Language override file management
-        add_action('admin_post_linguaforge_upload_i18n_override', [MaintenanceTab::class, 'handle_upload_override']);
-        add_action('admin_post_linguaforge_delete_i18n_override', [MaintenanceTab::class, 'handle_delete_override']);
-        add_action('admin_post_linguaforge_copy_loco_override',   [MaintenanceTab::class, 'handle_copy_loco_override']);
+        // Language override file management — handlers co-located with LanguageOverridesPanel
+        add_action('admin_post_linguaforge_upload_i18n_override', [LanguageOverridesPanel::class, 'handle_upload_override']);
+        add_action('admin_post_linguaforge_delete_i18n_override', [LanguageOverridesPanel::class, 'handle_delete_override']);
+        add_action('admin_post_linguaforge_copy_loco_override',   [LanguageOverridesPanel::class, 'handle_copy_loco_override']);
 
-        // AI cache maintenance
-        add_action('admin_post_linguaforge_clear_ai_cache',       [MaintenanceTab::class, 'handle_clear_ai_cache']);
-        add_action('admin_post_linguaforge_clear_debug_files',    [MaintenanceTab::class, 'handle_clear_debug_files']);
-        add_action('admin_post_linguaforge_save_debug_setting',   [MaintenanceTab::class, 'handle_save_debug_setting']);
+        // AI cache + TM maintenance — handlers co-located with CacheStatsPanel
+        add_action('admin_post_linguaforge_clear_ai_cache',       [CacheStatsPanel::class, 'handle_clear_ai_cache']);
+        add_action('admin_post_linguaforge_clear_debug_files',    [DebugFilesPanel::class, 'handle_clear_debug_files']);
+        add_action('admin_post_linguaforge_save_debug_setting',   [DebugFilesPanel::class, 'handle_save_debug_setting']);
 
         // Glossary management (§4.6)
         add_action('admin_post_linguaforge_glossary_add',    [GlossaryTab::class, 'handle_glossary_add']);
         add_action('admin_post_linguaforge_glossary_delete', [GlossaryTab::class, 'handle_glossary_delete']);
 
-        // Translation Memory maintenance (§4.5)
-        add_action('admin_post_linguaforge_clear_translation_memory', [MaintenanceTab::class, 'handle_clear_translation_memory']);
+        // Translation Memory maintenance (§4.5) — handler co-located with CacheStatsPanel
+        add_action('admin_post_linguaforge_clear_translation_memory', [CacheStatsPanel::class, 'handle_clear_translation_memory']);
 
-        // Uninstall behaviour toggle
-        add_action('admin_post_linguaforge_save_uninstall_setting',   [MaintenanceTab::class, 'handle_save_uninstall_setting']);
+        // Uninstall behaviour toggle — handler co-located with UninstallSettingsPanel
+        add_action('admin_post_linguaforge_save_uninstall_setting',   [UninstallSettingsPanel::class, 'handle_save_uninstall_setting']);
 
         // Language Router tab
         add_action('admin_post_linguaforge_save_router_settings', [RouterTab::class, 'handle_save_router_settings']);
