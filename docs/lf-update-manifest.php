@@ -35,21 +35,17 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.9';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.9/lingua-forge-2.1.9.zip';
+	$version      = '2.1.10';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.10/lingua-forge-2.1.10.zip';
 	$last_updated = '2026-06-05';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.9 — 2026-06-05</h4>' .
+		'<h4>2.1.10 — 2026-06-05</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> Plugin Check compliance — <code>%i</code> identifier placeholder for table name in <code>LanguageUninstaller</code>; GET parameters in <code>RouterTab</code> unslashed and sanitized.</li>' .
-			'<li><strong>Fixed:</strong> WC Bookings (<code>shop_booking</code>) added to <code>QueryFilter</code> skip lists — a main query for that post type would silently return zero results.</li>' .
-			'<li><strong>UI:</strong> AI cache and Translation Memory stats moved from Maintenance to the AI Usage &amp; Cache tab — all AI performance metrics in one place.</li>' .
-			'<li><strong>Developer:</strong> <code>linguaforge_ai_provider</code> filter added to all AI call paths — swap the provider without modifying plugin code (custom providers, test stubs).</li>' .
-			'<li><strong>Developer:</strong> Translation.php refactored into three focused classes; Maintenance tab into panel classes. ~140 new tests added; total ~810 PHPUnit tests.</li>' .
+			'<li><strong>Developer:</strong> Pure test maintenance release. 32 new PHPUnit tests close all §6.0.1 coverage gaps across High, Medium, and Low priority. Total ~865 tests. Combined coverage rises from 23.63 % to 26.94 % (testable business logic ~65–70 %). No functional changes, no schema changes.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

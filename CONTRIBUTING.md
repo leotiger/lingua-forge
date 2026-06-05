@@ -624,8 +624,8 @@ and requires Docker + wp-env with WooCommerce active:
 ```bash
 cd dev/
 npm run env:start               # boots wp-env (only needed if stopped)
-composer test:integration:wc    # WC-only suite (~113 test cases)
-composer test:integration       # full suite including WC tests (~180 non-WC + ~113 WC)
+composer test:integration:wc    # WC-only suite (~121 test cases)
+composer test:integration       # full suite including WC tests (~221 non-WC + ~121 WC)
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes
@@ -1146,13 +1146,15 @@ coverage/
     └── summary.txt       ← per-file ✅/🔶/❌ table + totals
 ```
 
-**Interpreting the numbers:** the overall percentage is low (~10 %) by design —
-the entire Admin UI layer, CLI commands, and AI provider classes can only be
-exercised end-to-end and aren't practical to unit or integration test against
-the wp-env install. The meaningful signal is the per-file column: the core
-business logic classes (`BlockTextExtractor`, `Config`, `JsonRepair`,
-`TaxonomyDelegate`, `MetaDelegate`, `StockRouter`, `TridGroup`, etc.) should
-stay green (≥ 80 %).
+**Interpreting the numbers:** the raw headline (~27 % as of 2.1.10) understates
+real coverage — the denominator includes ~3,000 lines of Admin HTML render
+methods, ~1,200 lines of WP-CLI commands, and other untestable boilerplate.
+Stripping those, testable business-logic coverage is ~65–70 %. The meaningful
+signal is the per-file column: the core business logic classes (`BlockTextExtractor`,
+`Config`, `JsonRepair`, `TaxonomyDelegate`, `MetaDelegate`, `StockRouter`,
+`TridGroup`, `AbstractProvider`, `LanguageUninstaller`, etc.) should stay green
+(≥ 80 %). 29 files are at ≥ 80 % as of 2.1.10. See `lingua-forge-audit/COVERAGE-AUDIT-2026-06-05.md`
+for the full per-file breakdown.
 
 **Docker must be running** for `coverage:setup` and `composer coverage` (the
 integration step calls `wp-env run tests-cli`). If Docker isn't in your

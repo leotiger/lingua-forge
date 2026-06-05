@@ -350,6 +350,107 @@ final class VariationSyncIntegrationTest extends WcIntegrationTestCase {
 	// 14. maybe_sync_on_save() is a no-op for product_variation post type
 	// =========================================================================
 
+	// =========================================================================
+	// 15–16. sync_wc_taxonomies_from_source() — taxonomy propagation
+	//        §6.0.1 Low (VariationSync.php, 79%)
+	//
+	// sync_variations_for() calls sync_wc_taxonomies_from_source() internally,
+	// but only exercises the product_type and pa_* paths indirectly. These
+	// tests call the public static method directly so coverage is explicit and
+	// the individual taxonomy paths are each verified.
+	// =========================================================================
+
+	/**
+	 * 15. product_type term physically written to translated product by sync.
+	 *
+	 * TaxonomyDelegate's wp_get_object_terms filter delegates the source's terms
+	 * to translated products at query time, so we cannot use wp_get_object_terms()
+	 * to distinguish "physically assigned" from "delegated at runtime".
+	 *
+	 * Strategy:
+	 *   1. Pre-condition checked BEFORE assigning terms to source — delegation
+	 *      returns empty because the source has no terms yet.
+	 *   2. Assign term to source, then call sync.
+	 *   3. Post-condition: temporarily remove TaxonomyDelegate filter and verify
+	 *      the term is physically present in wp_term_relationships for the
+	 *      translated product — not just delegated at query time.
+	 */
+	public function test_sync_wc_taxonomies_propagates_product_type(): void {
+		if ( ! taxonomy_exists( 'product_type' ) ) {
+			register_taxonomy( 'product_type', [ 'product' ] );
+		}
+
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+
+		// Pre-condition: source has no terms yet → delegation returns empty for translated.
+		$before = wp_get_object_terms( $translated_id, 'product_type', [ 'fields' => 'ids' ] );
+		$this->assertSame( [], $before, 'Pre-condition: source has no product_type yet, so delegation must return empty.' );
+
+		// Assign a product_type term to the source.
+		$term = wp_insert_term( 'simple-' . uniqid(), 'product_type' );
+		$this->assertNotWPError( $term );
+		$term_id = (int) $term['term_id'];
+		wp_set_object_terms( $source_id, [ $term_id ], 'product_type' );
+
+		// Run the sync — must physically write the term to the translated product.
+		VariationSync::sync_wc_taxonomies_from_source( $source_id, $translated_id );
+
+		// Post-condition: bypass TaxonomyDelegate to confirm physical assignment.
+		remove_filter( 'wp_get_object_terms', [ \LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::class, 'maybe_delegate_terms' ], 10 );
+		$after = wp_get_object_terms( $translated_id, 'product_type', [ 'fields' => 'ids' ] );
+		add_filter( 'wp_get_object_terms', [ \LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::class, 'maybe_delegate_terms' ], 10, 4 );
+
+		$this->assertNotWPError( $after );
+		$this->assertContains(
+			$term_id,
+			$after,
+			'sync_wc_taxonomies_from_source() must physically write the product_type term to wp_term_relationships for the translated product.'
+		);
+	}
+
+	/**
+	 * 16. pa_* attribute taxonomy terms physically written to translated product.
+	 *
+	 * Same strategy as test 15: pre-condition before source has terms, then
+	 * bypass TaxonomyDelegate in the post-condition to verify physical assignment.
+	 */
+	public function test_sync_wc_taxonomies_propagates_pa_attribute_terms(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', [ 'product' ] );
+		}
+
+		[ $source_id, $translated_id ] = $this->make_product_pair();
+
+		// Pre-condition: source has no pa_color terms yet → delegation returns empty.
+		$before = wp_get_object_terms( $translated_id, 'pa_color', [ 'fields' => 'ids' ] );
+		$this->assertSame( [], $before, 'Pre-condition: source has no pa_color yet, so delegation must return empty.' );
+
+		// Assign a pa_color term to the source.
+		$term = wp_insert_term( 'Red-' . uniqid(), 'pa_color' );
+		$this->assertNotWPError( $term );
+		$term_id = (int) $term['term_id'];
+		wp_set_object_terms( $source_id, [ $term_id ], 'pa_color' );
+
+		// Run the sync.
+		VariationSync::sync_wc_taxonomies_from_source( $source_id, $translated_id );
+
+		// Post-condition: bypass TaxonomyDelegate to confirm physical assignment.
+		remove_filter( 'wp_get_object_terms', [ \LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::class, 'maybe_delegate_terms' ], 10 );
+		$after = wp_get_object_terms( $translated_id, 'pa_color', [ 'fields' => 'ids' ] );
+		add_filter( 'wp_get_object_terms', [ \LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::class, 'maybe_delegate_terms' ], 10, 4 );
+
+		$this->assertNotWPError( $after );
+		$this->assertContains(
+			$term_id,
+			$after,
+			'sync_wc_taxonomies_from_source() must physically write pa_* terms to wp_term_relationships for the translated product.'
+		);
+	}
+
+	// =========================================================================
+	// 14. maybe_sync_on_save() is a no-op for product_variation post type
+	// =========================================================================
+
 	public function test_maybe_sync_on_save_ignores_variation_post_type(): void {
 		[ $source_id, $translated_id ] = $this->make_product_pair();
 		$source_var_id = $this->make_source_variation( $source_id );

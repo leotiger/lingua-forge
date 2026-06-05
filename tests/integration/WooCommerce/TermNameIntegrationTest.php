@@ -303,4 +303,111 @@ final class TermNameIntegrationTest extends WcIntegrationTestCase {
 
 		$this->assertSame( 'History', $result, 'Non-WC taxonomy must not be filtered via int path.' );
 	}
+
+	// =========================================================================
+	// 13–16. Store API / block theme path — get_term and wp_get_object_terms
+	//
+	// WC's Store API calls WC_Product_Attribute::get_terms() which maps term IDs
+	// through array_map('get_term', ...) — bypassing the term_name filter entirely.
+	// translate_single_term_name() hooks `get_term` to cover this path.
+	//
+	// The classic wc_dropdown_variation_attribute_options() path uses
+	// wc_get_product_terms() → wp_get_object_terms() → translate_term_objects().
+	//
+	// Tests 13–14 exercise the `get_term` filter directly via apply_filters().
+	// Tests 15–16 exercise the `wp_get_object_terms` filter via the full WP API.
+	// =========================================================================
+
+	/**
+	 * 13. get_term filter — WC pa_* term translated in non-source language.
+	 *
+	 * The Store API JSON path calls get_term() for each attribute term; this
+	 * filter intercepts and swaps the name before the result is serialised.
+	 */
+	public function test_get_term_filter_translates_wc_term_name(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$term = $this->make_term( 'pa_color', 'Red' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Rojo' );
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		/** @var \WP_Term $result */
+		$result = apply_filters( 'get_term', $term, 'pa_color' );
+
+		$this->assertInstanceOf( \WP_Term::class, $result );
+		$this->assertSame( 'Rojo', $result->name, 'get_term filter must swap the pa_* term name in non-source language.' );
+		// The original object must be cloned — not mutated in place.
+		$this->assertSame( 'Red', $term->name, 'translate_single_term_name() must return a clone, not mutate the original.' );
+	}
+
+	/**
+	 * 14. get_term filter — source-language request returns original term unchanged.
+	 */
+	public function test_get_term_filter_returns_original_in_source_lang(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$term = $this->make_term( 'pa_color', 'Blue' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Blau' );
+
+		// Source-language request — no translation should occur.
+		$this->set_current_lang( self::SOURCE_LANG );
+
+		/** @var \WP_Term $result */
+		$result = apply_filters( 'get_term', $term, 'pa_color' );
+
+		$this->assertSame( 'Blue', $result->name, 'get_term filter must return original name in source language.' );
+	}
+
+	/**
+	 * 15. wp_get_object_terms filter — pa_* attribute names translated via full WP API.
+	 *
+	 * translate_term_objects() hooks wp_get_object_terms at priority 15 and
+	 * replaces term name properties on the returned WP_Term array. This is the
+	 * path that fires for wc_get_product_terms() in both classic and block themes.
+	 */
+	public function test_wp_get_object_terms_translates_pa_taxonomy_names(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$post_id = self::factory()->post->create( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
+		$term    = $this->make_term( 'pa_color', 'Green' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Verde' );
+		wp_set_object_terms( $post_id, $term->term_id, 'pa_color' );
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = wp_get_object_terms( $post_id, 'pa_color' );
+
+		$this->assertNotEmpty( $result, 'Expected at least one term from wp_get_object_terms().' );
+		$this->assertInstanceOf( \WP_Term::class, $result[0] );
+		$this->assertSame( 'Verde', $result[0]->name, 'wp_get_object_terms filter must translate pa_* term names.' );
+	}
+
+	/**
+	 * 16. wp_get_object_terms filter — non-WC taxonomy passes through untranslated.
+	 *
+	 * translate_term_objects() checks is_wc_taxonomy() and skips non-WC terms so
+	 * other plugins' taxonomies are never accidentally translated.
+	 */
+	public function test_wp_get_object_terms_skips_non_wc_taxonomy(): void {
+		register_taxonomy( 'lf_test_tax3', 'post' );
+
+		$post_id = self::factory()->post->create( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
+		$term    = $this->make_term( 'lf_test_tax3', 'History' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Historial' );
+		wp_set_object_terms( $post_id, $term->term_id, 'lf_test_tax3' );
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = wp_get_object_terms( $post_id, 'lf_test_tax3' );
+
+		$this->assertNotEmpty( $result, 'Expected at least one term from wp_get_object_terms().' );
+		$this->assertSame( 'History', $result[0]->name, 'Non-WC taxonomy must not be translated by translate_term_objects().' );
+	}
 }

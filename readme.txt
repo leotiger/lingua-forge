@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.9
+Stable tag: 2.1.10
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -251,6 +251,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.1.10 =
+* Developer: Pure test maintenance release — 32 new PHPUnit tests close all §6.0.1 coverage gaps (High, Medium, Low). Total ~865 PHPUnit tests. Combined coverage 26.94% (was 23.63%). Testable business-logic coverage ~65–70%. No functional changes, no schema changes.
+
 = 2.1.9 =
 * Fixed: Plugin Check compliance — prepared SQL uses %i identifier placeholder for table name in LanguageUninstaller; GET parameters in RouterTab unslashed and sanitized before use.
 * Fixed: WC Bookings (shop_booking) added to QueryFilter skip lists — a main query for that post type would silently return zero results due to a spurious _lf_lang meta condition.
@@ -355,6 +358,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.1.10 =
+Pure test maintenance release. 32 new PHPUnit tests, coverage 23.63%→26.94%. No functional changes, no schema changes.
 
 = 2.1.9 =
 Plugin Check compliance fixes. AI cache and TM stats moved to AI Usage & Cache tab. Major internal refactoring for testability (no functional changes). New linguaforge_ai_provider filter for custom providers. No schema changes.

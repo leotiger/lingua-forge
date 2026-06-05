@@ -2,6 +2,35 @@
 
 ---
 
+## [2.1.10] — 2026-06-05
+
+### Developer
+
+- **Full coverage pass — 32 new PHPUnit tests; total ~865 (unit + integration + WC).** Combined coverage rises from 23.63 % (end of 2.1.9) to **26.94 %** (2,787 / 10,347 statements). Testable business-logic coverage ~65–70 %. All §6.0.1 High, Medium, and Low priority gaps closed. No functional changes, no schema changes.
+
+  **High:**
+  - `SyncIntegrationTest.php` (4) — `handle_save_post()`: new post → `_lf_lang` + `_lf_trid`; existing lang preserved on update; `wp_navigation` gets lang but not TRID. `class-sync.php` 8 % → ~53 %.
+  - `TermNameIntegrationTest.php` (+4) — `get_term` filter and `wp_get_object_terms` filter (Store API path): translate and skip correctly for WC and non-WC taxonomies. `TermNameFilter.php` 49 % → 68 %.
+  - `LanguageUninstallerIntegrationTest.php` (3) — `uninstall()` end-to-end: posts deleted, count correct; protected lang noop; `file_mod_allowed=false` → skipped-file list surfaced. `LanguageUninstaller.php` 48 % → 94 %.
+
+  **Medium:**
+  - `MetaDescriptionIntegrationTest.php` (3) — success path via StubProvider; empty response → failure; cache hit on second call. `Features/MetaDescription.php` 74 % → 90 %.
+  - `GlossaryHashForPairTest.php` (+4) — `insert()` round-trip; empty-term guard (returns 0); `delete()` removes entry; `format_for_prompt()` substitution + "do not translate" directive. `Glossary.php` 61 % → 79 %.
+  - `TaxonomyDelegateIntegrationTest.php` (+3) — `clear_translated_product_term_cache_on_post()`: clears cache for translated product; skips source; skips non-product type. `TaxonomyDelegate.php` 53 % → 77 %.
+  - `ContextOptionsTest.php` (+3) — `lang_base_url()` subdomain URL; source-lang returns `home_url('/')`; `detect_lang()` reads HTTP_HOST in subdomain mode. `class-context.php` 52 % → 57 %.
+  - `FeatureControllerRestTest.php` (+2) — `/feature/meta-description/{id}` returns 200 + `success=true` via StubProvider; unknown slug returns 404. `FeatureController.php` 45 % → 47 %.
+
+  **Low:**
+  - `KeyStoreEnvelopeTest.php` (+3 unit) — `decrypt_v2()` invalid base64 → null; at exact IV+TAG boundary → null; `decrypt('')` via v1 path → null. `KeyStore.php` 79 % → 81 %.
+  - `VariationSyncIntegrationTest.php` (+2) — `sync_wc_taxonomies_from_source()` physically writes `product_type` and `pa_*` terms (post-condition verified by temporarily removing `TaxonomyDelegate` filter). `VariationSync.php` 79 % → 80 %.
+  - `ManagerIntegrationTest.php` (2) — source-language post returns URL unchanged; non-existent post ID returns URL unchanged. `class-manager.php` 38 %.
+  - `AbstractProviderIntegrationTest.php` (5) — WP_Error, HTTP 401, invalid JSON, `stop_reason=max_tokens`, success path — all via `pre_http_request` filter + Anthropic provider, no API quota consumed. `AbstractProvider.php` 2 % → 80 %.
+
+  **Discovered during run:**
+  - `MetaDescriptionModuleIntegrationTest.php` (5) — `Module::get()` with/without meta; `Module::save()` stores and delete-on-empty; `Module::output_tags()` three `<meta>` tags via bloginfo fallback. `meta-description/meta-description.php` 2 % → 27 %.
+
+---
+
 ## [2.1.9] — 2026-06-05
 
 ### Fixed

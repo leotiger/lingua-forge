@@ -55,16 +55,22 @@ tests/
 └── integration/                                   ← runs inside wp-env / WP test framework
     ├── Stubs/
     │   └── StubProvider.php                       ← AIProviderInterface stub with response-queue support; no live API key needed
+    ├── AbstractProviderIntegrationTest.php        ← AbstractProvider::chat() via pre_http_request: WP_Error/401/bad JSON/truncation/success
     ├── CacheStoreTest.php                         ← stats() shape, row count, date strings, hit_count, clear_all()
     ├── ConfigPresetAddendumIntegrationTest.php    ← preset_addendum + apply_compliance
-    ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang
-    ├── FeatureControllerRestTest.php              ← REST HTTP layer: 401/403/400/404/429 via rest_do_request()
-    ├── GlossaryHashForPairTest.php                ← Glossary::hash_for_pair stability
+    ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang, subdomain paths
+    ├── FeatureControllerRestTest.php              ← REST HTTP layer: 401/403/400/404/429 + /feature/{feature}/{id} success dispatch
+    ├── GlossaryHashForPairTest.php                ← hash_for_pair stability + insert/delete/format_for_prompt write paths
+    ├── LanguageUninstallerIntegrationTest.php     ← uninstall() end-to-end: posts deleted; protected lang noop; mods-disallowed path
     ├── LinkFixerScanTest.php                      ← scan_post(): wrong-language/no-translation/unresolved/correct-lang/shape
+    ├── ManagerIntegrationTest.php                 ← lang_permalink() early exits: source-lang post, non-existent post ID
+    ├── MetaDescriptionIntegrationTest.php         ← MetaDescription::run() via StubProvider: success, empty response, cache hit
+    ├── MetaDescriptionModuleIntegrationTest.php   ← meta-description Module: get(), save(), output_tags() bloginfo fallback
     ├── MissingTranslationNoticeBlockTest.php      ← FSE block render gating + escaping
     ├── PatternDiscoveryIntegrationTest.php        ← PatternDiscovery CPT pattern expansion
     ├── PluginBootTest.php                         ← constants + autoloader + class load
     ├── RedirectorSwitcherTest.php                 ← allow_lang_subdomains(), fix_site_logo_link(), translate_menu_items()
+    ├── SyncIntegrationTest.php                    ← handle_save_post(): new post gets _lf_lang + _lf_trid; lang preserved; wp_navigation
     ├── TranslationIntegrationTest.php             ← Translation::run() via StubProvider: cache hit, JSON-envelope, TM path, etc.
     ├── TranslationMemoryTest.php                  ← stats() shape, bytes_estimate, idempotent store(), clear_all()
     ├── TridGroupTest.php                          ← set/get lang+trid, get_translations SQL, cache clear
@@ -77,14 +83,14 @@ tests/
         ├── MetaDelegateWcApiIntegrationTest.php   ← wc_get_product() API path: price/SKU/stock on translated products/variations
         ├── RestWriteGuardIntegrationTest.php      ← HTTP 422 on PUT/PATCH to translated products and variations
         ├── StockRouterIntegrationTest.php         ← stock write routing in WP runtime
-        ├── TaxonomyDelegateIntegrationTest.php    ← term delegation + product_brand + linguaforge_wc_delegate_taxonomies filter
-        ├── TermNameIntegrationTest.php            ← _lf_term_name_{lang} swap at render time
+        ├── TaxonomyDelegateIntegrationTest.php    ← term delegation + cache clearing (clear_translated_product_term_cache_on_post)
+        ├── TermNameIntegrationTest.php            ← _lf_term_name_{lang} swap; get_term + wp_get_object_terms Store API paths
         ├── VariationDelegateIntegrationTest.php   ← variation query scoping; translated variations not redirected
-        └── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, price delegation
+        └── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, sync_wc_taxonomies_from_source
 ```
 
 Latest counts (test methods; data-provider variants add a few more test cases each):
-**~520 unit**, **~180 non-WC integration**, **~113 WC integration** — approximately **810 total**.
+**~523 unit**, **~221 non-WC integration**, **~121 WC integration** — approximately **865 total**.
 E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 

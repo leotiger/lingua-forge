@@ -214,4 +214,56 @@ final class FeatureControllerRestTest extends WP_UnitTestCase {
 		$data = $response->get_data();
 		$this->assertSame( 'missing_content', $data['code'] );
 	}
+
+	// =========================================================================
+	// /feature/{feature}/{id} — success dispatch — §6.0.1 Medium
+	//
+	// Previous tests only exercised error paths (401, 403, 400, 404, 429).
+	// These tests confirm the success dispatch: Registry::get() resolves the
+	// feature, supports() passes, and run() returns success=true via StubProvider.
+	// =========================================================================
+
+	/**
+	 * A valid authenticated POST to /feature/meta-description/{id} must return
+	 * HTTP 200 with success=true when the AI provider is stubbed.
+	 */
+	public function test_feature_meta_description_dispatch_returns_200_success(): void {
+		require_once dirname( __DIR__ ) . '/integration/Stubs/StubProvider.php';
+
+		$post_id = (int) self::factory()->post->create( [
+			'post_title'   => 'Renewable Energy Overview',
+			'post_content' => '<!-- wp:paragraph --><p>Solar and wind power are the future.</p><!-- /wp:paragraph -->',
+			'post_status'  => 'publish',
+		] );
+
+		$stub = new \LinguaForge\Tests\Integration\Stubs\StubProvider( 'Discover the future of renewable energy solutions.' );
+		add_filter( 'linguaforge_ai_provider', static fn() => $stub, 10, 3 );
+
+		// Disable API cache so the stub is always reached.
+		update_option( 'linguaforge_api_cache_enabled', false );
+
+		$response = $this->post( "/lingua-forge/v1/feature/meta-description/{$post_id}" );
+
+		remove_all_filters( 'linguaforge_ai_provider' );
+
+		$this->assertSame( 200, $response->get_status(), '/feature/meta-description/{id} must return 200 on success.' );
+		$data = $response->get_data();
+		$this->assertTrue( $data['success'] ?? false, 'Response must carry success=true.' );
+		$this->assertNotEmpty( $data['output'] ?? '', "'output' must be set and non-empty." );
+	}
+
+	/**
+	 * A POST to /feature/{unknown}/{id} must return HTTP 404 with
+	 * error code 'invalid_feature'.
+	 *
+	 * Completes the success/error dispatch matrix for the feature endpoint.
+	 */
+	public function test_feature_unknown_slug_returns_404(): void {
+		$post_id  = (int) self::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$response = $this->post( "/lingua-forge/v1/feature/no-such-feature/{$post_id}" );
+
+		$this->assertSame( 404, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertSame( 'invalid_feature', $data['code'] );
+	}
 }

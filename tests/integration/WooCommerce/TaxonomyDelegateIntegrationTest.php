@@ -274,6 +274,90 @@ final class TaxonomyDelegateIntegrationTest extends WcIntegrationTestCase {
 	// 12. linguaforge_wc_delegate_taxonomies filter adds third-party taxonomy
 	// =========================================================================
 
+	// =========================================================================
+	// 13–15. clear_translated_product_term_cache_on_post() — §6.0.1 Medium
+	//
+	// The `the_post` hook calls this method to bust the wp_term_relationships
+	// cache for translated products so the next get_the_terms() call falls
+	// through to wp_get_object_terms() → TaxonomyDelegate.
+	// =========================================================================
+
+	/**
+	 * 13. Translated product — term relationship caches are deleted.
+	 *
+	 * We prime the cache with a known value, call the method directly, and
+	 * assert that wp_cache_get() returns false (cache entry deleted).
+	 */
+	public function test_clear_cache_on_post_clears_cache_for_translated_product(): void {
+		[ , $translated_id ] = $this->make_product_pair();
+		$post = get_post( $translated_id );
+		$this->assertNotNull( $post );
+
+		// Prime the product_cat term relationship cache with a sentinel value.
+		wp_cache_set( $translated_id, [ 999 ], 'product_cat_relationships' );
+		$this->assertNotFalse(
+			wp_cache_get( $translated_id, 'product_cat_relationships' ),
+			'Pre-condition: cache must be primed before calling the method.'
+		);
+
+		\LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::clear_translated_product_term_cache_on_post( $post );
+
+		$this->assertFalse(
+			wp_cache_get( $translated_id, 'product_cat_relationships' ),
+			'clear_translated_product_term_cache_on_post() must delete the product_cat_relationships cache for a translated product.'
+		);
+	}
+
+	/**
+	 * 14. Source product — caches are NOT cleared (no delegation needed).
+	 *
+	 * clear_translated_product_term_cache_on_post() must return early when
+	 * the post language matches the source language.
+	 */
+	public function test_clear_cache_on_post_skips_source_product(): void {
+		[ $source_id ] = $this->make_product_pair();
+		$post = get_post( $source_id );
+		$this->assertNotNull( $post );
+
+		// Prime cache for the source product.
+		wp_cache_set( $source_id, [ 777 ], 'product_cat_relationships' );
+
+		\LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::clear_translated_product_term_cache_on_post( $post );
+
+		// Source product cache must be untouched.
+		$this->assertNotFalse(
+			wp_cache_get( $source_id, 'product_cat_relationships' ),
+			'clear_translated_product_term_cache_on_post() must not clear caches for the source-language product.'
+		);
+	}
+
+	/**
+	 * 15. Non-product post type — method returns early without clearing caches.
+	 *
+	 * Only 'product' and 'product_variation' are in the delegate_post_types list.
+	 * A regular 'post' must be skipped entirely.
+	 */
+	public function test_clear_cache_on_post_skips_non_product_type(): void {
+		$post_id = (int) self::factory()->post->create( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
+		$this->tg->set_lang( $post_id, self::TRANS_LANG );
+		$post = get_post( $post_id );
+
+		// Prime a cache entry for this non-product post.
+		wp_cache_set( $post_id, [ 555 ], 'product_cat_relationships' );
+
+		\LinguaForge\AI\Integrations\WooCommerce\TaxonomyDelegate::clear_translated_product_term_cache_on_post( $post );
+
+		// Cache must be untouched — the method bailed at the post-type guard.
+		$this->assertNotFalse(
+			wp_cache_get( $post_id, 'product_cat_relationships' ),
+			'clear_translated_product_term_cache_on_post() must not touch non-product post types.'
+		);
+	}
+
+	// =========================================================================
+	// 12. (existing)
+	// =========================================================================
+
 	public function test_delegate_taxonomies_filter_adds_third_party_brand_taxonomy(): void {
 		$custom_tax = 'pwb-brand';
 		if ( ! taxonomy_exists( $custom_tax ) ) {

@@ -211,4 +211,56 @@ final class KeyStoreEnvelopeTest extends TestCase {
             self::call( 'decrypt', [ $legacy, 'whatever-slug-is-ignored' ] )
         );
     }
+
+    // ── Corrupt / boundary envelope paths — §6.0.1 Low ─────────────────────
+
+    /**
+     * decrypt_v2() with invalid base64 content (non-base64 characters after the
+     * "v2|" prefix) must return null — exercises the `base64_decode($b64, true)
+     * === false` branch.
+     */
+    public function test_decrypt_v2_invalid_base64_returns_null(): void {
+
+        $corrupt = 'v2|!!!not-valid-base64!!!';
+
+        $this->assertNull(
+            self::call( 'decrypt_v2', [ $corrupt, 'anthropic' ] ),
+            'decrypt_v2() must return null when the payload is not valid base64.'
+        );
+    }
+
+    /**
+     * decrypt_v2() with a decoded payload of exactly IV_LEN + TAG_LEN bytes
+     * (12 + 16 = 28) must return null — the ciphertext region is zero-length,
+     * which the `strlen($raw) <= $iv_len + $tag_len` guard catches.
+     *
+     * The existing test_v2_short_envelope_is_rejected uses 8 bytes; this
+     * test covers the upper boundary: exactly at the limit.
+     */
+    public function test_decrypt_v2_exact_iv_plus_tag_boundary_returns_null(): void {
+
+        $iv_len  = 12; // V2_IV_LEN
+        $tag_len = 16; // V2_TAG_LEN
+        // Exactly IV_LEN + TAG_LEN bytes — ciphertext portion is empty.
+        $boundary = 'v2|' . base64_encode( str_repeat( "\x00", $iv_len + $tag_len ) );
+
+        $this->assertNull(
+            self::call( 'decrypt_v2', [ $boundary, 'anthropic' ] ),
+            'decrypt_v2() must return null when decoded payload has no ciphertext (IV+TAG only).'
+        );
+    }
+
+    /**
+     * decrypt() called with an empty string routes to the v1 path (no "v2|"
+     * prefix). base64_decode('', true) returns '' (not false), then
+     * strlen('') <= iv_len (16) → null. Verifies the v1 short-payload guard
+     * via the public dispatcher with a minimal input.
+     */
+    public function test_decrypt_empty_string_returns_null(): void {
+
+        $this->assertNull(
+            self::call( 'decrypt', [ '', 'anthropic' ] ),
+            'decrypt() must return null for an empty stored value.'
+        );
+    }
 }

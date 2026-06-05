@@ -209,4 +209,66 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de,ca;q=0.9';
 		$this->assertSame( 'de', $this->ctx()->detect_browser_lang( [ 'ca', 'de' ] ) );
 	}
+
+	// ── Subdomain routing — §6.0.1 Medium (class-context.php, 52%) ───────────
+
+	/**
+	 * lang_base_url() must return https://{lang}.{base_domain}/ in subdomain mode
+	 * for a non-source language.
+	 */
+	public function test_lang_base_url_returns_subdomain_url_in_subdomain_mode(): void {
+		update_option( 'linguaforge_routing_mode',     'subdomain', false );
+		update_option( 'linguaforge_primary_language', 'en',        false );
+		add_filter( 'lf_base_domain',    static fn() => 'example.org' );
+		add_filter( 'lf_languages_list', static fn( array $l ): array => array_values( array_unique( array_merge( $l, [ 'de' ] ) ) ) );
+
+		$result = $this->ctx()->lang_base_url( 'de' );
+
+		remove_all_filters( 'lf_base_domain' );
+		remove_all_filters( 'lf_languages_list' );
+
+		$this->assertStringContainsString( 'de.example.org', $result, 'lang_base_url() must include {lang}.{base_domain} in subdomain mode.' );
+		$this->assertStringEndsWith( '/', $result, 'lang_base_url() must end with a trailing slash.' );
+	}
+
+	/**
+	 * lang_base_url() must return home_url('/') for the source language in
+	 * subdomain mode — source content lives at the root domain, not a subdomain.
+	 */
+	public function test_lang_base_url_returns_home_url_for_source_language_in_subdomain_mode(): void {
+		update_option( 'linguaforge_routing_mode',     'subdomain', false );
+		update_option( 'linguaforge_primary_language', 'en',        false );
+		add_filter( 'lf_base_domain', static fn() => 'example.org' );
+
+		$result = $this->ctx()->lang_base_url( 'en' );
+
+		remove_all_filters( 'lf_base_domain' );
+
+		$this->assertSame( home_url( '/' ), $result, 'lang_base_url() must return home_url("/") for the source language.' );
+	}
+
+	/**
+	 * detect_lang() must resolve the language from the HTTP_HOST subdomain
+	 * when subdomain routing mode is active.
+	 *
+	 * Simulates a request to de.example.org by setting $_SERVER['HTTP_HOST']
+	 * and filtering lf_base_domain to the apex domain.
+	 */
+	public function test_detect_lang_reads_subdomain_in_subdomain_mode(): void {
+		update_option( 'linguaforge_routing_mode',     'subdomain', false );
+		update_option( 'linguaforge_primary_language', 'en',        false );
+
+		$_SERVER['HTTP_HOST'] = 'de.example.org'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- test-only assignment to simulate a subdomain request.
+
+		add_filter( 'lf_base_domain',    static fn() => 'example.org' );
+		add_filter( 'lf_languages_list', static fn( array $l ): array => array_values( array_unique( array_merge( $l, [ 'de' ] ) ) ) );
+
+		$result = $this->ctx()->detect_lang();
+
+		remove_all_filters( 'lf_base_domain' );
+		remove_all_filters( 'lf_languages_list' );
+		unset( $_SERVER['HTTP_HOST'] );
+
+		$this->assertSame( 'de', $result, 'detect_lang() must return the subdomain language code in subdomain routing mode.' );
+	}
 }
