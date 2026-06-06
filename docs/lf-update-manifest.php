@@ -35,23 +35,23 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.0/lingua-forge-2.2.0.zip';
+	$version      = '2.2.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.1/lingua-forge-2.2.1.zip';
 	$last_updated = '2026-06-06';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.0 — 2026-06-06</h4>' .
+		'<h4>2.2.1 — 2026-06-06</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Complete multilingual SEO layer — Open Graph with og:locale/og:locale:alternate, Twitter Cards, Schema.org JSON-LD (Article/WebPage/WebSite with inLanguage annotations, Product schema for WooCommerce), and a dedicated XML sitemap at /lf-sitemap.xml with xhtml:link hreflang alternates. No companion SEO plugin required.</li>' .
-			'<li><strong>Added:</strong> Social Share — Social Icons block share: URL rewriting for Facebook, X, LinkedIn, WhatsApp, Telegram, Email, Reddit, Pinterest, Mastodon, and copy/native/auto JS clipboard and Web Share API actions.</li>' .
-			'<li><strong>Added:</strong> SEO Content Analysis — rule-based 0–100 score (title, meta description, word count, headings, image alt, links) in Settings → SEO → Analysis. Block editor sidebar panel with AI Recommendations.</li>' .
-			'<li><strong>Added:</strong> Settings → SEO tab with Hreflang, Open Graph, Social Share, WooCommerce, Schema.org, Sitemap, Analysis, and Compatibility panels.</li>' .
-			'<li><strong>Added:</strong> WooCommerce product OG — og:type=product, og:price:amount, og:price:currency, og:availability, product:* namespace equivalents.</li>' .
-			'<li><strong>Added:</strong> XML sitemap announced in robots.txt; Bing/Yandex ping; robots.txt management panel.</li>' .
-			'<li><strong>Developer:</strong> 63 new tests (unit + integration). New classes: SeoManager, SchemaManager, SocialShare, SitemapManager, WooCommerce/SeoSupport.</li>' .
+			'<li><strong>Added:</strong> SEO Analysis scoring profiles — Blog/Editorial, Product/eCommerce, Landing/Short-form. Per-row profile selector in the Settings analysis panel and the block editor sidebar.</li>' .
+			'<li><strong>Added:</strong> WooCommerce classic editor SEO meta box — full scoring and AI recommendations on the product edit screen. Extensible via linguaforge_seo_analysis_classic_post_types filter.</li>' .
+			'<li><strong>Added:</strong> AI recommendation caching — stored in CacheStore under seo-ai-{profile} keys; from_cache flag returned; ↺ Refresh button to force a new AI call.</li>' .
+			'<li><strong>Added:</strong> H2-as-H1 global option — credits the first H2 as H1 when a block theme renders the post title as H2.</li>' .
+			'<li><strong>Changed:</strong> Profile-aware AI prompts — product profile omits heading/links advice; landing profile omits links advice.</li>' .
+			'<li><strong>Changed:</strong> Product and landing profile link weight set to 0; redistributed to meta description, word count, and images.</li>' .
+			'<li><strong>Fixed:</strong> ESLint no-shadow warning in seo-analysis.js; react-hooks/exhaustive-deps warning in seo-analysis-editor.js.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

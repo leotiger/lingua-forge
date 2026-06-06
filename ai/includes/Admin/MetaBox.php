@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Admin;
 
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Admin\Settings\Panels\SeoAnalysisPanel;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
 
@@ -128,10 +129,20 @@ class MetaBox {
             [self::class, 'enqueue_block_action']
         );
 
-        // SEO Analysis panel in the Document sidebar.
+        // SEO Analysis panel in the Document sidebar (block editor).
         add_action(
             'enqueue_block_editor_assets',
             [self::class, 'enqueue_seo_analysis']
+        );
+
+        // SEO Analysis meta box for classic-editor post types (e.g. WooCommerce products).
+        add_action(
+            'add_meta_boxes',
+            [self::class, 'register_seo_analysis_meta_box']
+        );
+        add_action(
+            'admin_enqueue_scripts',
+            [self::class, 'enqueue_seo_analysis_classic']
         );
 
         add_action(
@@ -348,6 +359,8 @@ class MetaBox {
             return;
         }
 
+        $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
         wp_enqueue_script(
             'lingua-forge-seo-analysis-editor',
             LINGUAFORGE_AI_URL . '/assets/seo-analysis-editor.js',
@@ -359,14 +372,23 @@ class MetaBox {
         $provider_slug = \LinguaForge\AI\Core\Config::provider();
         $ai_enabled    = ! empty( \LinguaForge\AI\Core\KeyStore::get( $provider_slug ) );
 
+        // Build profile list for the SelectControl in the editor panel.
+        $profiles_list = [];
+        foreach ( SeoAnalysisPanel::profiles() as $key => $prof ) {
+            $profiles_list[] = [ 'value' => $key, 'label' => $prof['label'] ];
+        }
+
         wp_localize_script( 'lingua-forge-seo-analysis-editor', 'lfSeoAnalysisEditor', [
             'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
             'nonce'     => wp_create_nonce( 'linguaforge_seo_analyze' ),
             'aiEnabled' => $ai_enabled,
+            'postType'  => $screen ? $screen->post_type : '',
             'postLang'  => Translation::detect_post_language(),
+            'profiles'  => $profiles_list,
             'strings'   => [
                 'panelTitle'      => __( 'SEO Analysis',             'lingua-forge' ),
-                'analyze'         => __( 'Analyze',                  'lingua-forge' ),
+                'profile'         => __( 'Profile',                  'lingua-forge' ),
+                'clickForDetails' => __( 'Details ↗',               'lingua-forge' ),
                 'outOf100'        => __( '/ 100',                    'lingua-forge' ),
                 'overallScore'    => __( 'Overall SEO score',        'lingua-forge' ),
                 'metric'          => __( 'Metric',                   'lingua-forge' ),
@@ -385,6 +407,139 @@ class MetaBox {
                 'aiFailed'        => __( 'AI analysis failed. Please try again.',  'lingua-forge' ),
                 'titleSuggestion' => __( 'Suggested title',          'lingua-forge' ),
                 'metaSuggestion'  => __( 'Suggested meta description', 'lingua-forge' ),
+                'fromCache'       => __( 'Loaded from cache.',        'lingua-forge' ),
+                'refreshAi'       => __( '↺ Refresh AI Analysis',    'lingua-forge' ),
+            ],
+        ] );
+    }
+
+    // ── SEO Analysis — classic editor meta box ────────────────────────────────
+
+    /**
+     * Post types that use the classic editor and should receive the SEO
+     * Analysis meta box instead of the block-editor sidebar panel.
+     *
+     * @return string[]
+     */
+    private static function seo_classic_post_types(): array {
+        return (array) apply_filters( 'linguaforge_seo_analysis_classic_post_types', [ 'product' ] );
+    }
+
+    /**
+     * Register the SEO Analysis meta box for classic-editor post types.
+     */
+    public static function register_seo_analysis_meta_box(): void {
+
+        foreach ( self::seo_classic_post_types() as $post_type ) {
+            add_meta_box(
+                'lingua-forge-seo-analysis',
+                __( 'SEO Analysis', 'lingua-forge' ),
+                [ self::class, 'render_seo_analysis_meta_box' ],
+                $post_type,
+                'normal',
+                'default'
+            );
+        }
+    }
+
+    /**
+     * Render the SEO Analysis meta box for classic-editor post types.
+     */
+    public static function render_seo_analysis_meta_box( \WP_Post $post ): void {
+
+        $default_profile = SeoAnalysisPanel::resolve_profile( $post->post_type );
+
+        ?>
+        <div id="lf-seo-meta-box" style="padding:4px 0;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <label for="lf-seo-meta-profile" style="font-weight:600;">
+                    <?php esc_html_e( 'Profile', 'lingua-forge' ); ?>
+                </label>
+                <select id="lf-seo-meta-profile" style="min-width:190px;">
+                    <option value="" disabled selected>
+                        <?php esc_html_e( 'Analyse…', 'lingua-forge' ); ?>
+                    </option>
+                    <?php foreach ( SeoAnalysisPanel::profiles() as $key => $prof ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>">
+                            <?php echo esc_html( $prof['label'] ); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <span id="lf-seo-meta-spinner" class="spinner"
+                    style="float:none;margin:0 4px;vertical-align:middle;display:none;"></span>
+            </div>
+            <div id="lf-seo-meta-results"></div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Enqueue the SEO Analysis script for classic-editor post types.
+     */
+    public static function enqueue_seo_analysis_classic( string $hook ): void {
+
+        if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+            return;
+        }
+
+        $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+        if ( ! $screen || ! in_array( $screen->post_type, self::seo_classic_post_types(), true ) ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            return;
+        }
+
+        // Resolve current post ID from query string (edit) or POST (new).
+        // No nonce available here — this runs during admin_enqueue_scripts to
+        // identify which post the edit screen is showing, not to process any
+        // submitted form data. absint() ensures the value is safe to use.
+        // phpcs:disable WordPress.Security.NonceVerification
+        $post_id = isset( $_GET['post'] )
+            ? absint( $_GET['post'] )
+            : ( isset( $_POST['post_ID'] ) ? absint( $_POST['post_ID'] ) : 0 );
+        // phpcs:enable WordPress.Security.NonceVerification
+
+        wp_enqueue_script(
+            'lingua-forge-seo-analysis-meta',
+            LINGUAFORGE_AI_URL . '/assets/seo-analysis-meta.js',
+            [],
+            LINGUAFORGE_VERSION,
+            true
+        );
+
+        $provider_slug = \LinguaForge\AI\Core\Config::provider();
+        $ai_enabled    = ! empty( \LinguaForge\AI\Core\KeyStore::get( $provider_slug ) );
+
+        wp_localize_script( 'lingua-forge-seo-analysis-meta', 'lfSeoAnalysisMeta', [
+            'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+            'nonce'     => wp_create_nonce( 'linguaforge_seo_analyze' ),
+            'postId'    => $post_id,
+            'postLang'  => Translation::detect_post_language(),
+            'aiEnabled' => $ai_enabled,
+            'strings'   => [
+                'titleLabel'      => __( 'Title',            'lingua-forge' ),
+                'metaDesc'        => __( 'Meta description', 'lingua-forge' ),
+                'wordCount'       => __( 'Word count',       'lingua-forge' ),
+                'readTime'        => __( 'Reading time',     'lingua-forge' ),
+                'headings'        => __( 'Headings',         'lingua-forge' ),
+                'images'          => __( 'Images',           'lingua-forge' ),
+                'links'           => __( 'Links',            'lingua-forge' ),
+                'overallScore'    => __( 'Overall SEO score', 'lingua-forge' ),
+                'metric'          => __( 'Metric',           'lingua-forge' ),
+                'finding'         => __( 'Finding',          'lingua-forge' ),
+                'requestFailed'   => __( 'Analysis request failed. Please try again.', 'lingua-forge' ),
+                'usedSource'      => __( 'No translation found — analyzed the source language version.', 'lingua-forge' ),
+                'aiSection'       => __( 'AI Recommendations', 'lingua-forge' ),
+                'aiNotConfigured' => __( 'Configure an AI provider in Settings → API Keys to enable AI-powered recommendations.', 'lingua-forge' ),
+                'runAi'           => __( 'Run AI Analysis', 'lingua-forge' ),
+                'analyzing'       => __( 'Analyzing…', 'lingua-forge' ),
+                'aiFailed'        => __( 'AI analysis failed. Please try again.', 'lingua-forge' ),
+                'titleSuggestion' => __( 'Suggested title', 'lingua-forge' ),
+                'metaSuggestion'  => __( 'Suggested meta description', 'lingua-forge' ),
+                'fromCache'       => __( 'Loaded from cache.', 'lingua-forge' ),
+                'refreshAi'       => __( '↺ Refresh AI Analysis', 'lingua-forge' ),
             ],
         ] );
     }

@@ -2,6 +2,40 @@
 
 ---
 
+## [2.2.1] — 2026-06-06
+
+### Added
+
+- **SEO Analysis scoring profiles** — three built-in profiles (Blog/Editorial, Product/eCommerce, Landing/Short-form) each with tailored thresholds and metric weights. Profile selector appears per-row in Settings → SEO → Analysis and auto-triggers analysis on change (no separate Analyze button). Block editor sidebar panel includes a `SelectControl` profile picker that auto-loads the score on mount and on every profile change.
+
+- **H2-as-H1 global option** — checkbox in Settings → SEO → Analysis. When enabled and the theme renders the post title as H2 (no H1 present), the first H2 is credited as the H1 equivalent. Fallback when the rendered page cannot be fetched returns `ok` status with an explanatory note rather than penalising the score.
+
+- **Fetch-based heading detection** — `SeoAnalysisPanel::extract_headings_from_url()` fetches the rendered frontend page via `wp_remote_get()` so theme-output heading tags (post title as `<h1>`) are counted accurately. Falls back to content-only parsing on fetch failure. `linguaforge_seo_sslverify` filter for self-signed-cert environments.
+
+- **WooCommerce classic editor SEO Analysis meta box** — `add_meta_box()` registered for `product` post type (filterable via `linguaforge_seo_analysis_classic_post_types`). Profile selector with a disabled "Analyse…" placeholder triggers inline analysis on change; full metrics table and AI recommendations rendered directly in the meta box. `seo-analysis-meta.js` is enqueued only on product edit screens via `admin_enqueue_scripts`.
+
+- **AI recommendation caching** — results stored in the existing `CacheStore` table under `seo-ai-{profile}` feature keys. Hash covers post content, title, meta description, language, and profile — any content change invalidates the cache automatically. Cache hits are served instantly; a `from_cache: true` flag in the response causes JS to render a "↺ Refresh AI Analysis" button. `force_refresh: 1` POST parameter bypasses cache and writes a fresh entry.
+
+- **Profile-aware AI prompts** — `ajax_ai_analyze()` builds a tailored prompt context per profile. Product: excludes heading and internal-link metrics (WooCommerce theme template outputs the product title as H1 automatically; internal links are not a relevant ranking signal for product pages). Landing: excludes internal-link advice. Blog: full context including H1/H2 counts and internal link count.
+
+### Changed
+
+- **Product profile weights** — `links` weight reduced from 10 to 0; `meta_description` raised from 25 to 30; `word_count` raised from 10 to 15; `images` raised from 15 to 20; `headings` lowered from 10 to 5. Weights still sum to 90 (max score 100 including the fixed 10-point reading-time base).
+
+- **Landing profile weights** — `links` weight reduced from 10 to 0; `meta_description` raised from 25 to 30; `word_count` raised from 10 to 15.
+
+- **`rate_links()` — non-required profiles** — returns `info` status (0 score contribution) instead of `warn` when `links_required` is false and no links are found.
+
+- **Block editor AI panel** — replaced static "Run AI Analysis" button with a persistent "↺ Refresh AI Analysis" button rendered below results; `runAi()` accepts `forceRefresh` parameter passed through to the AJAX action.
+
+### Fixed
+
+- `seo-analysis.js` — `forEach` callback parameter `s` shadowed the outer `s` (strings) variable; renamed to `sel`. ESLint `no-shadow` errors on lines 160 and 194.
+
+- `seo-analysis-editor.js` — `useEffect` dependency array missing `setScore`; added. ESLint `react-hooks/exhaustive-deps` warning on line 83.
+
+---
+
 ## [2.2.0] — 2026-06-06
 
 ### Added

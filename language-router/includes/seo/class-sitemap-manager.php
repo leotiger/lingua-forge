@@ -12,12 +12,11 @@
  * SEO plugin sitemaps (Yoast, Rank Math) replace the WP sitemap entirely
  * but have no knowledge of LF's routing configuration.
  *
- * LF's sitemap at /lf-sitemap.xml is complementary, not a replacement:
- *   WP core sitemap   — lists all your content URLs
- *   LF sitemap        — adds the language alternate links that tell
- *                       search engines how language versions relate
+ * LF disables the WP core sitemap entirely (wp_sitemaps_enabled → false)
+ * and replaces it with /lf-sitemap.xml, which includes the hreflang
+ * alternates that search engines need to index multilingual content.
  *
- * Both URLs should be submitted to Google Search Console.
+ * Submit /lf-sitemap.xml to Google Search Console.
  *
  * ── Discovery ─────────────────────────────────────────────────────────────
  * The sitemap URL is announced via a Sitemap: directive in robots.txt so
@@ -65,6 +64,10 @@ class SitemapManager {
 		if ( ! get_option( 'linguaforge_seo_sitemap_enabled', true ) ) {
 			return;
 		}
+
+		// Disable the WordPress 5.5+ built-in sitemap — it has no hook for
+		// <xhtml:link> alternates, so LF's own sitemap replaces it entirely.
+		add_filter( 'wp_sitemaps_enabled', '__return_false' );
 
 		// Serve the sitemap XML on the front end.
 		add_action( 'template_redirect', [ $this, 'maybe_serve_sitemap' ], 1 );
@@ -347,8 +350,9 @@ class SitemapManager {
 	/**
 	 * Whether a SEO plugin with its own sitemap system is active.
 	 *
-	 * These plugins replace the WP core sitemap entirely.  Their sitemaps
-	 * are separate from LF's — both should be submitted to Search Console.
+	 * These plugins replace the WP core sitemap entirely.  LF's sitemap
+	 * adds the hreflang alternates these plugins lack; both should be
+	 * submitted to Search Console.
 	 *
 	 * @return bool
 	 */

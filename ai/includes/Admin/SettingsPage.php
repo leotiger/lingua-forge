@@ -140,6 +140,7 @@ class SettingsPage {
         add_action('admin_post_linguaforge_flush_sitemap_cache',    [SitemapPanel::class,          'handle_flush_cache']);
         add_action('admin_post_linguaforge_ping_sitemap',           [SitemapPanel::class,          'handle_ping']);
         add_action('admin_post_linguaforge_update_robots_txt',      [SitemapPanel::class,          'handle_update_robots']);
+        add_action('admin_post_linguaforge_save_seo_analysis',       [SeoAnalysisPanel::class,      'handle_save_analysis_settings']);
 
         // SEO Analysis AJAX
         add_action('wp_ajax_linguaforge_seo_analyze',    [SeoAnalysisPanel::class, 'ajax_analyze']);
@@ -330,27 +331,33 @@ class SettingsPage {
             $version,
             true
         );
+        $seo_profiles_list = [];
+        foreach ( SeoAnalysisPanel::profiles() as $key => $prof ) {
+            $seo_profiles_list[] = [ 'value' => $key, 'label' => $prof['label'] ];
+        }
         wp_localize_script( 'linguaforge-seo-analysis', 'lfSeoAnalysis', [
-            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( 'linguaforge_seo_analyze' ),
-            'strings' => [
-                'titleLabel'   => __( 'Title',            'lingua-forge' ),
-                'metaDesc'     => __( 'Meta description', 'lingua-forge' ),
-                'wordCount'    => __( 'Word count',       'lingua-forge' ),
-                'readTime'     => __( 'Reading time',     'lingua-forge' ),
-                'headings'     => __( 'Headings',         'lingua-forge' ),
-                'images'       => __( 'Images',           'lingua-forge' ),
-                'links'        => __( 'Links',            'lingua-forge' ),
-                'overallScore' => __( 'Overall SEO score', 'lingua-forge' ),
-                'metric'       => __( 'Metric',           'lingua-forge' ),
-                'finding'      => __( 'Finding',          'lingua-forge' ),
-                'title'        => __( 'Title',            'lingua-forge' ),
-                'type'         => __( 'Type',             'lingua-forge' ),
-                'modified'     => __( 'Modified',         'lingua-forge' ),
-                'analyze'      => __( 'Analyze',          'lingua-forge' ),
-                'edit'         => __( 'edit',             'lingua-forge' ),
-                'noPostsFound' => __( 'No published posts found for the selected filters.', 'lingua-forge' ),
-                'usedSource'   => __( 'No translation found — analyzed the source language version.', 'lingua-forge' ),
+            'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'linguaforge_seo_analyze' ),
+            'profiles' => $seo_profiles_list,
+            'strings'  => [
+                'titleLabel'    => __( 'Title',            'lingua-forge' ),
+                'metaDesc'      => __( 'Meta description', 'lingua-forge' ),
+                'wordCount'     => __( 'Word count',       'lingua-forge' ),
+                'readTime'      => __( 'Reading time',     'lingua-forge' ),
+                'headings'      => __( 'Headings',         'lingua-forge' ),
+                'images'        => __( 'Images',           'lingua-forge' ),
+                'links'         => __( 'Links',            'lingua-forge' ),
+                'overallScore'  => __( 'Overall SEO score', 'lingua-forge' ),
+                'metric'        => __( 'Metric',           'lingua-forge' ),
+                'finding'       => __( 'Finding',          'lingua-forge' ),
+                'title'         => __( 'Title',            'lingua-forge' ),
+                'type'          => __( 'Type',             'lingua-forge' ),
+                'modified'      => __( 'Modified',         'lingua-forge' ),
+                'profile'             => __( 'Profile',          'lingua-forge' ),
+                'analysePlaceholder'  => __( 'Analyse…',         'lingua-forge' ),
+                'edit'                => __( 'edit',             'lingua-forge' ),
+                'noPostsFound'  => __( 'No published posts found for the selected filters.', 'lingua-forge' ),
+                'usedSource'    => __( 'No translation found — analyzed the source language version.', 'lingua-forge' ),
                 'requestFailed' => __( 'Analysis request failed. Please try again.', 'lingua-forge' ),
             ],
         ] );

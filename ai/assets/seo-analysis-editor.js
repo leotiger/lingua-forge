@@ -2,15 +2,18 @@
  * Lingua Forge — SEO Analysis — Block Editor Panel
  *
  * Registers a PluginDocumentSettingPanel in the Document sidebar that shows
- * the current post's rule-based SEO score with a button to open a full
- * analysis modal.  Inside the modal an "AI Recommendations" section calls
- * the AI provider (when configured) for natural-language suggestions.
+ * a profile selector and the current post's rule-based SEO score.  The score
+ * badge is clickable and opens a full analysis modal.  Inside the modal an
+ * "AI Recommendations" section calls the AI provider (when configured) for
+ * natural-language suggestions.
  *
  * Globals (lfSeoAnalysisEditor, injected via wp_localize_script):
  *   ajaxUrl    — admin-ajax.php URL
  *   nonce      — shared nonce for rule-based + AI analysis requests
  *   aiEnabled  — bool — whether an AI provider is configured
  *   postLang   — current post's LF language code, or null
+ *   postType   — current post type slug (used to auto-detect default profile)
+ *   profiles   — array of { value, label } objects for the SelectControl
  *   strings    — translatable UI strings
  */
 ( function () {
@@ -24,14 +27,17 @@
 	var aiOn     = !! cfg.aiEnabled;
 	var s        = cfg.strings  || {};
 
-	var el          = wp.element.createElement;
-	var useState    = wp.element.useState;
-	var useEffect   = wp.element.useEffect;
-	var useSelect   = wp.data.useSelect;
-	var Button      = wp.components.Button;
-	var Spinner     = wp.components.Spinner;
-	var Modal       = wp.components.Modal;
-	var Notice      = wp.components.Notice;
+	// Auto-detect initial scoring profile from post type.
+	var defaultProfile = cfg.postType === 'product' ? 'product' : 'blog';
+
+	var el            = wp.element.createElement;
+	var useState      = wp.element.useState;
+	var useEffect     = wp.element.useEffect;
+	var useSelect     = wp.data.useSelect;
+	var SelectControl = wp.components.SelectControl;
+	var Spinner       = wp.components.Spinner;
+	var Modal         = wp.components.Modal;
+	var Notice        = wp.components.Notice;
 
 	// ── Panel component ────────────────────────────────────────────────────────
 
@@ -43,6 +49,9 @@
 		var postTitle = useSelect( function ( select ) {
 			return select( 'core/editor' ).getEditedPostAttribute( 'title' );
 		} );
+
+		var _profile     = useState( defaultProfile );
+		var profile      = _profile[0]; var setProfile     = _profile[1];
 
 		var _score       = useState( null );
 		var score        = _score[0]; var setScore       = _score[1];
@@ -65,10 +74,13 @@
 		var _aiError     = useState( '' );
 		var aiError      = _aiError[0]; var setAiError     = _aiError[1];
 
-		// Load rule-based metrics for the score badge on first render.
+		// Auto-load score whenever postId or profile changes.
 		useEffect( function () {
-			if ( postId ) { quickLoad( postId, setScore ); }
-		}, [ postId, setScore ] );
+			if ( postId ) {
+				setScore( null );
+				quickLoad( postId, profile, setScore );
+			}
+		}, [ postId, profile, setScore ] );
 
 		// ── Panel render ────────────────────────────────────────────────────────
 		return el( wp.editPost.PluginDocumentSettingPanel,
@@ -77,21 +89,43 @@
 				title: s.panelTitle || 'SEO Analysis',
 				icon:  'chart-line',
 			},
-			// Score badge.
-			score !== null && el( 'div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' } },
-				el( 'span', { style: { fontSize: '1.5em', fontWeight: '700', color: scoreColor( score ), lineHeight: 1 } }, String( score ) ),
-				el( 'span', { style: { color: '#646970', fontSize: '12px' } }, s.outOf100 || '/ 100' )
-			),
-			loading && el( Spinner ),
-			el( Button,
+
+			// Profile selector — replaces the old Analyze button.
+			el( SelectControl,
 				{
-					variant:  'secondary',
-					isBusy:   loading,
-					disabled: loading || ! postId,
-					onClick:  function () { openModal( postId, setLoading, setMetrics, setScore, setShowModal, setAiData, setAiError ); },
-				},
-				s.analyze || 'Analyze'
+					label:                   s.profile || 'Profile',
+					value:                   profile,
+					options:                 cfg.profiles || [],
+					onChange:                function ( val ) { setProfile( val ); },
+					__nextHasNoMarginBottom: true,
+				}
 			),
+
+			// Score badge — clickable to open full modal.
+			score !== null && el( 'div',
+				{
+					style:   { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', cursor: 'pointer' },
+					onClick: function () {
+						openModal( postId, profile, setLoading, setMetrics, setScore, setShowModal, setAiData, setAiError );
+					},
+					title: s.clickForDetails || 'Details ↗',
+					role:  'button',
+					tabIndex: 0,
+					onKeyDown: function ( e ) {
+						if ( e.key === 'Enter' || e.key === ' ' ) {
+							openModal( postId, profile, setLoading, setMetrics, setScore, setShowModal, setAiData, setAiError );
+						}
+					},
+				},
+				el( 'span', { style: { fontSize: '1.8em', fontWeight: '700', color: scoreColor( score ), lineHeight: 1 } }, String( score ) ),
+				el( 'span', { style: { color: '#646970', fontSize: '12px' } }, s.outOf100 || '/ 100' ),
+				el( 'span', { style: { color: '#0073aa', fontSize: '11px', marginLeft: '4px', textDecoration: 'underline' } },
+					s.clickForDetails || 'Details ↗'
+				)
+			),
+
+			loading && el( 'div', { style: { marginTop: '10px' } }, el( Spinner ) ),
+
 			// ── Modal ───────────────────────────────────────────────────────────
 			showModal && el( Modal,
 				{
@@ -99,28 +133,28 @@
 					onRequestClose:  function () { setShowModal( false ); setAiData( null ); setAiError( '' ); },
 					style:           { maxWidth: '680px' },
 				},
-				renderModal( metrics, aiData, aiLoading, aiError, aiOn, postId, s, setAiData, setAiLoading, setAiError )
+				renderModal( metrics, aiData, aiLoading, aiError, aiOn, postId, profile, s, setAiData, setAiLoading, setAiError )
 			)
 		);
 	}
 
 	// ── Quick load (score badge only) ─────────────────────────────────────────
 
-	function quickLoad( postId, setScore ) {
-		post( 'linguaforge_seo_analyze', { post_id: postId, lang: cfg.postLang || '' } )
+	function quickLoad( postId, profile, setScore ) {
+		post( 'linguaforge_seo_analyze', { post_id: postId, lang: cfg.postLang || '', profile: profile } )
 			.then( function ( d ) { if ( d.success ) setScore( d.data.score ); } )
 			.catch( function () {} );
 	}
 
 	// ── Open modal + load full metrics ────────────────────────────────────────
 
-	function openModal( postId, setLoading, setMetrics, setScore, setShowModal, setAiData, setAiError ) {
+	function openModal( postId, profile, setLoading, setMetrics, setScore, setShowModal, setAiData, setAiError ) {
 
 		setLoading( true );
 		setAiData( null );
 		setAiError( '' );
 
-		post( 'linguaforge_seo_analyze', { post_id: postId, lang: cfg.postLang || '' } )
+		post( 'linguaforge_seo_analyze', { post_id: postId, lang: cfg.postLang || '', profile: profile } )
 			.then( function ( d ) {
 				if ( d.success ) {
 					setMetrics( d.data );
@@ -134,7 +168,7 @@
 
 	// ── Modal content ─────────────────────────────────────────────────────────
 
-	function renderModal( metrics, aiData, aiLoading, aiError, aiEnabled, postId, strings, setAiData, setAiLoading, setAiError ) {
+	function renderModal( metrics, aiData, aiLoading, aiError, aiEnabled, postId, profile, strings, setAiData, setAiLoading, setAiError ) {
 
 		if ( ! metrics ) {
 			return el( Spinner );
@@ -183,10 +217,10 @@
 				strings.aiNotConfigured || 'Configure an AI provider in Settings → API Keys to enable AI-powered recommendations.'
 			),
 
-			aiEnabled && ! aiData && ! aiLoading && ! aiError && el( Button,
+			aiEnabled && ! aiData && ! aiLoading && ! aiError && el( 'button',
 				{
-					variant: 'primary',
-					onClick: function () { runAi( postId, setAiData, setAiLoading, setAiError ); },
+					className: 'button button-primary',
+					onClick:   function () { runAi( postId, profile, false, setAiData, setAiLoading, setAiError ); },
 				},
 				strings.runAi || 'Run AI Analysis'
 			),
@@ -200,16 +234,21 @@
 				aiError
 			),
 
-			aiData && renderAiResults( aiData, strings )
+			aiData && renderAiResults( aiData, strings, function () {
+				runAi( postId, profile, true, setAiData, setAiLoading, setAiError );
+			} )
 		);
 	}
 
-	function renderAiResults( ai, aiStrings ) {
+	function renderAiResults( ai, aiStrings, onRefresh ) {
 		var items = ( ai.improvements || [] ).map( function ( imp, i ) {
 			return el( 'li', { key: i, style: { marginBottom: '4px' } }, imp );
 		} );
 
 		return el( 'div', null,
+			ai.from_cache && el( 'p', { style: { color: '#646970', fontSize: '11px', marginBottom: '8px' } },
+				'ℹ ' + ( aiStrings.fromCache || 'Loaded from cache.' )
+			),
 			el( 'p', { style: { fontStyle: 'italic', color: '#3c434a', marginBottom: '12px' } }, ai.summary || '' ),
 			items.length > 0 && el( 'ul', { style: { marginLeft: '1.2em', listStyle: 'disc' } }, ...items ),
 			ai.title_suggestion && el( 'div', { style: { marginTop: '12px' } },
@@ -219,18 +258,27 @@
 			ai.meta_suggestion && el( 'div', { style: { marginTop: '12px' } },
 				el( 'strong', null, ( aiStrings.metaSuggestion || 'Suggested meta description' ) + ':' ),
 				el( 'p', { style: { margin: '4px 0 0', fontStyle: 'italic' } }, ai.meta_suggestion )
-			)
+			),
+			el( 'button', {
+				className: 'button button-secondary',
+				style:     { marginTop: '12px' },
+				onClick:   onRefresh,
+			}, aiStrings.refreshAi || '↺ Refresh AI Analysis' )
 		);
 	}
 
 	// ── Run AI analysis ───────────────────────────────────────────────────────
 
-	function runAi( postId, setAiData, setAiLoading, setAiError ) {
+	function runAi( postId, profile, forceRefresh, setAiData, setAiLoading, setAiError ) {
 
 		setAiLoading( true );
 		setAiError( '' );
+		setAiData( null ); // clear previous results while loading
 
-		post( 'linguaforge_seo_ai_analyze', { post_id: postId, lang: cfg.postLang || '' } )
+		var params = { post_id: postId, lang: cfg.postLang || '', profile: profile };
+		if ( forceRefresh ) { params.force_refresh = '1'; }
+
+		post( 'linguaforge_seo_ai_analyze', params )
 			.then( function ( d ) {
 				if ( d.success ) {
 					setAiData( d.data );

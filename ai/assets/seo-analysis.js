@@ -1,49 +1,53 @@
 /**
- * Lingua Forge — SEO Analysis panel
+ * Lingua Forge — SEO Analysis panel (Settings page)
  *
  * Flow:
  *   1. User selects language + post type and clicks "Load content".
  *   2. Post list is fetched via AJAX and rendered as a table.
- *   3. User clicks "Analyze" on any row.
+ *   3. Each row shows a profile <select>; changing it immediately runs analysis
+ *      for that row's post with the chosen profile.
  *   4. Analysis result is rendered in the panel below the list.
  *
  * Data injected by wp_localize_script as lfSeoAnalysis:
  *   ajaxUrl  — admin-ajax.php URL
  *   nonce    — wp_create_nonce('linguaforge_seo_analyze')
+ *   profiles — array of { value, label } for the per-row profile selector
  *   strings  — translatable UI strings
  */
 ( function () {
 	'use strict';
 
-	var data       = window.lfSeoAnalysis || {};
-	var ajaxUrl    = data.ajaxUrl || '';
-	var nonce      = data.nonce   || '';
-	var s          = data.strings || {};
+	var data    = window.lfSeoAnalysis || {};
+	var ajaxUrl = data.ajaxUrl  || '';
+	var nonce   = data.nonce    || '';
+	var s       = data.strings  || {};
+	var profiles = data.profiles || [];
 
 	// ── Element refs ───────────────────────────────────────────────────────────
-	var langSelect    = document.getElementById( 'lf-seo-filter-lang' );
-	var typeSelect    = document.getElementById( 'lf-seo-filter-type' );
-	var loadBtn       = document.getElementById( 'lf-seo-load-posts-btn' );
-	var listSpinner   = document.getElementById( 'lf-seo-list-spinner' );
-	var postList      = document.getElementById( 'lf-seo-post-list' );
-	var resultsDiv    = document.getElementById( 'lf-seo-analysis-results' );
+	var langSelect  = document.getElementById( 'lf-seo-filter-lang' );
+	var typeSelect  = document.getElementById( 'lf-seo-filter-type' );
+	var loadBtn     = document.getElementById( 'lf-seo-load-posts-btn' );
+	var listSpinner = document.getElementById( 'lf-seo-list-spinner' );
+	var postList    = document.getElementById( 'lf-seo-post-list' );
+	var resultsDiv  = document.getElementById( 'lf-seo-analysis-results' );
 
 	if ( ! loadBtn || ! postList || ! resultsDiv ) { return; }
 
 	// ── Load content list ──────────────────────────────────────────────────────
 	loadBtn.addEventListener( 'click', function () {
+		resultsDiv.innerHTML = '';
 		loadPosts();
 	} );
 
-	// Also reload when filters change.
+	// Reload post list when language / type filters change.
 	if ( langSelect ) {
 		langSelect.addEventListener( 'change', function () {
-			if ( postList.innerHTML !== '' ) { loadPosts(); }
+			if ( postList.innerHTML !== '' ) { resultsDiv.innerHTML = ''; loadPosts(); }
 		} );
 	}
 	if ( typeSelect ) {
 		typeSelect.addEventListener( 'change', function () {
-			if ( postList.innerHTML !== '' ) { loadPosts(); }
+			if ( postList.innerHTML !== '' ) { resultsDiv.innerHTML = ''; loadPosts(); }
 		} );
 	}
 
@@ -52,7 +56,6 @@
 		loadBtn.disabled          = true;
 		listSpinner.style.display = 'inline-block';
 		postList.innerHTML        = '';
-		resultsDiv.innerHTML      = '';
 
 		var body = new URLSearchParams( {
 			action:    'linguaforge_seo_get_posts',
@@ -100,6 +103,14 @@
 			return;
 		}
 
+		// Build profile options HTML once and reuse per row.
+		// A disabled placeholder is always first so any profile choice fires the change event.
+		var profileOptions =
+			'<option value="" disabled selected>' + escHtml( s.analysePlaceholder || 'Analyse…' ) + '</option>' +
+			profiles.map( function ( p ) {
+				return '<option value="' + escHtml( p.value ) + '">' + escHtml( p.label ) + '</option>';
+			} ).join( '' );
+
 		var rows = items.map( function ( item ) {
 			return '<tr>' +
 				'<td>' +
@@ -111,12 +122,13 @@
 				'</td>' +
 				'<td style="color:#646970;white-space:nowrap;">' + escHtml( item.type ) + '</td>' +
 				'<td style="color:#646970;white-space:nowrap;">' + escHtml( item.modified ) + '</td>' +
-				'<td>' +
-					'<button type="button" class="button button-small lf-seo-analyze-row-btn" ' +
-					'data-post-id="' + escHtml( String( item.id ) ) + '" ' +
-					'data-lang="' + escHtml( lang ) + '">' +
-					escHtml( s.analyze || 'Analyze' ) +
-					'</button>' +
+				'<td style="white-space:nowrap;">' +
+					'<select class="lf-seo-profile-select" ' +
+						'data-post-id="' + escHtml( String( item.id ) ) + '" ' +
+						'data-lang="' + escHtml( lang ) + '" ' +
+						'style="max-width:160px;">' +
+						profileOptions +
+					'</select>' +
 					'<span class="spinner lf-row-spinner" style="float:none;margin:0 4px;vertical-align:middle;display:none;"></span>' +
 				'</td>' +
 			'</tr>';
@@ -125,43 +137,39 @@
 		postList.innerHTML =
 			'<table class="widefat striped" style="margin-bottom:1.5em;">' +
 				'<thead><tr>' +
-					'<th>' + escHtml( s.title      || 'Title'    ) + '</th>' +
-					'<th>' + escHtml( s.type       || 'Type'     ) + '</th>' +
-					'<th>' + escHtml( s.modified   || 'Modified' ) + '</th>' +
-					'<th style="width:100px;"></th>' +
+					'<th>' + escHtml( s.title    || 'Title'    ) + '</th>' +
+					'<th>' + escHtml( s.type     || 'Type'     ) + '</th>' +
+					'<th>' + escHtml( s.modified || 'Modified' ) + '</th>' +
+					'<th style="width:180px;">' + escHtml( s.profile || 'Profile' ) + '</th>' +
 				'</tr></thead>' +
 				'<tbody>' + rows + '</tbody>' +
 			'</table>';
 
-		// Wire Analyze buttons.
-		var btns = postList.querySelectorAll( '.lf-seo-analyze-row-btn' );
-		btns.forEach( function ( btn ) {
-			btn.addEventListener( 'click', function () {
-				analyzePost( btn );
+		// Wire profile selects — change triggers immediate analysis.
+		postList.querySelectorAll( '.lf-seo-profile-select' ).forEach( function ( sel ) {
+			sel.addEventListener( 'change', function () {
+				runAnalysis( sel.dataset.postId, sel.dataset.lang, sel.value, sel.nextElementSibling );
 			} );
 		} );
 	}
 
-	// ── Analyze a single post ─────────────────────────────────────────────────
-	function analyzePost( btn ) {
+	// ── Run analysis ──────────────────────────────────────────────────────────
+	function runAnalysis( postId, lang, profile, spinner ) {
 
-		var postId  = btn.dataset.postId;
-		var lang    = btn.dataset.lang;
-		var spinner = btn.nextElementSibling;
-
-		// Disable all analyze buttons while running.
-		postList.querySelectorAll( '.lf-seo-analyze-row-btn' ).forEach( function ( b ) {
-			b.disabled = true;
+		// Disable all profile selects while a request is running.
+		postList.querySelectorAll( '.lf-seo-profile-select' ).forEach( function ( sel ) {
+			sel.disabled = true;
 		} );
 
 		if ( spinner ) { spinner.style.display = 'inline-block'; }
 		resultsDiv.innerHTML = '';
 
 		var body = new URLSearchParams( {
-			action:  'linguaforge_seo_analyze',
-			nonce:   nonce,
-			post_id: postId,
-			lang:    lang,
+			action:   'linguaforge_seo_analyze',
+			nonce:    nonce,
+			post_id:  postId,
+			lang:     lang,
+			profile:  profile,
 		} );
 
 		fetch( ajaxUrl, {
@@ -173,7 +181,6 @@
 			.then( function ( json ) {
 				if ( json.success ) {
 					renderResults( json.data );
-					// Scroll results into view.
 					resultsDiv.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 				} else {
 					renderError( ( json.data && json.data.message ) || ( s.requestFailed || 'Analysis failed.' ) );
@@ -184,8 +191,8 @@
 			} )
 			.finally( function () {
 				if ( spinner ) { spinner.style.display = 'none'; }
-				postList.querySelectorAll( '.lf-seo-analyze-row-btn' ).forEach( function ( b ) {
-					b.disabled = false;
+				postList.querySelectorAll( '.lf-seo-profile-select' ).forEach( function ( sel ) {
+					sel.disabled = false;
 				} );
 			} );
 	}
@@ -199,9 +206,8 @@
 
 	function renderResults( d ) {
 
-		var score   = d.score   || 0;
-		var metrics = d.metrics || {};
-
+		var score      = d.score   || 0;
+		var metrics    = d.metrics || {};
 		var scoreColor = score >= 80 ? '#00a32a' : score >= 50 ? '#dba617' : '#d63638';
 
 		var rows = [
