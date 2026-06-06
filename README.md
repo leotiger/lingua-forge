@@ -18,7 +18,7 @@ Lingua Forge is a WordPress plugin for sites that publish content in more than o
 
 At its core it does three things that always end up intertwined on multilingual sites:
 
-1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, or via language subdomains like `de.example.com`, with hreflang SEO tags, a language switcher block, and an admin panel that keeps translations linked and warns you when source content has changed.
+1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, or via language subdomains like `de.example.com`, with a language switcher block, browser language detection, and an admin panel that keeps translations linked and warns you when source content has changed.
 
 2. **Handles the full multilingual SEO surface natively — no companion plugin required** — hreflang, Open Graph with `og:locale`/`og:locale:alternate`, Schema.org JSON-LD with `inLanguage`, a dedicated XML sitemap with hreflang alternates, WooCommerce product schema, Social Icons block share: URL rewriting, and AI-powered SEO content analysis in both the Settings page and the block editor sidebar. A Compatibility tab shows live detection of any installed SEO plugin and explains exactly what Lingua Forge does for each feature area.
 
@@ -56,11 +56,11 @@ Everything ships as a single installable plugin. No external services beyond an 
 
 ## How does it compare to WPML, Polylang, TranslatePress, Weglot, and MultilingualPress?
 
-The short version: Lingua Forge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, hreflang, FSE templates, translation groups, browser language redirect, translated slugs — while adding a deeper AI editorial layer that no competitor ships natively. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
+The short version: Lingua Forge covers the full multilingual workflow that the paid tiers of those plugins provide — language routing, complete multilingual SEO (hreflang, Open Graph, Schema.org, sitemap), FSE templates, translation groups, browser language redirect, translated slugs — while adding a deeper AI editorial layer and a complete SEO layer that no competitor ships natively and at zero licensing cost. The key difference is economic: there are no license fees, no annual renewals, and no per-word translation credits. If you use the AI features you pay your provider directly at API rates; if you translate manually, the cost is zero.
 
 The competitive landscape splits into three architectural camps. **Post-based plugins** (WPML, Polylang, MultilingualPress, Lingua Forge) create a distinct post record per language — the same approach Lingua Forge uses. **String-replacement plugins** (TranslatePress) intercept page output at render time and swap strings in place; no separate posts, but adds render overhead and can be brittle in complex block-template contexts. **Cloud-proxy SaaS** (Weglot) stores translations externally and serves them via CDN — fast setup, but your content lives in their infrastructure and pricing scales with word count.
 
-Where Lingua Forge differentiates: it is the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with full support for any public Custom Post Type out of the box (Lang column, AI metabox, FSE template routing, and link fixer — all CPTs, zero configuration), the only one with a complete WooCommerce integration at zero cost (shared-stock delegation for price, stock, images, variations with translatable descriptions, categories, attribute term names translated in both block and classic themes, and product brand), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
+Where Lingua Forge differentiates: it is the only post-based plugin with a **complete native multilingual SEO layer** — hreflang, Open Graph with `og:locale`, Schema.org JSON-LD with `inLanguage`, a dedicated XML sitemap with hreflang alternates, WooCommerce product schema and OG, Social Icons block share-URL rewriting, and AI-powered SEO content analysis — all without a companion SEO plugin. It is also the only post-based plugin with native FSE / block-theme support from the ground up (language-specific templates, Language Switcher block), the only one with full support for any public Custom Post Type out of the box (Lang column, AI metabox, FSE template routing, and link fixer — all CPTs, zero configuration), the only one with a complete WooCommerce integration at zero cost (shared-stock delegation for price, stock, images, variations with translatable descriptions, categories, attribute term names translated in both block and classic themes, product brand, and WC product SEO schema), the only one with WP-CLI commands for scripted and automated workflows, and the only one with an iterative AI editorial toolset built into the post editor (content generation with multi-turn refinement, meta description generation, behavior presets, glossary, translation memory). AI costs go directly to the provider at published API rates — no credit intermediary.
 
 Current gaps worth knowing: A general-purpose string translation UI (for third-party plugin strings outside the Language Overrides feature) is not yet included. For string translation today, [Loco Translate](https://wordpress.org/plugins/loco-translate/) is the recommended free companion — it provides in-admin `.po`/`.mo` editing, automatic sync with installed language packs, and developer extraction tools, and integrates cleanly alongside Lingua Forge with no conflicts. Slug translation is fully covered across all paths — full-page Translation dispatches the translated title via the Gutenberg Apply modal and WordPress derives the slug automatically; CLI commands set `post_name` from the translated title on every run.
 
@@ -91,7 +91,7 @@ If you want to understand where this plugin came from and why it exists as a fre
 - **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version.
 - **Language navigation menus** — create per-language `wp_navigation` copies with AI-translated link labels and language-prefixed internal URLs. The Fix Nav action rewrites `wp:navigation` ref IDs inside template parts to point at the correct copy.
 - **Site Editor page-list language filter** — when the Site Editor is opened on a navigation or template post, the sidebar page-list picker automatically scopes its `/wp/v2/pages` REST requests to the current navigation's language. The filter is resolved synchronously at PHP render time (no race condition on the initial load) and corrects itself asynchronously when the navigation ID is not in the initial URL.
-- hreflang tags for singular, archive, and paginated views; compatible with Yoast SEO, Rank Math, AIOSEO, and SEOPress
+- hreflang tags for singular, archive, and paginated views; automatically suppresses duplicate hreflang output from Yoast SEO, Rank Math, AIOSEO, and SEOPress via filter — see **Settings → SEO → Hreflang**
 - Language switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic `Lsflr_Switcher_Widget` (Appearance → Widgets). All three produce identical output and support the same `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three entry points so themes and third-party plugins can customise the HTML without touching templates
 - Admin link fixer — scans translated pages for internal links pointing to the wrong language version and repairs them via AJAX
 - Plugin translation override — custom `.mo` files placed in `wp-content/uploads/lingua-forge/i18n-overrides/` are loaded automatically, overriding third-party plugin strings for each locale (e.g. swapping "room" → "apartment" in VikBooking). Files survive plugin updates. Manage them from **Settings → Lingua Forge → Language Overrides** or drop them in directly via FTP/SFTP.
@@ -99,15 +99,27 @@ If you want to understand where this plugin came from and why it exists as a fre
 - **WooCommerce integration** — translated products carry only content fields (title, description, meta description); price, SKU, stock, dimensions, images, and taxonomy assignments are served transparently from the source-language product at runtime. Variable products are fully supported: translated product variations are created automatically with their descriptions (`_variation_description`) translatable via the standard Retranslate button, while operational meta (price, stock) delegates from source variations. Attribute term names display in the visitor's language (e.g. "Rot"/"Blau" on DE pages) via `_lf_term_name_{lang}` termmeta in both classic templates and WC block themes. Product brand (`product_brand`, native WC 10.x) is delegated automatically; third-party brand taxonomies are registerable via the `linguaforge_wc_delegate_taxonomies` filter. REST API writes to translated products return HTTP 422 with the source product ID for safe resolution. Requires WooCommerce 9.0+ and WordPress 6.9+
 - DB index on `wp_postmeta (meta_key, meta_value)` created on activation for fast `_lang` queries
 
-### Meta Description
+### SEO
 
-Adds a meta description field to every public post type. Outputs `<meta name="description">`, `<meta property="og:description">`, and `<meta name="twitter:description">` in `<head>` on every frontend request.
+Lingua Forge provides a complete multilingual SEO layer. No additional SEO plugin is required. Configure everything from **Settings → SEO**.
 
-- Custom field editable in the post editor's Classic meta box, fully compatible with the Block Editor
-- Character counter with green/amber/red guidance (120–160 ideal range)
-- Fallback chain: custom field → post excerpt → site description
-- Excerpt fallback is auto-generated from content if no manual excerpt exists
-- Only custom descriptions are output verbatim; fallback descriptions are auto-truncated at 190 characters
+**Hreflang** — `<link rel="alternate" hreflang>` for every configured language on every page, including `x-default`. Automatically suppresses duplicate hreflang output from Yoast SEO, Rank Math, AIOSEO, and SEOPress via WordPress filter hooks.
+
+**Open Graph + Twitter Cards** — outputs `og:locale` (current language) and `og:locale:alternate` (every other configured language) on every page — the multilingual OG signals that SEO plugins cannot produce without knowledge of your routing configuration. In auto mode it also outputs the full OG base set (`og:type`, `og:title`, `og:description`, `og:url`, `og:image`, Twitter Cards) when no SEO plugin is detected, deferring to the SEO plugin when one is present to avoid duplicate tags. Default OG image with full fallback chain: featured image → site logo → site icon → admin-configured default.
+
+**Schema.org JSON-LD** — outputs `Article`/`WebPage` on singular posts and pages, `WebSite` on the front page/blog index, and `Product` on WooCommerce product pages (when WC is active). Every type includes the `inLanguage` BCP 47 annotation. Defers entirely when Yoast/Rank Math is detected — conflicting JSON-LD graphs cause validation errors and there is no clean way to supplement an existing graph.
+
+**XML Sitemap** — dedicated multilingual sitemap at `/lf-sitemap.xml` with `xmlns:xhtml` namespace and `<xhtml:link rel="alternate" hreflang>` entries for every translation group. Announced automatically in `robots.txt`. One-click Bing and Yandex ping buttons. robots.txt detection panel with option to add the `Sitemap:` directive to an existing physical file.
+
+**Social Share** — extends the WordPress Core Social Icons block. Set any icon's link URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:email`, `share:reddit`, `share:pinterest`, `share:mastodon`, `share:copy`, `share:native`, or `share:auto`; Lingua Forge rewrites it at render time. The JS actions (`share:copy`, `share:native`, `share:auto`) use the Clipboard API and Web Share API with clipboard fallback, and show a toast notification on success.
+
+**SEO Content Analysis** — browse your content by language and post type from **Settings → SEO → Analysis**, click Analyze on any item, and get a rule-based 0–100 SEO score covering title length, meta description quality (uses AI-generated meta description when available), word count, heading structure, image alt coverage, and internal link profile. The block editor Document sidebar shows the current post's score and a "Run AI Analysis" button that opens a modal with natural-language recommendations, title suggestions, and meta description improvements.
+
+**WooCommerce product SEO** *(requires WooCommerce)* — adds `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, and their `product:` namespace equivalents on product pages. Product schema includes translated name, description, `inLanguage`, and a correctly resolved `offers` object (price and availability from the source-language product via MetaDelegate).
+
+**Compatibility** — the Compatibility tab shows live detection of any active SEO plugin (Yoast, Rank Math, AIOSEO, SEOPress) with a per-feature explanation of what Lingua Forge is doing and why — no manual configuration needed.
+
+**Meta description field** — custom field editable in the Classic meta box and Block Editor on every public post type. Character counter with green/amber/red guidance (140–160 optimal range). Fallback chain: AI-generated field → post excerpt → trimmed content. AI generation available in one click from the AI metabox (`_linguaforge_meta_description` postmeta key, readable by third-party integrations).
 
 ### AI Content Tools
 
@@ -137,7 +149,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - Permalink structure set to anything other than Plain
 - An API key for at least one supported AI provider (Anthropic, OpenAI, or Gemini)
 
-**Optional — WooCommerce integration:** WooCommerce 9.0 or later is required (which in turn requires WordPress 6.9 or later). The core plugin — language routing, hreflang, AI tools — works on WordPress 6.4 without WooCommerce. If WooCommerce is not active the integration layer is silently skipped.
+**Optional — WooCommerce integration:** WooCommerce 9.0 or later is required (which in turn requires WordPress 6.9 or later). The core plugin — language routing, full SEO layer, AI tools — works on WordPress 6.4 without WooCommerce. If WooCommerce is not active the WooCommerce delegation layer and WooCommerce-specific SEO output are silently skipped.
 
 **Multisite:** Lingua Forge is not tested on WordPress Multisite. Per-site activation — each site in the network manages its own languages, settings, and AI credentials independently — is expected to work. Network-wide activation is not supported and may produce unexpected behaviour.
 
@@ -189,9 +201,10 @@ wp-content/
   plugins/
     lingua-forge/
       lingua-forge.php       ← main plugin file
-      language-router/       ← Language Router module
-      meta-description/      ← SEO meta description module
-      ai/                    ← AI content tools module
+      language-router/       ← Language Router + full SEO layer (hreflang, OG, schema, sitemap, social share)
+        includes/seo/        ←   SeoManager · SchemaManager · SocialShare · SitemapManager
+      meta-description/      ← Meta description meta box module (legacy; SEO suite is in language-router/includes/seo/)
+      ai/                    ← AI content tools + Settings page with SEO tab + WooCommerce SEO
 ```
 
 > If you are migrating from the mu-plugin versions of these tools, deactivate or remove `wp-content/mu-plugins/language-router/`, `wp-content/mu-plugins/meta-description/`, and `wp-content/mu-plugins/wpenhance-ai/` (or `wpai/`) before activating Lingua Forge to avoid duplicate hooks.
@@ -303,15 +316,22 @@ lingua-forge/
       class-lsflr-switcher.php       ← LinguaForge\Router\Switcher (aliased LSFLR_Switcher)
       class-lsflr-switcher-widget.php← Lsflr_Switcher_Widget (global namespace — classic WP widget)
       class-lsflr-link-fixer.php     ← LinguaForge\Router\LinkFixer (aliased LSFLR_Link_Fixer)
+      seo/
+        class-hreflang.php          ← Hreflang output, canonical removal, SEO plugin suppression
+        class-seo-manager.php       ← Open Graph / og:locale / Twitter Cards (wp_head priority 2)
+        class-schema-manager.php    ← Schema.org JSON-LD Article/WebPage/WebSite/Product (priority 3)
+        class-social-share.php      ← Social Icons block share: URL rewriting + footer JS
+        class-sitemap-manager.php   ← /lf-sitemap.xml + robots.txt + ping
       rest/
         class-data-endpoints.php    ← LinguaForge\Router\REST\DataEndpoints
                                        GET /wp-json/lingua-forge/v1/languages
                                        GET /wp-json/lingua-forge/v1/post/{id}/translations
     assets/
       lsflr.css                      ← Switcher styles
+      social-share.js                ← copy/native/auto share JS actions
     languages/                       ← Lingua Forge own translation files (.pot / .po / .mo)
   meta-description/
-    meta-description.php             ← LinguaForge\MetaDescription\Module — SEO meta box + <head> output
+    meta-description.php             ← LinguaForge\MetaDescription\Module — meta description meta box + <meta name="description"> output (the full SEO layer lives in language-router/includes/seo/)
   ai/
     ai.php                           ← Module entry: constants, autoloader, plugin boot
     includes/
@@ -349,7 +369,7 @@ lingua-forge/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
         PostListColumn.php           ← "Translate missing" button in the Posts/Pages list
-        SettingsPage.php             ← Settings → Lingua Forge (8-tab layout, delegates to Tabs/)
+        SettingsPage.php             ← Settings → Lingua Forge (9-tab layout, delegates to Tabs/)
         Settings/Tabs/
           Tab.php                    ← Abstract base class for all tab classes
           GeneralTab.php             ← Provider + model selection
@@ -358,6 +378,7 @@ lingua-forge/
           BehaviorTab.php            ← AI behavior presets and toggles
           RouterTab.php              ← Language Router settings; delegates FSE panels to Sections/
           GlossaryTab.php            ← Per-language-pair terminology table
+          SeoTab.php                 ← SEO (inner tabs: Hreflang, Open Graph, Social Share, WooCommerce, Schema.org, Sitemap, Analysis, Compatibility)
           AiUsageTab.php             ← Read-only token usage log
           MaintenanceTab.php         ← Cache, debug, language overrides, TM tools
         Settings/Tabs/Sections/
@@ -365,6 +386,15 @@ lingua-forge/
           TemplatePartsSection.php   ← Template part scaffold/translate/fix UI
           NavigationsSection.php     ← Language navigation create/translate UI
           PatternsSection.php        ← CPT-scoped block pattern translation UI
+        Settings/Panels/
+          HreflangPanel.php          ← Hreflang enable/disable + SEO plugin suppression status
+          OpenGraphPanel.php         ← OG mode selector + default image + detection notices
+          SocialSharePanel.php       ← share: URL rewriting toggle + usage guide
+          WooCommerceSeoPanel.php    ← WC product OG/schema toggle + tag reference
+          SchemaPanel.php            ← Schema.org per-type toggles + plugin deference status
+          SitemapPanel.php           ← Sitemap URL + cache + ping buttons + robots.txt panel
+          SeoAnalysisPanel.php       ← Rule-based content audit + AI analysis; AJAX handlers
+          CompatibilityPanel.php     ← Live SEO plugin detection + per-feature behaviour table
       FseLocalisation/
         TemplateDefinitions.php      ← CPT-slot template list (dynamic per active CPTs)
         PartDiscovery.php            ← Template-part registry queries
@@ -650,7 +680,7 @@ Any `.mo` file placed in `language-router/languages/` is loaded automatically at
 
 ### Meta Description Generator
 
-Generates a ready-to-use SEO meta description from the post title and content. Language-aware via the `_lang` post meta field. Output is 140–160 characters with a character-count tooltip showing SEO quality (green/amber/red).
+Generates a ready-to-use SEO meta description from the post title and content. Language-aware — the generated description matches the post's language (`_lf_lang` meta). Output is 140–160 characters with a character-count tooltip showing SEO quality (green/amber/red). The result is stored in the `_linguaforge_meta_description` postmeta key, which the SEO layer picks up as the preferred `og:description` and schema `description` source.
 
 Uses the **Light** model tier (384 token budget, temperature 0.4). See the Models table above for per-provider defaults.
 
@@ -966,9 +996,16 @@ The filter applies everywhere the directory is read — both the file loader and
 
 ## Third-party compatibility
 
-**SEO plugins** — Lingua Forge outputs its own hreflang tags and suppresses duplicate output from SEO plugins by default. Hreflang suppression is confirmed for **Yoast SEO**, **Rank Math**, **AIOSEO**, and **SEOPress**. To hand hreflang control back to your SEO plugin instead, filter `lf_hreflang_mode` to `'off'` (or any value other than `'custom'`).
+**SEO plugins** — Lingua Forge provides a complete multilingual SEO layer and co-exists with Yoast SEO, Rank Math, AIOSEO, and SEOPress without conflicts. The strategy differs by feature area:
 
-**WooCommerce** — full variable product translation supported (v2.1.6+): translated variations with translatable descriptions, delegated prices/stock/SKU, translated attribute term names in both block and classic themes, product brand delegation, and a REST write guard. Simple and variable products, all CPTs, WooCommerce 9.0+. See the WooCommerce integration entry in the Features section for details.
+- **Hreflang** — LF always takes over. General SEO plugins produce hreflang based on a single-language URL structure and cannot account for LF's routing configuration. LF suppresses their hreflang output automatically via filter (`wpseo_hreflang`, `rank_math/frontend/hreflang`, `aioseo_hreflang`, `seopress_hreflang`). To disable LF's hreflang and hand control back to your SEO plugin, filter `lf_hreflang_mode` to `'off'` or toggle it in **Settings → SEO → Hreflang**.
+- **Open Graph** — In auto mode (default), LF adds `og:locale` and `og:locale:alternate` (the multilingual OG signals your SEO plugin cannot produce) and skips the base OG set (`og:title`, `og:description`, etc.) to avoid duplicate tags. Set mode to `'full'` in **Settings → SEO → Open Graph** to always emit the complete set regardless of what's detected.
+- **Schema.org JSON-LD** — LF disables its own schema entirely when Yoast or Rank Math is detected. Duplicate JSON-LD graphs cause validation errors and cannot be cleanly supplemented. If you want LF's multilingual schema (`inLanguage` annotations), disable schema output in your SEO plugin first.
+- **Sitemap** — LF generates `/lf-sitemap.xml` with `xhtml:link` hreflang alternates for all translation groups. WordPress 5.5+ ships a built-in sitemap at `/wp-sitemap.xml` for content discovery — no SEO plugin is needed. LF's sitemap is announced automatically in `robots.txt`. If a SEO plugin is also generating a sitemap, LF's runs independently alongside it. Submit LF's sitemap URL to Google Search Console for the language relationship signals it provides.
+
+The **Settings → SEO → Compatibility** tab shows live detection of any installed SEO plugin with a per-feature breakdown of exactly what LF is doing and why.
+
+**WooCommerce** — full variable product translation with shared-stock delegation (price, stock, SKU, images), translatable variation descriptions, translated attribute term names in both block and classic themes, product brand delegation, REST write guard, and WooCommerce-specific SEO (OG product tags + Product schema). Simple and variable products, all CPTs, WooCommerce 9.0+. No additional WooCommerce SEO plugin required. See the WooCommerce integration entry in the Features section for details.
 
 **Locale-aware plugins** — plugins that read the `locale` filter directly (booking plugins, form plugins, and similar) receive the correct frontend locale automatically via the `locale` filter hook registered in `LocaleDetector`. The `lf_lang_force_locale` filter is available for sites that need to override locale mapping programmatically.
 
@@ -1028,11 +1065,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
-**Current release — 2.0.1**
+**Current release — 2.2.0**
 
+- **Complete multilingual SEO layer** — hreflang, Open Graph with `og:locale`/`og:locale:alternate`, Schema.org JSON-LD (Article/WebPage/WebSite with `inLanguage`, Product for WooCommerce), dedicated XML sitemap at `/lf-sitemap.xml` with xhtml:link alternates, Social Icons block share: URL rewriting, WooCommerce product OG/schema, and AI-powered SEO content analysis. No companion SEO plugin required. Settings → SEO tab with eight inner panels including a Compatibility tab.
 - **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
-- **WooCommerce integration — Phase 1 + 1b** — WooCommerce `product` posts are fully supported. Translated products carry only content fields (title, description, excerpt, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime. Category, tag, and attribute term names display in the visitor's language via `_lf_term_name_{lang}` termmeta, editable from the term edit screen. No meta copying, no SKU uniqueness issues, no stock sync complexity. New filters: `linguaforge_wc_delegate_post_types`, `linguaforge_cpt_create_allowed`.
-- **Third-party integration API** — five new hooks for external plugins: `linguaforge_loaded` (safe attach point after the router is fully booted), `linguaforge_translation_content` (filter the AI payload before caching), `linguaforge_translation_complete` (action after CLI/programmatic translation), `linguaforge_trid_changed` (action when a post joins or leaves a translation group), `linguaforge_switcher_output` (filter the switcher HTML). Two public REST endpoints: `GET /wp-json/lingua-forge/v1/languages` and `GET /wp-json/lingua-forge/v1/post/{id}/translations`. New public PHP function `linguaforge_trigger_translation()` for programmatic translation from any plugin or script. Full API documentation in `CONTRIBUTING.md`.
+- **WooCommerce integration** — translated products carry only content fields (title, description, excerpt, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime. Category, tag, and attribute term names display in the visitor's language. WooCommerce product OG tags and Product schema output from the SEO layer. Filters: `linguaforge_wc_delegate_post_types`, `linguaforge_wc_delegate_taxonomies`.
+- **Third-party integration API** — hooks: `linguaforge_loaded`, `linguaforge_translation_content`, `linguaforge_translation_complete`, `linguaforge_trid_changed`, `linguaforge_switcher_output`. SEO extension hooks: `linguaforge_seo_og_type`, `linguaforge_seo_og_extra_tags`, `linguaforge_seo_schema_extra_types`. Two public REST endpoints. Public PHP function `linguaforge_trigger_translation()`. Full API documentation in `CONTRIBUTING.md`.
 - **Classic theme language switcher** — `[lsflr_switcher]` shortcode and `Lsflr_Switcher_Widget` (Appearance → Widgets) provide the language switcher on any WordPress theme, no block widget area required.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
