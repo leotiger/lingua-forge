@@ -563,3 +563,120 @@ if ( ! function_exists( 'get_queried_object_id' ) ) {
 // get_post_meta() and get_locale() are intentionally NOT defined here — both
 // are provided by WcPolyfills (LfWcMocks::$meta and $GLOBALS['lf_test_locale']
 // respectively). Tests that need them should load WcPolyfills first.
+
+// =============================================================================
+// PHP 8.0+ built-in polyfills (for PHP 7.4 local lint/test environment)
+// =============================================================================
+
+if ( ! function_exists( 'str_starts_with' ) ) {
+	function str_starts_with( string $haystack, string $needle ): bool {
+		return '' === $needle || str_starts_with_compat( $haystack, $needle );
+	}
+	function str_starts_with_compat( string $haystack, string $needle ): bool {
+		return substr( $haystack, 0, strlen( $needle ) ) === $needle;
+	}
+}
+// Re-define after the above guards to avoid issues when str_starts_with already exists.
+if ( ! function_exists( 'str_starts_with_compat' ) ) {
+	function str_starts_with_compat( string $haystack, string $needle ): bool {
+		return substr( $haystack, 0, strlen( $needle ) ) === $needle;
+	}
+}
+
+if ( ! function_exists( 'str_contains' ) ) {
+	function str_contains( string $haystack, string $needle ): bool {
+		return '' === $needle || false !== strpos( $haystack, $needle );
+	}
+}
+
+if ( ! function_exists( 'str_ends_with' ) ) {
+	function str_ends_with( string $haystack, string $needle ): bool {
+		return '' === $needle || substr( $haystack, -strlen( $needle ) ) === $needle;
+	}
+}
+
+// =============================================================================
+// WordPress URL / HTTP polyfills (for SEO helper tests)
+// =============================================================================
+
+if ( ! function_exists( 'home_url' ) ) {
+	/**
+	 * Returns $GLOBALS['lf_test_home_url'] (default 'https://example.org').
+	 * Accepts an optional path appended to the base URL.
+	 */
+	function home_url( string $path = '' ): string {
+		$base = rtrim( (string) ( $GLOBALS['lf_test_home_url'] ?? 'https://example.org' ), '/' );
+		return '' === $path ? $base : $base . '/' . ltrim( $path, '/' );
+	}
+}
+
+if ( ! function_exists( 'is_ssl' ) ) {
+	/** Returns $GLOBALS['lf_test_is_ssl'] (default false). */
+	function is_ssl(): bool {
+		return (bool) ( $GLOBALS['lf_test_is_ssl'] ?? false );
+	}
+}
+
+if ( ! function_exists( 'esc_url' ) ) {
+	/** Minimal esc_url polyfill — strips dangerous protocols, otherwise returns as-is. */
+	function esc_url( string $url, array $protocols = [], string $_context = 'display' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature.
+		// Reject javascript: and data: URLs; pass everything else through.
+		if ( preg_match( '/^\s*(javascript|data|vbscript)\s*:/i', $url ) ) {
+			return '';
+		}
+		return $url;
+	}
+}
+
+if ( ! function_exists( 'esc_attr' ) ) {
+	/** Minimal esc_attr polyfill. */
+	function esc_attr( string $text ): string {
+		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8', false );
+	}
+}
+
+if ( ! function_exists( 'wp_parse_url' ) ) {
+	/** Wraps PHP parse_url(). */
+	function wp_parse_url( string $url, int $component = -1 ): mixed { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature.
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url -- polyfill
+		return parse_url( $url, $component );
+	}
+}
+
+if ( ! function_exists( 'wp_get_document_title' ) ) {
+	/** Returns $GLOBALS['lf_test_document_title'] (default 'Test Page'). */
+	function wp_get_document_title(): string {
+		return (string) ( $GLOBALS['lf_test_document_title'] ?? 'Test Page' );
+	}
+}
+
+if ( ! function_exists( 'do_blocks' ) ) {
+	/** Minimal do_blocks polyfill — strips Gutenberg block comments. */
+	function do_blocks( string $content ): string {
+		return (string) preg_replace( '/<!--\s*\/?wp:[^>]*-->/i', '', $content );
+	}
+}
+
+if ( ! function_exists( 'wp_trim_words' ) ) {
+	/** Minimal wp_trim_words polyfill. */
+	function wp_trim_words( string $text, int $num_words = 55, string $more = '' ): string {
+		$words = preg_split( '/\s+/', trim( $text ), -1, PREG_SPLIT_NO_EMPTY );
+		if ( ! is_array( $words ) || count( $words ) <= $num_words ) {
+			return $text;
+		}
+		return implode( ' ', array_slice( $words, 0, $num_words ) ) . $more;
+	}
+}
+
+if ( ! function_exists( '_n' ) ) {
+	/** Minimal _n polyfill — returns singular or plural based on count. */
+	function _n( string $singular, string $plural, int $number, string $domain = 'default' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP signature.
+		return 1 === $number ? $singular : $plural;
+	}
+}
+
+if ( ! function_exists( 'number_format_i18n' ) ) {
+	function number_format_i18n( float $number, int $decimals = 0 ): string {
+		return number_format( $number, $decimals );
+	}
+}

@@ -128,6 +128,12 @@ class MetaBox {
             [self::class, 'enqueue_block_action']
         );
 
+        // SEO Analysis panel in the Document sidebar.
+        add_action(
+            'enqueue_block_editor_assets',
+            [self::class, 'enqueue_seo_analysis']
+        );
+
         add_action(
             'save_post',
             [self::class, 'save_preset']
@@ -328,6 +334,59 @@ class MetaBox {
         }
 
         self::enqueue_block_action();
+    }
+
+    /**
+     * Enqueue the SEO Analysis sidebar panel for the block editor.
+     *
+     * Registers a PluginDocumentSettingPanel with rule-based score display
+     * and an AI Recommendations modal (when a provider is configured).
+     */
+    public static function enqueue_seo_analysis(): void {
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'lingua-forge-seo-analysis-editor',
+            LINGUAFORGE_AI_URL . '/assets/seo-analysis-editor.js',
+            [ 'wp-plugins', 'wp-edit-post', 'wp-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-i18n' ],
+            LINGUAFORGE_VERSION,
+            true
+        );
+
+        $provider_slug = \LinguaForge\AI\Core\Config::provider();
+        $ai_enabled    = ! empty( \LinguaForge\AI\Core\KeyStore::get( $provider_slug ) );
+
+        wp_localize_script( 'lingua-forge-seo-analysis-editor', 'lfSeoAnalysisEditor', [
+            'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+            'nonce'     => wp_create_nonce( 'linguaforge_seo_analyze' ),
+            'aiEnabled' => $ai_enabled,
+            'postLang'  => Translation::detect_post_language(),
+            'strings'   => [
+                'panelTitle'      => __( 'SEO Analysis',             'lingua-forge' ),
+                'analyze'         => __( 'Analyze',                  'lingua-forge' ),
+                'outOf100'        => __( '/ 100',                    'lingua-forge' ),
+                'overallScore'    => __( 'Overall SEO score',        'lingua-forge' ),
+                'metric'          => __( 'Metric',                   'lingua-forge' ),
+                'finding'         => __( 'Finding',                  'lingua-forge' ),
+                'titleLabel'      => __( 'Title',                    'lingua-forge' ),
+                'metaDesc'        => __( 'Meta description',         'lingua-forge' ),
+                'wordCount'       => __( 'Word count',               'lingua-forge' ),
+                'readTime'        => __( 'Reading time',             'lingua-forge' ),
+                'headings'        => __( 'Headings',                 'lingua-forge' ),
+                'images'          => __( 'Images',                   'lingua-forge' ),
+                'links'           => __( 'Links',                    'lingua-forge' ),
+                'aiSection'       => __( 'AI Recommendations',       'lingua-forge' ),
+                'runAi'           => __( 'Run AI Analysis',          'lingua-forge' ),
+                'analyzing'       => __( 'Analyzing…',               'lingua-forge' ),
+                'aiNotConfigured' => __( 'Configure an AI provider in Settings → API Keys to enable AI-powered recommendations.', 'lingua-forge' ),
+                'aiFailed'        => __( 'AI analysis failed. Please try again.',  'lingua-forge' ),
+                'titleSuggestion' => __( 'Suggested title',          'lingua-forge' ),
+                'metaSuggestion'  => __( 'Suggested meta description', 'lingua-forge' ),
+            ],
+        ] );
     }
 
     /**

@@ -35,17 +35,23 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.1.10';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.1.10/lingua-forge-2.1.10.zip';
-	$last_updated = '2026-06-05';
+	$version      = '2.2.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.0/lingua-forge-2.2.0.zip';
+	$last_updated = '2026-06-06';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.1.10 — 2026-06-05</h4>' .
+		'<h4>2.2.0 — 2026-06-06</h4>' .
 		'<ul>' .
-			'<li><strong>Developer:</strong> Pure test maintenance release. 32 new PHPUnit tests close all §6.0.1 coverage gaps across High, Medium, and Low priority. Total ~865 tests. Combined coverage rises from 23.63 % to 26.94 % (testable business logic ~65–70 %). No functional changes, no schema changes.</li>' .
+			'<li><strong>Added:</strong> Complete multilingual SEO layer — Open Graph with og:locale/og:locale:alternate, Twitter Cards, Schema.org JSON-LD (Article/WebPage/WebSite with inLanguage annotations, Product schema for WooCommerce), and a dedicated XML sitemap at /lf-sitemap.xml with xhtml:link hreflang alternates. No companion SEO plugin required.</li>' .
+			'<li><strong>Added:</strong> Social Share — Social Icons block share: URL rewriting for Facebook, X, LinkedIn, WhatsApp, Telegram, Email, Reddit, Pinterest, Mastodon, and copy/native/auto JS clipboard and Web Share API actions.</li>' .
+			'<li><strong>Added:</strong> SEO Content Analysis — rule-based 0–100 score (title, meta description, word count, headings, image alt, links) in Settings → SEO → Analysis. Block editor sidebar panel with AI Recommendations.</li>' .
+			'<li><strong>Added:</strong> Settings → SEO tab with Hreflang, Open Graph, Social Share, WooCommerce, Schema.org, Sitemap, Analysis, and Compatibility panels.</li>' .
+			'<li><strong>Added:</strong> WooCommerce product OG — og:type=product, og:price:amount, og:price:currency, og:availability, product:* namespace equivalents.</li>' .
+			'<li><strong>Added:</strong> XML sitemap announced in robots.txt; Bing/Yandex ping; robots.txt management panel.</li>' .
+			'<li><strong>Developer:</strong> 63 new tests (unit + integration). New classes: SeoManager, SchemaManager, SocialShare, SitemapManager, WooCommerce/SeoSupport.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

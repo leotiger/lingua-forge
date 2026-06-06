@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** June 2026 · Lingua Forge 2.1.6
+**Date:** June 2026 · Lingua Forge 2.2.0
 
 ---
 
@@ -99,15 +99,23 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 
 ## 4. SEO
 
-| Feature | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
+> **Note (June 2026):** WPML's SEO features are delivered by the WPML SEO component (separate install; v2.2.x). Polylang Pro automatically adds hreflang and Open Graph tags and is designed to work alongside Yoast or Rank Math. TranslatePress provides hreflang, sitemaps, and OG/Twitter via the SEO Pack add-on. Weglot auto-manages hreflang and sitemaps (subdirectory mode); it does not output `x-default` by default.
+
+| Feature | Lingua Forge 2.2.0 | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| hreflang output | ✅ (singular, archive, paginated) | ✅ | ✅ Pro | ✅ | ✅ | ✅ |
-| Auto-suppresses duplicate hreflang from Yoast / Rank Math / AIOSEO | ✅ automatic | Manual filter | Manual filter | ❌ (relies on SEO plugin) | ❌ | ❌ |
-| Native meta description field | ✅ (all public post types) | Via SEO plugin | Via SEO plugin | ✅ via SEO Pack add-on | ✅ (auto-translated) | Via SEO plugin |
-| `<meta name="description">` + OG + Twitter | ✅ native | Via SEO plugin | Via SEO plugin | ✅ SEO Pack | ✅ | Via SEO plugin |
-| Character counter with colour guidance | ✅ | Via SEO plugin | Via SEO plugin | Via SEO plugin | ❌ | Via SEO plugin |
-| AI meta description generator | ✅ language-aware | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Translated slugs / permalinks | ✅ full support across all translation paths; editor free to optimise slug independently of title (SEO advantage) | ✅ | ✅ Pro | ✅ | ✅ | ✅ |
+| hreflang output | ✅ (singular, archive, paginated, x-default) | ✅ WPML SEO component; hreflang now also in sitemaps since WPML SEO 2.2.x | ✅ Pro (auto-added) | ✅ SEO Pack add-on | ✅ auto (no x-default by default) | ✅ |
+| Auto-suppresses duplicate hreflang from Yoast / Rank Math / AIOSEO / SEOPress | ✅ automatic via filter; Compatibility tab shows live status | WPML SEO handles co-existence with Yoast/Rank Math via its own integration layer | Works alongside SEO plugin; some manual filter configuration | ❌ relies on SEO plugin | ❌ | ❌ |
+| Open Graph + og:locale + og:locale:alternate | ✅ native; og:locale always emitted; full OG set in auto/full mode; defers to detected SEO plugin in auto mode to avoid duplicate tags | Via Yoast/Rank Math; WPML SEO ensures translated OG title/description matches language | ✅ Pro (auto-added alongside SEO plugin) | ✅ SEO Pack (OG + Twitter Cards for translated content) | ✅ auto-translated OG from cloud | Via SEO plugin per site |
+| Schema.org JSON-LD with `inLanguage` annotations | ✅ native — Article/WebPage, WebSite, Product (WC); includes `inLanguage` BCP 47; defers entirely to Yoast/Rank Math to prevent conflicting JSON-LD graphs | Via Yoast/Rank Math; WPML SEO translates schema title/description fields; no `inLanguage` field | Via SEO plugin; no multilingual `inLanguage` | Via SEO plugin / SEO Pack (partial) | ❌ cloud handles rendered output but no structured data control | Via SEO plugin per site |
+| XML sitemap with hreflang alternates | ✅ native `/lf-sitemap.xml` with `xmlns:xhtml` + `xhtml:link` alternates per translation group; announced in `robots.txt`; one-click Bing/Yandex ping; robots.txt management panel | ✅ WPML SEO multilingual sitemaps with hreflang in sitemap (SEO 2.2.x); improved sitemap rendering performance | Via Yoast/Rank Math with Polylang integration | ✅ SEO Pack multilingual sitemaps | ✅ auto (subdirectory mode); multilingual sitemap managed by Weglot | Via SEO plugin per sub-site |
+| Social Share (share: URL rewriting for Social Icons block) | ✅ native — Facebook, X, LinkedIn, WhatsApp, Telegram, Email, Reddit, Pinterest, Mastodon; copy/native/auto JS actions with clipboard and Web Share API | ❌ | ❌ | ❌ | ❌ | ❌ |
+| AI-powered SEO content analysis | ✅ native — rule-based score (0–100) with title length, meta description, word count, heading structure, image alt coverage, internal links; AI recommendations (summary, improvements, title/meta suggestions) in block editor `PluginDocumentSettingPanel` | ❌ relies on Yoast/Rank Math for content analysis | ❌ relies on Yoast/Rank Math | ❌ | ❌ | ❌ |
+| WooCommerce product OG (`og:type=product`, price, availability) | ✅ native — `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, `product:*` namespace equivalents | Via Yoast/Rank Math + WooCommerce | Via SEO plugin + WooCommerce | Via SEO plugin + SEO Pack | ✅ cloud auto-translates product pages | Via SEO plugin per sub-site |
+| SEO plugin co-existence management | ✅ Compatibility tab shows live detection + per-feature behaviour; no config needed | ✅ WPML SEO designed for Yoast/Rank Math co-existence; recent 2.2.5 improved RankMath integration | Works with major SEO plugins; some manual filter config needed | ✅ SEO Pack works with Yoast/Rank Math/SEOPress/AIOSEO | Works alongside site SEO plugins | Works alongside per-site SEO plugin |
+| Native meta description field | ✅ all public post types; character counter with colour guidance | Via SEO plugin | Via SEO plugin | ✅ SEO Pack | ✅ auto-translated | Via SEO plugin |
+| AI meta description generator | ✅ language-aware, 140–160 chars, per post per language | ❌ | ❌ | ❌ | ❌ | ❌ |
+| No additional SEO plugin required | ✅ complete multilingual SEO layer (hreflang, OG, schema, sitemap, analysis) | ❌ WPML SEO component + Yoast/Rank Math recommended for content analysis | ❌ Pro + SEO plugin for full coverage | ❌ SEO Pack add-on | ⚠ basic SEO auto-handled; no content analysis | ❌ SEO plugin per sub-site |
+| Translated slugs / permalinks | ✅ slug editable independently of title per language | ✅ | ✅ Pro | ✅ | ✅ | ✅ |
 
 ---
 
@@ -205,7 +213,7 @@ Feature tables show what a plugin can do — not what it costs in actual effort 
 | WooCommerce UI string translation (cart labels, notices, button text) | ✅ via Loco Translate companion (.mo/.po layer) | ✅ | ✅ | ✅ (string-intercept) | ✅ (cloud) | ✅ |
 | Multi-currency | Via WooCommerce / 3rd-party | ✅ (WPML Multi-Currency add-on) | Via WooCommerce / 3rd-party | ❌ | ❌ | ✅ (separate store per language) |
 
-**Assessment (v2.1.6):** Lingua Forge supports the full WooCommerce variable product stack:
+**Assessment (v2.2.0):** Lingua Forge supports the full WooCommerce variable product stack:
 
 - **Translated product variations** — `product_variation` children are created automatically on translated parent products, TRID-linked to source variations. `_variation_description` (the per-variation description field) is translatable via the standard Retranslate button. Attribute assignments (`attribute_pa_color = 'red'`) are copied so WooCommerce's variation matching (`find_matching_product_variation()`) works correctly.
 - **Operational data delegation** — price, SKU, stock, dimensions, and images are served transparently from source variations at runtime via `get_post_metadata` interception (both individual and bulk reads, covering WC's `read_product_data()` path). No meta copying, no SKU uniqueness issues, no stock sync complexity.
@@ -284,17 +292,21 @@ Lingua Forge takes the WordPress-native path: every template part — header, fo
 
 The complete FSE localisation workflow shipped natively in 1.6.0: scaffold a language variant of any template or template part, AI-translate it in one click, fix internal links to point at the correct language equivalents, fix template-part slug references, fix `wp:navigation` ref IDs so each header and footer loads the correct language navigation, and create language-specific `wp_navigation` copies with AI-translated labels — all from Settings → Router with no CLI or manual database work required. WP-CLI commands for templates and template parts remain on the roadmap as a future automation path, extending the same five existing commands that already cover posts and pages to the FSE layer.
 
-### SEO — native output, no plugin dependency
+### SEO — complete multilingual SEO layer, no companion plugin required
 
-Lingua Forge handles the full multilingual SEO surface natively, without a companion plugin or add-on:
+As of 2.2.0, Lingua Forge handles the full multilingual SEO surface natively. No third-party SEO plugin is required:
 
-- **hreflang** — output for singular, archive, and paginated contexts; duplicate output from Yoast, Rank Math, and AIOSEO suppressed automatically
-- **Meta description** — native field on all public post types; `<meta name="description">`, OG, and Twitter tags all emitted natively
-- **Character counter** — real-time length guidance with colour coding directly in the editor
-- **AI meta description generator** — language-aware, 140–160 character output per language
-- **Slug SEO freedom** — title and slug can carry independent keyword sets per language; the translated slug is set automatically but the editor retains full control to optimise it separately
+- **hreflang** — output for singular, archive, and paginated contexts; `x-default` pointing to the source language; duplicate output from Yoast, Rank Math, AIOSEO, and SEOPress suppressed automatically via filter
+- **Open Graph + Twitter Cards** — `og:locale` and `og:locale:alternate` always emitted; full OG set (title, description, URL, image, type, Twitter Cards) in auto/full mode; defers to detected SEO plugin in auto mode to avoid duplicate tags. WooCommerce product pages: `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, and `product:` namespace equivalents
+- **Schema.org JSON-LD** — `Article`/`WebPage` on singular posts/pages, `WebSite` on the front page, `Product` on WooCommerce product pages; every type includes the `inLanguage` BCP 47 annotation that general SEO plugins cannot provide. Defers entirely to Yoast/Rank Math when detected to prevent conflicting JSON-LD graphs
+- **XML sitemap** — `/lf-sitemap.xml` with `xmlns:xhtml` namespace and `<xhtml:link rel="alternate" hreflang>` entries for every translation group; announced automatically in `robots.txt`; one-click Bing/Yandex ping buttons; robots.txt detection and management panel. WPML SEO (v2.2.x) now also puts hreflang in sitemaps — Lingua Forge's dedicated sitemap was always more precise for multilingual alternate links
+- **Social Share** — native Social Icons block enhancement: editors set any icon URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:email`, `share:reddit`, `share:pinterest`, `share:mastodon`, or `share:copy`/`share:native`/`share:auto` (JS clipboard + Web Share API); LF rewrites them at render time. No other multilingual plugin ships this
+- **AI SEO content analysis** — a rule-based 0–100 SEO score (title length, meta description quality, word count, heading structure, image alt coverage, internal links) available in both the Settings → SEO → Analysis tab (browse by language, batch audit) and as a `PluginDocumentSettingPanel` in the block editor Document sidebar. The editor panel adds an AI Recommendations section: one click calls the configured AI provider for natural-language improvements, title suggestions, and meta description rewrites — the only multilingual plugin to offer this
+- **Meta description** — native field on all public post types; character counter with colour guidance; AI generator producing language-aware 140–160 character output per language
+- **Slug SEO freedom** — title and slug carry independent keyword sets per language with full editor control
+- **Compatibility management** — Compatibility tab shows live detection of installed SEO plugins with per-feature explanation of what LF is doing, why, and what the result is for each feature area. No manual configuration needed
 
-Every competitor either delegates SEO entirely to a third-party plugin (WPML, Polylang, MultilingualPress) or requires a paid add-on (TranslatePress SEO Pack). Weglot auto-translates meta descriptions but without editorial control or character guidance.
+WPML delegates most SEO to Yoast/Rank Math with its WPML SEO add-on handling co-existence; it has no native content analysis. Polylang Pro auto-adds hreflang and OG but also relies on a paired SEO plugin for content analysis and most meta. TranslatePress requires the SEO Pack add-on. Weglot auto-handles basic SEO via its cloud but has no structured data control, no content analysis, and no `x-default` tag. MultilingualPress leaves all SEO to a per-site SEO plugin.
 
 ### WP-CLI for automation at scale
 
@@ -394,24 +406,24 @@ The following items are out of current scope by design, not competitive gaps:
 
 | Plugin | Best fit | Core strength | Core limitation |
 |---|---|---|---|
-| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects, WooCommerce stores | Zero cost + AI editorial depth + WP-CLI + FSE-native + full CPT support + full variable product translation (variations, translated attribute names in block + classic themes, brand, REST guard) + post-list AI translate/retranslate | Separate-domain routing not yet supported; WooCommerce dynamic cart/checkout JS not translated |
+| **Lingua Forge** | Content-focused block-theme sites, developers, cost-sensitive projects, WooCommerce stores | Zero cost + complete native SEO layer (hreflang, OG/schema/sitemap, Social Share, AI content analysis) + AI editorial depth + WP-CLI + FSE-native + full variable product translation + post-list AI translate/retranslate | Separate-domain routing not yet supported; WooCommerce dynamic cart/checkout JS not translated |
 | **WPML** | Plugin-ecosystem-dependent sites, agencies, WooCommerce at scale | Market leader, widest compatibility, agency/CAT workflows | High cost, plugin bloat, metered AI credits |
 | **Polylang** | Budget post-based sites where Lingua Forge is overkill | Lightweight, clean, widely understood | Free tier severely limited; Pro still needs DeepL separately |
 | **TranslatePress** | Teams where visual front-end editing is priority | Front-end editor UX, transparent WooCommerce, predictable pricing | Render-time overhead + parallel string storage layer, no FSE template support |
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance | Requires Multisite, operational complexity, no free tier |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.1.6 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.2.0 already covers the full multilingual workflow that every competitor charges €99–€200+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
 
 The honest differentiation is not "Lingua Forge does everything every competitor does." It is: **Lingua Forge does everything a content-focused, block-theme site actually needs from a multilingual plugin — permanently free — with AI assistance built in, a developer experience (WP-CLI, encryption, PHP API, no lock-in) that no competitor matches, and a native-block architecture that carries none of the overhead that string-interception or cloud-proxy tools require.**
 
-As of 2.1.6, Lingua Forge covers the full WooCommerce variable product stack: translated variable products display correct prices, stock, images, and variations; variation descriptions are translatable; attribute term names (colour swatches etc.) display in the visitor's language in both block themes and classic templates; product brands are delegated automatically; and a REST write guard protects translated posts from external integration accidents. Dynamic cart and checkout JavaScript translation remains out of scope; Weglot and TranslatePress handle that use case via cloud-proxy and render-time interception respectively. For everything else in the competitive surface — path-prefix and subdomain routing, hreflang, FSE templates and template parts, navigation localisation, AI translation and generation, SEO meta output, WP-CLI, full CPT support, block-level granularity with refinement and rewrite, WooCommerce product and category content, and post-list AI translate/retranslate actions — Lingua Forge is fully covered at zero licensing cost.
+As of 2.2.0, Lingua Forge covers the complete multilingual SEO surface natively — hreflang, Open Graph with locale tags, Schema.org JSON-LD with `inLanguage` annotations, a dedicated multilingual sitemap, WooCommerce product schema and OG tags, Social Icons block share: rewriting, and AI-powered SEO content analysis — with no companion SEO plugin required. It also covers the full WooCommerce variable product stack: translated variable products display correct prices, stock, images, and variations; variation descriptions are translatable; attribute term names display in the visitor's language in both block themes and classic templates; product brands are delegated automatically; and a REST write guard protects translated posts from external integration accidents. Dynamic cart and checkout JavaScript translation remains out of scope; Weglot and TranslatePress handle that use case via cloud-proxy and render-time interception respectively. For everything else in the competitive surface — Lingua Forge is fully covered at zero licensing cost.
 
 ---
 
 ## 16. Sources and References
 
-> All sources verified May 2026. Pricing pages change frequently — the ⚠ caution in §1 applies throughout.
+> All sources verified June 2026. Pricing pages change frequently — the ⚠ caution in §1 applies throughout.
 
 ### Pricing
 
@@ -463,3 +475,15 @@ As of 2.1.6, Lingua Forge covers the full WooCommerce variable product stack: tr
 - [Weglot — How to Add a WordPress Language Switcher](https://www.weglot.com/guides/wordpress-language-switcher)
 - [MultilingualPress — Getting started guide](https://multilingualpress.org/docs/getting-started-with-multilingualpress/)
 - [MultilingualPress — Language Switcher setup](https://multilingualpress.org/docs/language-switcher-multilingual-wordpress-website/)
+
+### SEO (June 2026 research)
+
+- [WPML SEO — Documentation](https://wpml.org/documentation/related-projects/wpml-seo/)
+- [WPML SEO 2.2.0 — Release notes](https://wpml.org/compatibility/2025/06/wpml-seo-2-2-0/)
+- [WPML SEO 2.2.5 — RankMath/Yoast integration](https://wpml.org/compatibility/2026/03/wpml-seo-2-2-5/)
+- [Polylang — Features (hreflang + Open Graph)](https://polylang.pro/features/)
+- [TranslatePress SEO Pack — Documentation](https://translatepress.com/docs/addons/seo-pack/)
+- [Weglot — How Weglot manages WordPress SEO](https://support.weglot.com/article/99-wordpress-how-weglot-manage-seo)
+- [Weglot — Multilingual sitemap guide](https://www.weglot.com/blog/multilingual-sitemap)
+- [Rank Math vs Yoast 2026 — Independent comparison](https://oddjar.com/wordpress-seo-plugins-2026-comparison/)
+- [Multilingual sitemap comparison — Slim SEO](https://wpslimseo.com/wordpress-multilingual-sitemap/)

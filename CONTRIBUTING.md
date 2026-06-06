@@ -48,6 +48,18 @@ outside the plugin namespace.
     `linguaforge_translation_complete` (action after a CLI / programmatic
     translation creates or updates a post; receives `int $new_id`,
     `int $source_id`, `string $target_lang`).
+  - **SEO sub-module hooks** (new in 2.2.0):
+    - `linguaforge_seo_og_type` — filter; override the resolved `og:type` per page. Receives `string $type` ('article'|'website'). WooCommerce integration uses this to return `'product'` on product pages.
+    - `linguaforge_seo_og_extra_tags` — action; fires after the full OG + Twitter Card set. Use to append additional Open Graph properties (e.g. WC price/availability).
+    - `linguaforge_seo_schema_extra_types` — action; fires after built-in JSON-LD types (Article, WebSite). Receives `string $lang`, `string $in_language` (BCP 47). Use to output additional JSON-LD types.
+    - `linguaforge_seo_og_locale_map` — filter; override the language→Facebook-locale mapping (`array<string,string>`).
+    - `linguaforge_seo_schema_locale_map` — filter; override the language→BCP47 mapping (`array<string,string>`).
+    - `linguaforge_seo_og_image` — filter; override the resolved OG image URL (string).
+    - `linguaforge_seo_og_description` — filter; override the resolved OG description (string).
+    - `linguaforge_seo_schema_data` — filter; modify any schema array before JSON encoding. Receives `array $data`, `string $type` (@type value).
+    - `linguaforge_seo_sitemap_slug` — filter; override the sitemap URL slug (default `'lf-sitemap.xml'`).
+    - `linguaforge_seo_sitemap_xml` — filter; modify the full generated sitemap XML string before serving.
+    - `linguaforge_social_share_url` — filter; override the resolved share URL for a given service. Receives `string $url`, `string $service`.
   - **AI sub-module settings knobs:** `linguaforge_ai_retry_policy`,
     `linguaforge_required_capability`, `linguaforge_debug_dir`,
     `linguaforge_ai_should_boot`, `linguaforge_ai_rate_limit`,
@@ -316,21 +328,34 @@ uninstall.php                 Wipe-on-delete handler (named options + LIKE prefi
 includes/
   class-updater.php           Self-hosted update checker (Linguaforge_Updater)
 
-language-router/              Routing, locale, translations, hreflang, admin meta boxes
+language-router/              Routing, locale, translations, hreflang, SEO output, admin meta boxes
   language-router.php         Sub-module bootstrap + procedural template wrappers
   includes/                   Class files (Router, Switcher, LinkFixer, widget, …)
+    seo/                      SEO output classes (all registered as Router sub-objects):
+                              class-hreflang.php     — hreflang tags, canonical removal, SEO plugin compat
+                              class-seo-manager.php  — Open Graph / og:locale / Twitter Cards (priority 2)
+                              class-schema-manager.php — Schema.org JSON-LD Article/WebPage/WebSite (priority 3)
+                              class-social-share.php — Social Icons block share: URL rewriting + JS
+                              class-sitemap-manager.php — /lf-sitemap.xml generation + robots.txt
     rest/                     REST endpoint classes (DataEndpoints)
-  assets/                     CSS / JS enqueued into admin
+  assets/                     CSS / JS enqueued into admin and frontend
+                              social-share.js — clipboard / native share JS for share:copy/native/auto
 
 ai/                           AI features (translation, meta-description, excerpt, content gen, revise)
   ai.php                      Sub-module bootstrap
   includes/                   PSR-4 class files under LinguaForge\AI\…
     Admin/                    Admin UI: MetaBox, AdminToolbar, PostListColumn, SettingsPage
-    Admin/Settings/Tabs/      One class per settings tab (Tab base + 8 concrete tabs)
+    Admin/Settings/Tabs/      One class per settings tab (Tab base + 9 concrete tabs)
+                              SeoTab.php — SEO tab orchestrator (inner tabs: Hreflang, Open Graph,
+                              Social Share, WooCommerce, Schema.org, Sitemap, Analysis, Compatibility)
     Admin/Settings/Tabs/Sections/
                               Per-section renderers for the Router tab's FSE panel:
                               TemplatesSection, TemplatePartsSection, NavigationsSection,
                               PatternsSection (CPT-scoped block pattern translation)
+    Admin/Settings/Panels/    Per-panel classes for the SEO tab and other multi-panel tabs:
+                              HreflangPanel, OpenGraphPanel, SocialSharePanel,
+                              WooCommerceSeoPanel, SchemaPanel, SitemapPanel,
+                              SeoAnalysisPanel, CompatibilityPanel
     Admin/FseLocalisation/    FSE localisation layer — pure-static classes, no instance state:
                               TemplateDefinitions (CPT-slot template list),
                               PartDiscovery (template-part registry queries),
@@ -348,10 +373,12 @@ ai/                           AI features (translation, meta-description, excerp
                               TranslationTrigger, …)
     Integrations/WooCommerce/ WooCommerce delegation layer (Bootstrap, MetaDelegate,
                               StockRouter, VariationDelegate, TaxonomyDelegate,
-                              CatalogQuery, TermNameFilter, TermNameAdmin)
+                              CatalogQuery, TermNameFilter, TermNameAdmin, SeoSupport)
     Providers/                AI provider adapters (Anthropic, OpenAI, Gemini) + factory
     REST/                     REST controller + rate limiter
   assets/                     CSS / JS for the meta box, editor toolbar, Settings page, post list
+                              seo-analysis.js — rule-based analysis results rendering (settings page)
+                              seo-analysis-editor.js — Gutenberg PluginDocumentSettingPanel + AI modal
   templates/prompts/          AI prompt templates (translation.txt, block-revision.txt, …)
 
 meta-description/             Meta Description module — LinguaForge\MetaDescription\Module class
@@ -398,12 +425,12 @@ codify all live in this file.
 
 ## Settings page layout
 
-The Settings page (`Settings → Lingua Forge`) uses an eight-tab layout
-(General / API Keys / Limits / Behavior / Router / Glossary / AI Usage /
-Maintenance). The first four tabs (General, API Keys, Limits, Behavior)
-live inside a single `<form>` so one Save Settings click persists every
-value. The remaining four tabs (Router, Glossary, AI Usage, Maintenance)
-are outside that form — each uses its own dedicated admin-post actions.
+The Settings page (`Settings → Lingua Forge`) uses a nine-tab layout
+(General / API Keys / Limits / Behavior / Router / Glossary / SEO /
+AI Usage / Maintenance). The first four tabs (General, API Keys, Limits,
+Behavior) live inside a single `<form>` so one Save Settings click
+persists every value. The remaining five tabs are outside that form —
+each uses its own dedicated admin-post actions.
 
 When adding a new setting, decide which tab it belongs in:
 
@@ -419,6 +446,19 @@ When adding a new setting, decide which tab it belongs in:
 - **Glossary** — per-language-pair terminology table. Has its own
   admin-post actions (`linguaforge_glossary_add`,
   `linguaforge_glossary_delete`).
+- **SEO** — SEO output settings. Structured as inner tabs using the same
+  `.lf-seo-tab` / `.lf-seo-tab-panel` pattern as the Cache stats panel.
+  Inner tabs: **Hreflang**, **Open Graph & Twitter Cards**, **Social Share**,
+  **WooCommerce** (visible only when WC is active), **Schema.org**, **Sitemap**,
+  **Analysis**, **Compatibility**. Each inner panel has its own admin-post
+  action (`linguaforge_save_seo_hreflang`, `linguaforge_save_seo_og`,
+  `linguaforge_save_seo_social_share`, `linguaforge_save_seo_wc`,
+  `linguaforge_save_seo_schema`, `linguaforge_save_seo_sitemap`). The
+  Analysis panel also registers two AJAX actions:
+  `wp_ajax_linguaforge_seo_analyze` (rule-based) and
+  `wp_ajax_linguaforge_seo_ai_analyze` (AI-powered). The Sitemap panel
+  registers `linguaforge_flush_sitemap_cache`, `linguaforge_ping_sitemap`,
+  and `linguaforge_update_robots_txt`.
 - **AI Usage** — read-only usage log (requests, input/output tokens by
   feature, provider, model, and date). No save action.
 - **Maintenance** — operational forms (cache, debug files, language
@@ -546,6 +586,7 @@ from the source-language product at runtime:
 | `TaxonomyDelegate` | `wp_get_object_terms` priority 10 + `wp`/`the_post` cache clearing | Term assignments delegated to source; `object_id` rewritten on returned terms so `update_object_term_cache()` primes the correct bucket |
 | `CatalogQuery` | `woocommerce_product_query` | Language filter for secondary WC product queries |
 | `RestWriteGuard` | `woocommerce_rest_pre_insert_product_object` + `…_variation_object` | Returns HTTP 422 for PUT/PATCH to translated products/variations; includes source_id in response |
+| `SeoSupport` | `linguaforge_seo_og_type` (filter), `linguaforge_seo_og_extra_tags` (action), `linguaforge_seo_schema_extra_types` (action) | WC-specific SEO: `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, `product:*` namespace tags, and `Product` JSON-LD schema. Option-gated: `linguaforge_seo_wc_og_enabled` (OG) + `linguaforge_seo_schema_product` (schema). |
 
 ### WC structural taxonomy inheritance
 

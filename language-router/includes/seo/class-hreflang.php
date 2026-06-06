@@ -26,6 +26,11 @@ class Hreflang {
 	// =========================================================
 
 	public function register_hooks(): void {
+
+		if ( ! get_option( 'linguaforge_seo_hreflang_enabled', true ) ) {
+			return;
+		}
+
 		add_action( 'wp_head', [ $this, 'print_hreflang_tags' ], 1 );
 		add_action( 'wp',      [ $this, 'remove_core_canonical' ] );
 		add_action( 'init',    [ $this, 'disable_seo_plugin_hreflang' ] );

@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.1.10 — stable, open for testing.**
+> **Version 2.2.0 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -20,7 +20,7 @@ At its core it does three things that always end up intertwined on multilingual 
 
 1. **Routes visitors to the right language version of every page** — via URL prefixes like `/de/` or `/fr/`, or via language subdomains like `de.example.com`, with hreflang SEO tags, a language switcher block, and an admin panel that keeps translations linked and warns you when source content has changed.
 
-2. **Keeps SEO meta descriptions accurate and in the right language** — a simple meta box on every post and page, with AI generation available in one click when you need a fresh description.
+2. **Handles the full multilingual SEO surface natively — no companion plugin required** — hreflang, Open Graph with `og:locale`/`og:locale:alternate`, Schema.org JSON-LD with `inLanguage`, a dedicated XML sitemap with hreflang alternates, WooCommerce product schema, Social Icons block share: URL rewriting, and AI-powered SEO content analysis in both the Settings page and the block editor sidebar. A Compatibility tab shows live detection of any installed SEO plugin and explains exactly what Lingua Forge does for each feature area.
 
 3. **Gives editors an AI assistant directly inside the block editor** — translate full pages, revise individual blocks, generate content from scratch, and fix quick-translate snippets on the fly, all without leaving WordPress. Results are previewed before anything is applied, and a terminology glossary ensures brand names and technical terms stay consistent across languages.
 

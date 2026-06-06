@@ -115,6 +115,18 @@ class SettingsHelp {
 					'<p>' . esc_html__( 'Add one term per row. Both the source term and the target rendering are required. The language pair determines which translation jobs the constraint applies to.', 'lingua-forge' ) . '</p>',
 			],
 			[
+				'id'      => 'lf-help-seo',
+				'title'   => __( 'SEO', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'SEO Tab', 'lingua-forge' ) . '</h3>' .
+					'<p>' . esc_html__( 'Lingua Forge is a complete multilingual SEO solution. No additional SEO plugin or sitemap plugin is required.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'What LF provides: hreflang tags for every configured language, Open Graph and Twitter Card tags with og:locale and og:locale:alternate, Schema.org JSON-LD with inLanguage annotations, and a dedicated multilingual sitemap at /lf-sitemap.xml with xhtml:link alternate entries for all translation groups.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'The sitemap is announced in robots.txt automatically. All major search engines — Google, Bing, Yandex — discover it from robots.txt. No manual submission is required.', 'lingua-forge' ) . '</p>' .
+					'<p><strong>' . esc_html__( 'SEO plugins and conflict avoidance:', 'lingua-forge' ) . '</strong> ' .
+					esc_html__( 'If you have Yoast SEO, Rank Math, All in One SEO, or SEOPress installed, Lingua Forge detects them and adapts to avoid duplicate output. For hreflang, LF takes over entirely and suppresses the plugin\'s output because those plugins cannot produce correct hreflang for a multilingual routing configuration. For Open Graph, LF adds only og:locale and og:locale:alternate — the multilingual signals the plugin cannot provide — and leaves the base OG set to the plugin. For Schema.org, LF disables its own output entirely to avoid conflicting JSON-LD graphs.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'The SEO → Compatibility tab shows the live detection status and explains exactly what LF is doing for each feature area.', 'lingua-forge' ) . '</p>',
+			],
+			[
 				'id'      => 'lf-help-maintenance',
 				'title'   => __( 'Maintenance', 'lingua-forge' ),
 				'content' =>

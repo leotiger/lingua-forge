@@ -52,6 +52,7 @@ class Bootstrap {
 		TermNameFilter::init();
 		TermNameAdmin::init();
 		RestWriteGuard::init();
+		SeoSupport::init();
 
 		self::$active = true;
 

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 2.1.9\n"
+"Project-Id-Version: Lingua Forge 2.1.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-05T16:40:06+00:00\n"
+"POT-Creation-Date: 2026-06-05T23:56:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -45,9 +45,9 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:222
-#: ai/includes/Admin/SettingsPage.php:236
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:266
 #: ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268
 #: ai/assets/block-action.js:292
@@ -66,31 +66,31 @@ msgid "Lingua Forge — Quick Translate"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:106
-#: ai/includes/Admin/MetaBox.php:238
+#: ai/includes/Admin/MetaBox.php:244
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:107
-#: ai/includes/Admin/MetaBox.php:239
+#: ai/includes/Admin/MetaBox.php:245
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:108
-#: ai/includes/Admin/MetaBox.php:240
+#: ai/includes/Admin/MetaBox.php:246
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:109
-#: ai/includes/Admin/MetaBox.php:241
+#: ai/includes/Admin/MetaBox.php:247
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr ""
 
 #: ai/includes/Admin/AdminToolbar.php:110
-#: ai/includes/Admin/MetaBox.php:242
+#: ai/includes/Admin/MetaBox.php:248
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr ""
@@ -107,10 +107,22 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:308
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:167
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:185
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:138
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:287
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:344
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
@@ -339,37 +351,130 @@ msgstr ""
 msgid "\"%1$s %2$s\" saved."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:503
+#: ai/includes/Admin/MetaBox.php:368
+msgid "SEO Analysis"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:369
+#: ai/includes/Admin/SettingsPage.php:350
+msgid "Analyze"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:370
+msgid "/ 100"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:371
+#: ai/includes/Admin/SettingsPage.php:344
+msgid "Overall SEO score"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:372
+#: ai/includes/Admin/SettingsPage.php:345
+msgid "Metric"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:373
+#: ai/includes/Admin/SettingsPage.php:346
+msgid "Finding"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:374
+#: ai/includes/Admin/SettingsPage.php:337
+#: ai/includes/Admin/SettingsPage.php:347
+msgid "Title"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:375
+#: ai/includes/Admin/SettingsPage.php:338
+msgid "Meta description"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:376
+#: ai/includes/Admin/SettingsPage.php:339
+msgid "Word count"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:377
+#: ai/includes/Admin/SettingsPage.php:340
+msgid "Reading time"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:378
+#: ai/includes/Admin/SettingsPage.php:341
+msgid "Headings"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:379
+#: ai/includes/Admin/SettingsPage.php:342
+msgid "Images"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:380
+#: ai/includes/Admin/SettingsPage.php:343
+#: language-router/includes/class-lsflr-link-fixer.php:93
+msgid "Links"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:381
+msgid "AI Recommendations"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:382
+msgid "Run AI Analysis"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:383
+msgid "Analyzing…"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:384
+msgid "Configure an AI provider in Settings → API Keys to enable AI-powered recommendations."
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:385
+msgid "AI analysis failed. Please try again."
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:386
+msgid "Suggested title"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:387
+msgid "Suggested meta description"
+msgstr ""
+
+#: ai/includes/Admin/MetaBox.php:562
 msgid "Translate page…"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:504
+#: ai/includes/Admin/MetaBox.php:563
 msgid "Generate content…"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/MetaBox.php:583
 msgid "AI Behaviour Preset"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/MetaBox.php:589
 msgid "Custom"
 msgstr ""
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:535
+#: ai/includes/Admin/MetaBox.php:594
 #, php-format
 msgid "Global default (%s)"
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:547
+#: ai/includes/Admin/MetaBox.php:606
 msgid "Overrides the AI preset for Translation and Content Generation on this page. Site-wide custom prompt instructions (Settings → Behavior) are always appended to every request regardless of this selection."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:552
+#: ai/includes/Admin/MetaBox.php:611
 msgid "Overrides the AI preset for Translation and Content Generation on this page. All other features always use the global preset."
 msgstr ""
 
-#: ai/includes/Admin/MetaBox.php:633
+#: ai/includes/Admin/MetaBox.php:692
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51
 #: ai/assets/admin-diff-modal.js:49
@@ -394,9 +499,9 @@ msgid "Retranslate"
 msgstr ""
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:223
-#: ai/includes/Admin/SettingsPage.php:237
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267
 #: ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
@@ -507,6 +612,7 @@ msgid "Block-level translation cache shared across posts. When enabled, identica
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:146
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
 msgstr ""
 
@@ -545,7 +651,7 @@ msgid "Clear Translation Memory"
 msgstr ""
 
 #. translators: %d: number of cache entries removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:252
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:253
 #, php-format
 msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
@@ -553,12 +659,183 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of cached blocks removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:267
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:268
 #, php-format
 msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] ""
 msgstr[1] ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:77
+msgid "Lingua Forge is a complete multilingual SEO solution. No additional SEO plugin is required."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:85
+msgid "If you have a general SEO plugin installed, this panel shows how LF adapts to avoid duplicate output. The goal is collision avoidance — not cooperation. LF always provides the multilingual SEO layer (hreflang, og:locale, inLanguage schema) that requires knowledge of LF's language routing configuration to produce correctly."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:93
+msgid "Installed SEO plugins"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+msgid "Plugin"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:108
+msgid "✓ Active"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:110
+msgid "— Not detected"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:120
+msgid "No conflicting SEO plugins detected. Lingua Forge is handling all SEO output independently."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:125
+msgid "What LF provides — and collision avoidance"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+msgid "Feature"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:131
+msgid "LF provides"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:132
+msgid "When another SEO plugin is installed"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:45
+msgid "Hreflang"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:142
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:179
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:211
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:237
+msgid "Disabled (by setting)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:145
+msgid "✓ LF outputs — plugin hreflang suppressed"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:149
+msgid "✓ LF outputs"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:155
+msgid "LF outputs accurate hreflang for every configured language, including x-default. General SEO plugins have no access to your LF routing configuration and would produce hreflang based on incorrect URL assumptions. LF suppresses their output via filter to prevent collisions."
+msgstr ""
+
+#. translators: %s: comma-separated list of suppressed plugin names
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:163
+#, php-format
+msgid "Suppressed: %s."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:176
+msgid "Open Graph"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:181
+msgid "Disabled (mode setting)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:184
+msgid "→ Locale tags only — deferring base OG to plugin"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:188
+msgid "→ Locale tags only (manual setting)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:192
+msgid "✓ LF outputs full OG + Twitter Cards"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:198
+msgid "LF always adds og:locale and og:locale:alternate — the multilingual OG signals no general SEO plugin can produce correctly. For the base OG set (og:title, og:description, og:image), LF outputs it when no other plugin is present. When a SEO plugin is installed, LF skips the base set to avoid duplicate tags — not because the plugin is \"better\", but because duplication produces no value."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:208
+msgid "Schema.org JSON-LD"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:214
+msgid "— Deferred to plugin"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:218
+msgid "✓ LF outputs Article / WebPage / WebSite"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:224
+msgid "LF outputs multilingual JSON-LD with inLanguage annotations tied to its language routing configuration. When a SEO plugin is installed, LF disables its own schema entirely: duplicate JSON-LD graphs produce validation errors and there is no clean way to supplement an existing graph."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:234
+msgid "XML Sitemap"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:240
+msgid "✓ Active at /lf-sitemap.xml"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:246
+msgid "LF generates its own sitemap with xhtml:link alternates for all translation groups. When a SEO plugin is installed, it generates a separate sitemap — both coexist independently. Submit both to Google Search Console: the SEO plugin sitemap for content discovery, the LF sitemap for language relationship signals."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:256
+msgid "Canonical tag"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:260
+msgid "✓ WP core canonical removed"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:263
+msgid "WP core canonical active (hreflang disabled)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:268
+msgid "LF removes the WordPress core canonical tag on multilingual pages because the router's language-prefixed rewrite rules and the hreflang x-default are the correct canonical signals for a multilingual site. This prevents a double-canonical if a SEO plugin also outputs one. LF does not add its own canonical — the language routing already makes each URL canonical."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:281
+msgid "Legacy lf-social-share mu-plugin"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:285
+msgid "The lf-social-share mu-plugin is active."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:287
+msgid "Lingua Forge's built-in Social Share and Open Graph modules cover all functionality the mu-plugin provides, plus multilingual og:locale support. You can safely deactivate the mu-plugin."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:294
+msgid "OG/Twitter Card tags: handled by LF's Open Graph module (SEO → Open Graph & Twitter Cards)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:295
+msgid "Social Icons block share: URLs: handled by LF's built-in Social Share (SEO → Social Share)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:296
+msgid "copy/native/auto JS actions: handled by LF's social-share.js"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:300
+msgid "While active, the mu-plugin handles the base OG set and LF emits locale tags only (auto mode). Removing it switches LF to full OG mode automatically."
+msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:40
 msgid "Debug Files"
@@ -569,7 +846,7 @@ msgid "When debug logging is enabled (via the toggle below or by defining LINGUA
 msgstr ""
 
 #. translators: %d: number of debug files removed.
-#: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:58
+#: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:59
 #, php-format
 msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
@@ -637,6 +914,54 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:152
 msgid "Clear Debug Files"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:48
+msgid "Lingua Forge outputs <link rel=\"alternate\" hreflang> tags for every configured language on every page, including x-default pointing to the source language. This is the primary multilingual SEO signal for Google and other search engines — no additional SEO plugin is required."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
+msgid "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua Forge automatically suppresses their hreflang output via filter. General SEO plugins produce hreflang based on a single-language URL structure and cannot account for your multilingual routing configuration; LF's output is always correct."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:67
+msgid "Hreflang settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:77
+msgid "Hreflang output"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:86
+msgid "Output hreflang tags in wp_head"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:90
+msgid "Disable only for headless sites or fully custom hreflang implementations. When disabled, LF no longer removes the WordPress core canonical tag and no longer suppresses SEO-plugin hreflang output."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:101
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:148
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:130
+msgid "Current status"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:104
+msgid "✓ Hreflang active"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:107
+msgid "LF is outputting hreflang tags and has removed the WordPress core canonical tag on multilingual pages."
+msgstr ""
+
+#. translators: %s: comma-separated list of SEO plugin names
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:115
+#, php-format
+msgid "LF is suppressing hreflang output from: %s"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/HreflangPanel.php:126
+msgid "Save Hreflang Settings"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:100
@@ -744,6 +1069,8 @@ msgid "Invalid file reference."
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Type"
 msgstr ""
 
@@ -757,6 +1084,664 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid "No custom Loco Translate files found yet. They appear here once you save a translation in Loco Translate."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:49
+msgid "Lingua Forge outputs Open Graph and Twitter Card meta tags so shared URLs display the correct language, title, description, and image on social platforms."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:57
+msgid "Unlike hreflang — where LF always overrides other plugins because they cannot know your multilingual configuration — Open Graph is different: Yoast, Rank Math, and similar plugins already output correct OG tags for your content. Duplicating them adds no value. In auto mode, LF detects active SEO plugins and adds only what they cannot provide: og:locale (current language) and og:locale:alternate (all other configured languages)."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:68
+msgid "Open Graph settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:79
+msgid "Open Graph output"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:88
+msgid "Output Open Graph tags in wp_head"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:94
+msgid "Output mode"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:99
+msgid "Auto (recommended)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
+msgid "Detect active SEO plugins (Yoast, Rank Math, etc.) at runtime. Emit only og:locale + og:locale:alternate when another plugin already outputs the full OG set; emit the complete set when none is detected."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:105
+msgid "Locale only"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:107
+msgid "Always emit only og:locale and og:locale:alternate. Use when another plugin or theme handles the full OG set."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:111
+msgid "Full"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:113
+msgid "Always emit the complete OG + Twitter Card set regardless of other plugins. Use only if no other plugin outputs OG tags."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:117
+msgid "Disabled"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:119
+msgid "Do not output any OG tags."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:126
+msgid "Default OG image"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:137
+msgid "Fallback image URL used when a page has no featured image, site logo, or site icon. Shown in social previews for archives, the blog index, and any singular page without a thumbnail."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:151
+msgid "— Disabled"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:153
+msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:155
+msgid "✓ Active — full OG + Twitter Cards"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:160
+msgid "Legacy lf-social-share mu-plugin detected. LF is deferring the base OG set to the mu-plugin and outputting og:locale + og:locale:alternate only. You can deactivate the mu-plugin — LF's built-in Social Share (SEO → Social Share tab) and Open Graph cover the same functionality."
+msgstr ""
+
+#. translators: %s: comma-separated list of SEO plugin names
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:169
+#, php-format
+msgid "SEO plugin(s) detected: %s. LF is outputting og:locale and og:locale:alternate only; the detected plugin handles the full OG set."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:178
+msgid "No external OG plugin detected. LF is outputting the full OG + Twitter Card set."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:187
+msgid "Save Open Graph Settings"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:50
+msgid "Lingua Forge outputs Schema.org JSON-LD structured data so search engines understand your content type, language, and metadata. This is the primary way to communicate inLanguage annotations for multilingual content to Google and other crawlers."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:60
+msgid "Schema output deferred."
+msgstr ""
+
+#. translators: %s: comma-separated plugin names
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:64
+#, php-format
+msgid "%s is active and already outputs Schema.org JSON-LD. Lingua Forge has disabled its own schema output to prevent conflicting graphs. Unlike Open Graph — where LF adds og:locale on top of another plugin's output — schema cannot be cleanly supplemented: duplicate or overlapping JSON-LD graphs produce validation errors. Disable schema output in the detected plugin if you want LF to handle structured data."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:76
+msgid "Schema.org settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:88
+msgid "Schema.org output"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:98
+msgid "Output Schema.org JSON-LD in wp_head"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:102
+msgid "Locked — a conflicting SEO plugin is active. See the notice above."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:110
+msgid "Article / WebPage"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:119
+msgid "Output Article or WebPage schema on singular posts and pages"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
+msgid "Blog posts use Article; all other post types and pages use WebPage. Includes headline, description, inLanguage, url, datePublished, dateModified, image, and publisher."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:134
+msgid "WebSite"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:143
+msgid "Output WebSite schema on the front page and blog index"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:146
+msgid "Includes site name, url, and inLanguage."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:155
+msgid "Product"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:166
+msgid "Output Product schema on WooCommerce product pages"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:170
+msgid "Includes name, description, inLanguage, url, image, and an Offer with price, priceCurrency, and availability. Price and availability come from the source-language product (shared stock model)."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:183
+msgid "Currently emitting"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:187
+msgid "Article / WebPage — all singular posts and pages"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:190
+msgid "WebSite — front page / blog index"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
+msgid "Product — WooCommerce product pages"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:196
+msgid "Nothing — all types disabled"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SchemaPanel.php:205
+msgid "Save Schema.org Settings"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+msgid "Filter by language and post type, browse your content, and click Analyze on any item to run a rule-based SEO audit — title length, meta description, word count, heading structure, image alt coverage, and internal links."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: language-router/includes/class-lsflr-switcher-widget.php:40
+msgid "Language"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+msgid "source"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+msgid "All types"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+msgid "Load content"
+msgstr ""
+
+#. translators: %d: post ID
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#, php-format
+msgid "(no title) #%d"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+msgid "Invalid post ID."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+msgid "Post not found or not published."
+msgstr ""
+
+#. translators: %d: minutes
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#, php-format
+msgid "~%d min read"
+msgid_plural "~%d min read"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+msgid "No title set."
+msgstr ""
+
+#. translators: %d: number of characters
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#, php-format
+msgid "Title is %d chars — aim for 50–60."
+msgstr ""
+
+#. translators: %d: number of characters
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
+#, php-format
+msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgstr ""
+
+#. translators: %d: number of characters
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#, php-format
+msgid "%d chars — good length."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+msgid "Using LF AI meta description."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+msgid "No LF meta description set — using excerpt/content."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+msgid "No meta description found. Generate one via the AI meta description feature."
+msgstr ""
+
+#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#, php-format
+msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgstr ""
+
+#. translators: %1$d: number of characters, %2$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
+#, php-format
+msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
+msgstr ""
+
+#. translators: %1$d: number of characters, %2$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#, php-format
+msgid "%1$d chars — good length. %2$s"
+msgstr ""
+
+#. translators: %d: word count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
+#, php-format
+msgid "%d words — very thin content. Consider expanding to at least 300 words."
+msgstr ""
+
+#. translators: %d: word count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
+#, php-format
+msgid "%d words — below recommended minimum of 300."
+msgstr ""
+
+#. translators: %d: word count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#, php-format
+msgid "%d words."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+msgid "No H1 found. Typically the post title is the H1 — verify your theme is outputting it."
+msgstr ""
+
+#. translators: %d: number of H1 tags found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#, php-format
+msgid "%d H1 tags found — a page should have exactly one H1."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgstr ""
+
+#. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#, php-format
+msgid "1 H1 ✓, %1$d H2, %2$d H3."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+msgid "No images found in content."
+msgstr ""
+
+#. translators: %1$d: number of images missing alt text, %2$d: total image count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#, php-format
+msgid "%1$d of %2$d image(s) missing alt text."
+msgstr ""
+
+#. translators: %d: number of images
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#, php-format
+msgid "%d image(s), all have alt text."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+msgid "No links found. Internal links improve crawlability and user navigation."
+msgstr ""
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#, php-format
+msgid "%d external link(s), no internal links. Add internal links to related content."
+msgstr ""
+
+#. translators: %1$d: number of internal links, %2$d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#, php-format
+msgid "%1$d internal, %2$d external."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: language-router/includes/rest/class-data-endpoints.php:125
+msgid "Post not found."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+msgid "No AI provider configured. Add an API key in Settings → API Keys."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+msgid "No response from AI provider. Check your API key and try again."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+msgid "AI returned an unexpected response format. Please try again."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:46
+msgid "Lingua Forge generates a dedicated XML sitemap at /lf-sitemap.xml that adds language alternate links for all your translated content. This sitemap complements the WordPress core sitemap and any SEO plugin sitemap — it does not replace them."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:54
+msgid "The WordPress core sitemap lists all your content URLs. The LF sitemap tells search engines how language versions relate to each other via xhtml:link hreflang alternates. Submit both to Google Search Console for full coverage."
+msgstr ""
+
+#. translators: %s: comma-separated plugin names
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:67
+#, php-format
+msgid "%s is active and generates its own sitemap. That sitemap is separate from LF's. Both should be submitted to Google Search Console: the SEO plugin sitemap lists your content; the LF sitemap adds the multilingual alternate links. LF's sitemap is announced in robots.txt automatically."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:79
+msgid "Sitemap settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:87
+msgid "Sitemap cache flushed. It will be regenerated on the next visit to the sitemap URL."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:98
+msgid "Sitemap output"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:107
+msgid "Generate the multilingual sitemap at /lf-sitemap.xml"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:110
+msgid "When enabled, the sitemap URL is announced in robots.txt automatically and the cache is refreshed when translated content is saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:118
+msgid "Sitemap URL"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:124
+msgid "Submit this URL to Google Search Console alongside your main sitemap."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
+msgid "Not yet generated. The sitemap is built on the first visit to the sitemap URL and cached for 24 hours."
+msgstr ""
+
+#. translators: %d: number of URL entries
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:141
+#, php-format
+msgid "✓ Active — %d URL entry with language alternates"
+msgid_plural "✓ Active — %d URL entries with language alternates"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:153
+msgid "No translated content found. The sitemap will populate once posts have been translated."
+msgstr ""
+
+#. translators: %s: ISO 8601 timestamp
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:162
+#, php-format
+msgid "Last generated: %s"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:175
+msgid "Save Sitemap Settings"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:182
+msgid "Flush Sitemap Cache"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:184
+msgid "Forces the sitemap to regenerate on the next request. Use after bulk-importing or manually editing translation relationships."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:190
+msgid "Notify search engines"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:194
+msgid "All major search engines — Google, Bing, and Yandex — discover the sitemap automatically via the Sitemap: directive in robots.txt. No manual action is required. The buttons below send an immediate ping so the engine recrawls the sitemap now rather than waiting for its next scheduled robots.txt check."
+msgstr ""
+
+#. translators: %s: search engine name
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:216
+#, php-format
+msgid "✓ %s notified successfully."
+msgstr ""
+
+#. translators: %s: search engine name
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:228
+#, php-format
+msgid "✗ %s ping failed. The sitemap URL is still announced in robots.txt — the search engine will discover it on its next crawl."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:247
+msgid "Ping Bing"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:251
+msgid "Optional. Bing already reads the Sitemap: directive from robots.txt — this just triggers an immediate recrawl instead of waiting for the next scheduled check."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:263
+msgid "Ping Yandex"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:267
+msgid "Optional. Yandex already reads the Sitemap: directive from robots.txt — this just triggers an immediate recrawl instead of waiting for the next scheduled check."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:276
+msgid "No action needed. Google deprecated its sitemap ping endpoint in January 2024 and now discovers sitemaps exclusively via the robots.txt Sitemap: directive — which LF has already configured. Google will pick it up on its next crawl."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:283
+msgid "Search Console is useful for monitoring indexing and coverage errors, but is not required for discovery."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:285
+msgid "Open Search Console →"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:296
+msgid "robots.txt"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:317
+msgid "robots.txt updated with Sitemap directive."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:330
+msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:337
+msgid "A physical robots.txt file exists at the site root. WordPress's virtual robots.txt — and LF's Sitemap: filter — are bypassed. The LF sitemap is not announced to search engines."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:350
+msgid "Add Sitemap directive to robots.txt"
+msgstr ""
+
+#. translators: %s: Sitemap directive line
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:356
+#, php-format
+msgid "Appends the following line to your existing robots.txt: %s"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:364
+msgid "DISALLOW_FILE_MODS is set."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:365
+msgid "Add the following line to your robots.txt manually:"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:375
+msgid "View current robots.txt"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
+msgid "No physical robots.txt file found. WordPress is generating it virtually and LF's Sitemap directive is included automatically."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:400
+msgid "The following directive is active in your virtual robots.txt:"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:454
+msgid "Unknown search engine."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:506
+msgid "File modifications are disabled (DISALLOW_FILE_MODS)."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SitemapPanel.php:539
+msgid "Could not write to robots.txt. Check file permissions."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:43
+msgid "Lingua Forge extends the WordPress Core Social Icons block with dynamic share URLs. Set any icon's link to a \"share:\" value and LF rewrites it to the correct share URL or JavaScript action at render time — no custom code or third-party plugin required."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:54
+msgid "Social Share settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:62
+msgid "The lf-social-share mu-plugin is active. Lingua Forge's built-in Social Share is inactive — the mu-plugin handles share URL rewriting and the JS actions."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:77
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:51
+msgid "Social Share"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:87
+msgid "Enable Social Share URL rewriting for Social Icons blocks"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:91
+msgid "Disabled because the lf-social-share mu-plugin is already providing this feature."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:99
+msgid "Save Social Share Settings"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
+msgid "How to use"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:108
+msgid "In the block editor, add a Social Icons block. For each icon, open the link settings and enter one of the \"share:\" values below as the URL. On the frontend, LF replaces it with the correct share URL for the current page."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:115
+msgid "External share services"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:119
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:140
+msgid "URL to enter"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
+#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
+#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:51
+msgid "Action"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:124
+msgid "Share on Facebook"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:125
+msgid "Post on X / Twitter"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:126
+msgid "Share on LinkedIn"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:127
+msgid "Send via WhatsApp"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:128
+msgid "Send via Telegram"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:129
+msgid "Submit to Reddit"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:130
+msgid "Pin on Pinterest"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:131
+msgid "Share on Mastodon"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:132
+msgid "Share via email (mailto:)"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:136
+msgid "JavaScript-powered actions"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:147
+msgid "Copy the current URL to the clipboard. Shows a \"Link copied\" toast on success."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:151
+msgid "Open the browser's native Web Share sheet (iOS, Android, some desktops). Falls back to clipboard copy if not supported."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:155
+msgid "Use native share when available; fall back to clipboard copy. Recommended default for \"Share\" buttons."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:162
+msgid "The share URL always reflects the current page — no manual URL entry needed. The linguaforge_social_share_url filter lets you override the resolved URL for any service."
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:30
@@ -808,7 +1793,7 @@ msgid "All time"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:569
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "AI Usage"
 msgstr ""
 
@@ -824,10 +1809,6 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
 #, php-format
 msgid "No AI usage recorded in the selected window (%s). Pick a wider range above."
-msgstr ""
-
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
-msgid "Feature"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
@@ -860,6 +1841,62 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:40
+msgid "Lingua Forge adds WooCommerce-specific Open Graph properties to product pages so that sharing a product URL on Facebook, Pinterest, and similar platforms surfaces the correct product type, price, and availability."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:51
+msgid "WooCommerce SEO settings saved."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
+msgid "Product Open Graph"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:71
+msgid "Add WooCommerce product tags to Open Graph output"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:75
+msgid "When enabled, Lingua Forge outputs the following additional meta tags on product pages: og:type=product, og:price:amount, og:price:currency, og:availability, and their product: namespace equivalents used by Facebook Catalog."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:86
+msgid "Tags emitted"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:91
+msgid "Tag"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:92
+msgid "Value source"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:98
+msgid "\"product\" (replaces \"article\")"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:102
+msgid "WooCommerce product price"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:106
+msgid "WooCommerce store currency"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:111
+msgid "instock / oos / pending from WC stock status"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:118
+msgid "Price and availability always reflect the source-language product (shared stock model). Tags are only output when LF's Open Graph module is set to \"Full\" or \"Auto\" mode with no conflicting SEO plugin detected."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:130
+msgid "Save WooCommerce SEO Settings"
+msgstr ""
+
 #: ai/includes/Admin/Settings/Tabs/AiUsageTab.php:29
 msgid "AI Usage & Cache"
 msgstr ""
@@ -867,7 +1904,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
 #: ai/includes/Admin/SettingsHelp.php:83
-#: ai/includes/Admin/SettingsPage.php:564
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "API Keys"
 msgstr ""
 
@@ -946,7 +1983,7 @@ msgid "Provider returned no text. Check the WordPress error log for the detailed
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:566
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Behavior"
 msgstr ""
 
@@ -1058,27 +2095,27 @@ msgid "Disable during prompt tuning or when you need every request to reach the 
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:563
+#: ai/includes/Admin/SettingsPage.php:620
 msgid "General"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:71
+#: ai/includes/Admin/SettingsPage.php:79
 msgid "Light"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:72
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Meta Description, Excerpt Generator"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:75
+#: ai/includes/Admin/SettingsPage.php:83
 msgid "Quality"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:76
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Translation, Content Generator"
 msgstr ""
 
@@ -1116,7 +2153,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:568
+#: ai/includes/Admin/SettingsPage.php:625
 msgid "Glossary"
 msgstr ""
 
@@ -1243,7 +2280,7 @@ msgid "Add entry"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:565
+#: ai/includes/Admin/SettingsPage.php:622
 msgid "Limits"
 msgstr ""
 
@@ -1388,14 +2425,14 @@ msgid "Maximum characters of existing post content passed to the AI as seed cont
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:570
+#: ai/includes/Admin/SettingsHelp.php:131
+#: ai/includes/Admin/SettingsPage.php:628
 msgid "Maintenance"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
 #: ai/includes/Admin/SettingsHelp.php:73
-#: ai/includes/Admin/SettingsPage.php:567
+#: ai/includes/Admin/SettingsPage.php:624
 msgid "Router"
 msgstr ""
 
@@ -1524,7 +2561,7 @@ msgid "Load available languages"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "— select a language —"
 msgstr ""
 
@@ -1584,7 +2621,7 @@ msgid "This language is protected and cannot be uninstalled."
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 
@@ -1614,14 +2651,9 @@ msgstr ""
 msgid "Navigation"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
-#: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:51
-msgid "Action"
-msgstr ""
-
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Re-translate"
 msgstr ""
 
@@ -1642,12 +2674,12 @@ msgid "Post Types"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "✓ Translation saved"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "View"
 msgstr ""
 
@@ -1669,12 +2701,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:227
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Fix Links"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:262
 msgid "Fix Nav"
 msgstr ""
 
@@ -1698,7 +2730,7 @@ msgid "Actions"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:231
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Fix Parts"
 msgstr ""
 
@@ -1716,6 +2748,36 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
 msgid "Fix all links"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
+#: ai/includes/Admin/SettingsHelp.php:119
+#: ai/includes/Admin/SettingsPage.php:626
+msgid "SEO"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:48
+msgid "Open Graph &amp; Twitter Cards"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:55
+msgid "WooCommerce"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:59
+msgid "Schema.org"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:62
+msgid "Sitemap"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
+msgid "Analysis"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:68
+msgid "Compatibility"
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:64
@@ -1827,206 +2889,254 @@ msgid "Add one term per row. Both the source term and the target rendering are r
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:121
-msgid "Maintenance Tab"
+msgid "SEO Tab"
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:122
-msgid "AI Cache: lists cached AI responses with hit counts. Clear the whole cache or a single post's entries. Use \"Clear\" before testing a translation change — cached results are returned even when you change the AI preset or model until the cache entry is evicted."
+msgid "Lingua Forge is a complete multilingual SEO solution. No additional SEO plugin or sitemap plugin is required."
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:123
-msgid "Translation Memory: stores the full translated post per content hash. Clear it when you want to force a retranslation of all posts regardless of whether their content changed."
+msgid "What LF provides: hreflang tags for every configured language, Open Graph and Twitter Card tags with og:locale and og:locale:alternate, Schema.org JSON-LD with inLanguage annotations, and a dedicated multilingual sitemap at /lf-sitemap.xml with xhtml:link alternate entries for all translation groups."
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:124
-msgid "Language Overrides: manage custom .po/.mo override files for the Lingua Forge UI strings. Use this instead of editing plugin files directly — overrides survive updates."
+msgid "The sitemap is announced in robots.txt automatically. All major search engines — Google, Bing, Yandex — discover it from robots.txt. No manual submission is required."
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:125
-msgid "Debug: enable the debug log to capture AI prompts and API responses to a local file. Disable after troubleshooting — debug mode writes a file on every AI request."
+msgid "SEO plugins and conflict avoidance:"
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:126
+msgid "If you have Yoast SEO, Rank Math, All in One SEO, or SEOPress installed, Lingua Forge detects them and adapts to avoid duplicate output. For hreflang, LF takes over entirely and suppresses the plugin's output because those plugins cannot produce correct hreflang for a multilingual routing configuration. For Open Graph, LF adds only og:locale and og:locale:alternate — the multilingual signals the plugin cannot provide — and leaves the base OG set to the plugin. For Schema.org, LF disables its own output entirely to avoid conflicting JSON-LD graphs."
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:127
+msgid "The SEO → Compatibility tab shows the live detection status and explains exactly what LF is doing for each feature area."
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "Maintenance Tab"
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:134
+msgid "AI Cache: lists cached AI responses with hit counts. Clear the whole cache or a single post's entries. Use \"Clear\" before testing a translation change — cached results are returned even when you change the AI preset or model until the cache entry is evicted."
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Translation Memory: stores the full translated post per content hash. Clear it when you want to force a retranslation of all posts regardless of whether their content changed."
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:136
-msgid "Getting started"
+msgid "Language Overrides: manage custom .po/.mo override files for the Lingua Forge UI strings. Use this instead of editing plugin files directly — overrides survive updates."
 msgstr ""
 
 #: ai/includes/Admin/SettingsHelp.php:137
+msgid "Debug: enable the debug log to capture AI prompts and API responses to a local file. Disable after troubleshooting — debug mode writes a file on every AI request."
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid "Getting started"
+msgstr ""
+
+#: ai/includes/Admin/SettingsHelp.php:149
 msgid "Server setup (subdomain)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:138
+#: ai/includes/Admin/SettingsHelp.php:150
 msgid "Translation workflow"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:139
+#: ai/includes/Admin/SettingsHelp.php:151
 msgid "Language switcher"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:140
+#: ai/includes/Admin/SettingsHelp.php:152
 msgid "WP-CLI reference"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:141
+#: ai/includes/Admin/SettingsHelp.php:153
 msgid "Integration API"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:154
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid "Documentation"
 msgstr ""
 
-#: ai/includes/Admin/SettingsHelp.php:157
+#: ai/includes/Admin/SettingsHelp.php:169
 msgid "Report an issue on GitHub"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:55
+#: ai/includes/Admin/SettingsPage.php:63
 msgid "Anthropic (Claude)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:56
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "OpenAI (GPT)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:57
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "Google (Gemini)"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:180
+#: ai/includes/Admin/SettingsPage.php:204
 msgid "Testing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:181
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "✓ Connection OK"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:182
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✗ Failed:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:183
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "No response from provider — check the error log for details."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:184
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:211
+#: ai/includes/Admin/SettingsPage.php:235
 msgid "Loading…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:212
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Installing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:213
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "✓ Language installed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:214
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✗ Error:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:241
 msgid "Creating…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "✓ All templates created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:219
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "Some templates could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:220
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "✓ All parts created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:221
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Some parts could not be created."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:224
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✓ All translated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:225
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "Some translations failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:226
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Review carefully — links and slugs not updated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:228
-#: ai/includes/Admin/SettingsPage.php:232
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:263
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:229
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "✓ Links fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:230
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "Some link fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:233
+#: ai/includes/Admin/SettingsPage.php:257
 msgid "✓ Parts fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:234
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "Some part fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "✓ Nav refs fixed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Some nav ref fixes failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ Pattern translated."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Pattern translation failed."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Hide"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:294
+#: ai/includes/Admin/SettingsPage.php:318
 msgid "Built-in preset instructions:"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:295
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "No built-in instructions — each AI feature uses its own tuned defaults. Fill in the Custom prompt instructions field below to add your own site-wide rules."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:333
+#: ai/includes/Admin/SettingsPage.php:349
+msgid "Modified"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:351
+msgid "edit"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:352
+msgid "No published posts found for the selected filters."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:353
+msgid "No translation found — analyzed the source language version."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:354
+msgid "Analysis request failed. Please try again."
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:390
 msgid "Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/SettingsPage.php:402
 msgid "You do not have permission to manage these settings."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:552
+#: ai/includes/Admin/SettingsPage.php:609
 msgid "Lingua Forge — Settings"
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:557
+#: ai/includes/Admin/SettingsPage.php:614
 msgid "Settings saved."
 msgstr ""
 
-#: ai/includes/Admin/SettingsPage.php:605
+#: ai/includes/Admin/SettingsPage.php:663
 msgid "Save Settings"
 msgstr ""
 
@@ -2192,7 +3302,7 @@ msgid "These footnotes come from the source page and are shown here for referenc
 msgstr ""
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:294
+#: language-router/includes/class-language-router.php:314
 #, php-format
 msgid "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;%2$s&#8221; theme are preserved in the database but are currently inactive. They will become active again if you reactivate that theme. To carry your translations to the new theme, regenerate them via <strong>Settings → Lingua Forge → Router → FSE scaffold</strong>."
 msgstr ""
@@ -2243,10 +3353,6 @@ msgstr ""
 
 #: language-router/includes/class-lsflr-link-fixer.php:92
 msgid "Post"
-msgstr ""
-
-#: language-router/includes/class-lsflr-link-fixer.php:93
-msgid "Links"
 msgstr ""
 
 #: language-router/includes/class-lsflr-link-fixer.php:94
@@ -2359,10 +3465,6 @@ msgstr ""
 msgid "Displays the Lingua Forge language switcher."
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher-widget.php:40
-msgid "Language"
-msgstr ""
-
 #: language-router/includes/class-lsflr-switcher-widget.php:61
 msgid "Display"
 msgstr ""
@@ -2403,12 +3505,16 @@ msgstr ""
 msgid "You do not have permission to read this post."
 msgstr ""
 
-#: language-router/includes/rest/class-data-endpoints.php:125
-msgid "Post not found."
-msgstr ""
-
 #: language-router/includes/rewrite/class-query-filter.php:94
 msgid "Limit results to pages in the given Lingua Forge language code."
+msgstr ""
+
+#: language-router/includes/seo/class-social-share.php:184
+msgid "Link copied"
+msgstr ""
+
+#: language-router/includes/seo/class-social-share.php:185
+msgid "Copy failed — please copy the URL manually."
 msgstr ""
 
 #: meta-description/meta-description.php:67

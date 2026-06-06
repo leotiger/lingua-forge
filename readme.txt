@@ -3,12 +3,12 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.1.10
+Stable tag: 2.2.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Multilingual routing, SEO meta descriptions, and AI-powered content tools — all in one plugin for block-theme sites.
+Multilingual routing, complete multilingual SEO (hreflang, Open Graph, Schema.org, sitemap), and AI tools — free, no license required.
 
 == Description ==
 
@@ -33,6 +33,9 @@ Detects the active language from URL prefixes (`/de/`), query parameters, or a c
 * Language-specific template parts — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any template part. Each is an independent native `wp_template_part` post
 * Language navigation menus — create per-language `wp_navigation` copies with AI-translated labels and language-prefixed URLs
 * hreflang tags for singular, archive, and paginated views; suppresses duplicate output from Yoast SEO, Rank Math, AIOSEO, and SEOPress automatically
+* **Complete multilingual SEO** — Open Graph with og:locale and og:locale:alternate, Twitter Cards, Schema.org JSON-LD (Article/WebPage/WebSite with inLanguage annotations, Product schema for WooCommerce), and a dedicated XML sitemap at `/lf-sitemap.xml` with xhtml:link alternate entries. No companion SEO plugin required. Settings → SEO provides a Compatibility tab explaining exactly what LF does alongside any detected SEO plugin
+* **Social Share** — set any WordPress Social Icons block link URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:reddit`, `share:copy`, or `share:auto`; Lingua Forge rewrites it at render time with no custom code required
+* **SEO Content Analysis** — rule-based 0–100 SEO score (title length, meta description, word count, heading structure, image alt coverage, internal links) accessible from Settings → SEO → Analysis. The block editor Document sidebar adds an AI Recommendations panel for natural-language improvement suggestions
 * Language Switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic widget (Appearance → Widgets). All three produce identical output and support `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three
 * Admin link fixer — finds internal links pointing to the wrong language version and repairs them in bulk
 * **Full Custom Post Type support** — every public CPT (WooCommerce `product`, any third-party CPT) automatically receives the full admin layer: Lang column with outdated/missing indicators and Retranslate/Translate-missing buttons, language filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. No configuration required
@@ -251,6 +254,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.0 =
+* Added: Complete multilingual SEO layer — Open Graph with og:locale/og:locale:alternate, Twitter Cards, Schema.org JSON-LD (Article/WebPage/WebSite with inLanguage, Product for WooCommerce), dedicated XML sitemap at /lf-sitemap.xml with xhtml:link hreflang alternates. No companion SEO plugin required.
+* Added: Social Share — Social Icons block share: URL rewriting for Facebook, X, LinkedIn, WhatsApp, Telegram, Email, Reddit, Pinterest, Mastodon, and copy/native/auto JS clipboard and Web Share API actions.
+* Added: SEO Content Analysis — rule-based 0–100 score (title length, meta description, word count, headings, image alt, links) in Settings → SEO → Analysis. Block editor Document sidebar panel with AI Recommendations.
+* Added: Settings → SEO tab with eight inner panels: Hreflang, Open Graph & Twitter Cards, Social Share, WooCommerce (WC-only), Schema.org, Sitemap, Analysis, Compatibility.
+* Added: WooCommerce product Open Graph — og:type=product, og:price:amount, og:price:currency, og:availability, product:* namespace equivalents.
+* Added: XML Sitemap — /lf-sitemap.xml announced in robots.txt; Bing/Yandex ping buttons; robots.txt detection and management panel.
+* Added: Compatibility tab — live detection of SEO plugins with per-feature behaviour explanation.
+* Developer: SeoManager, SchemaManager, SocialShare, SitemapManager new classes under language-router/includes/seo/. WooCommerce/SeoSupport new class for WC-specific OG and schema. 63 new tests (unit + integration).
+
 = 2.1.10 =
 * Developer: Pure test maintenance release — 32 new PHPUnit tests close all §6.0.1 coverage gaps (High, Medium, Low). Total ~865 PHPUnit tests. Combined coverage 26.94% (was 23.63%). Testable business-logic coverage ~65–70%. No functional changes, no schema changes.
 
@@ -358,6 +371,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+Major SEO release. Adds complete multilingual SEO layer (Open Graph, og:locale, Schema.org JSON-LD, XML sitemap), Social Share block rewriting, WooCommerce product schema, and AI-powered SEO content analysis. New Settings → SEO tab with Compatibility panel. No schema changes.
 
 = 2.1.10 =
 Pure test maintenance release. 32 new PHPUnit tests, coverage 23.63%→26.94%. No functional changes, no schema changes.

@@ -6,6 +6,13 @@ use LinguaForge\AI\Admin\Settings\Panels\CacheStatsPanel;
 use LinguaForge\AI\Admin\Settings\Panels\DebugFilesPanel;
 use LinguaForge\AI\Admin\Settings\Panels\LanguageOverridesPanel;
 use LinguaForge\AI\Admin\Settings\Panels\UninstallSettingsPanel;
+use LinguaForge\AI\Admin\Settings\Panels\HreflangPanel;
+use LinguaForge\AI\Admin\Settings\Panels\OpenGraphPanel;
+use LinguaForge\AI\Admin\Settings\Panels\SocialSharePanel;
+use LinguaForge\AI\Admin\Settings\Panels\SchemaPanel;
+use LinguaForge\AI\Admin\Settings\Panels\SeoAnalysisPanel;
+use LinguaForge\AI\Admin\Settings\Panels\SitemapPanel;
+use LinguaForge\AI\Admin\Settings\Panels\WooCommerceSeoPanel;
 use LinguaForge\AI\Admin\Settings\Tabs\AiUsageTab;
 use LinguaForge\AI\Admin\Settings\Tabs\ApiKeysTab;
 use LinguaForge\AI\Admin\Settings\Tabs\BehaviorTab;
@@ -14,6 +21,7 @@ use LinguaForge\AI\Admin\Settings\Tabs\GlossaryTab;
 use LinguaForge\AI\Admin\Settings\Tabs\LimitsTab;
 use LinguaForge\AI\Admin\Settings\Tabs\MaintenanceTab;
 use LinguaForge\AI\Admin\Settings\Tabs\RouterTab;
+use LinguaForge\AI\Admin\Settings\Tabs\SeoTab;
 use LinguaForge\AI\Core\KeyStore;
 use LinguaForge\AI\Core\Config;
 
@@ -121,6 +129,22 @@ class SettingsPage {
 
         // Uninstall behaviour toggle — handler co-located with UninstallSettingsPanel
         add_action('admin_post_linguaforge_save_uninstall_setting',   [UninstallSettingsPanel::class, 'handle_save_uninstall_setting']);
+
+        // SEO tab — handlers co-located with panel classes
+        add_action('admin_post_linguaforge_save_seo_hreflang',      [HreflangPanel::class,     'handle_save']);
+        add_action('admin_post_linguaforge_save_seo_og',            [OpenGraphPanel::class,    'handle_save']);
+        add_action('admin_post_linguaforge_save_seo_social_share',  [SocialSharePanel::class,     'handle_save']);
+        add_action('admin_post_linguaforge_save_seo_wc',            [WooCommerceSeoPanel::class,  'handle_save']);
+        add_action('admin_post_linguaforge_save_seo_schema',        [SchemaPanel::class,           'handle_save']);
+        add_action('admin_post_linguaforge_save_seo_sitemap',       [SitemapPanel::class,          'handle_save']);
+        add_action('admin_post_linguaforge_flush_sitemap_cache',    [SitemapPanel::class,          'handle_flush_cache']);
+        add_action('admin_post_linguaforge_ping_sitemap',           [SitemapPanel::class,          'handle_ping']);
+        add_action('admin_post_linguaforge_update_robots_txt',      [SitemapPanel::class,          'handle_update_robots']);
+
+        // SEO Analysis AJAX
+        add_action('wp_ajax_linguaforge_seo_analyze',    [SeoAnalysisPanel::class, 'ajax_analyze']);
+        add_action('wp_ajax_linguaforge_seo_get_posts',  [SeoAnalysisPanel::class, 'ajax_get_posts']);
+        add_action('wp_ajax_linguaforge_seo_ai_analyze', [SeoAnalysisPanel::class, 'ajax_ai_analyze']);
 
         // Language Router tab
         add_action('admin_post_linguaforge_save_router_settings', [RouterTab::class, 'handle_save_router_settings']);
@@ -297,6 +321,39 @@ class SettingsPage {
             ] ) . ';',
             'before'
         );
+
+        // SEO Analysis panel JS.
+        wp_enqueue_script(
+            'linguaforge-seo-analysis',
+            LINGUAFORGE_AI_URL . '/assets/seo-analysis.js',
+            [],
+            $version,
+            true
+        );
+        wp_localize_script( 'linguaforge-seo-analysis', 'lfSeoAnalysis', [
+            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( 'linguaforge_seo_analyze' ),
+            'strings' => [
+                'titleLabel'   => __( 'Title',            'lingua-forge' ),
+                'metaDesc'     => __( 'Meta description', 'lingua-forge' ),
+                'wordCount'    => __( 'Word count',       'lingua-forge' ),
+                'readTime'     => __( 'Reading time',     'lingua-forge' ),
+                'headings'     => __( 'Headings',         'lingua-forge' ),
+                'images'       => __( 'Images',           'lingua-forge' ),
+                'links'        => __( 'Links',            'lingua-forge' ),
+                'overallScore' => __( 'Overall SEO score', 'lingua-forge' ),
+                'metric'       => __( 'Metric',           'lingua-forge' ),
+                'finding'      => __( 'Finding',          'lingua-forge' ),
+                'title'        => __( 'Title',            'lingua-forge' ),
+                'type'         => __( 'Type',             'lingua-forge' ),
+                'modified'     => __( 'Modified',         'lingua-forge' ),
+                'analyze'      => __( 'Analyze',          'lingua-forge' ),
+                'edit'         => __( 'edit',             'lingua-forge' ),
+                'noPostsFound' => __( 'No published posts found for the selected filters.', 'lingua-forge' ),
+                'usedSource'   => __( 'No translation found — analyzed the source language version.', 'lingua-forge' ),
+                'requestFailed' => __( 'Analysis request failed. Please try again.', 'lingua-forge' ),
+            ],
+        ] );
 
         // Settings page styles.
         wp_enqueue_style(
@@ -566,6 +623,7 @@ class SettingsPage {
                 <a href="#behavior"    class="nav-tab"                data-lf-tab="behavior"><?php    esc_html_e('Behavior',    'lingua-forge'); ?></a>
                 <a href="#router"      class="nav-tab"                data-lf-tab="router"><?php      esc_html_e('Router',      'lingua-forge'); ?></a>
                 <a href="#glossary"    class="nav-tab"                data-lf-tab="glossary"><?php    esc_html_e('Glossary',    'lingua-forge'); ?></a>
+                <a href="#seo"         class="nav-tab"                data-lf-tab="seo"><?php         esc_html_e('SEO',         'lingua-forge'); ?></a>
                 <a href="#ai-usage"    class="nav-tab"                data-lf-tab="ai-usage"><?php    esc_html_e('AI Usage',    'lingua-forge'); ?></a>
                 <a href="#maintenance" class="nav-tab"                data-lf-tab="maintenance"><?php esc_html_e('Maintenance', 'lingua-forge'); ?></a>
             </h2>
@@ -615,6 +673,11 @@ class SettingsPage {
             <div class="lingua-forge-tab-panel" data-lf-panel="glossary">
             <?php GlossaryTab::render_content(); ?>
             </div><!-- /lingua-forge-tab-panel: glossary -->
+
+            <!-- ───── Tab: SEO ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="seo">
+            <?php SeoTab::render_content(); ?>
+            </div><!-- /lingua-forge-tab-panel: seo -->
 
             <!-- ───── Tab: AI Usage ───── -->
             <div class="lingua-forge-tab-panel" data-lf-panel="ai-usage">

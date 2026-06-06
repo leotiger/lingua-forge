@@ -2,6 +2,59 @@
 
 ---
 
+## [2.2.0] — 2026-06-06
+
+### Added
+
+- **SEO tab** — new Settings → SEO tab with seven inner panels: Hreflang, Open Graph & Twitter Cards, Social Share, WooCommerce (WC-only), Schema.org, Sitemap, Analysis, and Compatibility.
+
+- **Hreflang settings UI** — first admin surface for the always-on hreflang engine. Enable/disable toggle, status display, and live list of suppressed SEO-plugin hreflang outputs (Yoast, Rank Math, AIOSEO, SEOPress).
+
+- **Open Graph & Twitter Cards** (`SeoManager`) — outputs `og:locale` and `og:locale:alternate` on every page so social platforms serve the correct language when a translated URL is shared. In `auto` mode detects the legacy lf-social-share mu-plugin and major SEO plugins; falls back to the full OG + Twitter Card set when none are present. Configurable mode selector: auto / locale-only / full / disabled. Default OG image field with fallback chain: featured image → site logo → site icon → admin-configured default → mu-plugin legacy asset.
+
+- **Social Share** — built-in extension for the WordPress Core Social Icons block. Set any icon's link URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:email`, `share:reddit`, `share:pinterest`, `share:mastodon`, `share:copy`, `share:native`, or `share:auto`; LF rewrites them to the correct share URL or JS action at render time. Includes `share:copy` (clipboard), `share:native` (Web Share API), and `share:auto` (native with clipboard fallback) JS actions with toast feedback.
+
+- **WooCommerce Open Graph** (`SeoSupport`) — on product pages, replaces `og:type` with `product`, adds `og:price:amount`, `og:price:currency`, `og:availability`, and their `product:` namespace equivalents used by Facebook Catalog. Only active when WooCommerce is installed.
+
+- **Schema.org JSON-LD** (`SchemaManager`) — outputs `Article` / `WebPage` on singular posts and pages, and `WebSite` on the front page/blog index. Each type includes `inLanguage` (BCP 47 format). Fires `linguaforge_seo_schema_extra_types` action for extensions. Fully skips output when Yoast, Rank Math, AIOSEO, or SEOPress is active to prevent conflicting JSON-LD graphs. **WooCommerce Product schema** — `Product` type with `name`, `description`, `inLanguage`, `url`, `image`, and `offers` (price, currency, Schema.org availability URL).
+
+- **XML Sitemap** (`SitemapManager`) — dedicated multilingual sitemap at `/lf-sitemap.xml` with `xmlns:xhtml` namespace and `<xhtml:link rel="alternate" hreflang>` entries for every translation group. Announced automatically in `robots.txt` via filter. 24-hour transient cache flushed on `save_post` for LF-managed posts. Admin panel shows URL, entry count, cache age, flush button, and Bing/Yandex ping buttons. Google row explains robots.txt discovery (deprecated ping). robots.txt section detects physical file and offers to append the Sitemap directive via `WP_Filesystem`.
+
+- **SEO Analysis tab** — rule-based content audit for any post/language combination. Filter content by language and post type, browse the list, click Analyze. Checks: title length, meta description presence/quality (uses `_linguaforge_meta_description` when available), word count, reading time, heading structure (H1/H2/H3), image alt coverage, internal/external link count. Returns weighted 0–100 score with per-metric status (ok/warn/fail/info).
+
+- **SEO Analysis — block editor sidebar panel** (`seo-analysis-editor.js`) — `PluginDocumentSettingPanel` in the Document sidebar shows the current post's rule-based score. Clicking Analyze opens a `wp.components.Modal` with the full metrics table. An "AI Recommendations" section calls the configured AI provider (quality tier) for natural-language improvements: overall assessment, up to 5 specific recommendations, optional title and meta description suggestions.
+
+- **Compatibility tab** — read-only panel listing detected SEO plugins with per-feature behaviour table explaining what LF does for Hreflang (takes over, suppresses plugin output), Open Graph (adds locale tags, avoids duplicates), Schema.org (defers entirely to prevent conflicts), XML Sitemap (independent, submit both to Search Console), and Canonical (removes WP core canonical). Legacy lf-social-share mu-plugin migration notice.
+
+- **Admin help tab** — new "SEO" entry explains complete multilingual SEO coverage, no additional SEO plugin required, sitemap discovery via robots.txt, and SEO plugin conflict avoidance strategy.
+
+### Developer
+
+- `SeoManager`, `SchemaManager`, `SocialShare`, `SitemapManager` — new classes under `language-router/includes/seo/`. All registered via Router and optioned-gated.
+- `WooCommerce/SeoSupport` — new class hooking `linguaforge_seo_og_type` filter and `linguaforge_seo_og_extra_tags` / `linguaforge_seo_schema_extra_types` actions. Product schema output delegates to `SchemaManager::output_schema()` (now `public static`).
+- `SeoManager::lang_to_locale()`, `SchemaManager::lang_to_bcp47()`, `SchemaManager::output_schema()` — promoted to `public static` for testability.
+- All `SeoAnalysisPanel` private helpers promoted to `public static`; `analyze_links()` accepts optional `$home` parameter.
+- `linguaforge_seo_og_type` filter — override `og:type` per page type (used by WC to return `'product'`).
+- `linguaforge_seo_og_extra_tags` action — append additional OG properties after the base set.
+- `linguaforge_seo_schema_extra_types` action — append additional JSON-LD types after built-ins.
+- `linguaforge_seo_og_locale_map` filter — override the language→Facebook-locale mapping.
+- `linguaforge_seo_schema_locale_map` filter — override the language→BCP47 mapping.
+- `linguaforge_seo_og_image` filter — override the resolved OG image URL.
+- `linguaforge_seo_og_description` filter — override the resolved OG description.
+- `linguaforge_seo_schema_data` filter — modify any schema array before JSON encoding.
+- `linguaforge_seo_sitemap_slug` filter — override the sitemap URL slug (default `lf-sitemap.xml`).
+- `linguaforge_seo_sitemap_xml` filter — modify the full sitemap XML string before output.
+- `linguaforge_social_share_url` filter — override the resolved share URL per service.
+- `ApiPolyfills.php` — added `home_url`, `is_ssl`, `esc_url`, `esc_attr`, `wp_parse_url`, `wp_get_document_title`, `do_blocks`, `wp_trim_words`, `_n`, `number_format_i18n`, PHP 8.0 `str_starts_with`/`str_contains`/`str_ends_with` shims for unit test environments.
+
+### Tests
+
+- **`SeoHelpersTest.php`** (unit, ~30 tests) — `SeoManager::lang_to_locale()`: known language codes, unknown fallback, filter override. `SchemaManager::lang_to_bcp47()`: BCP 47 format, hyphen separator, fallback. `SchemaManager::output_schema()`: JSON encoding, `</script>` injection escaping, empty array guard, Unicode preservation. `SocialShare::rewrite_share_url()`: all external services, JS actions (copy/native/auto), no-op cases, legacy `share:twitter` alias.
+- **`SeoAnalysisHelpersTest.php`** (unit, ~28 tests) — `count_words`, `extract_headings` (case-insensitive, attribute-tolerant), `analyze_images` (alt coverage), `analyze_links` (internal/external/anchor/mailto classification), all `rate_*` functions (boundary conditions), `compute_score` (all-ok = 100, all-fail = 10, mixed, cap).
+- **`SeoAnalysisPanelIntegrationTest.php`** (integration, 5 tests) — `ajax_analyze()`: permission denied as subscriber, invalid post ID, valid post metric key structure, score in 0–100 range, word-count rating correctness.
+
+---
+
 ## [2.1.10] — 2026-06-05
 
 ### Developer

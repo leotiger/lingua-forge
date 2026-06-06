@@ -23,6 +23,10 @@ defined( 'ABSPATH' ) || exit;
  *   Rewrite\QueryFilter – parse_query, pre_get_posts, query helpers
  *   Routing\Redirector  – redirect handlers, fix_site_logo_link, menu translation
  *   Seo\Hreflang     – hreflang output, canonical removal, SEO plugin compat
+ *   Seo\SeoManager   – Open Graph / Twitter Card output, og:locale, og:locale:alternate
+ *   Seo\SocialShare  – Social Icons block share: URL rewriting + JS actions
+ *   Seo\SchemaManager  – Schema.org JSON-LD output (Article, WebPage, WebSite)
+ *   Seo\SitemapManager – Multilingual XML sitemap at /lf-sitemap.xml
  *   Search\Index     – build_search_content, extract_block_text
  *   Search\Query     – search template override, form fix, SQL extend/boost
  *   Translation\TridGroup – get/set lang/trid, get_translations, cache clear
@@ -41,6 +45,10 @@ use LinguaForge\Router\Rewrite\Manager     as RewriteManager;
 use LinguaForge\Router\Rewrite\QueryFilter as RewriteQueryFilter;
 use LinguaForge\Router\Routing\Redirector;
 use LinguaForge\Router\Seo\Hreflang;
+use LinguaForge\Router\Seo\SeoManager;
+use LinguaForge\Router\Seo\SchemaManager;
+use LinguaForge\Router\Seo\SitemapManager;
+use LinguaForge\Router\Seo\SocialShare;
 use LinguaForge\Router\Search\Index        as SearchIndex;
 use LinguaForge\Router\Search\Query        as SearchQuery;
 use LinguaForge\Router\Translation\TridGroup;
@@ -88,6 +96,10 @@ class Router {
 		$this->query_filter  = new RewriteQueryFilter( $this );
 		$this->redirector    = new Redirector( $this );
 		$this->hreflang      = new Hreflang( $this );
+		$this->seo_manager   = new SeoManager( $this );
+		$this->social_share   = new SocialShare();
+		$this->schema_manager   = new SchemaManager( $this );
+		$this->sitemap_manager  = new SitemapManager( $this );
 		$this->search_index  = new SearchIndex();
 		$this->search_query  = new SearchQuery();
 		$this->trid_group    = new TridGroup( $this );
@@ -130,6 +142,10 @@ class Router {
 	public RewriteQueryFilter $query_filter;
 	public Redirector       $redirector;
 	public Hreflang         $hreflang;
+	public SeoManager       $seo_manager;
+	public SocialShare      $social_share;
+	public SchemaManager    $schema_manager;
+	public SitemapManager   $sitemap_manager;
 	public SearchIndex      $search_index;
 	public SearchQuery      $search_query;
 	public TridGroup        $trid_group;
@@ -193,6 +209,10 @@ class Router {
 
 		// SEO
 		$this->hreflang->register_hooks();
+		$this->seo_manager->register_hooks();
+		$this->social_share->register_hooks();
+		$this->schema_manager->register_hooks();
+		$this->sitemap_manager->register_hooks();
 
 		// Search
 		$this->search_query->register_hooks();
