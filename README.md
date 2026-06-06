@@ -1065,6 +1065,13 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ---
 
+![SEO Settings — SEO Analysis](docs/assets/screenshot-7.png)
+
+*SEO Settings overview showing SEO Analysis active. SEO Analysis is available as well with hints and AI integration 
+from within the editor of post objects and WooCommerce products. For most websites SEO features available in Lingua Forge cover all SEO necesseties, from xml sitemap generation to schemas and Content Analysis which includes three profiles for different content types.*
+
+---
+
 **Current release — 2.2.1**
 
 - **SEO Analysis profiles** — three scoring profiles (Blog/Editorial, Product/eCommerce, Landing/Short-form) selectable per post in the Settings analysis panel and the block editor sidebar. Product and landing profiles zero the links weight and redistribute it across meta description, word count, and images. Profile-aware AI prompts omit irrelevant advice (no heading or link recommendations on product profiles; no link recommendations on landing profiles). AI recommendations are cached in `CacheStore` under `seo-ai-{profile}` keys and returned with a `from_cache` flag; a "↺ Refresh" button forces a new AI call.
