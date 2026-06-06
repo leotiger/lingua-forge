@@ -136,7 +136,20 @@ if ( ! function_exists( 'get_permalink' ) ) {
 }
 
 if ( ! function_exists( 'current_user_can' ) ) {
-	function current_user_can( string $capability, mixed ...$args ): bool {
+	/**
+	 * Checks both backing stores so this polyfill is compatible with WC tests
+	 * regardless of which polyfill file PHPUnit loads first:
+	 *  - WcPolyfills loaded first → WcPolyfills defines this instead; n/a here.
+	 *  - ApiPolyfills loaded first → this version runs; honours LfWcMocks when
+	 *    the class is already loaded (WC test suite loaded it after this file),
+	 *    and falls back to $GLOBALS['lf_api_current_user_can'] otherwise.
+	 *
+	 * @param mixed ...$args Capability string + optional extra args (signature compat).
+	 */
+	function current_user_can( mixed ...$args ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- matches WP signature; args unused in stub.
+		if ( class_exists( 'LfWcMocks' ) && ! \LfWcMocks::$current_user_can ) {
+			return false;
+		}
 		return (bool) ( $GLOBALS['lf_api_current_user_can'] ?? true );
 	}
 }

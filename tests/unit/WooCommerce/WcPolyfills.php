@@ -64,7 +64,8 @@ if ( ! class_exists( 'WP_Error' ) ) {
 
 if ( ! class_exists( 'WP_Query' ) ) {
 	/**
-	 * Minimal WP_Query stub — only get() / set() are used by VariationDelegate.
+	 * Minimal WP_Query stub — only get() / set() / is_main_query() are used by
+	 * WooCommerce integration classes under test.
 	 */
 	class WP_Query {
 		/** @var array<string,mixed> */
@@ -76,6 +77,14 @@ if ( ! class_exists( 'WP_Query' ) ) {
 
 		public function set( string $query_var, mixed $value ): void {
 			$this->vars[ $query_var ] = $value;
+		}
+
+		/**
+		 * Returns the value of LfWcMocks::$is_main_query so tests can simulate
+		 * whether this query instance is the main WordPress query.
+		 */
+		public function is_main_query(): bool {
+			return \LfWcMocks::$is_main_query;
 		}
 	}
 }
@@ -144,17 +153,34 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		/** @var bool Return value for the is_admin() polyfill. Default false (frontend). */
 		public static bool $is_admin = false;
 
+		/** @var bool Return value for WP_Query::is_main_query(). Default false (secondary query). */
+		public static bool $is_main_query = false;
+
+		/** @var bool Return value for current_user_can(). Default true (capable). */
+		public static bool $current_user_can = true;
+
+		/**
+		 * User meta store for get_user_meta() polyfill.
+		 * Shape: [ user_id => [ meta_key => value ] ]
+		 *
+		 * @var array<int,array<string,mixed>>
+		 */
+		public static array $user_meta = [];
+
 		public static function reset(): void {
-			self::$posts          = [];
-			self::$meta           = [];
-			self::$translations   = [];
-			self::$object_terms   = [];
-			self::$write_log      = [];
-			self::$options        = [];
-			self::$cache_deletes  = [];
-			self::$wpdb_updates   = [];
-			self::$wpdb_get_var   = null;
-			self::$is_admin       = false;
+			self::$posts             = [];
+			self::$meta              = [];
+			self::$translations      = [];
+			self::$object_terms      = [];
+			self::$write_log         = [];
+			self::$options           = [];
+			self::$cache_deletes     = [];
+			self::$wpdb_updates      = [];
+			self::$wpdb_get_var      = null;
+			self::$is_admin          = false;
+			self::$is_main_query     = false;
+			self::$current_user_can  = true;
+			self::$user_meta         = [];
 		}
 	}
 }
@@ -439,6 +465,61 @@ if ( ! function_exists( 'wp_cache_delete' ) ) {
 	function wp_cache_delete( mixed $key, string $group = '' ): bool {
 		LfWcMocks::$cache_deletes[] = [ 'key' => $key, 'group' => $group ];
 		return true;
+	}
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+	/**
+	 * Returns LfWcMocks::$current_user_can regardless of the requested
+	 * capability — sufficient for the single edit_posts check in PageTagRepair.
+	 *
+	 * @param mixed ...$args Ignored.
+	 */
+	function current_user_can( mixed ...$args ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- capability args intentionally ignored; stub returns global flag.
+		return \LfWcMocks::$current_user_can;
+	}
+}
+
+if ( ! function_exists( 'get_current_user_id' ) ) {
+	/**
+	 * Returns $GLOBALS['lf_test_user_id'] (default 1) — same backing store as
+	 * ApiPolyfills so the two polyfill files are interchangeable regardless of
+	 * which one PHPUnit loads first.
+	 */
+	function get_current_user_id(): int {
+		return (int) ( $GLOBALS['lf_test_user_id'] ?? 1 );
+	}
+}
+
+if ( ! function_exists( 'get_user_meta' ) ) {
+	/**
+	 * Returns LfWcMocks::$user_meta[$user_id][$key] when $single is true, or
+	 * an empty string/array when absent.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $key     Meta key.
+	 * @param bool   $single  Whether to return a single value.
+	 * @return mixed
+	 */
+	function get_user_meta( int $user_id, string $key = '', bool $single = false ): mixed {
+		$val = \LfWcMocks::$user_meta[ $user_id ][ $key ] ?? null;
+		if ( $single ) {
+			return $val !== null ? $val : '';
+		}
+		return $val !== null ? (array) $val : [];
+	}
+}
+
+if ( ! function_exists( 'wp_unslash' ) ) {
+	/**
+	 * wp_unslash polyfill — passes through the value unchanged.
+	 * Unit tests never deal with magic-quoted input, so stripslashes is a no-op.
+	 *
+	 * @param mixed $value Input value.
+	 * @return mixed Unchanged value.
+	 */
+	function wp_unslash( mixed $value ): mixed {
+		return $value;
 	}
 }
 

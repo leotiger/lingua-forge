@@ -53,6 +53,7 @@ class Bootstrap {
 		TermNameAdmin::init();
 		RestWriteGuard::init();
 		SeoSupport::init();
+		PageTagRepair::init();
 
 		self::$active = true;
 

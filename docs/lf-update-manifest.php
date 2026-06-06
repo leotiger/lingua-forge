@@ -35,23 +35,19 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.1/lingua-forge-2.2.1.zip';
+	$version      = '2.2.2';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.2/lingua-forge-2.2.2.zip';
 	$last_updated = '2026-06-06';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.1 — 2026-06-06</h4>' .
+		'<h4>2.2.2 — 2026-06-06</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> SEO Analysis scoring profiles — Blog/Editorial, Product/eCommerce, Landing/Short-form. Per-row profile selector in the Settings analysis panel and the block editor sidebar.</li>' .
-			'<li><strong>Added:</strong> WooCommerce classic editor SEO meta box — full scoring and AI recommendations on the product edit screen. Extensible via linguaforge_seo_analysis_classic_post_types filter.</li>' .
-			'<li><strong>Added:</strong> AI recommendation caching — stored in CacheStore under seo-ai-{profile} keys; from_cache flag returned; ↺ Refresh button to force a new AI call.</li>' .
-			'<li><strong>Added:</strong> H2-as-H1 global option — credits the first H2 as H1 when a block theme renders the post title as H2.</li>' .
-			'<li><strong>Changed:</strong> Profile-aware AI prompts — product profile omits heading/links advice; landing profile omits links advice.</li>' .
-			'<li><strong>Changed:</strong> Product and landing profile link weight set to 0; redistributed to meta description, word count, and images.</li>' .
-			'<li><strong>Fixed:</strong> ESLint no-shadow warning in seo-analysis.js; react-hooks/exhaustive-deps warning in seo-analysis-editor.js.</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce product blocks (New Arrivals, Top Rated, Best Sellers, On Sale, Handpicked Products, Featured Product, Product Collection) showing products from all languages. Added pre_get_posts handler to filter all secondary product queries by _lf_lang.</li>' .
+			'<li><strong>Fixed:</strong> Cross-language transient cache contamination in legacy product grid blocks. BlocksWpQuery hashed query vars before pre_get_posts fired; now disabled via woocommerce_blocks_product_grid_is_cacheable when LF_LANG is set.</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce built-in pages (Shop, Cart, Checkout, My Account, Terms) missing _lf_lang when created before LF is active. New PageTagRepair class repairs them lazily on the pages list screen.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

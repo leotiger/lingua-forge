@@ -2,6 +2,18 @@
 
 ---
 
+## [2.2.2] — 2026-06-06
+
+### Fixed
+
+- **WooCommerce product blocks showing cross-language products** — New Arrivals (`product-new`), Top Rated, Best Sellers, On Sale, Handpicked Products, Featured Product, and Product Collection all use secondary `WP_Query` instances. `woocommerce_product_query` is guarded by `is_main_query()` inside `WC_Query::pre_get_posts()` and never fires for these blocks. Added `pre_get_posts` hook (`apply_language_filter_to_secondary_query`) to inject the `_lf_lang` meta constraint on all secondary product queries.
+
+- **Cross-language transient cache contamination in legacy product grid blocks** — `BlocksWpQuery::get_cached_posts()` computes its MD5 hash before `pre_get_posts` fires, so `_lf_lang` was absent from the cache key. The first language to prime the transient contaminated all other languages. Now disabled via the `woocommerce_blocks_product_grid_is_cacheable` filter (`disable_product_grid_cache`) when `LF_LANG` is set, forcing live SQL execution on every request.
+
+- **WooCommerce built-in pages missing `_lf_lang`** — Shop, Cart, Checkout, My Account, and Terms pages created before LF is active have no `_lf_lang` postmeta, causing them to appear as "untagged" in the language filter. New `PageTagRepair` class repairs them lazily when the admin pages list is viewed with All Languages selected.
+
+---
+
 ## [2.2.1] — 2026-06-06
 
 ### Added
