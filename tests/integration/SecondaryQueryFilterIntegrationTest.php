@@ -30,6 +30,9 @@
  *   8. Empty post_type string → treated as 'post'; _lf_lang clause injected.
  *   9. Array post_type — all non-WC → clause injected.
  *  10. Array post_type including a WC type → no clause injected.
+ *  11. fields='ids' → skip (internal ID-lookup guard).
+ *  12. wp_navigation → no clause injected (system type; prevents WP_Navigation_Fallback cascade).
+ *  13. nav_menu_item → no clause injected (system type; classic menu queries must be unfiltered).
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -334,5 +337,41 @@ final class SecondaryQueryFilterIntegrationTest extends WP_UnitTestCase {
 
 		$meta_query = $q->get( 'meta_query', [] );
 		$this->assertEmpty( $meta_query, "fields='id=>parent' queries must not receive a secondary _lf_lang injection." );
+	}
+
+	// =========================================================================
+	// 12. wp_navigation → skip (system type)
+	// =========================================================================
+
+	/**
+	 * wp_navigation posts are WordPress system infrastructure — they never carry
+	 * _lf_lang meta by default. Injecting a meta constraint here causes
+	 * WP_Navigation_Fallback::get_fallback() to find zero results and create a
+	 * brand-new navigation post from the latest classic menu, which manifests
+	 * as unexpected "new" navigation items on the frontend.
+	 */
+	public function test_wp_navigation_post_type_is_skipped(): void {
+		$q = $this->secondary_query( [ 'post_type' => 'wp_navigation' ] );
+		$this->filter()->handle_secondary_pre_get_posts( $q );
+
+		$meta_query = $q->get( 'meta_query', [] );
+		$this->assertEmpty( $meta_query, "'wp_navigation' queries must not receive a secondary _lf_lang injection." );
+	}
+
+	// =========================================================================
+	// 13. nav_menu_item → skip (system type)
+	// =========================================================================
+
+	/**
+	 * Classic nav menu item queries must pass through unfiltered — nav_menu_item
+	 * posts do not carry _lf_lang meta and URL translation is handled separately
+	 * by Redirector::translate_menu_items() on the wp_nav_menu_objects filter.
+	 */
+	public function test_nav_menu_item_post_type_is_skipped(): void {
+		$q = $this->secondary_query( [ 'post_type' => 'nav_menu_item' ] );
+		$this->filter()->handle_secondary_pre_get_posts( $q );
+
+		$meta_query = $q->get( 'meta_query', [] );
+		$this->assertEmpty( $meta_query, "'nav_menu_item' queries must not receive a secondary _lf_lang injection." );
 	}
 }

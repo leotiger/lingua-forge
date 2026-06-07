@@ -271,6 +271,25 @@ class QueryFilter {
 		// Normalize: empty string means WordPress will query 'post'.
 		$types = '' !== $post_type ? (array) $post_type : [ 'post' ];
 
+		// WordPress system / infrastructure post types — never carry _lf_lang meta
+		// and must not be language-filtered here. wp_navigation is especially
+		// critical: injecting a meta constraint causes WP_Navigation_Fallback to
+		// find zero results and create a brand-new navigation post from the latest
+		// classic menu, which manifests as unexpected navigation items on the
+		// frontend. nav_menu_item queries (classic menus) are also system-internal.
+		// This list mirrors internal_post_types() in class-sync.php (wp_navigation
+		// is intentionally included here, unlike the sync exclusion list).
+		$system_types = [
+			'wp_navigation', 'wp_navigation_fallback',
+			'nav_menu_item',
+			'wp_template', 'wp_template_part',
+			'wp_block', 'wp_global_styles',
+			'wp_font_family', 'wp_font_face',
+		];
+		if ( array_intersect( $types, $system_types ) ) {
+			return;
+		}
+
 		// WC post types are handled by CatalogQuery — skip if any type in the
 		// query is a WC type to avoid double-injection or logic conflicts.
 		$wc_types = [ 'product', 'product_variation', 'shop_order', 'shop_coupon', 'shop_subscription', 'shop_booking' ];

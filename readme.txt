@@ -272,6 +272,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 * Fixed: Custom taxonomy archive URLs returning 404 under a language prefix. New `add_general_taxonomy_archive_rewrite_rules()` registers explicit top-priority rules for all public custom taxonomies with a rewrite slug; `translate_general_term_link()` prefixes `get_term_link()` output with the active language path.
 * Fixed: WooCommerce Product structured data duplicated when no third-party SEO plugin is active (two `Product` JSON-LD blocks plus a redundant `WebPage`). `SeoSupport` now injects `inLanguage` via `woocommerce_structured_data_product` instead of emitting a parallel schema block; `SchemaManager` skips the Article/WebPage block on product singulars.
 * Fixed: Secondary (non-main) WP_Query instances — sidebar widgets, `get_posts()` calls in templates, Latest Posts/Latest Events blocks — receiving no `_lf_lang` constraint and returning mixed-language results. New `handle_secondary_pre_get_posts()` injects `_lf_lang` on all secondary frontend queries; ID-only lookups (`fields=ids`) are correctly skipped.
+* Fixed: Navigation block injecting unexpected new items. `handle_secondary_pre_get_posts()` was missing an exclusion for WordPress system post types. `wp_navigation` queries (used by `WP_Navigation_Fallback` and by the internal page-list lang filter) received a `_lf_lang` constraint, returned zero results, and WordPress silently created a new navigation post from the latest classic menu. System types (`wp_navigation`, `nav_menu_item`, `wp_template`, `wp_template_part`, etc.) are now excluded.
 * Changed: Translation Memory and API Response Cache enable/disable toggles moved from Settings → Behavior to Settings → AI Usage & Cache (each in its own inner sub-tab), where stats, cache management, and enable/disable controls now live together.
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
@@ -306,6 +307,6 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 == Upgrade Notice ==
 
 = 2.2.4 =
-Fixes WC My Account sub-endpoint 404s, T&C/Privacy Policy checkout links, Brands and custom taxonomy archives, Site Title block href, secondary CPT query scoping, and WC structured data duplication. Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
+Fixes WC My Account 404s, T&C/Privacy Policy checkout links, Brands and custom taxonomy archives, Site Title block href, secondary query scoping, WC structured data duplication, and nav-block regression (injected new items). Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
 
 

@@ -52,6 +52,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 			'<li><strong>Fixed:</strong> Custom taxonomy archive URLs returning 404 under a language prefix. New add_general_taxonomy_archive_rewrite_rules() registers explicit top-priority rules for all public custom taxonomies.</li>' .
 			'<li><strong>Fixed:</strong> WooCommerce Product structured data duplicated when no SEO plugin is active. SeoSupport now injects inLanguage via woocommerce_structured_data_product; SchemaManager skips Article/WebPage on product singulars.</li>' .
 			'<li><strong>Fixed:</strong> Secondary WP_Query instances (sidebar widgets, get_posts(), Latest Posts/Events blocks) returning mixed-language results. New handle_secondary_pre_get_posts() injects _lf_lang on all secondary frontend queries; ID-only lookups (fields=ids) are skipped.</li>' .
+			'<li><strong>Fixed:</strong> Navigation block injecting unexpected new items. handle_secondary_pre_get_posts() was missing an exclusion for WordPress system post types; wp_navigation queries returned zero results and WordPress silently created a new navigation post from the latest classic menu. System types (wp_navigation, nav_menu_item, wp_template, wp_template_part, etc.) are now excluded.</li>' .
 			'<li><strong>Changed:</strong> Translation Memory and API Response Cache enable/disable toggles moved from Settings &rarr; Behavior to Settings &rarr; AI Usage &amp; Cache (each in its own inner sub-tab).</li>' .
 		'</ul>' .
 		'<h4>2.2.3 — 2026-06-07</h4>' .
