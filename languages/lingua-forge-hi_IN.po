@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 09:26+0000\n"
+"PO-Revision-Date: 2026-06-06 21:19+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: hi_IN\n"
@@ -41,45 +41,80 @@ msgstr "\"%s\" बनाया गया।"
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"उत्पाद\" (\"लेख\" को बदलता है)"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
 #, php-format
-msgid "%1$d chars — good length. %2$s"
-msgstr "%1$d वर्ण — अच्छा लंबाई। %2$s"
-
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
-#, php-format
-msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
+msgid ""
+"%1$d chars — good, slightly above the ideal %2$d but within the accepted "
+"%3$d-char range. %4$s"
 msgstr ""
-"%1$d वर्ण — SERPs में संक्षिप्त हो सकता है (140–160 का लक्ष्य रखें)। %2$s"
+"%1$d वर्ण — अच्छा, आदर्श %2$d से थोड़ा ऊपर लेकिन स्वीकृत %3$d-चर रेंज के "
+"भीतर। %4$s"
 
-#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#. translators: %1$d: number of characters, %2$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
 #, php-format
-msgid "%1$d chars — too short (aim for 140–160). %2$s"
-msgstr "%1$d वर्ण — बहुत कम (140–160 का लक्ष्य रखें)। %2$s"
+#| msgid "%1$d chars — good length. %2$s"
+msgid "%1$d chars — ideal length. %2$s"
+msgstr "%1$d वर्ण — आदर्श लंबाई। %2$s"
+
+#. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
+#, php-format
+msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
+msgstr "%1$d वर्ण — संभवतः SERPs में कट गए हैं (%2$d से कम रखें)। %3$s"
+
+#. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#, php-format
+#| msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
+msgstr "%1$d वर्ण — बहुत छोटा (लक्ष्य %2$d–%3$d के लिए)। %4$s"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d आंतरिक, %2$d बाहरी।"
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d में से %2$d छवियों का ऑल्ट टेक्स्ट गायब है।"
 
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#, php-format
+#| msgid "%d words — below recommended minimum of 300."
+msgid "%1$d words — below recommended minimum of %2$d."
+msgstr "%1$d शब्द — %2$d की अनुशंसित न्यूनतम से कम।"
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#, php-format
+#| msgid ""
+#| "%d words — very thin content. Consider expanding to at least 300 words."
+msgid ""
+"%1$d words — very thin content. Consider expanding to at least %2$d words."
+msgstr ""
+"%1$d शब्द — बहुत पतली सामग्री। कम से कम %2$d शब्दों तक विस्तार करने पर विचार "
+"करें।"
+
 #. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
 #, php-format
 msgid "%d chars — good length."
 msgstr "%d वर्ण — अच्छी लंबाई।"
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#, php-format
+msgid "%d external link(s), no internal links."
+msgstr "%d बाहरी लिंक, कोई आंतरिक लिंक नहीं।"
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -89,13 +124,13 @@ msgstr ""
 "जोड़ें।"
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d H1 टैग पाए गए — एक पृष्ठ में बिल्कुल एक H1 होना चाहिए।"
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d छवियां, सभी के पास ऑल्ट टेक्स्ट है।"
@@ -169,20 +204,7 @@ msgstr[0] "%d भाग संदर्भ अपडेट किया गय�
 msgstr[1] "%d भाग संदर्भ अपडेट किए गए।"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
-#, php-format
-msgid "%d words — below recommended minimum of 300."
-msgstr "%d शब्द — अनुशंसित न्यूनतम 300 से कम।"
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
-#, php-format
-msgid "%d words — very thin content. Consider expanding to at least 300 words."
-msgstr ""
-"%d शब्द — बहुत कम सामग्री। कम से कम 300 शब्दों तक विस्तार करने पर विचार करें।"
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
 #, php-format
 msgid "%d words."
 msgstr "%d शब्द।"
@@ -243,7 +265,7 @@ msgid "(disabled)"
 msgstr "(अक्षम) "
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 #, php-format
 msgid "(no title) #%d"
 msgstr "(कोई शीर्षक नहीं) #%d"
@@ -258,17 +280,21 @@ msgstr ""
 msgid ".txt file(s) in the directory"
 msgstr ".txt फ़ाइल(ें) इस निर्देशिका में"
 
-#: ai/includes/Admin/MetaBox.php:370
+#: ai/includes/Admin/MetaBox.php:392
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
+msgstr "1 H1 ✓ — कोई H2 उपशीर्षक नहीं (इस सामग्री प्रकार के लिए स्वीकार्य)।"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr ""
 "1 H1 ✓ — कोई H2 उपशीर्षक नहीं मिला। H2 जोड़ने से संरचना में सुधार होता है।"
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3।"
@@ -429,11 +455,11 @@ msgstr ""
 "स्थायी लिंक पर जाएं और परिवर्तन सहेजें पर क्लिक करें ताकि पुनर्लेखन नियम साफ "
 "हो जाएं। "
 
-#: ai/includes/Admin/MetaBox.php:385
+#: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:538
 msgid "AI analysis failed. Please try again."
 msgstr "AI विश्लेषण विफल रहा। कृपया पुनः प्रयास करें।"
 
-#: ai/includes/Admin/MetaBox.php:583
+#: ai/includes/Admin/MetaBox.php:738
 msgid "AI Behaviour Preset"
 msgstr "एआई व्यवहार पूर्वनिर्धारित"
 
@@ -475,17 +501,17 @@ msgstr "AI सीमाएँ और सुरक्षा"
 msgid "AI provider returned an empty response."
 msgstr "एआई प्रदाता ने खाली प्रतिक्रिया दी।"
 
-#: ai/includes/Admin/MetaBox.php:381
+#: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:534
 msgid "AI Recommendations"
 msgstr "AI सिफारिशें"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
 msgid "AI returned an unexpected response format. Please try again."
 msgstr ""
 "AI ने अप्रत्याशित प्रतिक्रिया प्रारूप लौटाया है। कृपया पुनः प्रयास करें।"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "AI Usage"
 msgstr "एआई उपयोग"
 
@@ -515,7 +541,7 @@ msgstr ""
 msgid "All time"
 msgstr "सभी समय"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
 msgid "All types"
 msgstr "सभी प्रकार"
 
@@ -564,19 +590,19 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "एक अज्ञात त्रुटि हुई।"
 
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+msgid "Analyse…"
+msgstr "विश्लेषण करें…"
+
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
 msgid "Analysis"
 msgstr "विश्लेषण"
 
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
 msgid "Analysis request failed. Please try again."
 msgstr "विश्लेषण अनुरोध विफल रहा। कृपया पुनः प्रयास करें।"
 
-#: ai/includes/Admin/MetaBox.php:369 ai/includes/Admin/SettingsPage.php:350
-msgid "Analyze"
-msgstr "विश्लेषण करें"
-
-#: ai/includes/Admin/MetaBox.php:383
+#: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:537
 msgid "Analyzing…"
 msgstr "विश्लेषण हो रहा है…"
 
@@ -603,7 +629,7 @@ msgstr "एपीआई कुंजी"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
 msgid "API Keys"
 msgstr "एपीआई कुंजी"
 
@@ -695,7 +721,7 @@ msgid "Auto (recommended)"
 msgstr "स्वचालित (सिफारिश की गई)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:623
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Behavior"
 msgstr "व्यवहार"
 
@@ -793,6 +819,10 @@ msgstr ""
 "जाते हैं बजाय फिर से एआई को कॉल करने के। सेटिंग्स → व्यवहार में कॉन्फ़िगर "
 "करें। "
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
+msgid "Blog / Editorial"
+msgstr "ब्लॉग / संपादकीय"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -807,7 +837,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "ब्राउज़र भाषा पुनः निर्देशित"
 
-#: ai/includes/Admin/SettingsPage.php:318
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "Built-in preset instructions:"
 msgstr "इन-बिल्ट प्रीसेट निर्देश:"
 
@@ -945,7 +975,7 @@ msgstr ""
 msgid "Clear Translation Memory"
 msgstr "अनुवाद स्मृति साफ़ करें"
 
-#: ai/includes/Admin/MetaBox.php:692
+#: ai/includes/Admin/MetaBox.php:847
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
@@ -968,7 +998,7 @@ msgstr "अनुकूलता"
 msgid "Compliance Preset"
 msgstr "अनुपालन पूर्वसेट"
 
-#: ai/includes/Admin/MetaBox.php:384
+#: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:535
 msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
@@ -1024,7 +1054,7 @@ msgstr ""
 "दी जाती हैं। भाषा असाइनमेंट और अनुवाद संबंध डिफ़ॉल्ट रूप से रखे जाते हैं "
 "ताकि अनजाने में अनइंस्टॉल या पुनः इंस्टॉल करने पर वे वहीं से शुरू हो सकें।"
 
-#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:248
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:259
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr "संवादात्मक"
@@ -1124,7 +1154,7 @@ msgstr ""
 "पोस्ट प्रकार \"%s\" के लिए अनुवाद बनाना एक सक्रिय एकीकरण की आवश्यकता है। "
 "कृपया सुनिश्चित करें कि आवश्यक एकीकरण स्थापित और सक्रिय है।"
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "Creating…"
 msgstr "बनाया जा रहा है…"
 
@@ -1182,7 +1212,7 @@ msgstr ""
 msgid "Currently:"
 msgstr "वर्तमान में:"
 
-#: ai/includes/Admin/MetaBox.php:589
+#: ai/includes/Admin/MetaBox.php:744
 msgid "Custom"
 msgstr "कस्टम"
 
@@ -1266,6 +1296,10 @@ msgstr "क्या आप इस शब्दावली प्रविष�
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "क्या लिखना है — विषय, मुख्य बिंदु, संरचना…"
+
+#: ai/includes/Admin/MetaBox.php:391
+msgid "Details ↗"
+msgstr "विवरण ↗"
 
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
 msgid ""
@@ -1375,7 +1409,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "ड्रॉपडाउन दिशा"
 
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "edit"
 msgstr "संपादित करें"
 
@@ -1394,6 +1428,18 @@ msgstr "ब्लॉक-स्तर अनुवाद कैश पुन: उ
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:87
 msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr "सामाजिक आइकन ब्लॉकों के लिए सोशल शेयर URL पुनर्लेखन सक्षम करें"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+msgid ""
+"Enable when your theme renders the post title as an H2 instead of an H1 "
+"(common in some block themes). The analyser fetches the rendered page and, "
+"if it finds no H1 but does find an H2, it promotes the first H2 to H1 for "
+"scoring purposes."
+msgstr ""
+"जब आपका थीम पोस्ट शीर्षक को H2 के रूप में प्रस्तुत करता है तो सक्षम करें "
+"(कुछ ब्लॉक थीम में सामान्य)। विश्लेषक रेंडर किए गए पृष्ठ को लाता है और यदि "
+"यह H1 नहीं पाता है लेकिन H2 पाता है, तो यह पहले H2 को H1 में प्रमोट करता है "
+"ताकि स्कोरिंग के लिए।"
 
 #: ai/includes/Admin/SettingsHelp.php:86
 msgid ""
@@ -1495,7 +1541,7 @@ msgstr ""
 msgid "Filter"
 msgstr "फ़िल्टर"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1514,7 +1560,8 @@ msgstr ""
 "डिबग आउटपुट को एक गैर-सार्वजनिक स्थान पर पुनर्निर्देशित करने के लिए "
 "linguaforge_debug_dir के साथ फ़िल्टर करें।"
 
-#: ai/includes/Admin/MetaBox.php:373 ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/SettingsPage.php:352
 msgid "Finding"
 msgstr "खोज"
 
@@ -1536,17 +1583,17 @@ msgstr "सभी भागों को ठीक करें"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Fix Links"
 msgstr "लिंक ठीक करें"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "Fix Nav"
 msgstr "नेविगेशन ठीक करें"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Fix Parts"
 msgstr "भाग ठीक करें"
 
@@ -1558,9 +1605,9 @@ msgstr "टेम्पलेट ठीक करें"
 msgid "Fixing {n} / {total}…"
 msgstr "{n} / {total} को ठीक कर रहे हैं…"
 
-#: ai/includes/Admin/SettingsPage.php:252
-#: ai/includes/Admin/SettingsPage.php:256
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:264
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1670,7 +1717,7 @@ msgid "Full post"
 msgstr "पूरा पोस्ट"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:620
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "General"
 msgstr "सामान्य"
 
@@ -1683,7 +1730,7 @@ msgstr "सृजन करें"
 msgid "Generate Content"
 msgstr "सामग्री उत्पन्न करें"
 
-#: ai/includes/Admin/MetaBox.php:563
+#: ai/includes/Admin/MetaBox.php:718
 msgid "Generate content…"
 msgstr "सामग्री उत्पन्न करें…"
 
@@ -1726,7 +1773,7 @@ msgid "Global AI preset"
 msgstr "वैश्विक AI पूर्वसेट"
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:594
+#: ai/includes/Admin/MetaBox.php:749
 #, php-format
 msgid "Global default (%s)"
 msgstr "वैश्विक डिफ़ॉल्ट (%s)"
@@ -1734,7 +1781,7 @@ msgstr "वैश्विक डिफ़ॉल्ट (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:625
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Glossary"
 msgstr "शब्दावली"
 
@@ -1754,11 +1801,22 @@ msgstr "शब्दावली टैब "
 msgid "Google (Gemini)"
 msgstr "गूगल (जेमिनी)"
 
-#: ai/includes/Admin/MetaBox.php:378 ai/includes/Admin/SettingsPage.php:341
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+msgid ""
+"H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
+"not be detected from the rendered page; verify your theme outputs the title "
+"correctly.)"
+msgstr ""
+"H2-से-H1 मोड सक्षम — शीर्षक को H1 समकक्ष माना जाता है। (हेडिंग टैग रेंडर किए "
+"गए पृष्ठ से नहीं पहचाने गए; अपने थीम को सही ढंग से शीर्षक आउटपुट करने की "
+"पुष्टि करें।)"
+
+#: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/SettingsPage.php:347
 msgid "Headings"
 msgstr "शीर्षक"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Hide"
 msgstr "छुपाएँ"
 
@@ -1860,7 +1918,8 @@ msgstr ""
 "और मूल OG सेट को प्लगइन पर छोड़ देता है। Schema.org के लिए, LF अपने आउटपुट "
 "को पूरी तरह से अक्षम कर देता है ताकि टकराव वाली JSON-LD ग्राफ से बचा जा सके।"
 
-#: ai/includes/Admin/MetaBox.php:379 ai/includes/Admin/SettingsPage.php:342
+#: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Images"
 msgstr "छवियाँ"
 
@@ -1893,7 +1952,7 @@ msgstr ""
 msgid "Includes site name, url, and inLanguage."
 msgstr "इसमें साइट का नाम, url, और inLanguage शामिल है।"
 
-#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:244
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:255
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr "सूचनात्मक"
@@ -1914,7 +1973,7 @@ msgstr "एक भाषा स्थापित करें"
 msgid "Installed SEO plugins"
 msgstr "स्थापित SEO प्लगइन्स"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Installing…"
 msgstr "इंस्टॉल हो रहा है…"
 
@@ -1972,8 +2031,8 @@ msgstr "अमान्य लोकल कोड।"
 msgid "Invalid or primary language."
 msgstr "अमान्य या प्राथमिक भाषा।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
 msgid "Invalid post ID."
 msgstr "अमान्य पोस्ट ID।"
 
@@ -2009,7 +2068,11 @@ msgstr ""
 "सॉल्ट्स (wp-config.php) से लिया जाता है, इसलिए प्लेनटेक्स्ट कुंजी कभी भी "
 "डेटाबेस को नहीं छूती।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+msgid "Landing / Short-form"
+msgstr "लैंडिंग / शॉर्ट-फॉर्म"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "भाषा"
@@ -2025,7 +2088,7 @@ msgid "Language (optional)"
 msgstr "भाषा (वैकल्पिक)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:241
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr "इस सर्वर पर भाषा स्थापना अक्षम है (DISALLOW_FILE_MODS सेट है)।"
@@ -2303,7 +2366,7 @@ msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "दी गई लिंगुआ फोर्ज भाषा कोड में पृष्ठों के परिणाम सीमित करें।"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:622
+#: ai/includes/Admin/SettingsPage.php:629
 msgid "Limits"
 msgstr "सीमाएँ"
 
@@ -2439,7 +2502,7 @@ msgstr "लिंगुआ फोर्ज प्रत्येक प्रद
 msgid "Lingua Forge — Quick Translate"
 msgstr "लिंगुआ फोर्ज — त्वरित अनुवाद"
 
-#: ai/includes/Admin/SettingsPage.php:609
+#: ai/includes/Admin/SettingsPage.php:616
 msgid "Lingua Forge — Settings"
 msgstr "लिंगुआ फोर्ज — सेटिंग्स"
 
@@ -2461,7 +2524,8 @@ msgstr "लिंक कॉपी किया गया"
 msgid "link(s)"
 msgstr "लिंक"
 
-#: ai/includes/Admin/MetaBox.php:380 ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
+#: ai/includes/Admin/SettingsPage.php:349
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "लिंक"
@@ -2470,11 +2534,15 @@ msgstr "लिंक"
 msgid "Load available languages"
 msgstr "उपलब्ध भाषाएँ लोड करें"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
 msgid "Load content"
 msgstr "सामग्री लोड करें"
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/MetaBox.php:410 ai/includes/Admin/MetaBox.php:541
+msgid "Loaded from cache."
+msgstr "कैश से लोड किया गया।"
+
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Loading…"
 msgstr "लोड हो रहा है…"
 
@@ -2519,7 +2587,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Maintenance"
 msgstr "रखरखाव"
 
@@ -2617,7 +2685,8 @@ msgstr "प्रति त्वरित अनुवाद AI द्वार
 msgid "Meta Description"
 msgstr "मेटा विवरण"
 
-#: ai/includes/Admin/MetaBox.php:375 ai/includes/Admin/SettingsPage.php:338
+#: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
+#: ai/includes/Admin/SettingsPage.php:344
 msgid "Meta description"
 msgstr "मेटा विवरण"
 
@@ -2626,7 +2695,8 @@ msgstr "मेटा विवरण"
 msgid "Meta Description, Excerpt Generator"
 msgstr "मेटा विवरण, सारांश जनरेटर"
 
-#: ai/includes/Admin/MetaBox.php:372 ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/SettingsPage.php:351
 msgid "Metric"
 msgstr "मेट्रिक"
 
@@ -2660,7 +2730,7 @@ msgstr "मॉडल"
 msgid "Models Tab (General)"
 msgstr "मॉडल टैब (सामान्य) "
 
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Modified"
 msgstr "संशोधित"
 
@@ -2675,13 +2745,14 @@ msgstr "सबसे हाल की कैश की गई प्रतिक
 #. Description of the plugin
 #: lingua-forge.php
 msgid ""
-"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
-"Combines language detection, URL routing, hreflang, meta descriptions, and "
-"AI-powered excerpt, meta, and translation features."
+"Multilingual routing, complete multilingual SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), and AI content tools for WordPress. Language detection,"
+" URL routing, translation, content generation, and a full SEO layer — no "
+"companion plugin required."
 msgstr ""
-"मल्टीभाषी रूटिंग, एसईओ मेटा टैग, और वर्डप्रेस के लिए एआई सामग्री उपकरण। यह "
-"भाषा पहचान, URL रूटिंग, hreflang, मेटा विवरण, और एआई-संचालित अंश, मेटा, और "
-"अनुवाद सुविधाओं को मिलाता है।"
+"बहुभाषी रूटिंग, पूर्ण बहुभाषी SEO (hreflang, Open Graph, Schema.org, साइटमैप)"
+", और WordPress के लिए AI सामग्री उपकरण। भाषा पहचान, URL रूटिंग, अनुवाद, "
+"सामग्री निर्माण, और एक पूर्ण SEO परत — कोई साथी प्लगइन आवश्यक नहीं।"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2719,7 +2790,7 @@ msgstr ""
 msgid "Navigations"
 msgstr "नेविगेशन"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "नेटवर्क त्रुटि — वर्डप्रेस AJAX एंडपॉइंट तक नहीं पहुंच सका।"
 
@@ -2747,7 +2818,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "कोई एआई प्रदाता कॉन्फ़िगर नहीं किया गया।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "कोई AI प्रदाता कॉन्फ़िगर नहीं किया गया। सेटिंग्स → API Keys में एक API कुंजी "
@@ -2775,7 +2846,7 @@ msgstr ""
 msgid "No API key configured for this provider."
 msgstr "इस प्रदाता के लिए कोई API कुंजी कॉन्फ़िगर नहीं की गई है।"
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:320
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2830,7 +2901,7 @@ msgstr ""
 "अभी तक कोई शब्दावली प्रविष्टि नहीं है। अनुवाद में शब्दावली लागू करने के लिए "
 "नीचे एक जोड़ें।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -2838,7 +2909,7 @@ msgstr ""
 "कोई H1 नहीं मिला। आमतौर पर पोस्ट का शीर्षक H1 होता है — सुनिश्चित करें कि "
 "आपका थीम इसे आउटपुट कर रहा है।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
 msgid "No images found in content."
 msgstr "सामग्री में कोई छवियां नहीं मिलीं।"
 
@@ -2850,18 +2921,22 @@ msgstr "अपडेट करने के लिए कोई आंतरि�
 msgid "No language-specific template parts found to map."
 msgstr "मॉप करने के लिए कोई भाषा-विशिष्ट टेम्पलेट भाग नहीं मिला।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
 msgid "No LF meta description set — using excerpt/content."
 msgstr "कोई LF मेटा विवरण सेट नहीं — सारांश/सामग्री का उपयोग कर रहा है।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+msgid "No links found."
+msgstr "कोई लिंक नहीं मिला।"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "कोई लिंक नहीं मिला। आंतरिक लिंक क्रॉलबिलिटी और उपयोगकर्ता नेविगेशन में सुधार "
 "करते हैं।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr "कोई मेटा विवरण नहीं मिला। AI मेटा विवरण सुविधा का उपयोग करके एक बनाएं।"
@@ -2882,17 +2957,17 @@ msgstr ""
 "कोई भौतिक robots.txt फ़ाइल नहीं मिली। WordPress इसे वर्चुअली जेनरेट कर रहा "
 "है और LF का Sitemap निर्देश स्वचालित रूप से शामिल है।"
 
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "No published posts found for the selected filters."
 msgstr "चयनित फ़िल्टर के लिए कोई प्रकाशित पोस्ट नहीं मिली।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "AI प्रदाता से कोई प्रतिक्रिया नहीं। अपनी API कुंजी जांचें और पुनः प्रयास "
 "करें।"
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "No response from provider — check the error log for details."
 msgstr "प्रदाता से प्रतिक्रिया नहीं मिली — विवरण के लिए त्रुटि लॉग जांचें।"
 
@@ -2916,7 +2991,7 @@ msgstr "अभी तक कोई स्रोत पृष्ठ लिंक 
 msgid "No template part references needed updating."
 msgstr "कोई टेम्पलेट भाग संदर्भ अपडेट करने की आवश्यकता नहीं है।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
 msgid "No title set."
 msgstr "कोई शीर्षक सेट नहीं।"
 
@@ -2927,7 +3002,7 @@ msgid ""
 msgstr ""
 "कोई अनुवादित सामग्री नहीं मिली। पोस्ट का अनुवाद होने के बाद साइटमैप भर जाएगा।"
 
-#: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
 msgid "No translation found — analyzed the source language version."
 msgstr "कोई अनुवाद नहीं मिला — स्रोत भाषा संस्करण का विश्लेषण किया गया।"
 
@@ -3078,7 +3153,8 @@ msgstr "आउटपुट टोकन"
 msgid "Output WebSite schema on the front page and blog index"
 msgstr "मुख्य पृष्ठ और ब्लॉग सूचकांक पर WebSite schema का आउटपुट"
 
-#: ai/includes/Admin/MetaBox.php:371 ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
+#: ai/includes/Admin/SettingsPage.php:350
 msgid "Overall SEO score"
 msgstr "कुल SEO स्कोर"
 
@@ -3094,7 +3170,7 @@ msgstr "ओवरराइड फ़ाइल हटा दी गई।"
 msgid "Override file uploaded successfully."
 msgstr "ओवरराइड फ़ाइल सफलतापूर्वक अपलोड की गई।"
 
-#: ai/includes/Admin/MetaBox.php:611
+#: ai/includes/Admin/MetaBox.php:766
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "All other features always use the global preset."
@@ -3102,7 +3178,7 @@ msgstr ""
 "इस पृष्ठ पर अनुवाद और सामग्री निर्माण के लिए एआई पूर्वनिर्धारित को ओवरराइड "
 "करता है। सभी अन्य सुविधाएँ हमेशा वैश्विक पूर्वनिर्धारित का उपयोग करती हैं।"
 
-#: ai/includes/Admin/MetaBox.php:606
+#: ai/includes/Admin/MetaBox.php:761
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "Site-wide custom prompt instructions (Settings → Behavior) are always "
@@ -3167,7 +3243,7 @@ msgstr ""
 "ब्लॉक संपादक पैटर्न इंसर्टर के माध्यम से कॉपी करें या इसे एक पुन: प्रयोज्य "
 "ब्लॉक के रूप में शुरूआत के रूप में उपयोग करें।"
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Pattern translation failed."
 msgstr "पैटर्न अनुवाद असफल रहा।"
 
@@ -3226,9 +3302,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
@@ -3243,7 +3320,7 @@ msgstr ""
 msgid "Permission denied."
 msgstr "अनुमति अस्वीकृत।"
 
-#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:245
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:256
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr "प्रेरक"
@@ -3296,11 +3373,11 @@ msgstr "प्लगइन"
 msgid "Post"
 msgstr "पोस्ट"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
 msgid "Post not found or not published."
 msgstr "पोस्ट नहीं मिली या प्रकाशित नहीं है।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "पोस्ट नहीं मिली।"
@@ -3357,6 +3434,10 @@ msgstr "प्रक्रिया में…"
 msgid "Product"
 msgstr "उत्पाद"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+msgid "Product / eCommerce"
+msgstr "उत्पाद / ईकॉमर्स"
+
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
 msgid "Product Open Graph"
 msgstr "उत्पाद Open Graph"
@@ -3364,6 +3445,11 @@ msgstr "उत्पाद Open Graph"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
 msgid "Product — WooCommerce product pages"
 msgstr "उत्पाद — WooCommerce उत्पाद पृष्ठ"
+
+#: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
+#: ai/includes/Admin/SettingsPage.php:356
+msgid "Profile"
+msgstr "प्रोफ़ाइल"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
@@ -3452,11 +3538,12 @@ msgstr "पुनः स्कैन कर रहे हैं…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Re-translate"
 msgstr "पुनः अनुवाद करें"
 
-#: ai/includes/Admin/MetaBox.php:377 ai/includes/Admin/SettingsPage.php:340
+#: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Reading time"
 msgstr "पढ़ने का समय"
 
@@ -3549,7 +3636,7 @@ msgstr "पुनः अनुवाद करें"
 msgid "Retranslating…"
 msgstr "पुनः अनुवाद हो रहा है…"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Review carefully — links and slugs not updated."
 msgstr "सावधानीपूर्वक समीक्षा करें — लिंक और स्लग अपडेट नहीं किए गए।"
 
@@ -3578,7 +3665,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt को Sitemap निर्देश के साथ अपडेट किया गया।"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
 msgid "Router"
 msgstr "राउटर"
 
@@ -3586,9 +3673,13 @@ msgstr "राउटर"
 msgid "Router Tab"
 msgstr "राउटर टैब "
 
-#: ai/includes/Admin/MetaBox.php:382
+#: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "AI विश्लेषण चलाएँ"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+msgid "Save analysis settings"
+msgstr "विश्लेषण सेटिंग्स सहेजें"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:143
 msgid "Save Debug Setting"
@@ -3610,7 +3701,7 @@ msgstr "राउटर सेटिंग्स सहेजें"
 msgid "Save Schema.org Settings"
 msgstr "Schema.org सेटिंग्स सहेजें"
 
-#: ai/includes/Admin/SettingsPage.php:663
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "Save Settings"
 msgstr "सेटिंग्स सहेजें"
 
@@ -3712,11 +3803,11 @@ msgstr "WhatsApp के माध्यम से भेजें"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:626
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "SEO"
 msgstr "एसईओ"
 
-#: ai/includes/Admin/MetaBox.php:368
+#: ai/includes/Admin/MetaBox.php:389 ai/includes/Admin/MetaBox.php:436
 msgid "SEO Analysis"
 msgstr "एसईओ विश्लेषण"
 
@@ -3756,11 +3847,11 @@ msgstr ""
 "पोस्ट इसको ओवरराइड कर सकते हैं, जैसे अनुवाद और सामग्री निर्माण, Lingua Forge "
 "मेटा बॉक्स के माध्यम से।"
 
-#: ai/includes/Admin/SettingsPage.php:390
+#: ai/includes/Admin/SettingsPage.php:397
 msgid "Settings"
 msgstr "सेटिंग्स"
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "Settings saved."
 msgstr "सेटिंग्स सहेजी गई।"
 
@@ -3862,31 +3953,31 @@ msgstr "सामाजिक शेयर"
 msgid "Social Share settings saved."
 msgstr "सामाजिक शेयर सेटिंग्स सहेजी गईं।"
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some link fixes failed."
 msgstr "कुछ लिंक सुधार असफल रहे।"
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Some nav ref fixes failed."
 msgstr "कुछ नेविगेशन संदर्भ सुधार असफल रहे।"
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some part fixes failed."
 msgstr "कुछ भाग सुधार असफल रहे।"
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Some parts could not be created."
 msgstr "कुछ भाग नहीं बन सके।"
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "Some templates could not be created."
 msgstr "कुछ टेम्पलेट नहीं बन सके।"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Some translations failed."
 msgstr "कुछ अनुवाद असफल रहे।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid "source"
 msgstr "स्रोत"
 
@@ -3931,7 +4022,7 @@ msgstr "स्थिति"
 msgid "Status / Actions"
 msgstr "स्थिति / क्रियाएँ"
 
-#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:246
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:257
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr "कहानी सुनाना"
@@ -3980,11 +4071,11 @@ msgstr ""
 msgid "Submit to Reddit"
 msgstr "Reddit में सबमिट करें"
 
-#: ai/includes/Admin/MetaBox.php:387
+#: ai/includes/Admin/MetaBox.php:409 ai/includes/Admin/MetaBox.php:540
 msgid "Suggested meta description"
 msgstr "सुझावित मेटा विवरण"
 
-#: ai/includes/Admin/MetaBox.php:386
+#: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:539
 msgid "Suggested title"
 msgstr "सुझावित शीर्षक"
 
@@ -4046,7 +4137,7 @@ msgstr "लक्ष्य शब्द"
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr "लक्ष्य: 140–160 अक्षर अनुकूल SERP प्रदर्शन के लिए"
 
-#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:247
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:258
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr "प्राविधिक"
@@ -4112,7 +4203,7 @@ msgstr "टेम्प्लेट"
 msgid "Test connection"
 msgstr "कनेक्शन का परीक्षण करें"
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "Testing…"
 msgstr "परीक्षण हो रहा है…"
 
@@ -4280,23 +4371,25 @@ msgid ""
 msgstr ""
 "टिप: एक मॉडल को डिफ़ॉल्ट में रीसेट करने के लिए, फ़ील्ड साफ़ करें और सहेजें।"
 
-#: ai/includes/Admin/MetaBox.php:374 ai/includes/Admin/SettingsPage.php:337
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
+#: ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Title"
 msgstr "शीर्षक"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
 #, php-format
-msgid "Title is %d chars — aim for 50–60."
-msgstr "शीर्षक %d वर्ण का है — 50–60 के बीच लक्ष्य।"
+msgid "Title is %1$d chars — aim for %2$d–%3$d."
+msgstr "शीर्षक %1$d वर्ण का है — %2$d–%3$d का लक्ष्य रखें।"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
 #, php-format
-msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgstr ""
-"शीर्षक %d वर्ण का है — SERPs में संक्षिप्त हो सकता है (50–60 का लक्ष्य)।"
+"शीर्षक %1$d वर्ण है — SERPs में काटा जा सकता है (लक्ष्य %2$d–%3$d के लिए)।"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -4352,9 +4445,9 @@ msgstr "कुल टोकन"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:246
-#: ai/includes/Admin/SettingsPage.php:260
-#: ai/includes/Admin/SettingsPage.php:266 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4388,7 +4481,7 @@ msgstr "सामग्री का अनुवाद करें"
 msgid "Translate missing"
 msgstr "लापता अनुवाद करें"
 
-#: ai/includes/Admin/MetaBox.php:562
+#: ai/includes/Admin/MetaBox.php:717
 msgid "Translate page…"
 msgstr "पृष्ठ का अनुवाद करें…"
 
@@ -4420,9 +4513,9 @@ msgstr ""
 "टेम्प्लेट स्लग स्वचालित रूप से अपडेट नहीं होते हैं।"
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "अनुवाद हो रहा है…"
@@ -4500,9 +4593,13 @@ msgstr "अनुवाद कार्यप्रवाह"
 msgid "Translation, Content Generator"
 msgstr "अनुवाद, सामग्री निर्माता"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+msgid "Treat H2 as H1 equivalent"
+msgstr "H2 को H1 के समकक्ष मानें"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Type"
 msgstr "प्रकार"
 
@@ -4648,7 +4745,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "कस्टम मेटा विवरण का उपयोग कर रहा है।"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
 msgid "Using LF AI meta description."
 msgstr "LF AI मेटा विवरण का उपयोग कर रहा है।"
 
@@ -4657,7 +4754,7 @@ msgid "Value source"
 msgstr "मूल स्रोत"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "View"
 msgstr "देखें"
 
@@ -4818,7 +4915,8 @@ msgstr "WooCommerce SEO सेटिंग्स सहेजी गईं।"
 msgid "WooCommerce store currency"
 msgstr "WooCommerce स्टोर मुद्रा"
 
-#: ai/includes/Admin/MetaBox.php:376 ai/includes/Admin/SettingsPage.php:339
+#: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/SettingsPage.php:345
 msgid "Word count"
 msgstr "शब्द गणना"
 
@@ -4849,7 +4947,7 @@ msgstr ""
 "wp-config.php में)। ये स्रोत स्वचालित रूप से तब उपयोग किए जाते हैं जब कोई "
 "डेटाबेस कुंजी संग्रहीत नहीं होती।"
 
-#: ai/includes/Admin/SettingsPage.php:402
+#: ai/includes/Admin/SettingsPage.php:409
 msgid "You do not have permission to manage these settings."
 msgstr "आपके पास इन सेटिंग्स का प्रबंधन करने की अनुमति नहीं है।"
 
@@ -4862,7 +4960,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} पुराना पथ(आम"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -4902,7 +5000,7 @@ msgid "— Not detected"
 msgstr "— पता नहीं चला"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "— select a language —"
 msgstr "— एक भाषा चुनें —"
 
@@ -4941,6 +5039,10 @@ msgstr "↺ परिष्कृत करें"
 #: ai/assets/admin.js:877
 msgid "↺ Refresh"
 msgstr "↺ ताज़ा करें"
+
+#: ai/includes/Admin/MetaBox.php:411 ai/includes/Admin/MetaBox.php:542
+msgid "↺ Refresh AI Analysis"
+msgstr "↺ AI विश्लेषण ताज़ा करें"
 
 #: ai/assets/admin.js:88
 msgid "↺ Refreshing…"
@@ -5017,15 +5119,15 @@ msgstr "✓ सक्रिय — पूर्ण OG + ट्विटर क�
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ सक्रिय — केवल लोकल टैग (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "✓ All parts created."
 msgstr "✓ सभी भाग बनाए गए।"
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "✓ All templates created."
 msgstr "✓ सभी टेम्पलेट बनाए गए।"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✓ All translated."
 msgstr "✓ सभी अनुवादित।"
 
@@ -5033,7 +5135,7 @@ msgstr "✓ सभी अनुवादित।"
 msgid "✓ Configured"
 msgstr "✓ कॉन्फ़िगर किया गया"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✓ Connection OK"
 msgstr "✓ कनेक्शन ठीक है"
 
@@ -5062,7 +5164,7 @@ msgstr "✓ Hreflang सक्रिय"
 msgid "✓ In safe storage"
 msgstr "✓ सुरक्षित संग्रह में"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Language installed."
 msgstr "✓ भाषा स्थापित।"
 
@@ -5082,19 +5184,19 @@ msgstr "✓ सक्रिय — पूर्ण OG + ट्विटर क�
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF आउटपुट — प्लगइन hreflang दबाया गया"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ Links fixed."
 msgstr "✓ लिंक ठीक किए गए।"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "✓ Nav refs fixed."
 msgstr "✓ नेविगेशन संदर्भ ठीक किए गए।"
 
-#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ Parts fixed."
 msgstr "✓ भाग ठीक किए गए।"
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "✓ Pattern translated."
 msgstr "✓ पैटर्न का अनुवाद किया गया।"
 
@@ -5108,7 +5210,7 @@ msgstr ""
 "✓ सुधारा गया — ऊपर दिए गए मसौदे की समीक्षा, संशोधन और लागू करने के लिए देखें।"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "✓ Translation saved"
 msgstr "✓ अनुवाद सहेजा गया"
 
@@ -5131,11 +5233,11 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ अक्षम"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "✗ Error:"
 msgstr "✗ त्रुटि:"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "✗ Failed:"
 msgstr "✗ असफल:,"
 

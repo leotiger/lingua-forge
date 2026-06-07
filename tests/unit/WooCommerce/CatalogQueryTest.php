@@ -29,6 +29,11 @@
  *  (The LF_LANG-not-set pass-through cannot be unit-tested here — same
  *   reason as the LF_LANG guard note above; it is a trivial one-liner.)
  *
+ * Coverage — apply_language_filter_to_secondary_query — effective_lang branch:
+ *  17. is_singular('product') with a product whose _lf_lang differs from LF_LANG →
+ *      effective_lang is taken from the product's own _lf_lang, not LF_LANG.
+ *  18. is_singular true but product has no _lf_lang → effective_lang falls back to LF_LANG.
+ *
  * Coverage — apply_language_filter_to_related_query (raw SQL path):
  *   6. Happy path — language INNER JOIN appended to an empty join fragment.
  *   7. Happy path — language JOIN appended alongside a pre-existing join.
@@ -48,16 +53,16 @@ declare(strict_types=1);
 namespace LinguaForge\Tests\Unit\WooCommerce;
 
 use LinguaForge\AI\Integrations\WooCommerce\CatalogQuery;
-use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/WcPolyfills.php';
+// WcUnitTestCase loads WcPolyfills and class-language-router; require_once is safe
+// if another test file already pulled them in first.
 require_once dirname( __DIR__, 3 ) . '/ai/includes/Integrations/WooCommerce/CatalogQuery.php';
 
 // Define LF_LANG once for the unit suite — simulates the router having
 // resolved a language on a French frontend request.
 defined( 'LF_LANG' ) || define( 'LF_LANG', 'fr' );
 
-final class CatalogQueryTest extends TestCase {
+final class CatalogQueryTest extends WcUnitTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -336,6 +341,56 @@ final class CatalogQueryTest extends TestCase {
 		$result = CatalogQuery::disable_product_grid_cache( true );
 
 		$this->assertFalse( $result, 'Cache must be disabled when a language is active.' );
+	}
+
+	// =========================================================================
+	// 17. Effective lang — is_singular('product') with product's own _lf_lang
+	// =========================================================================
+
+	public function test_secondary_query_uses_product_lf_lang_when_is_singular_product(): void {
+		$GLOBALS['lf_test_is_singular'] = true;
+		\LfWcMocks::$queried_object_id  = 99;
+		$this->make_post( 99, 'product' );
+		\LfWcMocks::$meta[99]['_lf_lang'] = 'de'; // product lang differs from LF_LANG ('fr')
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$meta_query = $query->get( 'meta_query' );
+		$lf_clause  = array_values( array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		) );
+
+		$this->assertCount( 1, $lf_clause );
+		$this->assertSame( 'de', $lf_clause[0]['value'], "Must use the product's _lf_lang, not LF_LANG." );
+	}
+
+	// =========================================================================
+	// 18. Effective lang — is_singular true but no _lf_lang on product → LF_LANG
+	// =========================================================================
+
+	public function test_secondary_query_falls_back_to_lf_lang_when_product_has_no_lf_lang(): void {
+		$GLOBALS['lf_test_is_singular'] = true;
+		\LfWcMocks::$queried_object_id  = 99;
+		$this->make_post( 99, 'product' );
+		// _lf_lang intentionally absent → effective_lang must fall back to LF_LANG.
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$meta_query = $query->get( 'meta_query' );
+		$lf_clause  = array_values( array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		) );
+
+		$this->assertCount( 1, $lf_clause );
+		$this->assertSame( LF_LANG, $lf_clause[0]['value'], 'No _lf_lang on product must fall back to LF_LANG.' );
 	}
 
 }

@@ -660,9 +660,9 @@ final class TranslationTest extends TestCase {
 
 	public function test_detect_frontend_singular_returns_lf_lang_meta(): void {
 
-		$GLOBALS['lf_test_is_singular']       = true;
-		$GLOBALS['lf_test_queried_object_id'] = 55;
-		\LfWcMocks::$meta[55]['_lf_lang']     = 'fr';
+		$GLOBALS['lf_test_is_singular']     = true;
+		\LfWcMocks::$queried_object_id      = 55; // WcPolyfills wins over ApiPolyfills for get_queried_object_id
+		\LfWcMocks::$meta[55]['_lf_lang']   = 'fr';
 
 		$this->assertSame( 'fr', Translation::detect_post_language() );
 	}

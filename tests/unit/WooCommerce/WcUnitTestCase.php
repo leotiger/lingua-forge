@@ -34,6 +34,7 @@ abstract class WcUnitTestCase extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		\LfWcMocks::reset();
+		$GLOBALS['lf_test_is_singular'] = false; // prevent cross-test contamination from is_singular polyfill
 		static::inject_router( 'en' );
 	}
 

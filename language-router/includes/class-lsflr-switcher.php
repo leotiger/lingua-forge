@@ -44,7 +44,22 @@ class Switcher {
 	// =========================================================
 
 	public function get_languages(): array {
-		$post_id = get_the_ID() ?: null;
+		$post_id        = get_the_ID() ?: null;
+		$force_permalink = false;
+
+		// Translated WC shop pages (/es/tienda/, /ca/botiga/): inject_shop_post_type()
+		// fires at pre_get_posts p9 and converts the page query to a product archive.
+		// By the time the Switcher renders the main loop may have started, so
+		// get_the_ID() returns the first product ID rather than the shop page ID,
+		// and is_singular() is false.  inject_shop_post_type() saves the original
+		// page ID in the 'lf_shop_page_id' query var so we can recover it here.
+		if ( ! is_singular() ) {
+			$shop_page_id = (int) get_query_var( 'lf_shop_page_id' );
+			if ( $shop_page_id > 0 ) {
+				$post_id        = $shop_page_id;
+				$force_permalink = true; // permalink must be used; is_singular() is false
+			}
+		}
 
 		// Singular pages: build from the post's translation group so each
 		// language link points at the correct translated post permalink.
@@ -62,6 +77,18 @@ class Switcher {
 			$translation_map = array_fill_keys( $this->router->languages(), null );
 		}
 
+		// On language-neutral product URLs (e.g. /product/camisa/) LF_LANG is always
+		// the source language even when the queried product is a translation.  Read the
+		// product's own _lf_lang so the switcher marks the actual content language as
+		// current rather than always marking the source language.
+		$current_lang = LF_LANG;
+		if ( is_singular() && $post_id ) {
+			$product_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+			if ( $product_lang ) {
+				$current_lang = $product_lang;
+			}
+		}
+
 		$langs = [];
 
 		foreach ( $translation_map as $lang => $id ) {
@@ -71,16 +98,16 @@ class Switcher {
 
 			$langs[] = [
 				'code'    => $lang,
-				'url'     => $this->translate_current_url( $lang, $id ),
+				'url'     => $this->translate_current_url( $lang, $id, $force_permalink ),
 				'label'   => $this->router->language_label( $lang ),
-				'current' => ( $lang === LF_LANG ),
+				'current' => ( $lang === $current_lang ),
 			];
 		}
 
 		return $langs;
 	}
 
-	public function translate_current_url( string $target_lang, ?int $post_id = null ): string {
+	public function translate_current_url( string $target_lang, ?int $post_id = null, bool $force_permalink = false ): string {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set value used only for URL path parsing; home_url() encodes the result.
 		$current_url = home_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/' );
 
@@ -92,7 +119,11 @@ class Switcher {
 			$this->router->context->routing_mode(),
 			is_search(),
 			(string) get_query_var( 's' ),
-			is_singular() && (bool) $post_id,
+			// Use permalink when on a genuine singular page, OR when the caller
+			// explicitly set $force_permalink (e.g. translated shop pages whose
+			// query was converted to a product archive by inject_shop_post_type(),
+			// making is_singular() false even though $post_id is known and correct).
+			( is_singular() || $force_permalink ) && (bool) $post_id,
 			$post_id ? (string) get_permalink( $post_id ) : '',
 			$this->router->context->lang_base_url( $target_lang ),
 			home_url()

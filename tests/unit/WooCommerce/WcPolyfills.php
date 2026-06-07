@@ -153,6 +153,15 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		/** @var bool Return value for the is_admin() polyfill. Default false (frontend). */
 		public static bool $is_admin = false;
 
+		/**
+		 * Return value for get_queried_object_id() polyfill.
+		 * 0 = no queried object (early bootstrap / admin context).
+		 * Set to a post ID in tests that exercise frontend conditional hooks.
+		 *
+		 * @var int
+		 */
+		public static int $queried_object_id = 0;
+
 		/** @var bool Return value for WP_Query::is_main_query(). Default false (secondary query). */
 		public static bool $is_main_query = false;
 
@@ -177,8 +186,10 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 			self::$cache_deletes     = [];
 			self::$wpdb_updates      = [];
 			self::$wpdb_get_var      = null;
-			self::$is_admin          = false;
-			self::$is_main_query     = false;
+			self::$is_admin            = false;
+			self::$is_main_query       = false;
+			self::$queried_object_id   = 0;
+			\LfWpQueryStub::reset();
 			self::$current_user_can  = true;
 			self::$user_meta         = [];
 		}
@@ -303,6 +314,81 @@ if ( ! function_exists( 'is_admin' ) ) {
 	function is_admin(): bool {
 		return LfWcMocks::$is_admin;
 	}
+}
+
+if ( ! function_exists( 'get_queried_object_id' ) ) {
+	/**
+	 * Returns LfWcMocks::$queried_object_id so tests can simulate the current
+	 * frontend page without a WordPress runtime.  Defaults to 0 (no object).
+	 */
+	function get_queried_object_id(): int {
+		return LfWcMocks::$queried_object_id;
+	}
+}
+
+if ( ! function_exists( 'get_queried_object' ) ) {
+	/**
+	 * Returns the WP_Post stored under LfWcMocks::$queried_object_id, or null when
+	 * no queried object is configured.  Tests must (a) set
+	 * LfWcMocks::$queried_object_id and (b) register a WP_Post via
+	 * WcUnitTestCase::make_post() so both return the same object.
+	 */
+	function get_queried_object(): ?\WP_Post {
+		$id = LfWcMocks::$queried_object_id;
+		if ( $id <= 0 ) {
+			return null;
+		}
+		return LfWcMocks::$posts[ $id ] ?? null;
+	}
+}
+
+if ( ! function_exists( 'is_singular' ) ) {
+	/**
+	 * Returns $GLOBALS['lf_test_is_singular'] (default false).
+	 *
+	 * The $post_types argument is accepted for WP API compatibility but ignored —
+	 * the stub simulates any singular context without type discrimination.
+	 * WcUnitTestCase::setUp() resets $GLOBALS['lf_test_is_singular'] to false
+	 * between every test so state never leaks across test methods.
+	 *
+	 * @param mixed $post_types  Accepted for WP API compatibility; ignored in stub.
+	 */
+	function is_singular( mixed $post_types = '' ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- $post_types ignored; accepted for WP API signature compatibility only.
+		return (bool) ( $GLOBALS['lf_test_is_singular'] ?? false );
+	}
+}
+
+// Seed a minimal $wp_query stub in the global namespace for tests that read
+// query_vars (e.g. page_id) without a real WordPress runtime.
+// Tests that need a specific page_id call LfWpQueryStub::set_page_id().
+if ( ! class_exists( 'LfWpQueryStub' ) ) {
+	/**
+	 * Minimal $wp_query stub for unit tests that read query_vars.
+	 */
+	class LfWpQueryStub {
+		private static int $page_id = 0;
+
+		public static function set_page_id( int $id ): void {
+			self::$page_id = $id;
+		}
+
+		public static function reset(): void {
+			self::$page_id = 0;
+		}
+
+		/** Mirror of WP_Query::get() for the keys WcPageBridge reads. */
+		public function get( string $query_var, mixed $fallback = '' ): mixed {
+			if ( 'page_id' === $query_var ) {
+				return self::$page_id;
+			}
+			return $fallback;
+		}
+	}
+}
+
+// Register the global $wp_query stub once; tests call LfWpQueryStub::set_page_id().
+if ( ! isset( $GLOBALS['wp_query'] ) ) {
+	$GLOBALS['wp_query'] = new LfWpQueryStub(); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 }
 
 if ( ! function_exists( 'get_locale' ) ) {
@@ -536,5 +622,74 @@ if ( ! function_exists( 'wc_stock_amount' ) ) {
 	 */
 	function wc_stock_amount( mixed $qty ): float {
 		return (float) $qty;
+	}
+}
+
+if ( ! function_exists( '__' ) ) {
+	/**
+	 * i18n polyfill — returns the source string unchanged.
+	 * Sufficient for unit tests where no translation runtime is needed.
+	 *
+	 * @param string $text   The text to translate.
+	 * @param string $domain Text domain (ignored in stub).
+	 * @return string
+	 */
+	function __( string $text, string $domain = 'default' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $domain intentionally ignored; stub returns input unchanged.
+		return $text;
+	}
+}
+
+if ( ! function_exists( 'get_posts' ) ) {
+	/**
+	 * Minimal get_posts stub — evaluates `meta_query` conditions with AND
+	 * relation against LfWcMocks::$meta and returns matching post IDs or
+	 * WP_Post stubs.
+	 *
+	 * Supports:
+	 *  - `meta_query` with a 'relation' string key + array condition entries.
+	 *  - `fields => 'ids'` to return plain integer IDs.
+	 *  - `posts_per_page` to cap results.
+	 *
+	 * @param array<string,mixed> $args WP_Query-style argument array.
+	 * @return array<int,int|WP_Post>
+	 */
+	function get_posts( array $args = [] ): array {
+		$meta_query = $args['meta_query'] ?? [];
+		$fields     = $args['fields']     ?? '';
+		$limit      = isset( $args['posts_per_page'] ) ? (int) $args['posts_per_page'] : -1;
+
+		// Extract array conditions, discarding the 'relation' string key.
+		$conditions = array_values( array_filter( $meta_query, 'is_array' ) );
+
+		$results = [];
+		foreach ( LfWcMocks::$meta as $post_id => $meta ) {
+			$match = true;
+			foreach ( $conditions as $condition ) {
+				$key   = $condition['key']   ?? '';
+				$value = $condition['value'] ?? '';
+				$compare = strtoupper( $condition['compare'] ?? '=' );
+				$raw_val = $meta[ $key ] ?? null;
+				if ( 'IN' === $compare ) {
+					if ( ! in_array( $raw_val, (array) $value, true ) ) {
+						$match = false;
+						break;
+					}
+				} elseif ( ( $raw_val ?? '' ) !== $value ) {
+					$match = false;
+					break;
+				}
+			}
+			if ( ! $match ) {
+				continue;
+			}
+			$results[] = ( 'ids' === $fields )
+				? $post_id
+				: ( LfWcMocks::$posts[ $post_id ] ?? $post_id );
+			if ( $limit > 0 && count( $results ) >= $limit ) {
+				break;
+			}
+		}
+
+		return $results;
 	}
 }

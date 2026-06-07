@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 09:27+0000\n"
+"PO-Revision-Date: 2026-06-06 21:21+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: hu_HU\n"
@@ -41,44 +41,82 @@ msgstr "\"%s\" létrehozva."
 msgid "\"product\" (replaces \"article\")"
 msgstr "„termék” (helyettesíti az „cikket”)"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
 #, php-format
-msgid "%1$d chars — good length. %2$s"
-msgstr "%1$d karakter — jó hosszúság. %2$s"
+msgid ""
+"%1$d chars — good, slightly above the ideal %2$d but within the accepted "
+"%3$d-char range. %4$s"
+msgstr ""
+"%1$d karakter — jó, kissé meghaladja az ideális %2$d-t, de még elfogadható a "
+"%3$d karakteres tartományon belül. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
 #, php-format
-msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
-msgstr "%1$d karakter — a SERP-ben levágódhat (célozd meg a 140–160-at). %2$s"
+#| msgid "%1$d chars — good length. %2$s"
+msgid "%1$d chars — ideal length. %2$s"
+msgstr "%1$d karakter — ideális hossz. %2$s"
 
-#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
 #, php-format
-msgid "%1$d chars — too short (aim for 140–160). %2$s"
-msgstr "%1$d karakter — túl rövid (célozd meg a 140–160-at). %2$s"
+msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
+msgstr ""
+"%1$d karakter — valószínűleg levágva a SERP-eken (tartsd kevesebb mint %2$d)."
+" %3$s"
+
+#. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#, php-format
+#| msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
+msgstr "%1$d karakter — túl rövid (célozz %2$d–%3$d felé). %4$s"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d belső, %2$d külső."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d kép hiányzik az alt szövegből, összesen %2$d kép."
 
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#, php-format
+#| msgid "%d words — below recommended minimum of 300."
+msgid "%1$d words — below recommended minimum of %2$d."
+msgstr "%1$d szó — az ajánlott minimum %2$d alatt van."
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#, php-format
+#| msgid ""
+#| "%d words — very thin content. Consider expanding to at least 300 words."
+msgid ""
+"%1$d words — very thin content. Consider expanding to at least %2$d words."
+msgstr ""
+"%1$d szó — nagyon vékony tartalom. Fontolja meg a kiterjesztést legalább "
+"%2$d szóra."
+
 #. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
 #, php-format
 msgid "%d chars — good length."
 msgstr "%d karakter — jó hosszúság."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#, php-format
+msgid "%d external link(s), no internal links."
+msgstr "%d külső hivatkozás, nincs belső hivatkozás."
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -88,14 +126,14 @@ msgstr ""
 "kapcsolódó tartalomhoz."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr ""
 "%d H1 cím található — egy oldalnak pontosan egy H1 címet kell tartalmaznia."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d kép, mindegyik rendelkezik alt szöveggel."
@@ -169,20 +207,7 @@ msgstr[0] "%d rész hivatkozás frissítve."
 msgstr[1] "%d rész hivatkozás frissítve."
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
-#, php-format
-msgid "%d words — below recommended minimum of 300."
-msgstr "%d szó — az ajánlott minimum 300 szó alatt."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
-#, php-format
-msgid "%d words — very thin content. Consider expanding to at least 300 words."
-msgstr ""
-"%d szó — nagyon vékony tartalom. Fontold meg legalább 300 szóra bővíteni."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
 #, php-format
 msgid "%d words."
 msgstr "%d szó."
@@ -242,7 +267,7 @@ msgid "(disabled)"
 msgstr "Letiltva"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 #, php-format
 msgid "(no title) #%d"
 msgstr "(nincs cím) #%d"
@@ -257,17 +282,21 @@ msgstr ""
 msgid ".txt file(s) in the directory"
 msgstr ".txt fájl(ok) a könyvtárban"
 
-#: ai/includes/Admin/MetaBox.php:370
+#: ai/includes/Admin/MetaBox.php:392
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
+msgstr "1 H1 ✓ — nincs H2 alcím (elfogadható ebben a tartalomtípusban)."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr ""
 "1 H1 ✓ — nem található H2 alcím. A H2-k hozzáadása javítja a szerkezetet."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -431,11 +460,11 @@ msgstr ""
 "aldomain), mindig látogassa meg a Beállítások → Állandó linkek menüpontot, "
 "és kattintson a Mentés gombra az átírási szabályok ürítéséhez."
 
-#: ai/includes/Admin/MetaBox.php:385
+#: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:538
 msgid "AI analysis failed. Please try again."
 msgstr "Az AI elemzés sikertelen volt. Kérjük, próbáld újra."
 
-#: ai/includes/Admin/MetaBox.php:583
+#: ai/includes/Admin/MetaBox.php:738
 msgid "AI Behaviour Preset"
 msgstr "AI viselkedés előbeállítás"
 
@@ -479,16 +508,16 @@ msgstr "AI Határok és Biztonság"
 msgid "AI provider returned an empty response."
 msgstr "Az AI szolgáltató üres választ adott."
 
-#: ai/includes/Admin/MetaBox.php:381
+#: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:534
 msgid "AI Recommendations"
 msgstr "AI Ajánlások."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "Az AI váratlan választ adott. Kérjük, próbáld újra."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "AI Usage"
 msgstr "AI használat"
 
@@ -519,7 +548,7 @@ msgstr ""
 msgid "All time"
 msgstr "Összes idő"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
 msgid "All types"
 msgstr "Minden típus."
 
@@ -570,19 +599,19 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Ismeretlen hiba történt."
 
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+msgid "Analyse…"
+msgstr "Elemzés…"
+
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
 msgid "Analysis"
 msgstr "Elemzés."
 
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
 msgid "Analysis request failed. Please try again."
 msgstr "Az elemzési kérés sikertelen volt. Kérjük, próbáld újra."
 
-#: ai/includes/Admin/MetaBox.php:369 ai/includes/Admin/SettingsPage.php:350
-msgid "Analyze"
-msgstr "Elemzés."
-
-#: ai/includes/Admin/MetaBox.php:383
+#: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:537
 msgid "Analyzing…"
 msgstr "Elemzés folyamatban…"
 
@@ -609,7 +638,7 @@ msgstr "API kulcs"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
 msgid "API Keys"
 msgstr "API kulcsok"
 
@@ -701,7 +730,7 @@ msgid "Auto (recommended)"
 msgstr "Automatikus (ajánlott)."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:623
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Behavior"
 msgstr "Viselkedés"
 
@@ -799,6 +828,10 @@ msgstr ""
 "szótár) a memóriából szolgálódnak ki, nem pedig újra hívják az AI-t. "
 "Konfigurálja a Beállítások → Viselkedés menüben."
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
+msgid "Blog / Editorial"
+msgstr "Blog / Szerkesztői"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -813,7 +846,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Böngésző nyelvi átirányítás"
 
-#: ai/includes/Admin/SettingsPage.php:318
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "Built-in preset instructions:"
 msgstr "Beépített előre beállított utasítások:"
 
@@ -952,7 +985,7 @@ msgstr ""
 msgid "Clear Translation Memory"
 msgstr "Fordítási memória törlése"
 
-#: ai/includes/Admin/MetaBox.php:692
+#: ai/includes/Admin/MetaBox.php:847
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
@@ -975,7 +1008,7 @@ msgstr "Kompatibilitás."
 msgid "Compliance Preset"
 msgstr "Megfelelőségi előbeállítás"
 
-#: ai/includes/Admin/MetaBox.php:384
+#: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:535
 msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
@@ -1035,7 +1068,7 @@ msgstr ""
 "megtartja, így véletlen eltávolítás vagy újratelepítés esetén ott "
 "folytathatja, ahol abbahagyta."
 
-#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:248
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:259
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr "Beszélgetős"
@@ -1138,7 +1171,7 @@ msgstr ""
 "A \"%s\" típusú bejegyzések fordításához aktív integráció szükséges. Kérjük, "
 "győződjön meg arról, hogy a szükséges integráció telepítve és aktív."
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "Creating…"
 msgstr "Létrehozás…"
 
@@ -1195,7 +1228,7 @@ msgstr ""
 msgid "Currently:"
 msgstr "Jelenleg:"
 
-#: ai/includes/Admin/MetaBox.php:589
+#: ai/includes/Admin/MetaBox.php:744
 msgid "Custom"
 msgstr "Egyéni"
 
@@ -1279,6 +1312,10 @@ msgstr "Törli ezt a szójegyzék bejegyzést?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Írjon le, mit írjon — téma, kulcspontok, szerkezet…"
+
+#: ai/includes/Admin/MetaBox.php:391
+msgid "Details ↗"
+msgstr "Részletek ↗"
 
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
 msgid ""
@@ -1390,7 +1427,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Legördülő irány"
 
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "edit"
 msgstr "szerkesztés"
 
@@ -1412,6 +1449,18 @@ msgstr ""
 msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr ""
 "Társadalmi megosztási URL átírás engedélyezése a Social Icons blokkokhoz"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+msgid ""
+"Enable when your theme renders the post title as an H2 instead of an H1 "
+"(common in some block themes). The analyser fetches the rendered page and, "
+"if it finds no H1 but does find an H2, it promotes the first H2 to H1 for "
+"scoring purposes."
+msgstr ""
+"Engedélyezze, amikor a témája a bejegyzés címet H2-ként jeleníti meg H1 "
+"helyett (gyakori néhány blokk témában). Az elemző lekéri a renderelt oldalt, "
+"és ha nem talál H1-et, de talál H2-t, akkor az első H2-t H1-re emeli az "
+"értékeléshez."
 
 #: ai/includes/Admin/SettingsHelp.php:86
 msgid ""
@@ -1515,7 +1564,7 @@ msgstr ""
 msgid "Filter"
 msgstr "Szűrő"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1534,7 +1583,8 @@ msgstr ""
 "Szűrő a linguaforge_debug_dir segítségével, hogy a hibakereső kimenetet nem "
 "nyilvános helyre irányítsd."
 
-#: ai/includes/Admin/MetaBox.php:373 ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/SettingsPage.php:352
 msgid "Finding"
 msgstr "Keresés"
 
@@ -1556,17 +1606,17 @@ msgstr "Minden rész javítása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Fix Links"
 msgstr "Hivatkozások javítása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "Fix Nav"
 msgstr "Navigáció javítása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Fix Parts"
 msgstr "Részek javítása"
 
@@ -1578,9 +1628,9 @@ msgstr "Sablon javítása"
 msgid "Fixing {n} / {total}…"
 msgstr "Javítás {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:252
-#: ai/includes/Admin/SettingsPage.php:256
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:264
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1691,7 +1741,7 @@ msgid "Full post"
 msgstr "Teljes bejegyzés"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:620
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "General"
 msgstr "Általános"
 
@@ -1704,7 +1754,7 @@ msgstr "Létrehozás"
 msgid "Generate Content"
 msgstr "Tartalom generálása"
 
-#: ai/includes/Admin/MetaBox.php:563
+#: ai/includes/Admin/MetaBox.php:718
 msgid "Generate content…"
 msgstr "Tartalom generálása…"
 
@@ -1747,7 +1797,7 @@ msgid "Global AI preset"
 msgstr "Globális AI előbeállítás"
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:594
+#: ai/includes/Admin/MetaBox.php:749
 #, php-format
 msgid "Global default (%s)"
 msgstr "Globális alapértelmezett (%s)"
@@ -1755,7 +1805,7 @@ msgstr "Globális alapértelmezett (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:625
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Glossary"
 msgstr "Szójegyzék"
 
@@ -1775,11 +1825,22 @@ msgstr "Szótár lap"
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/MetaBox.php:378 ai/includes/Admin/SettingsPage.php:341
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+msgid ""
+"H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
+"not be detected from the rendered page; verify your theme outputs the title "
+"correctly.)"
+msgstr ""
+"H2-H1 mód engedélyezve — a cím H1-nek számít. (A fejléc címkék nem voltak "
+"észlelhetők a renderelt oldalról; ellenőrizze, hogy a témája helyesen "
+"jeleníti-e meg a címet.)"
+
+#: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/SettingsPage.php:347
 msgid "Headings"
 msgstr "Címsorok"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Hide"
 msgstr "Elrejtés"
 
@@ -1884,7 +1945,8 @@ msgstr ""
 "letiltja saját kimenetét, hogy elkerülje az összeférhetetlen JSON-LD "
 "gráfokat."
 
-#: ai/includes/Admin/MetaBox.php:379 ai/includes/Admin/SettingsPage.php:342
+#: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Images"
 msgstr "Képek"
 
@@ -1917,7 +1979,7 @@ msgstr ""
 msgid "Includes site name, url, and inLanguage."
 msgstr "Tartalmazza az oldal nevét, url-jét és inLanguage-t."
 
-#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:244
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:255
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr "Tájékoztató"
@@ -1938,7 +2000,7 @@ msgstr "Nyelv telepítése"
 msgid "Installed SEO plugins"
 msgstr "Telepített SEO bővítmények"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Installing…"
 msgstr "Telepítés…"
 
@@ -1996,8 +2058,8 @@ msgstr "Érvénytelen helyi kód."
 msgid "Invalid or primary language."
 msgstr "Érvénytelen vagy elsődleges nyelv."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
 msgid "Invalid post ID."
 msgstr "Érvénytelen bejegyzés azonosító."
 
@@ -2032,7 +2094,11 @@ msgstr ""
 "titkosítás titkos kulcsa a WordPress hitelesítési sóiból származik (wp-"
 "config.php), így a tiszta szövegű kulcsok soha nem kerülnek az adatbázisba."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+msgid "Landing / Short-form"
+msgstr "Földi / Rövid formátum"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "Nyelv"
@@ -2048,7 +2114,7 @@ msgid "Language (optional)"
 msgstr "Nyelv (opcionális)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:241
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
@@ -2331,7 +2397,7 @@ msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "Eredmények szűkítése a megadott Lingua Forge nyelvkód oldalaira."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:622
+#: ai/includes/Admin/SettingsPage.php:629
 msgid "Limits"
 msgstr "Határok"
 
@@ -2468,7 +2534,7 @@ msgstr "A Lingua Forge két modell szintet használ szolgáltatónként:"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Gyors Fordítás"
 
-#: ai/includes/Admin/SettingsPage.php:609
+#: ai/includes/Admin/SettingsPage.php:616
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Beállítások"
 
@@ -2490,7 +2556,8 @@ msgstr "Link másolva"
 msgid "link(s)"
 msgstr "link(ek)"
 
-#: ai/includes/Admin/MetaBox.php:380 ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
+#: ai/includes/Admin/SettingsPage.php:349
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Linkek"
@@ -2499,11 +2566,15 @@ msgstr "Linkek"
 msgid "Load available languages"
 msgstr "Töltsd be az elérhető nyelveket"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
 msgid "Load content"
 msgstr "Tartalom betöltése"
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/MetaBox.php:410 ai/includes/Admin/MetaBox.php:541
+msgid "Loaded from cache."
+msgstr "Betöltve a gyorsítótárból."
+
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Loading…"
 msgstr "Betöltés…"
 
@@ -2549,7 +2620,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Maintenance"
 msgstr "Karbantartás"
 
@@ -2654,7 +2725,8 @@ msgstr ""
 msgid "Meta Description"
 msgstr "Meta leírás"
 
-#: ai/includes/Admin/MetaBox.php:375 ai/includes/Admin/SettingsPage.php:338
+#: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
+#: ai/includes/Admin/SettingsPage.php:344
 msgid "Meta description"
 msgstr "Meta leírás"
 
@@ -2663,7 +2735,8 @@ msgstr "Meta leírás"
 msgid "Meta Description, Excerpt Generator"
 msgstr "Meta leírás, kivonat generátor"
 
-#: ai/includes/Admin/MetaBox.php:372 ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/SettingsPage.php:351
 msgid "Metric"
 msgstr "Mértékegység"
 
@@ -2697,7 +2770,7 @@ msgstr "Modellek"
 msgid "Models Tab (General)"
 msgstr "Modellek lap (Általános)"
 
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Modified"
 msgstr "Módosítva"
 
@@ -2712,13 +2785,15 @@ msgstr "Legutóbbi gyorsított válasz"
 #. Description of the plugin
 #: lingua-forge.php
 msgid ""
-"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
-"Combines language detection, URL routing, hreflang, meta descriptions, and "
-"AI-powered excerpt, meta, and translation features."
+"Multilingual routing, complete multilingual SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), and AI content tools for WordPress. Language detection,"
+" URL routing, translation, content generation, and a full SEO layer — no "
+"companion plugin required."
 msgstr ""
-"Többnyelvű útvonalkezelés, SEO meta címkék és AI tartalom eszközök "
-"WordPresshez. Kombinálja a nyelvfelismerést, URL útvonalkezelést, hreflang-"
-"et, meta leírásokat, valamint AI-alapú kivonat, meta és fordítási funkciókat."
+"Többnyelvű útvonalkezelés, teljes többnyelvű SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), és AI tartalom eszközök WordPresshez. Nyelvfelismerés, "
+"URL útvonalkezelés, fordítás, tartalomgenerálás, és egy teljes SEO réteg — "
+"nem szükséges kísérő plugin."
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2755,7 +2830,7 @@ msgstr ""
 msgid "Navigations"
 msgstr "Navigációk"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Hálózati hiba — nem lehet elérni a WordPress AJAX végpontot."
 
@@ -2783,7 +2858,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "Nincs AI szolgáltató konfigurálva."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "Nincs AI szolgáltató konfigurálva. Adj hozzá API kulcsot a Beállítások → API "
@@ -2811,7 +2886,7 @@ msgstr ""
 msgid "No API key configured for this provider."
 msgstr "Nincs API kulcs konfigurálva ehhez a szolgáltatóhoz."
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:320
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2865,7 +2940,7 @@ msgstr ""
 "Még nincs szójegyzék bejegyzés. Adjon hozzá egyet az alábbiakban, hogy "
 "elkezdje a terminológia érvényesítését a fordításokban."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -2873,7 +2948,7 @@ msgstr ""
 "Nem található H1. Általában a bejegyzés címe az H1 — ellenőrizze, hogy a "
 "témája kiadja-e."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
 msgid "No images found in content."
 msgstr "Nem található képek a tartalomban."
 
@@ -2885,18 +2960,22 @@ msgstr "Nem található belső hivatkozás frissítésre."
 msgid "No language-specific template parts found to map."
 msgstr "Nem található nyelvspecifikus sablonrész a térképezéshez."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
 msgid "No LF meta description set — using excerpt/content."
 msgstr "Nincs LF meta leírás beállítva — az kivonatot/tartalmat használja."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+msgid "No links found."
+msgstr "Nem található link."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Nem található linkek. A belső linkek javítják a feltérképezhetőséget és a "
 "felhasználói navigációt."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -2918,17 +2997,17 @@ msgstr ""
 "Nem található fizikai robots.txt fájl. A WordPress virtuálisan generálja, és "
 "az LF oldal térkép direktívája automatikusan be van állítva."
 
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "No published posts found for the selected filters."
 msgstr "Nem található közzétett bejegyzés a kiválasztott szűrőkkel."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "Nincs válasz az AI szolgáltatótól. Ellenőrizze az API kulcsot, és próbálja "
 "újra."
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "Nincs válasz a szolgáltatótól — ellenőrizze a hibajegyet a részletekért."
@@ -2953,7 +3032,7 @@ msgstr "Még nincs összekapcsolva forrásoldal."
 msgid "No template part references needed updating."
 msgstr "Nincs szükség hivatkozás frissítésére a sablonrészben."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
 msgid "No title set."
 msgstr "Nincs cím beállítva."
 
@@ -2965,7 +3044,7 @@ msgstr ""
 "Nem található fordított tartalom. Az oldal térkép feltöltődik, amint a "
 "bejegyzéseket lefordították."
 
-#: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
 msgid "No translation found — analyzed the source language version."
 msgstr "Nem található fordítás — az elemzett forrásnyelvi verziót."
 
@@ -3116,7 +3195,8 @@ msgstr "Kimeneti tokenek"
 msgid "Output WebSite schema on the front page and blog index"
 msgstr "Weboldal séma a főoldalon és a blog indexen"
 
-#: ai/includes/Admin/MetaBox.php:371 ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
+#: ai/includes/Admin/SettingsPage.php:350
 msgid "Overall SEO score"
 msgstr "Átfogó SEO pontszám"
 
@@ -3132,7 +3212,7 @@ msgstr "A felülíró fájl törölve."
 msgid "Override file uploaded successfully."
 msgstr "A felülíró fájl sikeresen feltöltve."
 
-#: ai/includes/Admin/MetaBox.php:611
+#: ai/includes/Admin/MetaBox.php:766
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "All other features always use the global preset."
@@ -3140,7 +3220,7 @@ msgstr ""
 "Felülírja az AI előbeállítást a fordítás és tartalomgenerálás esetén ezen az "
 "oldalon. Minden más funkció mindig az általános előbeállítást használja."
 
-#: ai/includes/Admin/MetaBox.php:606
+#: ai/includes/Admin/MetaBox.php:761
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "Site-wide custom prompt instructions (Settings → Behavior) are always "
@@ -3206,7 +3286,7 @@ msgstr ""
 "blokk szerkesztő mintabeillesztő segítségével, vagy használja "
 "kiindulópontként újrahasználható blokkhoz."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Pattern translation failed."
 msgstr "A minta fordítása sikertelen volt."
 
@@ -3267,9 +3347,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
@@ -3284,7 +3365,7 @@ msgstr ""
 msgid "Permission denied."
 msgstr "Engedély megtagadva."
 
-#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:245
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:256
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr "Meggyőző"
@@ -3337,11 +3418,11 @@ msgstr "Bővítmény"
 msgid "Post"
 msgstr "Bejegyzés"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
 msgid "Post not found or not published."
 msgstr "A bejegyzés nem található vagy nincs közzétéve."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "A bejegyzés nem található."
@@ -3399,6 +3480,10 @@ msgstr "Feldolgozás…"
 msgid "Product"
 msgstr "Termék"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+msgid "Product / eCommerce"
+msgstr "Termék / eCommerce"
+
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
 msgid "Product Open Graph"
 msgstr "Termék Open Graph"
@@ -3406,6 +3491,11 @@ msgstr "Termék Open Graph"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
 msgid "Product — WooCommerce product pages"
 msgstr "Termék — WooCommerce termékoldalak"
+
+#: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
+#: ai/includes/Admin/SettingsPage.php:356
+msgid "Profile"
+msgstr "Profil"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
@@ -3495,11 +3585,12 @@ msgstr "Újra vizsgálás…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Re-translate"
 msgstr "Újrafordítás"
 
-#: ai/includes/Admin/MetaBox.php:377 ai/includes/Admin/SettingsPage.php:340
+#: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Reading time"
 msgstr "Olvasási idő"
 
@@ -3593,7 +3684,7 @@ msgstr "Újrafordítás"
 msgid "Retranslating…"
 msgstr "Újrafordítás…"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Review carefully — links and slugs not updated."
 msgstr "Alapos áttekintés — linkek és slugok nem frissültek."
 
@@ -3622,7 +3713,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt frissítve Sitemap utasítással."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
 msgid "Router"
 msgstr "Útválasztó"
 
@@ -3630,9 +3721,13 @@ msgstr "Útválasztó"
 msgid "Router Tab"
 msgstr "Router lap"
 
-#: ai/includes/Admin/MetaBox.php:382
+#: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "AI elemzés futtatása"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+msgid "Save analysis settings"
+msgstr "Elemzési beállítások mentése"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:143
 msgid "Save Debug Setting"
@@ -3654,7 +3749,7 @@ msgstr "Router beállítások mentése"
 msgid "Save Schema.org Settings"
 msgstr "Schema.org beállítások mentése"
 
-#: ai/includes/Admin/SettingsPage.php:663
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "Save Settings"
 msgstr "Beállítások mentése"
 
@@ -3756,11 +3851,11 @@ msgstr "Küldés WhatsApp-on keresztül"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:626
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "SEO"
 msgstr "SEO"
 
-#: ai/includes/Admin/MetaBox.php:368
+#: ai/includes/Admin/MetaBox.php:389 ai/includes/Admin/MetaBox.php:436
 msgid "SEO Analysis"
 msgstr "SEO elemzés"
 
@@ -3800,11 +3895,11 @@ msgstr ""
 "egészén. Egyes bejegyzések felülírhatják ezt a Fordítás és Tartalom "
 "Generálás esetén a Lingua Forge meta dobozban."
 
-#: ai/includes/Admin/SettingsPage.php:390
+#: ai/includes/Admin/SettingsPage.php:397
 msgid "Settings"
 msgstr "Beállítások"
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "Settings saved."
 msgstr "A beállítások mentve."
 
@@ -3905,31 +4000,31 @@ msgstr "Közösségi Megosztás"
 msgid "Social Share settings saved."
 msgstr "A közösségi megosztási beállításokat elmentettük."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some link fixes failed."
 msgstr "Néhány link javítása sikertelen volt."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Some nav ref fixes failed."
 msgstr "Néhány navigációs hivatkozás javítása sikertelen volt."
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some part fixes failed."
 msgstr "Néhány rész javítása sikertelen volt."
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Some parts could not be created."
 msgstr "Néhány részt nem sikerült létrehozni."
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "Some templates could not be created."
 msgstr "Néhány sablont nem sikerült létrehozni."
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Some translations failed."
 msgstr "Néhány fordítás sikertelen volt."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid "source"
 msgstr "forrás"
 
@@ -3975,7 +4070,7 @@ msgstr "Állapot"
 msgid "Status / Actions"
 msgstr "Állapot / Akciók"
 
-#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:246
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:257
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr "Történetmesélés"
@@ -4025,11 +4120,11 @@ msgstr "Küldje ezt a URL-t a Google Search Console-ba a fő sitemapja mellett."
 msgid "Submit to Reddit"
 msgstr "Küldés a Redditre"
 
-#: ai/includes/Admin/MetaBox.php:387
+#: ai/includes/Admin/MetaBox.php:409 ai/includes/Admin/MetaBox.php:540
 msgid "Suggested meta description"
 msgstr "Javasolt meta leírás"
 
-#: ai/includes/Admin/MetaBox.php:386
+#: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:539
 msgid "Suggested title"
 msgstr "Javasolt cím"
 
@@ -4092,7 +4187,7 @@ msgstr "Cél kifejezés"
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr "Cél: 140–160 karakter a optimális SERP megjelenítéshez"
 
-#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:247
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:258
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr "Technikai"
@@ -4159,7 +4254,7 @@ msgstr "Sablonok"
 msgid "Test connection"
 msgstr "Kapcsolat tesztelése"
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "Testing…"
 msgstr "Tesztelés…"
 
@@ -4332,21 +4427,23 @@ msgstr ""
 "Tipp: a modell visszaállításához az alapértelmezett értékre, törölje a mezőt "
 "és mentse."
 
-#: ai/includes/Admin/MetaBox.php:374 ai/includes/Admin/SettingsPage.php:337
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
+#: ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Title"
 msgstr "Cím"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
 #, php-format
-msgid "Title is %d chars — aim for 50–60."
-msgstr "A cím %d karakter hosszú — célozza meg az 50–60 karaktert."
+msgid "Title is %1$d chars — aim for %2$d–%3$d."
+msgstr "A cím %1$d karakter — célozd meg a %2$d–%3$d tartományt."
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
-#, php-format
-msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
+#, fuzzy, php-format
+#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgstr ""
 "A cím %d karakter hosszú — a SERP-ekben levágható lehet (célozza meg az 50–"
 "60 karaktert)."
@@ -4405,9 +4502,9 @@ msgstr "Összes token"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:246
-#: ai/includes/Admin/SettingsPage.php:260
-#: ai/includes/Admin/SettingsPage.php:266 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4441,7 +4538,7 @@ msgstr "Tartalom fordítása"
 msgid "Translate missing"
 msgstr "Hiányzó fordítás"
 
-#: ai/includes/Admin/MetaBox.php:562
+#: ai/includes/Admin/MetaBox.php:717
 msgid "Translate page…"
 msgstr "Oldal fordítása…"
 
@@ -4473,9 +4570,9 @@ msgstr ""
 "navigációs URL-ek és sablon szlógok nem frissülnek automatikusan."
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Fordítás folyamatban…"
@@ -4556,9 +4653,13 @@ msgstr "Fordítási munkafolyamat"
 msgid "Translation, Content Generator"
 msgstr "Fordítás, Tartalom Generátor"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+msgid "Treat H2 as H1 equivalent"
+msgstr "Treat H2 as H1 equivalent"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Type"
 msgstr "Típus"
 
@@ -4705,7 +4806,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Egyedi meta leírás használata."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
 msgid "Using LF AI meta description."
 msgstr "LF AI meta leírás használata."
 
@@ -4714,7 +4815,7 @@ msgid "Value source"
 msgstr "Érték forrása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "View"
 msgstr "Nézet"
 
@@ -4876,7 +4977,8 @@ msgstr "WooCommerce SEO beállításokat elmentettük."
 msgid "WooCommerce store currency"
 msgstr "WooCommerce bolt pénzneme"
 
-#: ai/includes/Admin/MetaBox.php:376 ai/includes/Admin/SettingsPage.php:339
+#: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/SettingsPage.php:345
 msgid "Word count"
 msgstr "Szószám"
 
@@ -4907,7 +5009,7 @@ msgstr ""
 "config.php-ban). Ezek a források automatikusan használatba kerülnek, ha "
 "nincs adatbázisban tárolt kulcs."
 
-#: ai/includes/Admin/SettingsPage.php:402
+#: ai/includes/Admin/SettingsPage.php:409
 msgid "You do not have permission to manage these settings."
 msgstr "Nincs jogosultsága ezeknek a beállításoknak a kezelésére."
 
@@ -4920,7 +5022,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} elavult útvonal(ak)"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -4960,7 +5062,7 @@ msgid "— Not detected"
 msgstr "— Nem észlelve"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "— select a language —"
 msgstr "— válassz egy nyelvet —"
 
@@ -4999,6 +5101,10 @@ msgstr "↺ Finomítás"
 #: ai/assets/admin.js:877
 msgid "↺ Refresh"
 msgstr "↺ Frissítés"
+
+#: ai/includes/Admin/MetaBox.php:411 ai/includes/Admin/MetaBox.php:542
+msgid "↺ Refresh AI Analysis"
+msgstr "↺ AI elemzés frissítése"
 
 #: ai/assets/admin.js:88
 msgid "↺ Refreshing…"
@@ -5077,15 +5183,15 @@ msgstr "✓ Aktív — teljes OG + Twitter kártyák"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Aktív — csak helyi címkék (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "✓ All parts created."
 msgstr "✓ Minden rész létrehozva."
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "✓ All templates created."
 msgstr "✓ Minden sablon létrehozva."
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✓ All translated."
 msgstr "✓ Minden fordítva."
 
@@ -5093,7 +5199,7 @@ msgstr "✓ Minden fordítva."
 msgid "✓ Configured"
 msgstr "✓ Beállítva"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✓ Connection OK"
 msgstr "✓ Kapcsolat rendben"
 
@@ -5124,7 +5230,7 @@ msgstr "✓ Hreflang aktív"
 msgid "✓ In safe storage"
 msgstr "✓ Biztonságos tárolásban"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Language installed."
 msgstr "✓ Nyelv telepítve."
 
@@ -5144,19 +5250,19 @@ msgstr "✓ LF kimenetek teljes OG + Twitter kártyák"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF kimenetek — plugin hreflang elnyomva"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ Links fixed."
 msgstr "✓ Linkek javítva."
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "✓ Nav refs fixed."
 msgstr "✓ Navigációs hivatkozások javítva."
 
-#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ Parts fixed."
 msgstr "✓ Részek javítva."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "✓ Pattern translated."
 msgstr "✓ Minta fordítva."
 
@@ -5169,7 +5275,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Finomhangolva — tekintse meg a fenti frissített vázlatot."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "✓ Translation saved"
 msgstr "✓ Fordítás mentve"
 
@@ -5192,11 +5298,11 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Letiltva"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "✗ Error:"
 msgstr "✗ Hiba:"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "✗ Failed:"
 msgstr "✗ Sikertelen:"
 

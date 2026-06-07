@@ -28,6 +28,13 @@ class LocaleDetector {
 		add_action( 'plugins_loaded',    [ $this, 'apply_locale' ], 0 );
 		add_filter( 'determine_locale',  [ $this, 'filter_determine_locale' ], 0 );
 		add_filter( 'locale',            [ $this, 'filter_locale' ], 0 );
+		// Late locale override for singular posts whose _lf_lang differs from
+		// LF_LANG (e.g. WC products served from a language-neutral /product/ URL
+		// always have LF_LANG=source, even when the product itself is in another
+		// language).  Fires after the main query resolves so the queried object
+		// is available.  switch_to_locale() reloads all text domains, fixing WC
+		// tab labels, "Add to cart", breadcrumb "Home", etc.
+		add_action( 'wp', [ $this, 'maybe_switch_locale_for_post' ], 1 );
 	}
 
 	// =========================================================
@@ -115,6 +122,31 @@ class LocaleDetector {
 	// =========================================================
 	// LOCALE HOOKS
 	// =========================================================
+
+	/**
+	 * After the main query resolves, switch locale to match the queried post's
+	 * _lf_lang when it differs from the URL-derived LF_LANG.
+	 *
+	 * Covers singular CPT posts (e.g. WC products) whose URLs carry no language
+	 * prefix, so LF_LANG is always the source language regardless of which
+	 * language the individual post is in.
+	 */
+	public function maybe_switch_locale_for_post(): void {
+		if ( is_admin() ) return;
+		if ( ! defined( 'LF_LANG' ) ) return;
+		if ( ! is_singular() ) return;
+
+		$post = get_queried_object();
+		if ( ! ( $post instanceof \WP_Post ) ) return;
+
+		$post_lang = get_post_meta( $post->ID, '_lf_lang', true );
+		if ( ! $post_lang || $post_lang === LF_LANG ) return;
+
+		$locale = $this->locale_from_lang( $post_lang );
+		if ( $locale && $locale !== get_locale() ) {
+			switch_to_locale( $locale );
+		}
+	}
 
 	public function apply_locale(): void {
 		if ( is_admin() ) return;

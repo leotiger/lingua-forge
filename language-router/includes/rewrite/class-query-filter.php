@@ -232,11 +232,18 @@ class QueryFilter {
 		}
 
 		if ( $this->pending_page_list_lang !== null ) {
-			// Consume-once: clear immediately so that if block rendering is
-			// interrupted and clear_nav_lang_after_render() never fires, the
-			// pending lang cannot bleed into a subsequent unrelated get_pages() call.
-			$lang                         = $this->pending_page_list_lang;
-			$this->pending_page_list_lang = null;
+			$lang = $this->pending_page_list_lang;
+			// On the public frontend, block rendering is synchronous and
+			// clear_nav_lang_after_render() reliably fires after the navigation
+			// wrapper finishes — so keep pending alive for all get_pages() calls
+			// within that single navigation render (e.g. one call per sub-menu
+			// level or breakpoint variant).
+			// On canvas/REST (admin or REST_REQUEST), rendering can be interrupted
+			// mid-block, so consume immediately to prevent bleed into subsequent
+			// unrelated get_pages() calls.
+			if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+				$this->pending_page_list_lang = null;
+			}
 		} elseif ( defined( 'LF_LANG' ) ) {
 			// Frontend (non-admin, non-REST) — filter by the active site language.
 			$lang = LF_LANG;
@@ -275,11 +282,54 @@ class QueryFilter {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$is_canvas = isset( $_GET['canvas'] ) && 'edit' === $_GET['canvas'];
-		if ( ! $is_canvas && ! ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
-			return $pre_render;
-		}
+		$is_rest   = defined( 'REST_REQUEST' ) && REST_REQUEST;
 
 		$block_name = $parsed_block['blockName'] ?? '';
+
+		// ── Frontend path ─────────────────────────────────────────────────────────
+		// LF_LANG is URL-derived.  On prefixed URLs (/es/…, /ca/…) it is the right
+		// language.  On language-neutral URLs (/product/…) LF_LANG is always the
+		// source language, but the queried post may have a different _lf_lang —
+		// e.g. a Spanish product at /product/camisa/ has LF_LANG=en (source) even
+		// though its template uses header-es / navigation-es.
+		//
+		// Arm ONLY when all of the following hold:
+		//  1. We are on a language-neutral URL  (LF_LANG === source language).
+		//  2. The request is singular           (archives like /shop/ use LF_LANG).
+		//  3. The queried post has a non-source _lf_lang  (= it is a translation).
+		//  4. The navigation's _lf_lang matches that post language — the template
+		//     deliberately chose a language-specific nav for this post.
+		//
+		// In every other case filter_page_list_frontend() falls through to LF_LANG,
+		// which is correct for prefixed URLs, source-language singulars, and archives.
+		if ( ! $is_canvas && ! $is_rest ) {
+			// Arm when we are on a language-neutral URL (LF_LANG === source) but the
+			// queried post is a translation (post._lf_lang !== source).  In this case
+			// LF_LANG does not reflect the content language, so filter_page_list_frontend
+			// must be told which language to use rather than falling through to LF_LANG.
+			//
+			// We use the post's own _lf_lang as the pending language — not the
+			// navigation's language — so that the page-list shows pages in the correct
+			// language regardless of which navigation post the template chose.  This
+			// also handles CA/other languages when only an ES navigation exists: the
+			// page-list shows CA pages, not ES pages.
+			//
+			// The arm does NOT fire on prefixed URLs (LF_LANG !== source): there the
+			// fallback in filter_page_list_frontend already uses LF_LANG directly.
+			if ( $block_name === 'core/navigation' && defined( 'LF_LANG' ) ) {
+				$source = $this->router->context->source_language();
+				if ( LF_LANG === $source && is_singular() ) {
+					$post = get_queried_object();
+					if ( $post instanceof \WP_Post ) {
+						$post_lang = (string) get_post_meta( $post->ID, '_lf_lang', true );
+						if ( $post_lang && $post_lang !== $source ) {
+							$this->pending_page_list_lang = $post_lang;
+						}
+					}
+				}
+			}
+			return $pre_render;
+		}
 
 		// ── Case 1: core/navigation wrapper (template context) ──────────────────
 		if ( $block_name === 'core/navigation' ) {

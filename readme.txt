@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.3 =
+* Fixed: WooCommerce Cart, Checkout, and My Account pages always linking to source-language URLs in mini-cart and checkout navigation. Translated equivalents are now returned via the same `woocommerce_get_{type}_page_id` filter + `_lf_trid`/`_lf_lang` lookup used for the Shop page.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.2 =
 * Fixed: WooCommerce product blocks (New Arrivals, Top Rated, Best Sellers, On Sale, Handpicked Products, Featured Product, Product Collection) showing products from all languages on the frontend. These blocks use secondary WP_Query instances that bypass `woocommerce_product_query`; added `pre_get_posts` handler to inject the `_lf_lang` constraint on all secondary product queries.
 * Fixed: Cross-language transient cache contamination in legacy product grid blocks. BlocksWpQuery hashed query vars before `pre_get_posts` fires, making the cache key language-agnostic. Now disabled via `woocommerce_blocks_product_grid_is_cacheable` when LF_LANG is set.
@@ -287,7 +292,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 == Upgrade Notice ==
 
-= 2.2.2 =
-Fixes WC product blocks (New Arrivals, Top Rated, Best Sellers, On Sale, etc.) showing cross-language products. Adds lazy repair for WC built-in pages (Shop, Cart, Checkout) missing language tag. No schema changes. No data migration needed.
+= 2.2.3 =
+Fixes WooCommerce Cart, Checkout, and My Account page links always pointing to source-language URLs in mini-cart and checkout navigation. No schema changes. No data migration needed.
 
 

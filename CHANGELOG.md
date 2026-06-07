@@ -2,6 +2,19 @@
 
 ---
 
+## [2.2.3] — 2026-06-07
+
+### Fixed
+
+- **WooCommerce Cart, Checkout, and My Account pages always linking to source-language URLs** — Mini-cart, the checkout flow, and My Account navigation always resolved to the source-language equivalents regardless of the active frontend language. Root cause: `wc_get_page_id('cart'|'checkout'|'myaccount')` reads from WP options which always store source-language IDs. Added `woocommerce_get_cart_page_id`, `woocommerce_get_checkout_page_id`, and `woocommerce_get_myaccount_page_id` filters in `WcPageBridge`, reusing the shared `translate_wc_page_id()` private method (per-request cache keyed by option name) already serving the Shop page.
+
+### Developer
+
+- Removed stale `[LF-DEBUG filter_related]` `error_log` call from `WcPageBridge::filter_related_products_by_lang` left over from related-products debugging.
+- **Tests — 16 new unit test methods.** `WcPageBridgeTest` (tests 13–26): `translate_cart_page_id`, `translate_checkout_page_id`, `translate_myaccount_page_id` (happy-path, no-translation passthrough, cache-key independence across page types), and full `filter_related_products_by_lang` coverage (empty input, source-lang passthrough ×2, source peers mapped to translations via `_lf_trid`, self-exclusion after trid mapping, already-translated peer kept, foreign-lang peer dropped, missing trid skipped, no translation in target language). `CatalogQueryTest` (tests 17–18): `is_singular('product')` effective-lang branch — product's own `_lf_lang` used when set; falls back to `LF_LANG` when absent. `WcPolyfills` extended with `get_queried_object()` and `is_singular()` stubs, and `'compare' => 'IN'` support added to the `get_posts` stub.
+
+---
+
 ## [2.2.2] — 2026-06-06
 
 ### Fixed

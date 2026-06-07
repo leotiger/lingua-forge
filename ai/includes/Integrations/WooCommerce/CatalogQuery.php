@@ -171,9 +171,26 @@ class CatalogQuery {
 			}
 		}
 
+		// On single product pages the queried object's _lf_lang may differ from
+		// LF_LANG.  Language-neutral product URLs (e.g. /product/widget-de-prueba/)
+		// always have LF_LANG = source language even when the product is a translation.
+		// Using LF_LANG would exclude the translated related products returned by
+		// woocommerce_related_products / apply_language_filter_to_related_query.
+		// Use the product's own _lf_lang so the secondary post__in query accepts them.
+		$effective_lang = LF_LANG;
+		if ( is_singular( 'product' ) ) {
+			$queried_object = get_queried_object();
+			if ( $queried_object instanceof \WP_Post ) {
+				$product_lang = (string) get_post_meta( $queried_object->ID, '_lf_lang', true );
+				if ( '' !== $product_lang ) {
+					$effective_lang = $product_lang;
+				}
+			}
+		}
+
 		$meta_query[] = [
 			'key'   => '_lf_lang',
-			'value' => LF_LANG,
+			'value' => $effective_lang,
 		];
 
 		$query->set( 'meta_query', $meta_query );
@@ -241,11 +258,12 @@ class CatalogQuery {
 	 *  • Admin requests — product management must show all languages.
 	 *  • Requests where LF_LANG is not defined or empty (REST, CLI without lang).
 	 *
-	 * @param array $query      SQL fragment array: fields, join, where, limits.
-	 * @param int   $product_id Source product ID (unused; present for filter signature).
+	 * @param array $query       SQL fragment array: fields, join, where, limits.
+	 * @param int   $_product_id Source product ID (unused; present for filter signature).
 	 * @return array Modified (or unchanged) SQL fragment array.
 	 */
-	public static function apply_language_filter_to_related_query( array $query, int $product_id ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $product_id required by filter signature; language comes from LF_LANG constant.
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $product_id is required by the filter signature but this hook only needs the SQL array.
+	public static function apply_language_filter_to_related_query( array $query, int $_product_id ): array {
 
 		if ( is_admin() ) {
 			return $query;
@@ -255,6 +273,15 @@ class CatalogQuery {
 			return $query;
 		}
 
+		// Always use the source language so the SQL JOIN hits real wp_term_relationships
+		// rows.  TaxonomyDelegate virtualises taxonomy at the PHP layer; WC's raw $wpdb
+		// SQL bypasses those filters and queries the table directly.  Translated products
+		// have no wp_term_relationships rows of their own, so using LF_LANG on a
+		// language-specific URL (e.g. /es/producto/…, LF_LANG=es) always returns empty.
+		// Using the source language returns source-language peers; filter_related_products_by_lang
+		// (woocommerce_related_products, p10) then maps those IDs to translations via _lf_trid.
+		$source_lang = \LinguaForge\Router\Router::get_instance()->context->source_language();
+
 		global $wpdb;
 
 		$query['join'] .= $wpdb->prepare(
@@ -262,7 +289,7 @@ class CatalogQuery {
 			      ON pm_lf_lang.post_id = p.ID
 			     AND pm_lf_lang.meta_key = '_lf_lang'
 			     AND pm_lf_lang.meta_value = %s",
-			LF_LANG
+			$source_lang
 		);
 
 		return $query;

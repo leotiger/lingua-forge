@@ -54,6 +54,7 @@ class Bootstrap {
 		RestWriteGuard::init();
 		SeoSupport::init();
 		PageTagRepair::init();
+		WcPageBridge::init();
 
 		self::$active = true;
 

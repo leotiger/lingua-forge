@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 09:28+0000\n"
+"PO-Revision-Date: 2026-06-06 21:23+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: id_ID\n"
@@ -40,44 +40,82 @@ msgstr "\"%s\" dibuat."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"produk\" (mengganti \"artikel\")"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
 #, php-format
-msgid "%1$d chars — good length. %2$s"
-msgstr "%1$d karakter — panjang yang baik. %2$s"
+msgid ""
+"%1$d chars — good, slightly above the ideal %2$d but within the accepted "
+"%3$d-char range. %4$s"
+msgstr ""
+"%1$d karakter — baik, sedikit di atas batas ideal %2$d tetapi masih dalam "
+"rentang %3$d karakter yang diterima. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
 #, php-format
-msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
-msgstr "%1$d karakter — mungkin dipotong di SERP (targetkan 140–160). %2$s"
+#| msgid "%1$d chars — good length. %2$s"
+msgid "%1$d chars — ideal length. %2$s"
+msgstr "%1$d karakter — panjang ideal. %2$s"
 
-#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
 #, php-format
-msgid "%1$d chars — too short (aim for 140–160). %2$s"
-msgstr "%1$d karakter — terlalu pendek (targetkan 140–160). %2$s"
+msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
+msgstr ""
+"%1$d karakter — kemungkinan terpotong di SERP (pertahankan di bawah %2$d). "
+"%3$s"
+
+#. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#, php-format
+#| msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
+msgstr "%1$d karakter — terlalu pendek (targetkan %2$d–%3$d). %4$s"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d internal, %2$d eksternal."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d dari %2$d gambar tidak memiliki teks alt."
 
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#, php-format
+#| msgid "%d words — below recommended minimum of 300."
+msgid "%1$d words — below recommended minimum of %2$d."
+msgstr "%1$d kata — di bawah minimum yang disarankan yaitu %2$d."
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#, php-format
+#| msgid ""
+#| "%d words — very thin content. Consider expanding to at least 300 words."
+msgid ""
+"%1$d words — very thin content. Consider expanding to at least %2$d words."
+msgstr ""
+"%1$d kata — konten sangat tipis. Pertimbangkan untuk memperluas hingga "
+"setidaknya %2$d kata."
+
 #. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
 #, php-format
 msgid "%d chars — good length."
 msgstr "%d karakter — panjang yang baik."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#, php-format
+msgid "%d external link(s), no internal links."
+msgstr "%d tautan eksternal, tanpa tautan internal."
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -87,13 +125,13 @@ msgstr ""
 "konten terkait."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d tag H1 ditemukan — sebuah halaman harus memiliki tepat satu H1."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d gambar, semuanya memiliki teks alt."
@@ -157,21 +195,7 @@ msgid_plural "%d part references updated."
 msgstr[0] "%d referensi bagian diperbarui."
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
-#, php-format
-msgid "%d words — below recommended minimum of 300."
-msgstr "%d kata — di bawah minimum yang disarankan 300."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
-#, php-format
-msgid "%d words — very thin content. Consider expanding to at least 300 words."
-msgstr ""
-"%d kata — konten sangat tipis. Pertimbangkan untuk memperluas menjadi "
-"setidaknya 300 kata."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
 #, php-format
 msgid "%d words."
 msgstr "%d kata."
@@ -232,7 +256,7 @@ msgid "(disabled)"
 msgstr "(dinonaktifkan)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 #, php-format
 msgid "(no title) #%d"
 msgstr "(tanpa judul) #%d"
@@ -247,17 +271,22 @@ msgstr ""
 msgid ".txt file(s) in the directory"
 msgstr ".txt file(s) di direktori"
 
-#: ai/includes/Admin/MetaBox.php:370
+#: ai/includes/Admin/MetaBox.php:392
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
+msgstr ""
+"1 H1 ✓ — tidak ada subjudul H2 (dapat diterima untuk jenis konten ini)."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr ""
 "1 H1 ✓ — tidak ditemukan subjudul H2. Menambahkan H2 meningkatkan struktur."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -421,11 +450,11 @@ msgstr ""
 "kunjungi Pengaturan → Tautan Permanen dan klik Simpan Perubahan untuk "
 "membersihkan aturan penulisan ulang."
 
-#: ai/includes/Admin/MetaBox.php:385
+#: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:538
 msgid "AI analysis failed. Please try again."
 msgstr "Analisis AI gagal. Silakan coba lagi."
 
-#: ai/includes/Admin/MetaBox.php:583
+#: ai/includes/Admin/MetaBox.php:738
 msgid "AI Behaviour Preset"
 msgstr "Preset Perilaku AI"
 
@@ -467,16 +496,16 @@ msgstr "Batas & Keamanan AI"
 msgid "AI provider returned an empty response."
 msgstr " Penyedia AI mengembalikan respons kosong."
 
-#: ai/includes/Admin/MetaBox.php:381
+#: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:534
 msgid "AI Recommendations"
 msgstr "Rekomendasi AI"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI mengembalikan format respons yang tidak terduga. Silakan coba lagi."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "AI Usage"
 msgstr "Penggunaan AI"
 
@@ -507,7 +536,7 @@ msgstr ""
 msgid "All time"
 msgstr "Semua waktu"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
 msgid "All types"
 msgstr "Semua jenis"
 
@@ -556,19 +585,19 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Terjadi kesalahan yang tidak diketahui."
 
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+msgid "Analyse…"
+msgstr "Analisis…"
+
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
 msgid "Analysis"
 msgstr "Analisis"
 
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
 msgid "Analysis request failed. Please try again."
 msgstr "Permintaan analisis gagal. Silakan coba lagi."
 
-#: ai/includes/Admin/MetaBox.php:369 ai/includes/Admin/SettingsPage.php:350
-msgid "Analyze"
-msgstr "Analisis"
-
-#: ai/includes/Admin/MetaBox.php:383
+#: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:537
 msgid "Analyzing…"
 msgstr "Menganalisis…"
 
@@ -595,7 +624,7 @@ msgstr "Kunci API"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
 msgid "API Keys"
 msgstr "Kunci API"
 
@@ -687,7 +716,7 @@ msgid "Auto (recommended)"
 msgstr "Auto (direkomendasikan)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:623
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Behavior"
 msgstr "Perilaku"
 
@@ -785,6 +814,10 @@ msgstr ""
 "disajikan dari memori alih-alih memanggil AI lagi. Konfigurasi di Pengaturan "
 "→ Perilaku."
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
+msgid "Blog / Editorial"
+msgstr "Blog / Editorial"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -799,7 +832,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Pengalihan bahasa browser"
 
-#: ai/includes/Admin/SettingsPage.php:318
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "Built-in preset instructions:"
 msgstr "Instruksi preset bawaan:"
 
@@ -938,7 +971,7 @@ msgstr ""
 msgid "Clear Translation Memory"
 msgstr "Hapus Memori Terjemahan"
 
-#: ai/includes/Admin/MetaBox.php:692
+#: ai/includes/Admin/MetaBox.php:847
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
@@ -961,7 +994,7 @@ msgstr "Kesesuaian"
 msgid "Compliance Preset"
 msgstr "Preset Kepatuhan"
 
-#: ai/includes/Admin/MetaBox.php:384
+#: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:535
 msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
@@ -1019,7 +1052,7 @@ msgstr ""
 "dipertahankan sehingga penghapusan tidak sengaja atau pemasangan ulang dapat "
 "melanjutkan dari tempat terakhir."
 
-#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:248
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:259
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr " Percakapan"
@@ -1121,7 +1154,7 @@ msgstr ""
 "Membuat terjemahan untuk tipe pos \"%s\" memerlukan integrasi aktif. "
 "Pastikan integrasi yang diperlukan terpasang dan aktif."
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "Creating…"
 msgstr "Sedang membuat…"
 
@@ -1179,7 +1212,7 @@ msgstr ""
 msgid "Currently:"
 msgstr "Saat ini:"
 
-#: ai/includes/Admin/MetaBox.php:589
+#: ai/includes/Admin/MetaBox.php:744
 msgid "Custom"
 msgstr "Kustom"
 
@@ -1262,6 +1295,10 @@ msgstr "Hapus entri glosarium ini?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Jelaskan apa yang harus ditulis — topik, poin utama, struktur…"
+
+#: ai/includes/Admin/MetaBox.php:391
+msgid "Details ↗"
+msgstr "Detail ↗"
 
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
 msgid ""
@@ -1370,7 +1407,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Arah dropdown"
 
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "edit"
 msgstr "sunting"
 
@@ -1390,6 +1427,18 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:87
 msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr "Aktifkan penulisan ulang URL Share Sosial untuk blok Ikon Sosial"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+msgid ""
+"Enable when your theme renders the post title as an H2 instead of an H1 "
+"(common in some block themes). The analyser fetches the rendered page and, "
+"if it finds no H1 but does find an H2, it promotes the first H2 to H1 for "
+"scoring purposes."
+msgstr ""
+"Aktifkan saat tema Anda menampilkan judul posting sebagai H2 bukan H1 (umum "
+"di beberapa tema blok). Analisis ini mengambil halaman yang dirender dan, "
+"jika tidak menemukan H1 tetapi menemukan H2, akan mempromosikan H2 pertama "
+"menjadi H1 untuk penilaian."
 
 #: ai/includes/Admin/SettingsHelp.php:86
 msgid ""
@@ -1492,7 +1541,7 @@ msgstr ""
 msgid "Filter"
 msgstr "Filter"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1511,7 +1560,8 @@ msgstr ""
 "Filter dengan linguaforge_debug_dir untuk mengarahkan output debug ke lokasi "
 "yang tidak publik."
 
-#: ai/includes/Admin/MetaBox.php:373 ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/SettingsPage.php:352
 msgid "Finding"
 msgstr "Penemuan"
 
@@ -1533,17 +1583,17 @@ msgstr "Perbaiki semua bagian"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Fix Links"
 msgstr "Perbaiki Tautan"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "Fix Nav"
 msgstr "Perbaiki Navigasi"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Fix Parts"
 msgstr "Perbaiki Bagian"
 
@@ -1555,9 +1605,9 @@ msgstr "Perbaiki Template"
 msgid "Fixing {n} / {total}…"
 msgstr "Memperbaiki {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:252
-#: ai/includes/Admin/SettingsPage.php:256
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:264
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1667,7 +1717,7 @@ msgid "Full post"
 msgstr "Pos lengkap"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:620
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "General"
 msgstr "Umum"
 
@@ -1680,7 +1730,7 @@ msgstr "Hasilkan"
 msgid "Generate Content"
 msgstr "Hasilkan Konten"
 
-#: ai/includes/Admin/MetaBox.php:563
+#: ai/includes/Admin/MetaBox.php:718
 msgid "Generate content…"
 msgstr "Hasilkan konten…"
 
@@ -1723,7 +1773,7 @@ msgid "Global AI preset"
 msgstr "Preset AI global"
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:594
+#: ai/includes/Admin/MetaBox.php:749
 #, php-format
 msgid "Global default (%s)"
 msgstr "Default global (%s)"
@@ -1731,7 +1781,7 @@ msgstr "Default global (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:625
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Glossary"
 msgstr "Glosarium"
 
@@ -1751,11 +1801,22 @@ msgstr "Tab Glosarium"
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/MetaBox.php:378 ai/includes/Admin/SettingsPage.php:341
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+msgid ""
+"H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
+"not be detected from the rendered page; verify your theme outputs the title "
+"correctly.)"
+msgstr ""
+"Mode H2-sebagai-H1 diaktifkan — judul dihitung sebagai setara H1. (Tag "
+"heading tidak dapat dideteksi dari halaman yang dirender; pastikan tema Anda "
+"menampilkan judul dengan benar.)"
+
+#: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/SettingsPage.php:347
 msgid "Headings"
 msgstr "Judul"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Hide"
 msgstr "Sembunyikan"
 
@@ -1860,7 +1921,8 @@ msgstr ""
 "Untuk Schema.org, LF menonaktifkan outputnya sendiri sepenuhnya untuk "
 "menghindari konflik grafik JSON-LD."
 
-#: ai/includes/Admin/MetaBox.php:379 ai/includes/Admin/SettingsPage.php:342
+#: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Images"
 msgstr "Gambar"
 
@@ -1893,7 +1955,7 @@ msgstr ""
 msgid "Includes site name, url, and inLanguage."
 msgstr "Termasuk nama situs, url, dan inLanguage."
 
-#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:244
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:255
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr " Informatif"
@@ -1914,7 +1976,7 @@ msgstr "Pasang Bahasa"
 msgid "Installed SEO plugins"
 msgstr "Plugin SEO yang terpasang"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Installing…"
 msgstr "Menginstal…"
 
@@ -1972,8 +2034,8 @@ msgstr "Kode locale tidak valid."
 msgid "Invalid or primary language."
 msgstr " Bahasa tidak valid atau utama."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
 msgid "Invalid post ID."
 msgstr "ID posting tidak valid."
 
@@ -2008,7 +2070,11 @@ msgstr ""
 "WordPress. Rahasia enkripsi diambil dari garam otentikasi WordPress Anda (wp-"
 "config.php), sehingga kunci teks biasa tidak pernah menyentuh basis data."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+msgid "Landing / Short-form"
+msgstr "Landing / Format Singkat"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "Bahasa"
@@ -2024,7 +2090,7 @@ msgid "Language (optional)"
 msgstr "Bahasa (opsional)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:241
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
@@ -2302,7 +2368,7 @@ msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "Batasi hasil ke halaman dalam kode bahasa Lingua Forge yang diberikan."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:622
+#: ai/includes/Admin/SettingsPage.php:629
 msgid "Limits"
 msgstr "Batasan"
 
@@ -2438,7 +2504,7 @@ msgstr "Lingua Forge menggunakan dua tingkat model per penyedia:"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Terjemahan Cepat"
 
-#: ai/includes/Admin/SettingsPage.php:609
+#: ai/includes/Admin/SettingsPage.php:616
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Pengaturan"
 
@@ -2460,7 +2526,8 @@ msgstr "Tautan disalin"
 msgid "link(s)"
 msgstr "tautan"
 
-#: ai/includes/Admin/MetaBox.php:380 ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
+#: ai/includes/Admin/SettingsPage.php:349
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Tautan"
@@ -2469,11 +2536,15 @@ msgstr "Tautan"
 msgid "Load available languages"
 msgstr "Muat bahasa yang tersedia"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
 msgid "Load content"
 msgstr "Memuat konten"
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/MetaBox.php:410 ai/includes/Admin/MetaBox.php:541
+msgid "Loaded from cache."
+msgstr "Dimuat dari cache."
+
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Loading…"
 msgstr "Memuat…"
 
@@ -2519,7 +2590,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Maintenance"
 msgstr "Pemeliharaan"
 
@@ -2622,7 +2693,8 @@ msgstr ""
 msgid "Meta Description"
 msgstr "Meta Deskripsi"
 
-#: ai/includes/Admin/MetaBox.php:375 ai/includes/Admin/SettingsPage.php:338
+#: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
+#: ai/includes/Admin/SettingsPage.php:344
 msgid "Meta description"
 msgstr "Meta deskripsi"
 
@@ -2631,7 +2703,8 @@ msgstr "Meta deskripsi"
 msgid "Meta Description, Excerpt Generator"
 msgstr "Meta Deskripsi, Generator Kutipan"
 
-#: ai/includes/Admin/MetaBox.php:372 ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/SettingsPage.php:351
 msgid "Metric"
 msgstr "Metrik"
 
@@ -2665,7 +2738,7 @@ msgstr "Model"
 msgid "Models Tab (General)"
 msgstr "Tab Model (Umum)"
 
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Modified"
 msgstr "Diubah"
 
@@ -2680,13 +2753,15 @@ msgstr "Respons cache terbaru"
 #. Description of the plugin
 #: lingua-forge.php
 msgid ""
-"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
-"Combines language detection, URL routing, hreflang, meta descriptions, and "
-"AI-powered excerpt, meta, and translation features."
+"Multilingual routing, complete multilingual SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), and AI content tools for WordPress. Language detection,"
+" URL routing, translation, content generation, and a full SEO layer — no "
+"companion plugin required."
 msgstr ""
-"Routing multibahasa, meta tag SEO, dan alat konten AI untuk WordPress. "
-"Menggabungkan deteksi bahasa, routing URL, hreflang, deskripsi meta, dan "
-"fitur kutipan, meta, serta terjemahan yang didukung AI."
+"Routing multibahasa, SEO multibahasa lengkap (hreflang, Open Graph, Schema."
+"org, sitemap), dan alat konten AI untuk WordPress. Deteksi bahasa, routing "
+"URL, terjemahan, pembuatan konten, dan lapisan SEO lengkap — tanpa plugin "
+"pendamping."
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2723,7 +2798,7 @@ msgstr ""
 msgid "Navigations"
 msgstr "Navigasi"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Kesalahan jaringan — tidak dapat menghubungi endpoint AJAX WordPress."
 
@@ -2751,7 +2826,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr " Penyedia AI tidak dikonfigurasi."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "Tidak ada penyedia AI yang dikonfigurasi. Tambahkan kunci API di Pengaturan "
@@ -2779,7 +2854,7 @@ msgstr ""
 msgid "No API key configured for this provider."
 msgstr "Tidak ada kunci API yang dikonfigurasi untuk penyedia ini."
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:320
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2833,7 +2908,7 @@ msgstr ""
 "Belum ada entri glosarium. Tambahkan di bawah untuk mulai menegakkan "
 "terminologi dalam terjemahan."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -2841,7 +2916,7 @@ msgstr ""
 "Tidak ditemukan H1. Biasanya judul posting adalah H1 — pastikan tema Anda "
 "menghasilkannya."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
 msgid "No images found in content."
 msgstr "Tidak ditemukan gambar dalam konten."
 
@@ -2853,18 +2928,22 @@ msgstr " Tidak ditemukan tautan internal untuk diperbarui."
 msgid "No language-specific template parts found to map."
 msgstr " Tidak ditemukan bagian template khusus bahasa untuk dipetakan."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
 msgid "No LF meta description set — using excerpt/content."
 msgstr "Meta deskripsi LF tidak disetel — menggunakan kutipan/isi."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+msgid "No links found."
+msgstr "Tidak ditemukan tautan."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Tidak ditemukan tautan. Tautan internal meningkatkan crawlability dan "
 "navigasi pengguna."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -2887,16 +2966,16 @@ msgstr ""
 "Tidak ditemukan file robots.txt fisik. WordPress menghasilkannya secara "
 "virtual dan arahan Sitemap LF disertakan secara otomatis."
 
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "No published posts found for the selected filters."
 msgstr "Tidak ditemukan posting yang dipublikasikan untuk filter yang dipilih."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "Tidak ada respons dari penyedia AI. Periksa kunci API Anda dan coba lagi."
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "No response from provider — check the error log for details."
 msgstr "Tidak ada respons dari penyedia — periksa log error untuk detailnya."
 
@@ -2920,7 +2999,7 @@ msgstr "Belum ada halaman sumber yang terhubung."
 msgid "No template part references needed updating."
 msgstr " Tidak diperlukan pembaruan referensi bagian template."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
 msgid "No title set."
 msgstr "Judul tidak disetel."
 
@@ -2932,7 +3011,7 @@ msgstr ""
 "Konten terjemahan tidak ditemukan. Peta situs akan terisi setelah posting "
 "diterjemahkan."
 
-#: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
 msgid "No translation found — analyzed the source language version."
 msgstr "Tidak ditemukan terjemahan — menganalisis versi bahasa sumber."
 
@@ -3085,7 +3164,8 @@ msgstr "Token output"
 msgid "Output WebSite schema on the front page and blog index"
 msgstr "Output skema WebSite di halaman depan dan indeks blog"
 
-#: ai/includes/Admin/MetaBox.php:371 ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
+#: ai/includes/Admin/SettingsPage.php:350
 msgid "Overall SEO score"
 msgstr "Skor SEO keseluruhan"
 
@@ -3101,7 +3181,7 @@ msgstr "File penimpa dihapus."
 msgid "Override file uploaded successfully."
 msgstr "File penimpa berhasil diunggah."
 
-#: ai/includes/Admin/MetaBox.php:611
+#: ai/includes/Admin/MetaBox.php:766
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "All other features always use the global preset."
@@ -3109,7 +3189,7 @@ msgstr ""
 "Mengganti preset AI untuk Terjemahan dan Pembuatan Konten di halaman ini. "
 "Semua fitur lainnya selalu menggunakan preset global."
 
-#: ai/includes/Admin/MetaBox.php:606
+#: ai/includes/Admin/MetaBox.php:761
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "Site-wide custom prompt instructions (Settings → Behavior) are always "
@@ -3174,7 +3254,7 @@ msgstr ""
 "inserter pola editor blok atau gunakan sebagai titik awal untuk Blok yang "
 "Dapat Digunakan Kembali."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Pattern translation failed."
 msgstr "Gagal menerjemahkan pola."
 
@@ -3234,9 +3314,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
@@ -3251,7 +3332,7 @@ msgstr ""
 msgid "Permission denied."
 msgstr " Izin ditolak."
 
-#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:245
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:256
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr " Persuasif"
@@ -3304,11 +3385,11 @@ msgstr "Plugin"
 msgid "Post"
 msgstr "Posting"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
 msgid "Post not found or not published."
 msgstr "Posting tidak ditemukan atau belum dipublikasikan."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Posting tidak ditemukan."
@@ -3365,6 +3446,10 @@ msgstr "Sedang diproses…"
 msgid "Product"
 msgstr "Produk"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+msgid "Product / eCommerce"
+msgstr "Produk / eCommerce"
+
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
 msgid "Product Open Graph"
 msgstr "Open Graph Produk"
@@ -3372,6 +3457,11 @@ msgstr "Open Graph Produk"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
 msgid "Product — WooCommerce product pages"
 msgstr "Produk — halaman produk WooCommerce"
+
+#: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
+#: ai/includes/Admin/SettingsPage.php:356
+msgid "Profile"
+msgstr "Profil"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
@@ -3460,11 +3550,12 @@ msgstr "Memindai ulang…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Re-translate"
 msgstr "Terjemahkan ulang"
 
-#: ai/includes/Admin/MetaBox.php:377 ai/includes/Admin/SettingsPage.php:340
+#: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Reading time"
 msgstr "Waktu membaca"
 
@@ -3558,7 +3649,7 @@ msgstr "Terjemahkan ulang"
 msgid "Retranslating…"
 msgstr "Sedang menerjemahkan ulang…"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Review carefully — links and slugs not updated."
 msgstr "Periksa dengan cermat — tautan dan slug tidak diperbarui."
 
@@ -3587,7 +3678,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt diperbarui dengan direktif Sitemap."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
 msgid "Router"
 msgstr "Router"
 
@@ -3595,9 +3686,13 @@ msgstr "Router"
 msgid "Router Tab"
 msgstr "Tab Router"
 
-#: ai/includes/Admin/MetaBox.php:382
+#: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "Jalankan Analisis AI"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+msgid "Save analysis settings"
+msgstr "Simpan pengaturan analisis"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:143
 msgid "Save Debug Setting"
@@ -3619,7 +3714,7 @@ msgstr "Simpan Pengaturan Router"
 msgid "Save Schema.org Settings"
 msgstr "Simpan Pengaturan Schema.org"
 
-#: ai/includes/Admin/SettingsPage.php:663
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "Save Settings"
 msgstr "Simpan Pengaturan"
 
@@ -3721,11 +3816,11 @@ msgstr "Kirim melalui WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:626
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "SEO"
 msgstr "SEO"
 
-#: ai/includes/Admin/MetaBox.php:368
+#: ai/includes/Admin/MetaBox.php:389 ai/includes/Admin/MetaBox.php:436
 msgid "SEO Analysis"
 msgstr "Analisis SEO"
 
@@ -3765,11 +3860,11 @@ msgstr ""
 "individual dapat mengesampinginya untuk Terjemahan dan Pembuatan Konten "
 "melalui kotak meta Lingua Forge."
 
-#: ai/includes/Admin/SettingsPage.php:390
+#: ai/includes/Admin/SettingsPage.php:397
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "Settings saved."
 msgstr "Pengaturan disimpan."
 
@@ -3870,31 +3965,31 @@ msgstr "Share Sosial"
 msgid "Social Share settings saved."
 msgstr "Pengaturan Share Sosial disimpan."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some link fixes failed."
 msgstr "Beberapa perbaikan tautan gagal."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Some nav ref fixes failed."
 msgstr "Beberapa perbaikan referensi navigasi gagal."
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some part fixes failed."
 msgstr "Beberapa perbaikan bagian gagal."
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Some parts could not be created."
 msgstr "Beberapa bagian tidak dapat dibuat."
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "Some templates could not be created."
 msgstr "Beberapa template tidak dapat dibuat."
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Some translations failed."
 msgstr "Beberapa terjemahan gagal."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid "source"
 msgstr "sumber"
 
@@ -3939,7 +4034,7 @@ msgstr "Status"
 msgid "Status / Actions"
 msgstr "Status / Tindakan"
 
-#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:246
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:257
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr " Bercerita"
@@ -3989,11 +4084,11 @@ msgstr "Kirim URL ini ke Google Search Console bersama peta situs utama Anda."
 msgid "Submit to Reddit"
 msgstr "Kirim ke Reddit"
 
-#: ai/includes/Admin/MetaBox.php:387
+#: ai/includes/Admin/MetaBox.php:409 ai/includes/Admin/MetaBox.php:540
 msgid "Suggested meta description"
 msgstr "Deskripsi meta yang disarankan"
 
-#: ai/includes/Admin/MetaBox.php:386
+#: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:539
 msgid "Suggested title"
 msgstr "Judul yang disarankan"
 
@@ -4056,7 +4151,7 @@ msgstr "Istilah target"
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr "Target: 140–160 karakter untuk tampilan SERP yang optimal"
 
-#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:247
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:258
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr " Teknis"
@@ -4122,7 +4217,7 @@ msgstr "Template"
 msgid "Test connection"
 msgstr "Uji koneksi"
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "Testing…"
 msgstr "Sedang pengujian…"
 
@@ -4293,23 +4388,25 @@ msgid ""
 msgstr ""
 "Tip: untuk mengatur ulang model ke default bawaan, hapus isian dan simpan."
 
-#: ai/includes/Admin/MetaBox.php:374 ai/includes/Admin/SettingsPage.php:337
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
+#: ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Title"
 msgstr "Judul"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
 #, php-format
-msgid "Title is %d chars — aim for 50–60."
-msgstr "Judul sepanjang %d karakter — targetkan 50–60."
+msgid "Title is %1$d chars — aim for %2$d–%3$d."
+msgstr "Judul terdiri dari %1$d karakter — targetkan %2$d–%3$d."
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
 #, php-format
-msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgstr ""
-"Judul sepanjang %d karakter — mungkin dipotong di SERP (targetkan 50–60)."
+"Judul adalah %1$d karakter — mungkin dipotong di SERP (targetkan %2$d–%3$d)."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -4365,9 +4462,9 @@ msgstr "Total token"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:246
-#: ai/includes/Admin/SettingsPage.php:260
-#: ai/includes/Admin/SettingsPage.php:266 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4401,7 +4498,7 @@ msgstr "Terjemahkan Konten"
 msgid "Translate missing"
 msgstr "Terjemahan hilang"
 
-#: ai/includes/Admin/MetaBox.php:562
+#: ai/includes/Admin/MetaBox.php:717
 msgid "Translate page…"
 msgstr "Terjemahkan halaman…"
 
@@ -4433,9 +4530,9 @@ msgstr ""
 "slug template tidak diperbarui secara otomatis."
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Sedang menerjemahkan…"
@@ -4512,9 +4609,13 @@ msgstr "Alur kerja terjemahan"
 msgid "Translation, Content Generator"
 msgstr "Terjemahan, Pembuat Konten"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+msgid "Treat H2 as H1 equivalent"
+msgstr "Perlakukan H2 sebagai setara H1"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Type"
 msgstr "Jenis"
 
@@ -4660,7 +4761,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Menggunakan meta deskripsi khusus."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
 msgid "Using LF AI meta description."
 msgstr "Menggunakan meta deskripsi AI LF."
 
@@ -4669,7 +4770,7 @@ msgid "Value source"
 msgstr "Sumber nilai"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "View"
 msgstr "Lihat"
 
@@ -4830,7 +4931,8 @@ msgstr "Pengaturan SEO WooCommerce disimpan."
 msgid "WooCommerce store currency"
 msgstr "mata uang toko WooCommerce"
 
-#: ai/includes/Admin/MetaBox.php:376 ai/includes/Admin/SettingsPage.php:339
+#: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/SettingsPage.php:345
 msgid "Word count"
 msgstr "Jumlah kata"
 
@@ -4861,7 +4963,7 @@ msgstr ""
 "lingkungan (misalnya di wp-config.php). Sumber-sumber tersebut digunakan "
 "secara otomatis sebagai cadangan jika tidak ada kunci database yang disimpan."
 
-#: ai/includes/Admin/SettingsPage.php:402
+#: ai/includes/Admin/SettingsPage.php:409
 msgid "You do not have permission to manage these settings."
 msgstr "Anda tidak memiliki izin untuk mengelola pengaturan ini."
 
@@ -4874,7 +4976,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} jalur usang"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -4913,7 +5015,7 @@ msgid "— Not detected"
 msgstr "— Tidak terdeteksi"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "— select a language —"
 msgstr "— pilih bahasa —"
 
@@ -4952,6 +5054,10 @@ msgstr "↺ Perbaiki"
 #: ai/assets/admin.js:877
 msgid "↺ Refresh"
 msgstr "↺ Segarkan"
+
+#: ai/includes/Admin/MetaBox.php:411 ai/includes/Admin/MetaBox.php:542
+msgid "↺ Refresh AI Analysis"
+msgstr "↺ Segarkan Analisis AI"
 
 #: ai/assets/admin.js:88
 msgid "↺ Refreshing…"
@@ -5029,15 +5135,15 @@ msgstr "✓ Aktif — OG lengkap + Twitter Cards"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Aktif — tag lokal hanya (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "✓ All parts created."
 msgstr "✓ Semua bagian dibuat."
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "✓ All templates created."
 msgstr "✓ Semua template dibuat."
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✓ All translated."
 msgstr "✓ Semuanya diterjemahkan."
 
@@ -5045,7 +5151,7 @@ msgstr "✓ Semuanya diterjemahkan."
 msgid "✓ Configured"
 msgstr "✓ Dikonfigurasi"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✓ Connection OK"
 msgstr "✓ Koneksi OK"
 
@@ -5076,7 +5182,7 @@ msgstr "✓ Hreflang aktif"
 msgid "✓ In safe storage"
 msgstr "✓ Disimpan di penyimpanan aman"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Language installed."
 msgstr "✓ Bahasa terinstal."
 
@@ -5096,19 +5202,19 @@ msgstr "✓ Output LF lengkap OG + Twitter Cards"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ Output LF — plugin hreflang ditekan"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ Links fixed."
 msgstr "✓ Tautan diperbaiki."
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "✓ Nav refs fixed."
 msgstr "✓ Referensi navigasi diperbaiki."
 
-#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ Parts fixed."
 msgstr "✓ Bagian diperbaiki."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "✓ Pattern translated."
 msgstr "✓ Pola diterjemahkan."
 
@@ -5121,7 +5227,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Diperbaiki — tinjau draf yang diperbarui di atas."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "✓ Translation saved"
 msgstr "✓ Terjemahan disimpan"
 
@@ -5144,11 +5250,11 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Dinonaktifkan"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "✗ Error:"
 msgstr "✗ Kesalahan:"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "✗ Failed:"
 msgstr "✗ Gagal:"
 

@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 00:51+0000\n"
+"PO-Revision-Date: 2026-06-06 20:56+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: zh_CN\n"
@@ -40,44 +40,76 @@ msgstr "“%s”已创建。"
 msgid "\"product\" (replaces \"article\")"
 msgstr "“产品”（取代“文章”）"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
 #, php-format
-msgid "%1$d chars — good length. %2$s"
+msgid ""
+"%1$d chars — good, slightly above the ideal %2$d but within the accepted "
+"%3$d-char range. %4$s"
+msgstr "%1$d 字符 — 良好，略高于理想的 %2$d，但在接受的 %3$d 字符范围内。%4$s"
+
+#. translators: %1$d: number of characters, %2$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
+#, php-format
+#| msgid "%1$d chars — good length. %2$s"
+msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d 字符 — 长度良好。%2$s"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
+#. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
 #, php-format
-msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
-msgstr "%1$d 字符 — 可能在搜索结果中被截断（目标为140–160字符）。%2$s"
+msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
+msgstr "%1$d 字符 — 可能在搜索引擎结果页中被截断（保持在 %2$d 以下）。%3$s"
 
-#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
 #, php-format
-msgid "%1$d chars — too short (aim for 140–160). %2$s"
-msgstr "%1$d 字符 — 太短（目标为140–160字符）。%2$s"
+#| msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
+msgstr "%1$d 个字符 — 太短（目标是 %2$d–%3$d）。%4$s"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d 内部链接，%2$d 外部链接。"
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
-msgstr "%1$d 张图片缺少alt文本。"
+msgstr "%1$d 个（共 %2$d 个）图像缺少替代文本。"
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#, php-format
+#| msgid "%d words — below recommended minimum of 300."
+msgid "%1$d words — below recommended minimum of %2$d."
+msgstr "%1$d 个单词 — 低于推荐最少数量 %2$d。"
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#, php-format
+#| msgid ""
+#| "%d words — very thin content. Consider expanding to at least 300 words."
+msgid ""
+"%1$d words — very thin content. Consider expanding to at least %2$d words."
+msgstr "%1$d 个单词 — 内容过于简洁。请考虑扩展至少到 %2$d 个单词。"
 
 #. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
 #, php-format
 msgid "%d chars — good length."
 msgstr "%d 字符 — 长度良好。"
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#, php-format
+msgid "%d external link(s), no internal links."
+msgstr "%d 个外部链接，没有内部链接。"
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -85,13 +117,13 @@ msgid ""
 msgstr "%d 个外部链接，未添加内部链接。请添加相关内容的内部链接。"
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "发现 %d 个H1标签 — 一个页面应只有一个H1标签。"
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d 张图片，全部有alt文本。"
@@ -154,19 +186,7 @@ msgid_plural "%d part references updated."
 msgstr[0] "%d 个模板部分引用已更新。"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
-#, php-format
-msgid "%d words — below recommended minimum of 300."
-msgstr "%d 个单词 — 少于建议的最小值300个。"
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
-#, php-format
-msgid "%d words — very thin content. Consider expanding to at least 300 words."
-msgstr "%d 个单词 — 内容非常少。建议扩展到至少300个单词。"
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
 #, php-format
 msgid "%d words."
 msgstr "%d 个单词。"
@@ -221,7 +241,7 @@ msgid "(disabled)"
 msgstr "（已禁用）"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 #, php-format
 msgid "(no title) #%d"
 msgstr "（无标题） #%d"
@@ -234,16 +254,20 @@ msgstr "（{skipped}没有可替换的链接——重新扫描以调查）"
 msgid ".txt file(s) in the directory"
 msgstr ".txt文件在目录中"
 
-#: ai/includes/Admin/MetaBox.php:370
+#: ai/includes/Admin/MetaBox.php:392
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
+msgstr "1 个 H1 ✓ — 无 H2 子标题（此内容类型可接受）。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr "1个H1 ✓ — 未找到H2子标题。添加H2可以改善结构。"
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1个H1 ✓，%1$d个H2，%2$d个H3。"
@@ -384,11 +408,11 @@ msgid ""
 "rules."
 msgstr "更改 URL 结构设置（路径前缀 ↔ 子域名）后，务必访问 设置 → 固定链接 并点击 保存更改 以刷新重写规则。"
 
-#: ai/includes/Admin/MetaBox.php:385
+#: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:538
 msgid "AI analysis failed. Please try again."
 msgstr "AI分析失败。请重试。"
 
-#: ai/includes/Admin/MetaBox.php:583
+#: ai/includes/Admin/MetaBox.php:738
 msgid "AI Behaviour Preset"
 msgstr "AI行为预设"
 
@@ -425,16 +449,16 @@ msgstr "AI 限制与安全"
 msgid "AI provider returned an empty response."
 msgstr "AI提供商返回空响应。"
 
-#: ai/includes/Admin/MetaBox.php:381
+#: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:534
 msgid "AI Recommendations"
 msgstr "AI建议"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI返回了意外的响应格式。请重试。"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "AI Usage"
 msgstr "AI使用情况"
 
@@ -461,7 +485,7 @@ msgstr ""
 msgid "All time"
 msgstr "全部时间"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
 msgid "All types"
 msgstr "所有类型"
 
@@ -504,19 +528,19 @@ msgstr "始终发出完整的OG + Twitter卡片集，无论其他插件如何。
 msgid "An unknown error occurred."
 msgstr "发生未知错误。"
 
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+msgid "Analyse…"
+msgstr "分析…"
+
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
 msgid "Analysis"
 msgstr "分析"
 
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
 msgid "Analysis request failed. Please try again."
 msgstr "分析请求失败。请重试。"
 
-#: ai/includes/Admin/MetaBox.php:369 ai/includes/Admin/SettingsPage.php:350
-msgid "Analyze"
-msgstr "分析"
-
-#: ai/includes/Admin/MetaBox.php:383
+#: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:537
 msgid "Analyzing…"
 msgstr "分析中…"
 
@@ -543,7 +567,7 @@ msgstr "API密钥"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
 msgid "API Keys"
 msgstr "API密钥"
 
@@ -635,7 +659,7 @@ msgid "Auto (recommended)"
 msgstr "自动（推荐）"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:623
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Behavior"
 msgstr "行为"
 
@@ -720,6 +744,10 @@ msgid ""
 msgstr ""
 "跨帖子共享的块级翻译缓存。启用时，相同的块（相同的标记、语言对和词汇表）将从内存中提供，而不是再次调用 AI。在 设置 → 行为 中进行配置。"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
+msgid "Blog / Editorial"
+msgstr "博客 / 编辑"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -732,7 +760,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "浏览器语言重定向"
 
-#: ai/includes/Admin/SettingsPage.php:318
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "Built-in preset instructions:"
 msgstr "内置预设指令："
 
@@ -858,7 +886,7 @@ msgstr "清除整个翻译记忆？未来的翻译将重新构建缓存。"
 msgid "Clear Translation Memory"
 msgstr "清除翻译记忆"
 
-#: ai/includes/Admin/MetaBox.php:692
+#: ai/includes/Admin/MetaBox.php:847
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
@@ -881,7 +909,7 @@ msgstr "兼容性"
 msgid "Compliance Preset"
 msgstr "合规预设"
 
-#: ai/includes/Admin/MetaBox.php:384
+#: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:535
 msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
@@ -928,7 +956,7 @@ msgid ""
 msgstr ""
 "控制管理员从插件→已安装插件→删除中删除插件时的行为。插件设置和AI缓存总是会被删除。默认会保留语言分配和翻译关系，以便意外卸载或重新安装时可以继续之前的状态。"
 
-#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:248
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:259
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr "对话性"
@@ -1021,7 +1049,7 @@ msgid ""
 "Please ensure the required integration is installed and active."
 msgstr "为\"%s\"类型的文章创建翻译需要激活的集成。请确保已安装并激活所需的集成。"
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "Creating…"
 msgstr "创建中…"
 
@@ -1074,7 +1102,7 @@ msgstr "目前跳过使用块注释属性占位符（如 wp:details summary 字�
 msgid "Currently:"
 msgstr "当前："
 
-#: ai/includes/Admin/MetaBox.php:589
+#: ai/includes/Admin/MetaBox.php:744
 msgid "Custom"
 msgstr "自定义"
 
@@ -1154,6 +1182,10 @@ msgstr "是否删除此词汇表条目？"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "描述要写的内容——主题、重点、结构…"
+
+#: ai/includes/Admin/MetaBox.php:391
+msgid "Details ↗"
+msgstr "详细信息 ↗"
 
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
 msgid ""
@@ -1252,7 +1284,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "下拉方向"
 
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "edit"
 msgstr "编辑"
 
@@ -1271,6 +1303,16 @@ msgstr "启用跨文章块级翻译缓存重用"
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:87
 msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr "启用社交图标块的社交分享URL重写"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+msgid ""
+"Enable when your theme renders the post title as an H2 instead of an H1 "
+"(common in some block themes). The analyser fetches the rendered page and, "
+"if it finds no H1 but does find an H2, it promotes the first H2 to H1 for "
+"scoring purposes."
+msgstr ""
+"当您的主题将文章标题渲染为 H2 而非 H1 时启用（某些块主题常见）。分析器会获取渲染后的页面，如果没有找到 H1 但找到 H2，则会将第一个 H2 "
+"提升为 H1 以进行评分。"
 
 #: ai/includes/Admin/SettingsHelp.php:86
 msgid ""
@@ -1362,7 +1404,7 @@ msgstr ""
 msgid "Filter"
 msgstr "筛选"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1375,7 +1417,8 @@ msgid ""
 "location."
 msgstr "使用linguaforge_debug_dir过滤，将调试输出重定向到非公共位置。"
 
-#: ai/includes/Admin/MetaBox.php:373 ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/SettingsPage.php:352
 msgid "Finding"
 msgstr "查找"
 
@@ -1397,17 +1440,17 @@ msgstr "修复所有部分"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Fix Links"
 msgstr "修复链接"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "Fix Nav"
 msgstr "修复导航"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Fix Parts"
 msgstr "修复部分"
 
@@ -1419,9 +1462,9 @@ msgstr "修复模板"
 msgid "Fixing {n} / {total}…"
 msgstr "正在修复{n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:252
-#: ai/includes/Admin/SettingsPage.php:256
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:264
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1522,7 +1565,7 @@ msgid "Full post"
 msgstr "完整帖子"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:620
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "General"
 msgstr "通用"
 
@@ -1535,7 +1578,7 @@ msgstr "生成"
 msgid "Generate Content"
 msgstr "生成内容"
 
-#: ai/includes/Admin/MetaBox.php:563
+#: ai/includes/Admin/MetaBox.php:718
 msgid "Generate content…"
 msgstr "生成内容…"
 
@@ -1578,7 +1621,7 @@ msgid "Global AI preset"
 msgstr "全局 AI 预设"
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:594
+#: ai/includes/Admin/MetaBox.php:749
 #, php-format
 msgid "Global default (%s)"
 msgstr "全局默认 (%s)"
@@ -1586,7 +1629,7 @@ msgstr "全局默认 (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:625
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Glossary"
 msgstr "词汇表"
 
@@ -1606,11 +1649,19 @@ msgstr "词汇表标签"
 msgid "Google (Gemini)"
 msgstr "Google（Gemini）"
 
-#: ai/includes/Admin/MetaBox.php:378 ai/includes/Admin/SettingsPage.php:341
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+msgid ""
+"H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
+"not be detected from the rendered page; verify your theme outputs the title "
+"correctly.)"
+msgstr "启用 H2 作为 H1 模式 — 标题计为 H1 等价（无法从渲染页面检测到标题标签；请确认您的主题正确输出标题）。"
+
+#: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/SettingsPage.php:347
 msgid "Headings"
 msgstr "标题"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Hide"
 msgstr "隐藏"
 
@@ -1701,7 +1752,8 @@ msgstr ""
 "alternate——多语言信号，这是插件无法提供的——并将基础OG集留给插件。对于Schema.org，LF完全禁用自己的输出以避免冲突的JSON-"
 "LD图表。"
 
-#: ai/includes/Admin/MetaBox.php:379 ai/includes/Admin/SettingsPage.php:342
+#: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Images"
 msgstr "图片"
 
@@ -1728,7 +1780,7 @@ msgstr "包括名称、描述、inLanguage、url、图片，以及带有价格�
 msgid "Includes site name, url, and inLanguage."
 msgstr "包括站点名称、网址和inLanguage。"
 
-#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:244
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:255
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr "信息性"
@@ -1749,7 +1801,7 @@ msgstr "安装语言"
 msgid "Installed SEO plugins"
 msgstr "已安装的SEO插件"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Installing…"
 msgstr "安装中…"
 
@@ -1807,8 +1859,8 @@ msgstr "无效的区域代码。"
 msgid "Invalid or primary language."
 msgstr "无效或主要语言。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
 msgid "Invalid post ID."
 msgstr "无效的帖子ID。"
 
@@ -1842,7 +1894,11 @@ msgstr ""
 "密钥在存入WordPress数据库前会用AES-256-CBC加密。加密密钥来自您的WordPress认证盐（wp-config."
 "php），因此明文密钥永远不会触及数据库。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+msgid "Landing / Short-form"
+msgstr "着陆页 / 短格式"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "语言"
@@ -1858,7 +1914,7 @@ msgid "Language (optional)"
 msgstr "语言（可选）"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:241
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr "此服务器禁用语言安装（设置了DISALLOW_FILE_MODS）。"
@@ -2096,7 +2152,7 @@ msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "限制结果仅显示给定Lingua Forge语言代码的页面。"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:622
+#: ai/includes/Admin/SettingsPage.php:629
 msgid "Limits"
 msgstr "限制"
 
@@ -2211,7 +2267,7 @@ msgstr "Lingua Forge 每个提供商使用两个模型层级："
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — 快速翻译"
 
-#: ai/includes/Admin/SettingsPage.php:609
+#: ai/includes/Admin/SettingsPage.php:616
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — 设置"
 
@@ -2232,7 +2288,8 @@ msgstr "链接已复制"
 msgid "link(s)"
 msgstr "链接"
 
-#: ai/includes/Admin/MetaBox.php:380 ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
+#: ai/includes/Admin/SettingsPage.php:349
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "链接"
@@ -2241,11 +2298,15 @@ msgstr "链接"
 msgid "Load available languages"
 msgstr "加载可用语言"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
 msgid "Load content"
 msgstr "加载内容"
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/MetaBox.php:410 ai/includes/Admin/MetaBox.php:541
+msgid "Loaded from cache."
+msgstr "从缓存加载。"
+
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Loading…"
 msgstr "加载中…"
 
@@ -2284,7 +2345,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Maintenance"
 msgstr "维护"
 
@@ -2373,7 +2434,8 @@ msgstr "每次快速翻译，AI 可能生成的最大令牌数。默认：2000�
 msgid "Meta Description"
 msgstr "Meta描述"
 
-#: ai/includes/Admin/MetaBox.php:375 ai/includes/Admin/SettingsPage.php:338
+#: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
+#: ai/includes/Admin/SettingsPage.php:344
 msgid "Meta description"
 msgstr "Meta描述"
 
@@ -2382,7 +2444,8 @@ msgstr "Meta描述"
 msgid "Meta Description, Excerpt Generator"
 msgstr "元描述、摘要生成器"
 
-#: ai/includes/Admin/MetaBox.php:372 ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/SettingsPage.php:351
 msgid "Metric"
 msgstr "指标"
 
@@ -2416,7 +2479,7 @@ msgstr "模型"
 msgid "Models Tab (General)"
 msgstr "模型标签（通用）"
 
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Modified"
 msgstr "已修改"
 
@@ -2431,11 +2494,13 @@ msgstr "最新缓存响应"
 #. Description of the plugin
 #: lingua-forge.php
 msgid ""
-"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
-"Combines language detection, URL routing, hreflang, meta descriptions, and "
-"AI-powered excerpt, meta, and translation features."
+"Multilingual routing, complete multilingual SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), and AI content tools for WordPress. Language detection,"
+" URL routing, translation, content generation, and a full SEO layer — no "
+"companion plugin required."
 msgstr ""
-"多语言路由、SEO元标签和AI内容工具，适用于WordPress。结合语言检测、URL路由、hreflang、元描述，以及由AI驱动的摘要、元信息和翻译功能。"
+"多语言路由，完整的多语言 SEO（hreflang、Open Graph、Schema.org、站点地图），以及用于 WordPress 的 AI "
+"内容工具。语言检测、URL 路由、翻译、内容生成和完整的 SEO 层 — 无需配套插件。"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2468,7 +2533,7 @@ msgstr "导航翻译需要激活的AI提供商。在API密钥标签中配置API�
 msgid "Navigations"
 msgstr "导航"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "网络错误 — 无法连接到 WordPress AJAX 端点。"
 
@@ -2494,7 +2559,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "未配置AI提供商。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr "未配置AI提供商。在设置→API密钥中添加API密钥。"
 
@@ -2515,7 +2580,7 @@ msgstr "尚未记录AI使用情况。一旦编辑器执行翻译、生成元描�
 msgid "No API key configured for this provider."
 msgstr "此提供者未配置 API 密钥。"
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:320
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2556,13 +2621,13 @@ msgid ""
 "translations."
 msgstr "还没有词汇表条目。请在下方添加以开始在翻译中强制执行术语。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
 msgstr "未找到H1。通常文章标题即为H1——请确认您的主题是否输出了它。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
 msgid "No images found in content."
 msgstr "内容中未找到图片。"
 
@@ -2574,16 +2639,20 @@ msgstr "未找到要更新的内部链接。"
 msgid "No language-specific template parts found to map."
 msgstr "未找到要映射的特定语言模板部分。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
 msgid "No LF meta description set — using excerpt/content."
 msgstr "未设置LF元描述——使用摘要/内容。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+msgid "No links found."
+msgstr "未找到链接。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr "未找到链接。内部链接有助于爬行和用户导航。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr "未找到元描述。请通过AI元描述功能生成。"
@@ -2602,15 +2671,15 @@ msgid ""
 "LF's Sitemap directive is included automatically."
 msgstr "未找到实际的robots.txt文件。WordPress虚拟生成它，LF的站点地图指令已自动包含其中。"
 
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "No published posts found for the selected filters."
 msgstr "未找到符合筛选条件的已发布文章。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
 msgid "No response from AI provider. Check your API key and try again."
 msgstr "未收到AI提供商的响应。请检查您的API密钥并重试。"
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "No response from provider — check the error log for details."
 msgstr "没有收到提供者的响应 — 请检查错误日志以获取详细信息。"
 
@@ -2632,7 +2701,7 @@ msgstr "尚未链接源页面。"
 msgid "No template part references needed updating."
 msgstr "无需更新的模板部分引用。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
 msgid "No title set."
 msgstr "未设置标题。"
 
@@ -2642,7 +2711,7 @@ msgid ""
 "translated."
 msgstr "未找到翻译内容。一旦文章被翻译，站点地图将会填充。"
 
-#: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
 msgid "No translation found — analyzed the source language version."
 msgstr "未找到翻译——已分析源语言版本。"
 
@@ -2781,7 +2850,8 @@ msgstr "输出令牌"
 msgid "Output WebSite schema on the front page and blog index"
 msgstr "在首页和博客索引页输出WebSite架构"
 
-#: ai/includes/Admin/MetaBox.php:371 ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
+#: ai/includes/Admin/SettingsPage.php:350
 msgid "Overall SEO score"
 msgstr "整体SEO评分"
 
@@ -2797,13 +2867,13 @@ msgstr "覆盖文件已删除。"
 msgid "Override file uploaded successfully."
 msgstr "覆盖文件上传成功。"
 
-#: ai/includes/Admin/MetaBox.php:611
+#: ai/includes/Admin/MetaBox.php:766
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "All other features always use the global preset."
 msgstr "覆盖此页面的AI预设，用于翻译和内容生成。所有其他功能始终使用全局预设。"
 
-#: ai/includes/Admin/MetaBox.php:606
+#: ai/includes/Admin/MetaBox.php:761
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "Site-wide custom prompt instructions (Settings → Behavior) are always "
@@ -2862,7 +2932,7 @@ msgid ""
 "Block."
 msgstr "模式已翻译并保存。通过块编辑器模式插入器将内容复制到您的CPT帖子中，或用作可重用块的起点。"
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Pattern translation failed."
 msgstr "模式翻译失败。"
 
@@ -2913,9 +2983,10 @@ msgstr "永久卸载 %s 吗？这将删除此语言的所有翻译内容，且�
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
@@ -2930,7 +3001,7 @@ msgstr "永久卸载 %s 吗？这将删除此语言的所有翻译内容，且�
 msgid "Permission denied."
 msgstr "权限被拒绝。"
 
-#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:245
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:256
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr "说服性"
@@ -2981,11 +3052,11 @@ msgstr "插件"
 msgid "Post"
 msgstr "帖子"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
 msgid "Post not found or not published."
 msgstr "未找到或未发布的文章。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "未找到帖子。"
@@ -3037,6 +3108,10 @@ msgstr "处理中…"
 msgid "Product"
 msgstr "产品"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+msgid "Product / eCommerce"
+msgstr "产品 / 电子商务"
+
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
 msgid "Product Open Graph"
 msgstr "产品Open Graph"
@@ -3044,6 +3119,11 @@ msgstr "产品Open Graph"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
 msgid "Product — WooCommerce product pages"
 msgstr "产品——WooCommerce产品页面"
+
+#: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
+#: ai/includes/Admin/SettingsPage.php:356
+msgid "Profile"
+msgstr "个人资料"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
@@ -3119,11 +3199,12 @@ msgstr "重新扫描…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Re-translate"
 msgstr "重新翻译"
 
-#: ai/includes/Admin/MetaBox.php:377 ai/includes/Admin/SettingsPage.php:340
+#: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Reading time"
 msgstr "阅读时间"
 
@@ -3210,7 +3291,7 @@ msgstr "重新翻译"
 msgid "Retranslating…"
 msgstr "重新翻译中…"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Review carefully — links and slugs not updated."
 msgstr "请仔细检查 — 链接和别名未更新。"
 
@@ -3239,7 +3320,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt已更新，包含站点地图指令。"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
 msgid "Router"
 msgstr "路由器"
 
@@ -3247,9 +3328,13 @@ msgstr "路由器"
 msgid "Router Tab"
 msgstr "路由器标签"
 
-#: ai/includes/Admin/MetaBox.php:382
+#: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "运行AI分析"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+msgid "Save analysis settings"
+msgstr "保存分析设置"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:143
 msgid "Save Debug Setting"
@@ -3271,7 +3356,7 @@ msgstr "保存路由器设置"
 msgid "Save Schema.org Settings"
 msgstr "保存Schema.org设置"
 
-#: ai/includes/Admin/SettingsPage.php:663
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "Save Settings"
 msgstr "保存设置"
 
@@ -3369,11 +3454,11 @@ msgstr "通过WhatsApp发送"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:626
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "SEO"
 msgstr "SEO"
 
-#: ai/includes/Admin/MetaBox.php:368
+#: ai/includes/Admin/MetaBox.php:389 ai/includes/Admin/MetaBox.php:436
 msgid "SEO Analysis"
 msgstr "SEO分析"
 
@@ -3408,11 +3493,11 @@ msgid ""
 "Forge meta box."
 msgstr "设置整个站点所有功能的默认 AI 行为。单个文章可以通过 Lingua Forge 元框覆盖此设置，用于翻译和内容生成。"
 
-#: ai/includes/Admin/SettingsPage.php:390
+#: ai/includes/Admin/SettingsPage.php:397
 msgid "Settings"
 msgstr "设置"
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "Settings saved."
 msgstr "设置已保存。"
 
@@ -3506,31 +3591,31 @@ msgstr "社交分享"
 msgid "Social Share settings saved."
 msgstr "社交分享设置已保存。"
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some link fixes failed."
 msgstr "部分链接修复失败。"
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Some nav ref fixes failed."
 msgstr "部分导航引用修复失败。"
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some part fixes failed."
 msgstr "部分修复失败。"
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Some parts could not be created."
 msgstr "部分部分无法创建。"
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "Some templates could not be created."
 msgstr "部分模板无法创建。"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Some translations failed."
 msgstr "部分翻译失败。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid "source"
 msgstr "源"
 
@@ -3573,7 +3658,7 @@ msgstr "状态"
 msgid "Status / Actions"
 msgstr "状态 / 操作"
 
-#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:246
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:257
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr "讲故事"
@@ -3617,11 +3702,11 @@ msgstr "将此URL与您的主站点地图一起提交到Google搜索控制台。
 msgid "Submit to Reddit"
 msgstr "提交到Reddit"
 
-#: ai/includes/Admin/MetaBox.php:387
+#: ai/includes/Admin/MetaBox.php:409 ai/includes/Admin/MetaBox.php:540
 msgid "Suggested meta description"
 msgstr "建议的元描述"
 
-#: ai/includes/Admin/MetaBox.php:386
+#: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:539
 msgid "Suggested title"
 msgstr "建议的标题"
 
@@ -3682,7 +3767,7 @@ msgstr "目标术语"
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr "目标：140–160字符以获得最佳SERP显示"
 
-#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:247
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:258
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr "技术性"
@@ -3747,7 +3832,7 @@ msgstr "模板"
 msgid "Test connection"
 msgstr "测试连接"
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "Testing…"
 msgstr "测试中…"
 
@@ -3891,22 +3976,24 @@ msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr "提示：要将模型重置为内置默认值，清空字段并保存。"
 
-#: ai/includes/Admin/MetaBox.php:374 ai/includes/Admin/SettingsPage.php:337
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
+#: ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Title"
 msgstr "标题"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
 #, php-format
-msgid "Title is %d chars — aim for 50–60."
-msgstr "标题字符数为%d——目标50-60字符。"
+msgid "Title is %1$d chars — aim for %2$d–%3$d."
+msgstr "标题为 %1$d 字符 — 目标为 %2$d–%3$d。"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
 #, php-format
-msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
-msgstr "标题字符数为%d——可能在搜索结果中被截断（目标50-60字符）。"
+#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
+msgstr "标题为 %1$d 个字符 — 可能在搜索结果中被截断（目标为 %2$d–%3$d）。"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -3957,9 +4044,9 @@ msgstr "总令牌"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:246
-#: ai/includes/Admin/SettingsPage.php:260
-#: ai/includes/Admin/SettingsPage.php:266 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -3993,7 +4080,7 @@ msgstr "翻译内容"
 msgid "Translate missing"
 msgstr "缺失翻译"
 
-#: ai/includes/Admin/MetaBox.php:562
+#: ai/includes/Admin/MetaBox.php:717
 msgid "Translate page…"
 msgstr "翻译页面…"
 
@@ -4023,9 +4110,9 @@ msgid ""
 msgstr "已翻译。在站点编辑器中查看——内部链接、导航URL和模板别名不会自动更新。"
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "翻译中…"
@@ -4093,9 +4180,13 @@ msgstr "翻译工作流程"
 msgid "Translation, Content Generator"
 msgstr "翻译、内容生成"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+msgid "Treat H2 as H1 equivalent"
+msgstr "将 H2 视为 H1 等价"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Type"
 msgstr "类型"
 
@@ -4221,7 +4312,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "使用自定义Meta描述。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
 msgid "Using LF AI meta description."
 msgstr "使用LF AI元描述。"
 
@@ -4230,7 +4321,7 @@ msgid "Value source"
 msgstr "值来源"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "View"
 msgstr "查看"
 
@@ -4366,7 +4457,8 @@ msgstr "WooCommerce SEO设置已保存。"
 msgid "WooCommerce store currency"
 msgstr "WooCommerce商店货币"
 
-#: ai/includes/Admin/MetaBox.php:376 ai/includes/Admin/SettingsPage.php:339
+#: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/SettingsPage.php:345
 msgid "Word count"
 msgstr "字数"
 
@@ -4394,7 +4486,7 @@ msgid ""
 "database key is stored."
 msgstr "你也可以将键定义为常量或环境变量（例如在 wp-config.php 中）。当没有存储数据库键时，这些来源会自动用作后备方案。"
 
-#: ai/includes/Admin/SettingsPage.php:402
+#: ai/includes/Admin/SettingsPage.php:409
 msgid "You do not have permission to manage these settings."
 msgstr "您没有权限管理这些设置。"
 
@@ -4407,7 +4499,7 @@ msgid "{n} stale path(s)"
 msgstr "{n}个过时路径"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -4446,7 +4538,7 @@ msgid "— Not detected"
 msgstr "——未检测到"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "— select a language —"
 msgstr "— 选择一种语言 —"
 
@@ -4485,6 +4577,10 @@ msgstr "↺ 重新完善"
 #: ai/assets/admin.js:877
 msgid "↺ Refresh"
 msgstr "↺ 刷新"
+
+#: ai/includes/Admin/MetaBox.php:411 ai/includes/Admin/MetaBox.php:542
+msgid "↺ Refresh AI Analysis"
+msgstr "↺ 刷新 AI 分析"
 
 #: ai/assets/admin.js:88
 msgid "↺ Refreshing…"
@@ -4556,15 +4652,15 @@ msgstr "✓ 活跃 — 完整的 OG + Twitter 卡片"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ 活跃 — 仅限区域标签（og:locale, og:locale:alternate）"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "✓ All parts created."
 msgstr "✓ 所有部分已创建。"
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "✓ All templates created."
 msgstr "✓ 所有模板已创建。"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✓ All translated."
 msgstr "✓ 所有已翻译。"
 
@@ -4572,7 +4668,7 @@ msgstr "✓ 所有已翻译。"
 msgid "✓ Configured"
 msgstr "✓ 已配置"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✓ Connection OK"
 msgstr "✓ 连接正常"
 
@@ -4601,7 +4697,7 @@ msgstr "✓ Hreflang 激活"
 msgid "✓ In safe storage"
 msgstr "✓ 在安全存储中"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Language installed."
 msgstr "✓ 语言已安装。"
 
@@ -4621,19 +4717,19 @@ msgstr "✓ LF 输出完整的 OG + Twitter 卡片"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF 输出 — 插件 hreflang 被抑制"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ Links fixed."
 msgstr "✓ 链接已修复。"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "✓ Nav refs fixed."
 msgstr "✓ 导航引用已修复。"
 
-#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ Parts fixed."
 msgstr "✓ 部分已修复。"
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "✓ Pattern translated."
 msgstr "✓ 模式已翻译。"
 
@@ -4646,7 +4742,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ 已完善——请审查上方更新的草稿。"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "✓ Translation saved"
 msgstr "✓ 翻译已保存"
 
@@ -4667,11 +4763,11 @@ msgstr "✗ %s 连接失败。站点地图 URL 仍在 robots.txt 中声明 — �
 msgid "✗ Disabled"
 msgstr "✗ 已禁用"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "✗ Error:"
 msgstr "✗ 错误："
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "✗ Failed:"
 msgstr "✗ 失败："
 

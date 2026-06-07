@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 09:24+0000\n"
+"PO-Revision-Date: 2026-06-06 21:18+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: el\n"
@@ -41,46 +41,82 @@ msgstr "\"%s\" δημιουργήθηκε."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"προϊόν\" (αντικαθιστά \"άρθρο\")"
 
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:358
+#. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
 #, php-format
-msgid "%1$d chars — good length. %2$s"
-msgstr "%1$d χαρακτήρες — καλή διάρκεια. %2$s"
-
-#. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:354
-#, php-format
-msgid "%1$d chars — may be truncated in SERPs (aim for 140–160). %2$s"
+msgid ""
+"%1$d chars — good, slightly above the ideal %2$d but within the accepted "
+"%3$d-char range. %4$s"
 msgstr ""
-"%1$d χαρακτήρες — ενδέχεται να περικοπούν στα αποτελέσματα αναζήτησης "
-"(στόχος 140–160). %2$s"
+"%1$d χαρακτήρες — καλό, ελαφρώς πάνω από το ιδανικό %2$d αλλά εντός του "
+"αποδεκτού εύρους των %3$d χαρακτήρων. %4$s"
 
-#. translators: %1$d: number of characters, %2$s: source note (e.g. "Using LF AI meta description.")
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
+#. translators: %1$d: number of characters, %2$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
 #, php-format
-msgid "%1$d chars — too short (aim for 140–160). %2$s"
-msgstr "%1$d χαρακτήρες — πολύ σύντομο (στόχος 140–160). %2$s"
+#| msgid "%1$d chars — good length. %2$s"
+msgid "%1$d chars — ideal length. %2$s"
+msgstr "%1$d χαρακτήρες — ιδανικό μήκος. %2$s"
+
+#. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
+#, php-format
+msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
+msgstr ""
+"%1$d χαρακτήρες — πιθανώς περικομμένοι στα αποτελέσματα SERP (κρατήστε κάτω "
+"από %2$d). %3$s"
+
+#. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#, php-format
+#| msgid "%1$d chars — too short (aim for 140–160). %2$s"
+msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
+msgstr "%1$d χαρακτήρες — πολύ σύντομο (στοχεύστε για %2$d–%3$d). %4$s"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:449
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d εσωτερικοί, %2$d εξωτερικοί."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:422
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d από %2$d εικόνες λείπει το εναλλακτικό κείμενο."
 
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#, php-format
+#| msgid "%d words — below recommended minimum of 300."
+msgid "%1$d words — below recommended minimum of %2$d."
+msgstr "%1$d λέξεις — κάτω από το συνιστώμενο ελάχιστο των %2$d."
+
+#. translators: %1$d: word count, %2$d: recommended minimum
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#, php-format
+#| msgid ""
+#| "%d words — very thin content. Consider expanding to at least 300 words."
+msgid ""
+"%1$d words — very thin content. Consider expanding to at least %2$d words."
+msgstr ""
+"%1$d λέξεις — πολύ λεπτό περιεχόμενο. Σκεφτείτε να επεκτείνετε σε "
+"τουλάχιστον %2$d λέξεις."
+
 #. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:332
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
 #, php-format
 msgid "%d chars — good length."
 msgstr "%d χαρακτήρες — καλή διάρκεια."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#, php-format
+msgid "%d external link(s), no internal links."
+msgstr "%d εξωτερικοί σύνδεσμοι, χωρίς εσωτερικούς συνδέσμους."
+
+#. translators: %d: number of external links
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -90,13 +126,13 @@ msgstr ""
 "συνδέσμους σε σχετικό περιεχόμενο."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:391
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "Βρέθηκαν %d ετικέτες H1 — μια σελίδα πρέπει να έχει ακριβώς μία H1."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:428
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d εικόνες, όλες έχουν εναλλακτικό κείμενο."
@@ -170,21 +206,7 @@ msgstr[0] "Ενημερώθηκε %d αναφορά τμήματος."
 msgstr[1] "Ενημερώθηκαν %d αναφορές τμήματος."
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
-#, php-format
-msgid "%d words — below recommended minimum of 300."
-msgstr "%d λέξεις — κάτω από το προτεινόμενο ελάχιστο των 300."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:367
-#, php-format
-msgid "%d words — very thin content. Consider expanding to at least 300 words."
-msgstr ""
-"%d λέξεις — πολύ λεπτό περιεχόμενο. Σκεφτείτε να το επεκτείνετε σε "
-"τουλάχιστον 300 λέξεις."
-
-#. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:376
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
 #, php-format
 msgid "%d words."
 msgstr "%d λέξεις."
@@ -247,7 +269,7 @@ msgid "(disabled)"
 msgstr "(απενεργοποιημένο)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:176
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 #, php-format
 msgid "(no title) #%d"
 msgstr "(χωρίς τίτλο) #%d"
@@ -262,17 +284,23 @@ msgstr ""
 msgid ".txt file(s) in the directory"
 msgstr ".txt αρχεία στον κατάλογο"
 
-#: ai/includes/Admin/MetaBox.php:370
+#: ai/includes/Admin/MetaBox.php:392
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:394
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
+msgstr ""
+"1 H1 ✓ — χωρίς υπο-επικεφαλίδες H2 (αποδεκτό για αυτόν τον τύπο περιεχομένου)"
+"."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr ""
 "1 H1 ✓ — δεν βρέθηκαν υποκεφαλίδες H2. Η προσθήκη H2 βελτιώνει τη δομή."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -436,11 +464,11 @@ msgstr ""
 "επισκεφθείτε πάντα τις Ρυθμίσεις → Μόνιμοι σύνδεσμοι και κάντε κλικ στην "
 "Αποθήκευση αλλαγών για να εκκαθαρίσετε τους κανόνες ανακατεύθυνσης."
 
-#: ai/includes/Admin/MetaBox.php:385
+#: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:538
 msgid "AI analysis failed. Please try again."
 msgstr "Αποτυχία ανάλυσης AI. Παρακαλώ δοκιμάστε ξανά."
 
-#: ai/includes/Admin/MetaBox.php:583
+#: ai/includes/Admin/MetaBox.php:738
 msgid "AI Behaviour Preset"
 msgstr "Προκαθορισμένο AI Συμπεριφοράς"
 
@@ -484,17 +512,17 @@ msgstr "Όρια AI & Ασφάλεια"
 msgid "AI provider returned an empty response."
 msgstr "Ο πάροχος AI επέστρεψε κενή απάντηση."
 
-#: ai/includes/Admin/MetaBox.php:381
+#: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:534
 msgid "AI Recommendations"
 msgstr "Συστάσεις AI"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:712
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
 msgid "AI returned an unexpected response format. Please try again."
 msgstr ""
 "Η AI επέστρεψε μια απροσδόκητη μορφή απάντησης. Παρακαλώ δοκιμάστε ξανά."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "AI Usage"
 msgstr "Χρήση AI"
 
@@ -525,7 +553,7 @@ msgstr ""
 msgid "All time"
 msgstr "Όλο το χρόνο"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:93
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
 msgid "All types"
 msgstr "Όλοι οι τύποι"
 
@@ -577,19 +605,19 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Παρουσιάστηκε άγνωστο σφάλμα."
 
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+msgid "Analyse…"
+msgstr "Ανάλυση…"
+
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
 msgid "Analysis"
 msgstr "Ανάλυση"
 
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
 msgid "Analysis request failed. Please try again."
 msgstr "Αποτυχία αιτήματος ανάλυσης. Παρακαλώ δοκιμάστε ξανά."
 
-#: ai/includes/Admin/MetaBox.php:369 ai/includes/Admin/SettingsPage.php:350
-msgid "Analyze"
-msgstr "Ανάλυση"
-
-#: ai/includes/Admin/MetaBox.php:383
+#: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:537
 msgid "Analyzing…"
 msgstr "Ανάλυση σε εξέλιξη…"
 
@@ -616,7 +644,7 @@ msgstr "Κλειδί API"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
 msgid "API Keys"
 msgstr "Κλειδιά API"
 
@@ -708,7 +736,7 @@ msgid "Auto (recommended)"
 msgstr "Αυτόματο (συνιστάται)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:623
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Behavior"
 msgstr "Συμπεριφορά"
 
@@ -808,6 +836,10 @@ msgstr ""
 " σερβίρονται από τη μνήμη αντί να καλούν ξανά το AI. Διαμορφώστε στις "
 "Ρυθμίσεις → Συμπεριφορά."
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
+msgid "Blog / Editorial"
+msgstr "Ιστολόγιο / Συντακτική"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -822,7 +854,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Ανακατεύθυνση γλώσσας περιηγητή"
 
-#: ai/includes/Admin/SettingsPage.php:318
+#: ai/includes/Admin/SettingsPage.php:319
 msgid "Built-in preset instructions:"
 msgstr "Ενσωματωμένες προεπιλεγμένες οδηγίες:"
 
@@ -962,7 +994,7 @@ msgstr ""
 msgid "Clear Translation Memory"
 msgstr "Εκκαθάριση μνήμης μετάφρασης"
 
-#: ai/includes/Admin/MetaBox.php:692
+#: ai/includes/Admin/MetaBox.php:847
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
@@ -985,7 +1017,7 @@ msgstr "Συμβατότητα"
 msgid "Compliance Preset"
 msgstr "Προεπιλογή Συμμόρφωσης"
 
-#: ai/includes/Admin/MetaBox.php:384
+#: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:535
 msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
@@ -1044,7 +1076,7 @@ msgstr ""
 "διατηρούνται από προεπιλογή ώστε μια τυχαία απεγκατάσταση ή επανεγκατάσταση "
 "να συνεχίσει από εκεί που σταμάτησε."
 
-#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:248
+#: ai/includes/Admin/AdminToolbar.php:110 ai/includes/Admin/MetaBox.php:259
 #: ai/includes/Features/ContentGenerator.php:39
 msgid "Conversational"
 msgstr "Διαλογικό"
@@ -1152,7 +1184,7 @@ msgstr ""
 "ενσωμάτωση. Παρακαλώ βεβαιωθείτε ότι η απαιτούμενη ενσωμάτωση είναι "
 "εγκατεστημένη και ενεργή."
 
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:242
 msgid "Creating…"
 msgstr "Δημιουργία…"
 
@@ -1210,7 +1242,7 @@ msgstr ""
 msgid "Currently:"
 msgstr "Τρέχον: "
 
-#: ai/includes/Admin/MetaBox.php:589
+#: ai/includes/Admin/MetaBox.php:744
 msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
@@ -1298,6 +1330,10 @@ msgstr "Να διαγραφεί αυτή η καταχώριση λεξικού;
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Περιγράψτε τι να γράψετε — θέμα, βασικά σημεία, δομή…"
+
+#: ai/includes/Admin/MetaBox.php:391
+msgid "Details ↗"
+msgstr "Λεπτομέρειες ↗"
 
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:101
 msgid ""
@@ -1409,7 +1445,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Κατεύθυνση αναδυόμενου μενού"
 
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "edit"
 msgstr "επεξεργασία"
 
@@ -1431,6 +1467,18 @@ msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr ""
 "Ενεργοποίηση ανακατεύθυνσης URL κοινωνικής κοινής χρήσης για μπλοκ "
 "εικονιδίων κοινωνικής δικτύωσης"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+msgid ""
+"Enable when your theme renders the post title as an H2 instead of an H1 "
+"(common in some block themes). The analyser fetches the rendered page and, "
+"if it finds no H1 but does find an H2, it promotes the first H2 to H1 for "
+"scoring purposes."
+msgstr ""
+"Ενεργοποιήστε όταν το θέμα σας εμφανίζει τον τίτλο ως H2 αντί για H1 "
+"(συνήθως σε ορισμένα μπλοκ θέματα). Ο αναλυτής λαμβάνει τη σελίδα που "
+"εμφανίζεται και, αν δεν βρει H1 αλλά βρει H2, προωθεί το πρώτο H2 σε H1 για "
+"σκοπούς βαθμολόγησης."
 
 #: ai/includes/Admin/SettingsHelp.php:86
 msgid ""
@@ -1535,7 +1583,7 @@ msgstr ""
 msgid "Filter"
 msgstr "Φίλτρο"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:60
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1554,7 +1602,8 @@ msgstr ""
 "Φίλτρο με το linguaforge_debug_dir για ανακατεύθυνση της εξόδου "
 "αποσφαλμάτωσης σε μη δημόσιο προορισμό."
 
-#: ai/includes/Admin/MetaBox.php:373 ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
+#: ai/includes/Admin/SettingsPage.php:352
 msgid "Finding"
 msgstr "Εύρεση"
 
@@ -1576,17 +1625,17 @@ msgstr "Επιδιόρθωση όλων των μερών"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Fix Links"
 msgstr "Επιδιόρθωση Συνδέσμων"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "Fix Nav"
 msgstr "Επιδιόρθωση Πλοήγησης"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Fix Parts"
 msgstr "Επιδιόρθωση Μερών"
 
@@ -1598,9 +1647,9 @@ msgstr "Διόρθωση Προτύπου"
 msgid "Fixing {n} / {total}…"
 msgstr "Διόρθωση {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:252
-#: ai/includes/Admin/SettingsPage.php:256
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:264
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1712,7 +1761,7 @@ msgid "Full post"
 msgstr "Πλήρες ποστ"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:620
+#: ai/includes/Admin/SettingsPage.php:627
 msgid "General"
 msgstr "Γενικά"
 
@@ -1725,7 +1774,7 @@ msgstr "Δημιουργία"
 msgid "Generate Content"
 msgstr "Παραγωγή περιεχομένου"
 
-#: ai/includes/Admin/MetaBox.php:563
+#: ai/includes/Admin/MetaBox.php:718
 msgid "Generate content…"
 msgstr "Δημιουργία περιεχομένου…"
 
@@ -1768,7 +1817,7 @@ msgid "Global AI preset"
 msgstr "Παγκόσμια προεπιλογή AI"
 
 #. translators: %s: name of the globally configured AI preset, or "Custom" when a per-preset addendum override is active
-#: ai/includes/Admin/MetaBox.php:594
+#: ai/includes/Admin/MetaBox.php:749
 #, php-format
 msgid "Global default (%s)"
 msgstr "Παγκόσμια προεπιλογή (%s)"
@@ -1776,7 +1825,7 @@ msgstr "Παγκόσμια προεπιλογή (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:625
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Glossary"
 msgstr "Γλωσσάρι"
 
@@ -1796,11 +1845,22 @@ msgstr "Γλωσσάρι"
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/MetaBox.php:378 ai/includes/Admin/SettingsPage.php:341
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+msgid ""
+"H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
+"not be detected from the rendered page; verify your theme outputs the title "
+"correctly.)"
+msgstr ""
+"Ενεργοποιήθηκε η λειτουργία H2 ως H1 — ο τίτλος μετράει ως ισοδύναμο H1. (Οι "
+"επικεφαλίδες ενδέχεται να μην ανιχνεύονται από τη σελίδα που εμφανίζεται. "
+"Επιβεβαιώστε ότι το θέμα σας εμφανίζει σωστά τον τίτλο.)"
+
+#: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
+#: ai/includes/Admin/SettingsPage.php:347
 msgid "Headings"
 msgstr "Επικεφαλίδες"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Hide"
 msgstr "Απόκρυψη"
 
@@ -1904,7 +1964,8 @@ msgstr ""
 "Για το Schema.org, το LF απενεργοποιεί εντελώς τη δική του έξοδο για να "
 "αποφύγει συγκρουόμενα γραφήματα JSON-LD."
 
-#: ai/includes/Admin/MetaBox.php:379 ai/includes/Admin/SettingsPage.php:342
+#: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
+#: ai/includes/Admin/SettingsPage.php:348
 msgid "Images"
 msgstr "Εικόνες"
 
@@ -1937,7 +1998,7 @@ msgstr ""
 msgid "Includes site name, url, and inLanguage."
 msgstr "Περιλαμβάνει όνομα ιστότοπου, url και inLanguage."
 
-#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:244
+#: ai/includes/Admin/AdminToolbar.php:106 ai/includes/Admin/MetaBox.php:255
 #: ai/includes/Features/ContentGenerator.php:35
 msgid "Informative"
 msgstr "Ενημερωτικό"
@@ -1958,7 +2019,7 @@ msgstr "Εγκατάσταση Γλώσσας"
 msgid "Installed SEO plugins"
 msgstr "Εγκατεστημένα πρόσθετα SEO"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:237
 msgid "Installing…"
 msgstr "Εγκατάσταση…"
 
@@ -2018,8 +2079,8 @@ msgstr "Μη έγκυρος κωδικός locale."
 msgid "Invalid or primary language."
 msgstr "Μη έγκυρη ή κύρια γλώσσα."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:206
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:609
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
 msgid "Invalid post ID."
 msgstr "Μη έγκυρο ID ανάρτησης."
 
@@ -2055,7 +2116,11 @@ msgstr ""
 "αυθεντικοποίησης του WordPress (wp-config.php), έτσι τα κείμενα σε απλό "
 "κείμενο ποτέ δεν έρχονται σε επαφή με τη βάση δεδομένων."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:74
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+msgid "Landing / Short-form"
+msgstr "Προσγείωση / Μικρής μορφής"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "Γλώσσα"
@@ -2071,7 +2136,7 @@ msgid "Language (optional)"
 msgstr "Γλώσσα (προαιρετικά)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:241
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
@@ -2363,7 +2428,7 @@ msgstr ""
 "δίνεται."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:622
+#: ai/includes/Admin/SettingsPage.php:629
 msgid "Limits"
 msgstr "Όρια"
 
@@ -2501,7 +2566,7 @@ msgstr "Το Lingua Forge χρησιμοποιεί δύο επίπεδα μον�
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Γρήγορη Μετάφραση"
 
-#: ai/includes/Admin/SettingsPage.php:609
+#: ai/includes/Admin/SettingsPage.php:616
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Ρυθμίσεις"
 
@@ -2524,7 +2589,8 @@ msgstr "Ο σύνδεσμος αντιγράφηκε"
 msgid "link(s)"
 msgstr "σύνδεσμος(οι)"
 
-#: ai/includes/Admin/MetaBox.php:380 ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
+#: ai/includes/Admin/SettingsPage.php:349
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Σύνδεσμοι"
@@ -2533,11 +2599,15 @@ msgstr "Σύνδεσμοι"
 msgid "Load available languages"
 msgstr "Φόρτωση διαθέσιμων γλωσσών"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:105
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
 msgid "Load content"
 msgstr "Φόρτωση περιεχομένου"
 
-#: ai/includes/Admin/SettingsPage.php:235
+#: ai/includes/Admin/MetaBox.php:410 ai/includes/Admin/MetaBox.php:541
+msgid "Loaded from cache."
+msgstr "Φορτώθηκε από την cache."
+
+#: ai/includes/Admin/SettingsPage.php:236
 msgid "Loading…"
 msgstr "Φόρτωση…"
 
@@ -2585,7 +2655,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Maintenance"
 msgstr "Συντήρηση"
 
@@ -2691,7 +2761,8 @@ msgstr ""
 msgid "Meta Description"
 msgstr "Μετα-περιγραφή"
 
-#: ai/includes/Admin/MetaBox.php:375 ai/includes/Admin/SettingsPage.php:338
+#: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
+#: ai/includes/Admin/SettingsPage.php:344
 msgid "Meta description"
 msgstr "Μετα-περιγραφή"
 
@@ -2700,7 +2771,8 @@ msgstr "Μετα-περιγραφή"
 msgid "Meta Description, Excerpt Generator"
 msgstr "Μετα-περιγραφή, Δημιουργός περίληψης"
 
-#: ai/includes/Admin/MetaBox.php:372 ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
+#: ai/includes/Admin/SettingsPage.php:351
 msgid "Metric"
 msgstr "Μέτρο"
 
@@ -2734,7 +2806,7 @@ msgstr "Μοντέλα"
 msgid "Models Tab (General)"
 msgstr "Γενική καρτέλα Μοντέλων"
 
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Modified"
 msgstr "Τροποποιήθηκε"
 
@@ -2749,14 +2821,15 @@ msgstr "Πιο πρόσφατη αποθηκευμένη απάντηση"
 #. Description of the plugin
 #: lingua-forge.php
 msgid ""
-"Multilingual routing, SEO meta tags, and AI content tools for WordPress. "
-"Combines language detection, URL routing, hreflang, meta descriptions, and "
-"AI-powered excerpt, meta, and translation features."
+"Multilingual routing, complete multilingual SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), and AI content tools for WordPress. Language detection,"
+" URL routing, translation, content generation, and a full SEO layer — no "
+"companion plugin required."
 msgstr ""
-"Πολυγλωσσική δρομολόγηση, μετα-ετικέτες SEO και εργαλεία περιεχομένου AI για "
-"το WordPress. Συνδυάζει ανίχνευση γλώσσας, δρομολόγηση URL, hreflang, μετα-"
-"περιγραφές και λειτουργίες αποσπάσματος, μετα-ετικετών και μετάφρασης με "
-"τεχνητή νοημοσύνη."
+"Πολυγλωσσική δρομολόγηση, πλήρης πολυγλωσσική SEO (hreflang, Open Graph, "
+"Schema.org, sitemap), και εργαλεία AI για περιεχόμενο για το WordPress. "
+"Ανίχνευση γλώσσας, δρομολόγηση URL, μετάφραση, δημιουργία περιεχομένου και "
+"πλήρης στρώση SEO — χωρίς ανάγκη για συμπληρωματικό πρόσθετο."
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2795,7 +2868,7 @@ msgstr ""
 msgid "Navigations"
 msgstr "Πλοηγήσεις"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:209
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr ""
 "Σφάλμα δικτύου — δεν ήταν δυνατή η πρόσβαση στο σημείο AJAX του WordPress."
@@ -2824,7 +2897,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "Δεν έχει διαμορφωθεί πάροχος AI."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:621
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "Δεν έχει διαμορφωθεί πάροχος AI. Προσθέστε ένα κλειδί API στις Ρυθμίσεις → "
@@ -2852,7 +2925,7 @@ msgstr ""
 msgid "No API key configured for this provider."
 msgstr "Δεν έχει διαμορφωθεί κλειδί API για αυτόν τον πάροχο."
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:320
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2907,7 +2980,7 @@ msgstr ""
 "Δεν υπάρχουν ακόμα καταχωρίσεις λεξικού. Προσθέστε μία παρακάτω για να "
 "αρχίσετε να επιβάλλετε ορολογία στις μεταφράσεις."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:387
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -2915,7 +2988,7 @@ msgstr ""
 "Δεν βρέθηκε H1. Συνήθως ο τίτλος της ανάρτησης είναι το H1 — επαληθεύστε ότι "
 "το θέμα σας το παράγει."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:416
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
 msgid "No images found in content."
 msgstr "Δεν βρέθηκαν εικόνες στο περιεχόμενο."
 
@@ -2927,19 +3000,23 @@ msgstr "Δεν βρέθηκαν εσωτερικοί σύνδεσμοι για �
 msgid "No language-specific template parts found to map."
 msgstr "Δεν βρέθηκαν τμήματα προτύπου που να χρειάζονται χαρτογράφηση."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:340
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
 msgid "No LF meta description set — using excerpt/content."
 msgstr ""
 "Δεν έχει οριστεί μετα-περιγραφή LF — χρησιμοποιώντας απόσπασμα/περιεχόμενο."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+msgid "No links found."
+msgstr "Δεν βρέθηκαν σύνδεσμοι."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Δεν βρέθηκαν σύνδεσμοι. Οι εσωτερικοί σύνδεσμοι βελτιώνουν την ανίχνευση και "
 "την πλοήγηση των χρηστών."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:344
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -2962,17 +3039,17 @@ msgstr ""
 "Δεν βρέθηκε φυσικό αρχείο robots.txt. Το WordPress το δημιουργεί εικονικά "
 "και η οδηγία Sitemap της LF περιλαμβάνεται αυτόματα."
 
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "No published posts found for the selected filters."
 msgstr "Δεν βρέθηκαν δημοσιευμένες αναρτήσεις για τα επιλεγμένα φίλτρα."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "Δεν λαμβάνεται απάντηση από τον πάροχο AI. Ελέγξτε το κλειδί API και "
 "δοκιμάστε ξανά."
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:208
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "Δεν υπάρχει απάντηση από τον πάροχο — ελέγξτε το αρχείο σφαλμάτων για "
@@ -2998,7 +3075,7 @@ msgstr "Δεν έχει ακόμη συσχετιστεί σελίδα πηγή�
 msgid "No template part references needed updating."
 msgstr "Δεν χρειάζεται ενημέρωση αναφορών τμήματος προτύπου."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
 msgid "No title set."
 msgstr "Δεν έχει οριστεί τίτλος."
 
@@ -3010,7 +3087,7 @@ msgstr ""
 "Δεν βρέθηκε μεταφρασμένο περιεχόμενο. Το sitemap θα γεμίσει μόλις "
 "μεταφραστούν οι αναρτήσεις."
 
-#: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
 msgid "No translation found — analyzed the source language version."
 msgstr "Δεν βρέθηκε μετάφραση — αναλύθηκε η έκδοση της πηγής γλώσσας."
 
@@ -3166,7 +3243,8 @@ msgstr "Εξαγωγικά tokens"
 msgid "Output WebSite schema on the front page and blog index"
 msgstr "Έξοδος schema Ιστότοπου στη αρχική σελίδα και στον κατάλογο ιστολογίου"
 
-#: ai/includes/Admin/MetaBox.php:371 ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
+#: ai/includes/Admin/SettingsPage.php:350
 msgid "Overall SEO score"
 msgstr "Συνολική βαθμολογία SEO"
 
@@ -3182,7 +3260,7 @@ msgstr "Το αρχείο παρακάμψεων διαγράφηκε."
 msgid "Override file uploaded successfully."
 msgstr "Το αρχείο παρακάμψεων ανέβηκε με επιτυχία."
 
-#: ai/includes/Admin/MetaBox.php:611
+#: ai/includes/Admin/MetaBox.php:766
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "All other features always use the global preset."
@@ -3191,7 +3269,7 @@ msgstr ""
 "αυτήν τη σελίδα. Όλες οι άλλες λειτουργίες πάντα χρησιμοποιούν την παγκόσμια "
 "προεπιλογή."
 
-#: ai/includes/Admin/MetaBox.php:606
+#: ai/includes/Admin/MetaBox.php:761
 msgid ""
 "Overrides the AI preset for Translation and Content Generation on this page. "
 "Site-wide custom prompt instructions (Settings → Behavior) are always "
@@ -3257,7 +3335,7 @@ msgstr ""
 "δημοσίευση CPT μέσω του επεξεργαστή μπλοκ ή χρησιμοποιήστε το ως σημείο "
 "εκκίνησης για ένα Επαναχρησιμοποιήσιμο Μπλοκ."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Pattern translation failed."
 msgstr "Αποτυχία μετάφρασης μοτίβου."
 
@@ -3318,9 +3396,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:132
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:198
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
@@ -3335,7 +3414,7 @@ msgstr ""
 msgid "Permission denied."
 msgstr "Άρνηση άδειας πρόσβασης."
 
-#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:245
+#: ai/includes/Admin/AdminToolbar.php:107 ai/includes/Admin/MetaBox.php:256
 #: ai/includes/Features/ContentGenerator.php:36
 msgid "Persuasive"
 msgstr "Πειστικό"
@@ -3389,11 +3468,11 @@ msgstr "Πρόσθετο"
 msgid "Post"
 msgstr "Ανάρτηση"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:212
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
 msgid "Post not found or not published."
 msgstr "Δεν βρέθηκε ή δεν δημοσιεύτηκε η ανάρτηση."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:615
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Η ανάρτηση δεν βρέθηκε."
@@ -3451,6 +3530,10 @@ msgstr "Επεξεργασία…"
 msgid "Product"
 msgstr "Προϊόν"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+msgid "Product / eCommerce"
+msgstr "Προϊόν / Ηλεκτρονικό εμπόριο"
+
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:62
 msgid "Product Open Graph"
 msgstr "Open Graph Προϊόν"
@@ -3458,6 +3541,11 @@ msgstr "Open Graph Προϊόν"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:193
 msgid "Product — WooCommerce product pages"
 msgstr "Προϊόν — σελίδες προϊόντων WooCommerce"
+
+#: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
+#: ai/includes/Admin/SettingsPage.php:356
+msgid "Profile"
+msgstr "Προφίλ"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
@@ -3547,11 +3635,12 @@ msgstr "Επανεξέταση…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Re-translate"
 msgstr "Επαναμετάφραση"
 
-#: ai/includes/Admin/MetaBox.php:377 ai/includes/Admin/SettingsPage.php:340
+#: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Reading time"
 msgstr "Χρόνος ανάγνωσης"
 
@@ -3646,7 +3735,7 @@ msgstr "Επαναμετάφραση"
 msgid "Retranslating…"
 msgstr "Επαναμεταφράζοντας…"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Review carefully — links and slugs not updated."
 msgstr "Ελέγξτε προσεκτικά — οι σύνδεσμοι και τα slugs δεν ενημερώθηκαν."
 
@@ -3675,7 +3764,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "Το robots.txt ενημερώθηκε με οδηγία Sitemap."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
 msgid "Router"
 msgstr "Δρομολογητής"
 
@@ -3683,9 +3772,13 @@ msgstr "Δρομολογητής"
 msgid "Router Tab"
 msgstr "Καρτέλα δρομολογητή"
 
-#: ai/includes/Admin/MetaBox.php:382
+#: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "Εκτέλεση ανάλυσης AI"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+msgid "Save analysis settings"
+msgstr "Αποθήκευση ρυθμίσεων ανάλυσης"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:143
 msgid "Save Debug Setting"
@@ -3707,7 +3800,7 @@ msgstr "Αποθήκευση Ρυθμίσεων Δρομολογητή"
 msgid "Save Schema.org Settings"
 msgstr "Αποθήκευση ρυθμίσεων Schema.org"
 
-#: ai/includes/Admin/SettingsPage.php:663
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "Save Settings"
 msgstr "Αποθήκευση ρυθμίσεων"
 
@@ -3809,11 +3902,11 @@ msgstr "Αποστολή μέσω WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:626
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "SEO"
 msgstr "SEO"
 
-#: ai/includes/Admin/MetaBox.php:368
+#: ai/includes/Admin/MetaBox.php:389 ai/includes/Admin/MetaBox.php:436
 msgid "SEO Analysis"
 msgstr "Ανάλυση SEO"
 
@@ -3853,11 +3946,11 @@ msgstr ""
 "τον ιστότοπο. Τα μεμονωμένα δημοσιεύματα μπορούν να το παρακάμψουν για "
 "Μετάφραση και Δημιουργία Περιεχομένου μέσω του μετα-κουτιού Lingua Forge."
 
-#: ai/includes/Admin/SettingsPage.php:390
+#: ai/includes/Admin/SettingsPage.php:397
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: ai/includes/Admin/SettingsPage.php:614
+#: ai/includes/Admin/SettingsPage.php:621
 msgid "Settings saved."
 msgstr "Οι ρυθμίσεις αποθηκεύτηκαν."
 
@@ -3958,31 +4051,31 @@ msgstr "Κοινωνική Μοιρασιά"
 msgid "Social Share settings saved."
 msgstr "Οι ρυθμίσεις Κοινωνικής Κοινοποίησης αποθηκεύτηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some link fixes failed."
 msgstr "Ορισμένες διορθώσεις συνδέσμων απέτυχαν."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Some nav ref fixes failed."
 msgstr "Ορισμένες διορθώσεις αναφορών πλοήγησης απέτυχαν."
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some part fixes failed."
 msgstr "Ορισμένες διορθώσεις μερών απέτυχαν."
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Some parts could not be created."
 msgstr "Ορισμένα μέρη δεν μπόρεσαν να δημιουργηθούν."
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:244
 msgid "Some templates could not be created."
 msgstr "Ορισμένα πρότυπα δεν μπόρεσαν να δημιουργηθούν."
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "Some translations failed."
 msgstr "Ορισμένες μεταφράσεις απέτυχαν."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:79
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid "source"
 msgstr "πηγή"
 
@@ -4028,7 +4121,7 @@ msgstr "Κατάσταση"
 msgid "Status / Actions"
 msgstr "Κατάσταση / Ενέργειες"
 
-#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:246
+#: ai/includes/Admin/AdminToolbar.php:108 ai/includes/Admin/MetaBox.php:257
 #: ai/includes/Features/ContentGenerator.php:37
 msgid "Storytelling"
 msgstr "Αφήγηση"
@@ -4080,11 +4173,11 @@ msgstr ""
 msgid "Submit to Reddit"
 msgstr "Υποβολή στο Reddit"
 
-#: ai/includes/Admin/MetaBox.php:387
+#: ai/includes/Admin/MetaBox.php:409 ai/includes/Admin/MetaBox.php:540
 msgid "Suggested meta description"
 msgstr "Προτεινόμενη μετα-περιγραφή"
 
-#: ai/includes/Admin/MetaBox.php:386
+#: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:539
 msgid "Suggested title"
 msgstr "Προτεινόμενος τίτλος"
 
@@ -4147,7 +4240,7 @@ msgstr "Όρος στόχου"
 msgid "Target: 140–160 chars for optimal SERP display"
 msgstr "Στόχος: 140–160 χαρακτήρες για βέλτιστη εμφάνιση στη SERP"
 
-#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:247
+#: ai/includes/Admin/AdminToolbar.php:109 ai/includes/Admin/MetaBox.php:258
 #: ai/includes/Features/ContentGenerator.php:38
 msgid "Technical"
 msgstr "Τεχνικό"
@@ -4214,7 +4307,7 @@ msgstr "Πρότυπα"
 msgid "Test connection"
 msgstr "Δοκιμή σύνδεσης"
 
-#: ai/includes/Admin/SettingsPage.php:204
+#: ai/includes/Admin/SettingsPage.php:205
 msgid "Testing…"
 msgstr "Δοκιμή…"
 
@@ -4393,24 +4486,26 @@ msgstr ""
 "Συμβουλή: για να επαναφέρετε ένα μοντέλο στην ενσωματωμένη προεπιλογή, "
 "διαγράψτε το πεδίο και αποθηκεύστε."
 
-#: ai/includes/Admin/MetaBox.php:374 ai/includes/Admin/SettingsPage.php:337
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
+#: ai/includes/Admin/SettingsPage.php:343
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Title"
 msgstr "Τίτλος"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:323
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
 #, php-format
-msgid "Title is %d chars — aim for 50–60."
-msgstr "Ο τίτλος έχει %d χαρακτήρες — στόχος 50–60."
+msgid "Title is %1$d chars — aim for %2$d–%3$d."
+msgstr "Ο τίτλος έχει %1$d χαρακτήρες — στόχος %2$d–%3$d."
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:328
+#. translators: %1$d: number of characters, %2$d: recommended max
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
 #, php-format
-msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgstr ""
-"Ο τίτλος έχει %d χαρακτήρες — ενδέχεται να περικοπεί στα SERPs (στόχος 50–60)"
-"."
+"Ο τίτλος είναι %1$d χαρακτήρες — ενδέχεται να περικοπεί στα SERPs (στοχεύστε "
+"για %2$d–%3$d)."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -4466,9 +4561,9 @@ msgstr "Σύνολο tokens"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:246
-#: ai/includes/Admin/SettingsPage.php:260
-#: ai/includes/Admin/SettingsPage.php:266 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4502,7 +4597,7 @@ msgstr "Μετάφραση περιεχομένου"
 msgid "Translate missing"
 msgstr "Αποτυχία μετάφρασης"
 
-#: ai/includes/Admin/MetaBox.php:562
+#: ai/includes/Admin/MetaBox.php:717
 msgid "Translate page…"
 msgstr "Μετάφραση σελίδας…"
 
@@ -4535,9 +4630,9 @@ msgstr ""
 "ενημερώνονται αυτόματα."
 
 #: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Μεταφράζοντας…"
@@ -4618,9 +4713,13 @@ msgstr "Ροή εργασίας μετάφρασης"
 msgid "Translation, Content Generator"
 msgstr "Μετάφραση, Δημιουργός Περιεχομένου"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+msgid "Treat H2 as H1 equivalent"
+msgstr "Αντιμετώπιση H2 ως H1 ισοδύναμο"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:90
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Type"
 msgstr "Τύπος"
 
@@ -4771,7 +4870,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Χρησιμοποιώντας προσαρμοσμένη μετα-περιγραφή."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:339
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
 msgid "Using LF AI meta description."
 msgstr "Χρησιμοποιώντας μετα-περιγραφή AI του LF."
 
@@ -4780,7 +4879,7 @@ msgid "Value source"
 msgstr "Πηγή τιμής"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "View"
 msgstr "Προβολή"
 
@@ -4945,7 +5044,8 @@ msgstr "Οι ρυθμίσεις SEO WooCommerce αποθηκεύτηκαν."
 msgid "WooCommerce store currency"
 msgstr "Νόμισμα καταστήματος WooCommerce"
 
-#: ai/includes/Admin/MetaBox.php:376 ai/includes/Admin/SettingsPage.php:339
+#: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
+#: ai/includes/Admin/SettingsPage.php:345
 msgid "Word count"
 msgstr "Αριθμός λέξεων"
 
@@ -4977,7 +5077,7 @@ msgstr ""
 "χ. στο wp-config.php). Αυτές οι πηγές χρησιμοποιούνται αυτόματα ως εφεδρική "
 "επιλογή όταν δεν αποθηκεύεται κλειδί βάσης δεδομένων."
 
-#: ai/includes/Admin/SettingsPage.php:402
+#: ai/includes/Admin/SettingsPage.php:409
 msgid "You do not have permission to manage these settings."
 msgstr "Δεν έχετε άδεια να διαχειριστείτε αυτές τις ρυθμίσεις."
 
@@ -4990,7 +5090,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} παρωχημένη διαδρομή(ες)"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -5030,7 +5130,7 @@ msgid "— Not detected"
 msgstr "— Δεν ανιχνεύθηκε"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:240
 msgid "— select a language —"
 msgstr "— επιλέξτε μια γλώσσα —"
 
@@ -5070,6 +5170,10 @@ msgstr "↺ Βελτίωση"
 #: ai/assets/admin.js:877
 msgid "↺ Refresh"
 msgstr "↺ Ανανεώστε"
+
+#: ai/includes/Admin/MetaBox.php:411 ai/includes/Admin/MetaBox.php:542
+msgid "↺ Refresh AI Analysis"
+msgstr "↺ Ανανεώστε την ανάλυση AI"
 
 #: ai/assets/admin.js:88
 msgid "↺ Refreshing…"
@@ -5148,15 +5252,15 @@ msgstr "✓ Ενεργό — πλήρες OG + Twitter Cards"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Ενεργό — ετικέτες τοπικής ρύθμισης (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "✓ All parts created."
 msgstr "✓ Όλα τα μέρη δημιουργήθηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:243
 msgid "✓ All templates created."
 msgstr "✓ Όλα τα πρότυπα δημιουργήθηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✓ All translated."
 msgstr "✓ Όλες οι μεταφράσεις ολοκληρώθηκαν."
 
@@ -5164,7 +5268,7 @@ msgstr "✓ Όλες οι μεταφράσεις ολοκληρώθηκαν."
 msgid "✓ Configured"
 msgstr "✓ Διαμορφωμένο"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:206
 msgid "✓ Connection OK"
 msgstr "✓ Σύνδεση ΟΚ"
 
@@ -5195,7 +5299,7 @@ msgstr "✓ Ενεργό Hreflang"
 msgid "✓ In safe storage"
 msgstr "✓ Σε ασφαλή αποθήκευση"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:238
 msgid "✓ Language installed."
 msgstr "✓ Η γλώσσα εγκαταστάθηκε."
 
@@ -5215,19 +5319,19 @@ msgstr "✓ Εξόδοι LF πλήρες OG + Twitter Cards"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ Εξόδοι LF — πρόσθετο hreflang κατασταλμένο"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ Links fixed."
 msgstr "✓ Οι σύνδεσμοι διορθώθηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "✓ Nav refs fixed."
 msgstr "✓ Οι αναφορές πλοήγησης διορθώθηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ Parts fixed."
 msgstr "✓ Τα μέρη διορθώθηκαν."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "✓ Pattern translated."
 msgstr "✓ Το μοτίβο μεταφράστηκε."
 
@@ -5241,7 +5345,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Βελτιώθηκε — ελέγξτε το ενημερωμένο προσχέδιο παραπάνω."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:271
 msgid "✓ Translation saved"
 msgstr "✓ Μετάφραση αποθηκευμένη"
 
@@ -5265,11 +5369,11 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Απενεργό"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:239
 msgid "✗ Error:"
 msgstr "✗ Σφάλμα:"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:207
 msgid "✗ Failed:"
 msgstr "✗ Απέτυχε:"
 

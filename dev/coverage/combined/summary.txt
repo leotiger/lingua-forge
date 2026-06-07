@@ -1,4 +1,4 @@
-COMBINED COVERAGE  (unit + integration)  —  2026-06-06 19:36
+COMBINED COVERAGE  (unit + integration)  —  2026-06-07 11:52
 ──────────────────────────────────────────────────────────────────────
   File                                                           Cov%
 ──────────────────────────────────────────────────────────────────────
@@ -76,7 +76,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-06-06 19:36
   ✅ ai/includes/Features/TranslationMemoryTranslator.php        90%
   ❌ ai/includes/Features/TranslationTrigger.php                  0%
   ❌ ai/includes/Integrations/WooCommerce/Bootstrap.php           5%
-  🔶 ai/includes/Integrations/WooCommerce/CatalogQuery.php       66%
+  🔶 ai/includes/Integrations/WooCommerce/CatalogQuery.php       70%
   ✅ ai/includes/Integrations/WooCommerce/MetaDelegate.php       89%
   ✅ ai/includes/Integrations/WooCommerce/PageTagRepair.php      90%
   ✅ ai/includes/Integrations/WooCommerce/RestWriteGuard.php     84%
@@ -87,6 +87,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-06-06 19:36
   🔶 ai/includes/Integrations/WooCommerce/TermNameFilter.php     68%
   ✅ ai/includes/Integrations/WooCommerce/VariationDelegate.php   94%
   ✅ ai/includes/Integrations/WooCommerce/VariationSync.php      80%
+  🔶 ai/includes/Integrations/WooCommerce/WcPageBridge.php       72%
   ✅ ai/includes/Providers/AbstractProvider.php                  80%
   🔶 ai/includes/Providers/Anthropic.php                         75%
   ❌ ai/includes/Providers/Gemini.php                             0%
@@ -101,15 +102,15 @@ COMBINED COVERAGE  (unit + integration)  —  2026-06-06 19:36
   ❌ language-router/includes/admin/class-scripts.php             0%
   🔶 language-router/includes/class-context.php                  57%
   ❌ language-router/includes/class-language-router.php           3%
-  🔶 language-router/includes/class-locale-detector.php          71%
+  ❌ language-router/includes/class-locale-detector.php          48%
   ❌ language-router/includes/class-lsflr-link-fixer.php         29%
   ❌ language-router/includes/class-lsflr-switcher-widget.php     0%
-  ❌ language-router/includes/class-lsflr-switcher.php           10%
+  ❌ language-router/includes/class-lsflr-switcher.php            6%
   ❌ language-router/includes/db/class-migrator.php               0%
   ❌ language-router/includes/i18n/class-overrides.php            0%
   ✅ language-router/includes/rest/class-data-endpoints.php      94%
   ❌ language-router/includes/rewrite/class-manager.php          38%
-  ❌ language-router/includes/rewrite/class-query-filter.php     17%
+  ❌ language-router/includes/rewrite/class-query-filter.php     12%
   ❌ language-router/includes/routing/class-redirector.php       21%
   🔶 language-router/includes/search/class-index.php             56%
   ❌ language-router/includes/search/class-query.php              7%
@@ -122,4 +123,4 @@ COMBINED COVERAGE  (unit + integration)  —  2026-06-06 19:36
   ✅ language-router/includes/translation/class-trid-group.php   95%
   ❌ meta-description/meta-description.php                       27%
 ──────────────────────────────────────────────────────────────────────
-  TOTAL: 23.58%  (3137 / 13305 statements)
+  TOTAL: 23.74%  (3245 / 13668 statements)
