@@ -190,8 +190,20 @@ class TermNameFilter {
 		$source_lang = $router->source_language();
 
 		// Use _lf_lang from the queried product post (see translate_single_term_name).
+		//
+		// Read the already-resolved queried_object property directly rather than
+		// calling get_queried_object_id().  The latter calls
+		// WP_Query::get_queried_object() which, on taxonomy archive pages, calls
+		// get_term_by() -> WP_Term_Query -> populate_terms() -> get_term() ->
+		// this filter -> get_queried_object_id() -> infinite recursion.
+		// Accessing the property directly is safe: if queried_object is not yet
+		// set we simply fall back to URL/cookie detection below.
 		$lang       = '';
-		$queried_id = get_queried_object_id();
+		$queried_id = 0;
+		$queried_obj = isset( $GLOBALS['wp_query'] ) ? $GLOBALS['wp_query']->queried_object : null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- read-only access
+		if ( $queried_obj instanceof \WP_Post ) {
+			$queried_id = $queried_obj->ID;
+		}
 		if ( $queried_id ) {
 			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
 		}
@@ -272,8 +284,20 @@ class TermNameFilter {
 		// product pages, making URL-prefix detection useless here. Reading _lf_lang
 		// directly from the current product post gives the correct language regardless
 		// of permalink structure.
-		$lang = '';
-		$queried_id = get_queried_object_id();
+		//
+		// IMPORTANT: do NOT call get_queried_object_id() here. On taxonomy archive
+		// pages, WP_Query::get_queried_object() resolves the queried object by
+		// calling get_term_by() -> WP_Term_Query -> populate_terms() -> get_term()
+		// -> this filter -> get_queried_object_id() -> get_queried_object() -> ...
+		// infinite recursion. Reading the already-resolved queried_object property
+		// directly is safe: if it is not yet set, $queried_id stays 0 and we fall
+		// back to URL/cookie detection (correct for archive pages anyway).
+		$lang        = '';
+		$queried_id  = 0;
+		$queried_obj = isset( $GLOBALS['wp_query'] ) ? $GLOBALS['wp_query']->queried_object : null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- read-only access
+		if ( $queried_obj instanceof \WP_Post ) {
+			$queried_id = $queried_obj->ID;
+		}
 		if ( $queried_id ) {
 			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
 		}
@@ -332,8 +356,13 @@ class TermNameFilter {
 
 		// Use _lf_lang from the queried product post — WC product pages at
 		// /product/{slug}/ have no URL prefix, so detect_lang() returns source lang.
-		$lang       = '';
-		$queried_id = get_queried_object_id();
+		// Read queried_object directly (see translate_single_term_name for rationale).
+		$lang        = '';
+		$queried_id  = 0;
+		$queried_obj = isset( $GLOBALS['wp_query'] ) ? $GLOBALS['wp_query']->queried_object : null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- read-only access
+		if ( $queried_obj instanceof \WP_Post ) {
+			$queried_id = $queried_obj->ID;
+		}
 		if ( $queried_id ) {
 			$lang = (string) get_post_meta( $queried_id, '_lf_lang', true );
 		}

@@ -31,6 +31,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-seo-manager.php';
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-schema-manager.php';
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-social-share.php';
+require_once dirname( __DIR__, 2 ) . '/ai/includes/Integrations/WooCommerce/SeoSupport.php';
+
+// SeoSupport::inject_inlanguage() calls SchemaManager::lang_to_bcp47(LF_LANG).
+// Define the constant once for this process — tests that require it are guarded.
+if ( ! defined( 'LF_LANG' ) ) {
+	define( 'LF_LANG', 'es' );
+}
 
 // ---------------------------------------------------------------------------
 
@@ -39,6 +46,7 @@ require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-social
  * @covers \LinguaForge\Router\Seo\SchemaManager::lang_to_bcp47
  * @covers \LinguaForge\Router\Seo\SchemaManager::output_schema
  * @covers \LinguaForge\Router\Seo\SocialShare::rewrite_share_url
+ * @covers \LinguaForge\AI\Integrations\WooCommerce\SeoSupport::inject_inlanguage
  */
 final class SeoHelpersTest extends TestCase {
 
@@ -247,7 +255,7 @@ final class SeoHelpersTest extends TestCase {
 		$block  = $this->makeBlock( 'share:unknownxyz' );
 		$result = ( new SocialShare() )->rewrite_share_url( $html, $block );
 
-		// No matching service → build_share_url returns '' → unchanged
+		// No matching service → build_share_url returns '' �� unchanged
 		$this->assertSame( $html, $result );
 	}
 
@@ -257,5 +265,47 @@ final class SeoHelpersTest extends TestCase {
 		$result = ( new SocialShare() )->rewrite_share_url( $html, $block );
 
 		$this->assertStringContainsString( 'twitter.com/intent/tweet', $result );
+	}
+
+	// =========================================================================
+	// SeoSupport::inject_inlanguage()
+	// =========================================================================
+
+	/**
+	 * When LF_LANG is defined, inject_inlanguage() must add the `inLanguage`
+	 * BCP 47 value to the WC Product markup array.
+	 *
+	 * LF_LANG is defined as 'es' at the top of this file; BCP 47 for 'es' is 'es-ES'.
+	 */
+	public function test_inject_inlanguage_adds_bcp47_value(): void {
+		$markup = [
+			'@type' => 'Product',
+			'name'  => 'Test Product',
+		];
+
+		$result = \LinguaForge\AI\Integrations\WooCommerce\SeoSupport::inject_inlanguage( $markup );
+
+		$this->assertArrayHasKey( 'inLanguage', $result );
+		$this->assertSame( 'es-ES', $result['inLanguage'] );
+	}
+
+	/**
+	 * inject_inlanguage() must preserve all keys already present in the markup.
+	 */
+	public function test_inject_inlanguage_preserves_existing_keys(): void {
+		$markup = [
+			'@type'       => 'Product',
+			'name'        => 'Test Product',
+			'description' => 'A description.',
+			'offers'      => [ '@type' => 'Offer', 'price' => '9.99' ],
+		];
+
+		$result = \LinguaForge\AI\Integrations\WooCommerce\SeoSupport::inject_inlanguage( $markup );
+
+		$this->assertSame( 'Product',       $result['@type'] );
+		$this->assertSame( 'Test Product',  $result['name'] );
+		$this->assertSame( 'A description.', $result['description'] );
+		$this->assertArrayHasKey( 'offers', $result );
+		$this->assertArrayHasKey( 'inLanguage', $result );
 	}
 }

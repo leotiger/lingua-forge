@@ -439,7 +439,9 @@ When adding a new setting, decide which tab it belongs in:
 - **Limits** — quotas, rate limits, capability gate, per-feature token /
   character caps.
 - **Behavior** — toggles that change *how* the AI features act (block
-  editor restrictions, AI behavior preset — Standard / Technical / Legal / Creative).
+  editor restrictions, AI behavior preset — Standard / Technical / Legal /
+  Creative). Note: Translation Memory and API Response Cache enable/disable
+  toggles live in the **AI Usage** tab, not here.
 - **Router** — Language Router settings (active languages, browser
   redirect, slug handling). Has its own admin-post save action
   (`linguaforge_save_router_settings`) and a Flush Permalinks action.
@@ -459,8 +461,13 @@ When adding a new setting, decide which tab it belongs in:
   `wp_ajax_linguaforge_seo_ai_analyze` (AI-powered). The Sitemap panel
   registers `linguaforge_flush_sitemap_cache`, `linguaforge_ping_sitemap`,
   and `linguaforge_update_robots_txt`.
-- **AI Usage** — read-only usage log (requests, input/output tokens by
-  feature, provider, model, and date). No save action.
+- **AI Usage** — usage log (requests, input/output tokens by feature,
+  provider, model, and date) plus a **Translation Caching** section with
+  inner tabs for API Response Cache and Translation Memory. The caching
+  inner tabs each contain an enable/disable toggle with a dedicated
+  admin-post save action (`linguaforge_save_api_cache_enabled`,
+  `linguaforge_save_tm_enabled`) and a clear-cache form
+  (`linguaforge_clear_ai_cache`, `linguaforge_clear_translation_memory`).
 - **Maintenance** — operational forms (cache, debug files, language
   overrides, translation memory). Each entry has its own admin-post
   action.

@@ -147,6 +147,10 @@ class SettingsPage {
         add_action('wp_ajax_linguaforge_seo_get_posts',  [SeoAnalysisPanel::class, 'ajax_get_posts']);
         add_action('wp_ajax_linguaforge_seo_ai_analyze', [SeoAnalysisPanel::class, 'ajax_ai_analyze']);
 
+        // AI Usage & Cache tab — Translation Caching toggle saves
+        add_action('admin_post_linguaforge_save_api_cache_enabled', [CacheStatsPanel::class, 'handle_save_api_cache_enabled']);
+        add_action('admin_post_linguaforge_save_tm_enabled',        [CacheStatsPanel::class, 'handle_save_tm_enabled']);
+
         // Language Router tab
         add_action('admin_post_linguaforge_save_router_settings', [RouterTab::class, 'handle_save_router_settings']);
         add_action('admin_post_linguaforge_flush_permalinks',      [RouterTab::class, 'handle_flush_permalinks']);
@@ -489,20 +493,6 @@ class SettingsPage {
             );
             update_option( $opt_key, $addendum, false );
         }
-
-        // ── Behavior — Translation Memory (§4.5) ─────────────────────────────
-        update_option(
-            'linguaforge_translation_memory_enabled',
-            !empty($_POST['linguaforge_translation_memory_enabled']) ? 1 : 0,
-            false
-        );
-
-        // ── Behavior — API Response Cache (§10.16) ────────────────────────────
-        update_option(
-            'linguaforge_api_cache_enabled',
-            !empty($_POST['linguaforge_api_cache_enabled']) ? 1 : 0,
-            false
-        );
 
         // ── Model overrides ───────────────────────────────────────────────────
         // Store whatever the admin submitted (even empty string).

@@ -90,8 +90,12 @@ class SchemaManager {
 		// ── Article / WebPage — singular pages ────────────────────────────────
 		if ( get_option( 'linguaforge_seo_schema_article', true ) ) {
 			if ( is_singular() ) {
-				$post = get_post();
-				if ( $post ) {
+				// Skip product pages when WooCommerce is active — WC_Structured_Data
+				// already outputs Product schema at wp_footer.  A parallel WebPage
+				// block adds no value and clutters structured data output.
+				$is_wc_product = function_exists( 'wc_get_product' ) && is_singular( 'product' );
+				$post          = get_post();
+				if ( $post && ! $is_wc_product ) {
 					self::output_schema( $this->build_article_schema( $post, $in_language ) );
 				}
 			}

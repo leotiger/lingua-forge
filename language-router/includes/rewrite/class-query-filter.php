@@ -37,6 +37,7 @@ class QueryFilter {
 	public function register_hooks(): void {
 		add_action( 'parse_query',    [ $this, 'handle_parse_query' ] );
 		add_action( 'pre_get_posts',  [ $this, 'handle_pre_get_posts' ] );
+		add_action( 'pre_get_posts',  [ $this, 'handle_secondary_pre_get_posts' ] );
 		add_filter( 'get_pages',        [ $this, 'filter_page_list_frontend' ],   10, 2 );
 		add_filter( 'pre_render_block', [ $this, 'arm_page_list_lang_filter' ],   10, 3 );
 		add_filter( 'render_block',     [ $this, 'clear_nav_lang_after_render' ], 10, 2 );
@@ -206,6 +207,98 @@ class QueryFilter {
 		if ( ! empty( $meta_query ) ) {
 			$q->set( 'meta_query', $meta_query );
 		}
+	}
+
+	// =========================================================
+	// SECONDARY QUERY FILTER (non-main WP_Query instances)
+	// =========================================================
+
+	/**
+	 * Adds a `_lf_lang` meta constraint to secondary (non-main) WP_Query
+	 * instances on the public frontend.
+	 *
+	 * handle_pre_get_posts() guards with is_main_query() and therefore leaves
+	 * all secondary queries unfiltered: sidebar widgets, `get_posts()` calls
+	 * in templates, "Latest Posts" / "Latest Events" core blocks, and any
+	 * other code that creates a WP_Query directly without going through the
+	 * main query cycle.  Without this handler, those queries return results
+	 * from all languages mixed together.
+	 *
+	 * WooCommerce post types are excluded — CatalogQuery already handles them
+	 * via its own pre_get_posts hook and contains WC-specific logic (per-product
+	 * `_lf_lang` override on language-neutral singular pages, related-products
+	 * SQL patching, etc.) that must not be duplicated here.
+	 *
+	 * `post_type = 'any'` is skipped to avoid interfering with internal WP /
+	 * WC queries that aggregate multiple post types, some of which may lack
+	 * `_lf_lang` meta entirely.
+	 *
+	 * Third-party code can opt additional post types out of secondary filtering
+	 * via the `linguaforge_secondary_query_excluded_post_types` filter.
+	 *
+	 * @param WP_Query $q  The secondary query being built.
+	 */
+	public function handle_secondary_pre_get_posts( WP_Query $q ): void {
+		if ( $q->is_main_query() ) {
+			return;
+		}
+
+		if ( is_admin() ) {
+			return;
+		}
+
+		if ( ! defined( 'LF_LANG' ) || '' === LF_LANG ) {
+			return;
+		}
+
+		$post_type = $q->get( 'post_type' );
+
+		// Skip 'any' — too broad; may include internal types without _lf_lang.
+		if ( 'any' === $post_type ) {
+			return;
+		}
+
+		// Skip ID-only lookups (fields='ids' or 'id=>parent'). These are
+		// internal infrastructure queries — not content displayed to users.
+		// WcPageBridge and similar helpers use get_posts(['fields'=>'ids'])
+		// to resolve translation page IDs; injecting a language constraint
+		// would exclude the very pages they are trying to find.
+		$fields = $q->get( 'fields' );
+		if ( 'ids' === $fields || 'id=>parent' === $fields ) {
+			return;
+		}
+
+		// Normalize: empty string means WordPress will query 'post'.
+		$types = '' !== $post_type ? (array) $post_type : [ 'post' ];
+
+		// WC post types are handled by CatalogQuery — skip if any type in the
+		// query is a WC type to avoid double-injection or logic conflicts.
+		$wc_types = [ 'product', 'product_variation', 'shop_order', 'shop_coupon', 'shop_subscription', 'shop_booking' ];
+		if ( array_intersect( $types, $wc_types ) ) {
+			return;
+		}
+
+		// Allow third-party code to opt additional post types out.
+		$excluded = (array) apply_filters( 'linguaforge_secondary_query_excluded_post_types', [] );
+		if ( $excluded && array_intersect( $types, $excluded ) ) {
+			return;
+		}
+
+		// Double-application guard — skip if _lf_lang is already constrained
+		// (e.g. by a theme or plugin that called QueryFilter::query() directly).
+		$meta_query = (array) $q->get( 'meta_query' ) ?: [];
+		foreach ( $meta_query as $clause ) {
+			if ( is_array( $clause ) && isset( $clause['key'] ) && '_lf_lang' === $clause['key'] ) {
+				return;
+			}
+		}
+
+		$meta_query[] = [
+			'key'   => '_lf_lang',
+			'value' => LF_LANG,
+		];
+
+		$q->set( 'meta_query', $meta_query );
 	}
 
 	// =========================================================

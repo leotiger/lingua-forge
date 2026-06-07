@@ -107,7 +107,7 @@ final class RedirectorSwitcherTest extends WP_UnitTestCase {
 		$this->assertSame( $content, $result );
 	}
 
-	public function test_fix_site_logo_link_no_page_on_front_returned_unchanged(): void {
+	public function test_fix_site_logo_link_latest_posts_front_rewrites_to_lang_home(): void {
 
 		if ( ! defined( 'LF_LANG' ) ) {
 			$this->markTestSkipped( 'LF_LANG not defined.' );
@@ -115,13 +115,22 @@ final class RedirectorSwitcherTest extends WP_UnitTestCase {
 
 		update_option( 'page_on_front', 0 ); // no static front page
 
-		$content = '<a href="https://example.org/">Home</a>';
+		$content = '<a href="https://example.org/stale-url/">Home</a>';
 		$result  = $this->router->redirector->fix_site_logo_link(
 			$content,
 			[ 'blockName' => 'core/site-logo' ]
 		);
 
-		$this->assertSame( $content, $result );
+		// Since the logo-link fix was extended to cover the latest-posts front page,
+		// lang_home_url() returns a non-null URL even when page_on_front = 0:
+		// home_url('/lang/') for non-source language, home_url('/') for source.
+		$source        = $this->router->context->source_language();
+		$expected_href = ( LF_LANG === $source )
+			? home_url( '/' )
+			: home_url( '/' . LF_LANG . '/' );
+
+		$this->assertStringContainsString( 'href="' . esc_url( $expected_href ) . '"', $result );
+		$this->assertStringNotContainsString( 'stale-url', $result );
 	}
 
 	public function test_fix_site_logo_link_rewrites_href_to_front_page_permalink(): void {

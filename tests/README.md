@@ -35,6 +35,8 @@ tests/
 │   ├── RegressionContractsTest.php                ← pin critical string constants + key shapes
 │   ├── RouterPureHelpersTest.php                  ← Manager::rewrite_lang_permalink(), Switcher::build_translated_url()
 │   ├── RouterSingletonTest.php                    ← Router::reset_instance contract
+│   ├── SeoAnalysisHelpersTest.php                 ← SEO analysis scoring helpers: keyword density, meta length, heading checks (38 tests)
+│   ├── SeoHelpersTest.php                         ← SeoManager::lang_to_locale, SchemaManager::lang_to_bcp47/output_schema, SocialShare::rewrite_share_url (23 tests)
 │   ├── TranslationLanguagesTest.php               ← Translation::LANGUAGES + get_languages()
 │   ├── TranslationMemoryHashTest.php              ← TranslationMemory hash stability
 │   ├── TranslationTest.php                        ← Translation pure helpers + detect_post_language() + run() early exits
@@ -48,9 +50,11 @@ tests/
 │       ├── WcPolyfills.php                        ← WP_Query/WP_Post stubs; get/update_post_meta; is_admin; LfWpdb stub
 │       ├── CatalogQueryTest.php                   ← apply_language_filter: append, double-application guard, admin skip
 │       ├── MetaDelegateTest.php                   ← price/stock/image delegation logic (individual + bulk reads)
+│       ├── PageTagRepairTest.php                  ← PageTagRepair lazy-repair + is_protected guard (9 tests)
 │       ├── StockRouterTest.php                    ← stock write routing to source
 │       ├── TaxonomyDelegateTest.php               ← wp_get_object_terms delegation
-│       └── VariationDelegateTest.php              ← pre_get_posts filter; own-variations bypass
+│       ├── VariationDelegateTest.php              ← pre_get_posts filter; own-variations bypass
+│       └── WcPageBridgeTest.php                   ← WcPageBridge pure helper coverage (26 tests)
 │
 └── integration/                                   ← runs inside wp-env / WP test framework
     ├── Stubs/
@@ -59,8 +63,10 @@ tests/
     ├── CacheStoreTest.php                         ← stats() shape, row count, date strings, hit_count, clear_all()
     ├── ConfigPresetAddendumIntegrationTest.php    ← preset_addendum + apply_compliance
     ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang, subdomain paths
+    ├── CptArchiveIntegrationTest.php              ← CPT archive routing: language prefix + rewrite rules (8 tests)
     ├── FeatureControllerRestTest.php              ← REST HTTP layer: 401/403/400/404/429 + /feature/{feature}/{id} success dispatch
     ├── GlossaryHashForPairTest.php                ← hash_for_pair stability + insert/delete/format_for_prompt write paths
+    ├── GeneralTaxonomyArchiveIntegrationTest.php  ← general (non-WC) taxonomy archive routing under language prefix (7 tests)
     ├── LanguageUninstallerIntegrationTest.php     ← uninstall() end-to-end: posts deleted; protected lang noop; mods-disallowed path
     ├── LinkFixerScanTest.php                      ← scan_post(): wrong-language/no-translation/unresolved/correct-lang/shape
     ├── ManagerIntegrationTest.php                 ← lang_permalink() early exits: source-lang post, non-existent post ID
@@ -70,6 +76,8 @@ tests/
     ├── PatternDiscoveryIntegrationTest.php        ← PatternDiscovery CPT pattern expansion
     ├── PluginBootTest.php                         ← constants + autoloader + class load
     ├── RedirectorSwitcherTest.php                 ← allow_lang_subdomains(), fix_site_logo_link(), translate_menu_items()
+    ├── SecondaryQueryFilterIntegrationTest.php    ← secondary query _lf_lang injection + fields=ids skip (12 tests)
+    ├── SeoAnalysisPanelIntegrationTest.php        ← AJAX handler stack: nonce, capability, score output (5 tests)
     ├── SyncIntegrationTest.php                    ← handle_save_post(): new post gets _lf_lang + _lf_trid; lang preserved; wp_navigation
     ├── TranslationIntegrationTest.php             ← Translation::run() via StubProvider: cache hit, JSON-envelope, TM path, etc.
     ├── TranslationMemoryTest.php                  ← stats() shape, bytes_estimate, idempotent store(), clear_all()
@@ -86,11 +94,14 @@ tests/
         ├── TaxonomyDelegateIntegrationTest.php    ← term delegation + cache clearing (clear_translated_product_term_cache_on_post)
         ├── TermNameIntegrationTest.php            ← _lf_term_name_{lang} swap; get_term + wp_get_object_terms Store API paths
         ├── VariationDelegateIntegrationTest.php   ← variation query scoping; translated variations not redirected
-        └── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, sync_wc_taxonomies_from_source
+        ├── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, sync_wc_taxonomies_from_source
+        ├── WcPageBridgeArchiveIntegrationTest.php ← archive routing for product taxonomies incl. Brands (14 tests)
+        └── WcPageBridgeEndpointIntegrationTest.php ← My Account sub-endpoint URL building and 404 prevention (7 tests)
 ```
 
-Latest counts (test methods; data-provider variants add a few more test cases each):
-**~523 unit**, **~221 non-WC integration**, **~121 WC integration** — approximately **865 total**.
+Latest counts (test methods; PHPUnit-reported run count is higher due to data-provider expansion):
+**666 unit**, **215 non-WC integration**, **138 WC integration** — **1019 total test methods**.
+PHPUnit reports ~372 integration tests (vs. 353 methods) because several methods use data providers.
 E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 

@@ -38,8 +38,17 @@ class Redirector {
 		// Allow wp_safe_redirect() to follow cross-domain redirects to language subdomains.
 		add_filter( 'allowed_redirect_hosts', [ $this, 'allow_lang_subdomains' ] );
 
-		// Site logo link
+		// Site logo + site title links
 		add_filter( 'render_block', [ $this, 'fix_site_logo_link' ], 20, 2 );
+		add_filter( 'render_block', [ $this, 'fix_site_title_link' ], 20, 2 );
+
+		// WooCommerce breadcrumb "Home" link
+		add_filter( 'woocommerce_breadcrumb_home_url', [ $this, 'translate_breadcrumb_home_url' ] );
+
+		// WordPress core Privacy Policy page — translates the URL returned by
+		// get_privacy_policy_url(), which is used by WC checkout, the WP login
+		// footer, and any theme or block that calls that function.
+		add_filter( 'privacy_policy_url', [ $this, 'translate_privacy_policy_url' ], 10, 2 );
 
 		// Menu translation — classic nav menus
 		add_filter( 'wp_nav_menu_objects', [ $this, 'translate_menu_items' ] );
@@ -245,24 +254,55 @@ class Redirector {
 	// RENDER BLOCK FILTERS
 	// =========================================================
 
-	public function fix_site_logo_link( string $block_content, array $block ): string {
-		if ( $block['blockName'] !== 'core/site-logo' ) return $block_content;
-		if ( ! defined( 'LF_LANG' ) ) return $block_content;
-
-		$front_id = get_option( 'page_on_front' );
-		if ( ! $front_id ) return $block_content;
-
-		$translations = $this->router->trid_group->get_translations( $front_id );
-
-		if ( LF_LANG === $this->router->context->source_language() ) {
-			$target_id = $front_id;
-		} elseif ( ! empty( $translations[LF_LANG] ) ) {
-			$target_id = $translations[LF_LANG];
-		} else {
-			$target_id = $front_id;
+	/**
+	 * Returns the language-appropriate home URL for the current request.
+	 *
+	 * For sites with a static front page: resolves the translated front page
+	 * permalink so the link lands on the correct language version.
+	 * For sites showing the latest posts: returns home_url('/') with the
+	 * language prefix path for non-source languages, or plain home_url('/') for
+	 * the source language.
+	 *
+	 * Returns null when LF_LANG is not defined or when no URL can be determined.
+	 *
+	 * @return string|null
+	 */
+	private function lang_home_url(): ?string {
+		if ( ! defined( 'LF_LANG' ) ) {
+			return null;
 		}
 
-		$target_url = get_permalink( $target_id );
+		$front_id = (int) get_option( 'page_on_front' );
+
+		if ( $front_id > 0 ) {
+			// Static front page: use the translated page's permalink.
+			$translations = $this->router->trid_group->get_translations( $front_id );
+
+			if ( LF_LANG === $this->router->context->source_language() ) {
+				$target_id = $front_id;
+			} elseif ( ! empty( $translations[LF_LANG] ) ) {
+				$target_id = (int) $translations[LF_LANG];
+			} else {
+				$target_id = $front_id;
+			}
+
+			$url = get_permalink( $target_id );
+			return $url ?: null;
+		}
+
+		// Latest-posts front: build the language-prefixed root URL.
+		if ( LF_LANG === $this->router->context->source_language() ) {
+			return home_url( '/' );
+		}
+
+		return home_url( '/' . LF_LANG . '/' );
+	}
+
+	public function fix_site_logo_link( string $block_content, array $block ): string {
+		if ( $block['blockName'] !== 'core/site-logo' ) return $block_content;
+
+		$target_url = $this->lang_home_url();
+		if ( ! $target_url ) return $block_content;
 
 		$block_content = preg_replace(
 			'/<a\s+([^>]*?)href="[^"]*"/',
@@ -272,6 +312,69 @@ class Redirector {
 		);
 
 		return $block_content;
+	}
+
+	/**
+	 * Rewrites the href on the `core/site-title` block's anchor to the
+	 * language-appropriate home URL, matching the behaviour of fix_site_logo_link.
+	 */
+	public function fix_site_title_link( string $block_content, array $block ): string {
+		if ( $block['blockName'] !== 'core/site-title' ) return $block_content;
+
+		$target_url = $this->lang_home_url();
+		if ( ! $target_url ) return $block_content;
+
+		$block_content = preg_replace(
+			'/<a\s+([^>]*?)href="[^"]*"/',
+			'<a $1href="' . esc_url( $target_url ) . '"',
+			$block_content,
+			1
+		);
+
+		return $block_content;
+	}
+
+	/**
+	 * Overrides the WooCommerce breadcrumb "Home" link with the language-
+	 * appropriate home URL so the first breadcrumb crumb points to the correct
+	 * language version of the site root.
+	 *
+	 * @param  string $url  Default home URL from WooCommerce.
+	 * @return string
+	 */
+	public function translate_breadcrumb_home_url( string $url ): string {
+		return $this->lang_home_url() ?? $url;
+	}
+
+	/**
+	 * Translates the WordPress Privacy Policy page URL to the current language.
+	 *
+	 * Hooks `privacy_policy_url` (WordPress core), which fires from
+	 * `get_privacy_policy_url()`.  Called by WC checkout, the WP login footer,
+	 * and any theme or block rendering a Privacy Policy link.
+	 *
+	 * @param  string $url            Current privacy policy URL.
+	 * @param  int    $policy_page_id Post ID of the source privacy policy page.
+	 * @return string
+	 */
+	public function translate_privacy_policy_url( string $url, int $policy_page_id ): string {
+		if ( ! defined( 'LF_LANG' ) ) {
+			return $url;
+		}
+		if ( LF_LANG === $this->router->context->source_language() ) {
+			return $url;
+		}
+		if ( $policy_page_id <= 0 ) {
+			return $url;
+		}
+
+		$translations = $this->router->trid_group->get_translations( $policy_page_id );
+		if ( empty( $translations[LF_LANG] ) ) {
+			return $url;
+		}
+
+		$translated_url = get_permalink( (int) $translations[LF_LANG] );
+		return $translated_url ?: $url;
 	}
 
 	// =========================================================

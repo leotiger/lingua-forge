@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,19 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.4 =
+* Fixed: WooCommerce My Account sub-endpoint URLs under a language prefix (e.g. `/es/mi-cuenta/orders/`) returning 404. WC's endpoint rewrite rule intercepted the URL before LF's fallback and set `error=404` before the `request` filter fires. New `fix_myaccount_endpoint_request` parses the URI directly and rebuilds query vars from scratch.
+* Fixed: WooCommerce Terms & Conditions page ID not translated on checkout. Added `woocommerce_get_terms_page_id` and `woocommerce_terms_and_conditions_page_id` filters in `WcPageBridge`, both delegating to the shared `translate_wc_page_id()` cache.
+* Fixed: WooCommerce Privacy Policy link on checkout pointing to the source-language page. WC resolves the privacy policy via `woocommerce_privacy_policy_page_id` (not WordPress's `get_privacy_policy_url()`); new `translate_privacy_policy_page_id` filter resolves the translation via `TridGroup::get_translations()`. The `privacy_policy_url` filter in `Redirector` covers WP-core contexts (login footer, FSE blocks).
+* Fixed: WooCommerce Brands (`product_brand`) and other product taxonomy archives not routing correctly under a language prefix — silently falling back to the source-language archive. The three taxonomy-archive hooks (`register_taxonomy_archive_rewrite_rules`, `translate_wc_term_link`, `inject_taxonomy_archive_lang`) now read the taxonomy list dynamically from `get_product_archive_taxonomies()` (default: `product_cat`, `product_tag`, `product_brand`), filterable via `lf_wc_product_archive_taxonomies`.
+* Fixed: Site Title block (`core/site-title`) wrapping link not localised — added `fix_site_title_link()` on `render_block` priority 20, mirroring the existing `fix_site_logo_link()` pattern and delegating to the shared `lang_home_url()` helper.
+* Fixed: Custom taxonomy archive URLs returning 404 under a language prefix. New `add_general_taxonomy_archive_rewrite_rules()` registers explicit top-priority rules for all public custom taxonomies with a rewrite slug; `translate_general_term_link()` prefixes `get_term_link()` output with the active language path.
+* Fixed: WooCommerce Product structured data duplicated when no third-party SEO plugin is active (two `Product` JSON-LD blocks plus a redundant `WebPage`). `SeoSupport` now injects `inLanguage` via `woocommerce_structured_data_product` instead of emitting a parallel schema block; `SchemaManager` skips the Article/WebPage block on product singulars.
+* Fixed: Secondary (non-main) WP_Query instances — sidebar widgets, `get_posts()` calls in templates, Latest Posts/Latest Events blocks — receiving no `_lf_lang` constraint and returning mixed-language results. New `handle_secondary_pre_get_posts()` injects `_lf_lang` on all secondary frontend queries; ID-only lookups (`fields=ids`) are correctly skipped.
+* Changed: Translation Memory and API Response Cache enable/disable toggles moved from Settings → Behavior to Settings → AI Usage & Cache (each in its own inner sub-tab), where stats, cache management, and enable/disable controls now live together.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.3 =
 * Fixed: WooCommerce Cart, Checkout, and My Account pages always linking to source-language URLs in mini-cart and checkout navigation. Translated equivalents are now returned via the same `woocommerce_get_{type}_page_id` filter + `_lf_trid`/`_lf_lang` lookup used for the Shop page.
 
@@ -292,7 +305,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 == Upgrade Notice ==
 
-= 2.2.3 =
-Fixes WooCommerce Cart, Checkout, and My Account page links always pointing to source-language URLs in mini-cart and checkout navigation. No schema changes. No data migration needed.
+= 2.2.4 =
+Fixes WC My Account sub-endpoint 404s, T&C/Privacy Policy checkout links, Brands and custom taxonomy archives, Site Title block href, secondary CPT query scoping, and WC structured data duplication. Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
 
 

@@ -70,7 +70,16 @@ final class SeoAnalysisPanelIntegrationTest extends WP_UnitTestCase {
 	 */
 	private function dispatch( array $params ): array {
 
-		$_POST = array_merge(
+		// check_ajax_referer() reads the nonce from $_REQUEST, not $_POST.
+		// In PHP CLI, $_REQUEST is never auto-populated from $_POST, so the
+		// nonce lookup silently fails and the non-AJAX branch calls die('-1'),
+		// killing the PHPUnit process.  Set both superglobals to avoid this.
+		//
+		// wp_send_json() uses the same DOING_AJAX guard: define it so the
+		// response goes through wp_die() → WPDieException rather than bare die.
+		defined( 'DOING_AJAX' ) || define( 'DOING_AJAX', true );
+
+		$payload = array_merge(
 			[
 				'nonce'   => wp_create_nonce( 'linguaforge_seo_analyze' ),
 				'post_id' => (string) $this->post_id,
@@ -79,14 +88,38 @@ final class SeoAnalysisPanelIntegrationTest extends WP_UnitTestCase {
 			$params
 		);
 
-		ob_start();
+		$_POST    = $payload;
+		$_REQUEST = $payload;
+
+		// In WordPress 6.9 the test framework no longer auto-installs the
+		// wp_die → WPDieException filter in WP_UnitTestCase::setUp().  Install
+		// it explicitly here so wp_die() throws instead of terminating the
+		// process.  get_wp_die_handler() is the canonical WP_UnitTestCase helper
+		// that returns the WPDieException-throwing callable.
+		add_filter( 'wp_die_handler',      [ $this, 'get_wp_die_handler' ], 1 );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'get_wp_die_handler' ], 1 );
+
+		// Use a suppressing ob callback: the JSON echoed by wp_send_json() is
+		// captured into $raw and the callback returns '' so nothing propagates
+		// to any parent buffer (PHPUnit strict-output monitor, WP's own ob stack).
+		$raw = '';
+		ob_start(
+			static function ( string $buffer ) use ( &$raw ): string {
+				$raw = $buffer;
+				return ''; // suppress — do not forward to parent buffer
+			}
+		);
 		try {
 			SeoAnalysisPanel::ajax_analyze();
-		} catch ( \WPDieException $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- intentional: we capture the JSON output before the exception.
+		} catch ( \WPDieException $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- intentional: we capture the JSON output; the exception signals wp_die() was called.
 		}
-		$raw = ob_get_clean();
+		ob_end_clean(); // trigger the callback above, then pop our buffer level
 
-		$_POST = [];
+		remove_filter( 'wp_die_handler',      [ $this, 'get_wp_die_handler' ], 1 );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'get_wp_die_handler' ], 1 );
+
+		$_POST    = [];
+		$_REQUEST = [];
 
 		$decoded = json_decode( (string) $raw, true );
 		return is_array( $decoded ) ? $decoded : [ 'success' => false, 'data' => null ];

@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.2.3 — stable, open for testing.**
+> **Version 2.2.4 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -131,7 +131,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **Content Generator** — drafts or rewrites post content from hints, tone, and output-type controls. Outputs native Gutenberg block markup
 - **Quick Translate** — admin toolbar popover with three modes: **Translate** any text snippet into a chosen language, **Create** new content from hints and tone, and **Refine** any result iteratively with additional instructions. Also available inside the Gutenberg / FSE editor toolbar
 - **AI Behavior Presets** — four named presets (Standard, Technical / Scientific, Legal / Compliance, Creative / Marketing), each with a tuned temperature and system-prompt addendum. Configurable globally from **Settings → Behavior** and overridable per post from the Lingua Forge metabox (Translation and Content Generator only)
-- **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Opt in from **Settings → Behavior**
+- **Translation Memory** — opt-in block-level translation cache shared across posts; only untranslated blocks are sent to the API, reducing token usage for recurring content. Enable from **Settings → AI Usage & Cache → Translation Memory**
 - **Glossary** — user-managed terminology table per language pair. Terms are injected into every translation prompt. Manage from **Settings → Glossary**
 - **Side-by-side diff preview** — "Apply to Editor" opens a two-column modal showing current vs translated content before anything is written
 - **Footnote tab** in the Block Action popover — translate or revise individual footnotes without switching to chunk mode; only visible when the popover is opened from inside the WordPress footnote editing UI (not from the main block toolbar)
@@ -821,7 +821,7 @@ Set the site-wide default from **Settings → Lingua Forge → Behavior**. Overr
 
 ### Translation Memory
 
-When enabled from **Settings → Behavior**, Translation Memory caches individual Gutenberg blocks in a dedicated database table. On the next translation request for a post that shares blocks with a previously translated post, only the uncached blocks are sent to the API — potentially reducing token usage significantly on recurring content like navigation text, footers, or boilerplate paragraphs. The cache key includes the block markup, language pair, active glossary hash, and preset signature, so changing any of those automatically invalidates affected entries. Status and a Clear button appear in **Settings → Maintenance**.
+When enabled from **Settings → AI Usage & Cache → Translation Memory**, Translation Memory caches individual Gutenberg blocks in a dedicated database table. On the next translation request for a post that shares blocks with a previously translated post, only the uncached blocks are sent to the API — potentially reducing token usage significantly on recurring content like navigation text, footers, or boilerplate paragraphs. The cache key includes the block markup, language pair, active glossary hash, and preset signature, so changing any of those automatically invalidates affected entries. Status, statistics, and a Clear button appear in the same inner tab.
 
 ### Glossary
 
@@ -1072,8 +1072,13 @@ from within the editor of post objects and WooCommerce products. For most websit
 
 ---
 
-**Current release — 2.2.3**
+**Current release — 2.2.4**
 
+- **WooCommerce checkout completeness** *(2.2.4)* — My Account sub-endpoint URLs (e.g. `/es/mi-cuenta/orders/`) no longer 404. Terms & Conditions and Privacy Policy links on checkout now resolve to the translated page. Brands and custom product taxonomy archives (`product_brand` + filterable via `lf_wc_product_archive_taxonomies`) now route correctly under a language prefix instead of silently falling back to the source-language archive. WooCommerce Product structured data no longer duplicated when no third-party SEO plugin is active — `SeoSupport` injects `inLanguage` via `woocommerce_structured_data_product` and `SchemaManager` skips the redundant `WebPage` block on product singulars.
+- **Secondary CPT query scoping** *(2.2.4)* — Sidebar widgets, `get_posts()` calls in templates, and Latest Posts / Latest Events core blocks now receive a `_lf_lang` constraint and return only content from the active language. ID-only lookups (`fields=ids`) are correctly skipped so `WcPageBridge` and similar infrastructure helpers are unaffected.
+- **Site Title block href localised** *(2.2.4)* — The `core/site-title` block's wrapping link now resolves to the language-appropriate home URL via the same `lang_home_url()` helper already used by the Site Logo block.
+- **Custom taxonomy archive routing** *(2.2.4)* — Any public custom taxonomy with a rewrite slug (e.g. `event_type`) now resolves correctly under a language prefix. Explicit top-priority rewrite rules are registered for all matching public taxonomies; `translate_general_term_link()` prefixes `get_term_link()` output with the active language path. Flush permalinks after upgrading.
+- **Translation Memory and API Response Cache toggles moved** *(2.2.4)* — Enable/disable checkboxes for both caching layers are now in **Settings → AI Usage & Cache** (each under its own inner sub-tab) rather than Settings → Behavior, directly alongside stats and cache management controls.
 - **WooCommerce page routing** *(2.2.2–2.2.3)* — Cart, Checkout, and My Account pages now resolve to their translated equivalents in mini-cart and checkout navigation. Product blocks (New Arrivals, Top Rated, Best Sellers, On Sale, Handpicked Products, Featured Product, Product Collection) are scoped to the active language via `pre_get_posts`. Shop, Cart, Checkout, My Account, and Terms pages created before LF is active are repaired lazily on the admin pages list.
 - **SEO Analysis profiles** *(2.2.1)* — three scoring profiles (Blog/Editorial, Product/eCommerce, Landing/Short-form) selectable per post in the Settings analysis panel and the block editor sidebar. Product and landing profiles zero the links weight and redistribute it across meta description, word count, and images. Profile-aware AI prompts omit irrelevant advice. AI recommendations are cached in `CacheStore` under `seo-ai-{profile}` keys with a "↺ Refresh" button.
 - **H2-as-H1 option** *(2.2.1)* — global setting that credits the first H2 as H1 when a block theme renders the post title as an H2. Heading detection uses a live fetch of the frontend URL for accurate theme-output counting.

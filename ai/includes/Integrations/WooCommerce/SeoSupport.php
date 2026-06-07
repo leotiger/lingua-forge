@@ -14,13 +14,18 @@
  * Only registers OG hooks when linguaforge_seo_wc_og_enabled is truthy (default true).
  *
  * ── Schema.org ────────────────────────────────────────────────────────────
- * Hooks into SchemaManager extension point:
+ * WooCommerce already outputs its own Product JSON-LD via WC_Structured_Data
+ * (wp_footer).  Emitting a parallel Product block from LF would produce duplicate
+ * schema — two <script type="application/ld+json"> Product entries on the same page.
  *
- *   linguaforge_seo_schema_extra_types action — outputs Product JSON-LD for WC
- *                                               product pages with name, description,
- *                                               inLanguage, url, image, and offers.
+ * Instead, SeoSupport hooks woocommerce_structured_data_product and injects
+ * `inLanguage` (BCP 47) into WC's own markup.  WC does the heavy lifting
+ * (SKU, gtin, reviews, offers, etc.); LF adds the multilingual property.
  *
- * Only registers Schema hook when linguaforge_seo_schema_enabled and
+ * SchemaManager suppresses its WebPage block on product pages for the same
+ * reason — WC_Structured_Data already covers structured data for that page type.
+ *
+ * Only registers the Schema hook when linguaforge_seo_schema_enabled and
  * linguaforge_seo_schema_product are both truthy (defaults true).
  *
  * Bootstrapped by WooCommerce\Bootstrap::init() — only called when WC is active.
@@ -47,15 +52,18 @@ class SeoSupport {
 			add_action( 'linguaforge_seo_og_extra_tags', [ self::class, 'output_og_extra' ] );
 		}
 
-		// ── Schema.org hook ───────────────────────────────────────────────────
+		// ── Schema.org: inject inLanguage into WC's own Product schema ────────
+		// WC_Structured_Data collects product markup via this filter and outputs
+		// it in a single JSON-LD graph at wp_footer.  We add inLanguage here
+		// instead of emitting a separate Product block from SchemaManager.
 		if ( get_option( 'linguaforge_seo_schema_enabled', true )
 			&& get_option( 'linguaforge_seo_schema_product', true ) ) {
-			add_action( 'linguaforge_seo_schema_extra_types', [ self::class, 'output_product_schema' ], 10, 2 );
+			add_filter( 'woocommerce_structured_data_product', [ self::class, 'inject_inlanguage' ] );
 		}
 	}
 
 	// =========================================================================
-	// Filters / actions
+	// Open Graph filters / actions
 	// =========================================================================
 
 	/**
@@ -126,110 +134,29 @@ class SeoSupport {
 	}
 
 	// =========================================================================
-	// Schema.org — Product
+	// Schema.org — inLanguage injection into WC's own markup
 	// =========================================================================
 
 	/**
-	 * Output Schema.org Product JSON-LD for WooCommerce product pages.
+	 * Inject `inLanguage` (BCP 47) into WooCommerce's Product structured data.
 	 *
-	 * Hooked on linguaforge_seo_schema_extra_types — only fires when
-	 * SchemaManager is active (no conflicting SEO plugin detected) and both
-	 * linguaforge_seo_schema_enabled and linguaforge_seo_schema_product are true.
+	 * WC_Structured_Data applies this filter before collecting the markup into
+	 * its internal graph array, which is then output as a single JSON-LD block
+	 * at wp_footer.  Adding inLanguage here is the correct integration point —
+	 * it avoids a duplicate Product schema while still surfacing the language
+	 * property that crawlers use for multilingual structured data.
 	 *
-	 * @param string $lang        Current LF language code (e.g. 'de').
-	 * @param string $in_language BCP 47 locale (e.g. 'de-DE').
+	 * @param  array<string, mixed> $markup  WC Product markup (no @context yet).
+	 * @return array<string, mixed>
 	 */
-	public static function output_product_schema( string $lang, string $in_language ): void {
+	public static function inject_inlanguage( array $markup ): array {
 
-		if ( ! is_singular( 'product' ) ) {
-			return;
+		if ( ! defined( 'LF_LANG' ) ) {
+			return $markup;
 		}
 
-		$post    = get_post();
-		$product = wc_get_product( get_the_ID() );
+		$markup['inLanguage'] = \LinguaForge\Router\Seo\SchemaManager::lang_to_bcp47( LF_LANG );
 
-		if ( ! $product instanceof \WC_Product || ! $post instanceof \WP_Post ) {
-			return;
-		}
-
-		$name        = wp_strip_all_tags( get_the_title( $post ) );
-		$url         = (string) get_permalink( $post );
-		$description = self::get_product_description( $post );
-		$image       = self::get_product_image( $post, $product );
-		$price       = $product->get_price();
-		$currency    = get_woocommerce_currency();
-
-		// Schema.org availability URLs.
-		$availability_map = [
-			'instock'     => 'https://schema.org/InStock',
-			'outofstock'  => 'https://schema.org/OutOfStock',
-			'onbackorder' => 'https://schema.org/PreOrder',
-		];
-		$availability = $availability_map[ $product->get_stock_status() ] ?? 'https://schema.org/InStock';
-
-		$data = [
-			'@context'    => 'https://schema.org',
-			'@type'       => 'Product',
-			'name'        => $name,
-			'url'         => $url,
-			'inLanguage'  => $in_language,
-		];
-
-		if ( '' !== $description ) {
-			$data['description'] = $description;
-		}
-
-		if ( '' !== $image ) {
-			$data['image'] = $image;
-		}
-
-		if ( '' !== (string) $price ) {
-			$data['offers'] = [
-				'@type'         => 'Offer',
-				'price'         => $price,
-				'priceCurrency' => $currency,
-				'availability'  => $availability,
-				'url'           => $url,
-			];
-		}
-
-		$data = (array) apply_filters( 'linguaforge_seo_schema_data', $data, 'Product' );
-
-		// Re-use SchemaManager's output helper via the Router singleton.
-		\LinguaForge\Router\Seo\SchemaManager::output_schema( $data );
-	}
-
-	// =========================================================================
-	// Private helpers
-	// =========================================================================
-
-	private static function get_product_description( \WP_Post $post ): string {
-
-		$lf_meta = get_post_meta( $post->ID, '_linguaforge_meta_description', true );
-		if ( is_string( $lf_meta ) && '' !== trim( $lf_meta ) ) {
-			return trim( $lf_meta );
-		}
-		if ( '' !== $post->post_excerpt ) {
-			return wp_strip_all_tags( $post->post_excerpt );
-		}
-		return wp_trim_words( wp_strip_all_tags( $post->post_content ), 30 );
-	}
-
-	private static function get_product_image( \WP_Post $post, \WC_Product $product ): string {
-
-		// WooCommerce product image (stored as _thumbnail_id on the source product).
-		if ( has_post_thumbnail( $post ) ) {
-			$src = wp_get_attachment_image_url( (int) get_post_thumbnail_id( $post ), 'full' );
-			if ( $src ) return $src;
-		}
-
-		// Fallback: first gallery image.
-		$gallery = $product->get_gallery_image_ids();
-		if ( ! empty( $gallery ) ) {
-			$src = wp_get_attachment_image_url( (int) $gallery[0], 'full' );
-			if ( $src ) return $src;
-		}
-
-		return '';
+		return $markup;
 	}
 }

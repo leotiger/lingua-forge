@@ -591,6 +591,93 @@ NODE
 
 fi
 
+# ── Sample lf_event posts ────────────────────────────────────────────────────
+# Creates one source EN event post and DE/CA/ES translation stubs linked by a
+# shared _lf_trid.  The lf_event CPT is registered by the lf-dev-env.php
+# mu-plugin (priority 5 on init) so it is available during wp eval.
+# Exercises CPT archive routing (/en/events/, /es/events/, …) and
+# translate_cpt_archive_link() in the language switcher.
+
+# Helper: create an lf_event post if none with this lang+slug exists.
+create_event_if_missing() {
+    local title="$1"
+    local lang="$2"
+    local slug="$3"
+    local content="$4"
+
+    local existing
+    existing=$($WP post list \
+        --post_type=lf_event \
+        --post_status=publish \
+        --meta_key=_lf_lang \
+        --meta_value="$lang" \
+        --name="$slug" \
+        --fields=ID \
+        --format=ids \
+        --quiet 2>/dev/null || true)
+
+    if [ -n "$existing" ]; then
+        echo "    ↳ \"$title\" ($lang) already exists (ID $existing), skipping." >&2
+        echo "$existing"
+        return
+    fi
+
+    local id
+    id=$($WP post create \
+        --post_type=lf_event \
+        --post_status=publish \
+        --post_title="$title" \
+        --post_name="$slug" \
+        --post_content="$content" \
+        --porcelain \
+        --quiet)
+
+    $WP post meta set "$id" _lf_lang "$lang" --quiet
+    echo "    ↳ Created event \"$title\" ($lang) → ID $id" >&2
+    echo "$id"
+}
+
+echo "  Creating sample lf_event posts …"
+
+if $WP eval 'exit( post_type_exists( "lf_event" ) ? 0 : 1 );' --quiet 2>/dev/null; then
+
+    EVENT_TRID=$(cat /proc/sys/kernel/random/uuid 2>/dev/null \
+        || uuidgen 2>/dev/null \
+        || printf '%s-%s' "lf-event" "$(date +%s)")
+
+    EN_EV=$(create_event_if_missing \
+        "Annual Conference" "en" "annual-conference" \
+        "<!-- wp:paragraph --><p>Our flagship annual conference — English version.</p><!-- /wp:paragraph -->")
+
+    DE_EV=$(create_event_if_missing \
+        "Jahreskonferenz" "de" "jahreskonferenz" \
+        "<!-- wp:paragraph --><p>Unsere jährliche Konferenz — Deutsche Version.</p><!-- /wp:paragraph -->")
+
+    CA_EV=$(create_event_if_missing \
+        "Conferència anual" "ca" "conferencia-anual" \
+        "<!-- wp:paragraph --><p>La nostra conferència anual — Versió catalana.</p><!-- /wp:paragraph -->")
+
+    ES_EV=$(create_event_if_missing \
+        "Conferencia anual" "es" "conferencia-anual-es" \
+        "<!-- wp:paragraph --><p>Nuestra conferencia anual — Versión en español.</p><!-- /wp:paragraph -->")
+
+    # Link all four with the shared TRID.
+    for pid in $EN_EV $DE_EV $CA_EV $ES_EV; do
+        [ -z "$pid" ] && continue
+        $WP post meta update "$pid" _lf_trid "$EVENT_TRID" --quiet 2>/dev/null \
+            || $WP post meta add "$pid" _lf_trid "$EVENT_TRID" --quiet 2>/dev/null \
+            || true
+    done
+
+    echo "    ↳ Event group TRID: $EVENT_TRID"
+    echo "    ↳ Source (EN): ID $EN_EV  Translations: DE=$DE_EV CA=$CA_EV ES=$ES_EV"
+    echo "    ↳ Test CPT archive routing: /en/events/  /de/events/  /ca/events/  /es/events/"
+
+else
+    echo "  lf_event CPT not registered — skipping event seed."
+    echo "  Run 'npm run env:start' (which loads lf-dev-env.php) then re-run 'npm run env:seed'."
+fi
+
 # ── Final rewrite flush ───────────────────────────────────────────────────────
 # Must run AFTER linguaforge_primary_language, linguaforge_routing_mode, and
 # language packs are all in place so the router registers its language-prefix

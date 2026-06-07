@@ -7,8 +7,9 @@ defined('ABSPATH') || exit;
 /**
  * Settings tab: Behavior
  *
- * Block Editor restrictions, Global AI Preset (compliance mode), and
- * Translation Memory toggle.
+ * Block Editor restrictions and Global AI Preset (compliance mode).
+ * Translation Memory and API Response Cache toggles live in the
+ * AI Usage &amp; Cache tab → Translation Caching inner tabs.
  */
 class BehaviorTab extends Tab {
 
@@ -162,67 +163,6 @@ class BehaviorTab extends Tab {
             <?php endforeach; ?>
         </table>
 
-        <!-- ── Translation Memory (§4.5) ────────────────────────── -->
-        <h2><?php esc_html_e('Translation Memory', 'lingua-forge'); ?></h2>
-
-        <p>
-            <?php
-            esc_html_e( 'Cache translated equivalents at the block level so reusable content (shared footers, sidebars, accordions, boilerplate-heavy legal sections) does not pay an API call every time. When enabled, the translation flow parses each post into blocks, looks each block up in the cache, and sends only uncached blocks to the AI in a single batched request. Glossary edits and Compliance preset changes automatically invalidate affected cached translations. View statistics and clear the cache under Maintenance.', 'lingua-forge' );
-            ?>
-        </p>
-
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row">
-                    <?php esc_html_e('Translation Memory', 'lingua-forge'); ?>
-                </th>
-                <td>
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="linguaforge_translation_memory_enabled"
-                            value="1"
-                            <?php checked( (bool) get_option('linguaforge_translation_memory_enabled', false) ); ?>
-                        >
-                        <?php esc_html_e('Enable block-level translation cache reuse across posts', 'lingua-forge'); ?>
-                    </label>
-                    <p class="description">
-                        <?php esc_html_e('Currently skipped for posts that use block-comment attribute placeholders (wp:details summary fields, etc.) — they fall through to the existing single-call translation path.', 'lingua-forge'); ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
-
-        <!-- ── API Response Cache (§10.16) ──────────────────────── -->
-        <h2><?php esc_html_e('API Response Cache', 'lingua-forge'); ?></h2>
-
-        <p>
-            <?php
-            esc_html_e( 'The API Response Cache stores the raw result of every AI request — translation, meta description, excerpt, and content generation — keyed by a hash of the inputs (content, language pair, provider, model). Subsequent requests with identical inputs are served from the cache with no API call. The cache is different from Translation Memory: Translation Memory operates at the block level and is shared across posts; the API Response Cache operates at the feature level and is keyed per post.', 'lingua-forge' );
-            ?>
-        </p>
-
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row">
-                    <?php esc_html_e('API Response Cache', 'lingua-forge'); ?>
-                </th>
-                <td>
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="linguaforge_api_cache_enabled"
-                            value="1"
-                            <?php checked( (bool) get_option('linguaforge_api_cache_enabled', true) ); ?>
-                        >
-                        <?php esc_html_e('Enable API response caching', 'lingua-forge'); ?>
-                    </label>
-                    <p class="description">
-                        <?php esc_html_e('Disable during prompt tuning or when you need every request to reach the AI provider. Disabling does not delete cached entries — re-enabling restores them. Increasing API spend immediately on busy sites is expected when disabled.', 'lingua-forge'); ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
         <?php
     }
 }

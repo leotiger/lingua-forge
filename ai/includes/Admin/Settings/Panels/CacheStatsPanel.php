@@ -51,13 +51,9 @@ class CacheStatsPanel {
         <?php self::render_notices(); ?>
 
         <?php
-        $cache_stats     = CacheStore::stats();
-        $tm_enabled      = (bool) get_option( 'linguaforge_translation_memory_enabled', false );
-        $tm_stats        = TranslationMemory::stats();
-        $tm_status_label = $tm_enabled
-            ? '<span class="lingua-forge-key-badge lingua-forge-badge--ok">' . esc_html__( '✓ Enabled', 'lingua-forge' ) . '</span>'
-            : '<span class="lingua-forge-key-badge lingua-forge-badge--missing">' . esc_html__( '✗ Disabled', 'lingua-forge' ) . '</span>'
-              . ' <span style="color:#646970">' . esc_html__( '— toggle in Settings → Behavior.', 'lingua-forge' ) . '</span>';
+        $cache_stats = CacheStore::stats();
+        $tm_enabled  = (bool) get_option( 'linguaforge_translation_memory_enabled', false );
+        $tm_stats    = TranslationMemory::stats();
         ?>
 
         <nav class="nav-tab-wrapper lf-cache-tabs" style="margin-bottom:1.5em;">
@@ -78,11 +74,42 @@ class CacheStatsPanel {
             <p class="description" style="margin-bottom:1em;">
                 <?php
                 esc_html_e(
-                    'Per-post cache for AI-generated translations, meta descriptions, excerpts, and content. Always active — no separate toggle required. Entries are invalidated automatically when the content or AI provider/model changes.',
+                    'Per-post cache for AI-generated translations, meta descriptions, excerpts, and content. Entries are invalidated automatically when the content or AI provider/model changes.',
                     'lingua-forge'
                 );
                 ?>
             </p>
+
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                style="margin-bottom:1.5em;"
+            >
+                <input type="hidden" name="action" value="linguaforge_save_api_cache_enabled">
+                <?php wp_nonce_field( 'linguaforge_save_api_cache_enabled', 'linguaforge_save_api_cache_enabled_nonce' ); ?>
+                <table class="form-table" role="presentation" style="margin-bottom:.5em;">
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e( 'API Response Cache', 'lingua-forge' ); ?>
+                        </th>
+                        <td>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="linguaforge_api_cache_enabled"
+                                    value="1"
+                                    <?php checked( (bool) get_option( 'linguaforge_api_cache_enabled', true ) ); ?>
+                                >
+                                <?php esc_html_e( 'Enable API response caching', 'lingua-forge' ); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e( 'The API Response Cache stores the raw result of every AI request — translation, meta description, excerpt, and content generation — keyed by a hash of the inputs (content, language pair, provider, model). Disable during prompt tuning or when you need every request to reach the AI provider. Disabling does not delete cached entries — re-enabling restores them.', 'lingua-forge' ); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <?php submit_button( __( 'Save', 'lingua-forge' ), 'secondary', 'submit', false ); ?>
+            </form>
 
             <table class="widefat striped" style="max-width:480px;margin-bottom:1em;">
                 <tbody>
@@ -134,18 +161,45 @@ class CacheStatsPanel {
             <p class="description" style="margin-bottom:1em;">
                 <?php
                 esc_html_e(
-                    'Block-level translation cache shared across posts. When enabled, identical blocks (same markup, language pair, and glossary) are served from memory instead of calling the AI again. Configure in Settings → Behavior.',
+                    'Block-level translation cache shared across posts. When enabled, identical blocks (same markup, language pair, and glossary) are served from memory instead of calling the AI again. Glossary edits and Compliance preset changes automatically invalidate affected cached translations.',
                     'lingua-forge'
                 );
                 ?>
             </p>
 
+            <form
+                method="post"
+                action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                style="margin-bottom:1.5em;"
+            >
+                <input type="hidden" name="action" value="linguaforge_save_tm_enabled">
+                <?php wp_nonce_field( 'linguaforge_save_tm_enabled', 'linguaforge_save_tm_enabled_nonce' ); ?>
+                <table class="form-table" role="presentation" style="margin-bottom:.5em;">
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e( 'Translation Memory', 'lingua-forge' ); ?>
+                        </th>
+                        <td>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="linguaforge_translation_memory_enabled"
+                                    value="1"
+                                    <?php checked( $tm_enabled ); ?>
+                                >
+                                <?php esc_html_e( 'Enable block-level translation cache reuse across posts', 'lingua-forge' ); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e( 'Currently skipped for posts that use block-comment attribute placeholders (wp:details summary fields, etc.) — they fall through to the existing single-call translation path.', 'lingua-forge' ); ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <?php submit_button( __( 'Save', 'lingua-forge' ), 'secondary', 'submit', false ); ?>
+            </form>
+
             <table class="widefat striped" style="max-width:480px;margin-bottom:1em;">
                 <tbody>
-                    <tr>
-                        <th scope="row"><?php esc_html_e( 'Status', 'lingua-forge' ); ?></th>
-                        <td><?php echo wp_kses_post( $tm_status_label ); ?></td>
-                    </tr>
                     <tr>
                         <th scope="row"><?php esc_html_e( 'Cached block translations', 'lingua-forge' ); ?></th>
                         <td><strong><?php echo esc_html( number_format_i18n( $tm_stats['rows'] ) ); ?></strong></td>
@@ -218,9 +272,9 @@ class CacheStatsPanel {
 
             var params  = new URLSearchParams( window.location.search );
             var initial = 'api-cache';
-            if ( params.has( 'lf_tm_cleared' ) ) {
+            if ( params.has( 'lf_tm_cleared' ) || params.has( 'lf_tm_enabled_saved' ) ) {
                 initial = 'tm';
-            } else if ( params.has( 'lf_cache_cleared' ) ) {
+            } else if ( params.has( 'lf_cache_cleared' ) || params.has( 'lf_api_cache_saved' ) ) {
                 initial = 'api-cache';
             } else {
                 try { initial = localStorage.getItem( LS_KEY ) || 'api-cache'; } catch (e) {}
@@ -242,6 +296,22 @@ class CacheStatsPanel {
      * Render success notices for cache-cleared and TM-cleared redirects.
      */
     private static function render_notices(): void {
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag; no data modified.
+        if ( isset( $_GET['lf_api_cache_saved'] ) ) :
+            ?>
+            <div class="notice notice-success is-dismissible"><p><?php
+                esc_html_e( 'API Response Cache setting saved.', 'lingua-forge' );
+            ?></p></div>
+        <?php endif;
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ( isset( $_GET['lf_tm_enabled_saved'] ) ) :
+            ?>
+            <div class="notice notice-success is-dismissible"><p><?php
+                esc_html_e( 'Translation Memory setting saved.', 'lingua-forge' );
+            ?></p></div>
+        <?php endif;
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag; no data modified.
         if ( isset( $_GET['lf_cache_cleared'] ) ) :
@@ -315,6 +385,60 @@ class CacheStatsPanel {
         wp_safe_redirect( add_query_arg(
             'lf_tm_cleared',
             (int) $count,
+            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+        ) );
+        exit;
+    }
+
+    /**
+     * Handle "Save" for the API Response Cache enable/disable toggle.
+     *
+     * Registered on admin_post_linguaforge_save_api_cache_enabled.
+     */
+    public static function handle_save_api_cache_enabled(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_save_api_cache_enabled', 'linguaforge_save_api_cache_enabled_nonce' );
+
+        update_option(
+            'linguaforge_api_cache_enabled',
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked above.
+            ! empty( $_POST['linguaforge_api_cache_enabled'] ) ? 1 : 0,
+            false
+        );
+
+        wp_safe_redirect( add_query_arg(
+            'lf_api_cache_saved', '1',
+            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+        ) );
+        exit;
+    }
+
+    /**
+     * Handle "Save" for the Translation Memory enable/disable toggle.
+     *
+     * Registered on admin_post_linguaforge_save_tm_enabled.
+     */
+    public static function handle_save_tm_enabled(): void {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
+        }
+
+        check_admin_referer( 'linguaforge_save_tm_enabled', 'linguaforge_save_tm_enabled_nonce' );
+
+        update_option(
+            'linguaforge_translation_memory_enabled',
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked above.
+            ! empty( $_POST['linguaforge_translation_memory_enabled'] ) ? 1 : 0,
+            false
+        );
+
+        wp_safe_redirect( add_query_arg(
+            'lf_tm_enabled_saved', '1',
             admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;

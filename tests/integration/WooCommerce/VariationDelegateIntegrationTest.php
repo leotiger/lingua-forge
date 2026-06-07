@@ -172,14 +172,24 @@ final class VariationDelegateIntegrationTest extends WcIntegrationTestCase {
 		[ $source_id, $translated_id ] = $this->make_product_pair();
 		unset( $translated_id );
 
-		// Create a regular 'product' child (not a variation) of source.
-		$child_id = self::factory()->post->create( [
-			'post_type'   => 'product',
-			'post_status' => 'publish',
-			'post_parent' => $source_id,
-		] );
+		// VariationDelegate hooks pre_get_posts at p5 and only acts on
+		// 'product_variation' post_type queries — it must bail immediately for
+		// 'product' queries without modifying post_parent.
+		//
+		// Rather than querying for results (which would drag in CatalogQuery's
+		// language filter and WC visibility filtering, both orthogonal to this
+		// test), we spy on the query at p6 — immediately after VariationDelegate
+		// at p5 — to capture the post_parent value.  If VariationDelegate
+		// rewrote the query, post_parent would differ from $source_id.
+		$captured_parent = null;
+		$spy             = static function ( \WP_Query $q ) use ( $source_id, &$captured_parent ) {
+			if ( 'product' === $q->get( 'post_type' ) && $source_id === (int) $q->get( 'post_parent' ) ) {
+				$captured_parent = (int) $q->get( 'post_parent' );
+			}
+		};
+		add_action( 'pre_get_posts', $spy, 6 );
 
-		$q = new \WP_Query( [
+		new \WP_Query( [
 			'post_type'     => 'product',
 			'post_parent'   => $source_id,
 			'post_status'   => 'any',
@@ -187,9 +197,14 @@ final class VariationDelegateIntegrationTest extends WcIntegrationTestCase {
 			'nopaging'      => true,
 			'no_found_rows' => true,
 		] );
-		$found = array_map( 'intval', $q->posts );
 
-		$this->assertContains( $child_id, $found, 'Non-variation query must not be rewritten by VariationDelegate.' );
+		remove_action( 'pre_get_posts', $spy, 6 );
+
+		$this->assertSame(
+			$source_id,
+			$captured_parent,
+			'VariationDelegate must not rewrite a post_type=product post_parent (non-variation query must be left untouched).'
+		);
 	}
 
 	// =========================================================================
@@ -240,6 +255,12 @@ final class VariationDelegateIntegrationTest extends WcIntegrationTestCase {
 		[ $source_id, $translated_id ] = $this->make_product_pair();
 		$variation_id = $this->make_variation( $source_id );
 
+		// CatalogQuery fires on any post_type array containing 'product'.
+		// product_variation posts carry no _lf_lang, so temporarily unhook it;
+		// this test is about VariationDelegate rewriting, not language filtering.
+		$catalog_cb = [ \LinguaForge\AI\Integrations\WooCommerce\CatalogQuery::class, 'apply_language_filter_to_secondary_query' ];
+		remove_action( 'pre_get_posts', $catalog_cb, 10 );
+
 		$q = new \WP_Query( [
 			'post_type'     => [ 'product_variation', 'product' ],
 			'post_parent'   => $translated_id,
@@ -249,6 +270,8 @@ final class VariationDelegateIntegrationTest extends WcIntegrationTestCase {
 			'no_found_rows' => true,
 		] );
 		$found = array_map( 'intval', $q->posts );
+
+		add_action( 'pre_get_posts', $catalog_cb, 10, 1 );
 
 		$this->assertContains(
 			$variation_id,
