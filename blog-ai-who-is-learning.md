@@ -102,7 +102,7 @@ The deeper you go — the longer the sessions, the more context you build, the m
 
 ## And No, It Did Not Stay With Me
 
-That's how AI likes to be seen. AI can be, is highly addictive, don't forget that there's a world, a far richer world, not related with computer science, a world that is suffering a continous depreciation, a loss of estimation, simply because everything that surrounds AI, the business models implied, is taking over everything, infecting everything, gaining pace with every day... it's resistance that shapes a tool as well... and for it's intrinsic qualities, there's no ethic framework, no moral guidance, it's to fast, to overwhelming for societies, for individuals... it's like the Gold Rush, the Klondike fever... few get rich, and mostly for selling sex to the poor, like the Trump family did and now see its heir! 
+That's how AI likes to be seen. AI can be, is highly addictive, don't forget that there's a world, a far richer world, not related with computer science, a world that is suffering a continous depreciation, a loss of estimation, simply because everything that surrounds AI, the business models implied, is taking over everything, infecting everything, gaining pace with every day... but does it really solve our most vital questions, satisfy our most vital needs? It's resistance that shapes a tool as well... and for it's intrinsic qualities, it's to fast, it's to consuming, there's no ethic framework, no moral guidance, it's to fast, to overwhelming for societies, for individuals... it's like the Gold Rush, the Klondike fever... few get rich, and mostly for selling sex to the poor, like the Trump family did and now see its heir! 
 
 --- 
 
