@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 21:27+0000\n"
+"PO-Revision-Date: 2026-06-08 19:24+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: ja\n"
@@ -24,14 +24,14 @@ msgid "\"%1$s %2$s\" saved."
 msgstr "\"%1$s %2$s\" が保存されました。"
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:249
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:310
 #, php-format
 msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
 msgstr[0] "「%1$s」が作成されました。%2$d テンプレートが更新されました。"
 
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:127
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:157
 #, php-format
 msgid "\"%s\" created."
 msgstr "「%s」が作成されました。"
@@ -41,7 +41,7 @@ msgid "\"product\" (replaces \"article\")"
 msgstr "「product」（「article」の代わり）"
 
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -49,46 +49,59 @@ msgid ""
 msgstr "%1$d文字 — 良好で、理想的な最大値の%2$dをわずかに超えていますが、許容範囲内です。%4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d 文字 — 理想的な長さです。%2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr "%1$d文字 — 検索結果ページで切り捨てられる可能性があります（%2$d未満に保つ）。%3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d 文字 — 短すぎます（%2$d～%3$d を目指してください）。%4$s"
 
+#. translators: %1$d: character count, %2$d: word count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#, php-format
+msgid "%1$d chars, %2$d words — good title."
+msgstr "%1$d文字、%2$d語 — 良いタイトルです。"
+
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d内部リンク、%2$d外部リンク。"
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$dの画像のうち、altテキストが欠落しているものが%2$dあります。"
 
+#. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#, php-format
+msgid "%1$d post tagged with _lf_lang = %2$s."
+msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
+msgstr[0] "%1$d 投稿が _lf_lang = %2$s にタグ付けされています。"
+
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d 語 — 推奨最小値 %2$d 以下です。"
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -96,20 +109,14 @@ msgid ""
 "%1$d words — very thin content. Consider expanding to at least %2$d words."
 msgstr "%1$d 語 — 非常に薄いコンテンツです。少なくとも %2$d 語に拡張することをお勧めします。"
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
-#, php-format
-msgid "%d chars — good length."
-msgstr "%d文字 — 良い長さ。"
-
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "外部リンク%d個、内部リンクなし。"
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -117,19 +124,19 @@ msgid ""
 msgstr "%dの外部リンク、内部リンクなし。関連コンテンツへの内部リンクを追加してください。"
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d個のH1タグが見つかりました — ページには正確に1つのH1が必要です。"
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d個の画像、すべてにaltテキストがあります。"
 
 #. translators: %d: number of languages without a translation post
-#: language-router/includes/admin/class-meta-boxes.php:266
+#: language-router/includes/admin/class-meta-boxes.php:282
 #, php-format
 msgid "%d language not yet linked"
 msgid_plural "%d languages not yet linked"
@@ -185,8 +192,22 @@ msgid "%d part reference updated."
 msgid_plural "%d part references updated."
 msgstr[0] "%d 個の部分参照が更新されました。"
 
+#. translators: %d: number of posts
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#, php-format
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] "%d 投稿"
+
+#. translators: %d: number of rewrite rules
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#, php-format
+msgid "%d rule registered"
+msgid_plural "%d rules registered"
+msgstr[0] "%d ルールが登録されました"
+
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
 #, php-format
 msgid "%d words."
 msgstr "%d語。"
@@ -227,23 +248,31 @@ msgstr ""
 ".txtで告知されます。"
 
 #. translators: %s is the average hits per cached block.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:160
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
 msgid "(avg %.1f hits/block)"
 msgstr "(平均 %.1f ヒット/ブロック)"
 
 #. translators: %s is the average hits per cached entry.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:100
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:127
 #, php-format
 msgid "(avg %.1f hits/entry)"
 msgstr "（平均 %.1f ヒット/エントリ）"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:70
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+msgid "(classic theme)"
+msgstr "（クラシックテーマ）"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:66
 msgid "(disabled)"
 msgstr "（無効）"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+msgid "(FSE / block theme)"
+msgstr "（FSE / ブロックテーマ）"
+
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
 #, php-format
 msgid "(no title) #%d"
 msgstr "（タイトルなし） #%d"
@@ -260,16 +289,16 @@ msgstr ".txtファイルがディレクトリにあります"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "1つのH1 ✓ — H2のサブ見出しはなし（このコンテンツタイプでは許容される）。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr "1つのH1 ✓ — H2のサブ見出しは見つかりませんでした。H2を追加すると構造が改善されます。"
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1つのH1 ✓、%1$dのH2、%2$dのH3。"
@@ -304,6 +333,10 @@ msgstr "<strong>{n}</strong> 古いパス"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> テンプレートの問題"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+msgid "_lf_lang Coverage"
+msgstr "_lf_lang カバレッジ"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:337
 msgid ""
 "A physical robots.txt file exists at the site root. WordPress's virtual "
@@ -329,16 +362,16 @@ msgstr ""
 msgid "Action"
 msgstr "アクション"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:48
-msgid "Actions"
-msgstr "アクション"
-
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
 msgid "active"
 msgstr "アクティブ"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
 msgid "Active Languages"
+msgstr "アクティブな言語"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+msgid "Active languages"
 msgstr "アクティブな言語"
 
 #: ai/includes/Admin/SettingsHelp.php:78
@@ -349,9 +382,27 @@ msgstr ""
 "アクティブな言語：サポートしたい各言語を追加してください。各言語にはURLプレフィックスまたはサブドメインと、ページの&lt;head&gt;"
 "内にhreflangタグが設定されます。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+msgid "Active preset"
+msgstr "アクティブなプリセット"
+
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
 msgid "Active Provider"
 msgstr "アクティブなプロバイダー"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
+msgid "Active provider"
+msgstr "アクティブなプロバイダー"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+msgid "Active theme"
+msgstr "アクティブなテーマ"
+
+#. translators: %s: comma-separated list of plugin names
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#, php-format
+msgid "Active: %s."
+msgstr "アクティブ：%s。"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:265
 msgid "Add entry"
@@ -368,6 +419,10 @@ msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
 msgstr "ドラフトを改善するための指示を追加してください — 例：短くする、結論セクションを追加、よりフォーマルな表現を使う…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+msgid "Add key →"
+msgstr "キーを追加 →"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:201
 msgid "Add new entry"
@@ -424,7 +479,7 @@ msgid "AI Behaviour Preset"
 msgstr "AI動作プリセット"
 
 #. translators: %d: number of cache entries removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:253
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:323
 #, php-format
 msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
@@ -439,6 +494,10 @@ msgid ""
 msgstr ""
 "AIキャッシュ：キャッシュされたAI応答とヒット数を一覧表示します。キャッシュ全体または特定の投稿のエントリをクリアします。翻訳変更をテストする前に「クリア」を使用してください"
 " — キャッシュされた結果は、AIプリセットやモデルを変更してもキャッシュエントリが追い出されるまで返され続けます。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+msgid "AI Configuration"
+msgstr "AI設定"
 
 #: ai/includes/Admin/SettingsHelp.php:88
 msgid ""
@@ -461,12 +520,16 @@ msgstr "AIプロバイダーが空の応答を返しました。"
 msgid "AI Recommendations"
 msgstr "AI推奨事項"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AIが予期しない応答形式を返しました。もう一度お試しください。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+msgid "AI translation and batch analysis may time out. Recommend 120s or more."
+msgstr "AI翻訳とバッチ分析はタイムアウトする場合があります。120秒以上を推奨します。"
+
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "AI Usage"
 msgstr "AI使用状況"
 
@@ -489,19 +552,24 @@ msgstr ""
 "ディレクティブを通じて自動的にサイトマップを検出します。手動の操作は必要ありません。下のボタンは即座にpingを送信し、次のrobots."
 "txtのチェックを待たずにサイトマップを再クロールさせます。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+msgid "All published posts have a _lf_lang value. No gaps detected."
+msgstr "公開済みのすべての投稿には _lf_lang の値があります。ギャップは検出されませんでした。"
+
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:49
 msgid "All time"
 msgstr "全期間"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:277
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
 msgid "All types"
 msgstr "すべてのタイプ"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:50
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:51
 msgid "Allow editors to lock individual blocks"
 msgstr "編集者が個々のブロックをロックできるようにします"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:69
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:70
 msgid "Allow Gutenberg template-editing mode on post screens"
 msgstr "投稿画面でGutenbergのテンプレート編集モードを許可します"
 
@@ -539,15 +607,23 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "不明なエラーが発生しました。"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+msgid "Analyse"
+msgstr "分析"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:373
+msgid "Analyse all languages"
+msgstr "すべての言語を分析"
+
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
 msgid "Analyse…"
 msgstr "分析…"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:70
 msgid "Analysis"
 msgstr "分析"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
 msgid "Analysis request failed. Please try again."
 msgstr "分析リクエストに失敗しました。もう一度お試しください。"
 
@@ -559,7 +635,7 @@ msgstr "分析中…"
 msgid "and"
 msgstr "および"
 
-#: ai/includes/Admin/SettingsPage.php:63
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "Anthropic (Claude)"
 msgstr "Anthropic（Claude）"
 
@@ -568,7 +644,7 @@ msgstr "Anthropic（Claude）"
 msgid "any"
 msgstr "いずれか"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:94
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:121
 msgid "API calls saved by cache"
 msgstr "キャッシュされたAPI呼び出し"
 
@@ -576,9 +652,13 @@ msgstr "キャッシュされたAPI呼び出し"
 msgid "API Key"
 msgstr "APIキー"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
+msgid "API key"
+msgstr "APIキー"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
 msgid "API Keys"
 msgstr "APIキー"
 
@@ -586,11 +666,14 @@ msgstr "APIキー"
 msgid "API Keys Tab"
 msgstr "APIキータブ"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:65
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:208
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:61
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:93
 msgid "API Response Cache"
 msgstr "API応答キャッシュ"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:304
+msgid "API Response Cache setting saved."
+msgstr "APIレスポンスキャッシュ設定が保存されました。"
 
 #. translators: %s: Sitemap directive line
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:356
@@ -608,6 +691,11 @@ msgstr "適用完了 ✓"
 #: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
 msgid "Apply failed — please try again."
 msgstr "適用に失敗しました — もう一度お試しください。"
+
+#: language-router/includes/admin/class-columns.php:173
+#: language-router/includes/admin/class-meta-boxes.php:97
+msgid "Apply to all language versions"
+msgstr "すべての言語バージョンに適用"
 
 #: ai/assets/block-action.js:328 ai/assets/block-action.js:517
 #: ai/assets/block-action.js:722 ai/assets/block-action.js:990
@@ -638,7 +726,7 @@ msgstr "翻訳を適用"
 msgid "Applying…"
 msgstr "適用中…"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:177
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:231
 msgid "Approximate size"
 msgstr "おおよそのサイズ"
 
@@ -669,8 +757,21 @@ msgstr "著者以上（edit_published_posts）"
 msgid "Auto (recommended)"
 msgstr "自動（推奨）"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:378
+msgid ""
+"Auto-detect assigns: WooCommerce products → Product profile; the static "
+"front page → Landing profile; everything else → Blog profile. Choose a "
+"specific profile to override this for all posts."
+msgstr ""
+"自動検出割り当て：WooCommerce製品 → 製品プロフィール；静的フロントページ → ランディングプロフィール；その他すべて → "
+"ブログプロフィール。この設定を上書きする特定のプロフィールを選択してください。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
+msgid "Batch Analysis"
+msgstr "バッチ分析"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Behavior"
 msgstr "動作"
 
@@ -697,7 +798,7 @@ msgstr ""
 "訪問者の言語に翻訳が存在しないため、現在のページがソース言語で表示されている場合に丁寧な通知を表示します。これは、Lingua "
 "ForgeルーターのLINGUAFORGE_LANG_FALLBACK_ACTIVE信号によって制御されており、リクエストロケールに翻訳が存在する場合は何も発しません。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:29
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:30
 msgid "Block Editor"
 msgstr "ブロックエディター"
 
@@ -726,7 +827,7 @@ msgctxt "block keyword"
 msgid "translation"
 msgstr "翻訳"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:40
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:41
 msgid "Block locking"
 msgstr "ブロックロック"
 
@@ -744,18 +845,18 @@ msgctxt "block title"
 msgid "Missing Translation Notice"
 msgstr "翻訳なし通知"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:154
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:208
 msgid "Block translation reuses"
 msgstr "ブロック翻訳の再利用"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:163
 msgid ""
 "Block-level translation cache shared across posts. When enabled, identical "
 "blocks (same markup, language pair, and glossary) are served from memory "
-"instead of calling the AI again. Configure in Settings → Behavior."
+"instead of calling the AI again. Glossary edits and Compliance preset "
+"changes automatically invalidate affected cached translations."
 msgstr ""
-"投稿間で共有されるブロックレベルの翻訳キャッシュ。有効にすると、同一のブロック（同じマークアップ、言語ペア、用語集）は、AIを再呼び出しする代わりにメモリから提供されます。設定"
-" → 動作で構成します。"
+"投稿間で共有されるブロックレベルの翻訳キャッシュ。これを有効にすると、同一のブロック（同じマークアップ、言語ペア、用語集）をメモリから提供し、AI呼び出しを省略します。用語集の編集やコンプライアンスプリセットの変更は、自動的に影響を受けるキャッシュ翻訳を無効にします。"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
 msgid "Blog / Editorial"
@@ -773,7 +874,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "ブラウザ言語リダイレクト"
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:329
 msgid "Built-in preset instructions:"
 msgstr "内蔵プリセット指示:"
 
@@ -781,28 +882,16 @@ msgstr "内蔵プリセット指示:"
 msgid "Bulletize (•-prefixed)"
 msgstr "箇条書き（•-プレフィックス）"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
-msgid ""
-"Cache translated equivalents at the block level so reusable content (shared "
-"footers, sidebars, accordions, boilerplate-heavy legal sections) does not "
-"pay an API call every time. When enabled, the translation flow parses each "
-"post into blocks, looks each block up in the cache, and sends only uncached "
-"blocks to the AI in a single batched request. Glossary edits and Compliance "
-"preset changes automatically invalidate affected cached translations. View "
-"statistics and clear the cache under Maintenance."
-msgstr ""
-"ブロックレベルで翻訳のキャッシュを保存し、再利用可能なコンテンツ（共有フッター、サイドバー、アコーディオン、定型文の多い法的セクション）がAPI呼び出しを毎回行わないようにします。有効にすると、翻訳フローは各投稿をブロックに解析し、キャッシュ内の各ブロックを検索し、キャッシュされていないブロックだけを一括リクエストでAIに送信します。用語集の編集やコンプライアンスプリセットの変更は自動的に影響を受けたキャッシュ翻訳を無効にします。統計を表示し、メンテナンスでキャッシュをクリアします。"
-
 #: ai/assets/admin.js:662 ai/assets/admin.js:737 ai/assets/admin.js:781
 #: ai/assets/toolbar-translate.js:669
 msgid "cached"
 msgstr "キャッシュ済み"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:90
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:117
 msgid "Cached API responses"
 msgstr "キャッシュされたAPI応答"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:150
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:204
 msgid "Cached block translations"
 msgstr "キャッシュされたブロック翻訳"
 
@@ -843,10 +932,18 @@ msgid ""
 msgstr ""
 "サイトが生成できるAIの使用量を制限し、有料AI呼び出しをトリガーできるユーザーロールを制限します。既にあるユーザごとのレート制限（30リクエスト/分、ハードコーディング）の上に乗っています。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+msgid "Cart"
+msgstr "カート"
+
 #. translators: %d is replaced by the number of characters
 #: ai/assets/admin.js:835
 msgid "chars"
 msgstr "文字数"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+msgid "Checkout"
+msgstr "チェックアウト"
 
 #: ai/assets/admin.js:734
 msgid "Chunk translated"
@@ -865,13 +962,13 @@ msgstr "クリア"
 msgid "Clear All"
 msgstr "すべてクリア"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:122
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:149
 msgid ""
 "Clear all cached AI results? Future requests will trigger fresh API calls "
 "until the cache rebuilds."
 msgstr "すべてのキャッシュされたAI結果をクリアしますか？今後のリクエストはキャッシュの再構築まで新しいAPI呼び出しをトリガーします。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:126
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:153
 msgid "Clear API Response Cache"
 msgstr "API応答キャッシュをクリア"
 
@@ -887,13 +984,13 @@ msgstr "ヒントをクリア"
 msgid "Clear input"
 msgstr "入力をクリア"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:186
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:240
 msgid ""
 "Clear the entire Translation Memory? Future translations will rebuild the "
 "cache as they run."
 msgstr "翻訳メモリ全体をクリアしますか？今後の翻訳はキャッシュを再構築します。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:191
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:245
 msgid "Clear Translation Memory"
 msgstr "翻訳メモリをクリア"
 
@@ -904,7 +1001,7 @@ msgstr "翻訳メモリをクリア"
 msgid "Close"
 msgstr "閉じる"
 
-#: language-router/includes/class-lsflr-switcher.php:257
+#: language-router/includes/class-lsflr-switcher.php:288
 msgid "Close language panel"
 msgstr "言語パネルを閉じる"
 
@@ -912,11 +1009,11 @@ msgstr "言語パネルを閉じる"
 msgid "Close popover"
 msgstr "ポップオーバーを閉じる"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:68
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:73
 msgid "Compatibility"
 msgstr "互換性"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:79
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:80
 msgid "Compliance Preset"
 msgstr "コンプライアンスプリセット"
 
@@ -925,6 +1022,19 @@ msgid ""
 "Configure an AI provider in Settings → API Keys to enable AI-powered "
 "recommendations."
 msgstr "設定→APIキーでAIプロバイダーを構成し、AIによる推奨を有効にします。"
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:45
+msgid ""
+"Configure hreflang, Open Graph, Schema.org, sitemaps, and social sharing for "
+"every language on your site. Each section below handles one aspect of "
+"multilingual SEO."
+msgstr ""
+"サイトのすべての言語に対してhreflang、Open Graph、Schema."
+"org、サイトマップ、ソーシャルシェアを設定します。以下の各セクションは、多言語SEOの一側面を扱います。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+msgid "Configured"
+msgstr "設定済み"
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -978,6 +1088,11 @@ msgstr "会話調"
 msgid "Copied ✓"
 msgstr "コピー完了 ✓"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+msgid "Copied!"
+msgstr "コピー完了！"
+
 #: ai/assets/admin.js:497 ai/assets/admin.js:507 ai/assets/admin.js:698
 #: ai/assets/admin.js:745 ai/assets/admin.js:792 ai/assets/block-action.js:331
 #: ai/assets/block-action.js:451 ai/assets/editor-translate.js:319
@@ -986,6 +1101,10 @@ msgstr "コピー完了 ✓"
 msgid "Copy"
 msgstr "コピー"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+msgid "Copy and paste into a GitHub issue or support request."
+msgstr "GitHubの問題やサポートリクエストにコピー＆ペーストしてください。"
+
 #: language-router/includes/seo/class-social-share.php:185
 msgid "Copy failed — please copy the URL manually."
 msgstr "コピーに失敗しました — URLを手動でコピーしてください。"
@@ -993,6 +1112,10 @@ msgstr "コピーに失敗しました — URLを手動でコピーしてくだ�
 #: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
 msgid "Copy markup"
 msgstr "マークアップをコピー"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+msgid "Copy system info"
+msgstr "システム情報をコピー"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:147
 msgid ""
@@ -1043,17 +1166,17 @@ msgid "CPT Block Patterns"
 msgstr "CPTブロックパターン"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:112
 #: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:231
 msgid "Create"
 msgstr "作成"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:51
 msgid "Create missing"
 msgstr "不足しているものを作成"
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:265
+#: ai/includes/Admin/PostListColumn.php:319
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration. "
@@ -1061,7 +1184,7 @@ msgid ""
 msgstr ""
 "投稿タイプ \"%s\" の翻訳を作成するには、アクティブな連携が必要です。必要な連携がインストールされて有効になっていることを確認してください。"
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Creating…"
 msgstr "作成中…"
 
@@ -1069,7 +1192,7 @@ msgstr "作成中…"
 msgid "Creative / Marketing"
 msgstr "クリエイティブ / マーケティング"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:132
 msgid "Creative / Marketing instructions"
 msgstr "クリエイティブ / マーケティング指示"
 
@@ -1103,7 +1226,7 @@ msgid ""
 "override it."
 msgstr "現在、%s定数から継承されています。ここで値を選択すると上書きされます。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:193
 msgid ""
 "Currently skipped for posts that use block-comment attribute placeholders "
 "(wp:details summary fields, etc.) — they fall through to the existing single-"
@@ -1126,6 +1249,10 @@ msgstr "カスタム"
 msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr "日次AIクォータに達しました（%1$dリクエスト）。UTCの%2$sにリセットされます。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+msgid "Daily quota"
+msgstr "日次クォータ"
+
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:65
 msgid "Daily request limit"
 msgstr "1日のリクエスト制限"
@@ -1144,6 +1271,10 @@ msgstr "デバッグファイル"
 msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "デバッグファイルがクリアされました。%dファイルが削除されました。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+msgid "Debug Info"
+msgstr "デバッグ情報"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:90
 msgid "Debug logging"
@@ -1169,6 +1300,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:126
 msgid "Default OG image"
 msgstr "デフォルトOG画像"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:361
+msgid "Default profile"
+msgstr "デフォルトプロフィール"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:180
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:190
@@ -1215,16 +1350,6 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:127
 msgid "Directory"
 msgstr "ディレクトリ"
-
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:221
-msgid ""
-"Disable during prompt tuning or when you need every request to reach the AI "
-"provider. Disabling does not delete cached entries — re-enabling restores "
-"them. Increasing API spend immediately on busy sites is expected when "
-"disabled."
-msgstr ""
-"プロンプト調整中や、すべてのリクエストをAIプロバイダーに届ける必要がある場合は無効にします。無効にしてもキャッシュされたエントリは削除されません — "
-"再有効化で復元されます。忙しいサイトでは、無効にするとAPI支出が即座に増加することが予想されます。"
 
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:90
 msgid ""
@@ -1302,7 +1427,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "ドロップダウンの方向"
 
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "edit"
 msgstr "編集"
 
@@ -1310,11 +1435,11 @@ msgstr "編集"
 msgid "Editors and above (edit_others_posts)"
 msgstr "編集者以上（edit_others_posts）"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:218
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:103
 msgid "Enable API response caching"
 msgstr "API応答キャッシュを有効にする"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:187
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:190
 msgid "Enable block-level translation cache reuse across posts"
 msgstr "投稿間でブロックレベルの翻訳キャッシュの再利用を有効にします"
 
@@ -1322,7 +1447,7 @@ msgstr "投稿間でブロックレベルの翻訳キャッシュの再利用を
 msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr "ソーシャルアイコンブロックのためのソーシャルシェアURL書き換えを有効にします"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid ""
 "Enable when your theme renders the post title as an H2 instead of an H1 "
 "(common in some block themes). The analyser fetches the rendered page and, "
@@ -1340,13 +1465,22 @@ msgstr ""
 "少なくとも1つのAIプロバイダーのAPIキーを入力してください。キーはAES-256-"
 "GCMを使用してサイト固有の秘密（LINGUAFORGE_SECRET）で暗号化されます。秘密をローテーションせずにデータベースエクスポートを共有しないでください。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+msgid "Environment"
+msgstr "環境"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
 msgid "environment variable"
 msgstr "環境変数"
 
-#: ai/includes/Admin/PostListColumn.php:184
+#: ai/includes/Admin/PostListColumn.php:238
 msgid "Error"
 msgstr "エラー"
+
+#: language-router/includes/admin/class-columns.php:169
+#: language-router/includes/admin/class-meta-boxes.php:90
+msgid "Exclude from navigation menus"
+msgstr "ナビゲーションメニューから除外"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1423,7 +1557,7 @@ msgstr ""
 msgid "Filter"
 msgstr "フィルター"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1439,7 +1573,7 @@ msgid ""
 msgstr "linguaforge_debug_dirを使って、デバッグ出力を非公開の場所にリダイレクトします。"
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Finding"
 msgstr "検出中"
 
@@ -1451,27 +1585,31 @@ msgstr "修正"
 msgid "Fix All"
 msgstr "すべて修正"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
 msgid "Fix all links"
 msgstr "すべてのリンクを修正"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:64
 msgid "Fix all parts"
 msgstr "すべてのパーツを修正"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:141
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
+#: ai/includes/Admin/SettingsPage.php:262
 msgid "Fix Links"
 msgstr "リンクを修正"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Fix Nav"
 msgstr "ナビゲーションを修正"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Fix Parts"
 msgstr "パーツを修正"
 
@@ -1483,9 +1621,9 @@ msgstr "テンプレートを修正"
 msgid "Fixing {n} / {total}…"
 msgstr "{n} / {total} を修正中…"
 
-#: ai/includes/Admin/SettingsPage.php:253
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:267
+#: ai/includes/Admin/SettingsPage.php:274
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1556,7 +1694,7 @@ msgstr ""
 "</strong>を見つけました。"
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:127
+#: ai/includes/Admin/PostListColumn.php:130
 msgid "From"
 msgstr "から"
 
@@ -1591,7 +1729,7 @@ msgid "Full post"
 msgstr "全文投稿"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "General"
 msgstr "一般"
 
@@ -1642,7 +1780,7 @@ msgstr "生成に失敗しました。"
 msgid "Getting started"
 msgstr "はじめに"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:91
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:92
 msgid "Global AI preset"
 msgstr "グローバルAIプリセット"
 
@@ -1655,7 +1793,7 @@ msgstr "グローバルデフォルト (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Glossary"
 msgstr "用語集"
 
@@ -1671,11 +1809,11 @@ msgstr "用語集エントリーが削除されました。"
 msgid "Glossary Tab"
 msgstr "用語集タブ"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:67
 msgid "Google (Gemini)"
 msgstr "Google（Gemini）"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1685,11 +1823,11 @@ msgstr ""
 "タイトルはH1とみなされます。（見出しタグはレンダリングされたページから検出できませんでした。テーマがタイトルを正しく出力しているか確認してください。）"
 
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Headings"
 msgstr "見出し"
 
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:283
 msgid "Hide"
 msgstr "非表示"
 
@@ -1712,7 +1850,7 @@ msgid "How to use"
 msgstr "使い方"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:45
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
 msgid "Hreflang"
 msgstr "Hreflang"
 
@@ -1782,7 +1920,7 @@ msgstr ""
 "orgについては、LFは競合を避けるために自身の出力を完全に無効にします。"
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "Images"
 msgstr "画像"
 
@@ -1832,7 +1970,7 @@ msgstr "言語をインストール"
 msgid "Installed SEO plugins"
 msgstr "インストール済みのSEOプラグイン"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "Installing…"
 msgstr "インストール中…"
 
@@ -1884,14 +2022,14 @@ msgstr "無効なロケールコードです。"
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:58
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:160
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:190
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:69
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:235
 msgid "Invalid or primary language."
 msgstr "無効または主要な言語。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
 msgid "Invalid post ID."
 msgstr "無効な投稿ID。"
 
@@ -1900,7 +2038,7 @@ msgstr "無効な投稿ID。"
 msgid "Invalid post type."
 msgstr "無効な投稿タイプ。"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:167
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:197
 msgid "Invalid template part."
 msgstr "無効なテンプレート部分。"
 
@@ -1911,6 +2049,10 @@ msgstr "無効なテンプレートタイプ。"
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:136
 msgid "JavaScript-powered actions"
 msgstr "JavaScriptを利用したアクション"
+
+#: ai/includes/Admin/SettingsPage.php:373
+msgid "Just now"
+msgstr "今しがた"
 
 #: ai/includes/Features/ContentGenerator.php:186
 msgid "Key points, ideas, or structure to build from…"
@@ -1929,7 +2071,7 @@ msgstr ""
 msgid "Landing / Short-form"
 msgstr "ランディング / ショートフォーム"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:258
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "言語"
@@ -1945,7 +2087,7 @@ msgid "Language (optional)"
 msgstr "言語（任意）"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:251
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr "このサーバーでは言語のインストールが無効になっています（DISALLOW_FILE_MODSが設定されています）。"
@@ -1988,7 +2130,7 @@ msgid "Language Setup"
 msgstr "言語設定"
 
 #: language-router/includes/class-lsflr-switcher-widget.php:25
-#: language-router/includes/class-lsflr-switcher.php:428
+#: language-router/includes/class-lsflr-switcher.php:459
 msgid "Language Switcher"
 msgstr "言語切替器"
 
@@ -2036,6 +2178,18 @@ msgstr "過去7日間"
 msgid "Last generated: %s"
 msgstr "最終生成日時：%s"
 
+#: ai/includes/Admin/PostListColumn.php:191
+msgid ""
+"Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to "
+"update."
+msgstr "最後のルールベースのSEOスコア。設定 → SEO → 分析で更新してください。"
+
+#. translators: %s: human-readable time difference
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:406
+#, php-format
+msgid "Last run: %s ago"
+msgstr "最後の実行：%s前"
+
 #: ai/assets/block-action.js:72
 msgid "Lead paragraph (≤60 w)"
 msgstr "リード段落（≤60語）"
@@ -2063,7 +2217,7 @@ msgstr "すべてのターゲット言語にこのエントリを適用するに
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr "既存のキーを維持するには空白のままにします。新しい値を入力して置き換えます。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:154
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:155
 msgid ""
 "Leave blank to use the built-in default. Clearing a saved override restores "
 "the default on next save."
@@ -2088,7 +2242,7 @@ msgstr ""
 msgid "Legal / Compliance"
 msgstr "法的 / コンプライアンス"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
 msgid "Legal / Compliance instructions"
 msgstr "法的 / コンプライアンス指示"
 
@@ -2168,8 +2322,17 @@ msgstr ""
 "defaultが、多言語サイトの正しい正規シグナルであるためです。これにより、SEOプラグインも正規タグを出力している場合の二重正規タグを防ぎます。LFは独自の正規タグを追加しません"
 " — 言語ルーティングですでに各URLが正規化されているからです。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+msgid ""
+"LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
+"Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
+"bug report."
+msgstr ""
+"LF所有のエントリは現在、$wp_rewrite->extra_rules_top "
+"に登録されています。404エラーやルーティングの競合を診断するのに役立ちます。バグ報告時にこれらをコピーしてください。"
+
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:79
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Light"
 msgstr "ライト"
 
@@ -2181,17 +2344,21 @@ msgstr "ライト（デフォルト — 高速かつコスト効率的）"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "ライト（高速かつコスト効率的 — Haiku / Flash）"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "Light model"
+msgstr "ライトモデル"
+
 #: ai/includes/Admin/SettingsHelp.php:96
 msgid ""
 "Light: used for meta descriptions and excerpt generation — fast, low cost."
 msgstr "ライト：メタディスクリプションや抜粋生成に使用 — 高速で低コスト。"
 
-#: language-router/includes/rewrite/class-query-filter.php:94
+#: language-router/includes/rewrite/class-query-filter.php:95
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "指定されたLingua Forgeの言語コードのページに結果を限定します。"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:629
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Limits"
 msgstr "制限"
 
@@ -2285,7 +2452,7 @@ msgstr ""
 "Lingua Forgeは、Schema.orgのJSON-"
 "LD構造化データを出力し、検索エンジンがコンテンツタイプ、言語、メタデータを理解できるようにします。これは、多言語コンテンツの言語注釈をGoogleや他のクローラーに伝える主要な方法です。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:33
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:34
 msgid ""
 "Lingua Forge restricts two Gutenberg features by default to keep editorial "
 "behavior consistent across languages. Opt in here when you need full "
@@ -2310,11 +2477,15 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forgeは、各プロバイダーに対して2つのモデル階層を使用します。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+msgid "Lingua Forge version"
+msgstr "Lingua Forgeバージョン"
+
 #: ai/includes/Admin/AdminToolbar.php:67
 msgid "Lingua Forge — Quick Translate"
 msgstr "リンガフォージ — クイック翻訳"
 
-#: ai/includes/Admin/SettingsPage.php:616
+#: ai/includes/Admin/SettingsPage.php:619
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — 設定"
 
@@ -2336,7 +2507,7 @@ msgid "link(s)"
 msgstr "リンク"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:359
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "リンク"
@@ -2345,7 +2516,7 @@ msgstr "リンク"
 msgid "Load available languages"
 msgstr "利用可能な言語を読み込む"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:289
 msgid "Load content"
 msgstr "コンテンツを読み込む"
 
@@ -2353,7 +2524,7 @@ msgstr "コンテンツを読み込む"
 msgid "Loaded from cache."
 msgstr "キャッシュから読み込みました。"
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Loading…"
 msgstr "読み込み中…"
 
@@ -2393,7 +2564,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:638
 msgid "Maintenance"
 msgstr "メンテナンス"
 
@@ -2483,23 +2654,27 @@ msgid "Meta Description"
 msgstr "メタディスクリプション"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Meta description"
 msgstr "メタディスクリプション"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:80
+#: ai/includes/Admin/SettingsPage.php:82
 msgid "Meta Description, Excerpt Generator"
 msgstr "メタディスクリプション、抜粋生成"
 
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Metric"
 msgstr "メトリック"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:89
 msgid "Minimum role"
 msgstr "最低ロール"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+msgid "Missing"
+msgstr "欠落"
 
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:51
 msgid "Missing pattern name or language."
@@ -2527,15 +2702,15 @@ msgstr "モデル"
 msgid "Models Tab (General)"
 msgstr "モデルタブ（一般）"
 
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Modified"
 msgstr "最終更新日"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:172
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:226
 msgid "Most recent cached block"
 msgstr "最新のキャッシュされたブロック"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:112
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:139
 msgid "Most recent cached response"
 msgstr "最新のキャッシュされた応答"
 
@@ -2550,6 +2725,18 @@ msgstr ""
 "多言語ルーティング、完全な多言語SEO（hreflang、Open Graph、Schema."
 "org、サイトマップ）、およびWordPress用のAIコンテンツツール。言語検出、URLルーティング、翻訳、コンテンツ生成、完全なSEO層 — "
 "追加のプラグインは不要です。"
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:43
+msgid "Multilingual SEO"
+msgstr "多言語SEO"
+
+#: ai/includes/Admin/SettingsPage.php:376
+msgid "Multilingual SEO overview"
+msgstr "多言語SEOの概要"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+msgid "My Account"
+msgstr "マイアカウント"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2568,7 +2755,7 @@ msgstr "ナビゲーションに翻訳する内容がありません。"
 msgid "Navigation not found."
 msgstr "ナビゲーションが見つかりません。"
 
-#: ai/includes/Admin/PostListColumn.php:226
+#: ai/includes/Admin/PostListColumn.php:280
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr "ナビゲーション投稿はルータータブ経由で翻訳され、このボタンではありません。"
 
@@ -2582,12 +2769,20 @@ msgstr "ナビゲーションの翻訳にはアクティブなAIプロバイダ�
 msgid "Navigations"
 msgstr "ナビゲーション"
 
-#: ai/includes/Admin/SettingsPage.php:209
+#: ai/includes/Admin/SettingsPage.php:219
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "ネットワークエラー — WordPressのAJAXエンドポイントに到達できませんでした。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+msgid "Network error."
+msgstr "ネットワークエラー。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:409
+msgid "Never run"
+msgstr "実行しない"
+
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:394
+#: ai/includes/Admin/PostListColumn.php:448
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr "この翻訳グループに %s バージョンが見つかりません。"
@@ -2608,7 +2803,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "AIプロバイダーが設定されていません。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr "AIプロバイダーが設定されていません。設定 → APIキーでAPIキーを追加してください。"
 
@@ -2629,7 +2824,7 @@ msgstr "まだAI使用状況は記録されていません。エディターが�
 msgid "No API key configured for this provider."
 msgstr "このプロバイダーのAPIキーが設定されていません。"
 
-#: ai/includes/Admin/SettingsPage.php:320
+#: ai/includes/Admin/SettingsPage.php:330
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2673,13 +2868,13 @@ msgid ""
 "translations."
 msgstr "まだ用語集のエントリはありません。下に追加して翻訳の用語を強制適用し始めましょう。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
 msgstr "H1が見つかりません。通常、投稿タイトルがH1です — テーマがそれを出力しているか確認してください。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
 msgid "No images found in content."
 msgstr "コンテンツに画像が見つかりません。"
 
@@ -2691,20 +2886,24 @@ msgstr "更新する内部リンクが見つかりません。"
 msgid "No language-specific template parts found to map."
 msgstr "マッピングするための言語固有のテンプレート部分が見つかりません。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
 msgid "No LF meta description set — using excerpt/content."
 msgstr "LFのメタディスクリプションが設定されていません — 抜粋/コンテンツを使用しています。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
+msgstr "LFのリライトルールが見つかりませんでした。予期しない場合はパーマリンクをフラッシュしてください。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
 msgid "No links found."
 msgstr "リンクが見つかりませんでした。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr "リンクが見つかりません。内部リンクはクロール性とユーザーナビゲーションを向上させます。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr "メタディスクリプションが見つかりません。AIのメタディスクリプション機能を使って生成してください。"
@@ -2724,17 +2923,21 @@ msgid ""
 msgstr ""
 "物理的なrobots.txtファイルが見つかりません。WordPressは仮想的に生成しており、LFのサイトマップディレクティブは自動的に含まれています。"
 
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:370
 msgid "No published posts found for the selected filters."
 msgstr "選択したフィルターに一致する公開済みの投稿が見つかりません。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
 msgid "No response from AI provider. Check your API key and try again."
 msgstr "AIプロバイダーからの応答がありません。APIキーを確認して再試行してください。"
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "No response from provider — check the error log for details."
 msgstr "プロバイダーからの応答がありません — 詳細はエラーログを確認してください。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+msgid "No secondary languages configured."
+msgstr "セカンダリー言語が設定されていません。"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
 msgid ""
@@ -2746,7 +2949,7 @@ msgstr "二次言語が設定されていません。上の言語パックをイ
 msgid "No source content found to translate."
 msgstr "翻訳するためのソースコンテンツが見つかりません。"
 
-#: language-router/includes/admin/class-meta-boxes.php:339
+#: language-router/includes/admin/class-meta-boxes.php:355
 msgid "No source page linked yet."
 msgstr "まだソースページがリンクされていません。"
 
@@ -2754,7 +2957,13 @@ msgstr "まだソースページがリンクされていません。"
 msgid "No template part references needed updating."
 msgstr "更新が必要なテンプレート部分の参照はありません。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+msgid ""
+"No third-party SEO plugins detected. Lingua Forge handles all multilingual "
+"SEO output."
+msgstr "サードパーティのSEOプラグインは検出されませんでした。Lingua Forgeはすべての多言語SEO出力を処理します。"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
 msgid "No title set."
 msgstr "タイトルが設定されていません。"
 
@@ -2764,13 +2973,21 @@ msgid ""
 "translated."
 msgstr "翻訳されたコンテンツが見つかりません。投稿が翻訳されるとサイトマップに反映されます。"
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
 msgid "No translation found — analyzed the source language version."
 msgstr "翻訳が見つかりません — ソース言語バージョンを分析しました。"
 
 #: language-router/includes/class-lsflr-link-fixer.php:107
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "{lang}の翻訳が登録されていません（TRIDが欠落しています）"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+msgid "No — WooCommerce integration class not loaded"
+msgstr "— WooCommerce統合クラスが読み込まれていません"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "Not set — AI features are disabled."
+msgstr "設定されていません — AI機能は無効です。"
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -2799,6 +3016,10 @@ msgstr "通知設定"
 msgid "Notify search engines"
 msgstr "検索エンジンに通知"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+msgid "Numeric permalink structure is not supported."
+msgstr "数字のパーマリンク構造はサポートされていません。"
+
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:294
 msgid ""
 "OG/Twitter Card tags: handled by LF's Open Graph module (SEO → Open Graph & "
@@ -2806,11 +3027,11 @@ msgid ""
 msgstr ""
 "OG/Twitter Cardタグ：LFのOpen Graphモジュール（SEO → Open Graph & Twitter Cards）で処理されます"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:168
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:222
 msgid "Oldest cached block"
 msgstr "最も古いキャッシュされたブロック"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:108
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:135
 msgid "Oldest cached response"
 msgstr "最も古いキャッシュされた応答"
 
@@ -2822,7 +3043,7 @@ msgstr ".moファイルのみが受け付けられます。"
 msgid "Open Graph"
 msgstr "Open Graph"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:48
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:53
 msgid "Open Graph &amp; Twitter Cards"
 msgstr "Open Graph & Twitterカード"
 
@@ -2846,7 +3067,7 @@ msgstr ""
 "ブラウザのネイティブWeb "
 "Shareシート（iOS、Android、一部のデスクトップ）を開きます。サポートされていない場合はクリップボードにコピーします。"
 
-#: ai/includes/Admin/SettingsPage.php:64
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "OpenAI (GPT)"
 msgstr "OpenAI（GPT）"
 
@@ -2913,7 +3134,7 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "トップページとブログインデックスにWebSiteスキーマを出力します"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:350
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Overall SEO score"
 msgstr "全体的なSEOスコア"
 
@@ -2950,6 +3171,7 @@ msgstr "概要"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "Page"
 msgstr "ページ"
 
@@ -2973,9 +3195,18 @@ msgstr "まずテキストを貼り付けるか、ページ上でテキストを
 msgid "Paste your API key…"
 msgstr "APIキーを貼り付けてください…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+msgid "Path prefix (/de/)"
+msgstr "パスプレフィックス (/de/)"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:182
 msgid "Path prefix — example.com/de/"
 msgstr "パスプレフィックス — example.com/de/"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+msgid ""
+"Path routing requires a post-name based permalink structure. Change it in"
+msgstr "パスルーティングには投稿名ベースのパーマリンク構造が必要です。これを変更してください"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:49
 msgid "Pattern"
@@ -2997,22 +3228,32 @@ msgid ""
 msgstr ""
 "パターンが翻訳され保存されました。コンテンツをブロックエディタのパターン挿入ツールを通じてCPT投稿にコピーするか、再利用可能ブロックの出発点として使用してください。"
 
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "Pattern translation failed."
 msgstr "パターンの翻訳に失敗しました。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
+msgid "Per-Post Analysis"
+msgstr "投稿ごとの分析"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:76
 msgid ""
 "Per-post cache for AI-generated translations, meta descriptions, excerpts, "
-"and content. Always active — no separate toggle required. Entries are "
-"invalidated automatically when the content or AI provider/model changes."
-msgstr ""
-"AI生成の翻訳、メタ記述、抜粋、コンテンツのための投稿ごとのキャッシュ。常に有効 — "
-"別の切り替えは不要です。コンテンツやAIプロバイダー/モデルが変更されると自動的に無効化されます。"
+"and content. Entries are invalidated automatically when the content or AI "
+"provider/model changes."
+msgstr "AI生成の翻訳、メタ記述、抜粋、コンテンツのための投稿ごとのキャッシュ。コンテンツやAI提供者/モデルが変更されると自動的に無効になります。"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:98
 msgid "Permalink rules flushed successfully."
 msgstr "パーマリンクルールが正常にフラッシュされました。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+msgid "Permalink Structure"
+msgstr "パーマリンク構造"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+msgid "Permalink structure is compatible with Lingua Forge path routing."
+msgstr "パーマリンク構造はLingua Forgeのパスルーティングと互換性があります。"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
 msgid ""
@@ -3037,11 +3278,13 @@ msgstr "本当に %s をアンインストールしますか？これにより�
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:35
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:149
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:179
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:42
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:220
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:287
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:308
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:357
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:378
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:401
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:428
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:167
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:185
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:138
@@ -3050,15 +3293,17 @@ msgstr "本当に %s をアンインストールしますか？これにより�
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
@@ -3076,6 +3321,18 @@ msgstr "説得力"
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "PHP constant"
 msgstr "PHP定数"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+msgid "PHP max_execution_time"
+msgstr "PHPの最大実行時間"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+msgid "PHP memory_limit"
+msgstr "PHPのメモリ制限"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+msgid "PHP version"
+msgstr "PHPのバージョン"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:130
 msgid "Pin on Pinterest"
@@ -3102,6 +3359,10 @@ msgstr "YandexにPing"
 msgid "Plain language"
 msgstr "平易な言葉"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+msgid "Plain permalinks are not supported."
+msgstr "プレーンパーマリンクはサポートされていません。"
+
 #: ai/assets/editor-translate.js:611 ai/assets/toolbar-translate.js:527
 msgid "Please enter some instructions first…"
 msgstr "まずいくつかの指示を入力してください…"
@@ -3118,11 +3379,11 @@ msgstr "プラグイン"
 msgid "Post"
 msgstr "投稿"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
 msgid "Post not found or not published."
 msgstr "投稿が見つからないか、公開されていません。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "投稿が見つかりません。"
@@ -3131,9 +3392,23 @@ msgstr "投稿が見つかりません。"
 msgid "Post on X / Twitter"
 msgstr "X / Twitterに投稿"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+msgid "Post type"
+msgstr "投稿タイプ"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "投稿タイプ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+msgid ""
+"Posts without _lf_lang are invisible to every Lingua Forge language filter. "
+"This can happen when content is imported or created before the plugin was "
+"activated."
+msgstr ""
+"_lf_langを持たない投稿は、すべてのLingua "
+"Forge言語フィルターから見えません。これは、コンテンツがインポートされたり、プラグインが有効になる前に作成された場合に起こることがあります。"
 
 #: meta-description/meta-description.php:109
 msgid "Prefilled from excerpt. Edit to override."
@@ -3152,6 +3427,7 @@ msgstr ""
 msgid "Primary Language"
 msgstr "プライマリ言語"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "プライマリ言語"
@@ -3188,7 +3464,7 @@ msgid "Product — WooCommerce product pages"
 msgstr "商品 — WooCommerce商品ページ"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:366
 msgid "Profile"
 msgstr "プロフィール"
 
@@ -3205,7 +3481,7 @@ msgid ""
 msgstr "プロバイダーからテキストが返されませんでした。詳細な失敗理由についてはWordPressのエラーログを確認してください。"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:83
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Quality"
 msgstr "品質"
 
@@ -3216,6 +3492,10 @@ msgstr "品質（デフォルト — Sonnet / GPT-4o / Gemini Pro）"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:240
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "品質（ソネット / GPT-4o / ジェミニ Pro）"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+msgid "Quality model"
+msgstr "品質モデル"
 
 #: ai/includes/Admin/SettingsHelp.php:97
 msgid ""
@@ -3242,13 +3522,13 @@ msgstr ""
 "スニペット/チャンクモードに使用されるクイック翻訳 — "
 "ツールバー、エディター、ブロックポップオーバーから短い文章をオンデマンドで翻訳します。フルページ翻訳とは異なる軽量な設定を使用し、応答を高速かつコスト効率的に保ちます。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:53
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
 "Re-enables Gutenberg's canLockBlocks. Useful for editorial templates that "
 "need to prevent contributors from moving or deleting specific blocks."
 msgstr "GutenbergのcanLockBlocksを再有効化します。特定のブロックの移動や削除を防止する必要がある編集テンプレートに便利です。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:72
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:73
 msgid ""
 "Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where "
 "post-level template overrides are intentional."
@@ -3268,12 +3548,12 @@ msgstr "再スキャン中…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Re-translate"
 msgstr "再翻訳"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Reading time"
 msgstr "読了時間"
 
@@ -3318,6 +3598,27 @@ msgstr ""
 msgid "Remove stored key"
 msgstr "保存されたキーを削除"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
+msgid ""
+"Repair assigns the source language to every affected post. Run after "
+"importing content or after initial plugin activation on an existing site."
+msgstr ""
+"修復は、影響を受けるすべての投稿にソース言語を割り当てます。コンテンツをインポートした後や、既存のサイトで最初のプラグイン有効化後に実行してください。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+msgid "Repair failed."
+msgstr "修復に失敗しました。"
+
+#. translators: %s: source language code shown in upper case, e.g. EN
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all affected posts"
+msgstr "修復 — すべての影響を受ける投稿に _lf_lang = %s を割り当てる"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+msgid "Repairing…"
+msgstr "修復中…"
+
 #: ai/includes/Admin/SettingsHelp.php:169
 msgid "Report an issue on GitHub"
 msgstr "GitHubで問題を報告"
@@ -3343,6 +3644,10 @@ msgstr "リクエストに失敗しました。もう一度お試しください
 msgid "Requests"
 msgstr "リクエスト"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+msgid "requests / day"
+msgstr "リクエスト / 日"
+
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:128
 msgid "Reset"
 msgstr "リセット"
@@ -3351,17 +3656,17 @@ msgstr "リセット"
 msgid "Result will appear here…"
 msgstr "結果はここに表示されます…"
 
-#: ai/includes/Admin/PostListColumn.php:137
+#: ai/includes/Admin/PostListColumn.php:140
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:67
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
 msgid "Retranslate"
 msgstr "再翻訳"
 
-#: ai/includes/Admin/PostListColumn.php:182
+#: ai/includes/Admin/PostListColumn.php:236
 msgid "Retranslating…"
 msgstr "再翻訳中…"
 
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Review carefully — links and slugs not updated."
 msgstr "注意深く確認してください — リンクとスラッグが更新されていません。"
 
@@ -3381,6 +3686,10 @@ msgstr "改訂"
 msgid "Revision Type"
 msgstr "改訂タイプ"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+msgid "Rewrite Rules"
+msgstr "書き換えルール"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:296
 msgid "robots.txt"
 msgstr "robots.txt"
@@ -3390,7 +3699,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txtがサイトマップディレクティブとともに更新されました。"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
 msgid "Router"
 msgstr "ルーター"
 
@@ -3398,11 +3707,24 @@ msgstr "ルーター"
 msgid "Router Tab"
 msgstr "ルータータブ"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:336
+msgid ""
+"Run a full SEO audit across all published posts for one or all active "
+"languages. Scores are saved per post and reflected in the Language column "
+"badges in the post list."
+msgstr ""
+"すべての公開投稿に対して、1つまたはすべてのアクティブな言語のSEO監査を実行します。スコアは投稿ごとに保存され、投稿リストの言語バッジに反映されます。"
+
 #: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "AI分析を実行"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:111
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:198
+msgid "Save"
+msgstr "保存"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:240
 msgid "Save analysis settings"
 msgstr "分析設定を保存"
 
@@ -3426,7 +3748,7 @@ msgstr "ルーター設定を保存"
 msgid "Save Schema.org Settings"
 msgstr "Schema.org設定を保存"
 
-#: ai/includes/Admin/SettingsPage.php:670
+#: ai/includes/Admin/SettingsPage.php:675
 msgid "Save Settings"
 msgstr "設定を保存"
 
@@ -3470,7 +3792,7 @@ msgstr "壊れた言語リンクをスキャンしています…"
 msgid "Schema output deferred."
 msgstr "Schemaの出力が遅延されました。"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:59
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:64
 msgid "Schema.org"
 msgstr "Schema.org"
 
@@ -3485,6 +3807,21 @@ msgstr "Schema.org出力"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:76
 msgid "Schema.org settings saved."
 msgstr "Schema.org設定が保存されました。"
+
+#: ai/includes/Admin/SettingsPage.php:374
+msgid "Score"
+msgstr "スコア"
+
+#: ai/includes/Admin/SettingsPage.php:377
+msgid ""
+"Scores are a signal, not a verdict. Some content is structurally limited — "
+"very short pages, landing pages with little body text, or pages whose "
+"purpose is navigation rather than information may score lower by nature. Use "
+"this overview to spot genuine parity gaps across languages, not to chase a "
+"number."
+msgstr ""
+"スコアは信号であり判決ではありません。一部のコンテンツは構造的に制限されています — "
+"非常に短いページ、本文が少ないランディングページ、または情報よりもナビゲーションを目的としたページは、自然にスコアが低くなることがあります。この概要を使って、言語間の本物のパリティギャップを見つけてください。"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:51
 msgid "Search"
@@ -3504,13 +3841,24 @@ msgstr "検索結果"
 msgid "Security check failed — file path is not permitted."
 msgstr "セキュリティチェックに失敗しました。ファイルパスが許可されていません。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+msgid ""
+"See Settings → SEO → Compatibility for the full per-feature behaviour table."
+msgstr "完全な機能ごとの動作表については、設定 → SEO → 互換性を参照してください。"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
 msgstr "管理する言語を選択して、そのFSEテンプレート、テンプレートパーツ、ナビゲーションメニューを設定します。"
 
-#: language-router/includes/class-lsflr-switcher.php:252
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+msgid ""
+"Select a post and run a detailed SEO audit to see per-metric results and a "
+"score for that specific item."
+msgstr "投稿を選択し、詳細なSEO監査を実行して、その特定の項目の結果とスコアを確認します。"
+
+#: language-router/includes/class-lsflr-switcher.php:283
 msgid "Select language"
 msgstr "言語を選択"
 
@@ -3524,7 +3872,7 @@ msgstr "WhatsApp経由で送信"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "SEO"
 msgstr "SEO"
 
@@ -3546,6 +3894,10 @@ msgstr ""
 "SEOプラグインが検出されました：%s。LFはog:localeとog:locale:"
 "alternateのみを出力しています。検出されたプラグインは完全なOGセットを処理します。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+msgid "SEO Plugins"
+msgstr "SEOプラグイン"
+
 #: ai/includes/Admin/SettingsHelp.php:125
 msgid "SEO plugins and conflict avoidance:"
 msgstr "SEOプラグインと競合回避："
@@ -3558,7 +3910,7 @@ msgstr "SEOタブ"
 msgid "Server setup (subdomain)"
 msgstr "サーバー設定（サブドメイン）"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:118
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
 msgid ""
 "Sets the default AI behaviour for all features site-wide. Individual posts "
 "can override this for Translation and Content Generation via the Lingua "
@@ -3567,13 +3919,18 @@ msgstr ""
 "サイト全体のすべての機能のデフォルトAI動作を設定します。個別の投稿は、Lingua "
 "Forgeのメタボックスを通じて翻訳とコンテンツ生成に対してこれを上書きできます。"
 
-#: ai/includes/Admin/SettingsPage.php:397
+#: ai/includes/Admin/SettingsPage.php:414
 msgid "Settings"
 msgstr "設定"
 
-#: ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsPage.php:624
 msgid "Settings saved."
 msgstr "設定が保存されました。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+msgid "Settings → Permalinks"
+msgstr "設定 → パーマリンク"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:124
 msgid "Share on Facebook"
@@ -3590,6 +3947,10 @@ msgstr "Mastodonで共有"
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:132
 msgid "Share via email (mailto:)"
 msgstr "メール（mailto:）で共有"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+msgid "Shop"
+msgstr "ショップ"
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -3610,6 +3971,14 @@ msgstr "シングル"
 msgid "Single %s"
 msgstr "シングル %s"
 
+#. translators: %d: character count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#, php-format
+msgid ""
+"Single-word title (%d chars) — adding a second word improves clarity and "
+"keyword coverage."
+msgstr "単語タイトル (%d 文字) — 2語目を追加すると明確さとキーワードのカバレッジが向上します。"
+
 #. translators: %s: CPT singular label, e.g. "Product"
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:116
 #, php-format
@@ -3624,7 +3993,7 @@ msgid ""
 msgstr ""
 "UTC日ごとのAIリクエストのサイト全体の上限（ツールバーの翻訳とブロックの改訂の両方をカウント）。カウンターはUTCの真夜中にリセットされます。無効にするには0に設定します。"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:62
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:67
 msgid "Sitemap"
 msgstr "サイトマップ"
 
@@ -3658,7 +4027,7 @@ msgid ""
 msgstr "ソーシャルアイコンブロック共有：URL：LFの内蔵ソーシャルシェア（SEO → ソーシャルシェア）で処理されます"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:77
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:51
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:56
 msgid "Social Share"
 msgstr "ソーシャルシェア"
 
@@ -3666,31 +4035,32 @@ msgstr "ソーシャルシェア"
 msgid "Social Share settings saved."
 msgstr "ソーシャルシェア設定が保存されました。"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Some link fixes failed."
 msgstr "一部のリンク修正に失敗しました。"
 
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:276
 msgid "Some nav ref fixes failed."
 msgstr "一部のナビゲーション参照修正に失敗しました。"
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Some part fixes failed."
 msgstr "一部のパーツ修正に失敗しました。"
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Some parts could not be created."
 msgstr "一部のパーツを作成できませんでした。"
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "Some templates could not be created."
 msgstr "一部のテンプレートを作成できませんでした。"
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Some translations failed."
 msgstr "いくつかの翻訳に失敗しました。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:392
 msgid "source"
 msgstr "ソース"
 
@@ -3712,11 +4082,15 @@ msgstr "ソース言語"
 msgid "Source term"
 msgstr "ソース用語"
 
+#: ai/includes/Admin/SettingsPage.php:375
+msgid "Source title"
+msgstr "ソースタイトル"
+
 #: ai/includes/Core/Config.php:51
 msgid "Standard"
 msgstr "標準"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:120
 msgid ""
 "Standard uses each feature's own tuned temperature: Translation T=0.2 "
 "(precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The "
@@ -3725,7 +4099,6 @@ msgstr ""
 "標準は各機能の調整された温度を使用します：翻訳はT=0.2（正確）、クイック翻訳はT=0.4、コンテンツ生成はT=0."
 "6（創造的）。他のプリセットはすべての機能に単一の固定温度を適用します。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:146
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
 msgstr "ステータス"
@@ -3739,7 +4112,7 @@ msgstr "ステータス / アクション"
 msgid "Storytelling"
 msgstr "ストーリーテリング"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:83
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:84
 msgid ""
 "Strict-preservation mode for legal, regulatory, medical, or technical "
 "content. When on, every AI feature uses a low sampling temperature and "
@@ -3752,6 +4125,10 @@ msgstr ""
 #: ai/includes/Features/ContentGenerator.php:54
 msgid "Structured Outline"
 msgstr "構造化アウトライン"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+msgid "Subdomain (de.example.com)"
+msgstr "サブドメイン (de.example.com)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:189
 msgid ""
@@ -3800,14 +4177,23 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "抑制されました：%s。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+msgid "Switch to a post-name based structure in"
+msgstr "に"
+
+#: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
+#: ai/includes/Admin/SettingsPage.php:639
+msgid "System"
+msgstr "システム"
+
 #. translators: %s: sampling temperature value, e.g. 0.2
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:106
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:107
 #, php-format
 msgid "T=%s"
 msgstr "T=%s"
 
 #. translators: temperature range shown for the Standard preset, e.g. "T=0.2–0.6, per feature"
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:111
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:112
 msgid "T=0.2–0.6, per feature"
 msgstr "T=0.2–0.6、機能ごと"
 
@@ -3852,7 +4238,7 @@ msgstr "技術的"
 msgid "Technical / Scientific"
 msgstr "技術 / 科学"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:129
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
 msgid "Technical / Scientific instructions"
 msgstr "技術 / 科学的指示"
 
@@ -3872,7 +4258,7 @@ msgstr "テンプレート \"{expected}\" は存在しません — まずサイ
 msgid "Template has no content."
 msgstr "テンプレートに内容がありません。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:59
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:60
 msgid "Template mode"
 msgstr "テンプレートモード"
 
@@ -3883,7 +4269,7 @@ msgid "Template not found or not stored in the database."
 msgstr "テンプレートが見つからないか、データベースに保存されていません。"
 
 #. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:176
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:206
 #, php-format
 msgid "Template part \"%s\" already exists."
 msgstr "テンプレート部分「%s」は既に存在します。"
@@ -3908,7 +4294,7 @@ msgstr "テンプレート"
 msgid "Test connection"
 msgstr "接続テスト"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "Testing…"
 msgstr "テスト中…"
 
@@ -3922,17 +4308,17 @@ msgstr "テキストドメイン / ロケール"
 msgid "Text to translate"
 msgstr "翻訳するテキスト"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:201
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:106
 msgid ""
 "The API Response Cache stores the raw result of every AI request — "
 "translation, meta description, excerpt, and content generation — keyed by a "
-"hash of the inputs (content, language pair, provider, model). Subsequent "
-"requests with identical inputs are served from the cache with no API call. "
-"The cache is different from Translation Memory: Translation Memory operates "
-"at the block level and is shared across posts; the API Response Cache "
-"operates at the feature level and is keyed per post."
+"hash of the inputs (content, language pair, provider, model). Disable during "
+"prompt tuning or when you need every request to reach the AI provider. "
+"Disabling does not delete cached entries — re-enabling restores them."
 msgstr ""
-"API応答キャッシュは、すべてのAIリクエストの生の結果（翻訳、メタディスクリプション、抜粋、コンテンツ生成）を保存し、入力のハッシュ（内容、言語ペア、プロバイダー、モデル）をキーとします。同一の入力を持つリクエストはキャッシュから提供され、API呼び出しは行われません。キャッシュは翻訳メモリとは異なります：翻訳メモリはブロックレベルで動作し、投稿間で共有されます。API応答キャッシュは機能レベルで動作し、投稿ごとにキー付けされます。"
+"APIレスポンスキャッシュは、すべてのAIリクエストの生の結果を保存します — 翻訳、メタ記述、抜粋、コンテンツ生成 — "
+"入力のハッシュによってキー付けされます（コンテンツ、言語ペア、提供者、モデル）。プロンプト調整中やすべてのリクエストをAI提供者に届ける必要がある場合は無効にしてください。無効にしてもキャッシュされたエントリは削除されません"
+" — 再有効化すると復元されます。"
 
 #: ai/assets/admin-diff-modal.js:237
 msgid "The editor did not accept the content — please try again."
@@ -4004,8 +4390,8 @@ msgstr ""
 "サイトマップはrobots.txtで自動的に通知されます。Google、Bing、Yandexなどの主要な検索エンジンはrobots."
 "txtからそれを検出します。手動提出は必要ありません。"
 
-#: language-router/includes/admin/class-meta-boxes.php:346
-#: language-router/includes/admin/class-meta-boxes.php:353
+#: language-router/includes/admin/class-meta-boxes.php:362
+#: language-router/includes/admin/class-meta-boxes.php:369
 msgid "The source page has no footnotes."
 msgstr "ソースページにはフットノートがありません。"
 
@@ -4023,13 +4409,21 @@ msgstr ""
 "hreflang代替を通じて言語バージョンの関係を検索エンジンに伝えます。両方をGoogle Search "
 "Consoleに提出して完全なカバレッジを得てください。"
 
-#: language-router/includes/admin/class-meta-boxes.php:358
+#: language-router/includes/admin/class-meta-boxes.php:374
 msgid ""
 "These footnotes come from the source page and are shown here for reference "
 "only. Add them to this page using the block editor."
 msgstr "これらのフットノートはソースページからのもので、参考のためにここに表示されています。ブロックエディタを使ってこのページに追加してください。"
 
-#: language-router/includes/admin/class-meta-boxes.php:331
+#: ai/includes/Admin/SettingsPage.php:378
+msgid ""
+"This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
+"is managed by WooCommerce — the score reflects structural signals only, not "
+"user-editable SEO content."
+msgstr ""
+"これはWooCommerceのシステムページ（ショップ、カート、チェックアウトなど）です。その内容はWooCommerceによって管理されており、スコアは構造的な信号のみを反映し、ユーザー編集可能なSEOコンテンツではありません。"
+
+#: language-router/includes/admin/class-meta-boxes.php:347
 msgid ""
 "This is the source page. Footnotes are edited directly in the block editor."
 msgstr "これはソースページです。フットノートはブロックエディタで直接編集されます。"
@@ -4058,23 +4452,23 @@ msgid ""
 msgstr "ヒント：モデルをビルトインのデフォルトにリセットするには、フィールドをクリアして保存してください。"
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:343
 #: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Title"
 msgstr "タイトル"
 
-#. translators: %1$d: number of characters, %2$d: recommended max
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
+#. translators: %1$d: character count, %2$d: SERP limit
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
 #, php-format
-msgid "Title is %1$d chars — aim for %2$d–%3$d."
-msgstr "タイトルは%d文字 — %2$d〜%3$dを目指してください。"
+#| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
+msgstr "タイトルは %1$d 文字です — SERPs で切り詰められる可能性があります（%2$d 文字未満を目指してください）。"
 
-#. translators: %1$d: number of characters, %2$d: recommended max
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
+#. translators: %d: character count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
 #, php-format
-#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
-msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
-msgstr "タイトルは %1$d 文字です — SERPs で切り詰められる可能性があります（%2$d～%3$d を目指してください）。"
+msgid "Title is only %d chars — aim for more than 10 characters."
+msgstr "タイトルは %d 文字のみ — 10文字以上を目指してください。"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -4122,13 +4516,15 @@ msgid "Total tokens"
 msgstr "合計トークン"
 
 #: ai/includes/Admin/AdminToolbar.php:63
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:134
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:285
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4146,7 +4542,7 @@ msgstr "翻訳 / 改訂"
 msgid "Translate / Revise block"
 msgstr "ブロックの翻訳 / 改訂"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:104
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:58
 msgid "Translate all"
 msgstr "すべて翻訳"
 
@@ -4158,7 +4554,7 @@ msgstr "チャンクを翻訳"
 msgid "Translate Content"
 msgstr "コンテンツを翻訳"
 
-#: ai/includes/Admin/PostListColumn.php:86
+#: ai/includes/Admin/PostListColumn.php:89
 msgid "Translate missing"
 msgstr "未翻訳を翻訳"
 
@@ -4191,10 +4587,10 @@ msgid ""
 "template slugs are not updated automatically."
 msgstr "翻訳済み。サイトエディタで確認 — 内部リンク、ナビゲーションURL、テンプレートスラッグは自動的に更新されません。"
 
-#: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:248
-#: ai/includes/Admin/SettingsPage.php:262
-#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/PostListColumn.php:235
+#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "翻訳中…"
@@ -4227,9 +4623,8 @@ msgid ""
 msgstr ""
 "翻訳の制限：どのユーザーロールがAI翻訳をトリガーできるかを制御し、月間トークン予算を設定します。予算を超えると、その月がリセットされるまでAI呼び出しが停止します。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:68
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:64
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:180
 msgid "Translation Memory"
 msgstr "翻訳メモリ"
 
@@ -4242,11 +4637,15 @@ msgstr ""
 "翻訳メモリは、コンテンツハッシュ、言語ペア、プロバイダー、モデルによってAIの結果をキャッシュします。投稿を編集するとキャッシュエントリが無効になり、次の翻訳呼び出しで新しい結果が得られます。"
 
 #. translators: %d: number of cached blocks removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:268
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:338
 #, php-format
 msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] "翻訳メモリがクリアされました。%d個のキャッシュされたブロックが削除されました。"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:312
+msgid "Translation Memory setting saved."
+msgstr "翻訳メモリ設定が保存されました。"
 
 #: ai/includes/Admin/SettingsHelp.php:135
 msgid ""
@@ -4261,17 +4660,17 @@ msgid "Translation workflow"
 msgstr "翻訳ワークフロー"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:84
+#: ai/includes/Admin/SettingsPage.php:86
 msgid "Translation, Content Generator"
 msgstr "翻訳、コンテンツ生成"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:234
 msgid "Treat H2 as H1 equivalent"
 msgstr "H2をH1とみなす"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Type"
 msgstr "タイプ"
 
@@ -4321,6 +4720,11 @@ msgstr ""
 "Mathなどのプラグインはすでに正しいOGタグを出力しています。これらを複製しても価値はありません。自動モードでは、LFは有効なSEOプラグインを検出し、彼らが提供できないog"
 ":locale（現在の言語）とog:locale:alternate（他の設定された言語）だけを追加します。"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+msgid "Unlimited"
+msgstr "無制限"
+
 #: language-router/includes/class-lsflr-switcher-widget.php:74
 msgid "Up"
 msgstr "上向き"
@@ -4349,6 +4753,7 @@ msgstr "上書きアップロード"
 msgid "URL could not be mapped to a post — check the link target exists"
 msgstr "URLが投稿にマッピングできませんでした — リンクのターゲットが存在するか確認してください"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "URL構造"
@@ -4398,7 +4803,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "カスタムメタディスクリプションを使用しています。"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
 msgid "Using LF AI meta description."
 msgstr "LF AIメタディスクリプションを使用しています。"
 
@@ -4407,11 +4812,11 @@ msgid "Value source"
 msgstr "値のソース"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "View"
 msgstr "表示"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:157
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:158
 msgid "View built-in default"
 msgstr "ビルトインデフォルトを表示"
 
@@ -4434,6 +4839,10 @@ msgstr "プラグインサイトを訪問"
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:67
 msgid "Warning:"
 msgstr "警告："
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+msgid "WcPageBridge active"
+msgstr "WcPageBridgeが有効"
 
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:134
 msgid "WebSite"
@@ -4529,9 +4938,18 @@ msgstr ""
 "有効な間、mu-"
 "pluginは基本的なOGセットを処理し、LFはロケールタグのみを出力します（自動モード）。これを削除すると、LFは自動的に完全なOGモードに切り替わります。"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+msgid "WooCommerce is not active."
+msgstr "WooCommerceは有効ではありません。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+msgid "WooCommerce page translations"
+msgstr "WooCommerceページの翻訳"
 
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:102
 msgid "WooCommerce product price"
@@ -4545,10 +4963,27 @@ msgstr "WooCommerce SEO設定が保存されました。"
 msgid "WooCommerce store currency"
 msgstr "WooCommerceストア通貨"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:338
+msgid ""
+"WooCommerce system pages (Shop, Cart, Checkout, My Account) are excluded — "
+"their content is managed by WooCommerce and cannot be improved through SEO "
+"edits."
+msgstr ""
+"WooCommerceのシステムページ（ショップ、カート、チェックアウト、マイアカウント）は除外されます — "
+"これらの内容はWooCommerceによって管理されており、SEO編集によって改善できません。"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+msgid "WooCommerce version"
+msgstr "WooCommerceのバージョン"
+
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Word count"
 msgstr "文字数"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+msgid "WordPress version"
+msgstr "WordPressのバージョン"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:263
 msgid "WP core canonical active (hreflang disabled)"
@@ -4567,6 +5002,10 @@ msgstr "トラブルシューティングのためにAIのプロンプトと応�
 msgid "XML Sitemap"
 msgstr "XMLサイトマップ"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+msgid "Yes"
+msgstr "はい"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
@@ -4576,7 +5015,7 @@ msgstr ""
 "キーを定数や環境変数として定義することもできます（例：wp-config."
 "php）。これらのソースは、データベースキーが保存されていない場合に自動的にフォールバックとして使用されます。"
 
-#: ai/includes/Admin/SettingsPage.php:409
+#: ai/includes/Admin/SettingsPage.php:426
 msgid "You do not have permission to manage these settings."
 msgstr "これらの設定を管理する権限がありません。"
 
@@ -4589,7 +5028,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} の古いパス"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -4611,6 +5050,11 @@ msgstr "— いずれかのターゲット —"
 msgid "— Any —"
 msgstr "— いずれか —"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
+#: ai/includes/Admin/SettingsPage.php:368
+msgid "— Auto-detect —"
+msgstr "— 自動検出 —"
+
 #: ai/assets/editor-translate.js:289 ai/assets/toolbar-translate.js:295
 msgid "— auto-detect —"
 msgstr "— 自動検出 —"
@@ -4628,13 +5072,9 @@ msgid "— Not detected"
 msgstr "— 検出されませんでした"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "— select a language —"
 msgstr "— 言語を選択 —"
-
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:60
-msgid "— toggle in Settings → Behavior."
-msgstr "— 設定→動作の切り替え。"
 
 #: ai/assets/admin.js:1141 ai/assets/admin.js:1305
 #: ai/assets/block-action.js:334
@@ -4745,15 +5185,15 @@ msgstr "✓ アクティブ — 完全なOG + Twitterカード"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ アクティブ — ロケールタグのみ（og:locale、og:locale:alternate）"
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "✓ All parts created."
 msgstr "✓ すべてのパーツが作成されました。"
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "✓ All templates created."
 msgstr "✓ すべてのテンプレートが作成されました。"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "✓ All translated."
 msgstr "✓ すべて翻訳完了。"
 
@@ -4761,7 +5201,7 @@ msgstr "✓ すべて翻訳完了。"
 msgid "✓ Configured"
 msgstr "✓ 設定済み"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✓ Connection OK"
 msgstr "✓ 接続OK"
 
@@ -4769,11 +5209,10 @@ msgstr "✓ 接続OK"
 msgid "✓ Content generated — see the overlay to review, refine, and apply."
 msgstr "✓ コンテンツが生成されました — オーバーレイを見て、レビュー、改善、適用してください。"
 
-#: ai/includes/Admin/PostListColumn.php:183
+#: ai/includes/Admin/PostListColumn.php:237
 msgid "✓ Done"
 msgstr "✓ 完了"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:58
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:119
 msgid "✓ Enabled"
 msgstr "✓ 有効"
@@ -4790,7 +5229,7 @@ msgstr "✓ Hreflangが有効"
 msgid "✓ In safe storage"
 msgstr "✓ セーフストレージに保存済み"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✓ Language installed."
 msgstr "✓ 言語がインストールされました。"
 
@@ -4810,19 +5249,19 @@ msgstr "✓ LFは完全なOG + Twitterカードを出力"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF出力 — プラグインhreflangは抑制されている"
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "✓ Links fixed."
 msgstr "✓ リンクが修正されました。"
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "✓ Nav refs fixed."
 msgstr "✓ ナビゲーション参照が修正されました。"
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ Parts fixed."
 msgstr "✓ パーツが修正されました。"
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "✓ Pattern translated."
 msgstr "✓ パターンが翻訳されました。"
 
@@ -4835,7 +5274,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ 改善完了 — 上記の更新されたドラフトを確認してください。"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "✓ Translation saved"
 msgstr "✓ 翻訳が保存されました"
 
@@ -4852,16 +5291,15 @@ msgid ""
 msgstr ""
 "✗ %sのpingに失敗しました。サイトマップURLはrobots.txtでまだ通知されています — 検索エンジンは次のクロール時に検出します。"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:59
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:121
 msgid "✗ Disabled"
 msgstr "✗ 無効"
 
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✗ Error:"
 msgstr "✗ エラー:"
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "✗ Failed:"
 msgstr "✗ 失敗:"
 

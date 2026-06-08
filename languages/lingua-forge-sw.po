@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-06 22:30+0000\n"
+"PO-Revision-Date: 2026-06-08 19:48+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: sw\n"
@@ -24,7 +24,7 @@ msgid "\"%1$s %2$s\" saved."
 msgstr "\"%1$s %2$s\" imehifadhiwa."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:249
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:310
 #, php-format
 msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
@@ -32,7 +32,7 @@ msgstr[0] "\"%1$s\" imetengenezwa. %2$d kiolezo kimesasishwa."
 msgstr[1] "\"%1$s\" imetengenezwa. %2$d kiolezo kimesasishwa."
 
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:127
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:157
 #, php-format
 msgid "\"%s\" created."
 msgstr "\"%s\" imetengenezwa."
@@ -42,7 +42,7 @@ msgid "\"product\" (replaces \"article\")"
 msgstr "\"bidhaa\" (inachukua nafasi ya \"makala\")"
 
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:549
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -52,14 +52,14 @@ msgstr ""
 "kiwango kinachokubalika cha herufi %3$d. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:553
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d herufi — urefu bora. %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:544
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr ""
@@ -67,33 +67,47 @@ msgstr ""
 "%2$d). %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:539
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d herufi — fupi sana (lengo ni %2$d–%3$d). %4$s"
 
+#. translators: %1$d: character count, %2$d: word count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#, php-format
+msgid "%1$d chars, %2$d words — good title."
+msgstr "%1$d herufi, %2$d maneno — kichwa kizuri."
+
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:698
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d ndani, %2$d nje."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:655
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d ya %2$d picha hazina maandishi ya alt."
 
+#. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#, php-format
+msgid "%1$d post tagged with _lf_lang = %2$s."
+msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
+msgstr[0] "%1$d chapisho kilichotahiniwa na _lf_lang = %2$s."
+msgstr[1] "%1$d machapisho yaliyotahiniwa na _lf_lang = %2$s."
+
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:573
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d maneno — chini ya kiwango cha chini kinachorekomendwa cha %2$d."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:568
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -103,20 +117,14 @@ msgstr ""
 "%1$d maneno — maudhui machache sana. Fikiria kupanua hadi angalau %2$d "
 "maneno."
 
-#. translators: %d: number of characters
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:515
-#, php-format
-msgid "%d chars — good length."
-msgstr "%d herufi — urefu mzuri."
-
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:690
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "Kiungo cha nje cha %d, hakina viungo vya ndani."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:685
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -126,19 +134,19 @@ msgstr ""
 "yanayohusiana."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:622
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d lebo za H1 zimepatikana — ukurasa unapaswa kuwa na H1 moja tu."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:661
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d picha, zote zina maandishi ya alt."
 
 #. translators: %d: number of languages without a translation post
-#: language-router/includes/admin/class-meta-boxes.php:266
+#: language-router/includes/admin/class-meta-boxes.php:282
 #, php-format
 msgid "%d language not yet linked"
 msgid_plural "%d languages not yet linked"
@@ -205,8 +213,24 @@ msgid_plural "%d part references updated."
 msgstr[0] "%d marejeo ya sehemu yamesasishwa."
 msgstr[1] "%d marejeo ya sehemu yamesasishwa."
 
+#. translators: %d: number of posts
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:399
+#, php-format
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] "%d chapisho"
+msgstr[1] "%d machapisho"
+
+#. translators: %d: number of rewrite rules
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#, php-format
+msgid "%d rule registered"
+msgid_plural "%d rules registered"
+msgstr[0] "%d kanuni zilizosajiliwa"
+msgstr[1] "%d kanuni zilizosajiliwa"
+
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:577
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
 #, php-format
 msgid "%d words."
 msgstr "%d maneno."
@@ -250,23 +274,31 @@ msgstr ""
 "nyingi. Ramani ya LF inatangazwa moja kwa moja kwenye robots.txt."
 
 #. translators: %s is the average hits per cached block.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:160
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
 msgid "(avg %.1f hits/block)"
 msgstr "(avg %.1f mafanikio/kipande)"
 
 #. translators: %s is the average hits per cached entry.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:100
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:127
 #, php-format
 msgid "(avg %.1f hits/entry)"
 msgstr "(wastani %.1f hits/kuingia)"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:70
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+msgid "(classic theme)"
+msgstr "(mandhari ya jadi)"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:66
 msgid "(disabled)"
 msgstr "(imezimwa)"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+msgid "(FSE / block theme)"
+msgstr "(FSE / mandhari ya kizuizi)"
+
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
 #, php-format
 msgid "(no title) #%d"
 msgstr "(hakuna kichwa) #%d"
@@ -285,19 +317,19 @@ msgstr ".txt faili(za) kwenye saraka"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:627
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr ""
 "H1 1 ✓ — hakuna vichwa vidogo vya H2 (inayokubalika kwa aina hii ya maudhui)."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:626
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
 msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
 msgstr ""
 "H1 moja ✓ — hakuna vichwa vya H2 vilivyopatikana. Kuongeza H2 huimarisha "
 "muundo."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:632
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "H1 moja ✓, %1$d H2, %2$d H3."
@@ -334,6 +366,10 @@ msgstr "<strong>{n}</strong> njia/nyingine zilizobaki"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> tatizo la kiolezo"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+msgid "_lf_lang Coverage"
+msgstr "Ufunuo wa _lf_lang"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:337
 msgid ""
 "A physical robots.txt file exists at the site root. WordPress's virtual "
@@ -361,10 +397,6 @@ msgstr ""
 msgid "Action"
 msgstr "Kitendo"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:48
-msgid "Actions"
-msgstr "Vitendo"
-
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
 msgid "active"
 msgstr "kinachofanya kazi"
@@ -372,6 +404,10 @@ msgstr "kinachofanya kazi"
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
 msgid "Active Languages"
 msgstr "Lugha Zinazotumika"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+msgid "Active languages"
+msgstr "Lugha zinazofanya kazi"
 
 #: ai/includes/Admin/SettingsHelp.php:78
 msgid ""
@@ -382,9 +418,27 @@ msgstr ""
 "hupata kiambatanisho cha URL au subdomain na lebo ya hreflang kwenye &lt;"
 "head&gt; ya ukurasa."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+msgid "Active preset"
+msgstr "Mipangilio inayofanya kazi"
+
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
 msgid "Active Provider"
 msgstr "Mtoa huduma wa Sasa"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
+msgid "Active provider"
+msgstr "Mtoa huduma anayefanya kazi"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+msgid "Active theme"
+msgstr "Mandhari inayofanya kazi"
+
+#. translators: %s: comma-separated list of plugin names
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#, php-format
+msgid "Active: %s."
+msgstr "Inafanya kazi: %s."
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:265
 msgid "Add entry"
@@ -406,6 +460,10 @@ msgid ""
 msgstr ""
 "Ongeza maelekezo ya kuboresha rasimu — mfano, ifupishe, ongeza sehemu ya "
 "hitimisho, tumia muundo rasmi zaidi…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+msgid "Add key →"
+msgstr "Ongeza ufunguo →"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:201
 msgid "Add new entry"
@@ -469,7 +527,7 @@ msgid "AI Behaviour Preset"
 msgstr "Mipangilio ya Tabia za AI"
 
 #. translators: %d: number of cache entries removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:253
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:323
 #, php-format
 msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
@@ -488,6 +546,10 @@ msgstr ""
 "kujaribu mabadiliko ya tafsiri — matokeo yaliyohifadhiwa yanarudiwa hata "
 "unapotabadilisha preset au mfano wa AI hadi kifurushi cha cache "
 "kitakapotolewa."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+msgid "AI Configuration"
+msgstr "Mipangilio ya AI"
 
 #: ai/includes/Admin/SettingsHelp.php:88
 msgid ""
@@ -512,12 +574,18 @@ msgstr "Mtoa huduma wa AI alirudisha majibu tupu."
 msgid "AI Recommendations"
 msgstr "Mapendekezo ya AI"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1028
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI imerudisha muundo wa majibu usiotarajiwa. Tafadhali jaribu tena."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+msgid "AI translation and batch analysis may time out. Recommend 120s or more."
+msgstr ""
+"Tafsiri ya AI na uchambuzi wa kundi linaweza kuchukua muda mrefu. Pendekeza "
+"sekunde 120 au zaidi."
+
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "AI Usage"
 msgstr "Matumizi ya AI"
 
@@ -542,19 +610,26 @@ msgstr ""
 "injini irudie ramani ya tovuti sasa badala ya kusubiri ukaguzi wa robots.txt "
 "ujao."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+msgid "All published posts have a _lf_lang value. No gaps detected."
+msgstr ""
+"Machapisho yote yaliyochapishwa yana thamani ya _lf_lang. Hakuna mapengo "
+"yaliyogunduliwa."
+
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:49
 msgid "All time"
 msgstr "Wakati wote"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:277
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:349
 msgid "All types"
 msgstr "Aina zote"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:50
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:51
 msgid "Allow editors to lock individual blocks"
 msgstr "Ruhusu wahariri kufunga blocks binafsi"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:69
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:70
 msgid "Allow Gutenberg template-editing mode on post screens"
 msgstr ""
 "Ruhusu hali ya uhariri wa template wa Gutenberg kwenye skrini za chapisho"
@@ -596,15 +671,23 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Hitilafu isiyojulikana imetokea."
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+msgid "Analyse"
+msgstr "Chambua"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:373
+msgid "Analyse all languages"
+msgstr "Chambua lugha zote"
+
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
 msgid "Analyse…"
 msgstr "Chambua…"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:65
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:70
 msgid "Analysis"
 msgstr "Uchambuzi"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
 msgid "Analysis request failed. Please try again."
 msgstr "Ombi la uchambuzi limekosa mafanikio. Tafadhali jaribu tena."
 
@@ -616,7 +699,7 @@ msgstr "Inachambua…"
 msgid "and"
 msgstr "na"
 
-#: ai/includes/Admin/SettingsPage.php:63
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
 
@@ -625,7 +708,7 @@ msgstr "Anthropic (Claude)"
 msgid "any"
 msgstr "yote"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:94
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:121
 msgid "API calls saved by cache"
 msgstr "Vito vya API vilivyohifadhiwa na cache"
 
@@ -633,9 +716,13 @@ msgstr "Vito vya API vilivyohifadhiwa na cache"
 msgid "API Key"
 msgstr "Funguo la API"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
+msgid "API key"
+msgstr "Ufunguo wa API"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:628
+#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
 msgid "API Keys"
 msgstr "Vifunguo vya API"
 
@@ -643,11 +730,14 @@ msgstr "Vifunguo vya API"
 msgid "API Keys Tab"
 msgstr "Kipindi cha Funguo za API"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:65
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:208
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:61
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:93
 msgid "API Response Cache"
 msgstr "Cache ya Majibu ya API"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:304
+msgid "API Response Cache setting saved."
+msgstr "Mipangilio ya Hifadhi ya Majibu ya API imehifadhiwa."
 
 #. translators: %s: Sitemap directive line
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:356
@@ -665,6 +755,11 @@ msgstr "Imethibitishwa ✓"
 #: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
 msgid "Apply failed — please try again."
 msgstr "Umeomba kushindwa — tafadhali jaribu tena."
+
+#: language-router/includes/admin/class-columns.php:173
+#: language-router/includes/admin/class-meta-boxes.php:97
+msgid "Apply to all language versions"
+msgstr "Tumia kwa toleo zote za lugha"
 
 #: ai/assets/block-action.js:328 ai/assets/block-action.js:517
 #: ai/assets/block-action.js:722 ai/assets/block-action.js:990
@@ -695,7 +790,7 @@ msgstr "Tumia tafsiri"
 msgid "Applying…"
 msgstr "Inatumika…"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:177
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:231
 msgid "Approximate size"
 msgstr "Ukubwa wa takriban"
 
@@ -726,8 +821,22 @@ msgstr "Waandishi na zaidi (hariri_maandishi_yaliyochapwa)"
 msgid "Auto (recommended)"
 msgstr "Automu (inapendekezwa)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:20
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:378
+msgid ""
+"Auto-detect assigns: WooCommerce products → Product profile; the static "
+"front page → Landing profile; everything else → Blog profile. Choose a "
+"specific profile to override this for all posts."
+msgstr ""
+"Uchambuzi wa kundi: bidhaa za WooCommerce → Profaili ya Bidhaa; ukurasa wa "
+"mbele wa static → Profaili ya Kutua; kila kitu kingine → Profaili ya Blogu. "
+"Chagua profaili maalum ili kuibadilisha hii kwa machapisho yote."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
+msgid "Batch Analysis"
+msgstr "Uchambuzi wa Kundi"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Behavior"
 msgstr "Tabia"
 
@@ -758,7 +867,7 @@ msgstr ""
 "na ishara ya LINGUAFORGE_LANG_FALLBACK_ACTIVE ya mtaalamu wa Lingua Forge — "
 "haitoi chochote wakati kuna tafsiri kwa eneo la ombi."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:29
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:30
 msgid "Block Editor"
 msgstr "Mhariri wa Block"
 
@@ -787,7 +896,7 @@ msgctxt "block keyword"
 msgid "translation"
 msgstr "tafsiri"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:40
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:41
 msgid "Block locking"
 msgstr "Kufunga kwa block"
 
@@ -809,20 +918,22 @@ msgctxt "block title"
 msgid "Missing Translation Notice"
 msgstr "Arifa ya Tafsiri Iliyokosewa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:154
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:208
 msgid "Block translation reuses"
 msgstr "Matumizi ya upya wa tafsiri za blok"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:163
 msgid ""
 "Block-level translation cache shared across posts. When enabled, identical "
 "blocks (same markup, language pair, and glossary) are served from memory "
-"instead of calling the AI again. Configure in Settings → Behavior."
+"instead of calling the AI again. Glossary edits and Compliance preset "
+"changes automatically invalidate affected cached translations."
 msgstr ""
-"Cache ya tafsiri za kiwango cha blok inayoshirikiana kati ya machapisho. "
-"Wakati imewezeshwa, blokii zinazofanana (alama sawa, jozi ya lugha, na "
-"kamusi) zinatumikia kutoka kwa kumbukumbu badala ya kuita AI tena. Weka "
-"mipangilio katika Mipangilio → Tabia."
+"Hifadhi ya tafsiri ya kiwango cha block inayoshirikiwa kati ya machapisho. "
+"Wakati imewezeshwa, blocks zinazofanana (alama sawa, jozi ya lugha, na "
+"kamusi) zinatumikia kutoka kwenye kumbukumbu badala ya kuita AI tena. "
+"Mabadiliko ya Kamusi na mabadiliko ya preset ya Uzingatiaji hufuta moja kwa "
+"moja tafsiri zilizohifadhiwa."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:75
 msgid "Blog / Editorial"
@@ -842,7 +953,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Uelekeaji wa lugha wa kivinjari"
 
-#: ai/includes/Admin/SettingsPage.php:319
+#: ai/includes/Admin/SettingsPage.php:329
 msgid "Built-in preset instructions:"
 msgstr "Maagizo ya awali yaliyowekwa ndani:"
 
@@ -850,35 +961,16 @@ msgstr "Maagizo ya awali yaliyowekwa ndani:"
 msgid "Bulletize (•-prefixed)"
 msgstr "Fanya kwa alama za orodha (•-kianzio)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
-msgid ""
-"Cache translated equivalents at the block level so reusable content (shared "
-"footers, sidebars, accordions, boilerplate-heavy legal sections) does not "
-"pay an API call every time. When enabled, the translation flow parses each "
-"post into blocks, looks each block up in the cache, and sends only uncached "
-"blocks to the AI in a single batched request. Glossary edits and Compliance "
-"preset changes automatically invalidate affected cached translations. View "
-"statistics and clear the cache under Maintenance."
-msgstr ""
-"Hifadhi sawa za tafsiri kwenye kiwango cha block ili maudhui yanayoweza "
-"kutumika tena (viambatanisho vya chini, upendeleo wa upande, accordions, "
-"sehemu za kisheria zenye boilerplate nyingi) zisitoe wito wa API kila wakati."
-" Wakati imewezeshwa, mchakato wa tafsiri huparsing kila chapisho kuwa blocks,"
-" huangalia kila block kwenye hifadhi, na hupeleka blocks zisizo na hifadhi "
-"pekee kwa AI kwa ombi moja la kundi. Mabadiliko ya kamusi na mabadiliko ya "
-"preset ya Uzingatiaji huondoa hifadhi za tafsiri zinazohusika kiotomatiki. "
-"Tazama takwimu na safisha hifadhi chini ya Matengenezo."
-
 #: ai/assets/admin.js:662 ai/assets/admin.js:737 ai/assets/admin.js:781
 #: ai/assets/toolbar-translate.js:669
 msgid "cached"
 msgstr "imehifadhiwa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:90
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:117
 msgid "Cached API responses"
 msgstr "Majibu ya API yaliyohifadhiwa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:150
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:204
 msgid "Cached block translations"
 msgstr "Tafsiri za blokii zilizohifadhiwa"
 
@@ -923,10 +1015,18 @@ msgstr ""
 "nafasi ya kikomo cha kila mtumiaji (ombi 30 / dakika, kilichowekwa kwa nguvu)"
 " kinacholinda dhidi ya mizunguko ya kipekee ya mtumiaji."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+msgid "Cart"
+msgstr "Karatasi"
+
 #. translators: %d is replaced by the number of characters
 #: ai/assets/admin.js:835
 msgid "chars"
 msgstr "wahusika"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+msgid "Checkout"
+msgstr "Malipo"
 
 #: ai/assets/admin.js:734
 msgid "Chunk translated"
@@ -945,7 +1045,7 @@ msgstr "Futa"
 msgid "Clear All"
 msgstr "Futa Yote"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:122
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:149
 msgid ""
 "Clear all cached AI results? Future requests will trigger fresh API calls "
 "until the cache rebuilds."
@@ -953,7 +1053,7 @@ msgstr ""
 "Futa matokeo yote ya AI yaliyohifadhiwa? Maombi yajayo yataanzisha wito mpya "
 "wa API hadi cache itakapojengwa upya."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:126
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:153
 msgid "Clear API Response Cache"
 msgstr "Futa Cache ya Majibu ya API"
 
@@ -969,7 +1069,7 @@ msgstr "Futa vidokezo"
 msgid "Clear input"
 msgstr "Futa ingizo"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:186
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:240
 msgid ""
 "Clear the entire Translation Memory? Future translations will rebuild the "
 "cache as they run."
@@ -977,7 +1077,7 @@ msgstr ""
 "Futa Kumbukumbu ya Tafsiri yote? Tafsiri za baadaye zitajenga tena cache "
 "wanapozalishwa."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:191
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:245
 msgid "Clear Translation Memory"
 msgstr "Futa Kumbukumbu ya Tafsiri"
 
@@ -988,7 +1088,7 @@ msgstr "Futa Kumbukumbu ya Tafsiri"
 msgid "Close"
 msgstr "Funga"
 
-#: language-router/includes/class-lsflr-switcher.php:257
+#: language-router/includes/class-lsflr-switcher.php:288
 msgid "Close language panel"
 msgstr "Funga paneli ya lugha"
 
@@ -996,11 +1096,11 @@ msgstr "Funga paneli ya lugha"
 msgid "Close popover"
 msgstr "Funga kidirisha"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:68
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:73
 msgid "Compatibility"
 msgstr " Ulinganifu"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:79
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:80
 msgid "Compliance Preset"
 msgstr "Preset ya Uzingatiaji"
 
@@ -1011,6 +1111,20 @@ msgid ""
 msgstr ""
 "Sanidi mtoa huduma wa AI katika Settings → API Keys ili kuwezesha "
 "mapendekezo yanayotegemea AI."
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:45
+msgid ""
+"Configure hreflang, Open Graph, Schema.org, sitemaps, and social sharing for "
+"every language on your site. Each section below handles one aspect of "
+"multilingual SEO."
+msgstr ""
+"Sanidi hreflang, Open Graph, Schema.org, ramani za tovuti, na ushirikiano wa "
+"kijamii kwa kila lugha kwenye tovuti yako. Sehemu kila chini inashughulikia "
+"kipengele kimoja cha SEO ya lugha nyingi."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+msgid "Configured"
+msgstr "Imesanidiwa"
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1074,6 +1188,11 @@ msgstr " Mazungumzo"
 msgid "Copied ✓"
 msgstr "Imenakiliwa ✓"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+msgid "Copied!"
+msgstr "Imenakiliwa!"
+
 #: ai/assets/admin.js:497 ai/assets/admin.js:507 ai/assets/admin.js:698
 #: ai/assets/admin.js:745 ai/assets/admin.js:792 ai/assets/block-action.js:331
 #: ai/assets/block-action.js:451 ai/assets/editor-translate.js:319
@@ -1082,6 +1201,10 @@ msgstr "Imenakiliwa ✓"
 msgid "Copy"
 msgstr "Nakili"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+msgid "Copy and paste into a GitHub issue or support request."
+msgstr "Nakili na ubandike kwenye tatizo la GitHub au ombi la msaada."
+
 #: language-router/includes/seo/class-social-share.php:185
 msgid "Copy failed — please copy the URL manually."
 msgstr "Nakili imekosa — tafadhali nakili URL kwa mikono."
@@ -1089,6 +1212,10 @@ msgstr "Nakili imekosa — tafadhali nakili URL kwa mikono."
 #: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
 msgid "Copy markup"
 msgstr "Nakili muundo wa maandishi"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+msgid "Copy system info"
+msgstr "Nakili taarifa za mfumo"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:147
 msgid ""
@@ -1148,17 +1275,17 @@ msgid "CPT Block Patterns"
 msgstr "Mipango ya Block CPT"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:87
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:112
 #: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:231
 msgid "Create"
 msgstr "Unda"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:51
 msgid "Create missing"
 msgstr "Unda zilizokosewa"
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:265
+#: ai/includes/Admin/PostListColumn.php:319
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration. "
@@ -1167,7 +1294,7 @@ msgstr ""
 "Kuunda tafsiri za aina ya chapisho \"%s\" kunahitaji muunganisho hai. "
 "Tafadhali hakikisha muunganisho unaohitajika umewekwa na kufanya kazi."
 
-#: ai/includes/Admin/SettingsPage.php:242
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "Creating…"
 msgstr "Inaundwa…"
 
@@ -1175,7 +1302,7 @@ msgstr "Inaundwa…"
 msgid "Creative / Marketing"
 msgstr "Ubunifu / Masoko"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:132
 msgid "Creative / Marketing instructions"
 msgstr "Maagizo ya Ubunifu / Masoko"
 
@@ -1211,7 +1338,7 @@ msgstr ""
 "Kwa sasa urithi kutoka kwa kifungo cha %s. Kuchagua thamani hapa kutaleta "
 "mabadiliko."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:193
 msgid ""
 "Currently skipped for posts that use block-comment attribute placeholders "
 "(wp:details summary fields, etc.) — they fall through to the existing single-"
@@ -1237,6 +1364,10 @@ msgstr ""
 "Kiwango cha AI cha kila siku kimefikia (%1$d maombi). Kinarejeshwa saa %2$s "
 "UTC."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+msgid "Daily quota"
+msgstr "Kiasi cha kila siku"
+
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:65
 msgid "Daily request limit"
 msgstr "Kikomo cha maombi ya kila siku"
@@ -1256,6 +1387,10 @@ msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "Faili za kagua zimesafishwa. Faili %d imeondolewa."
 msgstr[1] "Faili za kagua zimesafishwa. Faili %d zimeondolewa."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+msgid "Debug Info"
+msgstr "Taarifa za Debug"
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:90
 msgid "Debug logging"
@@ -1282,6 +1417,10 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:126
 msgid "Default OG image"
 msgstr "Picha ya OG chaguo-msingi"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:361
+msgid "Default profile"
+msgstr "Profaili chaguo-msingi"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:180
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:190
@@ -1330,18 +1469,6 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:127
 msgid "Directory"
 msgstr "Saraka"
-
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:221
-msgid ""
-"Disable during prompt tuning or when you need every request to reach the AI "
-"provider. Disabling does not delete cached entries — re-enabling restores "
-"them. Increasing API spend immediately on busy sites is expected when "
-"disabled."
-msgstr ""
-"Zima wakati wa kurekebisha maombi au unapoihitaji kila ombi lifikie mtoa "
-"huduma wa AI. Kuzima hakufutii vitu vilivyohifadhiwa — kuirudisha tena "
-"huwarejesha. Kuongeza matumizi ya API mara moja kwenye tovuti zenye shughuli "
-"nyingi kunatarajiwa wakati imezimwa."
 
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:90
 msgid ""
@@ -1424,7 +1551,7 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Mwelekeo wa orodha"
 
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "edit"
 msgstr "hariri"
 
@@ -1432,11 +1559,11 @@ msgstr "hariri"
 msgid "Editors and above (edit_others_posts)"
 msgstr "Wahariri na zaidi (hariri_wa_waandishi_wengine)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:218
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:103
 msgid "Enable API response caching"
 msgstr "Wezesha kuhifadhi majibu ya API"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:187
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:190
 msgid "Enable block-level translation cache reuse across posts"
 msgstr "Wezesha upyaji wa hifadhi ya tafsiri kwenye block kwa posts"
 
@@ -1445,7 +1572,7 @@ msgid "Enable Social Share URL rewriting for Social Icons blocks"
 msgstr ""
 "Wezesha upya URL za Shirika la Kijamii kwa vikundi vya Ikoni za Kijamii"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
 msgid ""
 "Enable when your theme renders the post title as an H2 instead of an H1 "
 "(common in some block themes). The analyser fetches the rendered page and, "
@@ -1468,13 +1595,22 @@ msgstr ""
 "(LINGUAFORGE_SECRET). Usishiriki usafirishaji wa hifadhidata bila "
 "kubadilisha siri kwanza."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+msgid "Environment"
+msgstr "Mazingira"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
 msgid "environment variable"
 msgstr "mabadiliko ya mazingira"
 
-#: ai/includes/Admin/PostListColumn.php:184
+#: ai/includes/Admin/PostListColumn.php:238
 msgid "Error"
 msgstr "Hitilafu"
+
+#: language-router/includes/admin/class-columns.php:169
+#: language-router/includes/admin/class-meta-boxes.php:90
+msgid "Exclude from navigation menus"
+msgstr "Epuka kwenye menyu za urambazaji"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1558,7 +1694,7 @@ msgstr ""
 msgid "Filter"
 msgstr "Kichujio"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:201
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:219
 msgid ""
 "Filter by language and post type, browse your content, and click Analyze on "
 "any item to run a rule-based SEO audit — title length, meta description, "
@@ -1578,7 +1714,7 @@ msgstr ""
 "mahali pasipo umma."
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Finding"
 msgstr "Utafutaji"
 
@@ -1590,27 +1726,31 @@ msgstr "Rekebisha"
 msgid "Fix All"
 msgstr "Rekebisha Yote"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:115
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
 msgid "Fix all links"
 msgstr "Rekebisha viungo vyote"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:64
 msgid "Fix all parts"
 msgstr "Rekebisha sehemu zote"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:141
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:75
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
+#: ai/includes/Admin/SettingsPage.php:262
 msgid "Fix Links"
 msgstr "Rekebisha Viungo"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Fix Nav"
 msgstr "Rekebisha Urambazaji"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:80
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
+#: ai/includes/Admin/SettingsPage.php:266
 msgid "Fix Parts"
 msgstr "Rekebisha Sehemu"
 
@@ -1622,9 +1762,9 @@ msgstr "Rekebisha Kiolezo"
 msgid "Fixing {n} / {total}…"
 msgstr "Rekebisha {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:253
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:267
+#: ai/includes/Admin/SettingsPage.php:274
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
@@ -1697,7 +1837,7 @@ msgstr ""
 "{scanned}</strong> yaliyopitiwa kwa <strong>{lang}</strong>."
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:127
+#: ai/includes/Admin/PostListColumn.php:130
 msgid "From"
 msgstr "Kutoka"
 
@@ -1735,7 +1875,7 @@ msgid "Full post"
 msgstr "Ujumbe kamili"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:627
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "General"
 msgstr "Jumla"
 
@@ -1786,7 +1926,7 @@ msgstr "Uzalishaji umeshindwa."
 msgid "Getting started"
 msgstr "Anza"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:91
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:92
 msgid "Global AI preset"
 msgstr "Preset ya AI Ulimwenguni"
 
@@ -1799,7 +1939,7 @@ msgstr "Chaguo-msingi duniani kote (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "Glossary"
 msgstr "Kamusi"
 
@@ -1815,11 +1955,11 @@ msgstr "Kufuta kamusi ya msamiati."
 msgid "Glossary Tab"
 msgstr "Tabu ya Kamusi"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:67
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:611
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1830,11 +1970,11 @@ msgstr ""
 "mandhari yako inatoa kichwa kwa usahihi.)"
 
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:347
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Headings"
 msgstr "Vichwa vya habari"
 
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:283
 msgid "Hide"
 msgstr "Ficha"
 
@@ -1859,7 +1999,7 @@ msgid "How to use"
 msgstr "Jinsi ya kutumia"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:45
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
 msgid "Hreflang"
 msgstr "Hreflang"
 
@@ -1939,7 +2079,7 @@ msgstr ""
 "michoro ya JSON-LD inayopingana."
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:348
+#: ai/includes/Admin/SettingsPage.php:358
 msgid "Images"
 msgstr "Picha"
 
@@ -1993,7 +2133,7 @@ msgstr "Sakinisha Lugha"
 msgid "Installed SEO plugins"
 msgstr "Programu-jalizi za SEO zilizowekwa"
 
-#: ai/includes/Admin/SettingsPage.php:237
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "Installing…"
 msgstr "Inasakinishwa…"
 
@@ -2045,14 +2185,14 @@ msgstr "Msimbo wa lugha si sahihi."
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:58
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:160
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:190
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:69
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:235
 msgid "Invalid or primary language."
 msgstr "Lugha si sahihi au ni kuu."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:366
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:886
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
 msgid "Invalid post ID."
 msgstr "ID batili ya chapisho."
 
@@ -2061,7 +2201,7 @@ msgstr "ID batili ya chapisho."
 msgid "Invalid post type."
 msgstr "Aina ya chapisho si sahihi."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:167
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:197
 msgid "Invalid template part."
 msgstr "Sehemu ya kiolezo si sahihi."
 
@@ -2072,6 +2212,10 @@ msgstr "Aina ya kiolezo si sahihi."
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:136
 msgid "JavaScript-powered actions"
 msgstr "Vitendo vinavyotegemea JavaScript"
+
+#: ai/includes/Admin/SettingsPage.php:373
+msgid "Just now"
+msgstr "Sasa hivi"
 
 #: ai/includes/Features/ContentGenerator.php:186
 msgid "Key points, ideas, or structure to build from…"
@@ -2092,7 +2236,7 @@ msgstr ""
 msgid "Landing / Short-form"
 msgstr "Kuruka / Fomu fupi"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:258
 #: language-router/includes/class-lsflr-switcher-widget.php:40
 msgid "Language"
 msgstr "Lugha"
@@ -2108,7 +2252,7 @@ msgid "Language (optional)"
 msgstr "Lugha (hiari)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:241
+#: ai/includes/Admin/SettingsPage.php:251
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
@@ -2155,7 +2299,7 @@ msgid "Language Setup"
 msgstr "Mipangilio ya Lugha"
 
 #: language-router/includes/class-lsflr-switcher-widget.php:25
-#: language-router/includes/class-lsflr-switcher.php:428
+#: language-router/includes/class-lsflr-switcher.php:459
 msgid "Language Switcher"
 msgstr "Kigeuzi cha Lugha"
 
@@ -2209,6 +2353,20 @@ msgstr "Siku 7 zilizopita"
 msgid "Last generated: %s"
 msgstr "Imezalishwa mwisho: %s"
 
+#: ai/includes/Admin/PostListColumn.php:191
+msgid ""
+"Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to "
+"update."
+msgstr ""
+"Alama ya SEO ya mwisho kwa kanuni. Endesha uchambuzi katika Usanidi → SEO → "
+"Uchambuzi ili kusasisha."
+
+#. translators: %s: human-readable time difference
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:406
+#, php-format
+msgid "Last run: %s ago"
+msgstr "Endesha mara ya mwisho: %s zilizopita"
+
 #: ai/assets/block-action.js:72
 msgid "Lead paragraph (≤60 w)"
 msgstr "Kipande cha kuongoza (≤60 w)"
@@ -2245,7 +2403,7 @@ msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr ""
 "Acha tupu ili kuhifadhi funguo iliyopo. Ingiza thamani mpya kuibadilisha."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:154
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:155
 msgid ""
 "Leave blank to use the built-in default. Clearing a saved override restores "
 "the default on next save."
@@ -2273,7 +2431,7 @@ msgstr ""
 msgid "Legal / Compliance"
 msgstr "Kisheria / Uzingatiaji"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:131
 msgid "Legal / Compliance instructions"
 msgstr "Maagizo ya Kisheria / Uzingatiaji"
 
@@ -2364,8 +2522,18 @@ msgstr ""
 "canonical yake mwenyewe — routing ya lugha tayari hufanya kila URL kuwa "
 "canonical."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+msgid ""
+"LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
+"Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
+"bug report."
+msgstr ""
+"Ving'ang'anizi vinavyomilikiwa na LF vinavyosajiliwa kwa sasa katika "
+"$wp_rewrite->extra_rules_top. Inafaa kwa kugundua 404s au migogoro ya "
+"mwelekeo. Nakili hizi wakati wa kuwasilisha ripoti ya hitilafu."
+
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:79
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Light"
 msgstr "Nuru"
 
@@ -2377,6 +2545,10 @@ msgstr "Nuru (chaguo-msingi — haraka na yenye gharama nafuu)"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "Mwanga (haraka na nafuu — Haiku / Flash)"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "Light model"
+msgstr "Mfano mwepesi"
+
 #: ai/includes/Admin/SettingsHelp.php:96
 msgid ""
 "Light: used for meta descriptions and excerpt generation — fast, low cost."
@@ -2384,14 +2556,14 @@ msgstr ""
 "Nuru: inatumika kwa maelezo mafupi na uzalishaji wa excerpt — haraka, "
 "gharama ya chini."
 
-#: language-router/includes/rewrite/class-query-filter.php:94
+#: language-router/includes/rewrite/class-query-filter.php:95
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr ""
 "Lenga matokeo kwa kurasa zilizo katika msimbo wa lugha wa Lingua Forge "
 "uliotolewa."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:629
+#: ai/includes/Admin/SettingsPage.php:632
 msgid "Limits"
 msgstr "Mipaka"
 
@@ -2498,7 +2670,7 @@ msgstr ""
 "utafutaji kuelewa aina ya maudhui yako, lugha, na metadata. Hii ndiyo njia "
 "kuu ya kuwasiliana maelezo ya inLanguage kwa Google na wakusanyaji wengine."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:33
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:34
 msgid ""
 "Lingua Forge restricts two Gutenberg features by default to keep editorial "
 "behavior consistent across languages. Opt in here when you need full "
@@ -2524,11 +2696,15 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge hutumia safu mbili za mfano kwa kila mtoa huduma:"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+msgid "Lingua Forge version"
+msgstr "Toleo la Lingua Forge"
+
 #: ai/includes/Admin/AdminToolbar.php:67
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Tafsiri Haraka"
 
-#: ai/includes/Admin/SettingsPage.php:616
+#: ai/includes/Admin/SettingsPage.php:619
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Mipangilio"
 
@@ -2551,7 +2727,7 @@ msgid "link(s)"
 msgstr "kiungo(viungo)"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:349
+#: ai/includes/Admin/SettingsPage.php:359
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Viungo"
@@ -2560,7 +2736,7 @@ msgstr "Viungo"
 msgid "Load available languages"
 msgstr "Pakua lugha zinazopatikana"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:289
 msgid "Load content"
 msgstr "Pakia maudhui"
 
@@ -2568,7 +2744,7 @@ msgstr "Pakia maudhui"
 msgid "Loaded from cache."
 msgstr "Imepakuliwa kutoka kwa cache."
 
-#: ai/includes/Admin/SettingsPage.php:236
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Loading…"
 msgstr "Inapakia…"
 
@@ -2612,7 +2788,7 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:638
 msgid "Maintenance"
 msgstr "Matengenezo"
 
@@ -2721,23 +2897,27 @@ msgid "Meta Description"
 msgstr "Maelezo ya Meta"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:344
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Meta description"
 msgstr "Maelezo ya meta"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:80
+#: ai/includes/Admin/SettingsPage.php:82
 msgid "Meta Description, Excerpt Generator"
 msgstr "Maelezo ya Meta, Mwandishi wa Muhtasari"
 
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:351
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Metric"
 msgstr "Kiwango"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:89
 msgid "Minimum role"
 msgstr "Hali ya chini"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+msgid "Missing"
+msgstr "Inakosekana"
 
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:51
 msgid "Missing pattern name or language."
@@ -2765,15 +2945,15 @@ msgstr "Miundo"
 msgid "Models Tab (General)"
 msgstr "Tabu ya Mifano (Kwa Jumla)"
 
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Modified"
 msgstr "Imebadilishwa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:172
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:226
 msgid "Most recent cached block"
 msgstr "Blokii ya hivi karibuni iliyohifadhiwa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:112
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:139
 msgid "Most recent cached response"
 msgstr "Majibu ya hivi karibuni yaliyohifadhiwa"
 
@@ -2789,6 +2969,18 @@ msgstr ""
 "Schema.org, ramani ya tovuti), na zana za AI za maudhui kwa WordPress. "
 "Utambuzi wa lugha, njia za URL, tafsiri, uzalishaji wa maudhui, na safu "
 "kamili ya SEO — hakuna programu-jalizi ya msaidizi inayohitajika."
+
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:43
+msgid "Multilingual SEO"
+msgstr "SEO ya Lugha Nyingi"
+
+#: ai/includes/Admin/SettingsPage.php:376
+msgid "Multilingual SEO overview"
+msgstr "Muhtasari wa SEO ya Lugha Nyingi"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+msgid "My Account"
+msgstr "Akaunti Yangu"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2808,7 +3000,7 @@ msgstr "Uelekeo haujakuwa na maudhui ya kutafsiri."
 msgid "Navigation not found."
 msgstr "Uelekeo haujapatikana."
 
-#: ai/includes/Admin/PostListColumn.php:226
+#: ai/includes/Admin/PostListColumn.php:280
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr ""
 "Maandishi ya urambazaji yanatafsiriwa kupitia kichupo cha Router, si kitufe "
@@ -2826,12 +3018,20 @@ msgstr ""
 msgid "Navigations"
 msgstr "Viongozi"
 
-#: ai/includes/Admin/SettingsPage.php:209
+#: ai/includes/Admin/SettingsPage.php:219
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Hitilafu ya mtandao — haikuweza kufikia mwisho wa AJAX wa WordPress."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+msgid "Network error."
+msgstr "Hitilafu ya mtandao."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:409
+msgid "Never run"
+msgstr "Usiwe kukimbia kamwe"
+
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:394
+#: ai/includes/Admin/PostListColumn.php:448
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr "Hakuna toleo la %s lililopatikana katika kundi hili la tafsiri."
@@ -2854,7 +3054,7 @@ msgstr ""
 msgid "No AI provider configured."
 msgstr "Mtoa huduma wa AI hajaanzishwa."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:898
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "Hakuna mtoa huduma wa AI aliyepangwa. Ongeza ufunguo wa API katika "
@@ -2882,7 +3082,7 @@ msgstr ""
 msgid "No API key configured for this provider."
 msgstr "Hakuna funguo ya API iliyowekwa kwa mtoa huduma huu."
 
-#: ai/includes/Admin/SettingsPage.php:320
+#: ai/includes/Admin/SettingsPage.php:330
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2936,7 +3136,7 @@ msgstr ""
 "Hakuna viingilio vya kamusi bado. Weka chini ili kuanza kutekeleza istilahi "
 "katika tafsiri."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:618
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -2944,7 +3144,7 @@ msgstr ""
 "Hakuna H1 iliyopatikana. Kawaida kichwa cha chapisho ni H1 — hakikisha "
 "mandhari yako inachapisha hicho."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:649
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
 msgid "No images found in content."
 msgstr "Hakuna picha zilizopatikana kwenye maudhui."
 
@@ -2956,22 +3156,28 @@ msgstr "Hakuna viungo vya ndani vilivyopatikana vya kusasisha."
 msgid "No language-specific template parts found to map."
 msgstr "Hakuna sehemu za kiolezo zinazohitajika kubadilishwa ili kuoanisha."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:530
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
 msgid "No LF meta description set — using excerpt/content."
 msgstr "Hakuna maelezo ya meta ya LF yaliowekwa — inatumia excerpt/maudhui."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:677
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
+msgstr ""
+"Hakuna sheria za kuandika upya LF zilizopatikana. Futa permalinks ikiwa hii "
+"siyo ya kawaida."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
 msgid "No links found."
 msgstr "Hakuna viungo vilivyopatikana."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:676
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Hakuna viungo vilivyopatikana. Viungo vya ndani vinaboresha utafutaji na "
 "urambazaji wa mtumiaji."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -2994,22 +3200,26 @@ msgstr ""
 "Hakuna faili halali ya robots.txt iliyopatikana. WordPress inazalisha kwa "
 "njia ya mtandao na amri ya Sitemap ya LF imejumuishwa kiatomati."
 
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:370
 msgid "No published posts found for the selected filters."
 msgstr ""
 "Hakuna machapisho yaliyochapwa yaliyopatikana kwa vichujio vilivyoteuliwa."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1018
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "Hakuna majibu kutoka kwa mtoa huduma wa AI. Angalia ufunguo wako wa API na "
 "jaribu tena."
 
-#: ai/includes/Admin/SettingsPage.php:208
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "Hakuna majibu kutoka kwa mtoa huduma — angalia kumbukumbu za makosa kwa "
 "maelezo."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+msgid "No secondary languages configured."
+msgstr "Hakuna lugha za nyongeza zilizowekwa."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
 msgid ""
@@ -3023,7 +3233,7 @@ msgstr ""
 msgid "No source content found to translate."
 msgstr "Hakuna maudhui ya chanzo yaliyopatikana ya kutafsiri."
 
-#: language-router/includes/admin/class-meta-boxes.php:339
+#: language-router/includes/admin/class-meta-boxes.php:355
 msgid "No source page linked yet."
 msgstr "Bado hakuna ukurasa wa chanzo umeunganishwa."
 
@@ -3031,7 +3241,15 @@ msgstr "Bado hakuna ukurasa wa chanzo umeunganishwa."
 msgid "No template part references needed updating."
 msgstr "Hakuna marejeo ya sehemu za kiolezo zinazohitajika kusasishwa."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:501
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+msgid ""
+"No third-party SEO plugins detected. Lingua Forge handles all multilingual "
+"SEO output."
+msgstr ""
+"Hakuna programu-jalizi za SEO za watu wa tatu zilizogunduliwa. Lingua Forge "
+"inashughulikia matokeo yote ya SEO ya lugha nyingi."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
 msgid "No title set."
 msgstr "Hakuna kichwa kilichowekwa."
 
@@ -3043,13 +3261,21 @@ msgstr ""
 "Hakuna maudhui yaliyotafsiriwa yaliyopatikana. Ramani ya tovuti itajaa mara "
 "baada ya machapisho kutafsiriwa."
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
 msgid "No translation found — analyzed the source language version."
 msgstr "Hakuna tafsiri iliyopatikana — ilitathmini toleo la lugha asili."
 
 #: language-router/includes/class-lsflr-link-fixer.php:107
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "Hakuna tafsiri ya {lang} iliyosajiliwa (TRID inakosekana)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+msgid "No — WooCommerce integration class not loaded"
+msgstr "Hakuna — darasa la ujumuishaji wa WooCommerce halijapakuliwa"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "Not set — AI features are disabled."
+msgstr "Haijaanza — sifa za AI zimezimwa."
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3080,6 +3306,10 @@ msgstr "Mipangilio ya arifa"
 msgid "Notify search engines"
 msgstr "Arifu injini za utafutaji"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+msgid "Numeric permalink structure is not supported."
+msgstr "Muundo wa permalink wa nambari hauungi mkono."
+
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:294
 msgid ""
 "OG/Twitter Card tags: handled by LF's Open Graph module (SEO → Open Graph & "
@@ -3088,11 +3318,11 @@ msgstr ""
 "Vichwa vya OG/Twitter Card: vinashughulikiwa na moduli ya Open Graph ya LF "
 "(SEO → Open Graph & Twitter Cards)"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:168
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:222
 msgid "Oldest cached block"
 msgstr "Blokii ya zamani zaidi iliyohifadhiwa"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:108
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:135
 msgid "Oldest cached response"
 msgstr "Majibu ya zamani zaidi yaliyohifadhiwa"
 
@@ -3104,7 +3334,7 @@ msgstr "Faili za .mo pekee zinakubaliwa."
 msgid "Open Graph"
 msgstr "Open Graph"
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:48
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:53
 msgid "Open Graph &amp; Twitter Cards"
 msgstr "Kadi za Open Graph &amp; Twitter"
 
@@ -3129,7 +3359,7 @@ msgstr ""
 "baadhi ya kompyuta). Inarudiwa kwa nakala kwenye ubao wa kunakili ikiwa "
 "haipo."
 
-#: ai/includes/Admin/SettingsPage.php:64
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
 
@@ -3196,7 +3426,7 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "Toa muundo wa WebSite kwenye ukurasa wa mbele na orodha ya blogu"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:350
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Overall SEO score"
 msgstr "Alama ya jumla ya SEO"
 
@@ -3237,6 +3467,7 @@ msgstr "Muhtasari"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "Page"
 msgstr "Ukurasa"
 
@@ -3261,9 +3492,20 @@ msgstr "Bandika maandishi, au chagua maandishi kwenye ukurasa kwanza…"
 msgid "Paste your API key…"
 msgstr "Bandika funguo lako la API…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+msgid "Path prefix (/de/)"
+msgstr "Kiambatanisho cha njia (/de/)"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:182
 msgid "Path prefix — example.com/de/"
 msgstr "Kipindi cha njia — example.com/de/"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+msgid ""
+"Path routing requires a post-name based permalink structure. Change it in"
+msgstr ""
+"Uendeshaji wa njia unahitaji muundo wa permalink wa jina la chapisho. "
+"Badilisha katika"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:49
 msgid "Pattern"
@@ -3287,24 +3529,35 @@ msgstr ""
 "CPT kupitia mhariri wa kiolezo au tumia kama mwanzo wa Kiolezo kinachoweza "
 "kutumika tena."
 
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "Pattern translation failed."
 msgstr "Ufasirishwa kwa mfano umeshindwa."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
+msgid "Per-Post Analysis"
+msgstr "Uchambuzi wa Kila Chapisho"
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:76
 msgid ""
 "Per-post cache for AI-generated translations, meta descriptions, excerpts, "
-"and content. Always active — no separate toggle required. Entries are "
-"invalidated automatically when the content or AI provider/model changes."
+"and content. Entries are invalidated automatically when the content or AI "
+"provider/model changes."
 msgstr ""
-"Kuhifadhi kwa kila chapisho kwa ajili ya tafsiri zinazotolewa na AI, maelezo "
-"ya meta, muhtasari, na maudhui. Daima inafanya kazi — hakuna kitufe tofauti "
-"kinachohitajika. Viingilio vinavunjwa kiotomatiki wakati maudhui au "
-"mtoaji/model wa AI unabadilika."
+"Kahesheni ya kila chapisho kwa tafsiri zinazotengenezwa na AI, maelezo ya "
+"meta, muhtasari, na maudhui. Ingizo huondolewa kiotomatiki wakati maudhui au "
+"mtoa huduma/model wa AI unabadilika."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:98
 msgid "Permalink rules flushed successfully."
 msgstr "Sheri za permalink zimefutwa kwa mafanikio."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+msgid "Permalink Structure"
+msgstr "Muundo wa Permalink"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+msgid "Permalink structure is compatible with Lingua Forge path routing."
+msgstr "Muundo wa permalink unalingana na uendeshaji wa njia wa Lingua Forge."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
 msgid ""
@@ -3335,11 +3588,13 @@ msgstr ""
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:35
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:149
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:179
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:42
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:220
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:287
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:308
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:357
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:378
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:401
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:428
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:167
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:185
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:138
@@ -3348,15 +3603,17 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:408
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:170
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:290
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:356
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:877
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
@@ -3374,6 +3631,18 @@ msgstr "Ushawishi"
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "PHP constant"
 msgstr "kifungo cha PHP"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+msgid "PHP max_execution_time"
+msgstr "Muda wa utekelezaji wa juu wa PHP"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+msgid "PHP memory_limit"
+msgstr "Kiwango cha kumbukumbu cha PHP"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+msgid "PHP version"
+msgstr "Toleo la PHP"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:130
 msgid "Pin on Pinterest"
@@ -3404,6 +3673,10 @@ msgstr "Pinga Yandex"
 msgid "Plain language"
 msgstr "Lugha rahisi"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+msgid "Plain permalinks are not supported."
+msgstr "Permalinks rahisi hazisaidwi."
+
 #: ai/assets/editor-translate.js:611 ai/assets/toolbar-translate.js:527
 msgid "Please enter some instructions first…"
 msgstr "Tafadhali ingiza maagizo kwanza…"
@@ -3420,11 +3693,11 @@ msgstr "Programu-jalizi"
 msgid "Post"
 msgstr "Uchapishaji"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:372
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
 msgid "Post not found or not published."
 msgstr "Chapisho hakipatikani au hakijachapishwa."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:892
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Chapisho hakipatikani."
@@ -3433,9 +3706,24 @@ msgstr "Chapisho hakipatikani."
 msgid "Post on X / Twitter"
 msgstr "Chapisho kwenye X / Twitter"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+msgid "Post type"
+msgstr "Aina ya chapisho"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "Aina za Machapisho"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+msgid ""
+"Posts without _lf_lang are invisible to every Lingua Forge language filter. "
+"This can happen when content is imported or created before the plugin was "
+"activated."
+msgstr ""
+"Chapisho bila _lf_lang haionekani kwa kila kichujio cha lugha cha Lingua "
+"Forge. Hii inaweza kutokea wakati maudhui yanapakiwa au kuundwa kabla ya "
+"programu-jalizi kuanzishwa."
 
 #: meta-description/meta-description.php:109
 msgid "Prefilled from excerpt. Edit to override."
@@ -3456,6 +3744,7 @@ msgstr ""
 msgid "Primary Language"
 msgstr "Lugha Kuu"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "Lugha kuu"
@@ -3495,7 +3784,7 @@ msgid "Product — WooCommerce product pages"
 msgstr "Bidhaa — kurasa za bidhaa za WooCommerce"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:366
 msgid "Profile"
 msgstr "Wasifu"
 
@@ -3514,7 +3803,7 @@ msgstr ""
 "kwa sababu kamili ya kushindwa."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:83
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Quality"
 msgstr "Ubora"
 
@@ -3525,6 +3814,10 @@ msgstr "Ubora (chaguo-msingi — Sonnet / GPT-4o / Gemini Pro)"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:240
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "Ubora (Sonnet / GPT-4o / Gemini Pro)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+msgid "Quality model"
+msgstr "Mfano wa Ubora"
 
 #: ai/includes/Admin/SettingsHelp.php:97
 msgid ""
@@ -3555,7 +3848,7 @@ msgstr ""
 "kizuizi. Inatumia usanidi tofauti, nyepesi kutoka kwa tafsiri ya ukurasa "
 "kamili ili kuweka majibu kuwa ya haraka na yenye gharama nafuu."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:53
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
 "Re-enables Gutenberg's canLockBlocks. Useful for editorial templates that "
 "need to prevent contributors from moving or deleting specific blocks."
@@ -3563,7 +3856,7 @@ msgstr ""
 "Inarudisha tena Gutenberg's canLockBlocks. Inafaa kwa templates za uhariri "
 "zinazohitaji kuzuia wachangiaji kuhamisha au kufuta blocks fulani."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:72
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:73
 msgid ""
 "Re-enables supportsTemplateMode. Core to Full-Site-Editing workflows where "
 "post-level template overrides are intentional."
@@ -3585,12 +3878,12 @@ msgstr "Inasoma tena..."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:270
 msgid "Re-translate"
 msgstr "Tafsiri tena"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:346
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Reading time"
 msgstr "Muda wa kusoma"
 
@@ -3639,6 +3932,29 @@ msgstr ""
 msgid "Remove stored key"
 msgstr "Ondoa funguo iliyohifadhiwa"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
+msgid ""
+"Repair assigns the source language to every affected post. Run after "
+"importing content or after initial plugin activation on an existing site."
+msgstr ""
+"Matengenezo huambatanisha lugha ya chanzo kwa kila chapisho lililohusika. "
+"Fanya baada ya kuingiza maudhui au baada ya kuanzisha kwa mara ya kwanza "
+"programu-jalizi kwenye tovuti iliyopo."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+msgid "Repair failed."
+msgstr "Matengenezo yameshindwa."
+
+#. translators: %s: source language code shown in upper case, e.g. EN
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all affected posts"
+msgstr "Matengenezo — amua _lf_lang = %s kwa chapisho zote zilizoathirika"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+msgid "Repairing…"
+msgstr "Inafanyika…"
+
 #: ai/includes/Admin/SettingsHelp.php:169
 msgid "Report an issue on GitHub"
 msgstr "Ripoti tatizo kwenye GitHub"
@@ -3664,6 +3980,10 @@ msgstr "Ombi limeshindwa. Tafadhali jaribu tena."
 msgid "Requests"
 msgstr "Maombi"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+msgid "requests / day"
+msgstr "maombi / siku"
+
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:128
 msgid "Reset"
 msgstr "Washa upya"
@@ -3672,17 +3992,17 @@ msgstr "Washa upya"
 msgid "Result will appear here…"
 msgstr "Matokeo yataonekana hapa…"
 
-#: ai/includes/Admin/PostListColumn.php:137
+#: ai/includes/Admin/PostListColumn.php:140
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:67
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
 msgid "Retranslate"
 msgstr "Tafsiri tena"
 
-#: ai/includes/Admin/PostListColumn.php:182
+#: ai/includes/Admin/PostListColumn.php:236
 msgid "Retranslating…"
 msgstr "Inatafsiri tena…"
 
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Review carefully — links and slugs not updated."
 msgstr "Kagua kwa makini — viungo na slugs havijasasishwa."
 
@@ -3702,6 +4022,10 @@ msgstr "Uboreshaji"
 msgid "Revision Type"
 msgstr "Aina ya Uboreshaji"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+msgid "Rewrite Rules"
+msgstr "Sheria za Kuandika Upya"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:296
 msgid "robots.txt"
 msgstr "robots.txt"
@@ -3711,7 +4035,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt imesasishwa na maagizo ya Ramani ya Tovuti."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
 msgid "Router"
 msgstr "Router"
 
@@ -3719,11 +4043,26 @@ msgstr "Router"
 msgid "Router Tab"
 msgstr "Tabu ya Router"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:336
+msgid ""
+"Run a full SEO audit across all published posts for one or all active "
+"languages. Scores are saved per post and reflected in the Language column "
+"badges in the post list."
+msgstr ""
+"Fanya ukaguzi kamili wa SEO kwa chapisho zote zilizochapishwa kwa lugha moja "
+"au zaidi zinazofanya kazi. Alama zimehifadhiwa kwa kila chapisho na "
+"zinaonyeshwa kwenye alama za safu ya Lugha kwenye orodha ya machapisho."
+
 #: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:536
 msgid "Run AI Analysis"
 msgstr "Endesha Uchanganuzi wa AI"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:222
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:111
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:198
+msgid "Save"
+msgstr "Hifadhi"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:240
 msgid "Save analysis settings"
 msgstr "Hifadhi mipangilio ya uchambuzi"
 
@@ -3747,7 +4086,7 @@ msgstr "Hifadhi Mipangilio ya Router"
 msgid "Save Schema.org Settings"
 msgstr "Hifadhi Mipangilio ya Schema.org"
 
-#: ai/includes/Admin/SettingsPage.php:670
+#: ai/includes/Admin/SettingsPage.php:675
 msgid "Save Settings"
 msgstr "Hifadhi Mipangilio"
 
@@ -3791,7 +4130,7 @@ msgstr "Inasoma machapisho kwa ajili ya viungo vya lugha vilivyovunjika..."
 msgid "Schema output deferred."
 msgstr "Matokeo ya Schema yameahirishwa."
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:59
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:64
 msgid "Schema.org"
 msgstr "Schema.org"
 
@@ -3806,6 +4145,24 @@ msgstr "Matokeo ya Schema.org"
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:76
 msgid "Schema.org settings saved."
 msgstr "Mipangilio ya Schema.org yamehifadhiwa."
+
+#: ai/includes/Admin/SettingsPage.php:374
+msgid "Score"
+msgstr "Alama"
+
+#: ai/includes/Admin/SettingsPage.php:377
+msgid ""
+"Scores are a signal, not a verdict. Some content is structurally limited — "
+"very short pages, landing pages with little body text, or pages whose "
+"purpose is navigation rather than information may score lower by nature. Use "
+"this overview to spot genuine parity gaps across languages, not to chase a "
+"number."
+msgstr ""
+"Alama ni ishara, si hukumu. Baadhi ya maudhui yana mipaka ya muundo — kurasa "
+"fupi sana, kurasa za kutua zenye maudhui machache, au kurasa zinazolenga "
+"urambazaji kuliko taarifa zinaweza kuwa na alama za chini kwa asili. Tumia "
+"muhtasari huu kubaini pengo halali la usawa kati ya lugha, si kufuata "
+"nambari."
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:51
 msgid "Search"
@@ -3827,6 +4184,13 @@ msgstr "Matokeo ya Utafutaji"
 msgid "Security check failed — file path is not permitted."
 msgstr "Uhakiki wa usalama umeshindwa — njia ya faili haikubaliki."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+msgid ""
+"See Settings → SEO → Compatibility for the full per-feature behaviour table."
+msgstr ""
+"Tazama Mipangilio → SEO → Ulinganifu kwa jedwali kamili la tabia za kila "
+"kipengele."
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
@@ -3835,7 +4199,15 @@ msgstr ""
 "Chagua lugha ili kuendesha muundo wa FSE, sehemu za muundo, na menyu za "
 "urambazaji."
 
-#: language-router/includes/class-lsflr-switcher.php:252
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
+msgid ""
+"Select a post and run a detailed SEO audit to see per-metric results and a "
+"score for that specific item."
+msgstr ""
+"Chagua chapisho na fanya ukaguzi wa kina wa SEO ili kuona matokeo kwa kila "
+"kipimo na alama kwa kipengele hicho."
+
+#: language-router/includes/class-lsflr-switcher.php:283
 msgid "Select language"
 msgstr "Chagua lugha"
 
@@ -3849,7 +4221,7 @@ msgstr "Tuma kupitia WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "SEO"
 msgstr "SEO"
 
@@ -3872,6 +4244,10 @@ msgstr ""
 "locale:alternate pekee; programu-jalizi iliyogunduliwa inashughulikia seti "
 "kamili ya OG."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+msgid "SEO Plugins"
+msgstr "Programu-jalizi za SEO"
+
 #: ai/includes/Admin/SettingsHelp.php:125
 msgid "SEO plugins and conflict avoidance:"
 msgstr "Programu-jalizi za SEO na kuepuka migongano:"
@@ -3884,7 +4260,7 @@ msgstr "Kipengele cha SEO"
 msgid "Server setup (subdomain)"
 msgstr "Mipangilio ya seva (subdomain)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:118
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
 msgid ""
 "Sets the default AI behaviour for all features site-wide. Individual posts "
 "can override this for Translation and Content Generation via the Lingua "
@@ -3894,13 +4270,18 @@ msgstr ""
 "binafsi kinaweza kubadilisha hii kwa Tafsiri na Uundaji wa Maudhui kupitia "
 "sanduku la meta la Lingua Forge."
 
-#: ai/includes/Admin/SettingsPage.php:397
+#: ai/includes/Admin/SettingsPage.php:414
 msgid "Settings"
 msgstr "Mipangilio"
 
-#: ai/includes/Admin/SettingsPage.php:621
+#: ai/includes/Admin/SettingsPage.php:624
 msgid "Settings saved."
 msgstr "Mipangilio imehifadhiwa."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+msgid "Settings → Permalinks"
+msgstr "Mipangilio → Permalinks"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:124
 msgid "Share on Facebook"
@@ -3917,6 +4298,10 @@ msgstr "Shiriki kwenye Mastodon"
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:132
 msgid "Share via email (mailto:)"
 msgstr "Shiriki kupitia barua pepe (mailto:)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+msgid "Shop"
+msgstr "Duka"
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -3937,6 +4322,16 @@ msgstr "Moja"
 msgid "Single %s"
 msgstr "Moja %s"
 
+#. translators: %d: character count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#, php-format
+msgid ""
+"Single-word title (%d chars) — adding a second word improves clarity and "
+"keyword coverage."
+msgstr ""
+"Kichwa cha neno kimoja (%d herufi) — kuongeza neno la pili huongeza uwazi na "
+"ufunuo wa maneno muhimu."
+
 #. translators: %s: CPT singular label, e.g. "Product"
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:116
 #, php-format
@@ -3953,7 +4348,7 @@ msgstr ""
 "Zana na marekebisho ya kizuizi). Kiwango kinarejeshwa saa sita usiku wa UTC. "
 "Weka 0 ili kuzima kikomo."
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:62
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:67
 msgid "Sitemap"
 msgstr "Ramani ya Tovuti"
 
@@ -3991,7 +4386,7 @@ msgstr ""
 "Kijamii la LF lililojengwa ndani (SEO → Kushiriki Kijamii)"
 
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:77
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:51
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:56
 msgid "Social Share"
 msgstr "Shiriki Kijamii"
 
@@ -3999,31 +4394,32 @@ msgstr "Shiriki Kijamii"
 msgid "Social Share settings saved."
 msgstr "Mipangilio ya Shiriki la Kijamii yamehifadhiwa."
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Some link fixes failed."
 msgstr "Baadhi ya marekebisho ya viungo yameshindwa."
 
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:276
 msgid "Some nav ref fixes failed."
 msgstr "Marekebisho ya marejeo ya urambazaji yameshindwa."
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Some part fixes failed."
 msgstr "Sehemu zingine hazikuweza kurekebishwa."
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:256
 msgid "Some parts could not be created."
 msgstr "Sehemu zingine hazikuweza kuundwa."
 
-#: ai/includes/Admin/SettingsPage.php:244
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "Some templates could not be created."
 msgstr "Baadhi ya kiolezo hakikuweza kuundwa."
 
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Some translations failed."
 msgstr "Baadhi ya tafsiri zimeshindwa."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:263
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:392
 msgid "source"
 msgstr "chanzo"
 
@@ -4045,11 +4441,15 @@ msgstr "Lugha ya Chanzo"
 msgid "Source term"
 msgstr "Neno la Chanzo"
 
+#: ai/includes/Admin/SettingsPage.php:375
+msgid "Source title"
+msgstr "Kichwa cha chanzo"
+
 #: ai/includes/Core/Config.php:51
 msgid "Standard"
 msgstr "Kawaida"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:119
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:120
 msgid ""
 "Standard uses each feature's own tuned temperature: Translation T=0.2 "
 "(precise), Quick Translate T=0.4, Content Generator T=0.6 (creative). The "
@@ -4059,7 +4459,6 @@ msgstr ""
 "Tafsiri Haraka T=0.4, Mwandishi wa Maudhui T=0.6 (ubunifu). Preset nyingine "
 "hutumia joto moja lililowekwa kwa vipengele vyote."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:146
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
 msgstr "Hali"
@@ -4073,7 +4472,7 @@ msgstr "Hali / Vitendo"
 msgid "Storytelling"
 msgstr "Hadithi"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:83
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:84
 msgid ""
 "Strict-preservation mode for legal, regulatory, medical, or technical "
 "content. When on, every AI feature uses a low sampling temperature and "
@@ -4090,6 +4489,10 @@ msgstr ""
 #: ai/includes/Features/ContentGenerator.php:54
 msgid "Structured Outline"
 msgstr "Muhtasari wa Muundo"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+msgid "Subdomain (de.example.com)"
+msgstr "Subdomain (de.example.com)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:189
 msgid ""
@@ -4144,14 +4547,23 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "Imesimamishwa: %s."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+msgid "Switch to a post-name based structure in"
+msgstr "Badilisha kwa muundo wa jina la chapisho katika"
+
+#: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
+#: ai/includes/Admin/SettingsPage.php:639
+msgid "System"
+msgstr "Mfumo"
+
 #. translators: %s: sampling temperature value, e.g. 0.2
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:106
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:107
 #, php-format
 msgid "T=%s"
 msgstr "T=%s"
 
 #. translators: temperature range shown for the Standard preset, e.g. "T=0.2–0.6, per feature"
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:111
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:112
 msgid "T=0.2–0.6, per feature"
 msgstr "T=0.2–0.6, kwa kila kipengele"
 
@@ -4196,7 +4608,7 @@ msgstr "Kitaaluma"
 msgid "Technical / Scientific"
 msgstr "Kitaaluma / Sayansi"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:129
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:130
 msgid "Technical / Scientific instructions"
 msgstr "Maagizo ya Kiufundi / Sayansi"
 
@@ -4217,7 +4629,7 @@ msgstr ""
 msgid "Template has no content."
 msgstr "Kiolezo hakina maudhui."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:59
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:60
 msgid "Template mode"
 msgstr "Hali ya template"
 
@@ -4228,7 +4640,7 @@ msgid "Template not found or not stored in the database."
 msgstr "Kiolezo hakipatikani au hakijahifadhiwa kwenye hifadhidata."
 
 #. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:176
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:206
 #, php-format
 msgid "Template part \"%s\" already exists."
 msgstr "Sehemu ya kiolezo \"%s\" tayari kipo."
@@ -4253,7 +4665,7 @@ msgstr "Mifano"
 msgid "Test connection"
 msgstr "Jaribu muunganisho"
 
-#: ai/includes/Admin/SettingsPage.php:205
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "Testing…"
 msgstr "Inajaribu…"
 
@@ -4267,23 +4679,20 @@ msgstr "Uwanja wa lugha / muktadha"
 msgid "Text to translate"
 msgstr "Maandishi ya kutafsiri"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:201
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:106
 msgid ""
 "The API Response Cache stores the raw result of every AI request — "
 "translation, meta description, excerpt, and content generation — keyed by a "
-"hash of the inputs (content, language pair, provider, model). Subsequent "
-"requests with identical inputs are served from the cache with no API call. "
-"The cache is different from Translation Memory: Translation Memory operates "
-"at the block level and is shared across posts; the API Response Cache "
-"operates at the feature level and is keyed per post."
+"hash of the inputs (content, language pair, provider, model). Disable during "
+"prompt tuning or when you need every request to reach the AI provider. "
+"Disabling does not delete cached entries — re-enabling restores them."
 msgstr ""
-"Cache ya Majibu ya API hifadhi matokeo halisi ya kila ombi la AI — tafsiri, "
-"maelezo ya meta, excerpt, na uzalishaji wa maudhui — kwa kutumia hash ya "
-"maingizo (maudhui, jozi ya lugha, mtoa huduma, mfano). Maombi yanayofuata "
-"yenye maingizo sawa yanatumikia kutoka kwa cache bila kuita API. Cache hii "
-"ni tofauti na Kumbukumbu ya Tafsiri: Kumbukumbu ya Tafsiri hufanya kazi kwa "
-"kiwango cha blokii na inashirikiana kati ya machapisho; Cache ya Majibu ya "
-"API hufanya kazi kwa kiwango cha kipengele na inahifadhiwa kwa kila chapisho."
+"Kumbukumbu ya Majibu ya API hifadhi matokeo ya awali ya kila ombi la AI — "
+"tafsiri, maelezo ya meta, muhtasari, na uundaji wa maudhui — kwa kufuata "
+"hash ya maingizo (maudhui, jozi la lugha, mtoa huduma, mfano). Zima wakati "
+"wa kurekebisha maombi au unapo hitaji kila ombi lifikie mtoa huduma wa AI. "
+"Kuzima hakuhifadhi ingizo zilizohifadhiwa — kuzirudisha tena kunarudisha "
+"zile zilizohifadhiwa."
 
 #: ai/assets/admin-diff-modal.js:237
 msgid "The editor did not accept the content — please try again."
@@ -4363,8 +4772,8 @@ msgstr ""
 "makuu ya injini za utafutaji — Google, Bing, Yandex — yanagundua kutoka "
 "robots.txt. Hakuna uwasilishaji wa mkono unaohitajika."
 
-#: language-router/includes/admin/class-meta-boxes.php:346
-#: language-router/includes/admin/class-meta-boxes.php:353
+#: language-router/includes/admin/class-meta-boxes.php:362
+#: language-router/includes/admin/class-meta-boxes.php:369
 msgid "The source page has no footnotes."
 msgstr "Ukurasa wa chanzo haujakuwa na nukuu za mguu wa ukurasa."
 
@@ -4383,7 +4792,7 @@ msgstr ""
 "lugha zinavyohusiana kwa njia ya xhtml:link hreflang mbadala. Wasilisha zote "
 "kwa Google Search Console kwa ufanisi kamili."
 
-#: language-router/includes/admin/class-meta-boxes.php:358
+#: language-router/includes/admin/class-meta-boxes.php:374
 msgid ""
 "These footnotes come from the source page and are shown here for reference "
 "only. Add them to this page using the block editor."
@@ -4392,7 +4801,17 @@ msgstr ""
 "zinaonyeshwa hapa kwa marejeo tu. Ziongeze kwenye ukurasa huu kwa kutumia "
 "mhariri wa vikundi."
 
-#: language-router/includes/admin/class-meta-boxes.php:331
+#: ai/includes/Admin/SettingsPage.php:378
+msgid ""
+"This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
+"is managed by WooCommerce — the score reflects structural signals only, not "
+"user-editable SEO content."
+msgstr ""
+"Hii ni ukurasa wa mfumo wa WooCommerce (Duka, Mzigo, Malipo, n.k.). Yaliyomo "
+"yanashughulikiwa na WooCommerce — alama inaonyesha tu ishara za muundo, si "
+"maudhui ya SEO yanayoweza kuhaririwa na mtumiaji."
+
+#: language-router/includes/admin/class-meta-boxes.php:347
 msgid ""
 "This is the source page. Footnotes are edited directly in the block editor."
 msgstr ""
@@ -4427,24 +4846,25 @@ msgstr ""
 "hifadhi."
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:343
 #: ai/includes/Admin/SettingsPage.php:353
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Title"
 msgstr "Kichwa"
 
-#. translators: %1$d: number of characters, %2$d: recommended max
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:506
+#. translators: %1$d: character count, %2$d: SERP limit
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
 #, php-format
-msgid "Title is %1$d chars — aim for %2$d–%3$d."
-msgstr "Kichwa ni herufi %1$d — lengo ni %2$d–%3$d."
-
-#. translators: %1$d: number of characters, %2$d: recommended max
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:511
-#, php-format
-#| msgid "Title is %d chars — may be truncated in SERPs (aim for 50–60)."
-msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
+#| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
+msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
 msgstr ""
-"Kichwa ni %1$d herufi — inaweza kukatwa katika SERPs (lengo ni %2$d–%3$d)."
+"Kichwa ni %1$d herufi — inaweza kukatwa katika SERPs (jaribu kuwa chini ya "
+"%2$d)."
+
+#. translators: %d: character count
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#, php-format
+msgid "Title is only %d chars — aim for more than 10 characters."
+msgstr "Kichwa ni herufi %d — lengo ni zaidi ya herufi 10."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
 msgid ""
@@ -4496,13 +4916,15 @@ msgid "Total tokens"
 msgstr "Jumla ya token"
 
 #: ai/includes/Admin/AdminToolbar.php:63
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:134
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:285
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:68
-#: ai/includes/Admin/SettingsPage.php:247
-#: ai/includes/Admin/SettingsPage.php:261
-#: ai/includes/Admin/SettingsPage.php:267 ai/assets/block-action.js:249
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4520,7 +4942,7 @@ msgstr "Tafsiri / Badilisha"
 msgid "Translate / Revise block"
 msgstr "Kifungu cha Tafsiri / Badilisha"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:104
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:58
 msgid "Translate all"
 msgstr "Tafsiri zote"
 
@@ -4532,7 +4954,7 @@ msgstr "Tafsiri sehemu"
 msgid "Translate Content"
 msgstr "Tafsiri Maudhui"
 
-#: ai/includes/Admin/PostListColumn.php:86
+#: ai/includes/Admin/PostListColumn.php:89
 msgid "Translate missing"
 msgstr "Tafsiri isiyokamilika"
 
@@ -4567,10 +4989,10 @@ msgstr ""
 "Imetafsiriwa. Pitia kwenye Mhariri wa Tovuti — viungo vya ndani, URLs za "
 "urambazaji, na majina ya kiolezo hayasaswi kiotomatiki."
 
-#: ai/includes/Admin/PostListColumn.php:181
-#: ai/includes/Admin/SettingsPage.php:248
-#: ai/includes/Admin/SettingsPage.php:262
-#: ai/includes/Admin/SettingsPage.php:268 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/PostListColumn.php:235
+#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Inatafsiri…"
@@ -4606,9 +5028,8 @@ msgstr ""
 "kuanzisha tafsiri ya AI, na kuweka bajeti ya token kwa mwezi. Kupita bajeti "
 "kunasababisha kusitisha simu za AI hadi mwezi ujao utakapobadilika."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:68
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:166
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:177
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:64
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:180
 msgid "Translation Memory"
 msgstr "Kumbukumbu ya Tafsiri"
 
@@ -4624,12 +5045,16 @@ msgstr ""
 "mapya."
 
 #. translators: %d: number of cached blocks removed.
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:268
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:338
 #, php-format
 msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] "Kumbukumbu ya Tafsiri imefutwa. Kipande cha cache %d kiliondolewa."
 msgstr[1] "Kumbukumbu ya Tafsiri imefutwa. Vipande %d vya cache vimeondolewa."
+
+#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:312
+msgid "Translation Memory setting saved."
+msgstr "Mipangilio ya Kumbukumbu ya Tafsiri imesimama."
 
 #: ai/includes/Admin/SettingsHelp.php:135
 msgid ""
@@ -4646,17 +5071,17 @@ msgid "Translation workflow"
 msgstr "Mchakato wa Tafsiri"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:84
+#: ai/includes/Admin/SettingsPage.php:86
 msgid "Translation, Content Generator"
 msgstr "Tafsiri, Mwandishi wa Maudhui"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:216
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:234
 msgid "Treat H2 as H1 equivalent"
 msgstr "Tafsiri H2 kama H1 sawa"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:248
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Type"
 msgstr "Aina"
 
@@ -4709,6 +5134,11 @@ msgstr ""
 "kutoa: og:locale (lugha ya sasa) na og:locale:alternate (lugha zote "
 "zilizowekwa)."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+msgid "Unlimited"
+msgstr "Bila kikomo"
+
 #: language-router/includes/class-lsflr-switcher-widget.php:74
 msgid "Up"
 msgstr "Juu"
@@ -4740,6 +5170,7 @@ msgid "URL could not be mapped to a post — check the link target exists"
 msgstr ""
 "URL haikuweza kuambatana na chapisho — angalia kama lengo la kiungo lipo"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "Muundo wa URL"
@@ -4802,7 +5233,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Kutumia maelezo maalum ya meta."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:529
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
 msgid "Using LF AI meta description."
 msgstr "Kutumia meta maelezo ya AI ya LF."
 
@@ -4811,11 +5242,11 @@ msgid "Value source"
 msgstr "Chanzo cha thamani"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "View"
 msgstr "Tazama"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:157
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:158
 msgid "View built-in default"
 msgstr "Tazama chaguo-msingi cha kujengwa ndani"
 
@@ -4838,6 +5269,10 @@ msgstr "Tembelea tovuti ya programu-jalizi"
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:67
 msgid "Warning:"
 msgstr "Onyo:"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+msgid "WcPageBridge active"
+msgstr "WcPageBridge imewashwa"
 
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:134
 msgid "WebSite"
@@ -4955,9 +5390,18 @@ msgstr ""
 "hutoa lebo za lugha pekee (hali ya kiotomatiki). Kuiondoa kunabadilisha LF "
 "kuwa hali kamili ya OG moja kwa moja."
 
-#: ai/includes/Admin/Settings/Tabs/SeoTab.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+msgid "WooCommerce is not active."
+msgstr "WooCommerce haijashikiliwa."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+msgid "WooCommerce page translations"
+msgstr "Tafsiri za kurasa za WooCommerce"
 
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:102
 msgid "WooCommerce product price"
@@ -4971,10 +5415,28 @@ msgstr "Mipangilio ya SEO ya WooCommerce yamehifadhiwa."
 msgid "WooCommerce store currency"
 msgstr "Sarafu ya duka la WooCommerce"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:338
+msgid ""
+"WooCommerce system pages (Shop, Cart, Checkout, My Account) are excluded — "
+"their content is managed by WooCommerce and cannot be improved through SEO "
+"edits."
+msgstr ""
+"Kurasa za mfumo wa WooCommerce (Duka, Mzigo, Malipo, Akaunti Yangu) "
+"hazijumuishwa — yaliyomo yao yanashughulikiwa na WooCommerce na hayawezi "
+"kuboreshwa kupitia mabadiliko ya SEO."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+msgid "WooCommerce version"
+msgstr "Toleo la WooCommerce"
+
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:345
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Word count"
 msgstr "Idadi ya maneno"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+msgid "WordPress version"
+msgstr "Toleo la WordPress"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:263
 msgid "WP core canonical active (hreflang disabled)"
@@ -4994,6 +5456,10 @@ msgstr ""
 msgid "XML Sitemap"
 msgstr "Ramani ya XML"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+msgid "Yes"
+msgstr "Ndiyo"
+
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
@@ -5004,7 +5470,7 @@ msgstr ""
 "PHP (mfano katika wp-config.php). Vyanzo hivyo vinatumika kiotomatiki kama "
 "mbadala wakati hakuna funguo ya hifadhidata iliyohifadhiwa."
 
-#: ai/includes/Admin/SettingsPage.php:409
+#: ai/includes/Admin/SettingsPage.php:426
 msgid "You do not have permission to manage these settings."
 msgstr "Huna ruhusa ya kusimamia mipangilio hii."
 
@@ -5017,7 +5483,7 @@ msgid "{n} stale path(s)"
 msgstr "{n} njia/nyingine zilizobaki"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:475
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
@@ -5040,6 +5506,11 @@ msgstr "— Malengo yote —"
 msgid "— Any —"
 msgstr "— Yoyote —"
 
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
+#: ai/includes/Admin/SettingsPage.php:368
+msgid "— Auto-detect —"
+msgstr "— Tambua kiotomatiki —"
+
 #: ai/assets/editor-translate.js:289 ai/assets/toolbar-translate.js:295
 msgid "— auto-detect —"
 msgstr "— kugundua kiotomatiki —"
@@ -5057,13 +5528,9 @@ msgid "— Not detected"
 msgstr "— Haijapatikana"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:240
+#: ai/includes/Admin/SettingsPage.php:250
 msgid "— select a language —"
 msgstr "— chagua lugha —"
-
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:60
-msgid "— toggle in Settings → Behavior."
-msgstr "— chaguo katika Vipimo → Tabia."
 
 #: ai/assets/admin.js:1141 ai/assets/admin.js:1305
 #: ai/assets/block-action.js:334
@@ -5178,15 +5645,15 @@ msgstr "✓ Imo — OG kamili + Kadi za Twitter"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Imo — lebo za eneo pekee (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:245
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "✓ All parts created."
 msgstr "✓ Sehemu zote zimetengenezwa."
 
-#: ai/includes/Admin/SettingsPage.php:243
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "✓ All templates created."
 msgstr "✓ Kila kiolezo kimeundwa."
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "✓ All translated."
 msgstr "✓ Zote zimefasirishwa."
 
@@ -5194,7 +5661,7 @@ msgstr "✓ Zote zimefasirishwa."
 msgid "✓ Configured"
 msgstr "Imesasishwa"
 
-#: ai/includes/Admin/SettingsPage.php:206
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✓ Connection OK"
 msgstr "✓ Muunganisho mzuri"
 
@@ -5203,11 +5670,10 @@ msgid "✓ Content generated — see the overlay to review, refine, and apply."
 msgstr ""
 "✓ Yaliyomo yamezalishwa — angalia juu ili kuangalia, kuboresha, na kutumia."
 
-#: ai/includes/Admin/PostListColumn.php:183
+#: ai/includes/Admin/PostListColumn.php:237
 msgid "✓ Done"
 msgstr "✓ Imekamilika"
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:58
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:119
 msgid "✓ Enabled"
 msgstr "✓ Imewashwa"
@@ -5224,7 +5690,7 @@ msgstr "✓ Hreflang imetumika"
 msgid "✓ In safe storage"
 msgstr "✓ Katika hifadhi salama"
 
-#: ai/includes/Admin/SettingsPage.php:238
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✓ Language installed."
 msgstr "✓ Lugha imewekwa."
 
@@ -5244,19 +5710,19 @@ msgstr "✓ Matokeo ya LF OG kamili + Kadi za Twitter"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ Matokeo ya LF — programu-jalizi hreflang imezuiwa"
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "✓ Links fixed."
 msgstr "✓ Viungo vimerekebishwa."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "✓ Nav refs fixed."
 msgstr "✓ Marejeo ya urambazaji yamerekebishwa."
 
-#: ai/includes/Admin/SettingsPage.php:258
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ Parts fixed."
 msgstr "✓ Sehemu zimerekebishwa."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "✓ Pattern translated."
 msgstr "✓ Mfano umefasirishwa."
 
@@ -5269,7 +5735,7 @@ msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Umeboreshwa — hakiki rasimu iliyosasishwa hapo juu."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "✓ Translation saved"
 msgstr "✓ Tafsiri imehifadhiwa"
 
@@ -5287,16 +5753,15 @@ msgstr ""
 "✗ %s ping imekosea. URL ya ramani ya tovuti bado inatangazwa kwenye robots."
 "txt — injini ya utafutaji itaiweza kwenye utafutaji wake ujao."
 
-#: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:59
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:121
 msgid "✗ Disabled"
 msgstr "✗ Imesimamishwa"
 
-#: ai/includes/Admin/SettingsPage.php:239
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "✗ Error:"
 msgstr "✗ Hitilafu:"
 
-#: ai/includes/Admin/SettingsPage.php:207
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "✗ Failed:"
 msgstr "✗ Imeshindwa:"
 
