@@ -38,9 +38,10 @@ class Redirector {
 		// Allow wp_safe_redirect() to follow cross-domain redirects to language subdomains.
 		add_filter( 'allowed_redirect_hosts', [ $this, 'allow_lang_subdomains' ] );
 
-		// Site logo + site title links
+		// Site logo + site title links + navigation home-link item
 		add_filter( 'render_block', [ $this, 'fix_site_logo_link' ], 20, 2 );
 		add_filter( 'render_block', [ $this, 'fix_site_title_link' ], 20, 2 );
+		add_filter( 'render_block', [ $this, 'fix_home_link' ], 20, 2 );
 
 		// WooCommerce breadcrumb "Home" link
 		add_filter( 'woocommerce_breadcrumb_home_url', [ $this, 'translate_breadcrumb_home_url' ] );
@@ -272,16 +273,33 @@ class Redirector {
 			return null;
 		}
 
+		$source = $this->router->context->source_language();
+		$lang   = LF_LANG;
+
+		// On language-neutral URLs (e.g. WooCommerce product pages), LF_LANG is
+		// always the source language even when the queried post is a translation.
+		// Detect the actual content language from the queried post so that home
+		// links, logo links, and site-title links resolve correctly on those pages.
+		if ( $lang === $source && is_singular() ) {
+			$post = get_queried_object();
+			if ( $post instanceof \WP_Post ) {
+				$post_lang = (string) $this->router->trid_group->get_lang( $post->ID );
+				if ( $post_lang && $post_lang !== $source ) {
+					$lang = $post_lang;
+				}
+			}
+		}
+
 		$front_id = (int) get_option( 'page_on_front' );
 
 		if ( $front_id > 0 ) {
 			// Static front page: use the translated page's permalink.
 			$translations = $this->router->trid_group->get_translations( $front_id );
 
-			if ( LF_LANG === $this->router->context->source_language() ) {
+			if ( $lang === $source ) {
 				$target_id = $front_id;
-			} elseif ( ! empty( $translations[LF_LANG] ) ) {
-				$target_id = (int) $translations[LF_LANG];
+			} elseif ( ! empty( $translations[ $lang ] ) ) {
+				$target_id = (int) $translations[ $lang ];
 			} else {
 				$target_id = $front_id;
 			}
@@ -291,11 +309,11 @@ class Redirector {
 		}
 
 		// Latest-posts front: build the language-prefixed root URL.
-		if ( LF_LANG === $this->router->context->source_language() ) {
+		if ( $lang === $source ) {
 			return home_url( '/' );
 		}
 
-		return home_url( '/' . LF_LANG . '/' );
+		return home_url( '/' . $lang . '/' );
 	}
 
 	public function fix_site_logo_link( string $block_content, array $block ): string {
@@ -320,6 +338,28 @@ class Redirector {
 	 */
 	public function fix_site_title_link( string $block_content, array $block ): string {
 		if ( $block['blockName'] !== 'core/site-title' ) return $block_content;
+
+		$target_url = $this->lang_home_url();
+		if ( ! $target_url ) return $block_content;
+
+		$block_content = preg_replace(
+			'/<a\s+([^>]*?)href="[^"]*"/',
+			'<a $1href="' . esc_url( $target_url ) . '"',
+			$block_content,
+			1
+		);
+
+		return $block_content;
+	}
+
+	/**
+	 * Rewrites the href on the `core/home-link` block to the language-appropriate
+	 * home URL.  core/home-link always renders home_url() directly; without this
+	 * filter the link stays at the source-language root on language-neutral URLs
+	 * such as WooCommerce product pages.
+	 */
+	public function fix_home_link( string $block_content, array $block ): string {
+		if ( $block['blockName'] !== 'core/home-link' ) return $block_content;
 
 		$target_url = $this->lang_home_url();
 		if ( ! $target_url ) return $block_content;

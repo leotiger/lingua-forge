@@ -33,6 +33,7 @@
  *  11. fields='ids' → skip (internal ID-lookup guard).
  *  12. wp_navigation → no clause injected (system type; prevents WP_Navigation_Fallback cascade).
  *  13. nav_menu_item → no clause injected (system type; classic menu queries must be unfiltered).
+ *  14. page post_type + pending_page_list_lang set → no clause (filter_page_list_frontend handles it).
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -373,5 +374,41 @@ final class SecondaryQueryFilterIntegrationTest extends WP_UnitTestCase {
 
 		$meta_query = $q->get( 'meta_query', [] );
 		$this->assertEmpty( $meta_query, "'nav_menu_item' queries must not receive a secondary _lf_lang injection." );
+	}
+
+	// =========================================================================
+	// 14. page post_type + navigation arm active → skip
+	// =========================================================================
+
+	/**
+	 * WordPress 6.3+ routes get_pages() through WP_Query, so pre_get_posts fires
+	 * for get_pages() calls made during navigation block rendering.  When the
+	 * navigation arm is active (pending_page_list_lang is set by
+	 * arm_page_list_lang_filter()), filter_page_list_frontend() handles language
+	 * scoping for that get_pages() result.  Injecting a SQL meta_query here would
+	 * filter out translated pages before filter_page_list_frontend sees them,
+	 * causing the fallback path to show source-language pages on translated
+	 * WooCommerce product pages.
+	 */
+	public function test_page_post_type_skipped_when_navigation_arm_is_active(): void {
+		$filter = $this->filter();
+
+		// Simulate arm_page_list_lang_filter() having set the pending language.
+		$ref  = new \ReflectionClass( $filter );
+		$prop = $ref->getProperty( 'pending_page_list_lang' );
+		$prop->setAccessible( true );
+		$prop->setValue( $filter, 'es' );
+
+		$q = $this->secondary_query( [ 'post_type' => 'page' ] );
+		$filter->handle_secondary_pre_get_posts( $q );
+
+		// Restore pending to null so subsequent tests start clean.
+		$prop->setValue( $filter, null );
+
+		$meta_query = $q->get( 'meta_query', [] );
+		$this->assertEmpty(
+			$meta_query,
+			"'page' queries must be skipped when pending_page_list_lang is set — filter_page_list_frontend handles language scoping."
+		);
 	}
 }

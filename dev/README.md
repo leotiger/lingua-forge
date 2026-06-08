@@ -95,7 +95,7 @@ Spec files and what they cover:
 | Spec file               | Coverage                                                              | API calls? |
 | ----------------------- | --------------------------------------------------------------------- | ---------- |
 | `e2e/routing.spec.js`   | EN/DE/CA language-prefixed URLs; root and cross-lang slugs without fatals; language switcher block renders on frontend (`/en/home`); hreflang tags present, include `x-default`, cover all configured languages | No |
-| `e2e/admin.spec.js`     | Settings page loads (no PHP/JS errors), all 9 tabs present (including SEO), Router/Maintenance/API Keys tab content, post edit meta box registered | No |
+| `e2e/admin.spec.js`     | Settings page loads (no PHP/JS errors), all 10 tabs present (including SEO and System), Router/Maintenance/API Keys tab content, post edit meta box registered | No |
 | `e2e/lang-column.spec.js` | Lang column header + filter dropdown, EN/DE/CA filter returns correct cells, WC products (auto-skipped when WC not active) | No |
 | `e2e/ai-translation.spec.js` | Meta box "Translate" button (REST `/feature/translation/{id}`), "Translate missing" in the Lang column (AJAX `lf_fill_missing`), AI Usage tab shows token rows | **Yes — costs tokens** |
 | `e2e/ai-modals.spec.js` | Quick Translate REST (`/translate-chunk`), Content-gen REST (`/create-chunk`); diff modal open/cancel/apply UI (mock payload, no API key); content-gen modal open/cancel/apply-button UI (mock payload, no API key) | **Yes for REST tests** |

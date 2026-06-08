@@ -16,8 +16,19 @@ jQuery(function ($) {
 			var row     = $('#post-' + postId);
 			var editRow = $('#edit-' + postId);
 			if (!editRow.length) return;
-			var lang = row.find('td.column-lang strong').data('lang');
+
+			var badge = row.find('td.column-lang strong');
+
+			var lang = badge.data('lang');
 			if (lang) { editRow.find('select[name="lf_lang"]').val(lang); }
+
+			// Restore the "Exclude from navigation menus" checkbox state.
+			var excluded = badge.data('lf-menu-exclude') === '1' || badge.data('lf-menu-exclude') === 1;
+			editRow.find('input[name="lf_page_menu_exclude"]').prop('checked', excluded);
+
+			// Always reset the "Apply to all language versions" checkbox — it's a
+			// one-shot action, not a persistent state, so it should never be pre-checked.
+			editRow.find('input[name="lf_page_menu_exclude_all"]').prop('checked', false);
 		}, 200);
 	});
 });

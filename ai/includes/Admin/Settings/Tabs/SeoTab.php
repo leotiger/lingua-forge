@@ -40,6 +40,11 @@ class SeoTab extends Tab {
 		?>
 		<?php $wc_active = class_exists( 'WooCommerce' ); ?>
 
+		<h2 style="margin-top:1.5em;"><?php esc_html_e( 'Multilingual SEO', 'lingua-forge' ); ?></h2>
+		<p class="description" style="margin-bottom:1.5em;max-width:680px;">
+			<?php esc_html_e( 'Configure hreflang, Open Graph, Schema.org, sitemaps, and social sharing for every language on your site. Each section below handles one aspect of multilingual SEO.', 'lingua-forge' ); ?>
+		</p>
+
 		<nav class="nav-tab-wrapper lf-seo-tabs" style="margin-bottom:1.5em;">
 			<a href="#lf-seo-tab-hreflang" class="nav-tab nav-tab-active" data-lf-tab="hreflang">
 				<?php esc_html_e( 'Hreflang', 'lingua-forge' ); ?>

@@ -53,7 +53,7 @@
     // in the row in parallel.
     $(document).on('click', '.lf-fix-links-row-btn', function () {
         var $btn     = $(this);
-        var $tplRow  = $btn.closest('tr.lf-tpl-row');
+        var $tplRow  = $btn.closest('.lf-tpl-row');
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-fix-links-btn').not(':disabled');
 

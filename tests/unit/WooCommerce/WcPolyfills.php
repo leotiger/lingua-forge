@@ -36,6 +36,7 @@ if ( ! class_exists( 'WP_Post' ) ) {
 		public string $post_status = 'publish';
 		public string $post_title  = '';
 		public int    $post_author = 0;
+		public int    $menu_order  = 0;
 	}
 }
 

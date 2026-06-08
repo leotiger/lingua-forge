@@ -36,10 +36,16 @@
             base_slug: base
         }, function (resp) {
             if (resp.success) {
-                $cell.html(
-                    '<span class="lf-tpl-exists" title="' +
-                    resp.data.slug + '.html">✓</span>'
-                );
+                // Prefer server-rendered buttons_html so action buttons appear
+                // immediately without a page reload (§9.4.2).
+                if (resp.data && resp.data.buttons_html) {
+                    $cell.html(resp.data.buttons_html);
+                } else {
+                    $cell.html(
+                        '<span class="lf-tpl-exists" title="' +
+                        resp.data.slug + '.html">✓</span>'
+                    );
+                }
             } else {
                 $cell.find('.lf-scaffold-one-btn').prop('disabled', false).text('Create');
             }
@@ -61,7 +67,7 @@
     // Per-row "Create missing" button — creates every pending template in the row.
     $(document).on('click', '.lf-scaffold-all-btn', function () {
         var $btn     = $(this);
-        var $tplRow  = $btn.closest('tr.lf-tpl-row');
+        var $tplRow  = $btn.closest('.lf-tpl-row');
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var lang     = $btn.data('lang');
         var $pending = $tplRow.find('.lf-scaffold-one-btn').not(':disabled');
@@ -118,10 +124,16 @@
             base_slug: base
         }, function (resp) {
             if (resp.success) {
-                $cell.html(
-                    '<span class="lf-tpl-exists" title="' +
-                    resp.data.slug + '.html">✓</span>'
-                );
+                // Prefer server-rendered buttons_html so action buttons appear
+                // immediately without a page reload (§9.4.2).
+                if (resp.data && resp.data.buttons_html) {
+                    $cell.html(resp.data.buttons_html);
+                } else {
+                    $cell.html(
+                        '<span class="lf-tpl-exists" title="' +
+                        resp.data.slug + '.html">✓</span>'
+                    );
+                }
             } else {
                 $cell.find('.lf-scaffold-part-btn').prop('disabled', false).text('Create');
             }
@@ -143,7 +155,7 @@
     // Per-row "Create all parts" button — creates every pending part in the row.
     $(document).on('click', '.lf-scaffold-all-parts-btn', function () {
         var $btn     = $(this);
-        var $partRow = $btn.closest('tr.lf-tpl-row');
+        var $partRow = $btn.closest('.lf-tpl-row');
         var $msg     = $partRow.find('.lf-scaffold-row-msg');
         var $pending = $partRow.find('.lf-scaffold-part-btn').not(':disabled');
 

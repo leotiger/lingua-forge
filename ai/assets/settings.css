@@ -65,6 +65,136 @@
 .lf-scaffold-row-msg.lf-ok   { color: #46b450; }
 .lf-scaffold-row-msg.lf-fail { color: #dc3232; }
 
+/* ── Router tab: template cards grid ───────────────────────── */
+
+/* Bulk-action toolbar sits above the grid. */
+.lf-template-bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0 12px;
+}
+
+/* Responsive grid — fills horizontal space, wraps when cards can't fit. */
+.lf-template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 10px;
+    margin: 0 0 24px;
+}
+
+/* Individual template card */
+.lf-template-card {
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 10px 12px;
+    background: #fff;
+}
+
+.lf-template-card__name {
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0 0 6px;
+    color: #1d2327;
+    /* Long template names (e.g. "Order Confirmation") wrap rather than overflow. */
+    overflow-wrap: break-word;
+}
+
+/* Card action area inherits .lf-tpl-cell stacked-button rules; clear table min-width. */
+.lf-template-card__actions {
+    min-width: 0 !important;
+}
+
+/* ── SEO Analysis: Batch Analysis lang grid ────────────────── */
+.lf-batch-lang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 0 0 24px;
+}
+
+.lf-batch-lang-card {
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 12px 14px;
+    background: #fff;
+}
+
+.lf-batch-card__lang {
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1;
+    color: #1d2327;
+    margin: 0 0 2px;
+}
+
+.lf-batch-card__name {
+    font-size: 12px;
+    color: #646970;
+    margin: 0 0 8px;
+    overflow-wrap: break-word;
+}
+
+.lf-batch-card__meta {
+    font-size: 11px;
+    color: #646970;
+    margin: 0 0 2px;
+}
+
+/* ── SEO Analysis: Multilingual parity overview tabs ─────── */
+.lf-parity-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 12px;
+    border-bottom: 1px solid #c3c4c7;
+    padding-bottom: 0;
+}
+
+.lf-parity-tab-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: transparent;
+    color: #646970;
+    cursor: pointer;
+    border-radius: 3px 3px 0 0;
+    margin-bottom: -1px;
+    line-height: 1.4;
+}
+
+.lf-parity-tab-btn:hover {
+    color: #1d2327;
+    background: #f6f7f7;
+    border-color: #c3c4c7;
+}
+
+.lf-parity-tab-btn.is-active {
+    color: #1d2327;
+    background: #fff;
+    border-color: #c3c4c7;
+    border-bottom-color: #fff;
+}
+
+.lf-parity-tab-count {
+    font-size: 10px;
+    font-weight: 400;
+    color: #646970;
+}
+
+.lf-parity-panel {
+    padding-top: 8px;
+}
+
+.lf-parity-source-col {
+    color: #646970;
+    font-size: 11px;
+    font-style: italic;
+}
+
 /* ── Router tab: per-language panels ───────────────────────── */
 .lf-lang-tabs {
     display: flex;

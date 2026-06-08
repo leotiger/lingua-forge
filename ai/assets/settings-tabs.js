@@ -28,8 +28,11 @@
 
 	function boot() {
 
-		var TAB_BUTTONS = document.querySelectorAll('.lingua-forge-tabs .nav-tab[data-lf-tab]');
-		var PANELS      = document.querySelectorAll('.lingua-forge-tab-panel[data-lf-panel]');
+		var TAB_BUTTONS  = document.querySelectorAll('.lingua-forge-tabs .nav-tab[data-lf-tab]');
+		var PANELS       = document.querySelectorAll('.lingua-forge-tab-panel[data-lf-panel]');
+		// Only these tabs live inside the settings <form> and need the Save button.
+		var FORM_TABS    = ['general', 'api-keys', 'limits', 'behavior'];
+		var SUBMIT_WRAP  = document.querySelector('.lf-settings-submit');
 
 		if (TAB_BUTTONS.length === 0 || PANELS.length === 0) {
 			// Visible warning so a misconfigured deploy is obvious in the console
@@ -73,6 +76,10 @@
 			Array.prototype.forEach.call(PANELS, function (panel) {
 				panel.classList.toggle('is-active', panel.dataset.lfPanel === tabName);
 			});
+
+			if (SUBMIT_WRAP) {
+				SUBMIT_WRAP.style.display = FORM_TABS.indexOf(tabName) !== -1 ? '' : 'none';
+			}
 
 			try {
 				sessionStorage.setItem(STORAGE_KEY, tabName);

@@ -90,8 +90,9 @@ class Columns {
 		$id = (int) $id;
 		if ( $col !== 'lang' ) return;
 
-		$lang = $this->router->trid_group->get_lang( $id );
-		echo '<strong data-lang="' . esc_attr( $lang ) . '">' . esc_html( strtoupper( $lang ) ) . '</strong>';
+		$lang        = $this->router->trid_group->get_lang( $id );
+		$menu_exclude = get_post_meta( $id, '_lf_page_menu_exclude', true ) ? '1' : '0';
+		echo '<strong data-lang="' . esc_attr( $lang ) . '" data-lf-menu-exclude="' . esc_attr( $menu_exclude ) . '">' . esc_html( strtoupper( $lang ) ) . '</strong>';
 
 		if ( $this->router->sync->is_outdated( $id ) ) {
 			echo ' <span class="lf-outdated-indicator">⚠</span>';
@@ -152,6 +153,7 @@ class Columns {
 		// type currently being listed, so this is already contextually scoped.
 		$pto = get_post_type_object( $post_type );
 		if ( ! $pto || ! $pto->public ) return;
+		wp_nonce_field( 'lf_page_menu_exclude_save', 'lf_page_menu_exclude_nonce' );
 		?>
 		<fieldset class="inline-edit-col">
 			<label>
@@ -161,6 +163,14 @@ class Columns {
 						<option value="<?php echo esc_attr( $l ); ?>"><?php echo esc_html( strtoupper( $l ) ); ?></option>
 					<?php endforeach; ?>
 				</select>
+			</label>
+			<label class="alignleft" style="margin-top:6px">
+				<input type="checkbox" name="lf_page_menu_exclude" value="1" />
+				<span class="checkbox-title"><?php esc_html_e( 'Exclude from navigation menus', 'lingua-forge' ); ?></span>
+			</label>
+			<label class="alignleft" style="margin-top:4px">
+				<input type="checkbox" name="lf_page_menu_exclude_all" value="1" />
+				<span class="checkbox-title"><?php esc_html_e( 'Apply to all language versions', 'lingua-forge' ); ?></span>
 			</label>
 		</fieldset>
 		<?php

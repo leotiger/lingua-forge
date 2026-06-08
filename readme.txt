@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -35,7 +35,7 @@ Detects the active language from URL prefixes (`/de/`), subdomains (`de.example.
 * hreflang tags for singular, archive, and paginated views; suppresses duplicate output from Yoast SEO, Rank Math, AIOSEO, and SEOPress automatically
 * **Complete multilingual SEO** — Open Graph with og:locale and og:locale:alternate, Twitter Cards, Schema.org JSON-LD (Article/WebPage/WebSite with inLanguage annotations, Product schema for WooCommerce), and a dedicated XML sitemap at `/lf-sitemap.xml` with xhtml:link alternate entries. No companion SEO plugin required. Settings → SEO provides a Compatibility tab explaining exactly what LF does alongside any detected SEO plugin
 * **Social Share** — set any WordPress Social Icons block link URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:reddit`, `share:copy`, or `share:auto`; Lingua Forge rewrites it at render time with no custom code required
-* **SEO Content Analysis** — rule-based 0–100 SEO score (title length, meta description, word count, heading structure, image alt coverage, internal links) accessible from Settings → SEO → Analysis. The block editor Document sidebar adds an AI Recommendations panel for natural-language improvement suggestions
+* **SEO Content Analysis** — rule-based 0–100 score accessible from three entry points: single-post analysis in Settings → SEO → Analysis; the block editor Document sidebar with AI Recommendations panel; and a **Batch Analysis** card grid that runs an entire language in one pass and presents results as a **Multilingual SEO overview** with per-language tabs, direct edit links, source-language titles for parity comparison, and colour-coded scores. WooCommerce system pages are excluded from batch scoring automatically
 * Language Switcher — available as a Gutenberg block (LSFLR Switcher), a `[lsflr_switcher]` shortcode, and a classic widget (Appearance → Widgets). All three produce identical output and support `direction`, `show`, and `customLabel` options. The `linguaforge_switcher_output` filter wraps all three
 * Admin link fixer — finds internal links pointing to the wrong language version and repairs them in bulk
 * **Full Custom Post Type support** — every public CPT (WooCommerce `product`, any third-party CPT) automatically receives the full admin layer: Lang column with outdated/missing indicators and Retranslate/Translate-missing buttons, language filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. No configuration required
@@ -106,7 +106,7 @@ No. Lingua Forge ships a complete multilingual SEO stack out of the box — no c
 * **Open Graph & Twitter Cards** — `og:locale`, `og:locale:alternate`, and Twitter Card tags output on every page with no configuration needed.
 * **Schema.org JSON-LD** — Article, WebPage, and WebSite markup with `inLanguage` annotations; Product schema for WooCommerce product pages.
 * **Meta descriptions** — a dedicated meta description field on every public post type; output as `<meta name="description">`, `og:description`, and `twitter:description`.
-* **SEO Content Analysis** — a rule-based 0–100 score (title length, meta description, word count, heading structure, image alt coverage, internal links) accessible from Settings → SEO → Analysis, with AI-powered improvement suggestions in the block editor.
+* **SEO Content Analysis** — a rule-based 0–100 score accessible from Settings → SEO → Analysis (single-post and batch), the block editor Document sidebar (AI recommendations), and a Multilingual SEO overview with per-language tabs for cross-language parity review.
 
 If you already run Yoast SEO, Rank Math, or a similar plugin for non-multilingual features (redirects, breadcrumbs, etc.), Lingua Forge coexists cleanly — see the Settings → SEO → Compatibility tab for a full breakdown of what each plugin contributes when both are active.
 
@@ -263,6 +263,20 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.5 =
+* Added: SEO Analysis Batch Analysis grid — one card per active language showing post count, last run time, average score, and ok/warn/fail distribution. "Analyse all languages" runs them sequentially in fast mode (no per-post HTTP request).
+* Added: Multilingual SEO overview — batch results render as per-language tabs. Every analyzed post appears with its SEO score, a direct edit link, the source-language title for parity comparison, post type, and profile. A parity hint explains that low scores can reflect structural limits, not necessarily improvable content.
+* Added: Settings → System tab with environment info, permalink compatibility check, SEO plugin detection, WooCommerce page translation coverage, `_lf_lang` repair tool, rewrite-rule dump, and debug copy button.
+* Added: SEO score history badge in the Lang column — colour-coded `SEO N` badge with ↑/↓ delta after two runs.
+* Added: `_lf_page_menu_exclude` meta flag to hide pages from all language navigations via the Language meta box or Quick Edit.
+* Changed: WooCommerce system pages (Shop, Cart, Checkout, My Account, Terms) and their translations are excluded from batch analysis and do not affect the score distribution.
+* Fixed: Template scaffold action buttons absent after creating an FSE template or part without a page reload.
+* Fixed: Navigation filter returning empty menus on WooCommerce product pages (language-neutral URLs).
+* Fixed: Home link and logo/site-title href not localised on WooCommerce product pages.
+* Fixed: `core/home-link` block not covered by the lang home URL handler.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.4 =
 * Fixed: WooCommerce My Account sub-endpoint URLs under a language prefix (e.g. `/es/mi-cuenta/orders/`) returning 404. WC's endpoint rewrite rule intercepted the URL before LF's fallback and set `error=404` before the `request` filter fires. New `fix_myaccount_endpoint_request` parses the URI directly and rebuilds query vars from scratch.
 * Fixed: WooCommerce Terms & Conditions page ID not translated on checkout. Added `woocommerce_get_terms_page_id` and `woocommerce_terms_and_conditions_page_id` filters in `WcPageBridge`, both delegating to the shared `translate_wc_page_id()` cache.
@@ -277,36 +291,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
-= 2.2.3 =
-* Fixed: WooCommerce Cart, Checkout, and My Account pages always linking to source-language URLs in mini-cart and checkout navigation. Translated equivalents are now returned via the same `woocommerce_get_{type}_page_id` filter + `_lf_trid`/`_lf_lang` lookup used for the Shop page.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.2 =
-* Fixed: WooCommerce product blocks (New Arrivals, Top Rated, Best Sellers, On Sale, Handpicked Products, Featured Product, Product Collection) showing products from all languages on the frontend. These blocks use secondary WP_Query instances that bypass `woocommerce_product_query`; added `pre_get_posts` handler to inject the `_lf_lang` constraint on all secondary product queries.
-* Fixed: Cross-language transient cache contamination in legacy product grid blocks. BlocksWpQuery hashed query vars before `pre_get_posts` fires, making the cache key language-agnostic. Now disabled via `woocommerce_blocks_product_grid_is_cacheable` when LF_LANG is set.
-* Fixed: WooCommerce built-in pages (Shop, Cart, Checkout, My Account, Terms) missing `_lf_lang` when created before LF is active. New PageTagRepair class repairs them lazily on the pages list screen when All Languages is selected.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.1 =
-* Added: SEO Analysis scoring profiles — Blog/Editorial, Product/eCommerce, Landing/Short-form — each with tailored metric weights. Per-row profile selector in Settings → SEO → Analysis auto-triggers analysis on change.
-* Added: Block editor Document sidebar profile selector; auto-loads score on mount and on every profile change.
-* Added: H2-as-H1 global option in Settings → SEO → Analysis for themes that render the post title as H2.
-* Added: Heading detection via `wp_remote_get()` on the rendered frontend page for accurate theme-output H1 counting.
-* Added: WooCommerce classic editor SEO Analysis meta box for product post types with inline results and profile selector.
-* Added: AI recommendation caching in the existing AI cache table; cache hit returns instantly with a "Refresh" button to force a fresh API call.
-* Added: Profile-aware AI prompts — product profile omits heading and internal-link advice; landing profile omits internal-link advice.
-* Changed: Product and Landing profiles set links weight to 0; redistributed to meta description and word count.
-* Fixed: ESLint no-shadow warning in seo-analysis.js (forEach parameter s shadowed outer strings variable).
-* Fixed: ESLint react-hooks/exhaustive-deps warning in seo-analysis-editor.js (missing setScore in useEffect deps).
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
 
 == Upgrade Notice ==
 
+= 2.2.5 =
+Adds Batch Analysis grid, Multilingual SEO overview tabs, System tab, SEO score badges, and nav-exclusion flag. WC system pages excluded from batch scoring. No DB changes; no permalink flush required.
+
 = 2.2.4 =
-Fixes WC My Account 404s, T&C/Privacy Policy checkout links, Brands and custom taxonomy archives, Site Title block href, secondary query scoping, WC structured data duplication, and nav-block regression (injected new items). Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
+Fixes WC My Account 404s, T&C/Privacy Policy links, Brands & custom taxonomy archives, Site Title href, secondary query scoping, WC schema duplication, nav-block regression. Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
 
 

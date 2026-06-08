@@ -129,26 +129,44 @@ class SeoAnalysisPanel {
 	/**
 	 * Resolve the active profile key.
 	 *
-	 * Priority: explicit override → post-type auto-detection → 'blog'.
+	 * Priority (highest → lowest):
+	 *   1. Explicit override   — user chose a specific profile from the dropdown.
+	 *   2. WC product          — 'product' post type always → 'product' profile.
+	 *   3. Static front page   — the page set as the front page → 'landing' profile.
+	 *   4. Fallback            — caller-supplied default (default 'blog').
 	 *
 	 * @param  string $post_type  WordPress post type slug.
 	 * @param  string $override   Explicit profile key from the UI or AJAX param.
+	 * @param  int    $post_id    Post ID; when > 0, enables front-page detection.
+	 * @param  string $fallback   Profile to use when no rule matches (default 'blog').
 	 * @return string  One of the keys returned by self::profiles().
 	 */
-	public static function resolve_profile( string $post_type, string $override = '' ): string {
+	public static function resolve_profile(
+		string $post_type,
+		string $override  = '',
+		int    $post_id   = 0,
+		string $fallback  = 'blog'
+	): string {
 
 		$valid = array_keys( self::profiles() );
 
+		// 1. Explicit override wins unconditionally.
 		if ( '' !== $override && in_array( $override, $valid, true ) ) {
 			return $override;
 		}
 
-		// Auto-detect from post type.
+		// 2. WooCommerce products always use the product profile.
 		if ( 'product' === $post_type ) {
 			return 'product';
 		}
 
-		return 'blog';
+		// 3. The static front page uses the landing profile.
+		if ( $post_id > 0 && (int) get_option( 'page_on_front' ) === $post_id ) {
+			return 'landing';
+		}
+
+		// 4. Caller-supplied fallback (validated).
+		return in_array( $fallback, $valid, true ) ? $fallback : 'blog';
 	}
 
 	// =========================================================================
@@ -222,6 +240,14 @@ class SeoAnalysisPanel {
 			<?php submit_button( __( 'Save analysis settings', 'lingua-forge' ), 'secondary small', 'submit', false ); ?>
 		</form>
 
+		<?php self::render_batch_section( $languages, $source, $public_types ); ?>
+
+		<hr style="margin:2em 0 1.5em;">
+		<h3 style="margin-bottom:0.4em;"><?php esc_html_e( 'Per-Post Analysis', 'lingua-forge' ); ?></h3>
+		<p class="description" style="margin-bottom:1em;max-width:680px;">
+			<?php esc_html_e( 'Select a post and run a detailed SEO audit to see per-metric results and a score for that specific item.', 'lingua-forge' ); ?>
+		</p>
+
 		<div id="lf-seo-analysis" style="max-width:860px;">
 
 			<!-- ── Filters ── -->
@@ -273,6 +299,348 @@ class SeoAnalysisPanel {
 
 		</div>
 		<?php
+	}
+
+	// =========================================================================
+	// Batch Analysis section (§10.2 point 2)
+	// =========================================================================
+
+	/**
+	 * Render the Batch Analysis grid — one card per active language.
+	 *
+	 * @param string[] $languages   All active language codes.
+	 * @param string   $source      Source language code.
+	 * @param string[] $public_types  Public post types (attachment excluded).
+	 */
+	private static function render_batch_section( array $languages, string $source, array $public_types ): void {
+
+		// Post counts per language (one COUNT query per lang — admin-only panel).
+		$lang_counts = [];
+		foreach ( $languages as $lang ) {
+			$q = new \WP_Query( [
+				'post_type'      => $public_types,
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => false,
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					[ 'key' => '_lf_lang', 'value' => $lang ],
+				],
+			] );
+			$lang_counts[ $lang ] = $q->found_posts;
+		}
+
+		?>
+		<h3 style="margin-bottom:0.4em;"><?php esc_html_e( 'Batch Analysis', 'lingua-forge' ); ?></h3>
+		<p class="description" style="margin-bottom:1em;max-width:680px;">
+			<?php esc_html_e( 'Run a full SEO audit across all published posts for one or all active languages. Scores are saved per post and reflected in the Language column badges in the post list.', 'lingua-forge' ); ?>
+			<?php if ( function_exists( 'wc_get_page_id' ) ) : ?>
+			<?php esc_html_e( 'WooCommerce system pages (Shop, Cart, Checkout, My Account) are excluded — their content is managed by WooCommerce and cannot be improved through SEO edits.', 'lingua-forge' ); ?>
+			<?php endif; ?>
+		</p>
+
+		<!-- Batch toolbar -->
+		<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:0.6em;">
+			<div>
+				<label for="lf-batch-filter-type" style="font-weight:600;margin-right:4px;">
+					<?php esc_html_e( 'Post type', 'lingua-forge' ); ?>
+				</label>
+				<select id="lf-batch-filter-type">
+					<option value=""><?php esc_html_e( 'All types', 'lingua-forge' ); ?></option>
+					<?php foreach ( $public_types as $type ) :
+						$obj = get_post_type_object( $type );
+						?>
+						<option value="<?php echo esc_attr( $type ); ?>">
+							<?php echo esc_html( $obj ? $obj->labels->name : $type ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div>
+				<label for="lf-batch-profile" style="font-weight:600;margin-right:4px;">
+					<?php esc_html_e( 'Default profile', 'lingua-forge' ); ?>
+				</label>
+				<select id="lf-batch-profile">
+					<option value=""><?php esc_html_e( '— Auto-detect —', 'lingua-forge' ); ?></option>
+					<?php foreach ( self::profiles() as $pk => $prof ) : ?>
+						<option value="<?php echo esc_attr( $pk ); ?>">
+							<?php echo esc_html( $prof['label'] ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<button type="button" id="lf-batch-analyse-all-btn" class="button">
+				<?php esc_html_e( 'Analyse all languages', 'lingua-forge' ); ?>
+			</button>
+			<span id="lf-batch-all-spinner" class="spinner" style="float:none;margin:0;vertical-align:middle;display:none;"></span>
+		</div>
+		<p class="description" style="margin-bottom:1em;">
+			<?php esc_html_e( 'Auto-detect assigns: WooCommerce products → Product profile; the static front page → Landing profile; everything else → Blog profile. Choose a specific profile to override this for all posts.', 'lingua-forge' ); ?>
+		</p>
+
+		<!-- Language cards grid -->
+		<div class="lf-batch-lang-grid" id="lf-batch-lang-grid">
+			<?php foreach ( $languages as $lang ) :
+				$count    = (int) ( $lang_counts[ $lang ] ?? 0 );
+				$last_run = (int) get_option( 'linguaforge_seo_batch_last_' . $lang, 0 );
+				$is_source = ( $lang === $source );
+				?>
+				<div class="lf-batch-lang-card" id="lf-batch-card-<?php echo esc_attr( $lang ); ?>" data-lang="<?php echo esc_attr( $lang ); ?>">
+					<div class="lf-batch-card__lang">
+						<?php echo esc_html( strtoupper( $lang ) ); ?>
+						<?php if ( $is_source ) : ?>
+							<span style="font-size:10px;font-weight:400;color:#646970;margin-left:4px;"><?php esc_html_e( 'source', 'lingua-forge' ); ?></span>
+						<?php endif; ?>
+					</div>
+					<div class="lf-batch-card__name"><?php echo esc_html( linguaforge_language_label( $lang ) ); ?></div>
+					<div class="lf-batch-card__meta">
+						<?php echo esc_html(
+							/* translators: %d: number of posts */
+							sprintf( _n( '%d post', '%d posts', $count, 'lingua-forge' ), $count )
+						); ?>
+					</div>
+					<div class="lf-batch-card__meta" id="lf-batch-last-<?php echo esc_attr( $lang ); ?>">
+						<?php if ( $last_run > 0 ) : ?>
+							<?php echo esc_html(
+								/* translators: %s: human-readable time difference */
+								sprintf( __( 'Last run: %s ago', 'lingua-forge' ), human_time_diff( $last_run ) )
+							); ?>
+						<?php else : ?>
+							<?php esc_html_e( 'Never run', 'lingua-forge' ); ?>
+						<?php endif; ?>
+					</div>
+					<div class="lf-batch-card__stats" id="lf-batch-stats-<?php echo esc_attr( $lang ); ?>" style="display:none;margin:8px 0 4px;"></div>
+					<div style="display:flex;align-items:center;gap:6px;margin-top:10px;">
+						<button type="button" class="button button-small lf-batch-analyse-btn" data-lang="<?php echo esc_attr( $lang ); ?>">
+							<?php esc_html_e( 'Analyse', 'lingua-forge' ); ?>
+						</button>
+						<span class="spinner lf-batch-card-spinner" style="float:none;margin:0;vertical-align:middle;display:none;"></span>
+					</div>
+				</div>
+			<?php endforeach; ?>
+		</div>
+
+		<!-- Attention list — posts scoring < 70, populated by JS after each run -->
+		<div id="lf-batch-attention" style="display:none;margin-bottom:24px;"></div>
+		<?php
+	}
+
+	// =========================================================================
+	// AJAX — batch analysis (§10.2 point 2)
+	// =========================================================================
+
+	/**
+	 * Return the flat set of post IDs that are WooCommerce system pages
+	 * (shop, cart, checkout, myaccount, terms) plus all their language translations.
+	 *
+	 * These pages have near-zero user-editable SEO content and should be excluded
+	 * from batch analysis rather than inflating the "fail" count.
+	 *
+	 * @return int[]
+	 */
+	private static function get_wc_system_page_ids(): array {
+
+		if ( ! function_exists( 'wc_get_page_id' ) ) {
+			return [];
+		}
+
+		$slugs      = [ 'shop', 'cart', 'checkout', 'myaccount', 'terms' ];
+		$source_ids = [];
+
+		foreach ( $slugs as $slug ) {
+			$id = (int) wc_get_page_id( $slug );
+			if ( $id > 0 ) {
+				$source_ids[] = $id;
+			}
+		}
+
+		if ( empty( $source_ids ) ) {
+			return [];
+		}
+
+		// Collect every language translation of each source page.
+		$all_ids = $source_ids;
+		$router  = Router::get_instance();
+
+		foreach ( $source_ids as $id ) {
+			$translations = $router->trid_group->get_translations( $id );
+			foreach ( $translations as $translated_id ) {
+				$all_ids[] = (int) $translated_id;
+			}
+		}
+
+		return array_unique( $all_ids );
+	}
+
+	/**
+	 * Run SEO analysis on all published posts for a language in fast mode
+	 * (content-only headings — no per-post HTTP requests).
+	 *
+	 * Profile resolution priority per post:
+	 *   1. WooCommerce system pages (shop/cart/checkout/myaccount/terms) → skipped
+	 *   2. WooCommerce products           → 'product' (always)
+	 *   3. The WordPress front page       → 'landing' (always)
+	 *   4. Everything else                → $fallback_profile (user-selected, default 'blog')
+	 *
+	 * POST params:
+	 *   lang      — language code (required)
+	 *   post_type — limit to one post type; empty = all public types
+	 *   profile   — fallback profile key for non-auto-detected posts ('blog'|'landing')
+	 *
+	 * Response JSON:
+	 *   lang, total, analyzed, skipped, avg_score, ok, warn, fail, partial, attention[]
+	 *   attention: all analyzed posts, sorted ascending by score, max 200 items per language.
+	 *   Each item: { id, lang, title, source_title, type, profile, score, edit_url }
+	 */
+	public static function ajax_batch_analyze(): void {
+
+		check_ajax_referer( 'linguaforge_seo_analyze', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'lingua-forge' ) ], 403 );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_key handles unslashing.
+		$lang      = sanitize_key( $_POST['lang']      ?? '' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_key handles unslashing.
+		$post_type = sanitize_key( $_POST['post_type'] ?? '' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_key handles unslashing.
+		$profile_param    = sanitize_key( $_POST['profile'] ?? 'blog' );
+		$valid_profiles   = array_keys( self::profiles() );
+		$fallback_profile = in_array( $profile_param, $valid_profiles, true ) ? $profile_param : 'blog';
+
+		$public_types = array_diff(
+			array_values( get_post_types( [ 'public' => true ] ) ),
+			[ 'attachment' ]
+		);
+
+		$types = ( '' !== $post_type && in_array( $post_type, $public_types, true ) )
+			? [ $post_type ]
+			: $public_types;
+
+		$query_args = [
+			'post_type'      => $types,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		];
+
+		if ( '' !== $lang ) {
+			$query_args['meta_query'] = [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				[ 'key' => '_lf_lang', 'value' => $lang ],
+			];
+		}
+
+		$post_ids       = get_posts( $query_args );
+		$total          = count( $post_ids );
+		$analyzed       = 0;
+		$skipped        = 0;
+		$ok             = 0;
+		$warn           = 0;
+		$fail           = 0;
+		$score_sum      = 0;
+		$attention      = [];
+		$partial        = false;
+		$start          = microtime( true );
+		$max_exec       = (int) ini_get( 'max_execution_time' );
+		$wc_system_ids  = self::get_wc_system_page_ids();
+		$router         = Router::get_instance();
+		$source_lang    = $router->context->source_language();
+
+		foreach ( $post_ids as $id ) {
+
+			// Bail if approaching the time limit (keep 5 s buffer).
+			if ( $max_exec > 0 && ( microtime( true ) - $start ) > ( $max_exec - 5 ) ) {
+				$partial = true;
+				break;
+			}
+
+			// Skip WooCommerce system pages — their content is WC-managed, not user SEO.
+			if ( in_array( (int) $id, $wc_system_ids, true ) ) {
+				$skipped++;
+				continue;
+			}
+
+			$post      = get_post( $id );
+			if ( ! $post ) {
+				continue;
+			}
+
+			$post_type_key = get_post_type( $post ) ?: 'post';
+
+			// Delegate to the canonical resolver.
+			// resolve_profile() handles: explicit override → product → front page → fallback.
+			// No explicit override in batch mode — the user-selected $fallback_profile
+			// acts as the fallback (param 4), so product and front-page auto-detection
+			// still fire normally.
+			$profile_key = self::resolve_profile( $post_type_key, '', (int) $id, $fallback_profile );
+
+			$profile_data = self::profiles()[ $profile_key ];
+			// Fast mode: skip per-post frontend HTTP request for heading extraction.
+			$metrics = self::analyze( $post, $profile_data, true );
+			$score   = self::compute_score( $metrics, $profile_data['weights'] );
+			self::save_score_history( $id, $score );
+
+			$analyzed++;
+			$score_sum += $score;
+
+			if ( $score >= 80 )     { $ok++; }
+			elseif ( $score >= 50 ) { $warn++; }
+			else                    { $fail++; }
+
+			// Collect every analyzed post for the parity overview.
+			// Resolve the source-language title for translation comparison.
+			$source_title  = '';
+			$post_lang     = (string) get_post_meta( (int) $id, '_lf_lang', true );
+			if ( '' !== $post_lang && $post_lang !== $source_lang ) {
+				$trid = (string) get_post_meta( (int) $id, '_lf_trid', true );
+				if ( '' !== $trid ) {
+					$translations = $router->trid_group->get_translations( (int) $id );
+					if ( isset( $translations[ $source_lang ] ) ) {
+						$src_post = get_post( (int) $translations[ $source_lang ] );
+						if ( $src_post ) {
+							$source_title = get_the_title( $src_post );
+						}
+					}
+				}
+			}
+
+			$post_type_obj = get_post_type_object( $post_type_key );
+			$attention[]   = [
+				'id'           => (int) $id,
+				'lang'         => $lang,
+				'title'        => get_the_title( $post ),
+				'source_title' => $source_title,
+				'type'         => $post_type_obj ? $post_type_obj->labels->singular_name : $post_type_key,
+				'profile'      => $profile_key,
+				'score'        => $score,
+				'edit_url'     => get_edit_post_link( $id, 'raw' ),
+			];
+		}
+
+		$avg_score = $analyzed > 0 ? (int) round( $score_sum / $analyzed ) : 0;
+
+		// Sort by score ascending (worst first); cap at 200 per language to keep response lean.
+		usort( $attention, static fn( array $a, array $b ): int => $a['score'] <=> $b['score'] );
+		$attention = array_slice( $attention, 0, 200 );
+
+		// Record last batch run time so the card can show a "last run" age.
+		if ( '' !== $lang ) {
+			update_option( 'linguaforge_seo_batch_last_' . $lang, time(), false );
+		}
+
+		wp_send_json_success( [
+			'lang'      => $lang,
+			'total'     => $total,
+			'analyzed'  => $analyzed,
+			'skipped'   => $skipped,
+			'avg_score' => $avg_score,
+			'ok'        => $ok,
+			'warn'      => $warn,
+			'fail'      => $fail,
+			'partial'   => $partial,
+			'attention' => $attention,
+		] );
 	}
 
 	// =========================================================================
@@ -402,20 +770,65 @@ class SeoAnalysisPanel {
 			}
 		}
 
-		$profile_key  = self::resolve_profile( get_post_type( $analyzed_post ) ?: 'post', $profile_override );
+		// Check if this is a WooCommerce system page (shop/cart/checkout/myaccount/terms).
+		// These pages are managed by WooCommerce, not editable SEO content.
+		$is_wc_system_page = in_array( $analyzed_post->ID, self::get_wc_system_page_ids(), true );
+
+		$profile_key  = self::resolve_profile( get_post_type( $analyzed_post ) ?: 'post', $profile_override, $analyzed_post->ID );
 		$profile_data = self::profiles()[ $profile_key ];
 
 		$metrics = self::analyze( $analyzed_post, $profile_data );
 
+		$score          = self::compute_score( $metrics, $profile_data['weights'] );
+		// Read previous score before overwriting so we can include it in the response.
+		$prev_history   = self::get_score_history( $analyzed_post->ID );
+		$previous_score = isset( $prev_history[0] ) ? (int) $prev_history[0]['score'] : null;
+		self::save_score_history( $analyzed_post->ID, $score );
+
 		wp_send_json_success( [
-			'post_id'     => $analyzed_post->ID,
-			'post_title'  => get_the_title( $analyzed_post ),
-			'lang'        => $used_lang,
-			'used_source' => $used_source,
-			'profile'     => $profile_key,
-			'metrics'     => $metrics,
-			'score'       => self::compute_score( $metrics, $profile_data['weights'] ),
+			'post_id'          => $analyzed_post->ID,
+			'post_title'       => get_the_title( $analyzed_post ),
+			'lang'             => $used_lang,
+			'used_source'      => $used_source,
+			'is_wc_system_page' => $is_wc_system_page,
+			'profile'          => $profile_key,
+			'metrics'          => $metrics,
+			'score'            => $score,
+			'previous_score'   => $previous_score,
 		] );
+	}
+
+	// =========================================================================
+	// Score history
+	// =========================================================================
+
+	/**
+	 * Prepend a new score entry and keep the two most recent.
+	 * Stored as a serialised PHP array in `_lf_seo_score_history`.
+	 *
+	 * @param int $post_id
+	 * @param int $score   0–100
+	 */
+	public static function save_score_history( int $post_id, int $score ): void {
+		$history = self::get_score_history( $post_id );
+		array_unshift( $history, [ 'score' => $score, 'ts' => time() ] );
+		update_post_meta( $post_id, '_lf_seo_score_history', array_slice( $history, 0, 2 ) );
+	}
+
+	/**
+	 * Return stored score history for a post, newest first (up to 2 entries).
+	 *
+	 * @param  int $post_id
+	 * @return array<int, array{score: int, ts: int}>
+	 */
+	public static function get_score_history( int $post_id ): array {
+		$raw = get_post_meta( $post_id, '_lf_seo_score_history', true );
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+		return array_values(
+			array_filter( $raw, static fn( $e ) => isset( $e['score'], $e['ts'] ) )
+		);
 	}
 
 	// =========================================================================
@@ -429,7 +842,7 @@ class SeoAnalysisPanel {
 	 * @param  array<string, mixed> $profile  Profile data from self::profiles(). Defaults to blog profile.
 	 * @return array<string, array<string, mixed>>
 	 */
-	private static function analyze( \WP_Post $post, array $profile = [] ): array {
+	private static function analyze( \WP_Post $post, array $profile = [], bool $fast = false ): array {
 
 		if ( empty( $profile ) ) {
 			$profile = self::profiles()['blog'];
@@ -460,8 +873,10 @@ class SeoAnalysisPanel {
 		// captures the theme-rendered title tag (H1 or H2) which is not present
 		// in post_content.  Falls back to content-only parsing when the page is
 		// unreachable (local dev, staging with HTTP auth, etc.).
+		// $fast skips the HTTP request for batch mode where per-post fetches would
+		// be prohibitively slow.
 		$permalink = get_permalink( $post->ID );
-		$headings  = ( $permalink ? self::extract_headings_from_url( $permalink ) : null )
+		$headings  = ( ! $fast && $permalink ? self::extract_headings_from_url( $permalink ) : null )
 			?? self::extract_headings( $raw_html );
 
 		return [
@@ -493,26 +908,37 @@ class SeoAnalysisPanel {
 	 */
 	public static function rate_title( string $title, int $len, array $thresholds = [ 'min' => 30, 'max' => 60 ] ): array {
 
-		$min = $thresholds['min'];
-		$max = $thresholds['max'];
+		// $thresholds['min'] is no longer used for scoring — replaced by the
+		// fixed > 10 char + word-count checks below.  $thresholds['max'] still
+		// governs the SERP-truncation warning.
+		$max   = $thresholds['max'];
+		$words = ( '' !== $title )
+			? count( array_filter( (array) preg_split( '/\s+/u', trim( $title ) ) ) )
+			: 0;
 
 		if ( '' === $title ) {
 			return [ 'value' => '', 'length' => 0, 'status' => 'fail',
 				'message' => __( 'No title set.', 'lingua-forge' ) ];
 		}
-		if ( $len < $min ) {
-			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
-				/* translators: %1$d: number of characters, %2$d: recommended max */
-				'message' => sprintf( __( 'Title is %1$d chars — aim for %2$d–%3$d.', 'lingua-forge' ), $len, $min + 20, $max ) ];
-		}
 		if ( $len > $max ) {
 			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
-				/* translators: %1$d: number of characters, %2$d: recommended max */
-				'message' => sprintf( __( 'Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d).', 'lingua-forge' ), $len, $min + 20, $max ) ];
+				/* translators: %1$d: character count, %2$d: SERP limit */
+				'message' => sprintf( __( 'Title is %1$d chars — may be truncated in SERPs (aim for under %2$d).', 'lingua-forge' ), $len, $max ) ];
 		}
+		if ( $len <= 10 ) {
+			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
+				/* translators: %d: character count */
+				'message' => sprintf( __( 'Title is only %d chars — aim for more than 10 characters.', 'lingua-forge' ), $len ) ];
+		}
+		if ( $words < 2 ) {
+			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
+				/* translators: %d: character count */
+				'message' => sprintf( __( 'Single-word title (%d chars) — adding a second word improves clarity and keyword coverage.', 'lingua-forge' ), $len ) ];
+		}
+		// > 10 chars, 2+ words, within SERP limit → ok
 		return [ 'value' => $title, 'length' => $len, 'status' => 'ok',
-			/* translators: %d: number of characters */
-			'message' => sprintf( __( '%d chars — good length.', 'lingua-forge' ), $len ) ];
+			/* translators: %1$d: character count, %2$d: word count */
+			'message' => sprintf( __( '%1$d chars, %2$d words — good title.', 'lingua-forge' ), $len, $words ) ];
 	}
 
 	/**
@@ -900,7 +1326,7 @@ class SeoAnalysisPanel {
 
 		// Run rule-based analysis first to give the AI grounded context.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-		$ai_profile_key  = self::resolve_profile( $post->post_type, sanitize_key( $_POST['profile'] ?? '' ) );
+		$ai_profile_key  = self::resolve_profile( $post->post_type, sanitize_key( $_POST['profile'] ?? '' ), $post->ID );
 		$ai_profile_data = self::profiles()[ $ai_profile_key ];
 		$metrics         = self::analyze( $post, $ai_profile_data );
 		$score           = self::compute_score( $metrics, $ai_profile_data['weights'] );

@@ -35,29 +35,24 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.4';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.4/lingua-forge-2.2.4.zip';
+	$version      = '2.2.5';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.5/lingua-forge-2.2.5.zip';
 	$last_updated = '2026-06-08';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.4 — 2026-06-08</h4>' .
+		'<h4>2.2.5 — 2026-06-08</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> WooCommerce My Account sub-endpoint URLs under a language prefix (e.g. /es/mi-cuenta/orders/) returning 404. New fix_myaccount_endpoint_request parses the URI directly and rebuilds query vars from scratch.</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce Terms &amp; Conditions and Privacy Policy links on checkout always pointing to the source-language page. Added woocommerce_get_terms_page_id, woocommerce_terms_and_conditions_page_id, and woocommerce_privacy_policy_page_id filters in WcPageBridge.</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce Brands (product_brand) and custom product taxonomy archives falling back to source-language pages. Taxonomy-archive hooks now consume a dynamic list via get_product_archive_taxonomies(), filterable via lf_wc_product_archive_taxonomies.</li>' .
-			'<li><strong>Fixed:</strong> Site Title block (core/site-title) wrapping link not localised — fix_site_title_link() added, mirroring the existing fix_site_logo_link() pattern.</li>' .
-			'<li><strong>Fixed:</strong> Custom taxonomy archive URLs returning 404 under a language prefix. New add_general_taxonomy_archive_rewrite_rules() registers explicit top-priority rules for all public custom taxonomies.</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce Product structured data duplicated when no SEO plugin is active. SeoSupport now injects inLanguage via woocommerce_structured_data_product; SchemaManager skips Article/WebPage on product singulars.</li>' .
-			'<li><strong>Fixed:</strong> Secondary WP_Query instances (sidebar widgets, get_posts(), Latest Posts/Events blocks) returning mixed-language results. New handle_secondary_pre_get_posts() injects _lf_lang on all secondary frontend queries; ID-only lookups (fields=ids) are skipped.</li>' .
-			'<li><strong>Fixed:</strong> Navigation block injecting unexpected new items. handle_secondary_pre_get_posts() was missing an exclusion for WordPress system post types; wp_navigation queries returned zero results and WordPress silently created a new navigation post from the latest classic menu. System types (wp_navigation, nav_menu_item, wp_template, wp_template_part, etc.) are now excluded.</li>' .
-			'<li><strong>Changed:</strong> Translation Memory and API Response Cache enable/disable toggles moved from Settings &rarr; Behavior to Settings &rarr; AI Usage &amp; Cache (each in its own inner sub-tab).</li>' .
-		'</ul>' .
-		'<h4>2.2.3 — 2026-06-07</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> WooCommerce Cart, Checkout, and My Account pages always linking to source-language URLs in mini-cart and checkout navigation. Translated equivalents now returned via woocommerce_get_{type}_page_id filters using the same _lf_trid/_lf_lang lookup as the Shop page.</li>' .
+			'<li><strong>Added:</strong> Batch Analysis card grid in Settings &rarr; SEO &rarr; Analysis — one card per active language with post count, last run time, average score, and ok/warn/fail distribution. &ldquo;Analyse all languages&rdquo; runs sequentially in fast mode.</li>' .
+			'<li><strong>Added:</strong> Multilingual SEO overview — batch results rendered as per-language tabs. Every analyzed post shows its score, a direct edit link, the source-language title for parity comparison, post type, and profile. WooCommerce system pages excluded from scoring.</li>' .
+			'<li><strong>Added:</strong> Settings &rarr; System tab — environment info, permalink compatibility check, SEO plugin detection, WooCommerce page translation coverage, _lf_lang repair tool, rewrite-rule dump, and debug copy button.</li>' .
+			'<li><strong>Added:</strong> SEO score history badge (colour-coded, with &uarr;/&darr; delta) in the Lang column after analysis runs.</li>' .
+			'<li><strong>Added:</strong> _lf_page_menu_exclude meta flag to hide pages from every language&rsquo;s core/page-list navigation (Language meta box + Quick Edit).</li>' .
+			'<li><strong>Fixed:</strong> Template scaffold action buttons absent after creating an FSE template or part without a page reload.</li>' .
+			'<li><strong>Fixed:</strong> Navigation filter returning empty menus on WooCommerce product pages (language-neutral URLs).</li>' .
+			'<li><strong>Fixed:</strong> Home link and logo/site-title href not localised on WooCommerce product pages. core/home-link block coverage added.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

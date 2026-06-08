@@ -57,7 +57,7 @@
     // in parallel.
     $(document).on('click', '.lf-fix-parts-row-btn', function () {
         var $btn     = $(this);
-        var $tplRow  = $btn.closest('tr.lf-tpl-row');
+        var $tplRow  = $btn.closest('.lf-tpl-row');
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-fix-parts-btn').not(':disabled');
 
@@ -132,7 +132,7 @@
     // in parallel.
     $(document).on('click', '.lf-fix-nav-refs-row-btn', function () {
         var $btn     = $(this);
-        var $tplRow  = $btn.closest('tr.lf-tpl-row');
+        var $tplRow  = $btn.closest('.lf-tpl-row');
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-fix-nav-refs-btn').not(':disabled');
 

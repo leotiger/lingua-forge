@@ -47,6 +47,9 @@ class PostListColumn {
 		// "Retranslate" — fires on every post regardless of outdated status.
 		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_retranslate_button' ], 10, 1 );
 
+		// SEO score badge — fires on every post; shows stored score + delta if available.
+		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_seo_score_badge' ], 20, 1 );
+
 		// Enqueue JS + CSS on the post list screen.
 		add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue' ] );
 
@@ -138,6 +141,57 @@ class PostListColumn {
 		);
 
 		echo '</span>';
+	}
+
+	// =========================================================================
+	// SEO score badge
+	// =========================================================================
+
+	/**
+	 * Render a compact SEO score badge in the Lang column.
+	 *
+	 * Reads `_lf_seo_score_history` written by SeoAnalysisPanel::ajax_analyze().
+	 * Shows the latest score colour-coded by threshold (≥80 green, ≥50 amber,
+	 * <50 red) plus a ↑/↓ delta when a previous score is stored.
+	 *
+	 * @param int $post_id Current post ID.
+	 */
+	public static function render_seo_score_badge( int $post_id ): void {
+		if ( ! class_exists( \LinguaForge\AI\Admin\Settings\Panels\SeoAnalysisPanel::class ) ) {
+			return;
+		}
+
+		$history = \LinguaForge\AI\Admin\Settings\Panels\SeoAnalysisPanel::get_score_history( $post_id );
+		if ( empty( $history ) ) {
+			return;
+		}
+
+		$current = (int) $history[0]['score'];
+		$color   = $current >= 80 ? '#00a32a' : ( $current >= 50 ? '#dba617' : '#d63638' );
+
+		$delta_html = '';
+		if ( isset( $history[1] ) ) {
+			$previous = (int) $history[1]['score'];
+			if ( $previous !== $current ) {
+				$diff        = $current - $previous;
+				$delta_color = $diff > 0 ? '#00a32a' : '#d63638';
+				$arrow       = $diff > 0 ? '↑' : '↓';
+				$delta_html  = sprintf(
+					'<span class="lf-seo-badge__delta" style="color:%s;">%s%d</span>',
+					esc_attr( $delta_color ),
+					$arrow,
+					abs( $diff )
+				);
+			}
+		}
+
+		printf(
+			' <span class="lf-seo-badge" style="color:%s;" title="%s">SEO&nbsp;%d%s</span>',
+			esc_attr( $color ),
+			esc_attr__( 'Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to update.', 'lingua-forge' ),
+			absint( $current ),
+			$delta_html // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built entirely from esc_attr()-escaped values and a hard-coded arrow character; no unescaped user input.
+		);
 	}
 
 	// =========================================================================

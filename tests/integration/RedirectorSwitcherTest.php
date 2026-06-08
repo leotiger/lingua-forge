@@ -8,6 +8,7 @@
  * Methods covered:
  *   • Redirector::allow_lang_subdomains() — builds allowed subdomain host list
  *   • Redirector::fix_site_logo_link()   — rewrites logo href to current-language home
+ *   • Redirector::fix_home_link()        — rewrites core/home-link href to current-language home
  *   • Redirector::translate_menu_items() — rewrites nav-item URLs via TRID
  *
  * Run via: composer test:integration  (requires wp-env running).
@@ -154,6 +155,44 @@ final class RedirectorSwitcherTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'href="', $result );
 		// The new href matches get_permalink of whichever post was resolved.
 		$this->assertMatchesRegularExpression( '/href="[^"]+"/', $result );
+	}
+
+	// =========================================================================
+	// Redirector::fix_home_link()
+	// =========================================================================
+
+	public function test_fix_home_link_non_home_link_block_returned_unchanged(): void {
+
+		$content = '<a href="https://example.org/">Home</a>';
+		$result  = $this->router->redirector->fix_home_link(
+			$content,
+			[ 'blockName' => 'core/navigation-link' ]
+		);
+
+		$this->assertSame( $content, $result );
+	}
+
+	public function test_fix_home_link_rewrites_href_on_core_home_link_block(): void {
+
+		if ( ! defined( 'LF_LANG' ) ) {
+			$this->markTestSkipped( 'LF_LANG not defined.' );
+		}
+
+		update_option( 'page_on_front', 0 ); // latest-posts front
+
+		$content = '<a href="https://example.org/stale-url/" class="wp-block-home-link">Home</a>';
+		$result  = $this->router->redirector->fix_home_link(
+			$content,
+			[ 'blockName' => 'core/home-link' ]
+		);
+
+		$source        = $this->router->context->source_language();
+		$expected_href = ( LF_LANG === $source )
+			? home_url( '/' )
+			: home_url( '/' . LF_LANG . '/' );
+
+		$this->assertStringContainsString( 'href="' . esc_url( $expected_href ) . '"', $result );
+		$this->assertStringNotContainsString( 'stale-url', $result );
 	}
 
 	// =========================================================================

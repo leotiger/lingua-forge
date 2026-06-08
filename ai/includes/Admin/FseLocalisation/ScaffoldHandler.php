@@ -119,10 +119,40 @@ class ScaffoldHandler {
         // this does not affect post translation relationships.
         update_post_meta( (int) $post_id, '_lf_lang', $lang );
 
+        // Build action-buttons HTML for the newly-created template.
+        // Returned as `buttons_html` so the JS can inject it into the card's
+        // action area immediately — no page reload required (§9.4.2).
+        $ai_active = \LinguaForge\AI\Admin\Settings\Tabs\RouterTab::ai_is_active();
+        ob_start();
+        ?>
+        <span class="lf-tpl-exists" title="<?php echo esc_attr( $lang_slug . '.html' ); ?>">✓</span>
+        <?php if ( $ai_active ) : ?>
+        <button type="button"
+                class="button button-small lf-translate-one-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>"
+                data-post-type="wp_template">
+            <?php esc_html_e( 'Translate', 'lingua-forge' ); ?>
+        </button>
+        <?php endif; ?>
+        <button type="button"
+                class="button button-small lf-fix-links-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>"
+                data-post-type="wp_template">
+            <?php esc_html_e( 'Fix Links', 'lingua-forge' ); ?>
+        </button>
+        <button type="button"
+                class="button button-small lf-fix-parts-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>">
+            <?php esc_html_e( 'Fix Parts', 'lingua-forge' ); ?>
+        </button>
+        <?php
+        $buttons_html = (string) ob_get_clean();
+
         wp_send_json_success( [
-            'slug'    => $lang_slug,
-            'title'   => $title,
-            'message' => sprintf(
+            'slug'         => $lang_slug,
+            'title'        => $title,
+            'buttons_html' => $buttons_html,
+            'message'      => sprintf(
                 /* translators: %s: template title such as "Page DE" */
                 __( '"%s" created.', 'lingua-forge' ),
                 $title
@@ -240,11 +270,42 @@ class ScaffoldHandler {
             }
         }
 
+        // Build action-buttons HTML for the newly-created template part.
+        // Returned as `buttons_html` so the JS can inject it into the cell
+        // immediately — no page reload required (§9.4.2).
+        $ai_active = \LinguaForge\AI\Admin\Settings\Tabs\RouterTab::ai_is_active();
+        ob_start();
+        ?>
+        <span class="lf-tpl-exists lf-tpl-exists--inline" title="<?php echo esc_attr( $lang_slug . '.html' ); ?>">✓</span>
+        <?php if ( $ai_active ) : ?>
+        <button type="button"
+                class="button button-small lf-translate-one-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>"
+                data-post-type="wp_template_part">
+            <?php esc_html_e( 'Translate', 'lingua-forge' ); ?>
+        </button>
+        <?php endif; ?>
+        <button type="button"
+                class="button button-small lf-fix-links-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>"
+                data-post-type="wp_template_part">
+            <?php esc_html_e( 'Fix Links', 'lingua-forge' ); ?>
+        </button>
+        <button type="button"
+                class="button button-small lf-fix-nav-refs-btn"
+                data-slug="<?php echo esc_attr( $lang_slug ); ?>">
+            <?php esc_html_e( 'Fix Nav', 'lingua-forge' ); ?>
+        </button>
+        <span class="lf-scaffold-row-msg"></span>
+        <?php
+        $buttons_html = (string) ob_get_clean();
+
         wp_send_json_success( [
-            'slug'    => $lang_slug,
-            'title'   => $title,
-            'updated' => $updated,
-            'message' => sprintf(
+            'slug'         => $lang_slug,
+            'title'        => $title,
+            'updated'      => $updated,
+            'buttons_html' => $buttons_html,
+            'message'      => sprintf(
                 /* translators: 1: template part title e.g. "Header DE", 2: count of templates updated */
                 _n(
                     '"%1$s" created. %2$d template updated.',

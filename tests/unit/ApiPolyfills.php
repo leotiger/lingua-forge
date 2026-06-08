@@ -516,6 +516,7 @@ if ( ! class_exists( 'WP_Post' ) ) {
 		public string $post_content = '';
 		public string $post_excerpt = '';
 		public int    $post_author = 0;
+		public int    $menu_order  = 0;
 	}
 }
 

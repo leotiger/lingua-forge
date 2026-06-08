@@ -297,6 +297,18 @@ class QueryFilter {
 			return;
 		}
 
+		// WordPress 6.3+ routes get_pages() through WP_Query, so pre_get_posts now
+		// fires for get_pages() calls made inside core/page-list during navigation
+		// rendering.  When the navigation arm is active (pending_page_list_lang is
+		// set), filter_page_list_frontend() handles language scoping for those
+		// get_pages() results.  Injecting a SQL meta_query here as well would
+		// filter out translated pages before filter_page_list_frontend sees them,
+		// causing the fallback path to kick in and showing source-language pages
+		// on translated WooCommerce product pages.
+		if ( in_array( 'page', $types, true ) && $this->pending_page_list_lang !== null ) {
+			return;
+		}
+
 		// Allow third-party code to opt additional post types out.
 		$excluded = (array) apply_filters( 'linguaforge_secondary_query_excluded_post_types', [] );
 		if ( $excluded && array_intersect( $types, $excluded ) ) {
@@ -328,6 +340,16 @@ class QueryFilter {
 	 * Filters get_pages() results to the active language on the public frontend
 	 * and the Site Editor canvas. Also active in REST block-renderer requests
 	 * when arm_page_list_lang_filter() has already set the pending language.
+	 *
+	 * If the language filter yields no pages (e.g. a translated WooCommerce product
+	 * on a language-neutral URL whose nav pages have not yet been translated),
+	 * the method falls back to showing source-language pages so the navigation
+	 * is never left empty.
+	 *
+	 * Pages marked with _lf_page_menu_exclude are hidden in
+	 * language filter so they appear in every language's navigation regardless
+	 * of their own _lf_lang value.  Developers can extend the excluded-ID list
+	 * via the linguaforge_page_menu_excluded_page_ids filter.
 	 */
 	public function filter_page_list_frontend( array $pages, array $args ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $args required by get_pages filter signature.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) return $pages;
@@ -365,14 +387,62 @@ class QueryFilter {
 
 		$is_source = ( $lang === $this->router->context->source_language() );
 
-		return array_values( array_filter(
+		// Collect IDs of pages explicitly excluded from all language navigations.
+		// We check only pages already in the get_pages() result — get_post_meta()
+		// is object-cached so this adds no DB overhead on warm requests.
+		$meta_excluded_ids = array_map(
+			fn( \WP_Post $p ) => $p->ID,
+			array_filter( $pages, fn( \WP_Post $p ) => (bool) get_post_meta( $p->ID, '_lf_page_menu_exclude', true ) )
+		);
+
+		/**
+		 * Filters the page IDs that are hidden from every language's navigation
+		 * page-list, regardless of their _lf_lang value.
+		 *
+		 * By default this list is derived from the _lf_page_menu_exclude postmeta
+		 * flag set via the Language meta box or Quick Edit.  Developers can extend
+		 * it programmatically — e.g. to always hide the privacy-policy page:
+		 *
+		 *     add_filter( 'linguaforge_page_menu_excluded_page_ids', function( $ids ) {
+		 *         return array_merge( $ids, [ get_option( 'wp_page_for_privacy_policy' ) ] );
+		 *     } );
+		 *
+		 * Note: this filter operates on core/page-list blocks inside core/navigation
+		 * only.  Classic nav menus (wp_nav_menu) render from stored nav_menu_item
+		 * posts and are unaffected.
+		 *
+		 * @param int[] $ids Page IDs to hide from every language navigation.
+		 */
+		$excluded_ids = (array) apply_filters( 'linguaforge_page_menu_excluded_page_ids', $meta_excluded_ids ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+
+		$filtered = array_values( array_filter(
 			$pages,
-			function ( \WP_Post $page ) use ( $lang, $is_source ): bool {
+			function ( \WP_Post $page ) use ( $lang, $is_source, $excluded_ids ): bool {
+				if ( in_array( $page->ID, $excluded_ids, true ) ) return false;
 				$page_lang = get_post_meta( $page->ID, '_lf_lang', true );
 				if ( ! $page_lang ) return $is_source;
 				return $page_lang === $lang;
 			}
 		) );
+
+		// Fallback for language-neutral URLs (e.g. WooCommerce product pages) where
+		// the queried post is a translation but no translated navigation pages exist
+		// yet.  Rather than rendering an empty navigation, show source-language pages
+		// so the menu is always present.  When translated nav pages are added later
+		// they will appear automatically without any extra configuration.
+		if ( ! $filtered && ! $is_source ) {
+			$source = $this->router->context->source_language();
+			$filtered = array_values( array_filter(
+				$pages,
+				function ( \WP_Post $page ) use ( $source, $excluded_ids ): bool {
+					if ( in_array( $page->ID, $excluded_ids, true ) ) return false;
+					$page_lang = get_post_meta( $page->ID, '_lf_lang', true );
+					return ! $page_lang || $page_lang === $source;
+				}
+			) );
+		}
+
+		return $filtered;
 	}
 
 	/**

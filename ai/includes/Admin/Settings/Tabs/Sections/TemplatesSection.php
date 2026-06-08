@@ -39,23 +39,48 @@ class TemplatesSection {
         <h3><?php esc_html_e( 'Templates', 'lingua-forge' ); ?></h3>
         <p><?php esc_html_e( 'FSE templates seeded from the active theme. Create then customise in the Site Editor.', 'lingua-forge' ); ?></p>
 
-        <table class="widefat striped lf-template-scaffold-table">
-            <thead>
-                <tr>
-                    <?php foreach ( $template_defs as $def ) : ?>
-                    <th scope="col"><?php echo esc_html( $def['label'] ); ?></th>
-                    <?php endforeach; ?>
-                    <th scope="col" style="width:160px"><?php esc_html_e( 'Actions', 'lingua-forge' ); ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="lf-tpl-row" data-lang="<?php echo esc_attr( $lang ); ?>">
-                    <?php foreach ( $template_defs as $base => $def ) :
-                        $slug               = $base . '-' . $lang;
-                        $exists             = $row_exists[ $base ];
-                        $already_translated = $exists && in_array( $slug, $translated_slugs, true );
-                    ?>
-                    <td class="lf-tpl-cell" data-base="<?php echo esc_attr( $base ); ?>">
+        <!-- Wrapper serves as the `.lf-tpl-row` anchor for bulk-action JS traversal. -->
+        <div class="lf-tpl-row" data-lang="<?php echo esc_attr( $lang ); ?>">
+
+            <!-- Bulk actions toolbar -->
+            <div class="lf-template-bulk-actions">
+                <?php if ( $has_missing ) : ?>
+                <button type="button"
+                        class="button lf-scaffold-all-btn"
+                        data-lang="<?php echo esc_attr( $lang ); ?>">
+                    <?php esc_html_e( 'Create missing', 'lingua-forge' ); ?>
+                </button>
+                <?php endif; ?>
+                <?php if ( $ai_active ) : ?>
+                <button type="button"
+                        class="button lf-translate-row-btn"
+                        data-lang="<?php echo esc_attr( $lang ); ?>">
+                    <?php esc_html_e( 'Translate all', 'lingua-forge' ); ?>
+                </button>
+                <?php endif; ?>
+                <button type="button"
+                        class="button lf-fix-parts-row-btn"
+                        data-lang="<?php echo esc_attr( $lang ); ?>">
+                    <?php esc_html_e( 'Fix all parts', 'lingua-forge' ); ?>
+                </button>
+                <button type="button"
+                        class="button lf-fix-links-row-btn"
+                        data-lang="<?php echo esc_attr( $lang ); ?>">
+                    <?php esc_html_e( 'Fix all links', 'lingua-forge' ); ?>
+                </button>
+                <span class="lf-scaffold-row-msg"></span>
+            </div>
+
+            <!-- One card per template type — wraps at any count without overflow. -->
+            <div class="lf-template-grid">
+                <?php foreach ( $template_defs as $base => $def ) :
+                    $slug               = $base . '-' . $lang;
+                    $exists             = $row_exists[ $base ];
+                    $already_translated = $exists && in_array( $slug, $translated_slugs, true );
+                ?>
+                <div class="lf-template-card">
+                    <div class="lf-template-card__name"><?php echo esc_html( $def['label'] ); ?></div>
+                    <div class="lf-tpl-cell lf-template-card__actions" data-base="<?php echo esc_attr( $base ); ?>">
                         <?php if ( $exists ) : ?>
                             <span class="lf-tpl-exists" title="<?php echo esc_attr( $slug . '.html' ); ?>">✓</span>
                             <?php if ( $ai_active ) : ?>
@@ -87,38 +112,12 @@ class TemplatesSection {
                                 <?php esc_html_e( 'Create', 'lingua-forge' ); ?>
                             </button>
                         <?php endif; ?>
-                    </td>
-                    <?php endforeach; ?>
-                    <td class="lf-tpl-actions">
-                        <?php if ( $has_missing ) : ?>
-                        <button type="button"
-                                class="button lf-scaffold-all-btn"
-                                data-lang="<?php echo esc_attr( $lang ); ?>">
-                            <?php esc_html_e( 'Create missing', 'lingua-forge' ); ?>
-                        </button>
-                        <?php endif; ?>
-                        <?php if ( $ai_active ) : ?>
-                        <button type="button"
-                                class="button lf-translate-row-btn"
-                                data-lang="<?php echo esc_attr( $lang ); ?>">
-                            <?php esc_html_e( 'Translate all', 'lingua-forge' ); ?>
-                        </button>
-                        <?php endif; ?>
-                        <button type="button"
-                                class="button lf-fix-parts-row-btn"
-                                data-lang="<?php echo esc_attr( $lang ); ?>">
-                            <?php esc_html_e( 'Fix all parts', 'lingua-forge' ); ?>
-                        </button>
-                        <button type="button"
-                                class="button lf-fix-links-row-btn"
-                                data-lang="<?php echo esc_attr( $lang ); ?>">
-                            <?php esc_html_e( 'Fix all links', 'lingua-forge' ); ?>
-                        </button>
-                        <span class="lf-scaffold-row-msg"></span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+        </div>
 
     <?php
     }

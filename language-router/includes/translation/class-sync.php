@@ -443,6 +443,48 @@ class Sync {
 			}
 		}
 
+		// Navigation menu exclusion flag.
+		//
+		// Accepted from two sources:
+		//   • lf_language_nonce  — Language meta box in the full block/classic editor.
+		//   • lf_page_menu_exclude_nonce — Quick Edit fieldset in the list table.
+		//
+		// "Apply to all language versions" propagates the flag to every TRID sibling
+		// in a single save.  A static guard prevents recursive re-entry if
+		// wp_after_insert_post fires again when we update sibling meta via
+		// update_post_meta (which can trigger save_post on some hosts).
+		$has_exclude_nonce = isset( $_POST['lf_page_menu_exclude_nonce'] )
+			&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['lf_page_menu_exclude_nonce'] ) ), 'lf_page_menu_exclude_save' );
+
+		if ( $has_lang_nonce || $has_exclude_nonce ) {
+			static $propagating = false;
+
+			$exclude     = ! empty( $_POST['lf_page_menu_exclude'] );
+			$exclude_all = ! empty( $_POST['lf_page_menu_exclude_all'] );
+
+			if ( $exclude ) {
+				update_post_meta( $post_id, '_lf_page_menu_exclude', '1' );
+			} else {
+				delete_post_meta( $post_id, '_lf_page_menu_exclude' );
+			}
+
+			// Propagate to TRID siblings when "Apply to all language versions" is checked.
+			if ( $exclude_all && ! $propagating ) {
+				$propagating  = true;
+				$translations = $trid_group->get_translations( $post_id );
+				foreach ( $translations as $sibling_id ) {
+					$sibling_id = (int) $sibling_id;
+					if ( $sibling_id === $post_id ) continue;
+					if ( $exclude ) {
+						update_post_meta( $sibling_id, '_lf_page_menu_exclude', '1' );
+					} else {
+						delete_post_meta( $sibling_id, '_lf_page_menu_exclude' );
+					}
+				}
+				$propagating = false;
+			}
+		}
+
 		// Search index
 		$this->router->search_index->build_search_content( $post_id );
 	}

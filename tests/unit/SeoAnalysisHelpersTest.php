@@ -183,20 +183,43 @@ final class SeoAnalysisHelpersTest extends TestCase {
 		$this->assertSame( 'fail', $result['status'] );
 	}
 
-	public function test_rate_title_short_is_warn(): void {
+	public function test_rate_title_very_short_is_warn(): void {
+		// ≤ 10 chars → warn regardless of word count.
 		$result = SeoAnalysisPanel::rate_title( 'Hi', 2 );
 		$this->assertSame( 'warn', $result['status'] );
 	}
 
+	public function test_rate_title_ten_chars_or_fewer_is_warn(): void {
+		// Exactly 10 chars, two words — still warn (boundary: must be > 10).
+		$result = SeoAnalysisPanel::rate_title( 'About Us!!', 10 );
+		$this->assertSame( 'warn', $result['status'] );
+	}
+
+	public function test_rate_title_single_word_over_ten_chars_is_warn(): void {
+		// > 10 chars but only one word → warn.
+		$title  = 'Confidentiality'; // 15 chars, 1 word
+		$result = SeoAnalysisPanel::rate_title( $title, mb_strlen( $title ) );
+		$this->assertSame( 'warn', $result['status'] );
+	}
+
+	public function test_rate_title_multiword_over_ten_chars_is_ok(): void {
+		// Real-world multilingual title: > 10 chars, 3 words → ok.
+		$title  = 'Política de Privacitat'; // 22 chars, 3 words
+		$result = SeoAnalysisPanel::rate_title( $title, mb_strlen( $title ) );
+		$this->assertSame( 'ok', $result['status'] );
+	}
+
 	public function test_rate_title_optimal_length_is_ok(): void {
-		$title  = str_repeat( 'a', 55 );
-		$result = SeoAnalysisPanel::rate_title( $title, 55 );
+		// > 10 chars, two words → ok.
+		$title  = 'How to bake sourdough bread at home';
+		$result = SeoAnalysisPanel::rate_title( $title, mb_strlen( $title ) );
 		$this->assertSame( 'ok', $result['status'] );
 	}
 
 	public function test_rate_title_long_is_warn(): void {
-		$title  = str_repeat( 'a', 70 );
-		$result = SeoAnalysisPanel::rate_title( $title, 70 );
+		// Over max (default 60) → warn, even with multiple words.
+		$title  = 'This title is intentionally far too long for any search engine results page display';
+		$result = SeoAnalysisPanel::rate_title( $title, mb_strlen( $title ) );
 		$this->assertSame( 'warn', $result['status'] );
 	}
 

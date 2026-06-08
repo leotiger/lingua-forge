@@ -75,12 +75,28 @@ class MetaBoxes {
 		// can't rebind a post's language via a save_post side effect.
 		wp_nonce_field( 'lf_language_save', 'lf_language_nonce' );
 
-		$cur = $this->router->trid_group->get_lang( $post->ID );
+		$cur     = $this->router->trid_group->get_lang( $post->ID );
+		$exclude = (bool) get_post_meta( $post->ID, '_lf_page_menu_exclude', true );
+
 		echo '<select name="lf_lang" class="lf-lr-lang" id="lf_lr_lang">';
 		foreach ( $this->router->context->languages() as $l ) {
 			echo '<option value="' . esc_attr( $l ) . '" ' . selected( $cur, $l, false ) . '>' . esc_html( strtoupper( $l ) ) . '</option>';
 		}
 		echo '</select>';
+
+		echo '<p style="margin-top:10px">';
+		echo '<label>';
+		echo '<input type="checkbox" name="lf_page_menu_exclude" value="1"' . checked( $exclude, true, false ) . ' />';
+		echo ' ' . esc_html__( 'Exclude from navigation menus', 'lingua-forge' );
+		echo '</label>';
+		echo '</p>';
+		echo '<p style="margin-top:4px">';
+		echo '<label>';
+		// "Apply to all" is a one-shot action — never pre-checked.
+		echo '<input type="checkbox" name="lf_page_menu_exclude_all" value="1" />';
+		echo ' ' . esc_html__( 'Apply to all language versions', 'lingua-forge' );
+		echo '</label>';
+		echo '</p>';
 	}
 
 	// =========================================================

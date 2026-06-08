@@ -27,12 +27,12 @@ test.describe( 'Settings page', () => {
         expect( jsErrors ).toHaveLength( 0 );
     } );
 
-    test( 'has all nine tabs', async ( { page } ) => {
+    test( 'has all ten tabs', async ( { page } ) => {
         await page.goto( SETTINGS_URL );
 
         const expectedTabs = [
             'General', 'API Keys', 'Limits', 'Behavior',
-            'Router', 'Glossary', 'AI Usage', 'Maintenance', 'SEO',
+            'Router', 'Glossary', 'AI Usage', 'Maintenance', 'SEO', 'System',
         ];
 
         for ( const label of expectedTabs ) {

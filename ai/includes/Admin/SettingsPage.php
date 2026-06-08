@@ -21,6 +21,8 @@ use LinguaForge\AI\Admin\Settings\Tabs\GlossaryTab;
 use LinguaForge\AI\Admin\Settings\Tabs\LimitsTab;
 use LinguaForge\AI\Admin\Settings\Tabs\MaintenanceTab;
 use LinguaForge\AI\Admin\Settings\Tabs\RouterTab;
+use LinguaForge\AI\Admin\Settings\Tabs\SystemTab;
+use LinguaForge\AI\Admin\Settings\Panels\SystemPanel;
 use LinguaForge\AI\Admin\Settings\Tabs\SeoTab;
 use LinguaForge\AI\Core\KeyStore;
 use LinguaForge\AI\Core\Config;
@@ -145,7 +147,8 @@ class SettingsPage {
         // SEO Analysis AJAX
         add_action('wp_ajax_linguaforge_seo_analyze',    [SeoAnalysisPanel::class, 'ajax_analyze']);
         add_action('wp_ajax_linguaforge_seo_get_posts',  [SeoAnalysisPanel::class, 'ajax_get_posts']);
-        add_action('wp_ajax_linguaforge_seo_ai_analyze', [SeoAnalysisPanel::class, 'ajax_ai_analyze']);
+        add_action('wp_ajax_linguaforge_seo_ai_analyze',    [SeoAnalysisPanel::class, 'ajax_ai_analyze']);
+        add_action('wp_ajax_linguaforge_seo_batch_analyze', [SeoAnalysisPanel::class, 'ajax_batch_analyze']);
 
         // AI Usage & Cache tab — Translation Caching toggle saves
         add_action('admin_post_linguaforge_save_api_cache_enabled', [CacheStatsPanel::class, 'handle_save_api_cache_enabled']);
@@ -158,6 +161,9 @@ class SettingsPage {
         add_action('wp_ajax_linguaforge_get_available_languages',  [RouterTab::class, 'ajax_get_available_languages']);
         add_action('wp_ajax_linguaforge_install_language',         [RouterTab::class, 'ajax_install_language']);
         RouterTab::register_fse_hooks();
+
+        // System tab — _lf_lang repair AJAX
+        SystemPanel::register_hooks();
 
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
@@ -358,11 +364,18 @@ class SettingsPage {
                 'type'          => __( 'Type',             'lingua-forge' ),
                 'modified'      => __( 'Modified',         'lingua-forge' ),
                 'profile'             => __( 'Profile',          'lingua-forge' ),
-                'analysePlaceholder'  => __( 'Analyse…',         'lingua-forge' ),
+                'analysePlaceholder'  => __( 'Analyse…',         'lingua-forge' ), // legacy; kept for compat
+                'autoDetect'          => __( '— Auto-detect —',  'lingua-forge' ),
                 'edit'                => __( 'edit',             'lingua-forge' ),
                 'noPostsFound'  => __( 'No published posts found for the selected filters.', 'lingua-forge' ),
                 'usedSource'    => __( 'No translation found — analyzed the source language version.', 'lingua-forge' ),
                 'requestFailed' => __( 'Analysis request failed. Please try again.', 'lingua-forge' ),
+                'justNow'            => __( 'Just now',                                   'lingua-forge' ),
+                'score'              => __( 'Score',                                     'lingua-forge' ),
+                'sourceTitle'        => __( 'Source title',                              'lingua-forge' ),
+                'parityHeading'      => __( 'Multilingual SEO overview',                 'lingua-forge' ),
+                'parityHint'         => __( 'Scores are a signal, not a verdict. Some content is structurally limited — very short pages, landing pages with little body text, or pages whose purpose is navigation rather than information may score lower by nature. Use this overview to spot genuine parity gaps across languages, not to chase a number.', 'lingua-forge' ),
+                'wcSystemPageNotice' => __( 'This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content is managed by WooCommerce — the score reflects structural signals only, not user-editable SEO content.', 'lingua-forge' ),
             ],
         ] );
 
@@ -623,6 +636,7 @@ class SettingsPage {
                 <a href="#seo"         class="nav-tab"                data-lf-tab="seo"><?php         esc_html_e('SEO',         'lingua-forge'); ?></a>
                 <a href="#ai-usage"    class="nav-tab"                data-lf-tab="ai-usage"><?php    esc_html_e('AI Usage',    'lingua-forge'); ?></a>
                 <a href="#maintenance" class="nav-tab"                data-lf-tab="maintenance"><?php esc_html_e('Maintenance', 'lingua-forge'); ?></a>
+                <a href="#system"      class="nav-tab"                data-lf-tab="system"><?php      esc_html_e('System',      'lingua-forge'); ?></a>
             </h2>
 
             <form
@@ -657,7 +671,9 @@ class SettingsPage {
                 <?php BehaviorTab::render_content(); ?>
                 </div><!-- /lingua-forge-tab-panel: behavior -->
 
-                <?php submit_button( __( 'Save Settings', 'lingua-forge' ) ); ?>
+                <div class="lf-settings-submit">
+                    <?php submit_button( __( 'Save Settings', 'lingua-forge' ) ); ?>
+                </div>
 
             </form>
 
@@ -685,6 +701,11 @@ class SettingsPage {
             <div class="lingua-forge-tab-panel" data-lf-panel="maintenance">
             <?php MaintenanceTab::render_content(); ?>
             </div><!-- /lingua-forge-tab-panel: maintenance -->
+
+            <!-- ───── Tab: System ───── -->
+            <div class="lingua-forge-tab-panel" data-lf-panel="system">
+            <?php SystemTab::render_content(); ?>
+            </div><!-- /lingua-forge-tab-panel: system -->
 
         </div>
 

@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.2.4 — stable, open for testing.**
+> **Version 2.2.5 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -113,7 +113,7 @@ Lingua Forge provides a complete multilingual SEO layer. No additional SEO plugi
 
 **Social Share** — extends the WordPress Core Social Icons block. Set any icon's link URL to `share:facebook`, `share:x`, `share:linkedin`, `share:whatsapp`, `share:telegram`, `share:email`, `share:reddit`, `share:pinterest`, `share:mastodon`, `share:copy`, `share:native`, or `share:auto`; Lingua Forge rewrites it at render time. The JS actions (`share:copy`, `share:native`, `share:auto`) use the Clipboard API and Web Share API with clipboard fallback, and show a toast notification on success.
 
-**SEO Content Analysis** — browse your content by language and post type from **Settings → SEO → Analysis**, click Analyze on any item, and get a rule-based 0–100 SEO score covering title length, meta description quality (uses AI-generated meta description when available), word count, heading structure, image alt coverage, and internal link profile. The block editor Document sidebar shows the current post's score and a "Run AI Analysis" button that opens a modal with natural-language recommendations, title suggestions, and meta description improvements.
+**SEO Content Analysis** — rule-based 0–100 score covering title length, meta description quality (uses AI-generated meta description when available), word count, heading structure, image alt coverage, and internal link profile. Three entry points: (1) **Single-post** — click Analyze on any item in **Settings → SEO → Analysis** to get an instant score for that post. (2) **Block editor sidebar** — the Document panel shows the current post's score and a "Run AI Analysis" button that opens a modal with natural-language recommendations, title suggestions, and meta description improvements. (3) **Batch / Multilingual parity** — a card grid in **Settings → SEO → Analysis** (one card per active language) lets you analyze an entire language in one pass and view the results as a **Multilingual SEO overview**: per-language tabs showing every post with its score, a direct edit link, the source-language title for cross-language parity comparison, post type, and profile. WooCommerce system pages are automatically excluded from batch scoring. A hint below the heading explains that low scores often reflect structural limits rather than improvable content.
 
 **WooCommerce product SEO** *(requires WooCommerce)* — adds `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, and their `product:` namespace equivalents on product pages. Product schema includes translated name, description, `inLanguage`, and a correctly resolved `offers` object (price and availability from the source-language product via MetaDelegate).
 
@@ -369,7 +369,7 @@ lingua-forge/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
         PostListColumn.php           ← "Translate missing" button in the Posts/Pages list
-        SettingsPage.php             ← Settings → Lingua Forge (9-tab layout, delegates to Tabs/)
+        SettingsPage.php             ← Settings → Lingua Forge (10-tab layout, delegates to Tabs/)
         Settings/Tabs/
           Tab.php                    ← Abstract base class for all tab classes
           GeneralTab.php             ← Provider + model selection
@@ -381,6 +381,7 @@ lingua-forge/
           SeoTab.php                 ← SEO (inner tabs: Hreflang, Open Graph, Social Share, WooCommerce, Schema.org, Sitemap, Analysis, Compatibility)
           AiUsageTab.php             ← Read-only token usage log
           MaintenanceTab.php         ← Cache, debug, language overrides, TM tools
+          SystemTab.php              ← Diagnostic environment panel (read-only)
         Settings/Tabs/Sections/
           TemplatesSection.php       ← FSE template scaffold/translate/fix UI
           TemplatePartsSection.php   ← Template part scaffold/translate/fix UI
@@ -393,8 +394,9 @@ lingua-forge/
           WooCommerceSeoPanel.php    ← WC product OG/schema toggle + tag reference
           SchemaPanel.php            ← Schema.org per-type toggles + plugin deference status
           SitemapPanel.php           ← Sitemap URL + cache + ping buttons + robots.txt panel
-          SeoAnalysisPanel.php       ← Rule-based content audit + AI analysis; AJAX handlers
+          SeoAnalysisPanel.php       ← Rule-based content audit + AI analysis + batch/parity; AJAX handlers
           CompatibilityPanel.php     ← Live SEO plugin detection + per-feature behaviour table
+          SystemPanel.php            ← Environment info, permalink check, repair tools, debug copy
       FseLocalisation/
         TemplateDefinitions.php      ← CPT-slot template list (dynamic per active CPTs)
         PartDiscovery.php            ← Template-part registry queries
@@ -1072,8 +1074,13 @@ from within the editor of post objects and WooCommerce products. For most websit
 
 ---
 
-**Current release — 2.2.4**
+**Current release — 2.2.5**
 
+- **Multilingual SEO overview** *(2.2.5)* — Batch analysis results are now presented as a per-language tabbed parity view. Every analyzed post appears in its language's tab with a colour-coded score, a direct edit link, the source-language title for cross-language comparison, post type, and SEO profile. WooCommerce system pages (Shop, Cart, Checkout, My Account, Terms) are excluded from batch scoring. A parity hint below the heading explains that a low score reflects structural limits and is a signal rather than a mandate.
+- **Batch Analysis card grid** *(2.2.5)* — New section in Settings → SEO → Analysis with one card per active language. Shows post count, last run time, average score, and ok/warn/fail distribution. "Analyse all languages" runs sequentially in fast mode.
+- **Settings → System tab** *(2.2.5)* — Diagnostic tab with environment info, permalink compatibility check, active SEO plugin detection, WooCommerce page translation coverage, `_lf_lang` repair tool, rewrite-rule dump, and a one-click debug copy button.
+- **SEO score history badge** *(2.2.5)* — Colour-coded `SEO N` badge with ↑/↓ delta in the Lang column after analysis runs.
+- **Navigation page-list exclusion flag** *(2.2.5)* — `_lf_page_menu_exclude` meta hides a page from every language's `core/page-list` navigation, with checkboxes in the Language meta box and Quick Edit.
 - **WooCommerce checkout completeness** *(2.2.4)* — My Account sub-endpoint URLs (e.g. `/es/mi-cuenta/orders/`) no longer 404. Terms & Conditions and Privacy Policy links on checkout now resolve to the translated page. Brands and custom product taxonomy archives (`product_brand` + filterable via `lf_wc_product_archive_taxonomies`) now route correctly under a language prefix instead of silently falling back to the source-language archive. WooCommerce Product structured data no longer duplicated when no third-party SEO plugin is active — `SeoSupport` injects `inLanguage` via `woocommerce_structured_data_product` and `SchemaManager` skips the redundant `WebPage` block on product singulars.
 - **Secondary CPT query scoping** *(2.2.4)* — Sidebar widgets, `get_posts()` calls in templates, and Latest Posts / Latest Events core blocks now receive a `_lf_lang` constraint and return only content from the active language. ID-only lookups (`fields=ids`) are correctly skipped so `WcPageBridge` and similar infrastructure helpers are unaffected.
 - **Site Title block href localised** *(2.2.4)* — The `core/site-title` block's wrapping link now resolves to the language-appropriate home URL via the same `lang_home_url()` helper already used by the Site Logo block.

@@ -41,7 +41,12 @@ outside the plugin namespace.
     (fires in `TridGroup::set_trid()` only when the TRID UUID changes;
     receives `int $post_id`, `string $new_trid`, `string $old_trid`),
     `linguaforge_switcher_output` (filter on the fully-rendered language-
-    switcher HTML; receives `string $html`, `array $langs`, `array $atts`).
+    switcher HTML; receives `string $html`, `array $langs`, `array $atts`),
+    `linguaforge_page_menu_excluded_page_ids` (filter on the array of page
+    IDs that are hidden from every language's `core/page-list` navigation;
+    receives `int[] $ids`; seeded from `_lf_page_menu_exclude` post meta.
+    Has no effect on classic nav menus — those render from stored
+    `nav_menu_item` posts, not from `get_pages()`).
   - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
     translation payload before it is written to the result cache; receives
     `array $payload`, `int $post_id`, `string $target_lang`),
@@ -71,6 +76,13 @@ outside the plugin namespace.
 - **Transient name prefixes.** Examples:
   `linguaforge_rate_user_{id}_{endpoint}`,
   `linguaforge_quota_daily_used_{Ymd}`.
+- **SEO batch run options.** `linguaforge_seo_batch_last_{lang}` (e.g.
+  `linguaforge_seo_batch_last_de`) — written by `ajax_batch_analyze()`
+  after each successful batch run; stores a JSON object with
+  `{total, analyzed, skipped, avg_score, ok, warn, fail, partial, ts}`.
+  Read by the batch-card JS to display last-run statistics without
+  re-running the analysis. Not autoloaded (`false`); one option per
+  active language.
 
 When you add a new option or hook, default to `linguaforge_` unless the
 identifier ships in form-field land (where `lf_` is more idiomatic).
@@ -86,15 +98,24 @@ a short name is meaningfully more readable.
   - **Language Router meta keys** (public data contract — readable by other
     plugins and themes): `_lf_lang`, `_lf_trid`, `_lf_lang_previous`,
     `_lf_source_updated_at`, `_lf_translation_source_updated_at`,
-    `_lf_search_content`. These are stable public API; preserve the exact key
-    names. *(Renamed from unprefixed `_lang`, `_trid`, etc. in DB version 1.1;
+    `_lf_search_content`, `_lf_page_menu_exclude` (boolean flag — value `'1'`
+    or absent — that hides a page from every language's `core/page-list`
+    navigation; set via the Language meta box or Quick Edit. **Scope:**
+    affects only `core/page-list` blocks inside `core/navigation`. Classic
+    nav menus (`wp_nav_menu`) render from stored `nav_menu_item` posts and
+    are unaffected). These are stable
+    public API; preserve the exact key names. *(Renamed from unprefixed `_lang`, `_trid`, etc. in DB version 1.1;
     `Db\Migrator::rename_meta_keys()` handles in-place migration on upgrade.)*
   - **Plugin-owned AI module keys** (prefixed, not part of external API):
     `_linguaforge_meta_description` (Meta Description module — stores the
     per-post translated meta description; read by the CLI
     `--with-meta-description` flag), `_linguaforge_preset` (per-page AI
     behavior preset override set in the editor metabox; read by
-    `Config::active_preset()`).
+    `Config::active_preset()`), `_lf_seo_score_history` (SEO Analysis —
+    stores the two most recent rule-based scores as a JSON array,
+    newest-first; used by the Lang column score badge to show a Δ delta.
+    Written by `SeoAnalysisPanel::save_score_history()`; read by
+    `SeoAnalysisPanel::get_score_history()`; max 2 entries).
   - **Internal routing key:** `_lf_auto_template` (tracks which FSE
     template was auto-assigned by the Language Router so it can be
     retracted if the language setting changes; not in the uninstall list
@@ -345,7 +366,7 @@ ai/                           AI features (translation, meta-description, excerp
   ai.php                      Sub-module bootstrap
   includes/                   PSR-4 class files under LinguaForge\AI\…
     Admin/                    Admin UI: MetaBox, AdminToolbar, PostListColumn, SettingsPage
-    Admin/Settings/Tabs/      One class per settings tab (Tab base + 9 concrete tabs)
+    Admin/Settings/Tabs/      One class per settings tab (Tab base + 10 concrete tabs)
                               SeoTab.php — SEO tab orchestrator (inner tabs: Hreflang, Open Graph,
                               Social Share, WooCommerce, Schema.org, Sitemap, Analysis, Compatibility)
     Admin/Settings/Tabs/Sections/
@@ -355,7 +376,7 @@ ai/                           AI features (translation, meta-description, excerp
     Admin/Settings/Panels/    Per-panel classes for the SEO tab and other multi-panel tabs:
                               HreflangPanel, OpenGraphPanel, SocialSharePanel,
                               WooCommerceSeoPanel, SchemaPanel, SitemapPanel,
-                              SeoAnalysisPanel, CompatibilityPanel
+                              SeoAnalysisPanel, CompatibilityPanel, SystemPanel
     Admin/FseLocalisation/    FSE localisation layer — pure-static classes, no instance state:
                               TemplateDefinitions (CPT-slot template list),
                               PartDiscovery (template-part registry queries),
@@ -387,10 +408,10 @@ meta-description/             Meta Description module — LinguaForge\MetaDescri
 Architectural review and audit notes live **outside** the public
 plugin tree — in a maintainer-only `lingua-forge-audit/` sibling
 folder (not tracked in this repo). The current snapshot is
-`AUDIT-2026-06-04.md`; older documents (`AUDIT-2026-06-01.md`, `AUDIT-2026-05-29.md`,
-`AUDIT-2026-05-23.md`, `REVIEW.md`, `AUDIT-2026-05-19.md`) are kept as historical record only. Contributors don't
-need to read them to ship a correct change — the conventions they
-codify all live in this file.
+`AUDIT-2026-06-06.md`; older documents (`AUDIT-2026-06-04.md`, `AUDIT-2026-06-01.md`,
+`AUDIT-2026-05-29.md`, `AUDIT-2026-05-23.md`, `REVIEW.md`, `AUDIT-2026-05-19.md`) are
+kept as historical record only. Contributors don't need to read them to ship a correct
+change — the conventions they codify all live in this file.
 
 ---
 
@@ -425,11 +446,11 @@ codify all live in this file.
 
 ## Settings page layout
 
-The Settings page (`Settings → Lingua Forge`) uses a nine-tab layout
+The Settings page (`Settings → Lingua Forge`) uses a ten-tab layout
 (General / API Keys / Limits / Behavior / Router / Glossary / SEO /
-AI Usage / Maintenance). The first four tabs (General, API Keys, Limits,
-Behavior) live inside a single `<form>` so one Save Settings click
-persists every value. The remaining five tabs are outside that form —
+AI Usage / Maintenance / System). The first four tabs (General, API Keys,
+Limits, Behavior) live inside a single `<form>` so one Save Settings
+click persists every value. The remaining six tabs are outside that form —
 each uses its own dedicated admin-post actions.
 
 When adding a new setting, decide which tab it belongs in:
@@ -456,9 +477,20 @@ When adding a new setting, decide which tab it belongs in:
   action (`linguaforge_save_seo_hreflang`, `linguaforge_save_seo_og`,
   `linguaforge_save_seo_social_share`, `linguaforge_save_seo_wc`,
   `linguaforge_save_seo_schema`, `linguaforge_save_seo_sitemap`). The
-  Analysis panel also registers two AJAX actions:
-  `wp_ajax_linguaforge_seo_analyze` (rule-based) and
-  `wp_ajax_linguaforge_seo_ai_analyze` (AI-powered). The Sitemap panel
+  Analysis panel also registers three AJAX actions:
+  `wp_ajax_linguaforge_seo_analyze` (single-post rule-based),
+  `wp_ajax_linguaforge_seo_ai_analyze` (single-post AI-powered), and
+  `wp_ajax_linguaforge_seo_batch_analyze` (per-language batch run in fast
+  mode — skips `wp_remote_get`, excludes WooCommerce system pages, returns
+  a parity overview grouped by language). The batch UI uses the CSS class
+  namespaces `.lf-batch-card__*` (per-language result cards) and
+  `.lf-parity-tab-btn` / `.lf-parity-panel` / `.lf-parity-source-col`
+  (the Multilingual SEO overview tabbed view). The JS strings passed via
+  `wp_localize_script` for the SEO Analysis panel include:
+  `parityHeading`, `parityHint`, `sourceTitle`, `wcSystemPageNotice`,
+  `justNow`, `score`, `title`, `type`, `profile` (added/extended in
+  2.2.5; for the full list see `SettingsPage::localize_seo_analysis()`).
+  The Sitemap panel
   registers `linguaforge_flush_sitemap_cache`, `linguaforge_ping_sitemap`,
   and `linguaforge_update_robots_txt`.
 - **AI Usage** — usage log (requests, input/output tokens by feature,
@@ -471,6 +503,11 @@ When adding a new setting, decide which tab it belongs in:
 - **Maintenance** — operational forms (cache, debug files, language
   overrides, translation memory). Each entry has its own admin-post
   action.
+- **System** — read-only environment panel: PHP/WP/plugin version info,
+  permalink compatibility check, active SEO plugin detection, WooCommerce
+  page translation coverage table, `_lf_lang` repair tool, rewrite-rule
+  dump, and a debug-copy button. No admin-post actions; all output is
+  informational.
 
 Tab state is preserved across the save-redirect cycle via
 `sessionStorage`. Each tab is deep-linkable via URL hash (`#behavior`,
