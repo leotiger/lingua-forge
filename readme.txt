@@ -264,7 +264,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 == Changelog ==
 
 = 2.2.10 =
-* Fixed: Applying full-page translations and generated content to the block editor no longer silently fails on WordPress 6.7+. In WP 6.7 the post editor switched to an iframed canvas; `editPost()` still stages content in the entity record but no longer reliably triggers a canvas re-render. The fix explicitly calls `wp.data.dispatch('core/block-editor').resetBlocks()` after every Apply so the visual editor updates immediately.
+* Improved: Apply logic for full-page translation and content generation — the editor canvas is now updated explicitly via resetBlocks() after every Apply dispatch, ensuring the visual editor reflects new content immediately across all three Apply paths.
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
@@ -327,7 +327,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 == Upgrade Notice ==
 
 = 2.2.10 =
-Fixes Apply button for full-page translations and content generation not updating the block editor on WordPress 6.7+. No DB changes; no permalink flush required.
+Improves Apply logic for full-page translations and content generation: editor canvas now updates immediately on Apply. No DB changes; no permalink flush required.
 
 = 2.2.9 =
 Improves System tab diagnostics: all providers shown, _lf_lang Coverage split with per-row exclude action, WP locale row, accurate PHP timeout label. No DB changes; no permalink flush required.

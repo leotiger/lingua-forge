@@ -45,7 +45,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	$changelog =
 		'<h4>2.2.10 — 2026-06-10</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> Applying full-page translations and generated content to the block editor no longer silently fails on WordPress 6.7+. WP 6.7 switched the post editor to an iframed canvas; <code>editPost()</code> still stages the entity record but no longer triggers a canvas re-render. Fix: explicitly calls <code>resetBlocks()</code> after every Apply dispatch.</li>' .
+			'<li><strong>Improved:</strong> Apply logic for full-page translation and content generation — editor canvas is now updated explicitly via <code>resetBlocks()</code> after every Apply dispatch, ensuring the visual editor reflects new content immediately across all three Apply paths.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 
