@@ -2,6 +2,15 @@
 
 ---
 
+## [2.2.11] — 2026-06-10
+
+### Added
+- **Model catalog with autocomplete** — Settings → General → Models inputs now offer browser autocomplete suggestions populated from a curated `ModelCatalog` class covering Anthropic, OpenAI, and Gemini. Light and mid-tier Quality models are recommended for all translation and content-generation tasks; a collapsible reference table below the Models table lists every catalogued model with its tier and a one-line note. (`ai/includes/Core/ModelCatalog.php`, `GeneralTab.php`)
+- **Live model list on test connection** — the "Test connection" button in Settings → API Keys now also queries the provider's models endpoint after a successful ping (`/v1/models` for Anthropic and OpenAI, `/v1beta/models` for Gemini). The merged result (catalog + newly-released models) is cached as a 24-hour transient and returned in the AJAX response; `test-connection.js` updates the datalist for that provider immediately so new models appear as autocomplete suggestions without a page reload. (`ApiKeysTab.php`, `test-connection.js`)
+- **"General" and "API Keys" tabs merged into "AI Provider"** — provider selection, model overrides, API key management, and test-connection are now in one place. New `AiProviderTab` delegates to the existing tab classes; `GeneralTab` and `ApiKeysTab` are retained as implementation detail. (`AiProviderTab.php`, `SettingsPage.php`)
+
+---
+
 ## [2.2.10] — 2026-06-10
 
 ### Improved

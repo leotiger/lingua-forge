@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.10
+Stable tag: 2.2.11
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.11 =
+* Added: Model catalog — Settings → General → Models fields now suggest known model identifiers via browser autocomplete (datalist). Light-to-mid-tier models are recommended for translation and content generation; a collapsible reference table lists all catalogued models with tier and notes.
+* Added: Live model list on test connection — "Test connection" in the API Keys tab now also queries the provider's models endpoint (Anthropic /v1/models, OpenAI /v1/models, Gemini /v1beta/models) and refreshes the autocomplete suggestions with the current live list, including any newly-released models not yet in the catalog.
+* Changed: "General" and "API Keys" tabs merged into a single "AI Provider" tab — provider selection, model configuration, API keys, and test connection are now in one place.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.10 =
 * Improved: Apply logic for full-page translation and content generation — the editor canvas is now updated explicitly via resetBlocks() after every Apply dispatch, ensuring the visual editor reflects new content immediately across all three Apply paths.
 
@@ -325,6 +332,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.11 =
+Merges "General" and "API Keys" into a single "AI Provider" tab; adds model autocomplete and live model refresh on test connection. No DB changes; no permalink flush required.
 
 = 2.2.10 =
 Improves Apply logic for full-page translations and content generation: editor canvas now updates immediately on Apply. No DB changes; no permalink flush required.

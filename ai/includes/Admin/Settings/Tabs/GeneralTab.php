@@ -4,6 +4,7 @@ namespace LinguaForge\AI\Admin\Settings\Tabs;
 
 use LinguaForge\AI\Admin\SettingsPage;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\ModelCatalog;
 
 defined('ABSPATH') || exit;
 
@@ -34,12 +35,12 @@ class GeneralTab extends Tab {
 
         return [
             'light' => [
-                'label'   => __( 'Light',                               'lingua-forge' ),
-                'used_by' => __( 'Meta Description, Excerpt Generator', 'lingua-forge' ),
+                'label'   => __( 'Light',                                              'lingua-forge' ),
+                'used_by' => __( 'Meta Description, Excerpt Generator, quick translate', 'lingua-forge' ),
             ],
             'quality' => [
-                'label'   => __( 'Quality',                        'lingua-forge' ),
-                'used_by' => __( 'Translation, Content Generator', 'lingua-forge' ),
+                'label'   => __( 'Quality',                                                                        'lingua-forge' ),
+                'used_by' => __( 'Full-page Translation, Content Generator (mid-tier models are fully sufficient)', 'lingua-forge' ),
             ],
         ];
     }
@@ -108,6 +109,29 @@ class GeneralTab extends Tab {
             );
             ?>
         </p>
+        <p class="description">
+            <?php
+            esc_html_e(
+                'Start typing in any field to see model suggestions, or use the reference table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini Flash) are fully sufficient for translation and content generation — flagship "max" models add cost with minimal quality gain for structured text.',
+                'lingua-forge'
+            );
+            ?>
+        </p>
+
+        <?php
+        // ── Datalists: one per provider, shared by both tier inputs ──────────
+        // Populated from the static catalog; refreshed from the live API when
+        // a "Test connection" succeeds in the API Keys tab (test-connection.js).
+        foreach (SettingsPage::providers() as $provider_slug => $provider_label):
+            $models  = ModelCatalog::for_provider($provider_slug);
+            $list_id = 'lf-models-' . $provider_slug;
+        ?>
+        <datalist id="<?php echo esc_attr($list_id); ?>">
+            <?php foreach ($models as $model_id => $meta): ?>
+                <option value="<?php echo esc_attr($model_id); ?>"></option>
+            <?php endforeach; ?>
+        </datalist>
+        <?php endforeach; ?>
 
         <table class="form-table lingua-forge-models-table" role="presentation">
 
@@ -147,6 +171,7 @@ class GeneralTab extends Tab {
                         $stored_model  = (string) get_option($option_key, '');
                         $default_model = Config::default_model($slug, $tier_slug);
                         $input_id      = "linguaforge_model_{$slug}_{$tier_slug}";
+                        $datalist_id   = 'lf-models-' . $slug;
                         ?>
 
                         <td>
@@ -157,6 +182,7 @@ class GeneralTab extends Tab {
                                 class="regular-text lingua-forge-model-input"
                                 value="<?php echo esc_attr($stored_model); ?>"
                                 placeholder="<?php echo esc_attr($default_model); ?>"
+                                list="<?php echo esc_attr($datalist_id); ?>"
                                 spellcheck="false"
                                 autocomplete="off"
                             >
@@ -176,10 +202,53 @@ class GeneralTab extends Tab {
         </table>
 
         <p class="description">
-            <?php
-            esc_html_e('Tip: to reset a model to the built-in default, clear the field and save.', 'lingua-forge');
-            ?>
+            <?php esc_html_e('Tip: to reset a model to the built-in default, clear the field and save.', 'lingua-forge'); ?>
         </p>
+
+        <!-- ── Available models reference ───────────────────────── -->
+        <details class="lingua-forge-models-reference">
+            <summary><?php esc_html_e('Available models reference', 'lingua-forge'); ?></summary>
+
+            <?php foreach (ModelCatalog::all() as $provider_slug => $provider_models): ?>
+
+                <?php
+                $provider_labels = SettingsPage::providers();
+                $provider_label  = $provider_labels[$provider_slug] ?? $provider_slug;
+                ?>
+
+                <h4><?php echo esc_html($provider_label); ?></h4>
+                <table class="widefat striped lingua-forge-models-reference-table">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('Model ID', 'lingua-forge'); ?></th>
+                            <th><?php esc_html_e('Name', 'lingua-forge'); ?></th>
+                            <th><?php esc_html_e('Tier', 'lingua-forge'); ?></th>
+                            <th><?php esc_html_e('Notes', 'lingua-forge'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($provider_models as $model_id => $meta): ?>
+                        <tr>
+                            <td><code><?php echo esc_html($model_id); ?></code></td>
+                            <td><?php echo esc_html($meta['label']); ?></td>
+                            <td><?php echo esc_html($meta['tier']); ?></td>
+                            <td><?php echo esc_html($meta['note']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+            <?php endforeach; ?>
+
+            <p class="description">
+                <?php
+                esc_html_e(
+                    'This catalog is updated with each Lingua Forge release. Testing a connection in the API Keys tab also fetches the live model list from the provider and refreshes the suggestions above.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+        </details>
         <?php
     }
 }

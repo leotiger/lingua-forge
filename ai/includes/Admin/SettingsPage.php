@@ -14,9 +14,8 @@ use LinguaForge\AI\Admin\Settings\Panels\SeoAnalysisPanel;
 use LinguaForge\AI\Admin\Settings\Panels\SitemapPanel;
 use LinguaForge\AI\Admin\Settings\Panels\WooCommerceSeoPanel;
 use LinguaForge\AI\Admin\Settings\Tabs\AiUsageTab;
-use LinguaForge\AI\Admin\Settings\Tabs\ApiKeysTab;
+use LinguaForge\AI\Admin\Settings\Tabs\AiProviderTab;
 use LinguaForge\AI\Admin\Settings\Tabs\BehaviorTab;
-use LinguaForge\AI\Admin\Settings\Tabs\GeneralTab;
 use LinguaForge\AI\Admin\Settings\Tabs\GlossaryTab;
 use LinguaForge\AI\Admin\Settings\Tabs\LimitsTab;
 use LinguaForge\AI\Admin\Settings\Tabs\MaintenanceTab;
@@ -167,7 +166,7 @@ class SettingsPage {
 
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
-        add_action('wp_ajax_linguaforge_test_provider', [ApiKeysTab::class, 'ajax_test_provider']);
+        add_action('wp_ajax_linguaforge_test_provider', [AiProviderTab::class, 'ajax_test_provider']);
 
         // Contextual help tabs (WP_Screen::add_help_tab).
         SettingsHelp::init();
@@ -627,8 +626,7 @@ class SettingsPage {
 
             <!-- ── Tab navigation ──────────────────────────────────── -->
             <h2 class="nav-tab-wrapper lingua-forge-tabs" role="tablist">
-                <a href="#general"     class="nav-tab nav-tab-active" data-lf-tab="general"><?php     esc_html_e('General',     'lingua-forge'); ?></a>
-                <a href="#api-keys"    class="nav-tab"                data-lf-tab="api-keys"><?php    esc_html_e('API Keys',    'lingua-forge'); ?></a>
+                <a href="#ai-provider"  class="nav-tab nav-tab-active" data-lf-tab="ai-provider"><?php  esc_html_e('AI Provider', 'lingua-forge'); ?></a>
                 <a href="#limits"      class="nav-tab"                data-lf-tab="limits"><?php      esc_html_e('Limits',      'lingua-forge'); ?></a>
                 <a href="#behavior"    class="nav-tab"                data-lf-tab="behavior"><?php    esc_html_e('Behavior',    'lingua-forge'); ?></a>
                 <a href="#router"      class="nav-tab"                data-lf-tab="router"><?php      esc_html_e('Router',      'lingua-forge'); ?></a>
@@ -651,15 +649,10 @@ class SettingsPage {
 
                 <?php wp_nonce_field(self::NONCE_ACTION, self::NONCE_FIELD); ?>
 
-                <!-- ───── Tab: General ───── -->
-                <div class="lingua-forge-tab-panel is-active" data-lf-panel="general">
-                <?php GeneralTab::render_content(); ?>
-                </div><!-- /lingua-forge-tab-panel: general -->
-
-                <!-- ───── Tab: API Keys ───── -->
-                <div class="lingua-forge-tab-panel" data-lf-panel="api-keys">
-                <?php ApiKeysTab::render_content(); ?>
-                </div><!-- /lingua-forge-tab-panel: api-keys -->
+                <!-- ───── Tab: AI Provider ───── -->
+                <div class="lingua-forge-tab-panel is-active" data-lf-panel="ai-provider">
+                <?php AiProviderTab::render_content(); ?>
+                </div><!-- /lingua-forge-tab-panel: ai-provider -->
 
                 <!-- ───── Tab: Limits ───── -->
                 <div class="lingua-forge-tab-panel" data-lf-panel="limits">

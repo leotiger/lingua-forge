@@ -5,6 +5,7 @@ namespace LinguaForge\AI\Admin\Settings\Tabs;
 use LinguaForge\AI\Admin\SettingsPage;
 use LinguaForge\AI\Core\Config;
 use LinguaForge\AI\Core\KeyStore;
+use LinguaForge\AI\Core\ModelCatalog;
 use LinguaForge\AI\Providers\Anthropic;
 use LinguaForge\AI\Providers\Gemini;
 use LinguaForge\AI\Providers\OpenAI;
@@ -184,8 +185,9 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
      *   {
      *     success: bool,
      *     provider: 'anthropic'|'openai'|'gemini',
-     *     message?: string,  // present on failure
-     *     reply?:  string,   // present on success (truncated provider text)
+     *     message?: string,   // present on failure
+     *     reply?:  string,    // present on success (truncated provider text)
+     *     models?: string[],  // present on success — merged catalog + live IDs
      *   }
      */
     public static function ajax_test_provider(): void {
@@ -264,10 +266,22 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
             ]);
         }
 
+        // Fetch available models from the provider API and cache for 24 h.
+        // Non-fatal: an empty list simply means no live models were returned.
+        $api_key    = (string) KeyStore::get($provider_slug);
+        $live_ids   = ModelCatalog::fetch_from_api($provider_slug, $api_key);
+        $models     = ModelCatalog::merge_live($provider_slug, $live_ids);
+        set_transient(
+            'linguaforge_available_models_' . $provider_slug,
+            $models,
+            DAY_IN_SECONDS
+        );
+
         wp_send_json([
             'success'  => true,
             'provider' => $provider_slug,
             'reply'    => mb_substr((string) $reply, 0, 200),
+            'models'   => $models,
         ]);
     }
 }

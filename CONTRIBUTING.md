@@ -375,7 +375,7 @@ ai/                           AI features (translation, meta-description, excerp
   ai.php                      Sub-module bootstrap
   includes/                   PSR-4 class files under LinguaForge\AI\…
     Admin/                    Admin UI: MetaBox, AdminToolbar, PostListColumn, SettingsPage
-    Admin/Settings/Tabs/      One class per settings tab (Tab base + 10 concrete tabs)
+    Admin/Settings/Tabs/      One class per settings tab (Tab base + 9 concrete tabs)
                               SeoTab.php — SEO tab orchestrator (inner tabs: Hreflang, Open Graph,
                               Social Share, WooCommerce, Schema.org, Sitemap, Analysis, Compatibility)
     Admin/Settings/Tabs/Sections/
@@ -455,17 +455,18 @@ change — the conventions they codify all live in this file.
 
 ## Settings page layout
 
-The Settings page (`Settings → Lingua Forge`) uses a ten-tab layout
-(General / API Keys / Limits / Behavior / Router / Glossary / SEO /
-AI Usage / Maintenance / System). The first four tabs (General, API Keys,
+The Settings page (`Settings → Lingua Forge`) uses a nine-tab layout
+(AI Provider / Limits / Behavior / Router / Glossary / SEO /
+AI Usage / Maintenance / System). The first three tabs (AI Provider,
 Limits, Behavior) live inside a single `<form>` so one Save Settings
 click persists every value. The remaining six tabs are outside that form —
 each uses its own dedicated admin-post actions.
 
 When adding a new setting, decide which tab it belongs in:
 
-- **General** — provider, models. Things the admin configures once.
-- **API Keys** — API keys and the Test Connection AJAX flow.
+- **AI Provider** — provider selection, model overrides (formerly "General"),
+  API keys, and the Test Connection AJAX flow (formerly "API Keys").
+  Everything needed to configure an AI provider lives here.
 - **Limits** — quotas, rate limits, capability gate, per-feature token /
   character caps.
 - **Behavior** — toggles that change *how* the AI features act (block

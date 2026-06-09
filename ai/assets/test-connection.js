@@ -68,6 +68,21 @@
 				const ok = STRINGS.ok || '✓ Connection OK';
 				const reply = data.reply ? ' — “' + data.reply + '”' : '';
 				render(result, 'ok', ok + reply);
+
+				// Refresh the datalist for this provider with the live model list
+				// returned by the server (catalog + any newly-released models).
+				if (Array.isArray(data.models) && data.models.length) {
+					var datalist = document.getElementById('lf-models-' + provider);
+					if (datalist) {
+						datalist.innerHTML = '';
+						data.models.forEach(function (id) {
+							var opt = document.createElement('option');
+							opt.value = String(id);
+							datalist.appendChild(opt);
+						});
+					}
+				}
+
 				return;
 			}
 
