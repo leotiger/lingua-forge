@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.6
+Stable tag: 2.2.7
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.7 =
+* Fixed: Contact Form 7 forms and other third-party shortcodes broken on the frontend — `QueryFilter::handle_secondary_pre_get_posts()` was injecting a `_lf_lang` meta constraint into `get_posts()` calls made by plugins whose post types carry no `_lf_lang` meta (e.g. `wpcf7_contact_form` for non-numeric shortcode IDs), returning zero results. `wpcf7_contact_form` is now excluded automatically. Admins can exclude additional post types via Settings → Router → "Excluded post types".
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.6 =
 * Fixed: Block editor link control showing only source-language pages when inserting a link inside a non-source-language template part (e.g. `footer-it`). `QueryFilter::handle_secondary_pre_get_posts()` was injecting `_lf_lang = LF_LANG` on REST API search queries; since REST URLs carry no language prefix, `LF_LANG` resolved to the source language and silently excluded all other-language pages from search results. Fix: `handle_secondary_pre_get_posts()` now early-returns for all REST requests. REST endpoints that need explicit language scoping use the registered `lf_lang` query param.
 
@@ -298,6 +303,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.7 =
+Fixes CF7 forms and other third-party shortcodes broken on the frontend. No DB changes; no permalink flush required.
 
 = 2.2.6 =
 Fixes block editor link control returning only source-language pages when inserting links inside non-source-language template parts. No DB changes; no permalink flush required.

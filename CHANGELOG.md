@@ -2,6 +2,14 @@
 
 ---
 
+## [2.2.7] — 2026-06-09
+
+### Fixed
+
+- **Contact Form 7 forms (and similar third-party shortcodes) broken on the frontend** — CF7 resolves non-numeric shortcode IDs (e.g. `id='b657a7a'`) via `get_posts()` against `post_type=wpcf7_contact_form`. `QueryFilter::handle_secondary_pre_get_posts()` was injecting `_lf_lang = LF_LANG` on that query; CF7 form posts carry no `_lf_lang` meta, so the query returned zero results and the form rendered empty. `wpcf7_contact_form` is now excluded from secondary-query language filtering automatically. Admins can exclude additional post types via Settings → Router → **Excluded post types** (comma/newline-separated slugs); the list is stored in `linguaforge_secondary_query_excluded_types` and applied unconditionally for all visitors.
+
+---
+
 ## [2.2.6] — 2026-06-09
 
 ### Fixed

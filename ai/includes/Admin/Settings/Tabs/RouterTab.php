@@ -211,6 +211,40 @@ class RouterTab extends Tab {
                 </tr>
             </table>
 
+            <!-- ── Query Filter Exclusions ──────────────────────────────────── -->
+            <h2><?php esc_html_e( 'Query Filter Exclusions', 'lingua-forge' ); ?></h2>
+
+            <p>
+                <?php esc_html_e( 'Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template blocks, plugin lookups) to the active language by injecting a _lf_lang meta constraint. Post types listed here are excluded from that constraint — their queries are always unfiltered.', 'lingua-forge' ); ?>
+            </p>
+            <p>
+                <?php
+                esc_html_e( 'Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated.', 'lingua-forge' );
+                ?>
+            </p>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <label for="linguaforge_secondary_query_excluded_types">
+                            <?php esc_html_e( 'Excluded post types', 'lingua-forge' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <textarea
+                            id="linguaforge_secondary_query_excluded_types"
+                            name="linguaforge_secondary_query_excluded_types"
+                            rows="4"
+                            class="large-text code"
+                            placeholder="e.g. acf-field-group, nf_sub"
+                        ><?php echo esc_textarea( (string) get_option( 'linguaforge_secondary_query_excluded_types', '' ) ); ?></textarea>
+                        <p class="description">
+                            <?php esc_html_e( 'Post type slugs separated by commas or newlines. Changes take effect immediately on save — no permalink flush required.', 'lingua-forge' ); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
             <?php submit_button( __( 'Save Router Settings', 'lingua-forge' ), 'secondary' ); ?>
         </form>
 
@@ -379,6 +413,14 @@ class RouterTab extends Tab {
         }
 
         update_option( 'lf_browser_redirect', ! empty( $_POST['lf_browser_redirect'] ), false );
+
+        // Comma/newline-separated list of post type slugs to exclude from the
+        // secondary-query language filter. Each slug is sanitized to [a-z0-9_-]
+        // via sanitize_key(); empty strings and duplicates are stripped.
+        $raw_excluded = wp_unslash( $_POST['linguaforge_secondary_query_excluded_types'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_key() applied to each token below.
+        $tokens       = preg_split( '/[\s,]+/', (string) $raw_excluded, -1, PREG_SPLIT_NO_EMPTY );
+        $sanitized    = array_values( array_unique( array_filter( array_map( 'sanitize_key', (array) $tokens ) ) ) );
+        update_option( 'linguaforge_secondary_query_excluded_types', implode( ',', $sanitized ), false );
 
         wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . SettingsPage::PAGE_SLUG . '&lf_router_saved=1#router' );
         exit;

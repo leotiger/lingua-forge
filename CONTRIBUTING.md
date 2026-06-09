@@ -30,7 +30,10 @@ outside the plugin namespace.
 
 - **`wp_options` keys.** Examples: `linguaforge_provider`,
   `linguaforge_ai_daily_quota`, `linguaforge_compliance_temperature`,
-  `linguaforge_block_editor_allow_lock_blocks`.
+  `linguaforge_block_editor_allow_lock_blocks`,
+  `linguaforge_secondary_query_excluded_types` (comma-separated list of
+  post type slugs excluded from secondary-query language filtering; managed
+  via Settings → Router → "Excluded post types").
 - **`admin_post_*` and `wp_ajax_*` action names.** Examples:
   `admin_post_linguaforge_clear_ai_cache`,
   `wp_ajax_linguaforge_test_provider`.
@@ -46,7 +49,13 @@ outside the plugin namespace.
     IDs that are hidden from every language's `core/page-list` navigation;
     receives `int[] $ids`; seeded from `_lf_page_menu_exclude` post meta.
     Has no effect on classic nav menus — those render from stored
-    `nav_menu_item` posts, not from `get_pages()`).
+    `nav_menu_item` posts, not from `get_pages()`),
+    `linguaforge_secondary_query_excluded_post_types` (filter on the array
+    of post type slugs that are excluded from the secondary-query `_lf_lang`
+    meta constraint injected by `QueryFilter::handle_secondary_pre_get_posts()`;
+    `wpcf7_contact_form` is built-in; additional types can be added via
+    Settings → Router → "Excluded post types" or by hooking this filter
+    directly; receives `string[] $types`).
   - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
     translation payload before it is written to the result cache; receives
     `array $payload`, `int $post_id`, `string $target_lang`),
@@ -709,8 +718,8 @@ and requires Docker + wp-env with WooCommerce active:
 ```bash
 cd dev/
 npm run env:start               # boots wp-env (only needed if stopped)
-composer test:integration:wc    # WC-only suite (~121 test cases)
-composer test:integration       # full suite including WC tests (~221 non-WC + ~121 WC)
+composer test:integration:wc    # WC-only suite (~138 test cases)
+composer test:integration       # full suite including WC tests (~226 non-WC + ~138 WC)
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes

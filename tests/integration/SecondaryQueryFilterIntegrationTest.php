@@ -34,6 +34,9 @@
  *  12. wp_navigation → no clause injected (system type; prevents WP_Navigation_Fallback cascade).
  *  13. nav_menu_item → no clause injected (system type; classic menu queries must be unfiltered).
  *  14. page post_type + pending_page_list_lang set → no clause (filter_page_list_frontend handles it).
+ *  15. wpcf7_contact_form → no clause (built-in exclusion; no manual filter required).
+ *  16. linguaforge_secondary_query_excluded_types option → listed types excluded; unlisted types still filtered.
+ *  17. builtin_excluded_post_types() — always contains wpcf7_contact_form; merges option; deduplicates.
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -63,6 +66,7 @@ final class SecondaryQueryFilterIntegrationTest extends WP_UnitTestCase {
 
 	protected function tearDown(): void {
 		remove_all_filters( 'linguaforge_secondary_query_excluded_post_types' );
+		delete_option( 'linguaforge_secondary_query_excluded_types' );
 		parent::tearDown();
 	}
 
@@ -374,6 +378,129 @@ final class SecondaryQueryFilterIntegrationTest extends WP_UnitTestCase {
 
 		$meta_query = $q->get( 'meta_query', [] );
 		$this->assertEmpty( $meta_query, "'nav_menu_item' queries must not receive a secondary _lf_lang injection." );
+	}
+
+	// =========================================================================
+	// 15. wpcf7_contact_form → skip (built-in exclusion, no manual filter needed)
+	// =========================================================================
+
+	/**
+	 * wpcf7_contact_form is hard-coded in builtin_excluded_post_types() and must
+	 * never receive a _lf_lang meta constraint.  No manual filter registration
+	 * is required — the method is wired into the hook by register_hooks().
+	 *
+	 * Root cause this covers: CF7 resolves non-numeric shortcode IDs
+	 * (e.g. id='b657a7a') via get_posts() against wpcf7_contact_form.
+	 * CF7 form posts carry no _lf_lang meta, so injecting the constraint
+	 * returned zero results and silently broke form rendering.
+	 */
+	public function test_wpcf7_contact_form_is_excluded_automatically(): void {
+		$q = $this->secondary_query( [ 'post_type' => 'wpcf7_contact_form' ] );
+		$this->filter()->handle_secondary_pre_get_posts( $q );
+
+		$meta_query = $q->get( 'meta_query', [] );
+		$this->assertEmpty(
+			$meta_query,
+			"'wpcf7_contact_form' must be excluded from secondary-query language filtering automatically."
+		);
+	}
+
+	// =========================================================================
+	// 16. Option-saved post types are excluded
+	// =========================================================================
+
+	/**
+	 * Post type slugs stored in linguaforge_secondary_query_excluded_types
+	 * (Settings → Router → Excluded post types) must be excluded from the
+	 * secondary-query language filter without any manual filter hook.
+	 */
+	public function test_option_saved_post_types_are_excluded(): void {
+		update_option( 'linguaforge_secondary_query_excluded_types', 'acf_field_group,nf_sub', false );
+
+		foreach ( [ 'acf_field_group', 'nf_sub' ] as $type ) {
+			$q = $this->secondary_query( [ 'post_type' => $type ] );
+			$this->filter()->handle_secondary_pre_get_posts( $q );
+
+			$meta_query = $q->get( 'meta_query', [] );
+			$this->assertEmpty(
+				$meta_query,
+				"Post type '{$type}' saved in linguaforge_secondary_query_excluded_types must be excluded from secondary-query filtering."
+			);
+		}
+	}
+
+	/**
+	 * A post type NOT in the option must still receive the constraint —
+	 * the option excludes only what is listed.
+	 */
+	public function test_post_type_not_in_option_still_receives_lang_clause(): void {
+		if ( ! defined( 'LF_LANG' ) ) {
+			$this->markTestSkipped( 'LF_LANG not defined.' );
+		}
+
+		update_option( 'linguaforge_secondary_query_excluded_types', 'acf_field_group', false );
+
+		$q = $this->secondary_query( [ 'post_type' => 'lf_event' ] );
+		$this->filter()->handle_secondary_pre_get_posts( $q );
+
+		$meta_query = $q->get( 'meta_query', [] );
+		$lf_clauses = array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		);
+
+		$this->assertNotEmpty(
+			$lf_clauses,
+			"'lf_event' must still receive the _lf_lang clause when only 'acf_field_group' is in the exclusion option."
+		);
+	}
+
+	// =========================================================================
+	// 17. builtin_excluded_post_types() method — direct unit-style coverage
+	// =========================================================================
+
+	/**
+	 * With no option set the method always returns at least wpcf7_contact_form.
+	 */
+	public function test_builtin_excluded_post_types_always_contains_wpcf7(): void {
+		$result = $this->filter()->builtin_excluded_post_types( [] );
+
+		$this->assertContains(
+			'wpcf7_contact_form',
+			$result,
+			'builtin_excluded_post_types() must always include wpcf7_contact_form.'
+		);
+	}
+
+	/**
+	 * Types from the option are merged into the returned array.
+	 */
+	public function test_builtin_excluded_post_types_merges_option_values(): void {
+		update_option( 'linguaforge_secondary_query_excluded_types', 'acf_field_group,nf_sub', false );
+
+		$result = $this->filter()->builtin_excluded_post_types( [] );
+
+		$this->assertContains( 'wpcf7_contact_form', $result );
+		$this->assertContains( 'acf_field_group',    $result );
+		$this->assertContains( 'nf_sub',             $result );
+	}
+
+	/**
+	 * Values already in the incoming $types array are not duplicated,
+	 * including wpcf7_contact_form if a caller already added it.
+	 */
+	public function test_builtin_excluded_post_types_deduplicates(): void {
+		update_option( 'linguaforge_secondary_query_excluded_types', 'wpcf7_contact_form,acf_field_group', false );
+
+		$result = $this->filter()->builtin_excluded_post_types( [ 'wpcf7_contact_form' ] );
+
+		$this->assertSame(
+			count( $result ),
+			count( array_unique( $result ) ),
+			'builtin_excluded_post_types() must not contain duplicate slugs.'
+		);
+		$this->assertContains( 'wpcf7_contact_form', $result );
+		$this->assertContains( 'acf_field_group',    $result );
 	}
 
 	// =========================================================================

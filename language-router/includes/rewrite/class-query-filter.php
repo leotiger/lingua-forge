@@ -48,6 +48,10 @@ class QueryFilter {
 		add_action( 'rest_api_init',                 [ $this, 'register_rest_nav_lang_meta' ] );
 		add_filter( 'rest_page_collection_params',   [ $this, 'register_lf_lang_rest_param' ] );
 		add_filter( 'rest_page_query',               [ $this, 'filter_pages_by_lf_lang_rest' ], 10, 2 );
+
+		// Populate the secondary-query exclusion list with built-in known types
+		// (e.g. wpcf7_contact_form) and any post types added via Settings → Router.
+		add_filter( 'linguaforge_secondary_query_excluded_post_types', [ $this, 'builtin_excluded_post_types' ] );
 	}
 
 	// =========================================================
@@ -340,6 +344,25 @@ class QueryFilter {
 		];
 
 		$q->set( 'meta_query', $meta_query );
+	}
+
+	/**
+	 * Populates the `linguaforge_secondary_query_excluded_post_types` filter with
+	 * built-in known types and any types added via Settings → Router.
+	 *
+	 * wpcf7_contact_form is always included: CF7 resolves non-numeric shortcode IDs
+	 * via get_posts() against that post type, and CF7 form posts carry no _lf_lang
+	 * meta, so injecting the meta constraint returns zero results and silently
+	 * breaks form rendering on any page.
+	 *
+	 * @param  array<string> $types  Types already excluded by other callbacks.
+	 * @return array<string>
+	 */
+	public function builtin_excluded_post_types( array $types ): array {
+		$builtin    = [ 'wpcf7_contact_form' ];
+		$saved      = (string) get_option( 'linguaforge_secondary_query_excluded_types', '' );
+		$user_types = array_filter( array_map( 'sanitize_key', explode( ',', $saved ) ) );
+		return array_values( array_unique( array_merge( $types, $builtin, $user_types ) ) );
 	}
 
 	// =========================================================
