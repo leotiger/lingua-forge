@@ -226,14 +226,31 @@ async function performApplyFromModal(modal) {
 
             await data.dispatch('core/editor').editPost(payload);
 
+            // WP 6.7+ canvas sync: editPost() updates the entity record but
+            // the block editor canvas no longer automatically re-renders from
+            // entity record changes.  Parsing and resetting blocks explicitly
+            // ensures the visual editor reflects the new content immediately.
+            // This is non-fatal — editPost() already staged content for save.
+            let blocksReset = false;
+            try {
+                if ( typeof wp !== 'undefined' && wp.blocks?.parse ) {
+                    data.dispatch( 'core/block-editor' ).resetBlocks( wp.blocks.parse( translatedContent ) );
+                    blocksReset = true;
+                }
+            } catch ( _ ) {
+                // Non-fatal.
+            }
+
             // Verify the dispatch actually took effect — Gutenberg sometimes
             // accepts the call but discards content if a block parse error
             // happens upstream. Idempotent re-apply also counts as "applied".
+            // If resetBlocks succeeded, the canvas is correct and save will
+            // serialize the blocks even if the entity record check fails.
             const afterContent   = editorSelect.getEditedPostAttribute('content') ?? '';
             const contentChanged = afterContent !== beforeContent;
             const contentMatches = afterContent.trim() === translatedContent.trim();
 
-            if (!contentChanged && !contentMatches) {
+            if (!contentChanged && !contentMatches && !blocksReset) {
                 throw new Error( __( 'The editor did not accept the content — please try again.', 'lingua-forge' ) );
             }
 

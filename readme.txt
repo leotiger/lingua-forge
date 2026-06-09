@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.9
+Stable tag: 2.2.10
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.10 =
+* Fixed: Applying full-page translations and generated content to the block editor no longer silently fails on WordPress 6.7+. In WP 6.7 the post editor switched to an iframed canvas; `editPost()` still stages content in the entity record but no longer reliably triggers a canvas re-render. The fix explicitly calls `wp.data.dispatch('core/block-editor').resetBlocks()` after every Apply so the visual editor updates immediately.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.9 =
 * Improved: System tab → AI Configuration now lists all configured providers (Anthropic, OpenAI, Gemini) with individual key status; the active provider is marked with an "(active)" badge.
 * Improved: System tab → _lf_lang Coverage now separates routable post types (need attention) from routing-excluded post types (shown muted, informational only). The Repair action carries a danger warning and skips excluded post types.
@@ -320,6 +325,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.10 =
+Fixes Apply button for full-page translations and content generation not updating the block editor on WordPress 6.7+. No DB changes; no permalink flush required.
 
 = 2.2.9 =
 Improves System tab diagnostics: all providers shown, _lf_lang Coverage split with per-row exclude action, WP locale row, accurate PHP timeout label. No DB changes; no permalink flush required.

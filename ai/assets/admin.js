@@ -1204,6 +1204,14 @@ function showTranslationDiffInOverlay(overlay, data, params) {
                 if (ctx.transExcerpt)  payload.excerpt = ctx.transExcerpt;
                 if (ctx.footnotesJson) payload.meta    = { footnotes: ctx.footnotesJson };
                 await store.dispatch('core/editor').editPost(payload);
+                // WP 6.7+ canvas sync — see admin-diff-modal.js for details.
+                try {
+                    if ( typeof wp !== 'undefined' && wp.blocks?.parse ) {
+                        store.dispatch( 'core/block-editor' ).resetBlocks( wp.blocks.parse( ctx.transContent ) );
+                    }
+                } catch ( _ ) {
+                    // Non-fatal.
+                }
             } else {
                 applyToClassicEditor({
                     translatedContent: ctx.transContent,

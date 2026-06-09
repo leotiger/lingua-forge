@@ -35,21 +35,17 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.9';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.9/lingua-forge-2.2.9.zip';
-	$last_updated = '2026-06-09';
+	$version      = '2.2.10';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.10/lingua-forge-2.2.10.zip';
+	$last_updated = '2026-06-10';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.9 — 2026-06-09</h4>' .
+		'<h4>2.2.10 — 2026-06-10</h4>' .
 		'<ul>' .
-			'<li><strong>Improved:</strong> System tab → AI Configuration now lists all configured providers with individual key status and active badge.</li>' .
-			'<li><strong>Improved:</strong> System tab → _lf_lang Coverage separates routable from routing-excluded post types; Repair skips excluded types and shows a danger warning.</li>' .
-			'<li><strong>Added:</strong> Per-row "Exclude from routing" button in _lf_lang Coverage — adds post type to Router exclusion list without leaving the System tab.</li>' .
-			'<li><strong>Improved:</strong> System tab → Environment now shows WP instance language (locale) separately from Primary content language.</li>' .
-			'<li><strong>Fixed:</strong> PHP max_execution_time = 0 was misleadingly shown as "Unlimited"; now correctly labelled "No PHP limit (server/FPM timeout still applies)".</li>' .
+			'<li><strong>Fixed:</strong> Applying full-page translations and generated content to the block editor no longer silently fails on WordPress 6.7+. WP 6.7 switched the post editor to an iframed canvas; <code>editPost()</code> still stages the entity record but no longer triggers a canvas re-render. Fix: explicitly calls <code>resetBlocks()</code> after every Apply dispatch.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

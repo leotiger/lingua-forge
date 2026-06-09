@@ -220,6 +220,16 @@ function applyContentGenToEditor(modal) {
 
     if (data) {
         data.dispatch('core/editor').editPost({ content: output });
+        // WP 6.7+ canvas sync: editPost() updates the entity record but may
+        // not trigger a visual re-render of the block editor canvas.
+        // resetBlocks() ensures the canvas reflects the new content immediately.
+        try {
+            if ( typeof wp !== 'undefined' && wp.blocks?.parse ) {
+                data.dispatch( 'core/block-editor' ).resetBlocks( wp.blocks.parse( output ) );
+            }
+        } catch ( _ ) {
+            // Non-fatal — editPost() already staged the content for save.
+        }
     } else {
         const el = document.querySelector('#content');
         if (el) el.value = output;

@@ -2,6 +2,13 @@
 
 ---
 
+## [2.2.10] — 2026-06-10
+
+### Fixed
+- **Apply button broken on WP 6.7+** — applying full-page translations and AI-generated content to the block editor no longer silently fails. WordPress 6.7 switched the post editor to an iframed canvas; `dispatch('core/editor').editPost({ content })` correctly stages the entity record but no longer triggers a canvas re-render. Fixed by explicitly calling `dispatch('core/block-editor').resetBlocks(wp.blocks.parse(content))` after every Apply dispatch, covering all three Apply paths: the translation diff modal, the content-gen modal, and the inline overlay. (`admin-diff-modal.js`, `admin-content-gen-modal.js`, `admin.js`)
+
+---
+
 ## [2.2.9] — 2026-06-09
 
 ### Improved
