@@ -2,6 +2,23 @@
 
 ---
 
+## [2.2.8] — 2026-06-09
+
+### Improved
+
+- **SEO heading analysis accepts H3 as valid subheading structure** — when no H2 is found but H3 headings are present (e.g. from Accordion or Details blocks, which default to H3), the heading metric now scores as `ok` instead of `warn`. The message notes the H3 count explicitly.
+- **SEO heading analysis: short content exempt from subheading warning** — pages with 3 paragraphs or fewer are never penalised for missing H2/H3 structure. Short content does not benefit from forced heading hierarchy; the metric scores `ok` and the message states the paragraph count.
+
+### Fixed
+
+- **SEO title length threshold** — the minimum-length check was `> 10` characters (strictly greater than); corrected to `≥ 10` (at least 10). A 10-character title now scores as passing.
+
+### Added
+
+- **WP Admin contextual help tab: SEO Scores** — new "SEO Scores" entry in the Settings → Lingua Forge help panel. Covers: score computation (ok/warn/fail point mapping, 10-point reading-time base, colour thresholds), all three content profiles with exact metric weights and thresholds, heading structure rules (H3 acceptance, short-content exemption, H2-as-H1 option), and score history badges.
+
+---
+
 ## [2.2.7] — 2026-06-09
 
 ### Fixed

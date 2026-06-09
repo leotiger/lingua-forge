@@ -875,6 +875,8 @@ class SeoAnalysisPanel {
 		// unreachable (local dev, staging with HTTP auth, etc.).
 		// $fast skips the HTTP request for batch mode where per-post fetches would
 		// be prohibitively slow.
+		$paragraph_count = self::count_paragraphs( $raw_html );
+
 		$permalink = get_permalink( $post->ID );
 		$headings  = ( ! $fast && $permalink ? self::extract_headings_from_url( $permalink ) : null )
 			?? self::extract_headings( $raw_html );
@@ -892,7 +894,7 @@ class SeoAnalysisPanel {
 				),
 				'status'  => 'info',
 			],
-			'headings'         => self::rate_headings( $headings, $profile['h2_required'], $h2_as_h1 ),
+			'headings'         => self::rate_headings( $headings, $profile['h2_required'], $h2_as_h1, $paragraph_count ),
 			'images'           => self::rate_images( $images ),
 			'links'            => self::rate_links( $links, $profile['links_required'] ),
 		];
@@ -925,17 +927,17 @@ class SeoAnalysisPanel {
 				/* translators: %1$d: character count, %2$d: SERP limit */
 				'message' => sprintf( __( 'Title is %1$d chars — may be truncated in SERPs (aim for under %2$d).', 'lingua-forge' ), $len, $max ) ];
 		}
-		if ( $len <= 10 ) {
+		if ( $len < 10 ) {
 			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
 				/* translators: %d: character count */
-				'message' => sprintf( __( 'Title is only %d chars — aim for more than 10 characters.', 'lingua-forge' ), $len ) ];
+				'message' => sprintf( __( 'Title is only %d chars — aim for at least 10 characters.', 'lingua-forge' ), $len ) ];
 		}
 		if ( $words < 2 ) {
 			return [ 'value' => $title, 'length' => $len, 'status' => 'warn',
 				/* translators: %d: character count */
 				'message' => sprintf( __( 'Single-word title (%d chars) — adding a second word improves clarity and keyword coverage.', 'lingua-forge' ), $len ) ];
 		}
-		// > 10 chars, 2+ words, within SERP limit → ok
+		// ≥ 10 chars, 2+ words, within SERP limit → ok
 		return [ 'value' => $title, 'length' => $len, 'status' => 'ok',
 			/* translators: %1$d: character count, %2$d: word count */
 			'message' => sprintf( __( '%1$d chars, %2$d words — good title.', 'lingua-forge' ), $len, $words ) ];
@@ -1004,17 +1006,22 @@ class SeoAnalysisPanel {
 	}
 
 	/**
-	 * @param  bool $h2_required  Whether missing H2 is a warn (true) or info (false).
-	 * @param  bool $h2_as_h1     When true and the rendered page has no H1 but has at
-	 *                            least one H2, promote the first H2 to H1. This covers
-	 *                            themes that output the post title inside <h2> rather
-	 *                            than <h1>. Because we now fetch the rendered page,
-	 *                            both the theme title tag and in-content headings are
-	 *                            visible, so the H2 from the title will actually be
-	 *                            present when this promotion is needed.
+	 * @param  bool $h2_required      Whether missing H2 is a warn (true) or info (false).
+	 * @param  bool $h2_as_h1         When true and the rendered page has no H1 but has at
+	 *                                least one H2, promote the first H2 to H1. This covers
+	 *                                themes that output the post title inside <h2> rather
+	 *                                than <h1>. Because we now fetch the rendered page,
+	 *                                both the theme title tag and in-content headings are
+	 *                                visible, so the H2 from the title will actually be
+	 *                                present when this promotion is needed.
+	 * @param  int  $paragraph_count  Number of <p> tags in the content. When between 1
+	 *                                and 3 (inclusive) the missing-subheading warning is
+	 *                                suppressed — short content does not benefit from
+	 *                                forced H2/H3 structure. Pass 0 (default) to skip
+	 *                                the threshold check (backward-compatible).
 	 * @return array<string, mixed>
 	 */
-	public static function rate_headings( array $headings, bool $h2_required = true, bool $h2_as_h1 = false ): array {
+	public static function rate_headings( array $headings, bool $h2_required = true, bool $h2_as_h1 = false, int $paragraph_count = 0 ): array {
 
 		$h1 = $headings['h1'] ?? 0;
 		$h2 = $headings['h2'] ?? 0;
@@ -1047,10 +1054,31 @@ class SeoAnalysisPanel {
 			/* translators: %d: number of H1 tags found */
 			$message = sprintf( __( '%d H1 tags found — a page should have exactly one H1.', 'lingua-forge' ), $h1 );
 		} elseif ( $h2 === 0 ) {
-			$status  = $h2_required ? 'warn' : 'ok';
-			$message = $h2_required
-				? __( '1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure.', 'lingua-forge' )
-				: __( '1 H1 ✓ — no H2 subheadings (acceptable for this content type).', 'lingua-forge' );
+			$h3 = $headings['h3'] ?? 0;
+			if ( $h3 > 0 ) {
+				// Accordion and Details blocks default to H3 for their headings.
+				// H3-based structure is valid when no H2 is present — treat as ok.
+				$status  = 'ok';
+				$message = sprintf(
+					/* translators: %d: number of H3 headings found */
+					__( '1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details headers). Structure is acceptable.', 'lingua-forge' ),
+					$h3
+				);
+			} else {
+				// Short content (≤ 3 paragraphs) does not benefit from forced heading
+				// structure — suppress the warning when we have an actual count.
+				$is_short = $paragraph_count > 0 && $paragraph_count <= 3;
+				if ( ! $h2_required || $is_short ) {
+					$status  = 'ok';
+					$message = $is_short && $h2_required
+						/* translators: %d: number of paragraphs in the content */
+						? sprintf( __( '1 H1 ✓ — short content (%d paragraph(s)), subheadings not required.', 'lingua-forge' ), $paragraph_count )
+						: __( '1 H1 ✓ — no H2 subheadings (acceptable for this content type).', 'lingua-forge' );
+				} else {
+					$status  = 'warn';
+					$message = __( '1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure.', 'lingua-forge' );
+				}
+			}
 		} else {
 			$status  = 'ok';
 			$message = sprintf(
@@ -1134,6 +1162,20 @@ class SeoAnalysisPanel {
 		$text = trim( $text );
 		if ( '' === $text ) return 0;
 		return count( preg_split( '/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY ) ?: [] );
+	}
+
+	/**
+	 * Count <p> tags in block-rendered HTML.
+	 *
+	 * Used by rate_headings() to decide whether missing subheadings should
+	 * trigger a warning: short content (≤ 3 paragraphs) does not need H2/H3
+	 * structure; longer content does.
+	 *
+	 * @param  string $html  Block-rendered post HTML (do_blocks output).
+	 * @return int
+	 */
+	public static function count_paragraphs( string $html ): int {
+		return (int) preg_match_all( '/<p[\s>]/i', $html );
 	}
 
 	/**

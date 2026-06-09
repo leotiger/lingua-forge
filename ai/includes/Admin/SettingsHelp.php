@@ -127,6 +127,37 @@ class SettingsHelp {
 					'<p>' . esc_html__( 'The SEO → Compatibility tab shows the live detection status and explains exactly what LF is doing for each feature area.', 'lingua-forge' ) . '</p>',
 			],
 			[
+				'id'      => 'lf-help-seo-scores',
+				'title'   => __( 'SEO Scores', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'SEO Score System', 'lingua-forge' ) . '</h3>' .
+
+					'<h4>' . esc_html__( 'Score computation', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Each post is scored 0–100 from six rule-based metrics: title, meta description, word count, heading structure, image alt coverage, and internal links. Ten points are always awarded for reading time (informational only). The remaining 90 points are distributed across the other metrics with weights that vary by content profile (see below).', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Each metric yields one of four statuses: ok (full weight), warn (50 % of weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 amber, below 50 red.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Title scoring rules (all profiles): fail if empty; warn if fewer than 10 characters; warn if only one word; warn if longer than the profile\'s SERP limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 characters, at least 2 words, and within the SERP limit.', 'lingua-forge' ) . '</p>' .
+
+					'<h4>' . esc_html__( 'Content profiles and weights', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Profiles adapt thresholds and weights to the type of content being analysed. Profile is resolved automatically; you can override it per analysis run from the profile dropdown.', 'lingua-forge' ) . '</p>' .
+					'<ul>' .
+					'<li><strong>' . esc_html__( 'Blog / Editorial (default)', 'lingua-forge' ) . '</strong> — ' .
+						esc_html__( 'Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts · Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 chars; word count warns below 300, fails below 100; H2 required; internal links required.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Product / eCommerce', 'lingua-forge' ) . '</strong> — ' .
+						esc_html__( 'Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and internal links optional.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Landing / Short-form', 'lingua-forge' ) . '</strong> — ' .
+						esc_html__( 'Auto-detected for the static front page; can be selected manually. Title 20 pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images 15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, fails below 60; H2 and internal links optional.', 'lingua-forge' ) . '</li>' .
+					'</ul>' .
+
+					'<h4>' . esc_html__( 'Heading structure rules', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Exactly one H1 is required. The H1 is normally the post title rendered by the theme — it is read from the live rendered page when possible, and from post content as a fallback.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'When the Blog profile requires an H2 and none is found, the analyser first checks for H3 subheadings before issuing a warning. Accordion and Details blocks default to H3 for their headers; those H3s are accepted as valid structure and produce an ok result, not a warning.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Short content (3 paragraphs or fewer) is never penalised for missing subheadings, regardless of profile. A concise page does not benefit from forced heading structure.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( '"Treat H2 as H1 equivalent" (Settings → SEO → Analysis): enable this when your theme renders the post title inside an H2 instead of an H1. The analyser promotes the first H2 to H1 so the score is not incorrectly penalised.', 'lingua-forge' ) . '</p>' .
+
+					'<h4>' . esc_html__( 'Score history and badges', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Every time a post is analysed the score is stored in post meta. The post list Lang column shows a colour-coded "SEO N" badge for any post that has been analysed at least once. When two scores are stored a delta indicator (↑N / ↓N) shows the change since the previous run.', 'lingua-forge' ) . '</p>',
+			],
+			[
 				'id'      => 'lf-help-maintenance',
 				'title'   => __( 'Maintenance', 'lingua-forge' ),
 				'content' =>

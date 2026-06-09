@@ -184,19 +184,25 @@ final class SeoAnalysisHelpersTest extends TestCase {
 	}
 
 	public function test_rate_title_very_short_is_warn(): void {
-		// ≤ 10 chars → warn regardless of word count.
+		// < 10 chars → warn regardless of word count.
 		$result = SeoAnalysisPanel::rate_title( 'Hi', 2 );
 		$this->assertSame( 'warn', $result['status'] );
 	}
 
-	public function test_rate_title_ten_chars_or_fewer_is_warn(): void {
-		// Exactly 10 chars, two words — still warn (boundary: must be > 10).
+	public function test_rate_title_exactly_ten_chars_is_ok(): void {
+		// Exactly 10 chars, two words — ok (boundary: must be >= 10).
 		$result = SeoAnalysisPanel::rate_title( 'About Us!!', 10 );
+		$this->assertSame( 'ok', $result['status'] );
+	}
+
+	public function test_rate_title_nine_chars_is_warn(): void {
+		// 9 chars (< 10) — warn regardless of word count.
+		$result = SeoAnalysisPanel::rate_title( 'About Us!', 9 );
 		$this->assertSame( 'warn', $result['status'] );
 	}
 
 	public function test_rate_title_single_word_over_ten_chars_is_warn(): void {
-		// > 10 chars but only one word → warn.
+		// >= 10 chars but only one word → warn.
 		$title  = 'Confidentiality'; // 15 chars, 1 word
 		$result = SeoAnalysisPanel::rate_title( $title, mb_strlen( $title ) );
 		$this->assertSame( 'warn', $result['status'] );

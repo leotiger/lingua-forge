@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,14 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.8 =
+* Improved: SEO heading analysis now accepts H3 subheadings (e.g. from Accordion / Details blocks) as valid structure when no H2 is present — no longer warns unnecessarily on pages that use H3-based heading patterns.
+* Improved: SEO heading analysis no longer penalises short content (3 paragraphs or fewer) for missing subheadings. A concise page does not benefit from forced heading structure.
+* Fixed: SEO title length threshold corrected from strictly greater than 10 to at least 10 characters (≥ 10). A 10-character title is now scored as passing.
+* Added: WP Admin contextual help tab "SEO Scores" — explains content profiles and their weights, score computation (ok/warn/fail → points), heading rules (H3 acceptance, short-content exemption, H2-as-H1 option), and score history badges.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.7 =
 * Fixed: Contact Form 7 forms and other third-party shortcodes broken on the frontend — `QueryFilter::handle_secondary_pre_get_posts()` was injecting a `_lf_lang` meta constraint into `get_posts()` calls made by plugins whose post types carry no `_lf_lang` meta (e.g. `wpcf7_contact_form` for non-numeric shortcode IDs), returning zero results. `wpcf7_contact_form` is now excluded automatically. Admins can exclude additional post types via Settings → Router → "Excluded post types".
 
@@ -303,6 +311,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.8 =
+Improves SEO heading and title scoring; adds SEO Scores help tab. No DB changes; no permalink flush required.
 
 = 2.2.7 =
 Fixes CF7 forms and other third-party shortcodes broken on the frontend. No DB changes; no permalink flush required.
