@@ -35,20 +35,21 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.8';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.8/lingua-forge-2.2.8.zip';
+	$version      = '2.2.9';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.9/lingua-forge-2.2.9.zip';
 	$last_updated = '2026-06-09';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.8 — 2026-06-09</h4>' .
+		'<h4>2.2.9 — 2026-06-09</h4>' .
 		'<ul>' .
-			'<li><strong>Improved:</strong> SEO heading analysis now accepts H3 subheadings (e.g. Accordion / Details blocks) as valid structure when no H2 is present.</li>' .
-			'<li><strong>Improved:</strong> SEO heading analysis no longer penalises short content (≤ 3 paragraphs) for missing subheadings.</li>' .
-			'<li><strong>Fixed:</strong> SEO title length threshold corrected from &gt; 10 to ≥ 10 characters.</li>' .
-			'<li><strong>Added:</strong> WP Admin contextual help tab "SEO Scores" — profiles, score computation, heading rules, and score history badges.</li>' .
+			'<li><strong>Improved:</strong> System tab → AI Configuration now lists all configured providers with individual key status and active badge.</li>' .
+			'<li><strong>Improved:</strong> System tab → _lf_lang Coverage separates routable from routing-excluded post types; Repair skips excluded types and shows a danger warning.</li>' .
+			'<li><strong>Added:</strong> Per-row "Exclude from routing" button in _lf_lang Coverage — adds post type to Router exclusion list without leaving the System tab.</li>' .
+			'<li><strong>Improved:</strong> System tab → Environment now shows WP instance language (locale) separately from Primary content language.</li>' .
+			'<li><strong>Fixed:</strong> PHP max_execution_time = 0 was misleadingly shown as "Unlimited"; now correctly labelled "No PHP limit (server/FPM timeout still applies)".</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

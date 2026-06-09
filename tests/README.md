@@ -77,7 +77,9 @@ tests/
     ├── PluginBootTest.php                         ← constants + autoloader + class load
     ├── RedirectorSwitcherTest.php                 ← allow_lang_subdomains(), fix_site_logo_link(), translate_menu_items()
     ├── SecondaryQueryFilterIntegrationTest.php    ← secondary query _lf_lang injection + fields=ids skip (21 tests)
+    ├── SecondaryQueryFilterIntegrationTest.php    ← secondary query _lf_lang injection + fields=ids skip (21 tests)
     ├── SeoAnalysisPanelIntegrationTest.php        ← AJAX handler stack: nonce, capability, score output (5 tests)
+    ├── SystemPanelIntegrationTest.php             ← ajax_exclude_post_type + ajax_repair_lf_lang: option writes, exclusions, permission gates (10 tests)
     ├── SyncIntegrationTest.php                    ← handle_save_post(): new post gets _lf_lang + _lf_trid; lang preserved; wp_navigation
     ├── TranslationIntegrationTest.php             ← Translation::run() via StubProvider: cache hit, JSON-envelope, TM path, etc.
     ├── TranslationMemoryTest.php                  ← stats() shape, bytes_estimate, idempotent store(), clear_all()
@@ -100,7 +102,7 @@ tests/
 ```
 
 Latest counts (test methods; PHPUnit-reported run count is higher due to data-provider expansion):
-**678 unit**, **226 non-WC integration**, **138 WC integration** — **1042 total test methods**.
+**678 unit**, **236 non-WC integration**, **138 WC integration** — **1052 total test methods**.
 PHPUnit reports ~372 integration tests (vs. 353 methods) because several methods use data providers.
 E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.

@@ -719,7 +719,7 @@ and requires Docker + wp-env with WooCommerce active:
 cd dev/
 npm run env:start               # boots wp-env (only needed if stopped)
 composer test:integration:wc    # WC-only suite (~138 test cases)
-composer test:integration       # full suite including WC tests (~226 non-WC + ~138 WC = ~364; ~678 unit = ~1042 total)
+composer test:integration       # full suite including WC tests (~236 non-WC + ~138 WC = ~374; ~678 unit = ~1052 total)
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes

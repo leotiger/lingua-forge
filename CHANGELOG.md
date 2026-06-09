@@ -2,6 +2,21 @@
 
 ---
 
+## [2.2.9] — 2026-06-09
+
+### Improved
+- System tab → AI Configuration now lists all configured providers (Anthropic, OpenAI, Gemini) with individual key status; active provider marked with an "(active)" badge.
+- System tab → _lf_lang Coverage separates routable post types (need attention) from routing-excluded post types (shown muted). Repair action carries a danger warning and skips excluded types.
+- System tab → Environment now shows "WP instance language" (WordPress locale) as a distinct row above "Primary content language".
+
+### Added
+- Per-row "Exclude from routing" button in _lf_lang Coverage — adds the post type to the Router exclusion option without leaving the System tab. Reversible via Settings → Router → Query Filter Exclusions.
+
+### Fixed
+- System tab → PHP `max_execution_time = 0` was misleadingly labelled "Unlimited"; now shown as "No PHP limit (server/FPM timeout still applies)".
+
+---
+
 ## [2.2.8] — 2026-06-09
 
 ### Improved

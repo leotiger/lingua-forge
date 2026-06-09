@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.8
+Stable tag: 2.2.9
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,15 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.9 =
+* Improved: System tab → AI Configuration now lists all configured providers (Anthropic, OpenAI, Gemini) with individual key status; the active provider is marked with an "(active)" badge.
+* Improved: System tab → _lf_lang Coverage now separates routable post types (need attention) from routing-excluded post types (shown muted, informational only). The Repair action carries a danger warning and skips excluded post types.
+* Added: Per-row "Exclude from routing" button in _lf_lang Coverage — adds the post type to the Router exclusion list without leaving the System tab.
+* Improved: System tab → Environment now shows "WP instance language" (WordPress locale, e.g. ca_ES) separately from "Primary content language".
+* Fixed: PHP max_execution_time = 0 was labelled "Unlimited" in the System tab; now correctly shown as "No PHP limit (server/FPM timeout still applies)".
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.8 =
 * Improved: SEO heading analysis now accepts H3 subheadings (e.g. from Accordion / Details blocks) as valid structure when no H2 is present — no longer warns unnecessarily on pages that use H3-based heading patterns.
 * Improved: SEO heading analysis no longer penalises short content (3 paragraphs or fewer) for missing subheadings. A concise page does not benefit from forced heading structure.
@@ -311,6 +320,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.9 =
+Improves System tab diagnostics: all providers shown, _lf_lang Coverage split with per-row exclude action, WP locale row, accurate PHP timeout label. No DB changes; no permalink flush required.
 
 = 2.2.8 =
 Improves SEO heading and title scoring; adds SEO Scores help tab. No DB changes; no permalink flush required.
