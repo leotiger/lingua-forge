@@ -35,24 +35,17 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.5';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.5/lingua-forge-2.2.5.zip';
-	$last_updated = '2026-06-08';
+	$version      = '2.2.6';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.6/lingua-forge-2.2.6.zip';
+	$last_updated = '2026-06-09';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.5 — 2026-06-08</h4>' .
+		'<h4>2.2.6 — 2026-06-09</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Batch Analysis card grid in Settings &rarr; SEO &rarr; Analysis — one card per active language with post count, last run time, average score, and ok/warn/fail distribution. &ldquo;Analyse all languages&rdquo; runs sequentially in fast mode.</li>' .
-			'<li><strong>Added:</strong> Multilingual SEO overview — batch results rendered as per-language tabs. Every analyzed post shows its score, a direct edit link, the source-language title for parity comparison, post type, and profile. WooCommerce system pages excluded from scoring.</li>' .
-			'<li><strong>Added:</strong> Settings &rarr; System tab — environment info, permalink compatibility check, SEO plugin detection, WooCommerce page translation coverage, _lf_lang repair tool, rewrite-rule dump, and debug copy button.</li>' .
-			'<li><strong>Added:</strong> SEO score history badge (colour-coded, with &uarr;/&darr; delta) in the Lang column after analysis runs.</li>' .
-			'<li><strong>Added:</strong> _lf_page_menu_exclude meta flag to hide pages from every language&rsquo;s core/page-list navigation (Language meta box + Quick Edit).</li>' .
-			'<li><strong>Fixed:</strong> Template scaffold action buttons absent after creating an FSE template or part without a page reload.</li>' .
-			'<li><strong>Fixed:</strong> Navigation filter returning empty menus on WooCommerce product pages (language-neutral URLs).</li>' .
-			'<li><strong>Fixed:</strong> Home link and logo/site-title href not localised on WooCommerce product pages. core/home-link block coverage added.</li>' .
+			'<li><strong>Fixed:</strong> Block editor link control returning only source-language pages when inserting links inside a non-source-language template part (e.g. footer-it). <code>handle_secondary_pre_get_posts()</code> was injecting <code>_lf_lang = LF_LANG</code> on REST search queries; since REST URLs carry no language prefix, <code>LF_LANG</code> resolved to the source language and silently excluded all other-language pages from results. The method now early-returns for all REST requests.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

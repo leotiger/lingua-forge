@@ -2,6 +2,14 @@
 
 ---
 
+## [2.2.6] — 2026-06-09
+
+### Fixed
+
+- **Block editor link control limited to source-language pages** — When inserting a link inside a non-source-language template part (e.g. `footer-it`), the link popup search returned only source-language pages. Root cause: `QueryFilter::handle_secondary_pre_get_posts()` injected `_lf_lang = LF_LANG` on the REST API search query (`wp/v2/search`) fired by the link control. REST requests carry no language prefix, so `LF_LANG` resolved to the source language (the site default) and silently excluded all other-language pages from results. Fix: `handle_secondary_pre_get_posts()` now early-returns for all REST API requests (`defined('REST_REQUEST') && REST_REQUEST`). The method's scope is public-frontend secondary queries only; REST endpoints that need explicit language scoping use the `lf_lang` query param registered via `filter_pages_by_lf_lang_rest()`.
+
+---
+
 ## [2.2.5] — 2026-06-08
 
 ### Added

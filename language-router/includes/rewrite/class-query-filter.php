@@ -247,6 +247,16 @@ class QueryFilter {
 			return;
 		}
 
+		// REST API requests are not public-frontend queries. The link control,
+		// block renderer, and other editor REST calls have no URL language prefix,
+		// so LF_LANG would resolve to the source language and silently exclude all
+		// non-source-language content from search results. REST endpoints that need
+		// explicit language scoping use the lf_lang query param registered via
+		// filter_pages_by_lf_lang_rest() instead.
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
 		if ( ! defined( 'LF_LANG' ) || '' === LF_LANG ) {
 			return;
 		}
