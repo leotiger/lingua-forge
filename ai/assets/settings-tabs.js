@@ -31,7 +31,7 @@
 		var TAB_BUTTONS  = document.querySelectorAll('.lingua-forge-tabs .nav-tab[data-lf-tab]');
 		var PANELS       = document.querySelectorAll('.lingua-forge-tab-panel[data-lf-panel]');
 		// Only these tabs live inside the settings <form> and need the Save button.
-		var FORM_TABS    = ['general', 'api-keys', 'limits', 'behavior'];
+		var FORM_TABS    = ['ai-provider', 'limits', 'behavior'];
 		var SUBMIT_WRAP  = document.querySelector('.lf-settings-submit');
 
 		if (TAB_BUTTONS.length === 0 || PANELS.length === 0) {
@@ -103,7 +103,7 @@
 		});
 
 		// Initial activation.
-		var initial = tabFromHash() || tabFromStorage() || 'general';
+		var initial = tabFromHash() || tabFromStorage() || 'ai-provider';
 		activate(initial);
 	}
 
