@@ -119,26 +119,21 @@ class ModelCatalog {
 
         'gemini' => [
             // Light tier ─────────────────────────────────────────────────────
-            'gemini-2.0-flash-lite' => [
+            'gemini-2.5-flash-lite' => [
                 'tier'  => 'light',
-                'label' => 'Gemini 2.0 Flash Lite',
-                'note'  => 'Fastest · lowest cost',
-            ],
-            'gemini-2.0-flash'      => [
-                'tier'  => 'light',
-                'label' => 'Gemini 2.0 Flash',
-                'note'  => 'Fast · cost-effective (default light)',
+                'label' => 'Gemini 2.5 Flash Lite',
+                'note'  => 'Fastest · lowest cost (default light)',
             ],
             // Quality tier ───────────────────────────────────────────────────
             'gemini-2.5-flash'      => [
                 'tier'  => 'quality',
                 'label' => 'Gemini 2.5 Flash',
-                'note'  => 'Balanced · latest recommended',
+                'note'  => 'Balanced · latest recommended (default quality)',
             ],
             'gemini-1.5-pro'        => [
                 'tier'  => 'quality',
                 'label' => 'Gemini 1.5 Pro',
-                'note'  => 'Balanced (default quality, being superseded)',
+                'note'  => 'Balanced (legacy)',
             ],
             // Max tier ───────────────────────────────────────────────────────
             'gemini-2.5-pro'        => [

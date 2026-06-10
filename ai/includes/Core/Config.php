@@ -97,8 +97,8 @@ class Config {
             'quality' => 'gpt-4o',
         ],
         'gemini' => [
-            'light'   => 'gemini-2.0-flash',
-            'quality' => 'gemini-1.5-pro',
+            'light'   => 'gemini-2.5-flash-lite',
+            'quality' => 'gemini-2.5-flash',
         ],
     ];
 

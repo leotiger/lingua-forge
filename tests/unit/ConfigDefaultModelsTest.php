@@ -38,11 +38,11 @@ final class ConfigDefaultModelsTest extends TestCase {
 	}
 
 	public function test_default_model_returns_gemini_light(): void {
-		$this->assertSame( 'gemini-2.0-flash', Config::default_model( 'gemini', 'light' ) );
+		$this->assertSame( 'gemini-2.5-flash-lite', Config::default_model( 'gemini', 'light' ) );
 	}
 
 	public function test_default_model_returns_gemini_quality(): void {
-		$this->assertSame( 'gemini-1.5-pro', Config::default_model( 'gemini', 'quality' ) );
+		$this->assertSame( 'gemini-2.5-flash', Config::default_model( 'gemini', 'quality' ) );
 	}
 
 	// ── default_model — unknown inputs ───────────────────────────────────────

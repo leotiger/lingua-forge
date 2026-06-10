@@ -289,8 +289,8 @@ Navigate to **Settings → Lingua Forge → Models** to override the model strin
 
 | Tier | Anthropic | OpenAI | Gemini | Used by |
 |---|---|---|---|---|
-| **Light** | `claude-haiku-4-5-20251001` | `gpt-4o-mini` | `gemini-2.0-flash` | Meta Description, Excerpt Generator |
-| **Quality** | `claude-sonnet-4-6` | `gpt-4o` | `gemini-1.5-pro` | Translation, Content Generator |
+| **Light** | `claude-haiku-4-5-20251001` | `gpt-4o-mini` | `gemini-2.5-flash-lite` | Meta Description, Excerpt Generator |
+| **Quality** | `claude-sonnet-4-6` | `gpt-4o` | `gemini-2.5-flash` | Translation, Content Generator |
 
 These are the built-in defaults for each provider. Leave a field blank to use the built-in default for your active provider. To update to a new model version when one ships, enter the new identifier in Settings — no code change or deployment needed.
 
