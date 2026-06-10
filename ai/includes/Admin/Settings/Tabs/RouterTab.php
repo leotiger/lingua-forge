@@ -219,7 +219,7 @@ class RouterTab extends Tab {
             </p>
             <p>
                 <?php
-                esc_html_e( 'Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated.', 'lingua-forge' );
+                esc_html_e( 'Contact Form 7 (wpcf7_contact_form), Flamingo contacts and inbound messages (flamingo_contact, flamingo_inbound), and WordPress language-pack sync storage (wp_sync_storage) are excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated.', 'lingua-forge' );
                 ?>
             </p>
 

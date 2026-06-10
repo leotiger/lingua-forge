@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-08 19:51+0000\n"
+"PO-Revision-Date: 2026-06-10 14:58+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: tr_TR\n"
@@ -41,8 +41,20 @@ msgstr "\"%s\" oluşturuldu."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"ürün\" (\"makale\" yerine kullanılır)"
 
+#: ai/includes/Admin/SettingsHelp.php:155
+msgid ""
+"\"Treat H2 as H1 equivalent\" (Settings → SEO → Analysis): enable this when "
+"your theme renders the post title inside an H2 instead of an H1. The "
+"analyser promotes the first H2 to H1 so the score is not incorrectly "
+"penalised."
+msgstr ""
+"\"H2'yi H1 eşdeğeri olarak kabul et\" (Ayarlar → SEO → Analiz): temanızın "
+"gönderi başlığını H1 yerine H2 içinde render ettiği durumlarda etkinleştirin."
+" Analizör, ilk H2'yi H1'ye yükseltir, böylece puan yanlışlıkla "
+"cezalandırılmaz."
+
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1020
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -52,46 +64,46 @@ msgstr ""
 "karar aralığında. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1024
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d karakter — ideal uzunluk. %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1015
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr ""
 "%1$d karakter — SERP'lerde muhtemelen kesilmiş (%2$d'nin altında tutun). %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1010
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d karakter — çok kısa (hedef: %2$d–%3$d). %4$s"
 
 #. translators: %1$d: character count, %2$d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:986
 #, php-format
 msgid "%1$d chars, %2$d words — good title."
 msgstr "%1$d karakter, %2$d kelime — iyi başlık."
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1195
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d dahili, %2$d harici."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1152
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d / %2$d görüntü(lerin) alt metni eksik."
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1037
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
@@ -99,14 +111,14 @@ msgstr[0] "%1$d gönderi _lf_lang = %2$s ile etiketlenmiş."
 msgstr[1] "%1$d gönderi _lf_lang = %2$s ile etiketlenmiş."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d kelime — önerilen minimum %2$d altında."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1039
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -115,13 +127,13 @@ msgid ""
 msgstr "%1$d kelime — çok az içerik. En az %2$d kelimeye genişletmeyi düşünün."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1187
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "%d dış bağlantı, iç bağlantı yok."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1182
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -131,13 +143,13 @@ msgstr ""
 "ekleyin."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1098
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d H1 etiketi bulundu — bir sayfada tam olarak bir H1 olmalı."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1158
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d resim, hepsinin alt metni var."
@@ -187,7 +199,7 @@ msgstr[0] "%d yerel dosya kaldırıldı."
 msgstr[1] "%d yerel dosya kaldırıldı."
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
@@ -219,7 +231,7 @@ msgstr[0] "%d gönderi"
 msgstr[1] "%d gönderi"
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:670
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
@@ -227,7 +239,7 @@ msgstr[0] "%d kural kaydedildi"
 msgstr[1] "%d kural kaydedildi"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d words."
 msgstr "%d kelime."
@@ -272,6 +284,10 @@ msgstr ""
 "bağlantıları ekler. LF'nin site haritası otomatik olarak robots.txt'de "
 "duyurulur."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "(active)"
+msgstr "(aktif)"
+
 #. translators: %s is the average hits per cached block.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
@@ -284,7 +300,7 @@ msgstr "(ortalama %.1f erişim/blok)"
 msgid "(avg %.1f hits/entry)"
 msgstr "(ortalama %.1f vuruş/entry)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:100
 msgid "(classic theme)"
 msgstr "(klasik tema)"
 
@@ -292,15 +308,23 @@ msgstr "(klasik tema)"
 msgid "(disabled)"
 msgstr "(devre dışı)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:99
 msgid "(FSE / block theme)"
 msgstr "(FSE / blok teması)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:745
 #, php-format
 msgid "(no title) #%d"
 msgstr "(başlık yok) #%d"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:431
+msgid "(partial)"
+msgstr "(kısmi)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:130
+msgid "(server/FPM timeout still applies)"
+msgstr "(sunucu/FPM zaman aşımı hala geçerlidir)"
 
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
@@ -315,16 +339,35 @@ msgstr ".txt dosyası(ları) dizinde"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1122
+#| msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgid "1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure."
+msgstr ""
+"1 H1 ✓ — H2 veya H3 alt başlıkları bulunamadı. H2 eklenmesi yapıyı "
+"iyileştirir."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1119
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "1 H1 ✓ — H2 alt başlıkları yok (bu içerik türü için kabul edilebilir)."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
-msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
-msgstr "1 H1 ✓ — H2 alt başlıkları bulunamadı. H2 eklemek yapıyı iyileştirir."
+#. translators: %d: number of H3 headings found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1107
+#, php-format
+msgid ""
+"1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details "
+"headers). Structure is acceptable."
+msgstr ""
+"1 H1 ✓ — H2 yok, ancak %d H3 alt başlık(lar)ı bulundu (ör. akordeon/detay "
+"başlıkları). Yapı kabul edilebilir."
+
+#. translators: %d: number of paragraphs in the content
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1118
+#, php-format
+msgid "1 H1 ✓ — short content (%d paragraph(s)), subheadings not required."
+msgstr "1 H1 ✓ — kısa içerik (%d paragraf), alt başlıklar gerekmez."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1129
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -361,7 +404,7 @@ msgstr "<strong>{n}</strong> eski yol(lar)"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> şablon sorunu(ları)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:554
 msgid "_lf_lang Coverage"
 msgstr "_lf_lang Kapsamı"
 
@@ -385,6 +428,14 @@ msgstr ""
 "mo kalıbını takip etmelidir. Aynı isimdeki bir dosya yüklemek onu "
 "değiştirecektir."
 
+#: ai/includes/Providers/AbstractProvider.php:85
+msgid ""
+"Access forbidden — your account may be suspended or the key lacks the "
+"required permissions."
+msgstr ""
+"Erişim yasaklandı — hesabınız askıya alınmış olabilir veya anahtar gerekli "
+"izinlere sahip değil."
+
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
@@ -392,15 +443,15 @@ msgstr ""
 msgid "Action"
 msgstr "Eylem"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:183
 msgid "active"
 msgstr "aktif"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:265
 msgid "Active Languages"
 msgstr "Aktif Diller"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:121
 msgid "Active languages"
 msgstr "Aktif diller"
 
@@ -413,24 +464,24 @@ msgstr ""
 "öneki veya alt alan adı ve sayfa &lt;head&gt; bölümünde bir hreflang etiketi "
 "alır."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
+msgid "Active Plugins"
+msgstr "Aktif Eklentiler"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:210
 msgid "Active preset"
 msgstr "Aktif ön ayar"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:59
 msgid "Active Provider"
 msgstr "Aktif Sağlayıcı"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
-msgid "Active provider"
-msgstr "Aktif sağlayıcı"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:94
 msgid "Active theme"
 msgstr "Aktif tema"
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:290
 #, php-format
 msgid "Active: %s."
 msgstr "Aktif: %s."
@@ -447,7 +498,7 @@ msgstr ""
 "Taslağı geliştirmek için talimatlar ekleyin — örneğin, daha kısa yapın, bir "
 "sonuç bölümü ekleyin, daha resmi bir dil kullanın, SSS bloğu ekleyin…"
 
-#: ai/assets/admin.js:1295
+#: ai/assets/admin.js:1303
 msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
@@ -455,7 +506,7 @@ msgstr ""
 "Taslağı geliştirmek için talimatlar ekleyin — ör. daha kısa yapın, sonuç "
 "bölümü ekleyin, daha resmi bir dil kullanın…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
 msgid "Add key →"
 msgstr "Anahtar ekle →"
 
@@ -529,7 +580,7 @@ msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "AI önbelleği temizlendi. %d giriş kaldırıldı."
 msgstr[1] "AI önbelleği temizlendi. %d giriş kaldırıldı."
 
-#: ai/includes/Admin/SettingsHelp.php:134
+#: ai/includes/Admin/SettingsHelp.php:165
 msgid ""
 "AI Cache: lists cached AI responses with hit counts. Clear the whole cache "
 "or a single post's entries. Use \"Clear\" before testing a translation "
@@ -542,7 +593,7 @@ msgstr ""
 "sonuçlar, AI ön ayarını veya modeli değiştirdiğinizde bile, önbellek girdisi "
 "kaldırılana kadar geri döner."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "AI Configuration"
 msgstr "Yapay Zeka Yapılandırması"
 
@@ -558,6 +609,12 @@ msgstr ""
 msgid "AI Limits & Security"
 msgstr "AI Sınırları ve Güvenlik"
 
+#: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
+#: ai/includes/Admin/SettingsPage.php:629
+#| msgid "Active provider"
+msgid "AI Provider"
+msgstr "AI Sağlayıcısı"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:120
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:161
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:295
@@ -568,19 +625,19 @@ msgstr "AI sağlayıcısı boş yanıt döndürdü."
 msgid "AI Recommendations"
 msgstr "Yapay Zeka Önerileri"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1539
 msgid "AI returned an unexpected response format. Please try again."
 msgstr ""
 "Yapay zeka beklenmedik bir yanıt formatı döndürdü. Lütfen tekrar deneyin."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:139
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr ""
 "Yapay zeka çevirisi ve toplu analiz zaman aşımına uğrayabilir. 120 saniye "
 "veya daha fazla önerilir."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:637
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "AI Usage"
 msgstr "Yapay Zeka Kullanımı"
 
@@ -605,7 +662,7 @@ msgstr ""
 "için hemen bir ping gönderir, böylece bir sonraki planlı robots.txt "
 "kontrolünü beklemez."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:562
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr ""
 "Tüm yayınlanmış gönderilerin _lf_lang değeri var. Boşluk tespiti yapılmadı."
@@ -639,7 +696,7 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr "Ayrıca meta açıklaması oluştur"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:154
 msgid "Alternative (server-side):"
 msgstr "Alternatif (sunucu tarafı):"
 
@@ -665,7 +722,7 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Bilinmeyen bir hata oluştu."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:447
 msgid "Analyse"
 msgstr "Analiz"
 
@@ -673,7 +730,7 @@ msgstr "Analiz"
 msgid "Analyse all languages"
 msgstr "Tüm dilleri analiz et"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:366
 msgid "Analyse…"
 msgstr "Analiz et…"
 
@@ -681,7 +738,7 @@ msgstr "Analiz et…"
 msgid "Analysis"
 msgstr "Analiz"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:371
 msgid "Analysis request failed. Please try again."
 msgstr "Analiz isteği başarısız oldu. Lütfen tekrar deneyin."
 
@@ -693,9 +750,14 @@ msgstr "Analiz ediliyor…"
 msgid "and"
 msgstr "ve"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:104
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:106
+msgid "Anthropic Console"
+msgstr "Anthropic Konsolu"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
@@ -706,17 +768,13 @@ msgstr "herhangi"
 msgid "API calls saved by cache"
 msgstr "Önbelleğe alınmış API çağrıları"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:62
 msgid "API Key"
 msgstr "API Anahtarı"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
-msgid "API key"
-msgstr "API anahtarı"
-
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:29
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:38
+#: ai/includes/Admin/SettingsHelp.php:83
 msgid "API Keys"
 msgstr "API Anahtarları"
 
@@ -739,14 +797,14 @@ msgstr "API Yanıt Önbellek ayarı kaydedildi."
 msgid "Appends the following line to your existing robots.txt: %s"
 msgstr "Mevcut robots.txt'nize aşağıdaki satırı ekler: %s"
 
-#: ai/assets/admin-content-gen-modal.js:247 ai/assets/admin-diff-modal.js:271
-#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1229
-#: ai/assets/admin.js:1380 ai/assets/block-action.js:964
+#: ai/assets/admin-content-gen-modal.js:257 ai/assets/admin-diff-modal.js:288
+#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1237
+#: ai/assets/admin.js:1388 ai/assets/block-action.js:964
 #: ai/assets/block-action.js:989
 msgid "Applied ✓"
 msgstr "Uygulandı ✓"
 
-#: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
+#: ai/assets/admin-diff-modal.js:306 ai/assets/admin.js:1254
 msgid "Apply failed — please try again."
 msgstr "Uygulama başarısız oldu — lütfen tekrar deneyin."
 
@@ -762,7 +820,7 @@ msgstr "Bloklara Uygula"
 
 #: ai/assets/admin-content-gen-modal.js:89
 #: ai/assets/admin-content-gen-modal.js:140 ai/assets/admin.js:322
-#: ai/assets/admin.js:697 ai/assets/admin.js:1311
+#: ai/assets/admin.js:697 ai/assets/admin.js:1319
 msgid "Apply to Editor"
 msgstr "Editöre uygula"
 
@@ -774,13 +832,13 @@ msgstr "Dipnota Uygula"
 msgid "Apply to Meta Description"
 msgstr "Meta Açıklamasına Uygula"
 
-#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:280
-#: ai/assets/admin.js:1144 ai/assets/admin.js:1238
+#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:297
+#: ai/assets/admin.js:1144 ai/assets/admin.js:1246
 msgid "Apply translation"
 msgstr "Çeviriyi uygula"
 
 #: ai/assets/admin-content-gen-modal.js:217 ai/assets/admin-diff-modal.js:204
-#: ai/assets/admin.js:1192 ai/assets/admin.js:1357
+#: ai/assets/admin.js:1192 ai/assets/admin.js:1365
 msgid "Applying…"
 msgstr "Uygulanıyor…"
 
@@ -825,12 +883,46 @@ msgstr ""
 "sayfa → Açılış profili; diğer her şey → Blog profili. Bu ayarı tüm "
 "gönderiler için geçersiz kılmak için belirli bir profil seçin."
 
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid ""
+"Auto-detected for the static front page; can be selected manually. Title 20 "
+"pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images "
+"15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, "
+"fails below 60; H2 and internal links optional."
+msgstr ""
+"Statik ana sayfa için otomatik algılandı; manuel olarak seçilebilir. Başlık "
+"20 puan · Meta açıklama 30 puan · Kelime sayısı 15 puan · Başlıklar 10 puan "
+"· Görseller 15 puan · Bağlantılar 0 puan. Başlık SERP sınırı 70 karakter; "
+"kelime sayısı 150'nin altında uyarı, 60'ın altında başarısız; H2 ve dahili "
+"bağlantılar isteğe bağlıdır."
+
+#: ai/includes/Admin/SettingsHelp.php:146
+msgid ""
+"Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 "
+"pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. "
+"Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and "
+"internal links optional."
+msgstr ""
+"WooCommerce ürünleri için otomatik algılandı. Başlık 20 puan · Meta açıklama "
+"30 puan · Kelime sayısı 15 puan · Başlıklar 5 puan · Görseller 20 puan · "
+"Bağlantılar 0 puan. Başlık SERP sınırı 70 karakter; kelime sayısı 80'nin "
+"altında uyarı, 40'ın altında başarısız; H2 ve dahili bağlantılar isteğe "
+"bağlıdır."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:231
+msgid "Available models reference"
+msgstr "Mevcut modeller referansı"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:427
+msgid "avg"
+msgstr "ortalama"
+
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 msgid "Batch Analysis"
 msgstr "Toplu Analiz"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:631
 msgid "Behavior"
 msgstr "Davranış"
 
@@ -933,6 +1025,10 @@ msgstr ""
 msgid "Blog / Editorial"
 msgstr "Blog / Editoryal"
 
+#: ai/includes/Admin/SettingsHelp.php:143
+msgid "Blog / Editorial (default)"
+msgstr "Blog / Editoryal (varsayılan)"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -947,7 +1043,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Tarayıcı dili yönlendirmesi"
 
-#: ai/includes/Admin/SettingsPage.php:329
+#: ai/includes/Admin/SettingsPage.php:328
 msgid "Built-in preset instructions:"
 msgstr "Yerleşik ön ayar talimatları:"
 
@@ -1009,7 +1105,7 @@ msgstr ""
 "kullanıcı kaçak döngülerine karşı koruyan kullanıcı başına oran sınırının "
 "(30 istek / dakika, sabit kodlu) üzerine oturur."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 msgid "Cart"
 msgstr "Sepet"
 
@@ -1018,7 +1114,15 @@ msgstr "Sepet"
 msgid "chars"
 msgstr "karakterler"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:101
+msgid ""
+"Check your account, billing, or remaining credits directly on the provider "
+"console:"
+msgstr ""
+"Hesabınızı, faturalandırmanızı veya kalan kredilerinizi doğrudan sağlayıcı "
+"konsolundan kontrol edin:"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:337
 msgid "Checkout"
 msgstr "Ödeme"
 
@@ -1116,9 +1220,19 @@ msgstr ""
 "paylaşım ayarlarını yapılandırın. Aşağıdaki her bölüm çok dilli SEO'nun bir "
 "yönünü ele alır."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
 msgid "Configured"
 msgstr "Yapılandırıldı"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
+msgid ""
+"Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other "
+"third-party post types whose content should not be language-filtered, one "
+"per line or comma-separated."
+msgstr ""
+"Contact Form 7 (wpcf7_contact_form) otomatik olarak hariç tutulur. İçeriği "
+"dil filtresine tabi olmaması gereken diğer üçüncü taraf gönderi türlerini, "
+"satır başı veya virgülle ayrılmış olarak ekleyin."
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1127,6 +1241,10 @@ msgstr "İçerik oluşturuldu"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
 msgid "Content Generator"
 msgstr "İçerik Üreteci"
+
+#: ai/includes/Admin/SettingsHelp.php:140
+msgid "Content profiles and weights"
+msgstr "İçerik profilleri ve ağırlıklar"
 
 #: ai/assets/admin.js:683
 msgid "Content ready"
@@ -1176,13 +1294,13 @@ msgid "Conversational"
 msgstr "Konuşma Dili"
 
 #: ai/assets/admin-content-gen-modal.js:180 ai/assets/admin.js:495
-#: ai/assets/admin.js:505 ai/assets/admin.js:1343 ai/assets/block-action.js:450
+#: ai/assets/admin.js:505 ai/assets/admin.js:1351 ai/assets/block-action.js:450
 #: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr "Kopyalandı ✓"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:728
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:734
 msgid "Copied!"
 msgstr "Kopyalandı!"
 
@@ -1194,7 +1312,7 @@ msgstr "Kopyalandı!"
 msgid "Copy"
 msgstr "Kopyala"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:699
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr "Bir GitHub sorunu veya destek talebine kopyala ve yapıştır."
 
@@ -1202,11 +1320,11 @@ msgstr "Bir GitHub sorunu veya destek talebine kopyala ve yapıştır."
 msgid "Copy failed — please copy the URL manually."
 msgstr "Kopyalama başarısız — lütfen URL'yi manuel kopyalayın."
 
-#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
+#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1316
 msgid "Copy markup"
 msgstr "İşaretlemeyi kopyala"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:703
 msgid "Copy system info"
 msgstr "Sistem bilgisi kopyala"
 
@@ -1245,7 +1363,7 @@ msgstr ""
 "Dosya kopyalanamadı. Yükleme klasörünün yazılabilir olup olmadığını kontrol "
 "edin."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:250
 msgid "Could not instantiate the provider."
 msgstr "Sağlayıcı başlatılamadı."
 
@@ -1287,7 +1405,7 @@ msgstr ""
 "\"%s\" gönderi türü için çeviri oluşturmak, aktif bir entegrasyon gerektirir."
 " Lütfen gerekli entegrasyonun yüklü ve aktif olduğundan emin olun."
 
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Creating…"
 msgstr "Oluşturuluyor…"
 
@@ -1322,7 +1440,7 @@ msgid "Currently emitting"
 msgstr "Şu anda yayınıyor"
 
 #. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:88
 #, php-format
 msgid ""
 "Currently inherited from the %s constant. Selecting a value here will "
@@ -1348,13 +1466,17 @@ msgstr "Şu anda:"
 msgid "Custom"
 msgstr "Özel"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
+msgid "Custom tables — LF post-meta filters do not affect orders."
+msgstr "Özel tablolar — LF gönderi-meta filtreleri siparişleri etkilemez."
+
 #. translators: 1: quota number, 2: reset time.
 #: ai/includes/REST/RateLimiter.php:169
 #, php-format
 msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr "Günlük AI kotası aşıldı (%1$d istek). UTC %2$s'de sıfırlanır."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Daily quota"
 msgstr "Günlük kota"
 
@@ -1362,7 +1484,7 @@ msgstr "Günlük kota"
 msgid "Daily request limit"
 msgstr "Günlük istek sınırı"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:462
 msgid "Danger Zone"
 msgstr "Tehlike Bölgesi"
 
@@ -1378,7 +1500,7 @@ msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "Hata ayıklama dosyaları temizlendi. %d dosya kaldırıldı."
 msgstr[1] "Hata ayıklama dosyaları temizlendi. %d dosya kaldırıldı."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:697
 msgid "Debug Info"
 msgstr "Hata ayıklama bilgisi"
 
@@ -1394,7 +1516,7 @@ msgstr "Hata ayıklama günlüğü devre dışı bırakıldı."
 msgid "Debug logging enabled."
 msgstr "Hata ayıklama günlüğü etkinleştirildi."
 
-#: ai/includes/Admin/SettingsHelp.php:137
+#: ai/includes/Admin/SettingsHelp.php:168
 msgid ""
 "Debug: enable the debug log to capture AI prompts and API responses to a "
 "local file. Disable after troubleshooting — debug mode writes a file on "
@@ -1443,6 +1565,10 @@ msgstr "Bu terimlik giriş silinsin mi?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Ne yazılacağını anlatın — konu, ana noktalar, yapı…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:610
+msgid "Destructive action — read before proceeding"
+msgstr "Yıkıcı işlem — devam etmeden önce oku"
 
 #: ai/includes/Admin/MetaBox.php:391
 msgid "Details ↗"
@@ -1512,7 +1638,7 @@ msgstr "Lingua Forge dil değiştiricisini gösterir."
 msgid "Do not output any OG tags."
 msgstr "Herhangi bir OG etiketi çıkarmayın."
 
-#: ai/includes/Admin/SettingsHelp.php:166
+#: ai/includes/Admin/SettingsHelp.php:197
 msgid "Documentation"
 msgstr "Belgeler"
 
@@ -1528,7 +1654,7 @@ msgstr "Tamamlandı — {done} gönderi düzeltildi, toplam {total}."
 msgid "Down"
 msgstr "Aşağı"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:293
 msgid ""
 "Download and install a WordPress core language pack directly from WordPress."
 "org. Once installed, the locale becomes available for URL routing and the AI "
@@ -1544,7 +1670,31 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Açılır menü yönü"
 
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsHelp.php:137
+msgid ""
+"Each metric yields one of four statuses: ok (full weight), warn (50 % of "
+"weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 "
+"amber, below 50 red."
+msgstr ""
+"Her metrik dört durumdan birini verir: tamam (tam ağırlık), uyarı (ağırlığın "
+"%50'si), başarısız (0) veya bilgi (0, ceza yok). 80 ve üzeri puan yeşil, 50–"
+"79 turuncu, 50'nin altında kırmızı."
+
+#: ai/includes/Admin/SettingsHelp.php:136
+msgid ""
+"Each post is scored 0–100 from six rule-based metrics: title, meta "
+"description, word count, heading structure, image alt coverage, and internal "
+"links. Ten points are always awarded for reading time (informational only). "
+"The remaining 90 points are distributed across the other metrics with "
+"weights that vary by content profile (see below)."
+msgstr ""
+"Her gönderi, başlık, meta açıklama, kelime sayısı, başlık yapısı, görsel "
+"alternatif metin kapsamı ve dahili bağlantılar olmak üzere altı kural "
+"tabanlı metrikten 0-100 arasında puan alır. Okuma süresi her zaman on puan "
+"ile ödüllendirilir (bilgilendirici amaçlı). Kalan 90 puan, içerik profiline "
+"göre değişen ağırlıklarla diğer metrikler arasında dağıtılır (aşağıya bakın)."
+
+#: ai/includes/Admin/SettingsPage.php:368
 msgid "edit"
 msgstr "düzenle"
 
@@ -1589,11 +1739,11 @@ msgstr ""
 "dinlenirken şifrelenir. Anahtarı değiştirmeden veritabanı dışa aktarımını "
 "paylaşmayın."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:77
 msgid "Environment"
 msgstr "Ortam"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "environment variable"
 msgstr "ortam değişkeni"
 
@@ -1601,10 +1751,70 @@ msgstr "ortam değişkeni"
 msgid "Error"
 msgstr "Hata"
 
+#: ai/includes/Admin/SettingsHelp.php:158
+msgid ""
+"Every time a post is analysed the score is stored in post meta. The post "
+"list Lang column shows a colour-coded \"SEO N\" badge for any post that has "
+"been analysed at least once. When two scores are stored a delta indicator "
+"(↑N / ↓N) shows the change since the previous run."
+msgstr ""
+"Her gönderi analiz edildiğinde, puan gönderi meta verisine kaydedilir. "
+"Gönderi listesi Dil sütunu, en az bir kez analiz edilen herhangi bir gönderi "
+"için renk kodlu \"SEO N\" rozeti gösterir. İki skor kaydedildiğinde, önceki "
+"çalışmadan itibaren değişikliği gösteren bir delta göstergesi (↑N / ↓N) "
+"bulunur."
+
+#: ai/includes/Admin/SettingsHelp.php:152
+msgid ""
+"Exactly one H1 is required. The H1 is normally the post title rendered by "
+"the theme — it is read from the live rendered page when possible, and from "
+"post content as a fallback."
+msgstr ""
+"Tam olarak bir H1 gereklidir. H1 genellikle temanın render ettiği gönderi "
+"başlığıdır — mümkünse canlı render edilen sayfadan okunur ve yedek olarak "
+"gönderi içeriğinden alınır."
+
 #: language-router/includes/admin/class-columns.php:169
 #: language-router/includes/admin/class-meta-boxes.php:90
 msgid "Exclude from navigation menus"
 msgstr "Gezinti menülerinden hariç tut"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:588
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:807
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:813
+msgid "Exclude from routing"
+msgstr "Yönlendirmeden hariç tut"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:587
+msgid ""
+"Exclude this post type from language routing — its posts will no longer "
+"appear here or receive _lf_lang. This cannot be undone automatically."
+msgstr ""
+"Bu gönderi türünü dil yönlendirmesinden hariç tut — gönderileri artık burada "
+"görünmeyecek veya _lf_lang almayacaktır. Bu otomatik olarak geri alınamaz."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:778
+msgid ""
+"Exclude this post type from language routing? Its posts will no longer "
+"appear in this list or receive _lf_lang. You can reverse this in Settings → "
+"Router → Query Filter Exclusions."
+msgstr ""
+"Bu gönderi türünü dil yönlendirmesinden hariç tut? Gönderileri artık bu "
+"listede görünmeyecek veya _lf_lang almayacaktır. Bunu Ayarlar → Yönlendirici "
+"→ Sorgu Filtreleri Hariç Tutma bölümünden geri alabilirsiniz."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:597
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:799
+msgid "excluded from routing"
+msgstr "yönlendirmeden hariç tutuldu"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
+msgid "Excluded post types"
+msgstr "Hariç tutulan gönderi türleri"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:782
+msgid "Excluding…"
+msgstr "Hariç tutma…"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1626,6 +1836,10 @@ msgstr "Ek rehberlik — ton, stil, kısıtlamalar, hedef kitle…"
 msgid "Extra guidance — tone, style, constraints…"
 msgstr "Ek rehberlik — ton, stil, kısıtlamalar…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:808
+msgid "Failed to save exclusion."
+msgstr "Hariç tutmayı kaydetme başarısız oldu."
+
 #: ai/assets/block-action.js:730 ai/assets/block-action.js:921
 msgid "Failed. Please try again."
 msgstr "Başarısız oldu. Lütfen tekrar deneyin."
@@ -1641,11 +1855,11 @@ msgstr ""
 "bir tekil sayfa için sosyal önizlemede gösterilir."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:153
 msgid "Feature"
 msgstr "Özellik"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:127
 msgid ""
 "Features are grouped into two tiers. Enter the exact model identifier for "
 "each tier and provider. Leave a field blank to use the built-in default "
@@ -1707,7 +1921,7 @@ msgstr ""
 "linguaforge_debug_dir filtresi ile kullanın."
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Finding"
 msgstr "Bulma"
 
@@ -1731,19 +1945,19 @@ msgstr "Tüm parçaları düzelt"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Fix Links"
 msgstr "Bağlantıları Düzelt"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Fix Nav"
 msgstr "Gezintiyi Düzelt"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Fix Parts"
 msgstr "Parçaları Düzelt"
 
@@ -1755,19 +1969,19 @@ msgstr "Şablonu Düzelt"
 msgid "Fixing {n} / {total}…"
 msgstr "{n} / {total} düzeltiliyor…"
 
-#: ai/includes/Admin/SettingsPage.php:263
-#: ai/includes/Admin/SettingsPage.php:267
-#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:273
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "Düzenleniyor…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:227
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:261
 msgid "Flush Permalink Rules"
 msgstr "Kalıcı Bağlantı Kurallarını Temizle"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
 msgid "Flush Permalinks"
 msgstr "Kalıcı Bağlantıları Temizle"
 
@@ -1791,9 +2005,9 @@ msgstr "Dipnotlar"
 msgid "Footnotes payload (advanced)"
 msgstr "Dipnotlar yükü (ileri düzey)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:364
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:393
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:490
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:398
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:435
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:532
 msgid "Forbidden"
 msgstr "Yasaklandı"
 
@@ -1869,8 +2083,14 @@ msgstr "Tam Makale"
 msgid "Full post"
 msgstr "Tam gönderi"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:43
+msgid ""
+"Full-page Translation, Content Generator (mid-tier models are fully "
+"sufficient)"
+msgstr ""
+"Tam sayfa Çeviri, İçerik Üreteci (orta seviye modeller tamamen yeterlidir)"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:23
 msgid "General"
 msgstr "Genel"
 
@@ -1904,7 +2124,7 @@ msgid "Generated Content"
 msgstr "Oluşturulan İçerik"
 
 #: ai/assets/admin-content-gen-modal.js:59 ai/assets/admin-diff-modal.js:82
-#: ai/assets/admin.js:1118 ai/assets/admin.js:1273
+#: ai/assets/admin.js:1118 ai/assets/admin.js:1281
 msgid "Generated meta description"
 msgstr "Oluşturulan meta açıklaması"
 
@@ -1917,7 +2137,7 @@ msgstr "Oluşturuluyor…"
 msgid "Generation failed."
 msgstr "Oluşturma başarısız oldu."
 
-#: ai/includes/Admin/SettingsHelp.php:148
+#: ai/includes/Admin/SettingsHelp.php:179
 msgid "Getting started"
 msgstr "Başlangıç"
 
@@ -1934,7 +2154,7 @@ msgstr "Global varsayılan (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Glossary"
 msgstr "Terim Sözlüğü"
 
@@ -1950,11 +2170,16 @@ msgstr "Terimlik girişi kaldırıldı."
 msgid "Glossary Tab"
 msgstr "Sözlük Sekmesi"
 
-#: ai/includes/Admin/SettingsPage.php:67
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:106
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:108
+msgid "Google AI Studio"
+msgstr "Google AI Stüdyosu"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1964,14 +2189,22 @@ msgstr ""
 "render edilen sayfadan tespit edilemedi; temanızın başlığı doğru şekilde "
 "çıkardığından emin olun.)"
 
+#: ai/includes/Admin/SettingsHelp.php:151
+msgid "Heading structure rules"
+msgstr "Başlık yapısı kuralları"
+
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Headings"
 msgstr "Başlıklar"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Hide"
 msgstr "Gizle"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+msgid "High-Performance Order Storage (HPOS)"
+msgstr "Yüksek Performanslı Sipariş Depolama (HPOS)"
 
 #: ai/includes/Features/ContentGenerator.php:185
 msgid "Hints"
@@ -1992,6 +2225,13 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
 msgid "How to use"
 msgstr "Nasıl kullanılır"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:356
+msgid ""
+"HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
+msgstr ""
+"HPOS + CPT senkronize edildi — geçici; LF gönderi-meta filtreleri CPT "
+"kopyasına uygulanır."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
@@ -2071,7 +2311,7 @@ msgstr ""
 "JSON-LD grafiklerini önler."
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Images"
 msgstr "Görseller"
 
@@ -2109,15 +2349,15 @@ msgstr "Site adı, url ve inLanguage içerir."
 msgid "Informative"
 msgstr "Bilgilendirici"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:137
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
 msgid "Input tokens"
 msgstr "Girdi tokenleri"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:278
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:312
 msgid "Install"
 msgstr "Yükle"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
 msgid "Install a Language"
 msgstr "Bir Dil Yükle"
 
@@ -2125,7 +2365,7 @@ msgstr "Bir Dil Yükle"
 msgid "Installed SEO plugins"
 msgstr "Yüklenmiş SEO eklentileri"
 
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Installing…"
 msgstr "Yükleniyor…"
 
@@ -2141,7 +2381,7 @@ msgstr "Talimatlar (isteğe bağlı)"
 msgid "Instructions / key points"
 msgstr "Talimatlar / ana noktalar"
 
-#: ai/includes/Admin/SettingsHelp.php:153
+#: ai/includes/Admin/SettingsHelp.php:184
 msgid "Integration API"
 msgstr "Entegrasyon API'si"
 
@@ -2153,6 +2393,13 @@ msgstr "İç Bağlantı Düzeltici"
 msgid "Introduction only"
 msgstr "Sadece Giriş"
 
+#: ai/includes/Providers/AbstractProvider.php:81
+msgid ""
+"Invalid API key — double-check the key entered in the AI Provider settings."
+msgstr ""
+"Geçersiz API anahtarı — AI Sağlayıcı ayarlarında girilen anahtarı tekrar "
+"kontrol edin."
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:225
 msgid "Invalid file reference."
 msgstr "Geçersiz dosya referansı."
@@ -2161,7 +2408,7 @@ msgstr "Geçersiz dosya referansı."
 msgid "Invalid filename."
 msgstr "Geçersiz dosya adı."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:494
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:536
 msgid "Invalid language code."
 msgstr "Geçersiz dil kodu."
 
@@ -2169,7 +2416,7 @@ msgstr "Geçersiz dil kodu."
 msgid "Invalid language."
 msgstr "Geçersiz dil."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:586
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:628
 msgid "Invalid locale code."
 msgstr "Geçersiz yerel kod."
 
@@ -2183,13 +2430,14 @@ msgstr "Geçersiz yerel kod."
 msgid "Invalid or primary language."
 msgstr "Geçersiz veya ana dil."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:777
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1397
 msgid "Invalid post ID."
 msgstr "Geçersiz gönderi ID'si."
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1065
 msgid "Invalid post type."
 msgstr "Geçersiz gönderi türü."
 
@@ -2205,7 +2453,7 @@ msgstr "Geçersiz şablon türü."
 msgid "JavaScript-powered actions"
 msgstr "JavaScript destekli eylemler"
 
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Just now"
 msgstr "Az önce"
 
@@ -2213,7 +2461,7 @@ msgstr "Az önce"
 msgid "Key points, ideas, or structure to build from…"
 msgstr "Anahtar noktalar, fikirler veya yapı..."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:42
 msgid ""
 "Keys are encrypted with AES-256-CBC before being stored in the WordPress "
 "database. The encryption secret is derived from your WordPress auth salts "
@@ -2225,6 +2473,7 @@ msgstr ""
 "dokunmaz."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+#: ai/includes/Admin/SettingsHelp.php:147
 msgid "Landing / Short-form"
 msgstr "Açılış / Kısa biçim"
 
@@ -2234,7 +2483,7 @@ msgid "Language"
 msgstr "Dil"
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:612
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:654
 #, php-format
 msgid "Language %s installed successfully."
 msgstr "Dil %s başarıyla yüklendi."
@@ -2243,15 +2492,15 @@ msgstr "Dil %s başarıyla yüklendi."
 msgid "Language (optional)"
 msgstr "Dil (isteğe bağlı)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:623
+#: ai/includes/Admin/SettingsPage.php:250
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 "Bu sunucuda dil yükleme devre dışı bırakılmıştır (DISALLOW_FILE_MODS "
 "ayarlanmış)."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:298
 msgid ""
 "Language installation is disabled on this server. The DISALLOW_FILE_MODS "
 "constant is set in wp-config.php. Install language packs manually via WP-CLI:"
@@ -2269,7 +2518,7 @@ msgstr "Dil etiketi"
 msgid "Language Overrides"
 msgstr "Dil Üzerinden Değişiklikleri"
 
-#: ai/includes/Admin/SettingsHelp.php:136
+#: ai/includes/Admin/SettingsHelp.php:167
 msgid ""
 "Language Overrides: manage custom .po/.mo override files for the Lingua "
 "Forge UI strings. Use this instead of editing plugin files directly — "
@@ -2279,7 +2528,7 @@ msgstr ""
 "geçersizlik dosyalarını yönetin. Bu, eklenti dosyalarını doğrudan düzenlemek "
 "yerine kullanılır — geçersizlikler güncellemelerden sonra da kalır."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:615
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:657
 msgid ""
 "Language pack installation failed. The language may already be installed, "
 "the locale code may be incorrect, or your server may block file writes."
@@ -2287,7 +2536,7 @@ msgstr ""
 "Dil paketi yüklemesi başarısız oldu. Dil zaten yüklü olabilir, yerel kod "
 "yanlış olabilir veya sunucunuz dosya yazma işlemlerini engelliyor olabilir."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:310
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Language Setup"
 msgstr "Dil Kurulumu"
 
@@ -2296,7 +2545,7 @@ msgstr "Dil Kurulumu"
 msgid "Language Switcher"
 msgstr "Dil Değiştirici"
 
-#: ai/includes/Admin/SettingsHelp.php:151
+#: ai/includes/Admin/SettingsHelp.php:182
 msgid "Language switcher"
 msgstr "Dil değiştirme aracı"
 
@@ -2320,7 +2569,7 @@ msgstr ""
 msgid "Language:"
 msgstr "Dil:"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid ""
 "Languages currently known to the router (derived from installed WordPress "
 "locale packs plus the primary language). Install additional language packs "
@@ -2389,7 +2638,7 @@ msgstr ""
 "Bu girdiyi tüm hedef dillere uygulamak için boş bırakın — marka isimleri, "
 "kısaltmalar ve her çeviride aynen korunması gereken terimler için idealdir."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:109
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr ""
 "Boş bırakmak mevcut anahtarı korur. Yenisini girerek değiştirebilirsiniz."
@@ -2418,6 +2667,10 @@ msgstr ""
 "veriyor. Mu eklentisini devre dışı bırakabilirsiniz — LF'nin yerleşik Sosyal "
 "Paylaşım (SEO → Sosyal Paylaşım sekmesi) ve Open Graph aynı işlevselliği "
 "kapsar."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+msgid "Legacy post-based (CPT)"
+msgstr "Klasik gönderi tabanlı (CPT)"
 
 #: ai/includes/Core/Config.php:61
 msgid "Legal / Compliance"
@@ -2514,7 +2767,7 @@ msgstr ""
 "eklentisi de bir tane çıkardığında çift canonical'ı önler. LF kendi "
 "canonical'ını ekmez — dil yönlendirmesi zaten her URL'yi canonical yapar."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:663
 msgid ""
 "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
 "Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
@@ -2524,8 +2777,8 @@ msgstr ""
 "hatalarını veya yönlendirme çatışmalarını teşhis etmek için faydalıdır. Hata "
 "raporu dosyalarken bunları kopyalayın."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:81
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Light"
 msgstr "Hafif"
 
@@ -2537,7 +2790,7 @@ msgstr "Hafif (varsayılan — hızlı ve maliyet etkin)"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "Hafif (hızlı ve maliyet etkin — Haiku / Flash)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
 msgid "Light model"
 msgstr "Hafif model"
 
@@ -2548,12 +2801,12 @@ msgstr ""
 "Hafif: meta açıklamaları ve özet oluşturma için kullanılır — hızlı, düşük "
 "maliyetli."
 
-#: language-router/includes/rewrite/class-query-filter.php:95
+#: language-router/includes/rewrite/class-query-filter.php:99
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "Sonuçları verilen Lingua Forge dil kodundaki sayfalara sınırla."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Limits"
 msgstr "Sınırlar"
 
@@ -2669,6 +2922,18 @@ msgstr ""
 "varsayılan olarak iki Gutenberg özelliğini sınırlar. Tam Gutenberg / FSE "
 "yeteneklerine ihtiyacınız olduğunda buradan katılın."
 
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template "
+"blocks, plugin lookups) to the active language by injecting a _lf_lang meta "
+"constraint. Post types listed here are excluded from that constraint — their "
+"queries are always unfiltered."
+msgstr ""
+"Lingua Forge, aktif dilye _lf_lang meta kısıtlaması ekleyerek ikincil "
+"WP_Query örneklerini (yan menü widget'ları, şablon blokları, eklenti "
+"aramaları) sınırlar. Burada listelenen gönderi türleri bu kısıtlamadan hariç "
+"tutulur — sorguları her zaman filtrelenmemiştir."
+
 #: ai/includes/Admin/SettingsHelp.php:66
 msgid "Lingua Forge Settings"
 msgstr "Lingua Forge Ayarları"
@@ -2686,7 +2951,7 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge, sağlayıcı başına iki model katmanı kullanır:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:82
 msgid "Lingua Forge version"
 msgstr "Lingua Forge sürümü"
 
@@ -2694,7 +2959,7 @@ msgstr "Lingua Forge sürümü"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Hızlı Çeviri"
 
-#: ai/includes/Admin/SettingsPage.php:619
+#: ai/includes/Admin/SettingsPage.php:618
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Ayarlar"
 
@@ -2717,12 +2982,12 @@ msgid "link(s)"
 msgstr "bağlantı"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:358
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Bağlantılar"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:303
 msgid "Load available languages"
 msgstr "Mevcut dilleri yükle"
 
@@ -2734,7 +2999,7 @@ msgstr "İçeriği yükle"
 msgid "Loaded from cache."
 msgstr "Önbellekten yüklendi."
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Loading…"
 msgstr "Yükleniyor…"
 
@@ -2778,12 +3043,12 @@ msgstr ""
 "override etmek için linguaforge_required_capability filtresini kullanın."
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:638
+#: ai/includes/Admin/SettingsHelp.php:162
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "Maintenance"
 msgstr "Bakım"
 
-#: ai/includes/Admin/SettingsHelp.php:133
+#: ai/includes/Admin/SettingsHelp.php:164
 msgid "Maintenance Tab"
 msgstr "Bakım Sekmesi"
 
@@ -2798,6 +3063,11 @@ msgstr "Özlü yap"
 #: ai/assets/block-action.js:67
 msgid "Make formal"
 msgstr "Resmi yap"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:103
+msgid "Manage your account, review usage, or top up credits:"
+msgstr ""
+"Hesabınızı yönetin, kullanımınızı gözden geçirin veya kredilerinizi yükleyin:"
 
 #: ai/assets/block-action.js:73
 msgid "Mark citations needed"
@@ -2881,17 +3151,20 @@ msgid "Meta Description"
 msgstr "Meta Açıklaması"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Meta description"
 msgstr "Meta açıklama"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:82
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Meta Description, Excerpt Generator"
 msgstr "Meta Açıklaması, Alıntı Üretici"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:39
+msgid "Meta Description, Excerpt Generator, quick translate"
+msgstr "Meta Açıklama, Alıntı Üreteci, hızlı çeviri"
+
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Metric"
 msgstr "Metrik"
 
@@ -2899,7 +3172,7 @@ msgstr "Metrik"
 msgid "Minimum role"
 msgstr "En düşük rol"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:571
 msgid "Missing"
 msgstr "Eksik"
 
@@ -2911,16 +3184,20 @@ msgstr "Desen adı veya dil eksik."
 msgid "Mode"
 msgstr "Mod"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:155
 msgid "Model"
 msgstr "Model"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:244
+msgid "Model ID"
+msgstr "Model Kimliği"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
 msgid "Model tier"
 msgstr "Model seviyesi"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:123
 #: ai/includes/Admin/SettingsHelp.php:92
 msgid "Models"
 msgstr "Modeller"
@@ -2929,7 +3206,7 @@ msgstr "Modeller"
 msgid "Models Tab (General)"
 msgstr "Modeller Sekmesi (Genel)"
 
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Modified"
 msgstr "Değiştirildi"
 
@@ -2958,13 +3235,17 @@ msgstr ""
 msgid "Multilingual SEO"
 msgstr "Çok dilli SEO"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Multilingual SEO overview"
 msgstr "Çok dilli SEO genel bakış"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:338
 msgid "My Account"
 msgstr "Hesabım"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:245
+msgid "Name"
+msgstr "İsim"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -3000,11 +3281,18 @@ msgstr ""
 msgid "Navigations"
 msgstr "Gezintiler"
 
-#: ai/includes/Admin/SettingsPage.php:219
+#. translators: %s: technical error detail from the HTTP layer
+#: ai/includes/Providers/AbstractProvider.php:134
+#, php-format
+msgid "Network error — could not reach the provider: %s"
+msgstr "Ağ hatası — sağlayıcıya ulaşılamadı: %s"
+
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Ağ hatası — WordPress AJAX uç noktasına ulaşılamadı."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:769
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:814
 msgid "Network error."
 msgstr "Ağ hatası."
 
@@ -3030,20 +3318,24 @@ msgstr ""
 "txt Sitemap: yönergesi aracılığıyla keşfediyor — ki LF zaten yapılandırdı. "
 "Google, bir sonraki taramasında alacaktır."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
+msgid "No active plugins detected."
+msgstr "Aktif eklenti bulunamadı."
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:224
 msgid "No AI provider configured."
 msgstr "AI sağlayıcısı yapılandırılmadı."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1409
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "AI sağlayıcısı yapılandırılmadı. Ayarlar → API Anahtarları'nda bir API "
 "anahtarı ekleyin."
 
 #. translators: %s is a date-range label like "Today" or "Last 7 days".
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:143
 #, php-format
 msgid ""
 "No AI usage recorded in the selected window (%s). Pick a wider range above."
@@ -3051,7 +3343,7 @@ msgstr ""
 "Seçilen pencerede Yapay Zeka kullanımı kaydı yok (%s). Yukarıdaki daha geniş "
 "bir aralık seçin."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:115
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
 msgid ""
 "No AI usage recorded yet. Once an editor runs a translation, generates a "
 "meta description, or uses any other AI feature, totals will appear here."
@@ -3060,11 +3352,16 @@ msgstr ""
 "açıklaması oluşturursa veya başka bir Yapay Zeka özelliği kullanırsa, "
 "toplamlar burada görünecek."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:219
 msgid "No API key configured for this provider."
 msgstr "Bu sağlayıcı için yapılandırılmış API anahtarı yok."
 
-#: ai/includes/Admin/SettingsPage.php:330
+#: ai/includes/Providers/AbstractProvider.php:121
+msgid "No API key configured — enter your key in the AI Provider settings."
+msgstr ""
+"API anahtarı yapılandırılmadı — anahtarınızı AI Sağlayıcı ayarlarına girin."
+
+#: ai/includes/Admin/SettingsPage.php:329
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -3081,6 +3378,14 @@ msgid ""
 msgstr ""
 "Çakışan SEO eklentisi tespit edilmedi. Lingua Forge, tüm SEO çıktısını "
 "bağımsız olarak yönetiyor."
+
+#: ai/includes/Providers/OpenAI.php:91
+msgid ""
+"No credits remaining — top up your OpenAI account at platform.openai."
+"com/account/billing."
+msgstr ""
+"Kredi kalmadı — OpenAI hesabınızı platform.openai.com/account/billing "
+"adresinden yükleyin."
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid ""
@@ -3117,7 +3422,7 @@ msgstr ""
 "Henüz terimlik girişi yok. Çevirilerde terimlerin uygulanmaya başlaması için "
 "aşağıda bir tane ekleyin."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1094
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -3125,7 +3430,7 @@ msgstr ""
 "H1 bulunamadı. Genellikle gönderi başlığı H1'dir — temanızın bunu "
 "çıkardığından emin olun."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1146
 msgid "No images found in content."
 msgstr "İçerde resim bulunamadı."
 
@@ -3133,32 +3438,36 @@ msgstr "İçerde resim bulunamadı."
 msgid "No internal links found to update."
 msgstr "Güncellenecek dahili bağlantı bulunamadı."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "No key"
+msgstr "Anahtar yok"
+
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
 msgstr "Haritalanacak dil'e özgü şablon parçası bulunamadı."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1001
 msgid "No LF meta description set — using excerpt/content."
 msgstr "LF meta açıklaması ayarlanmadı — özet/metin kullanılıyor."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:676
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr ""
 "LF yeniden yazma kuralları bulunamadı. Bu beklenmedikse kalıcı bağlantıları "
 "temizleyin."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1174
 msgid "No links found."
 msgstr "Bağlantı bulunamadı."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1173
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Bağlantı bulunamadı. Dahili bağlantılar taranabilirliği ve kullanıcı "
 "navigasyonunu artırır."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1005
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -3172,6 +3481,10 @@ msgstr "Güncellenecek gezinme referansı yok."
 msgid "No override files uploaded yet."
 msgstr "Henüz geçersiz kılma dosyası yüklenmedi."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:129
+msgid "No PHP limit"
+msgstr "PHP sınırı yok"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
 msgid ""
 "No physical robots.txt file found. WordPress is generating it virtually and "
@@ -3180,26 +3493,26 @@ msgstr ""
 "Fiziksel robots.txt dosyası bulunamadı. WordPress sanal olarak oluşturuyor "
 "ve LF'nin Site Haritası yönergesi otomatik olarak dahil edilmiştir."
 
-#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "No published posts found for the selected filters."
 msgstr "Seçilen filtreler için yayınlanmış gönderi bulunamadı."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1529
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "AI sağlayıcısından yanıt alınamadı. API anahtarınızı kontrol edin ve tekrar "
 "deneyin."
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "Sağlayıcıdan yanıt alınamadı — detaylar için hata günlüğünü kontrol edin."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:412
 msgid "No secondary languages configured."
 msgstr "İkincil diller yapılandırılmadı."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:348
 msgid ""
 "No secondary languages configured. Install a language pack above to enable "
 "template scaffolding."
@@ -3219,7 +3532,7 @@ msgstr "Henüz kaynak sayfa bağlantısı yok."
 msgid "No template part references needed updating."
 msgstr "Güncellenecek şablon parçası referansı yok."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid ""
 "No third-party SEO plugins detected. Lingua Forge handles all multilingual "
 "SEO output."
@@ -3227,7 +3540,7 @@ msgstr ""
 "Üçüncü taraf SEO eklentisi tespit edilmedi. Lingua Forge tüm çok dilli SEO "
 "çıktısını yönetir."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
 msgstr "Başlık ayarlanmadı."
 
@@ -3239,7 +3552,7 @@ msgstr ""
 "Çevrilmiş içerik bulunamadı. Gönderiler çevrildikçe site haritası "
 "doldurulacaktır."
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:370
 msgid "No translation found — analyzed the source language version."
 msgstr "Çeviri bulunamadı — kaynak dil sürümünü analiz etti."
 
@@ -3247,13 +3560,9 @@ msgstr "Çeviri bulunamadı — kaynak dil sürümünü analiz etti."
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "{lang} çevirisi kaydedilmedi (TRID eksik)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:371
 msgid "No — WooCommerce integration class not loaded"
 msgstr "Hayır — WooCommerce entegrasyon sınıfı yüklenmedi"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
-msgid "Not set — AI features are disabled."
-msgstr "Ayarlanmadı — AI özellikleri devre dışı bırakıldı."
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3263,6 +3572,7 @@ msgstr ""
 "Henüz oluşturulmadı. Site haritası, site haritası URL'sine ilk ziyaret "
 "sırasında oluşturulur ve 24 saat önbelleğe alınır."
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:247
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
 msgid "Notes"
@@ -3284,7 +3594,7 @@ msgstr "Bildirim ayarları"
 msgid "Notify search engines"
 msgstr "Arama motorlarını bilgilendir"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
 msgid "Numeric permalink structure is not supported."
 msgstr "Sayısal kalıcı bağlantı yapısı desteklenmiyor."
 
@@ -3336,9 +3646,14 @@ msgstr ""
 "Tarayıcının yerel Web Paylaşım ekranını açın (iOS, Android, bazı masaüstleri)"
 ". Desteklenmiyorsa panoya kopyalama ile geri döner."
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:107
+msgid "OpenAI Platform"
+msgstr "OpenAI Platformu"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
 msgid ""
@@ -3365,6 +3680,16 @@ msgid ""
 msgstr ""
 "İsteğe bağlı. Yandex, zaten robots.txt'den Sitemap: yönergesini okuyor — bu, "
 "bir sonraki planlı kontrolü beklemek yerine hemen yeniden taramayı tetikler."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+msgid "Order storage"
+msgstr "Sipariş depolama"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:359
+msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
+msgstr ""
+"WP'deki siparişler — LF yönlendirmesinden shop_order'un hariç tutulduğundan "
+"emin olun."
 
 #: ai/includes/Features/ContentGenerator.php:197
 msgid "Output"
@@ -3394,7 +3719,7 @@ msgstr "WooCommerce ürün sayfalarında Ürün şeması çıkışı"
 msgid "Output Schema.org JSON-LD in wp_head"
 msgstr "WP_head'da Schema.org JSON-LD Çıkışı"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:138
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:158
 msgid "Output tokens"
 msgstr "Çıktı tokenleri"
 
@@ -3403,11 +3728,11 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "Ana sayfa ve blog dizininde WebSite şemasını çıkart"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "Overall SEO score"
 msgstr "Genel SEO skoru"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:212
 msgid "overridden"
 msgstr "geçersiz kılındı"
 
@@ -3443,7 +3768,7 @@ msgstr "Genel Bakış"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:383
 msgid "Page"
 msgstr "Sayfa"
 
@@ -3463,11 +3788,11 @@ msgstr "Metni yapıştırın veya önce düzenleyicide metni seçin…"
 msgid "Paste text, or select text on the page first…"
 msgstr "Metni yapıştırın veya önce sayfada metni seçin…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:75
 msgid "Paste your API key…"
 msgstr "API anahtarınızı yapıştırın…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:109
 msgid "Path prefix (/de/)"
 msgstr "Yol ön eki (/de/)"
 
@@ -3475,7 +3800,7 @@ msgstr "Yol ön eki (/de/)"
 msgid "Path prefix — example.com/de/"
 msgstr "Yol öneki — example.com/tr/"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:249
 msgid ""
 "Path routing requires a post-name based permalink structure. Change it in"
 msgstr ""
@@ -3504,9 +3829,13 @@ msgstr ""
 "aracılığıyla CPT gönderinize yapıştırın veya Yeniden Kullanılabilir Blok "
 "için başlangıç noktası olarak kullanın."
 
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Pattern translation failed."
 msgstr "Desen çevirisi başarısız oldu."
+
+#: ai/includes/Providers/AbstractProvider.php:83
+msgid "Payment required — your account has no remaining credits."
+msgstr "Ödeme gerekli — hesabınızda kalan kredi yok."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
 msgid "Per-Post Analysis"
@@ -3526,15 +3855,15 @@ msgstr ""
 msgid "Permalink rules flushed successfully."
 msgstr "Kalıcı bağlantı kuralları başarıyla temizlendi."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
 msgid "Permalink Structure"
 msgstr "Kalıcı Bağlantı Yapısı"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr "Kalıcı bağlantı yapısı, Lingua Forge yol yönlendirmesiyle uyumludur."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:475
 msgid ""
 "Permanently deletes all templates, template parts, patterns, navigation "
 "menus, posts, pages, custom post types, products, and product variations "
@@ -3549,7 +3878,7 @@ msgstr ""
 "Bu işlem geri alınamaz."
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:455
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:497
 #, php-format
 msgid ""
 "Permanently uninstall %s? This will delete all translated content for this "
@@ -3579,22 +3908,23 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:701
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1388
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:990
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1060
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:577
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:619
 msgid "Permission denied."
 msgstr "İzin reddedildi."
 
@@ -3603,19 +3933,19 @@ msgstr "İzin reddedildi."
 msgid "Persuasive"
 msgstr "İkna edici"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:138
 msgid "PHP constant"
 msgstr "PHP sabiti"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:125
 msgid "PHP max_execution_time"
 msgstr "PHP maksimum yürütme süresi"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:145
 msgid "PHP memory_limit"
 msgstr "PHP bellek sınırı"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:90
 msgid "PHP version"
 msgstr "PHP sürümü"
 
@@ -3647,7 +3977,7 @@ msgstr "Yandex'e ping at"
 msgid "Plain language"
 msgstr "Düz dil"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:248
 msgid "Plain permalinks are not supported."
 msgstr "Düz kalıcı bağlantılar desteklenmiyor."
 
@@ -3660,6 +3990,7 @@ msgid "Please enter some text first…"
 msgstr "Lütfen önce biraz metin girin…"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "Plugin"
 msgstr "Eklenti"
 
@@ -3667,11 +3998,11 @@ msgstr "Eklenti"
 msgid "Post"
 msgstr "Gönderi"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:783
 msgid "Post not found or not published."
 msgstr "Gönderi bulunamadı veya yayınlanmadı."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1403
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Gönderi bulunamadı."
@@ -3681,15 +4012,23 @@ msgid "Post on X / Twitter"
 msgstr "X / Twitter'da gönder"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:570
 msgid "Post type"
 msgstr "Gönderi türü"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+msgid ""
+"Post type slugs separated by commas or newlines. Changes take effect "
+"immediately on save — no permalink flush required."
+msgstr ""
+"Virgül veya yeni satırla ayrılmış gönderi tipi takma adları. Değişiklikler "
+"kaydedildiğinde hemen etkili olur — kalıcı bağlantı temizlemesine gerek yok."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "Gönderi Türleri"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:557
 msgid ""
 "Posts without _lf_lang are invisible to every Lingua Forge language filter. "
 "This can happen when content is imported or created before the plugin was "
@@ -3713,11 +4052,14 @@ msgstr ""
 "stok modeli). Etiketler, LF'nin Open Graph modülü \"Tam\" veya \"Otomatik\" "
 "modda ayarlandığında ve çakışan SEO eklentisi algılanmadığında çıktı verir."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:117
+msgid "Primary content language"
+msgstr "Birincil içerik dili"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
 msgid "Primary Language"
 msgstr "Birincil Dil"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "Birincil dil"
@@ -3744,6 +4086,7 @@ msgid "Product"
 msgstr "Ürün"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+#: ai/includes/Admin/SettingsHelp.php:145
 msgid "Product / eCommerce"
 msgstr "Ürün / E-ticaret"
 
@@ -3756,26 +4099,44 @@ msgid "Product — WooCommerce product pages"
 msgstr "Ürün — WooCommerce ürün sayfaları"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Profile"
 msgstr "Profil"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+#: ai/includes/Admin/SettingsHelp.php:141
+msgid ""
+"Profiles adapt thresholds and weights to the type of content being analysed. "
+"Profile is resolved automatically; you can override it per analysis run from "
+"the profile dropdown."
+msgstr ""
+"Profiller, analiz edilen içerik türüne göre eşik ve ağırlıkları uyarlıyor. "
+"Profil otomatik olarak çözülür; profil açılır menüsünden her analiz "
+"çalıştırmasında üzerine yazabilirsiniz."
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:154
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:65
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:161
 msgid "Provider"
 msgstr "Sağlayıcı"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
-msgid ""
-"Provider returned no text. Check the WordPress error log for the detailed "
-"failure reason."
-msgstr ""
-"Sağlayıcı herhangi bir metin döndürmedi. Ayrıntılı başarısızlık nedenini "
-"WordPress hata günlüğünde kontrol edin."
+#. translators: 1: HTTP status code, 2: error message from the provider API
+#: ai/includes/Providers/AbstractProvider.php:102
+#, php-format
+msgid "Provider error (HTTP %1$d): %2$s"
+msgstr "Sağlayıcı hatası (HTTP %1$d): %2$s"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:85
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:268
+msgid ""
+"Provider returned no response. Check the WordPress error log for details."
+msgstr ""
+"Sağlayıcı yanıt vermedi. Detaylar için WordPress hata günlüğünü kontrol edin."
+
+#: ai/includes/Providers/AbstractProvider.php:97
+msgid "Provider service temporarily unavailable — try again in a moment."
+msgstr "Sağlayıcı hizmeti geçici olarak kullanılamıyor — tekrar deneyin."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Quality"
 msgstr "Kalite"
 
@@ -3787,7 +4148,7 @@ msgstr "Kalite (varsayılan — Sonnet / GPT-4o / Gemini Pro)"
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "Kalite (Sonnet / GPT-4o / Gemini Pro)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "Quality model"
 msgstr "Kalite modeli"
 
@@ -3798,6 +4159,10 @@ msgid ""
 msgstr ""
 "Kalite: gönderi çevirisi ve içerik oluşturma için kullanılır — daha yüksek "
 "kalite, daha yüksek maliyet."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Query Filter Exclusions"
+msgstr "Sorgu Filtreleri Hariç Tutmaları"
 
 #: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
@@ -3819,6 +4184,14 @@ msgstr ""
 "veya blok açılır pencerelerinden talep üzerine kısa pasajlar çevrilir. "
 "Yanıtları hızlı ve maliyet etkin tutmak için tam sayfa çeviriden ayrı, daha "
 "hafif bir yapılandırma kullanır."
+
+#: ai/includes/Providers/AbstractProvider.php:92
+msgid ""
+"Rate limited — too many requests sent to the provider; wait a moment and try "
+"again."
+msgstr ""
+"Hız sınırına takıldı — sağlayıcıya çok fazla istek gönderildi; bir süre "
+"bekleyin ve tekrar deneyin."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
@@ -3851,12 +4224,12 @@ msgstr "Tekrar tarama…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Re-translate"
 msgstr "Yeniden çevir"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Reading time"
 msgstr "Okuma süresi"
 
@@ -3872,26 +4245,26 @@ msgstr ""
 msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
 msgstr "Daha da iyileştir — örn. \"daha kısa yap\" veya \"resmi ton kullan\"…"
 
-#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1288
+#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1296
 msgid "Refine further:"
 msgstr "Daha fazla iyileştir:"
 
 #. translators: %d is the refinement iteration number
-#: ai/assets/admin-content-gen-modal.js:326 ai/assets/admin.js:1446
+#: ai/assets/admin-content-gen-modal.js:336 ai/assets/admin.js:1454
 #: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr "Düzenleme"
 
-#: ai/assets/admin-content-gen-modal.js:302 ai/assets/admin.js:1427
+#: ai/assets/admin-content-gen-modal.js:312 ai/assets/admin.js:1435
 msgid "Refinement failed — please try again."
 msgstr "Düzenleme başarısız oldu — lütfen tekrar deneyin."
 
-#: ai/assets/admin-content-gen-modal.js:274 ai/assets/admin.js:1404
+#: ai/assets/admin-content-gen-modal.js:284 ai/assets/admin.js:1412
 #: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr "Düzenleniyor…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:221
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
 msgid ""
 "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
 " and archive rewrites are all in sync. Necessary after changing the primary "
@@ -3902,37 +4275,44 @@ msgstr ""
 "Birincil dil değiştirildikten veya yeni dil desteği eklendikten sonra "
 "gereklidir."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:124
 msgid "Remove stored key"
 msgstr "Depolanan anahtarı kaldır"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
-msgid ""
-"Repair assigns the source language to every affected post. Run after "
-"importing content or after initial plugin activation on an existing site."
-msgstr ""
-"Onarım, etkilenen her gönderiye kaynak dil atar. İçerik içe aktarıldıktan "
-"veya ilk eklenti etkinleştirildikten sonra çalıştırın."
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:763
 msgid "Repair failed."
 msgstr "Onarım başarısız oldu."
 
-#. translators: %s: source language code shown in upper case, e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#. translators: %s: source language code in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:616
 #, php-format
-msgid "Repair — assign _lf_lang = %s to all affected posts"
-msgstr "Onarım — tüm etkilenen gönderilere _lf_lang = %s atayın"
+msgid ""
+"Repair tags every routable post listed above with _lf_lang = %s. Posts in "
+"routing-excluded post types are not touched. Only run this after importing "
+"content or on initial activation — do not use as a bulk language-"
+"reassignment tool."
+msgstr ""
+"Yukarıda listelenen yönlendirilebilir gönderilere _lf_lang = %s ile onarım "
+"yapın. Yönlendirme hariç tutulan gönderi türlerindeki gönderilere dokunulmaz."
+" Bu işlemi yalnızca içerik içe aktardıktan veya ilk etkinleştirmeden sonra "
+"çalıştırın — toplu dil yeniden atama aracı olarak kullanmayın."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+#. translators: %s: source language code shown in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all routable posts above"
+msgstr ""
+"Onarım — yukarıdaki tüm yönlendirilebilir gönderilere _lf_lang = %s atayın"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
 msgid "Repairing…"
 msgstr "Onarılıyor…"
 
-#: ai/includes/Admin/SettingsHelp.php:169
+#: ai/includes/Admin/SettingsHelp.php:200
 msgid "Report an issue on GitHub"
 msgstr "GitHub'da sorun bildir"
 
-#: ai/assets/admin-content-gen-modal.js:340 ai/assets/admin.js:1455
+#: ai/assets/admin-content-gen-modal.js:350 ai/assets/admin.js:1463
 msgid "Request failed — please try again."
 msgstr "İstek başarısız oldu — lütfen tekrar deneyin."
 
@@ -3949,11 +4329,11 @@ msgstr "İstek başarısız oldu. Bağlantınızı kontrol edin."
 msgid "Request failed. Please try again."
 msgstr "İstek başarısız oldu. Lütfen tekrar deneyin."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:156
 msgid "Requests"
 msgstr "İstekler"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:217
 msgid "requests / day"
 msgstr "günde istek"
 
@@ -3975,7 +4355,7 @@ msgstr "Yeniden çevir"
 msgid "Retranslating…"
 msgstr "Yeniden çeviriliyor…"
 
-#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Review carefully — links and slugs not updated."
 msgstr "Dikkatlice incele — bağlantılar ve slug'lar güncellenmedi."
 
@@ -3995,7 +4375,7 @@ msgstr "Revizyon"
 msgid "Revision Type"
 msgstr "Revizyon Türü"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:661
 msgid "Rewrite Rules"
 msgstr "Yeniden Yazma Kuralları"
 
@@ -4008,7 +4388,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt, Site Haritası yönergesi ile güncellendi."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:632
 msgid "Router"
 msgstr "Yönlendirici"
 
@@ -4051,7 +4431,7 @@ msgstr "Hreflang Ayarlarını Kaydet"
 msgid "Save Open Graph Settings"
 msgstr "Open Graph Ayarlarını Kaydet"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:214
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
 msgid "Save Router Settings"
 msgstr "Yönlendirici Ayarlarını Kaydet"
 
@@ -4059,7 +4439,7 @@ msgstr "Yönlendirici Ayarlarını Kaydet"
 msgid "Save Schema.org Settings"
 msgstr "Schema.org Ayarlarını Kaydet"
 
-#: ai/includes/Admin/SettingsPage.php:675
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Save Settings"
 msgstr "Ayarları Kaydet"
 
@@ -4071,7 +4451,7 @@ msgstr "Site Haritası Ayarlarını Kaydet"
 msgid "Save Social Share Settings"
 msgstr "Sosyal Paylaşım Ayarlarını Kaydet"
 
-#: ai/assets/admin-diff-modal.js:273
+#: ai/assets/admin-diff-modal.js:290
 msgid "Save the post to persist changes."
 msgstr "Değişiklikleri kalıcı hale getirmek için gönderiyi kaydedin."
 
@@ -4119,11 +4499,19 @@ msgstr "Schema.org çıkışı"
 msgid "Schema.org settings saved."
 msgstr "Schema.org ayarları kaydedildi."
 
-#: ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Score"
 msgstr "Puan"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Score computation"
+msgstr "Puan hesaplama"
+
+#: ai/includes/Admin/SettingsHelp.php:157
+msgid "Score history and badges"
+msgstr "Puan geçmişi ve rozetler"
+
+#: ai/includes/Admin/SettingsPage.php:376
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -4157,14 +4545,14 @@ msgstr "Arama Sonuçları"
 msgid "Security check failed — file path is not permitted."
 msgstr "Güvenlik kontrolü başarısız — dosya yolu izin verilmedi."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:294
 msgid ""
 "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr ""
 "Tüm özelliklerin davranış tablosu için Ayarlar → SEO → Uyumluluk bölümüne "
 "bakın."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:353
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
@@ -4194,7 +4582,7 @@ msgstr "WhatsApp aracılığıyla gönder"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:636
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "SEO"
 msgstr "SEO"
 
@@ -4216,7 +4604,7 @@ msgstr ""
 "Algılanan SEO eklentisi: %s. LF, yalnızca og:locale ve og:locale:alternate "
 "çıkartıyor; algılanan eklenti tam OG setini yönetir."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:281
 msgid "SEO Plugins"
 msgstr "SEO Eklentileri"
 
@@ -4224,11 +4612,19 @@ msgstr "SEO Eklentileri"
 msgid "SEO plugins and conflict avoidance:"
 msgstr "SEO eklentileri ve çakışma önleme:"
 
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "SEO Score System"
+msgstr "SEO Puan Sistemi"
+
+#: ai/includes/Admin/SettingsHelp.php:131
+msgid "SEO Scores"
+msgstr "SEO Puanları"
+
 #: ai/includes/Admin/SettingsHelp.php:121
 msgid "SEO Tab"
 msgstr "SEO Sekmesi"
 
-#: ai/includes/Admin/SettingsHelp.php:149
+#: ai/includes/Admin/SettingsHelp.php:180
 msgid "Server setup (subdomain)"
 msgstr "Sunucu kurulumu (alt alan adı)"
 
@@ -4242,16 +4638,16 @@ msgstr ""
 "yazılar, Lingua Forge meta kutusu aracılığıyla Çeviri ve İçerik Oluşturma "
 "için bunu geçersiz kılabilir."
 
-#: ai/includes/Admin/SettingsPage.php:414
+#: ai/includes/Admin/SettingsPage.php:413
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Settings saved."
 msgstr "Ayarlar kaydedildi."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
 msgid "Settings → Permalinks"
 msgstr "Ayarlar → Kalıcı Bağlantılar"
 
@@ -4271,9 +4667,23 @@ msgstr "Mastodon'da paylaş"
 msgid "Share via email (mailto:)"
 msgstr "E-posta ile paylaş (mailto:)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
+msgid "Shared / compatibility mode"
+msgstr "Paylaşılan / uyumluluk modu"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:335
 msgid "Shop"
 msgstr "Mağaza"
+
+#: ai/includes/Admin/SettingsHelp.php:154
+msgid ""
+"Short content (3 paragraphs or fewer) is never penalised for missing "
+"subheadings, regardless of profile. A concise page does not benefit from "
+"forced heading structure."
+msgstr ""
+"Kısa içerik (3 paragraf veya daha az) başlık eksikliği nedeniyle hiçbir "
+"zaman cezalandırılmaz, profil ne olursa olsun. Özlü bir sayfa zorunlu başlık "
+"yapısından fayda sağlamaz."
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -4295,7 +4705,7 @@ msgid "Single %s"
 msgstr "Tek %s"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:981
 #, php-format
 msgid ""
 "Single-word title (%d chars) — adding a second word improves clarity and "
@@ -4366,27 +4776,27 @@ msgstr "Sosyal Paylaşım"
 msgid "Social Share settings saved."
 msgstr "Sosyal Paylaşım ayarları kaydedildi."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "Some link fixes failed."
 msgstr "Bazı bağlantı düzeltmeleri başarısız oldu."
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "Some nav ref fixes failed."
 msgstr "Bazı navigasyon referansı düzeltmeleri başarısız oldu."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "Some part fixes failed."
 msgstr "Bazı parça düzeltmeleri başarısız oldu."
 
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some parts could not be created."
 msgstr "Bazı parçalar oluşturulamadı."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "Some templates could not be created."
 msgstr "Bazı şablonlar oluşturulamadı."
 
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some translations failed."
 msgstr "Bazı çeviriler başarısız oldu."
 
@@ -4413,7 +4823,7 @@ msgstr "Kaynak dili"
 msgid "Source term"
 msgstr "Kaynak terim"
 
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Source title"
 msgstr "Kaynak başlık"
 
@@ -4430,6 +4840,20 @@ msgstr ""
 "Standart, her özelliğin kendi ayarlanmış sıcaklığını kullanır: Çeviri T=0.2 "
 "(kesin), Hızlı Çeviri T=0.4, İçerik Üretici T=0.6 (yaratıcı). Diğer ön "
 "ayarlar, tüm özelliklerde tek bir sabit sıcaklık uygular."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:135
+msgid ""
+"Start typing in any field to see model suggestions, or use the reference "
+"table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini "
+"Flash) are fully sufficient for translation and content generation — "
+"flagship \"max\" models add cost with minimal quality gain for structured "
+"text."
+msgstr ""
+"Herhangi bir alana yazmaya başlayın veya aşağıdaki referans tablosunu "
+"kullanın. Hafif ve orta seviye Kalite modelleri (Haiku, GPT-4o mini, Gemini "
+"Flash) çeviri ve içerik üretimi için tamamen yeterlidir — amiral gemisi "
+"\"max\" modeller maliyeti artırır, yapısal metin için kalite artışı "
+"minimaldir."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
@@ -4462,7 +4886,7 @@ msgstr ""
 msgid "Structured Outline"
 msgstr "Yapılandırılmış Taslak"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:108
 msgid "Subdomain (de.example.com)"
 msgstr "Alt alan adı (de.ornek.com)"
 
@@ -4518,12 +4942,12 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "Engellendi: %s."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:256
 msgid "Switch to a post-name based structure in"
 msgstr "Yapıya geçin ve post-ismi tabanlı yapıya geçin in"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
-#: ai/includes/Admin/SettingsPage.php:639
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "System"
 msgstr "Sistem"
 
@@ -4632,11 +5056,11 @@ msgstr "Şablon Parçaları"
 msgid "Templates"
 msgstr "Şablonlar"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:98
 msgid "Test connection"
 msgstr "Bağlantıyı test et"
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:214
 msgid "Testing…"
 msgstr "Test ediliyor…"
 
@@ -4665,7 +5089,7 @@ msgstr ""
 "devre dışı bırakın. Devre dışı bırakmak, önbelleğe alınmış girişleri silmez "
 "— yeniden etkinleştirme onları geri yükler."
 
-#: ai/assets/admin-diff-modal.js:237
+#: ai/assets/admin-diff-modal.js:254
 msgid "The editor did not accept the content — please try again."
 msgstr "Editör içeriği kabul etmedi — lütfen tekrar deneyin."
 
@@ -4770,7 +5194,17 @@ msgstr ""
 "Bu dipnotlar kaynak sayfadan gelir ve burada sadece referans olarak "
 "gösterilir. Bunları blok düzenleyici kullanarak bu sayfaya ekleyin."
 
-#: ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:266
+msgid ""
+"This catalog is updated with each Lingua Forge release. Testing a connection "
+"in the API Keys tab also fetches the live model list from the provider and "
+"refreshes the suggestions above."
+msgstr ""
+"Bu katalog, her Lingua Forge sürümünde güncellenir. API Anahtarları "
+"sekmesinde bir bağlantı testi yapmak, sağlayıcıdan canlı model listesini de "
+"getirir ve yukarıdaki önerileri yeniler."
+
+#: ai/includes/Admin/SettingsPage.php:377
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -4786,7 +5220,7 @@ msgid ""
 msgstr "Bu kaynak sayfa. Dipnotlar doğrudan blok düzenleyicide düzenlenir."
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:132
 #, php-format
 msgid ""
 "This key is currently supplied by a server %s and cannot be removed here. "
@@ -4796,17 +5230,21 @@ msgstr ""
 "kaldırılamaz. Üzerine yeni bir anahtar girerek veritabanı değeriyle üzerine "
 "yazabilirsiniz."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:500
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:542
 msgid "This language is protected and cannot be uninstalled."
 msgstr "Bu dil korumalıdır ve kaldırılamaz."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:442
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid ""
 "This language matches the WordPress instance locale and cannot be "
 "uninstalled."
 msgstr "Bu dil, WordPress örneği yerel ayarına uyar ve kaldırılamaz."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:246
+msgid "Tier"
+msgstr "Seviye"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:226
 msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr ""
@@ -4814,13 +5252,25 @@ msgstr ""
 "kaydedin."
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:353
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Title"
 msgstr "Başlık"
 
+#: ai/includes/Admin/SettingsHelp.php:144
+msgid ""
+"Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts "
+"· Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 "
+"chars; word count warns below 300, fails below 100; H2 required; internal "
+"links required."
+msgstr ""
+"Başlık 15 puan · Meta açıklama 20 puan · Kelime sayısı 15 puan · Başlıklar "
+"20 puan · Görseller 10 puan · Bağlantılar 10 puan. Başlık SERP sınırı 60 "
+"karakter; meta 120–210 karakter; kelime sayısı 300'ün altında uyarır, 100'ün "
+"altında başarısız olur; H2 zorunludur; dahili bağlantılar zorunludur."
+
 #. translators: %1$d: character count, %2$d: SERP limit
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:971
 #, php-format
 #| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
@@ -4828,12 +5278,25 @@ msgstr ""
 "Başlık %1$d karakter — SERPs'te kesilmiş olabilir (hedef %2$d altında)."
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:976
 #, php-format
-msgid "Title is only %d chars — aim for more than 10 characters."
-msgstr "Başlık sadece %d karakter — 10 karakterden fazla olmasına çalışın."
+#| msgid "Title is only %d chars — aim for more than 10 characters."
+msgid "Title is only %d chars — aim for at least 10 characters."
+msgstr "Başlık sadece %d karakter — en az 10 karakter hedefleyin."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+#: ai/includes/Admin/SettingsHelp.php:138
+msgid ""
+"Title scoring rules (all profiles): fail if empty; warn if fewer than 10 "
+"characters; warn if only one word; warn if longer than the profile's SERP "
+"limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 "
+"characters, at least 2 words, and within the SERP limit."
+msgstr ""
+"Başlık puanlama kuralları (tüm profiller): boşsa başarısız; 10 karakterden "
+"azsa uyarı; sadece bir kelime ise uyarı; profilin SERP sınırını aşarsa (Blog "
+"için 60 karakter, Ürün/Landing için 70); en az 10 karakter, en az 2 kelime "
+"ve SERP sınırında ise tamamdır."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:163
 msgid ""
 "To use a custom encryption secret (instead of the derived wp_salt value), "
 "add this to wp-config.php:"
@@ -4874,11 +5337,11 @@ msgstr "Ton:"
 msgid "Too many AI requests. Please retry in %d seconds."
 msgstr "Çok fazla AI isteği. Lütfen %d saniye içinde tekrar deneyin."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:177
 msgid "Total"
 msgstr "Toplam"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:139
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:159
 msgid "Total tokens"
 msgstr "Toplam tokenler"
 
@@ -4889,9 +5352,9 @@ msgstr "Toplam tokenler"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:271
-#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:276 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4957,9 +5420,9 @@ msgstr ""
 "URL'leri ve şablon slug'ları otomatik olarak güncellenmez."
 
 #: ai/includes/Admin/PostListColumn.php:235
-#: ai/includes/Admin/SettingsPage.php:258
-#: ai/includes/Admin/SettingsPage.php:272
-#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Çeviriliyor…"
@@ -5021,7 +5484,7 @@ msgstr[1] "Çeviri Belleği temizlendi. %d önbelleğe alınmış blok kaldırı
 msgid "Translation Memory setting saved."
 msgstr "Çeviri Belleği ayarı kaydedildi."
 
-#: ai/includes/Admin/SettingsHelp.php:135
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid ""
 "Translation Memory: stores the full translated post per content hash. Clear "
 "it when you want to force a retranslation of all posts regardless of whether "
@@ -5031,12 +5494,11 @@ msgstr ""
 "değişmiş olsa da tüm gönderilerin yeniden çevrilmesini zorlamak "
 "istediğinizde temizleyin."
 
-#: ai/includes/Admin/SettingsHelp.php:150
+#: ai/includes/Admin/SettingsHelp.php:181
 msgid "Translation workflow"
 msgstr "Çeviri iş akışı"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:86
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Translation, Content Generator"
 msgstr "Çeviri, İçerik Üretici"
 
@@ -5046,7 +5508,7 @@ msgstr "H2'yi H1 eşdeğeri olarak kabul et"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Type"
 msgstr "Tür"
 
@@ -5055,9 +5517,15 @@ msgstr "Tür"
 msgid "Uli Hake"
 msgstr "Uli Hake"
 
+#. translators: %d: HTTP status code
+#: ai/includes/Providers/AbstractProvider.php:108
+#, php-format
+msgid "Unexpected provider error (HTTP %d)."
+msgstr "Beklenmedik sağlayıcı hatası (HTTP %d)."
+
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:427
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:465
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:469
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:507
 #, php-format
 msgid "Uninstall %s"
 msgstr "Kaldır %s"
@@ -5074,7 +5542,7 @@ msgstr "Kaldırma ayarı kaydedildi."
 msgid "unknown error"
 msgstr "bilinmeyen hata"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:211
 msgid "Unknown provider."
 msgstr "Bilinmeyen sağlayıcı."
 
@@ -5098,8 +5566,7 @@ msgstr ""
 "tespit eder ve yalnızca sağlayamayacakları öğeleri ekler: og:locale (mevcut "
 "dil) ve og:locale:alternate (diğer yapılandırılmış diller)."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:216
 msgid "Unlimited"
 msgstr "Sınırsız"
 
@@ -5135,7 +5602,7 @@ msgstr ""
 "URL bir gönderiye eşlenemedi — bağlantı hedefinin var olup olmadığını "
 "kontrol edin"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:105
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "URL yapısı"
@@ -5198,7 +5665,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Özel meta açıklaması kullanılıyor."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1000
 msgid "Using LF AI meta description."
 msgstr "LF AI meta açıklaması kullanılıyor."
 
@@ -5206,8 +5673,12 @@ msgstr "LF AI meta açıklaması kullanılıyor."
 msgid "Value source"
 msgstr "Değer kaynağı"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:462
+msgid "Version"
+msgstr "Sürüm"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "View"
 msgstr "Görüntüle"
 
@@ -5235,7 +5706,7 @@ msgstr "Eklenti sitesini ziyaret et"
 msgid "Warning:"
 msgstr "Uyarı:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:364
 msgid "WcPageBridge active"
 msgstr "WcPageBridge aktif"
 
@@ -5320,6 +5791,18 @@ msgstr ""
 "Etkinleştirildiğinde, site haritası URL'si otomatik olarak robots.txt'de "
 "duyurulur ve çevrilmiş içerik kaydedildiğinde önbellek yenilenir."
 
+#: ai/includes/Admin/SettingsHelp.php:153
+msgid ""
+"When the Blog profile requires an H2 and none is found, the analyser first "
+"checks for H3 subheadings before issuing a warning. Accordion and Details "
+"blocks default to H3 for their headers; those H3s are accepted as valid "
+"structure and produce an ok result, not a warning."
+msgstr ""
+"Blog profili H2 gerektiriyorsa ve bulunamazsa, analizör önce H3 alt "
+"başlıklarını kontrol eder ve uyarı verir. Accordion ve Details blokları "
+"başlıkları için varsayılan olarak H3 kullanır; bu H3'ler geçerli yapı olarak "
+"kabul edilir ve iyi sonuç verir, uyarı vermez."
+
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
 msgid ""
 "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua "
@@ -5354,16 +5837,16 @@ msgstr ""
 "etiketleri (otomatik mod) üretir. Kaldırmak, LF'yi otomatik olarak tam OG "
 "moduna geçirir."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:310
 msgid "WooCommerce is not active."
 msgstr "WooCommerce aktif değil."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:379
 msgid "WooCommerce page translations"
 msgstr "WooCommerce sayfa çevirileri"
 
@@ -5389,16 +5872,16 @@ msgstr ""
 "içerikleri WooCommerce tarafından yönetilir ve SEO düzenlemeleriyle "
 "geliştirilemez."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "WooCommerce version"
 msgstr "WooCommerce sürümü"
 
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Word count"
 msgstr "Kelime sayısı"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:86
 msgid "WordPress version"
 msgstr "WordPress sürümü"
 
@@ -5406,7 +5889,11 @@ msgstr "WordPress sürümü"
 msgid "WP core canonical active (hreflang disabled)"
 msgstr "WP çekirdek canonical aktif (hreflang devre dışı)"
 
-#: ai/includes/Admin/SettingsHelp.php:152
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:113
+msgid "WP instance language"
+msgstr "WP örneği dili"
+
+#: ai/includes/Admin/SettingsHelp.php:183
 msgid "WP-CLI reference"
 msgstr "WP-CLI referansı"
 
@@ -5419,11 +5906,11 @@ msgstr "Sorun giderme için AI istemlerini ve yanıtlarını diske yazın"
 msgid "XML Sitemap"
 msgstr "XML Site Haritası"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:368
 msgid "Yes"
 msgstr "Evet"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:156
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
 "config.php). Those sources are used automatically as a fallback when no "
@@ -5433,7 +5920,7 @@ msgstr ""
 "(örneğin wp-config.php'de). Bu kaynaklar, veritabanı anahtarı "
 "depolanmadığında otomatik olarak yedek olarak kullanılır."
 
-#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:425
 msgid "You do not have permission to manage these settings."
 msgstr "Bu ayarları yönetme izniniz yok."
 
@@ -5446,12 +5933,17 @@ msgid "{n} stale path(s)"
 msgstr "{n} eski yol(lar)"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:935
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d dakika okuma"
 msgstr[1] "~%d dakika okuma"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:192
+#| msgid "Not set — AI features are disabled."
+msgid "— AI features are disabled."
+msgstr "— AI özellikleri devre dışı bırakıldı."
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
 msgid "— Any source language —"
@@ -5470,7 +5962,7 @@ msgid "— Any —"
 msgstr "— Herhangi —"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:367
 msgid "— Auto-detect —"
 msgstr "— Otomatik algıla —"
 
@@ -5490,12 +5982,12 @@ msgstr "— Devre dışı"
 msgid "— Not detected"
 msgstr "— Algılanmadı"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr "— bir dil seçin —"
 
-#: ai/assets/admin.js:1141 ai/assets/admin.js:1305
+#: ai/assets/admin.js:1141 ai/assets/admin.js:1313
 #: ai/assets/block-action.js:334
 msgid "← Back"
 msgstr "← Geri"
@@ -5517,7 +6009,7 @@ msgstr "→ Yalnızca Yerel etiketler — temel OG'yi eklentiye devret"
 msgid "↺ Re-translate"
 msgstr "↺ Yeniden Çevir"
 
-#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1298
+#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1306
 #: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
 #: ai/assets/toolbar-translate.js:351 ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
@@ -5607,23 +6099,23 @@ msgstr "✓ Aktif — tam OG + Twitter Kartları"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Aktif — yalnızca yerel etiketler (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ All parts created."
 msgstr "✓ Tüm parçalar oluşturuldu."
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "✓ All templates created."
 msgstr "✓ Tüm şablonlar oluşturuldu."
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ All translated."
 msgstr "✓ Tüm çeviriler yapıldı."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:83
 msgid "✓ Configured"
 msgstr "✓ Yapılandırıldı"
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ Connection OK"
 msgstr "✓ Bağlantı OK"
 
@@ -5653,7 +6145,7 @@ msgstr "✓ Hreflang aktif"
 msgid "✓ In safe storage"
 msgstr "✓ Güvenli depolamada"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "✓ Language installed."
 msgstr "✓ Dil yüklendi."
 
@@ -5673,19 +6165,19 @@ msgstr "✓ LF çıktıları tam OG + Twitter Kartları"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF çıktıları — eklenti hreflang devre dışı bırakıldı"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "✓ Links fixed."
 msgstr "✓ Bağlantılar düzeltildi."
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:274
 msgid "✓ Nav refs fixed."
 msgstr "✓ Navigasyon referansları düzeltildi."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:267
 msgid "✓ Parts fixed."
 msgstr "✓ Parçalar düzeltildi."
 
-#: ai/includes/Admin/SettingsPage.php:279
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "✓ Pattern translated."
 msgstr "✓ Desen çevrildi."
 
@@ -5693,12 +6185,12 @@ msgstr "✓ Desen çevrildi."
 msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
 msgstr "✓ Fiziksel robots.txt bulundu. LF'nin Site Haritası yönergesi mevcut."
 
-#: ai/assets/admin-content-gen-modal.js:331 ai/assets/admin.js:1450
+#: ai/assets/admin-content-gen-modal.js:341 ai/assets/admin.js:1458
 msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Düzenlendi — yukarıdaki güncellenmiş taslağı inceleyin."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "✓ Translation saved"
 msgstr "✓ Çeviri kaydedildi"
 
@@ -5720,15 +6212,15 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Devre Dışı"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✗ Error:"
 msgstr "✗ Hata:"
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✗ Failed:"
 msgstr "✗ Başarısız:"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:88
 msgid "✗ Not configured"
 msgstr "✗ Yapılandırılmadı"
 

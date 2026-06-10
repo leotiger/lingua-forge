@@ -97,6 +97,26 @@ class UsageStatsPanel {
             ?>
         </p>
 
+        <p class="description">
+            <?php esc_html_e( 'Check your account, billing, or remaining credits directly on the provider console:', 'lingua-forge' ); ?>
+            <?php
+            $lf_consoles = [
+                'anthropic' => [ 'label' => __( 'Anthropic Console', 'lingua-forge' ), 'url' => 'https://console.anthropic.com/' ],
+                'openai'    => [ 'label' => __( 'OpenAI Platform',    'lingua-forge' ), 'url' => 'https://platform.openai.com/'   ],
+                'gemini'    => [ 'label' => __( 'Google AI Studio',   'lingua-forge' ), 'url' => 'https://aistudio.google.com/'   ],
+            ];
+            $lf_links = [];
+            foreach ( $lf_consoles as $lf_console ) {
+                $lf_links[] = sprintf(
+                    '<a href="%s" target="_blank" rel="noopener noreferrer">%s ↗</a>',
+                    esc_url( $lf_console['url'] ),
+                    esc_html( $lf_console['label'] )
+                );
+            }
+            echo implode( ' &middot; ', $lf_links ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- each link built with esc_url/esc_html above.
+            ?>
+        </p>
+
         <p class="lingua-forge-range-buttons">
             <?php foreach ( $ranges as $range_key => $range ) :
                 $href      = add_query_arg( 'range', $range_key, $base_url ) . '#ai-usage';

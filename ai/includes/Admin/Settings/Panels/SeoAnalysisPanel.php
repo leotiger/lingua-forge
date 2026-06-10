@@ -409,7 +409,39 @@ class SeoAnalysisPanel {
 							<?php esc_html_e( 'Never run', 'lingua-forge' ); ?>
 						<?php endif; ?>
 					</div>
-					<div class="lf-batch-card__stats" id="lf-batch-stats-<?php echo esc_attr( $lang ); ?>" style="display:none;margin:8px 0 4px;"></div>
+					<?php
+				$lf_summary = get_option( 'linguaforge_seo_batch_summary_' . $lang, null );
+				if ( is_array( $lf_summary ) ) :
+					$lf_avg      = (int) ( $lf_summary['avg_score'] ?? 0 );
+					$lf_analyzed = (int) ( $lf_summary['analyzed']  ?? 0 );
+					$lf_total    = (int) ( $lf_summary['total']     ?? 0 );
+					$lf_skipped  = (int) ( $lf_summary['skipped']   ?? 0 );
+					$lf_ok       = (int) ( $lf_summary['ok']        ?? 0 );
+					$lf_warn     = (int) ( $lf_summary['warn']      ?? 0 );
+					$lf_fail     = (int) ( $lf_summary['fail']      ?? 0 );
+					$lf_partial  = ! empty( $lf_summary['partial'] );
+					$lf_avgcolor = $lf_avg >= 80 ? '#00a32a' : ( $lf_avg >= 50 ? '#dba617' : '#d63638' );
+				?>
+				<div class="lf-batch-card__stats" id="lf-batch-stats-<?php echo esc_attr( $lang ); ?>" style="margin:8px 0 4px;">
+					<div style="font-size:1.4em;font-weight:700;color:<?php echo esc_attr( $lf_avgcolor ); ?>;line-height:1;margin-bottom:4px;">
+						<?php echo esc_html( (string) $lf_avg ); ?><span style="font-size:0.5em;font-weight:400;color:#646970;margin-left:3px;"><?php esc_html_e( 'avg', 'lingua-forge' ); ?></span>
+					</div>
+					<div style="font-size:11px;color:#646970;margin-bottom:3px;">
+						<?php echo esc_html( $lf_analyzed . ' / ' . $lf_total ); ?>
+						<?php if ( $lf_partial ) : ?><em style="color:#646970;font-size:10px;"><?php esc_html_e( '(partial)', 'lingua-forge' ); ?></em><?php endif; ?>
+						<?php if ( $lf_skipped > 0 ) : ?><em style="color:#646970;font-size:10px;"><?php echo esc_html( sprintf( '(%d skipped)', $lf_skipped ) ); ?></em><?php endif; ?>
+					</div>
+					<div style="font-size:11px;">
+						<span style="color:#00a32a;font-weight:600;">&#10003;&thinsp;<?php echo esc_html( (string) $lf_ok ); ?></span>
+						&ensp;
+						<span style="color:#dba617;font-weight:600;">&#9651;&thinsp;<?php echo esc_html( (string) $lf_warn ); ?></span>
+						&ensp;
+						<span style="color:#d63638;font-weight:600;">&#10007;&thinsp;<?php echo esc_html( (string) $lf_fail ); ?></span>
+					</div>
+				</div>
+				<?php else : ?>
+				<div class="lf-batch-card__stats" id="lf-batch-stats-<?php echo esc_attr( $lang ); ?>" style="display:none;margin:8px 0 4px;"></div>
+				<?php endif; ?>
 					<div style="display:flex;align-items:center;gap:6px;margin-top:10px;">
 						<button type="button" class="button button-small lf-batch-analyse-btn" data-lang="<?php echo esc_attr( $lang ); ?>">
 							<?php esc_html_e( 'Analyse', 'lingua-forge' ); ?>
@@ -624,9 +656,20 @@ class SeoAnalysisPanel {
 		usort( $attention, static fn( array $a, array $b ): int => $a['score'] <=> $b['score'] );
 		$attention = array_slice( $attention, 0, 200 );
 
-		// Record last batch run time so the card can show a "last run" age.
+		// Persist last-run timestamp and summary so the card can show results on
+		// the next page load without requiring another run.
 		if ( '' !== $lang ) {
 			update_option( 'linguaforge_seo_batch_last_' . $lang, time(), false );
+			update_option( 'linguaforge_seo_batch_summary_' . $lang, [
+				'avg_score' => $avg_score,
+				'analyzed'  => $analyzed,
+				'total'     => $total,
+				'skipped'   => $skipped,
+				'ok'        => $ok,
+				'warn'      => $warn,
+				'fail'      => $fail,
+				'partial'   => $partial,
+			], false );
 		}
 
 		wp_send_json_success( [

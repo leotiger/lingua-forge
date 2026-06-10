@@ -490,7 +490,7 @@ class SystemPanel {
      * @return string[]
      */
     private static function routing_excluded_post_types(): array {
-        $builtin    = [ 'wpcf7_contact_form' ];
+        $builtin    = [ 'wpcf7_contact_form', 'wp_sync_storage', 'flamingo_contact', 'flamingo_inbound' ];
         $saved      = (string) get_option( 'linguaforge_secondary_query_excluded_types', '' );
         $from_opt   = array_filter(
             array_map( 'sanitize_key', preg_split( '/[\s,]+/', $saved, -1, PREG_SPLIT_NO_EMPTY ) )

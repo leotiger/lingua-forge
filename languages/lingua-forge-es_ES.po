@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-08 19:37+0000\n"
+"PO-Revision-Date: 2026-06-10 14:46+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: es_ES\n"
@@ -41,8 +41,20 @@ msgstr "\"%s\" creado."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"producto\" (reemplaza \"artículo\")"
 
+#: ai/includes/Admin/SettingsHelp.php:155
+msgid ""
+"\"Treat H2 as H1 equivalent\" (Settings → SEO → Analysis): enable this when "
+"your theme renders the post title inside an H2 instead of an H1. The "
+"analyser promotes the first H2 to H1 so the score is not incorrectly "
+"penalised."
+msgstr ""
+"\"Tratar H2 como equivalente a H1\" (Configuración → SEO → Análisis): "
+"habilítalo cuando tu tema renderice el título de la publicación dentro de un "
+"H2 en lugar de un H1. El analizador promueve el primer H2 a H1 para que la "
+"puntuación no sea penalizada incorrectamente."
+
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1020
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -52,14 +64,14 @@ msgstr ""
 "del rango aceptado de %3$d caracteres. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1024
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d caracteres — longitud ideal. %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1015
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr ""
@@ -67,32 +79,32 @@ msgstr ""
 "(mantener por debajo de %2$d). %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1010
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d caracteres — demasiado corto (apunta a %2$d–%3$d). %4$s"
 
 #. translators: %1$d: character count, %2$d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:986
 #, php-format
 msgid "%1$d chars, %2$d words — good title."
 msgstr "%1$d caracteres, %2$d palabras — buen título."
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1195
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d internos, %2$d externos."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1152
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d de %2$d imágenes sin texto alternativo."
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1037
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
@@ -100,14 +112,14 @@ msgstr[0] "%1$d publicación etiquetada con _lf_lang = %2$s."
 msgstr[1] "%1$d publicaciones etiquetadas con _lf_lang = %2$s."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d palabras — por debajo del mínimo recomendado de %2$d."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1039
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -118,13 +130,13 @@ msgstr ""
 "palabras."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1187
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "%d enlace(s) externo(s), sin enlaces internos."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1182
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -134,14 +146,14 @@ msgstr ""
 "contenido relacionado."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1098
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr ""
 "Se encontraron %d etiquetas H1 — una página debe tener exactamente una H1."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1158
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d imágenes, todas tienen texto alternativo."
@@ -191,7 +203,7 @@ msgstr[0] "Archivo de idioma eliminado %d."
 msgstr[1] "Archivos de idioma eliminados %d."
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
@@ -223,7 +235,7 @@ msgstr[0] "%d publicación"
 msgstr[1] "%d publicaciones"
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:670
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
@@ -231,7 +243,7 @@ msgstr[0] "%d regla registrada"
 msgstr[1] "%d reglas registradas"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d words."
 msgstr "%d palabras."
@@ -276,6 +288,10 @@ msgstr ""
 "añade los enlaces alternativos multilingües. El mapa del sitio de LF se "
 "anuncia automáticamente en robots.txt."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "(active)"
+msgstr "(activo)"
+
 #. translators: %s is the average hits per cached block.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
@@ -288,7 +304,7 @@ msgstr "(promedio %.1f hits/bloque)"
 msgid "(avg %.1f hits/entry)"
 msgstr "(promedio %.1f aciertos/entrada)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:100
 msgid "(classic theme)"
 msgstr "(tema clásico)"
 
@@ -296,15 +312,23 @@ msgstr "(tema clásico)"
 msgid "(disabled)"
 msgstr "(desactivado)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:99
 msgid "(FSE / block theme)"
 msgstr "(tema FSE / bloques)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:745
 #, php-format
 msgid "(no title) #%d"
 msgstr "(sin título) #%d"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:431
+msgid "(partial)"
+msgstr "(parcial)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:130
+msgid "(server/FPM timeout still applies)"
+msgstr "(el tiempo de espera del servidor/FPM aún aplica)"
 
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
@@ -319,17 +343,35 @@ msgstr ".txt archivo(s) en el directorio"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1122
+#| msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgid "1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure."
+msgstr ""
+"1 H1 ✓ — no se encontraron subtítulos H2 o H3. Agregar H2 mejora la "
+"estructura."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1119
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "1 H1 ✓ — sin subtítulos H2 (aceptable para este tipo de contenido)."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
-msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+#. translators: %d: number of H3 headings found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1107
+#, php-format
+msgid ""
+"1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details "
+"headers). Structure is acceptable."
 msgstr ""
-"1 H1 ✓ — no se encontraron subtítulos H2. Añadir H2 mejora la estructura."
+"1 H1 ✓ — sin H2, pero se encontraron %d subtítulos H3 (por ejemplo, "
+"encabezados de acordeón/detalles). La estructura es aceptable."
+
+#. translators: %d: number of paragraphs in the content
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1118
+#, php-format
+msgid "1 H1 ✓ — short content (%d paragraph(s)), subheadings not required."
+msgstr "1 H1 ✓ — contenido corto (%d párrafos), no se requieren subtítulos."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1129
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -366,7 +408,7 @@ msgstr "<strong>{n}</strong> ruta(s) obsoleta(s)"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> problema(s) de plantilla"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:554
 msgid "_lf_lang Coverage"
 msgstr "Cobertura _lf_lang"
 
@@ -390,6 +432,14 @@ msgstr ""
 "patrón {textdomain}-{locale}.mo. La carga de un archivo con el mismo nombre "
 "que uno existente lo reemplazará."
 
+#: ai/includes/Providers/AbstractProvider.php:85
+msgid ""
+"Access forbidden — your account may be suspended or the key lacks the "
+"required permissions."
+msgstr ""
+"Acceso prohibido — tu cuenta puede estar suspendida o la clave carece de los "
+"permisos necesarios."
+
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
@@ -397,15 +447,15 @@ msgstr ""
 msgid "Action"
 msgstr "Acción"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:183
 msgid "active"
 msgstr "activo"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:265
 msgid "Active Languages"
 msgstr "Idiomas activos"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:121
 msgid "Active languages"
 msgstr "Idiomas activos"
 
@@ -418,24 +468,24 @@ msgstr ""
 "un prefijo de URL o subdominio y una etiqueta hreflang en la cabecera &lt;"
 "head&gt; de la página."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
+msgid "Active Plugins"
+msgstr "Plugins activos"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:210
 msgid "Active preset"
 msgstr "Preajuste activo"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:59
 msgid "Active Provider"
 msgstr "Proveedor activo"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
-msgid "Active provider"
-msgstr "Proveedor activo"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:94
 msgid "Active theme"
 msgstr "Tema activo"
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:290
 #, php-format
 msgid "Active: %s."
 msgstr "Activo: %s."
@@ -453,7 +503,7 @@ msgstr ""
 "corto, agregar una sección de conclusión, usar un registro más formal, "
 "incluir un bloque de preguntas frecuentes…"
 
-#: ai/assets/admin.js:1295
+#: ai/assets/admin.js:1303
 msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
@@ -461,7 +511,7 @@ msgstr ""
 "Agrega instrucciones para mejorar el borrador — por ejemplo, hacerlo más "
 "corto, agregar una sección de conclusión, usar un registro más formal…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
 msgid "Add key →"
 msgstr "Agregar clave →"
 
@@ -535,7 +585,7 @@ msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "Caché de IA limpiada. Se eliminó %d entrada."
 msgstr[1] "Caché de IA limpiada. Se eliminaron %d entradas."
 
-#: ai/includes/Admin/SettingsHelp.php:134
+#: ai/includes/Admin/SettingsHelp.php:165
 msgid ""
 "AI Cache: lists cached AI responses with hit counts. Clear the whole cache "
 "or a single post's entries. Use \"Clear\" before testing a translation "
@@ -548,7 +598,7 @@ msgstr ""
 "devuelven incluso cuando cambia el preset o el modelo de IA hasta que se "
 "elimina la entrada de la caché."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "AI Configuration"
 msgstr "Configuración de IA"
 
@@ -565,6 +615,12 @@ msgstr ""
 msgid "AI Limits & Security"
 msgstr "Límites y Seguridad de IA"
 
+#: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
+#: ai/includes/Admin/SettingsPage.php:629
+#| msgid "Active provider"
+msgid "AI Provider"
+msgstr "Proveedor IA"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:120
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:161
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:295
@@ -575,20 +631,20 @@ msgstr "El proveedor de IA devolvió una respuesta vacía."
 msgid "AI Recommendations"
 msgstr "Recomendaciones de IA"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1539
 msgid "AI returned an unexpected response format. Please try again."
 msgstr ""
 "La IA devolvió un formato de respuesta inesperado. Por favor, intenta de "
 "nuevo."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:139
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr ""
 "La traducción de IA y el análisis por lotes pueden agotarse. Se recomienda "
 "120s o más."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:637
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "AI Usage"
 msgstr "Uso de IA"
 
@@ -616,7 +672,7 @@ msgstr ""
 "sitio ahora en lugar de esperar a su próxima revisión programada de robots."
 "txt."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:562
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr ""
 "Todas las publicaciones publicadas tienen un valor _lf_lang. No se "
@@ -654,7 +710,7 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr "También generar meta descripción"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:154
 msgid "Alternative (server-side):"
 msgstr "Alternativa (lado del servidor):"
 
@@ -680,7 +736,7 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Ocurrió un error desconocido."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:447
 msgid "Analyse"
 msgstr "Analizar"
 
@@ -688,7 +744,7 @@ msgstr "Analizar"
 msgid "Analyse all languages"
 msgstr "Analizar todos los idiomas"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:366
 msgid "Analyse…"
 msgstr "Analizar…"
 
@@ -696,7 +752,7 @@ msgstr "Analizar…"
 msgid "Analysis"
 msgstr "Análisis"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:371
 msgid "Analysis request failed. Please try again."
 msgstr "Fallo en la solicitud de análisis. Por favor, intenta de nuevo."
 
@@ -708,9 +764,14 @@ msgstr "Analizando…"
 msgid "and"
 msgstr "y"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:104
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:106
+msgid "Anthropic Console"
+msgstr "Consola de Anthropic"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
@@ -721,17 +782,13 @@ msgstr "cualquiera"
 msgid "API calls saved by cache"
 msgstr "Llamadas API guardadas por caché"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:62
 msgid "API Key"
 msgstr "Clave API"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
-msgid "API key"
-msgstr "Clave API"
-
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:29
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:38
+#: ai/includes/Admin/SettingsHelp.php:83
 msgid "API Keys"
 msgstr "Claves API"
 
@@ -754,14 +811,14 @@ msgstr "Configuración de caché de respuesta API guardada."
 msgid "Appends the following line to your existing robots.txt: %s"
 msgstr "Agrega la siguiente línea a tu robots.txt existente: %s"
 
-#: ai/assets/admin-content-gen-modal.js:247 ai/assets/admin-diff-modal.js:271
-#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1229
-#: ai/assets/admin.js:1380 ai/assets/block-action.js:964
+#: ai/assets/admin-content-gen-modal.js:257 ai/assets/admin-diff-modal.js:288
+#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1237
+#: ai/assets/admin.js:1388 ai/assets/block-action.js:964
 #: ai/assets/block-action.js:989
 msgid "Applied ✓"
 msgstr "Aplicado ✓"
 
-#: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
+#: ai/assets/admin-diff-modal.js:306 ai/assets/admin.js:1254
 msgid "Apply failed — please try again."
 msgstr "La aplicación falló — por favor, intenta de nuevo."
 
@@ -777,7 +834,7 @@ msgstr "Aplicar al bloque"
 
 #: ai/assets/admin-content-gen-modal.js:89
 #: ai/assets/admin-content-gen-modal.js:140 ai/assets/admin.js:322
-#: ai/assets/admin.js:697 ai/assets/admin.js:1311
+#: ai/assets/admin.js:697 ai/assets/admin.js:1319
 msgid "Apply to Editor"
 msgstr "Aplicar al Editor"
 
@@ -789,13 +846,13 @@ msgstr "Aplicar a nota al pie"
 msgid "Apply to Meta Description"
 msgstr "Aplicar a la descripción meta"
 
-#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:280
-#: ai/assets/admin.js:1144 ai/assets/admin.js:1238
+#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:297
+#: ai/assets/admin.js:1144 ai/assets/admin.js:1246
 msgid "Apply translation"
 msgstr "Aplicar traducción"
 
 #: ai/assets/admin-content-gen-modal.js:217 ai/assets/admin-diff-modal.js:204
-#: ai/assets/admin.js:1192 ai/assets/admin.js:1357
+#: ai/assets/admin.js:1192 ai/assets/admin.js:1365
 msgid "Applying…"
 msgstr "Aplicando…"
 
@@ -840,12 +897,46 @@ msgstr ""
 "la página de inicio estática → perfil de destino; todo lo demás → perfil de "
 "blog. Elija un perfil específico para anular esto en todas las publicaciones."
 
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid ""
+"Auto-detected for the static front page; can be selected manually. Title 20 "
+"pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images "
+"15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, "
+"fails below 60; H2 and internal links optional."
+msgstr ""
+"Detectado automáticamente para la página estática; puede seleccionarse "
+"manualmente. Título 20 pts · Meta descripción 30 pts · Recuento de palabras "
+"15 pts · Encabezados 10 pts · Imágenes 15 pts · Enlaces 0 pts. Límite de "
+"SERP para el título 70 caracteres; advertencias de recuento de palabras por "
+"debajo de 150, fallos por debajo de 60; H2 y enlaces internos opcionales."
+
+#: ai/includes/Admin/SettingsHelp.php:146
+msgid ""
+"Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 "
+"pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. "
+"Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and "
+"internal links optional."
+msgstr ""
+"Detectado automáticamente para productos WooCommerce. Título 20 pts · Meta "
+"descripción 30 pts · Recuento de palabras 15 pts · Encabezados 5 pts · "
+"Imágenes 20 pts · Enlaces 0 pts. Límite de SERP para el título 70 caracteres;"
+" advertencias de recuento de palabras por debajo de 80, fallos por debajo de "
+"40; H2 y enlaces internos opcionales."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:231
+msgid "Available models reference"
+msgstr "Referencia de modelos disponibles"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:427
+msgid "avg"
+msgstr "promedio"
+
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 msgid "Batch Analysis"
 msgstr "Análisis por lotes"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:631
 msgid "Behavior"
 msgstr "Comportamiento"
 
@@ -950,6 +1041,10 @@ msgstr ""
 msgid "Blog / Editorial"
 msgstr "Blog / Editorial"
 
+#: ai/includes/Admin/SettingsHelp.php:143
+msgid "Blog / Editorial (default)"
+msgstr "Blog / Editorial (predeterminado)"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -964,7 +1059,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Redirección por idioma del navegador"
 
-#: ai/includes/Admin/SettingsPage.php:329
+#: ai/includes/Admin/SettingsPage.php:328
 msgid "Built-in preset instructions:"
 msgstr "Instrucciones predefinidas incorporadas:"
 
@@ -1026,7 +1121,7 @@ msgstr ""
 "tasa por usuario (30 solicitudes / minuto, codificado en duro) que ya "
 "protege contra bucles descontrolados de un solo usuario."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 msgid "Cart"
 msgstr "Carrito"
 
@@ -1035,7 +1130,15 @@ msgstr "Carrito"
 msgid "chars"
 msgstr "caracteres"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:101
+msgid ""
+"Check your account, billing, or remaining credits directly on the provider "
+"console:"
+msgstr ""
+"Verifica tu cuenta, facturación o créditos restantes directamente en la "
+"consola del proveedor:"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:337
 msgid "Checkout"
 msgstr "Pagar"
 
@@ -1133,9 +1236,19 @@ msgstr ""
 "social para cada idioma en su sitio. Cada sección a continuación maneja un "
 "aspecto del SEO multilingüe."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
 msgid "Configured"
 msgstr "Configurado"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
+msgid ""
+"Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other "
+"third-party post types whose content should not be language-filtered, one "
+"per line or comma-separated."
+msgstr ""
+"Se excluye automáticamente Contact Form 7 (wpcf7_contact_form). Agrega otros "
+"tipos de publicaciones de terceros cuyo contenido no deba filtrarse por "
+"idioma, uno por línea o separado por comas."
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1144,6 +1257,10 @@ msgstr "Contenido generado"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
 msgid "Content Generator"
 msgstr "Generador de contenido"
+
+#: ai/includes/Admin/SettingsHelp.php:140
+msgid "Content profiles and weights"
+msgstr "Perfiles de contenido y pesos"
 
 #: ai/assets/admin.js:683
 msgid "Content ready"
@@ -1194,13 +1311,13 @@ msgid "Conversational"
 msgstr "Conversacional"
 
 #: ai/assets/admin-content-gen-modal.js:180 ai/assets/admin.js:495
-#: ai/assets/admin.js:505 ai/assets/admin.js:1343 ai/assets/block-action.js:450
+#: ai/assets/admin.js:505 ai/assets/admin.js:1351 ai/assets/block-action.js:450
 #: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr "Copiado ✓"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:728
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:734
 msgid "Copied!"
 msgstr "¡Copiado!"
 
@@ -1212,7 +1329,7 @@ msgstr "¡Copiado!"
 msgid "Copy"
 msgstr "Copiar"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:699
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr "Copie y pegue en un problema de GitHub o solicitud de soporte."
 
@@ -1220,11 +1337,11 @@ msgstr "Copie y pegue en un problema de GitHub o solicitud de soporte."
 msgid "Copy failed — please copy the URL manually."
 msgstr "Fallo en la copia — por favor, copia la URL manualmente."
 
-#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
+#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1316
 msgid "Copy markup"
 msgstr "Copiar marcado"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:703
 msgid "Copy system info"
 msgstr "Copiar información del sistema"
 
@@ -1265,7 +1382,7 @@ msgstr ""
 "No se pudo copiar el archivo. Verifica que la carpeta de cargas tenga "
 "permisos de escritura."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:250
 msgid "Could not instantiate the provider."
 msgstr "No se pudo instanciar el proveedor."
 
@@ -1308,7 +1425,7 @@ msgstr ""
 "integración activa. Asegúrate de que la integración requerida esté instalada "
 "y activa."
 
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Creating…"
 msgstr "Creando…"
 
@@ -1343,7 +1460,7 @@ msgid "Currently emitting"
 msgstr "Emitiendo actualmente"
 
 #. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:88
 #, php-format
 msgid ""
 "Currently inherited from the %s constant. Selecting a value here will "
@@ -1370,6 +1487,11 @@ msgstr "Actualmente:"
 msgid "Custom"
 msgstr "Personalizado"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
+msgid "Custom tables — LF post-meta filters do not affect orders."
+msgstr ""
+"Tablas personalizadas — Los filtros LF post-meta no afectan los pedidos."
+
 #. translators: 1: quota number, 2: reset time.
 #: ai/includes/REST/RateLimiter.php:169
 #, php-format
@@ -1377,7 +1499,7 @@ msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr ""
 "Cuota diaria de IA alcanzada (%1$d solicitudes). Se reinicia a las %2$s UTC."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Daily quota"
 msgstr "Cuota diaria"
 
@@ -1385,7 +1507,7 @@ msgstr "Cuota diaria"
 msgid "Daily request limit"
 msgstr "Límite diario de solicitudes"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:462
 msgid "Danger Zone"
 msgstr "Zona de peligro"
 
@@ -1401,7 +1523,7 @@ msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "Archivos de depuración borrados. Se eliminó %d archivo."
 msgstr[1] "Archivos de depuración borrados. Se eliminaron %d archivos."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:697
 msgid "Debug Info"
 msgstr "Información de depuración"
 
@@ -1417,7 +1539,7 @@ msgstr "Registro de depuración deshabilitado."
 msgid "Debug logging enabled."
 msgstr "Registro de depuración habilitado."
 
-#: ai/includes/Admin/SettingsHelp.php:137
+#: ai/includes/Admin/SettingsHelp.php:168
 msgid ""
 "Debug: enable the debug log to capture AI prompts and API responses to a "
 "local file. Disable after troubleshooting — debug mode writes a file on "
@@ -1466,6 +1588,10 @@ msgstr "¿Eliminar esta entrada del glosario?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Describe qué escribir — tema, puntos clave, estructura…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:610
+msgid "Destructive action — read before proceeding"
+msgstr "Acción destructiva — lee antes de proceder"
 
 #: ai/includes/Admin/MetaBox.php:391
 msgid "Details ↗"
@@ -1535,7 +1661,7 @@ msgstr "Muestra el selector de idioma de Lingua Forge."
 msgid "Do not output any OG tags."
 msgstr "No mostrar ninguna etiqueta OG."
 
-#: ai/includes/Admin/SettingsHelp.php:166
+#: ai/includes/Admin/SettingsHelp.php:197
 msgid "Documentation"
 msgstr "Documentación"
 
@@ -1551,7 +1677,7 @@ msgstr "Hecho — {done} de {total} publicaciones corregidas."
 msgid "Down"
 msgstr "Abajo"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:293
 msgid ""
 "Download and install a WordPress core language pack directly from WordPress."
 "org. Once installed, the locale becomes available for URL routing and the AI "
@@ -1568,7 +1694,32 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Dirección del desplegable"
 
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsHelp.php:137
+msgid ""
+"Each metric yields one of four statuses: ok (full weight), warn (50 % of "
+"weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 "
+"amber, below 50 red."
+msgstr ""
+"Cada métrica produce uno de cuatro estados: ok (peso completo), warn (50 % "
+"del peso), fail (0), o info (0, sin penalización). Una puntuación ≥ 80 es "
+"verde, 50–79 ámbar, por debajo de 50 rojo."
+
+#: ai/includes/Admin/SettingsHelp.php:136
+msgid ""
+"Each post is scored 0–100 from six rule-based metrics: title, meta "
+"description, word count, heading structure, image alt coverage, and internal "
+"links. Ten points are always awarded for reading time (informational only). "
+"The remaining 90 points are distributed across the other metrics with "
+"weights that vary by content profile (see below)."
+msgstr ""
+"Cada publicación se puntúa de 0 a 100 con seis métricas basadas en reglas: "
+"título, descripción meta, recuento de palabras, estructura de encabezados, "
+"cobertura de atributos de imágenes y enlaces internos. Siempre se otorgan "
+"diez puntos por tiempo de lectura (solo informativo). Los otros 90 puntos se "
+"distribuyen entre las otras métricas con pesos que varían según el perfil de "
+"contenido (ver abajo)."
+
+#: ai/includes/Admin/SettingsPage.php:368
 msgid "edit"
 msgstr "editar"
 
@@ -1615,11 +1766,11 @@ msgstr ""
 "(LINGUAFORGE_SECRET). No comparta exportaciones de bases de datos sin rotar "
 "primero el secreto."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:77
 msgid "Environment"
 msgstr "Entorno"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "environment variable"
 msgstr "variable de entorno"
 
@@ -1627,10 +1778,73 @@ msgstr "variable de entorno"
 msgid "Error"
 msgstr "Error"
 
+#: ai/includes/Admin/SettingsHelp.php:158
+msgid ""
+"Every time a post is analysed the score is stored in post meta. The post "
+"list Lang column shows a colour-coded \"SEO N\" badge for any post that has "
+"been analysed at least once. When two scores are stored a delta indicator "
+"(↑N / ↓N) shows the change since the previous run."
+msgstr ""
+"Cada vez que se analiza una publicación, la puntuación se almacena en los "
+"metadatos de la publicación. La columna de idioma en la lista de "
+"publicaciones muestra una insignia \"SEO N\" codificada por colores para "
+"cualquier publicación que haya sido analizada al menos una vez. Cuando se "
+"almacenan dos puntuaciones, un indicador de delta (↑N / ↓N) muestra el "
+"cambio desde la ejecución anterior."
+
+#: ai/includes/Admin/SettingsHelp.php:152
+msgid ""
+"Exactly one H1 is required. The H1 is normally the post title rendered by "
+"the theme — it is read from the live rendered page when possible, and from "
+"post content as a fallback."
+msgstr ""
+"Se requiere exactamente un H1. El H1 normalmente es el título de la "
+"publicación renderizado por el tema — se lee de la página renderizada en "
+"vivo cuando es posible, y del contenido de la publicación como respaldo."
+
 #: language-router/includes/admin/class-columns.php:169
 #: language-router/includes/admin/class-meta-boxes.php:90
 msgid "Exclude from navigation menus"
 msgstr "Excluir de menús de navegación"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:588
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:807
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:813
+msgid "Exclude from routing"
+msgstr "Excluir del enrutamiento"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:587
+msgid ""
+"Exclude this post type from language routing — its posts will no longer "
+"appear here or receive _lf_lang. This cannot be undone automatically."
+msgstr ""
+"Excluir este tipo de publicación del enrutamiento por idioma — sus "
+"publicaciones ya no aparecerán aquí ni recibirán _lf_lang. Esto no se puede "
+"deshacer automáticamente."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:778
+msgid ""
+"Exclude this post type from language routing? Its posts will no longer "
+"appear in this list or receive _lf_lang. You can reverse this in Settings → "
+"Router → Query Filter Exclusions."
+msgstr ""
+"¿Excluir este tipo de publicación del enrutamiento por idioma? Sus "
+"publicaciones ya no aparecerán en esta lista ni recibirán _lf_lang. Puedes "
+"revertir esto en Configuración → Enrutador → Exclusiones de filtro de "
+"consulta."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:597
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:799
+msgid "excluded from routing"
+msgstr "excluido del enrutamiento"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
+msgid "Excluded post types"
+msgstr "Tipos de publicaciones excluidos"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:782
+msgid "Excluding…"
+msgstr "Excluyendo…"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1652,6 +1866,10 @@ msgstr "Orientación adicional — tono, estilo, restricciones, público objetiv
 msgid "Extra guidance — tone, style, constraints…"
 msgstr "Orientación adicional — tono, estilo, restricciones…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:808
+msgid "Failed to save exclusion."
+msgstr "Error al guardar la exclusión."
+
 #: ai/assets/block-action.js:730 ai/assets/block-action.js:921
 msgid "Failed. Please try again."
 msgstr "Fallido. Por favor, inténtalo de nuevo."
@@ -1668,11 +1886,11 @@ msgstr ""
 "singular sin miniatura."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:153
 msgid "Feature"
 msgstr "Función"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:127
 msgid ""
 "Features are grouped into two tiers. Enter the exact model identifier for "
 "each tier and provider. Leave a field blank to use the built-in default "
@@ -1738,7 +1956,7 @@ msgstr ""
 "una ubicación no pública."
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Finding"
 msgstr "Encontrando"
 
@@ -1762,19 +1980,19 @@ msgstr "Arreglar todas las partes"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Fix Links"
 msgstr "Corregir enlaces"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Fix Nav"
 msgstr "Corregir navegación"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Fix Parts"
 msgstr "Corregir partes"
 
@@ -1786,19 +2004,19 @@ msgstr "Corregir plantilla"
 msgid "Fixing {n} / {total}…"
 msgstr "Corriendo {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:263
-#: ai/includes/Admin/SettingsPage.php:267
-#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:273
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "Arreglando…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:227
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:261
 msgid "Flush Permalink Rules"
 msgstr "Actualizar reglas de enlaces permanentes"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
 msgid "Flush Permalinks"
 msgstr "Actualizar enlaces permanentes"
 
@@ -1822,9 +2040,9 @@ msgstr "Notas al pie"
 msgid "Footnotes payload (advanced)"
 msgstr "Carga útil de notas al pie (avanzado)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:364
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:393
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:490
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:398
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:435
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:532
 msgid "Forbidden"
 msgstr "Prohibido"
 
@@ -1900,8 +2118,15 @@ msgstr "Artículo completo"
 msgid "Full post"
 msgstr "Publicación completa"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:43
+msgid ""
+"Full-page Translation, Content Generator (mid-tier models are fully "
+"sufficient)"
+msgstr ""
+"Traducción de página completa, Generador de contenido (los modelos de nivel "
+"medio son completamente suficientes)"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:23
 msgid "General"
 msgstr "General"
 
@@ -1935,7 +2160,7 @@ msgid "Generated Content"
 msgstr "Contenido generado"
 
 #: ai/assets/admin-content-gen-modal.js:59 ai/assets/admin-diff-modal.js:82
-#: ai/assets/admin.js:1118 ai/assets/admin.js:1273
+#: ai/assets/admin.js:1118 ai/assets/admin.js:1281
 msgid "Generated meta description"
 msgstr "Meta descripción generada"
 
@@ -1948,7 +2173,7 @@ msgstr "Generando…"
 msgid "Generation failed."
 msgstr "La generación falló."
 
-#: ai/includes/Admin/SettingsHelp.php:148
+#: ai/includes/Admin/SettingsHelp.php:179
 msgid "Getting started"
 msgstr "Comenzando"
 
@@ -1965,7 +2190,7 @@ msgstr "Predeterminado global (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Glossary"
 msgstr "Glosario"
 
@@ -1981,11 +2206,16 @@ msgstr "Entrada del glosario eliminada."
 msgid "Glossary Tab"
 msgstr "Pestaña de Glosario"
 
-#: ai/includes/Admin/SettingsPage.php:67
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:106
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:108
+msgid "Google AI Studio"
+msgstr "Estudio de IA de Google"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1995,14 +2225,22 @@ msgstr ""
 "etiquetas de encabezado no pudieron ser detectadas en la página renderizada; "
 "verifica que tu tema muestre correctamente el título.)"
 
+#: ai/includes/Admin/SettingsHelp.php:151
+msgid "Heading structure rules"
+msgstr "Reglas de estructura de encabezados"
+
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Headings"
 msgstr "Encabezados"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Hide"
 msgstr "Ocultar"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+msgid "High-Performance Order Storage (HPOS)"
+msgstr "Almacenamiento de pedidos de alto rendimiento (HPOS)"
 
 #: ai/includes/Features/ContentGenerator.php:185
 msgid "Hints"
@@ -2023,6 +2261,13 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
 msgid "How to use"
 msgstr "Cómo usar"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:356
+msgid ""
+"HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
+msgstr ""
+"HPOS + CPT sincronizados — transicional; Los filtros LF post-meta se aplican "
+"a la copia de CPT."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
@@ -2106,7 +2351,7 @@ msgstr ""
 "gráficos JSON-LD."
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Images"
 msgstr "Imágenes"
 
@@ -2144,15 +2389,15 @@ msgstr "Incluye nombre del sitio, url e inLanguage."
 msgid "Informative"
 msgstr "Informativo"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:137
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
 msgid "Input tokens"
 msgstr "Tokens de entrada"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:278
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:312
 msgid "Install"
 msgstr "Instalar"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
 msgid "Install a Language"
 msgstr "Instalar un idioma"
 
@@ -2160,7 +2405,7 @@ msgstr "Instalar un idioma"
 msgid "Installed SEO plugins"
 msgstr "Plugins SEO instalados"
 
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Installing…"
 msgstr "Instalando…"
 
@@ -2176,7 +2421,7 @@ msgstr "Instrucciones (opcional)"
 msgid "Instructions / key points"
 msgstr "Instrucciones / puntos clave"
 
-#: ai/includes/Admin/SettingsHelp.php:153
+#: ai/includes/Admin/SettingsHelp.php:184
 msgid "Integration API"
 msgstr "API de integración"
 
@@ -2188,6 +2433,13 @@ msgstr "Arreglador de enlaces internos"
 msgid "Introduction only"
 msgstr "Solo introducción"
 
+#: ai/includes/Providers/AbstractProvider.php:81
+msgid ""
+"Invalid API key — double-check the key entered in the AI Provider settings."
+msgstr ""
+"Clave API inválida — verifica la clave ingresada en la configuración del "
+"proveedor de IA."
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:225
 msgid "Invalid file reference."
 msgstr "Referencia de archivo inválida."
@@ -2196,7 +2448,7 @@ msgstr "Referencia de archivo inválida."
 msgid "Invalid filename."
 msgstr "Nombre de archivo inválido."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:494
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:536
 msgid "Invalid language code."
 msgstr "Código de idioma no válido."
 
@@ -2204,7 +2456,7 @@ msgstr "Código de idioma no válido."
 msgid "Invalid language."
 msgstr "Idioma no válido."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:586
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:628
 msgid "Invalid locale code."
 msgstr "Código de idioma no válido."
 
@@ -2218,13 +2470,14 @@ msgstr "Código de idioma no válido."
 msgid "Invalid or primary language."
 msgstr "Idioma inválido o principal."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:777
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1397
 msgid "Invalid post ID."
 msgstr "ID de publicación no válido."
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1065
 msgid "Invalid post type."
 msgstr "Tipo de publicación no válido."
 
@@ -2240,7 +2493,7 @@ msgstr "Tipo de plantilla no válido."
 msgid "JavaScript-powered actions"
 msgstr "Acciones impulsadas por JavaScript"
 
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Just now"
 msgstr "Justo ahora"
 
@@ -2248,7 +2501,7 @@ msgstr "Justo ahora"
 msgid "Key points, ideas, or structure to build from…"
 msgstr "Puntos clave, ideas o estructura sobre la que construir…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:42
 msgid ""
 "Keys are encrypted with AES-256-CBC before being stored in the WordPress "
 "database. The encryption secret is derived from your WordPress auth salts "
@@ -2260,6 +2513,7 @@ msgstr ""
 "plano nunca llegan a la base de datos."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+#: ai/includes/Admin/SettingsHelp.php:147
 msgid "Landing / Short-form"
 msgstr "Página de destino / Forma corta"
 
@@ -2269,7 +2523,7 @@ msgid "Language"
 msgstr "Idioma"
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:612
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:654
 #, php-format
 msgid "Language %s installed successfully."
 msgstr "El idioma %s se instaló correctamente."
@@ -2278,15 +2532,15 @@ msgstr "El idioma %s se instaló correctamente."
 msgid "Language (optional)"
 msgstr "Idioma (opcional)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:623
+#: ai/includes/Admin/SettingsPage.php:250
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 "La instalación de idiomas está deshabilitada en este servidor "
 "(DISALLOW_FILE_MODS está activado)."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:298
 msgid ""
 "Language installation is disabled on this server. The DISALLOW_FILE_MODS "
 "constant is set in wp-config.php. Install language packs manually via WP-CLI:"
@@ -2304,7 +2558,7 @@ msgstr "Etiqueta del idioma"
 msgid "Language Overrides"
 msgstr "Sobrescrituras de idioma"
 
-#: ai/includes/Admin/SettingsHelp.php:136
+#: ai/includes/Admin/SettingsHelp.php:167
 msgid ""
 "Language Overrides: manage custom .po/.mo override files for the Lingua "
 "Forge UI strings. Use this instead of editing plugin files directly — "
@@ -2315,7 +2569,7 @@ msgstr ""
 "en lugar de editar archivos del plugin directamente — las sobrescrituras "
 "sobreviven a las actualizaciones."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:615
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:657
 msgid ""
 "Language pack installation failed. The language may already be installed, "
 "the locale code may be incorrect, or your server may block file writes."
@@ -2324,7 +2578,7 @@ msgstr ""
 "instalado, el código de idioma puede ser incorrecto, o tu servidor puede "
 "bloquear las escrituras en archivos."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:310
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Language Setup"
 msgstr "Configuración de idioma"
 
@@ -2333,7 +2587,7 @@ msgstr "Configuración de idioma"
 msgid "Language Switcher"
 msgstr "Selector de idioma"
 
-#: ai/includes/Admin/SettingsHelp.php:151
+#: ai/includes/Admin/SettingsHelp.php:182
 msgid "Language switcher"
 msgstr "Conmutador de idiomas"
 
@@ -2358,7 +2612,7 @@ msgstr ""
 msgid "Language:"
 msgstr "Idioma:"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid ""
 "Languages currently known to the router (derived from installed WordPress "
 "locale packs plus the primary language). Install additional language packs "
@@ -2429,7 +2683,7 @@ msgstr ""
 "para nombres de marcas, abreviaturas y términos que deben mantenerse "
 "exactamente en cada traducción."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:109
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr ""
 "Deja en blanco para mantener la clave existente. Ingresa un nuevo valor para "
@@ -2458,6 +2712,10 @@ msgstr ""
 "base al plugin y solo genera og:locale + og:locale:alternate. Puedes "
 "desactivar el plugin mu — LF's Social Share incorporado (pestaña SEO → "
 "Social Share) y Open Graph cubren la misma funcionalidad."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+msgid "Legacy post-based (CPT)"
+msgstr "Basado en publicaciones heredadas (CPT)"
 
 #: ai/includes/Core/Config.php:61
 msgid "Legal / Compliance"
@@ -2556,7 +2814,7 @@ msgstr ""
 "genera una por un plugin de SEO. LF no añade su propia canonical — la "
 "enrutación de idiomas ya hace que cada URL sea canónica."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:663
 msgid ""
 "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
 "Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
@@ -2566,8 +2824,8 @@ msgstr ""
 "extra_rules_top. Útil para diagnosticar errores 404 o conflictos de "
 "enrutamiento. Copie estos al presentar un informe de error."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:81
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Light"
 msgstr "Ligero"
 
@@ -2579,7 +2837,7 @@ msgstr "Ligero (predeterminado — rápido y rentable)"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "Ligero (rápido y rentable — Haiku / Flash)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
 msgid "Light model"
 msgstr "Modelo ligero"
 
@@ -2590,13 +2848,13 @@ msgstr ""
 "Ligero: utilizado para descripciones meta y generación de extractos — rápido,"
 " de bajo costo."
 
-#: language-router/includes/rewrite/class-query-filter.php:95
+#: language-router/includes/rewrite/class-query-filter.php:99
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr ""
 "Limitar resultados a páginas en el código de idioma de Lingua Forge dado."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Limits"
 msgstr "Límites"
 
@@ -2713,6 +2971,19 @@ msgstr ""
 "la coherencia editorial en todos los idiomas. Participa aquí si necesitas "
 "capacidades completas de Gutenberg / FSE."
 
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template "
+"blocks, plugin lookups) to the active language by injecting a _lf_lang meta "
+"constraint. Post types listed here are excluded from that constraint — their "
+"queries are always unfiltered."
+msgstr ""
+"Lingua Forge limita las instancias secundarias de WP_Query (widgets de barra "
+"lateral, bloques de plantilla, búsquedas de plugins) al idioma activo "
+"inyectando una restricción meta _lf_lang. Los tipos de publicaciones "
+"listados aquí están excluidos de esa restricción — sus consultas siempre "
+"están sin filtrar."
+
 #: ai/includes/Admin/SettingsHelp.php:66
 msgid "Lingua Forge Settings"
 msgstr "Configuraciones de Lingua Forge"
@@ -2730,7 +3001,7 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge usa dos niveles de modelos por proveedor:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:82
 msgid "Lingua Forge version"
 msgstr "Versión de Lingua Forge"
 
@@ -2738,7 +3009,7 @@ msgstr "Versión de Lingua Forge"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lengua Forge — Traducción rápida"
 
-#: ai/includes/Admin/SettingsPage.php:619
+#: ai/includes/Admin/SettingsPage.php:618
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Configuraciones"
 
@@ -2762,12 +3033,12 @@ msgid "link(s)"
 msgstr "enlace(s)"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:358
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Enlaces"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:303
 msgid "Load available languages"
 msgstr "Cargar idiomas disponibles"
 
@@ -2779,7 +3050,7 @@ msgstr "Cargar contenido"
 msgid "Loaded from cache."
 msgstr "Cargado desde la caché."
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Loading…"
 msgstr "Cargando…"
 
@@ -2825,12 +3096,12 @@ msgstr ""
 "mediante el filtro linguaforge_required_capability."
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:638
+#: ai/includes/Admin/SettingsHelp.php:162
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "Maintenance"
 msgstr "Mantenimiento"
 
-#: ai/includes/Admin/SettingsHelp.php:133
+#: ai/includes/Admin/SettingsHelp.php:164
 msgid "Maintenance Tab"
 msgstr "Pestaña de mantenimiento"
 
@@ -2845,6 +3116,10 @@ msgstr "Hacer conciso"
 #: ai/assets/block-action.js:67
 msgid "Make formal"
 msgstr "Hacer formal"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:103
+msgid "Manage your account, review usage, or top up credits:"
+msgstr "Gestiona tu cuenta, revisa el uso o recarga créditos:"
 
 #: ai/assets/block-action.js:73
 msgid "Mark citations needed"
@@ -2934,17 +3209,20 @@ msgid "Meta Description"
 msgstr "Meta descripción"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Meta description"
 msgstr "Meta descripción"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:82
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Meta Description, Excerpt Generator"
 msgstr "Meta Descripción, Generador de extractos"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:39
+msgid "Meta Description, Excerpt Generator, quick translate"
+msgstr "Meta descripción, Generador de extractos, traducción rápida"
+
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Metric"
 msgstr "Métrica"
 
@@ -2952,7 +3230,7 @@ msgstr "Métrica"
 msgid "Minimum role"
 msgstr "Rol mínimo"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:571
 msgid "Missing"
 msgstr "Faltante"
 
@@ -2964,16 +3242,20 @@ msgstr "Falta el nombre del patrón o el idioma."
 msgid "Mode"
 msgstr "Modo"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:155
 msgid "Model"
 msgstr "Modelo"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:244
+msgid "Model ID"
+msgstr "ID del modelo"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
 msgid "Model tier"
 msgstr "Nivel del modelo"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:123
 #: ai/includes/Admin/SettingsHelp.php:92
 msgid "Models"
 msgstr "Modelos"
@@ -2982,7 +3264,7 @@ msgstr "Modelos"
 msgid "Models Tab (General)"
 msgstr "Pestaña de modelos (General)"
 
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Modified"
 msgstr "Modificado"
 
@@ -3011,13 +3293,17 @@ msgstr ""
 msgid "Multilingual SEO"
 msgstr "SEO multilingüe"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Multilingual SEO overview"
 msgstr "Resumen de SEO multilingüe"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:338
 msgid "My Account"
 msgstr "Mi cuenta"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:245
+msgid "Name"
+msgstr "Nombre"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -3055,11 +3341,18 @@ msgstr ""
 msgid "Navigations"
 msgstr "Navegaciones"
 
-#: ai/includes/Admin/SettingsPage.php:219
+#. translators: %s: technical error detail from the HTTP layer
+#: ai/includes/Providers/AbstractProvider.php:134
+#, php-format
+msgid "Network error — could not reach the provider: %s"
+msgstr "Error de red — no se pudo contactar con el proveedor: %s"
+
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Error de red — no se pudo acceder al endpoint AJAX de WordPress."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:769
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:814
 msgid "Network error."
 msgstr "Error de red."
 
@@ -3085,20 +3378,24 @@ msgstr ""
 "exclusivamente a través de la directiva Sitemap en robots.txt — que LF ya ha "
 "configurado. Google lo detectará en su próxima exploración."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
+msgid "No active plugins detected."
+msgstr "No se detectaron plugins activos."
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:224
 msgid "No AI provider configured."
 msgstr "No se ha configurado ningún proveedor de IA."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1409
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "No se ha configurado ningún proveedor de IA. Añade una clave API en "
 "Configuración → Claves API."
 
 #. translators: %s is a date-range label like "Today" or "Last 7 days".
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:143
 #, php-format
 msgid ""
 "No AI usage recorded in the selected window (%s). Pick a wider range above."
@@ -3106,7 +3403,7 @@ msgstr ""
 "No se ha registrado uso de IA en la ventana seleccionada (%s). Elige un "
 "rango más amplio arriba."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:115
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
 msgid ""
 "No AI usage recorded yet. Once an editor runs a translation, generates a "
 "meta description, or uses any other AI feature, totals will appear here."
@@ -3115,11 +3412,17 @@ msgstr ""
 "traducción, genere una meta descripción o utilice cualquier otra función de "
 "IA, los totales aparecerán aquí."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:219
 msgid "No API key configured for this provider."
 msgstr "No hay una clave API configurada para este proveedor."
 
-#: ai/includes/Admin/SettingsPage.php:330
+#: ai/includes/Providers/AbstractProvider.php:121
+msgid "No API key configured — enter your key in the AI Provider settings."
+msgstr ""
+"Clave API no configurada — ingresa tu clave en la configuración del "
+"proveedor de IA."
+
+#: ai/includes/Admin/SettingsPage.php:329
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -3137,6 +3440,14 @@ msgid ""
 msgstr ""
 "No se detectaron plugins de SEO en conflicto. Lingua Forge maneja toda la "
 "salida de SEO de forma independiente."
+
+#: ai/includes/Providers/OpenAI.php:91
+msgid ""
+"No credits remaining — top up your OpenAI account at platform.openai."
+"com/account/billing."
+msgstr ""
+"No quedan créditos — recarga tu cuenta de OpenAI en platform.openai."
+"com/account/billing."
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid ""
@@ -3174,7 +3485,7 @@ msgstr ""
 "Aún no hay entradas en el glosario. Añade una abajo para empezar a aplicar "
 "la terminología en las traducciones."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1094
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -3182,7 +3493,7 @@ msgstr ""
 "No se encontró ningún H1. Normalmente, el título de la publicación es el H1 "
 "— verifica que tu tema lo esté generando."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1146
 msgid "No images found in content."
 msgstr "No se encontraron imágenes en el contenido."
 
@@ -3190,35 +3501,39 @@ msgstr "No se encontraron imágenes en el contenido."
 msgid "No internal links found to update."
 msgstr "No se encontraron enlaces internos para actualizar."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "No key"
+msgstr "Sin clave"
+
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
 msgstr ""
 "No se encontraron partes de plantilla específicas del idioma para mapear."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1001
 msgid "No LF meta description set — using excerpt/content."
 msgstr ""
 "No se ha establecido una meta descripción en LF — se usa el "
 "extracto/contenido."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:676
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr ""
 "No se encontraron reglas de reescritura LF. Actualiza los enlaces "
 "permanentes si esto es inesperado."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1174
 msgid "No links found."
 msgstr "No se encontraron enlaces."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1173
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "No se encontraron enlaces. Los enlaces internos mejoran la rastreabilidad y "
 "la navegación del usuario."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1005
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -3233,6 +3548,10 @@ msgstr "No se necesitan actualizar referencias de navegación."
 msgid "No override files uploaded yet."
 msgstr "Aún no se han cargado archivos de sobrescritura."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:129
+msgid "No PHP limit"
+msgstr "Límite de PHP no establecido"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
 msgid ""
 "No physical robots.txt file found. WordPress is generating it virtually and "
@@ -3241,28 +3560,28 @@ msgstr ""
 "No se encontró un archivo robots.txt físico. WordPress lo genera "
 "virtualmente y la directiva Sitemap de LF se incluye automáticamente."
 
-#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "No published posts found for the selected filters."
 msgstr ""
 "No se encontraron publicaciones publicadas con los filtros seleccionados."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1529
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "No hay respuesta del proveedor de IA. Verifica tu clave API y vuelve a "
 "intentarlo."
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "No hay respuesta del proveedor — revisa el registro de errores para más "
 "detalles."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:412
 msgid "No secondary languages configured."
 msgstr "No hay idiomas secundarios configurados."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:348
 msgid ""
 "No secondary languages configured. Install a language pack above to enable "
 "template scaffolding."
@@ -3282,7 +3601,7 @@ msgstr "Aún no hay página fuente vinculada."
 msgid "No template part references needed updating."
 msgstr "No se necesitan actualizar referencias de partes de plantilla."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid ""
 "No third-party SEO plugins detected. Lingua Forge handles all multilingual "
 "SEO output."
@@ -3290,7 +3609,7 @@ msgstr ""
 "No se detectaron plugins de SEO de terceros. Lingua Forge maneja toda la "
 "salida de SEO multilingüe."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
 msgstr "No se ha establecido ningún título."
 
@@ -3302,7 +3621,7 @@ msgstr ""
 "No se encontró contenido traducido. El sitemap se completará una vez que las "
 "publicaciones hayan sido traducidas."
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:370
 msgid "No translation found — analyzed the source language version."
 msgstr ""
 "No se encontró ninguna traducción — se analizó la versión en idioma fuente."
@@ -3311,13 +3630,9 @@ msgstr ""
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "No hay traducción en {lang} registrada (TRID faltante)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:371
 msgid "No — WooCommerce integration class not loaded"
 msgstr "No — clase de integración de WooCommerce no cargada"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
-msgid "Not set — AI features are disabled."
-msgstr "No establecido — las funciones de IA están desactivadas."
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3327,6 +3642,7 @@ msgstr ""
 "Aún no se ha generado. El sitemap se construye en la primera visita a la URL "
 "del sitemap y se almacena en caché durante 24 horas."
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:247
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
 msgid "Notes"
@@ -3348,7 +3664,7 @@ msgstr "Configuración de aviso"
 msgid "Notify search engines"
 msgstr "Notificar a los motores de búsqueda"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
 msgid "Numeric permalink structure is not supported."
 msgstr "La estructura de enlaces permanentes numéricos no es compatible."
 
@@ -3400,9 +3716,14 @@ msgstr ""
 "Abrir la hoja de compartir web nativa del navegador (iOS, Android, algunos "
 "escritorios). Recurre a copiar al portapapeles si no es compatible."
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:107
+msgid "OpenAI Platform"
+msgstr "Plataforma OpenAI"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
 msgid ""
@@ -3431,6 +3752,15 @@ msgstr ""
 "Opcional. Yandex ya lee la directiva Sitemap: del robots.txt — esto "
 "simplemente activa una reexploración inmediata en lugar de esperar a la "
 "próxima revisión programada."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+msgid "Order storage"
+msgstr "Almacenamiento de pedidos"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:359
+msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
+msgstr ""
+"Pedidos en wp_posts — asegúrese de excluir shop_order del enrutamiento LF."
 
 #: ai/includes/Features/ContentGenerator.php:197
 msgid "Output"
@@ -3461,7 +3791,7 @@ msgstr "Generar esquema Product en páginas de productos WooCommerce"
 msgid "Output Schema.org JSON-LD in wp_head"
 msgstr "Salida del esquema JSON-LD de Schema.org en wp_head"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:138
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:158
 msgid "Output tokens"
 msgstr "Tokens de salida"
 
@@ -3471,11 +3801,11 @@ msgstr ""
 "Salida del esquema WebSite en la página principal y en el índice del blog"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "Overall SEO score"
 msgstr "Puntuación general de SEO"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:212
 msgid "overridden"
 msgstr "sobrescrito"
 
@@ -3512,7 +3842,7 @@ msgstr "Resumen"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:383
 msgid "Page"
 msgstr "Página"
 
@@ -3532,11 +3862,11 @@ msgstr "Pega el texto, o selecciona primero el texto en el editor…"
 msgid "Paste text, or select text on the page first…"
 msgstr "Pega el texto, o selecciona primero el texto en la página…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:75
 msgid "Paste your API key…"
 msgstr "Pega tu clave API…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:109
 msgid "Path prefix (/de/)"
 msgstr "Prefijo de ruta (/de/)"
 
@@ -3544,7 +3874,7 @@ msgstr "Prefijo de ruta (/de/)"
 msgid "Path prefix — example.com/de/"
 msgstr "Prefijo de ruta — ejemplo.com/de/"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:249
 msgid ""
 "Path routing requires a post-name based permalink structure. Change it in"
 msgstr ""
@@ -3573,9 +3903,13 @@ msgstr ""
 "mediante el inserto de patrones del editor de bloques o utilícelo como punto "
 "de partida para un bloque reutilizable."
 
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Pattern translation failed."
 msgstr "Fallo en la traducción del patrón."
+
+#: ai/includes/Providers/AbstractProvider.php:83
+msgid "Payment required — your account has no remaining credits."
+msgstr "Pago requerido — su cuenta no tiene créditos restantes."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
 msgid "Per-Post Analysis"
@@ -3595,17 +3929,17 @@ msgstr ""
 msgid "Permalink rules flushed successfully."
 msgstr "Reglas de enlaces permanentes eliminadas con éxito."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
 msgid "Permalink Structure"
 msgstr "Estructura de enlaces permanentes"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr ""
 "La estructura de enlaces permanentes es compatible con el enrutamiento de "
 "rutas de Lingua Forge."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:475
 msgid ""
 "Permanently deletes all templates, template parts, patterns, navigation "
 "menus, posts, pages, custom post types, products, and product variations "
@@ -3621,7 +3955,7 @@ msgstr ""
 "deshacer."
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:455
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:497
 #, php-format
 msgid ""
 "Permanently uninstall %s? This will delete all translated content for this "
@@ -3651,22 +3985,23 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:701
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1388
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:990
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1060
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:577
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:619
 msgid "Permission denied."
 msgstr "Permiso denegado."
 
@@ -3675,19 +4010,19 @@ msgstr "Permiso denegado."
 msgid "Persuasive"
 msgstr "Persuasivo"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:138
 msgid "PHP constant"
 msgstr "constante de PHP"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:125
 msgid "PHP max_execution_time"
 msgstr "Tiempo máximo de ejecución de PHP"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:145
 msgid "PHP memory_limit"
 msgstr "Límite de memoria de PHP"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:90
 msgid "PHP version"
 msgstr "Versión de PHP"
 
@@ -3720,7 +4055,7 @@ msgstr "Enviar ping a Yandex"
 msgid "Plain language"
 msgstr "Lenguaje sencillo"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:248
 msgid "Plain permalinks are not supported."
 msgstr "Los enlaces permanentes simples no son compatibles."
 
@@ -3733,6 +4068,7 @@ msgid "Please enter some text first…"
 msgstr "Por favor, ingresa algún texto primero…"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "Plugin"
 msgstr "Complemento"
 
@@ -3740,11 +4076,11 @@ msgstr "Complemento"
 msgid "Post"
 msgstr "Publicación"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:783
 msgid "Post not found or not published."
 msgstr "No se encontró ni se publicó la publicación."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1403
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Publicación no encontrada."
@@ -3754,15 +4090,24 @@ msgid "Post on X / Twitter"
 msgstr "Publicar en X / Twitter"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:570
 msgid "Post type"
 msgstr "Tipo de publicación"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+msgid ""
+"Post type slugs separated by commas or newlines. Changes take effect "
+"immediately on save — no permalink flush required."
+msgstr ""
+"Slugs de tipo de publicación separados por comas o saltos de línea. Los "
+"cambios tienen efecto inmediatamente al guardar — no es necesario actualizar "
+"los enlaces permanentes."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "Tipos de publicaciones"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:557
 msgid ""
 "Posts without _lf_lang are invisible to every Lingua Forge language filter. "
 "This can happen when content is imported or created before the plugin was "
@@ -3787,11 +4132,14 @@ msgstr ""
 "el módulo Open Graph de LF está configurado en \"Completo\" o \"Automático\" "
 "sin detectar un plugin SEO en conflicto."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:117
+msgid "Primary content language"
+msgstr "Idioma principal del contenido"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
 msgid "Primary Language"
 msgstr "Idioma principal"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "Idioma principal"
@@ -3819,6 +4167,7 @@ msgid "Product"
 msgstr "Producto"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+#: ai/includes/Admin/SettingsHelp.php:145
 msgid "Product / eCommerce"
 msgstr "Producto / Comercio electrónico"
 
@@ -3831,26 +4180,47 @@ msgid "Product — WooCommerce product pages"
 msgstr "Producto — páginas de productos de WooCommerce"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Profile"
 msgstr "Perfil"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+#: ai/includes/Admin/SettingsHelp.php:141
+msgid ""
+"Profiles adapt thresholds and weights to the type of content being analysed. "
+"Profile is resolved automatically; you can override it per analysis run from "
+"the profile dropdown."
+msgstr ""
+"Los perfiles adaptan umbrales y pesos al tipo de contenido que se analiza. "
+"El perfil se resuelve automáticamente; puede sobrescribirlo por ejecución de "
+"análisis desde el menú desplegable de perfiles."
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:154
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:65
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:161
 msgid "Provider"
 msgstr "Proveedor"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
-msgid ""
-"Provider returned no text. Check the WordPress error log for the detailed "
-"failure reason."
-msgstr ""
-"El proveedor no devolvió texto. Revisa el registro de errores de WordPress "
-"para conocer la razón detallada del fallo."
+#. translators: 1: HTTP status code, 2: error message from the provider API
+#: ai/includes/Providers/AbstractProvider.php:102
+#, php-format
+msgid "Provider error (HTTP %1$d): %2$s"
+msgstr "Error del proveedor (HTTP %1$d): %2$s"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:85
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:268
+msgid ""
+"Provider returned no response. Check the WordPress error log for details."
+msgstr ""
+"El proveedor no devolvió respuesta. Verifique el registro de errores de "
+"WordPress para más detalles."
+
+#: ai/includes/Providers/AbstractProvider.php:97
+msgid "Provider service temporarily unavailable — try again in a moment."
+msgstr ""
+"Servicio del proveedor temporalmente no disponible — intente nuevamente en "
+"un momento."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Quality"
 msgstr "Calidad"
 
@@ -3862,7 +4232,7 @@ msgstr "Calidad (predeterminado — Sonnet / GPT-4o / Gemini Pro)"
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "Calidad (Soneto / GPT-4o / Gemini Pro)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "Quality model"
 msgstr "Modelo de calidad"
 
@@ -3873,6 +4243,10 @@ msgid ""
 msgstr ""
 "Calidad: utilizado para la traducción de publicaciones y generación de "
 "contenido — mayor calidad, mayor costo."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Query Filter Exclusions"
+msgstr "Exclusiones de filtros de consulta"
 
 #: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
@@ -3894,6 +4268,14 @@ msgstr ""
 "traducidos a demanda desde la barra de herramientas, editor o popovers de "
 "bloques. Utiliza una configuración separada y más ligera que la traducción "
 "de página completa para mantener las respuestas rápidas y rentables."
+
+#: ai/includes/Providers/AbstractProvider.php:92
+msgid ""
+"Rate limited — too many requests sent to the provider; wait a moment and try "
+"again."
+msgstr ""
+"Limitado por tasa — demasiadas solicitudes enviadas al proveedor; espere un "
+"momento y vuelva a intentarlo."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
@@ -3927,12 +4309,12 @@ msgstr "Re-escaneando…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Re-translate"
 msgstr "Re-traducir"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Reading time"
 msgstr "Tiempo de lectura"
 
@@ -3949,26 +4331,26 @@ msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
 msgstr ""
 "Refina aún más — por ejemplo, \"hazlo más corto\" o \"usa un tono formal\"…"
 
-#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1288
+#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1296
 msgid "Refine further:"
 msgstr "Refinar más:"
 
 #. translators: %d is the refinement iteration number
-#: ai/assets/admin-content-gen-modal.js:326 ai/assets/admin.js:1446
+#: ai/assets/admin-content-gen-modal.js:336 ai/assets/admin.js:1454
 #: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr "Refinamiento"
 
-#: ai/assets/admin-content-gen-modal.js:302 ai/assets/admin.js:1427
+#: ai/assets/admin-content-gen-modal.js:312 ai/assets/admin.js:1435
 msgid "Refinement failed — please try again."
 msgstr "La refinación falló — por favor, intenta de nuevo."
 
-#: ai/assets/admin-content-gen-modal.js:274 ai/assets/admin.js:1404
+#: ai/assets/admin-content-gen-modal.js:284 ai/assets/admin.js:1412
 #: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr "Refinando…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:221
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
 msgid ""
 "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
 " and archive rewrites are all in sync. Necessary after changing the primary "
@@ -3979,38 +4361,45 @@ msgstr ""
 "sincronizados. Es necesario después de cambiar el idioma principal o agregar "
 "soporte para nuevos idiomas."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:124
 msgid "Remove stored key"
 msgstr "Eliminar clave almacenada"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
-msgid ""
-"Repair assigns the source language to every affected post. Run after "
-"importing content or after initial plugin activation on an existing site."
-msgstr ""
-"La reparación asigna el idioma fuente a cada publicación afectada. Ejecuta "
-"después de importar contenido o después de activar inicialmente el plugin en "
-"un sitio existente."
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:763
 msgid "Repair failed."
 msgstr "La reparación falló."
 
-#. translators: %s: source language code shown in upper case, e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#. translators: %s: source language code in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:616
 #, php-format
-msgid "Repair — assign _lf_lang = %s to all affected posts"
-msgstr "Reparar — asignar _lf_lang = %s a todas las publicaciones afectadas"
+msgid ""
+"Repair tags every routable post listed above with _lf_lang = %s. Posts in "
+"routing-excluded post types are not touched. Only run this after importing "
+"content or on initial activation — do not use as a bulk language-"
+"reassignment tool."
+msgstr ""
+"Repare las etiquetas en cada publicación enrutable listada arriba con "
+"_lf_lang = %s. Las publicaciones en tipos de publicación excluidos del "
+"enrutamiento no se modifican. Ejecute esto solo después de importar "
+"contenido o en la activación inicial — no lo use como una herramienta de "
+"reasignación de idioma en masa."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+#. translators: %s: source language code shown in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all routable posts above"
+msgstr ""
+"Reparar — asignar _lf_lang = %s a todas las publicaciones enrutables arriba"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
 msgid "Repairing…"
 msgstr "Reparando…"
 
-#: ai/includes/Admin/SettingsHelp.php:169
+#: ai/includes/Admin/SettingsHelp.php:200
 msgid "Report an issue on GitHub"
 msgstr "Reportar un problema en GitHub"
 
-#: ai/assets/admin-content-gen-modal.js:340 ai/assets/admin.js:1455
+#: ai/assets/admin-content-gen-modal.js:350 ai/assets/admin.js:1463
 msgid "Request failed — please try again."
 msgstr "La solicitud falló — por favor, intenta de nuevo."
 
@@ -4027,11 +4416,11 @@ msgstr "La solicitud falló. Verifica tu conexión."
 msgid "Request failed. Please try again."
 msgstr "La solicitud falló. Por favor, inténtalo de nuevo."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:156
 msgid "Requests"
 msgstr "Solicitudes"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:217
 msgid "requests / day"
 msgstr "Solicitudes / día"
 
@@ -4053,7 +4442,7 @@ msgstr "Retraducir"
 msgid "Retranslating…"
 msgstr "Retraduciendo…"
 
-#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Review carefully — links and slugs not updated."
 msgstr "Revisa cuidadosamente — enlaces y slugs no actualizados."
 
@@ -4073,7 +4462,7 @@ msgstr "Revisión"
 msgid "Revision Type"
 msgstr "Tipo de revisión"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:661
 msgid "Rewrite Rules"
 msgstr "Reglas de reescritura"
 
@@ -4086,7 +4475,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt actualizado con la directiva Sitemap."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:632
 msgid "Router"
 msgstr "Enrutador"
 
@@ -4130,7 +4519,7 @@ msgstr "Guardar configuración de Hreflang"
 msgid "Save Open Graph Settings"
 msgstr "Guardar configuración de Open Graph"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:214
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
 msgid "Save Router Settings"
 msgstr "Guardar configuración del enrutador"
 
@@ -4138,7 +4527,7 @@ msgstr "Guardar configuración del enrutador"
 msgid "Save Schema.org Settings"
 msgstr "Guardar configuración de Schema.org"
 
-#: ai/includes/Admin/SettingsPage.php:675
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Save Settings"
 msgstr "Guardar configuraciones"
 
@@ -4150,7 +4539,7 @@ msgstr "Guardar configuración del sitemap"
 msgid "Save Social Share Settings"
 msgstr "Guardar configuración de compartición social"
 
-#: ai/assets/admin-diff-modal.js:273
+#: ai/assets/admin-diff-modal.js:290
 msgid "Save the post to persist changes."
 msgstr "Guarda la publicación para mantener los cambios."
 
@@ -4198,11 +4587,19 @@ msgstr "Salida de Schema.org"
 msgid "Schema.org settings saved."
 msgstr "Configuración de Schema.org guardada."
 
-#: ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Score"
 msgstr "Puntuación"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Score computation"
+msgstr "Cálculo de puntuación"
+
+#: ai/includes/Admin/SettingsHelp.php:157
+msgid "Score history and badges"
+msgstr "Historial de puntuaciones y medallas"
+
+#: ai/includes/Admin/SettingsPage.php:376
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -4237,14 +4634,14 @@ msgstr "Resultados de búsqueda"
 msgid "Security check failed — file path is not permitted."
 msgstr "Error de seguridad — ruta del archivo no permitida."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:294
 msgid ""
 "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr ""
 "Consulta Configuración → SEO → Compatibilidad para la tabla completa de "
 "comportamiento por función."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:353
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
@@ -4274,7 +4671,7 @@ msgstr "Enviar vía WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:636
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "SEO"
 msgstr "SEO"
 
@@ -4296,7 +4693,7 @@ msgstr ""
 "Plugins de SEO detectados: %s. LF solo está generando og:locale y og:locale:"
 "alternate; el plugin detectado maneja el conjunto completo de OG."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:281
 msgid "SEO Plugins"
 msgstr "Plugins de SEO"
 
@@ -4304,11 +4701,19 @@ msgstr "Plugins de SEO"
 msgid "SEO plugins and conflict avoidance:"
 msgstr "Plugins de SEO y evitación de conflictos:"
 
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "SEO Score System"
+msgstr "Sistema de puntuación SEO"
+
+#: ai/includes/Admin/SettingsHelp.php:131
+msgid "SEO Scores"
+msgstr "Puntuaciones SEO"
+
 #: ai/includes/Admin/SettingsHelp.php:121
 msgid "SEO Tab"
 msgstr "Pestaña de SEO"
 
-#: ai/includes/Admin/SettingsHelp.php:149
+#: ai/includes/Admin/SettingsHelp.php:180
 msgid "Server setup (subdomain)"
 msgstr "Configuración del servidor (subdominio)"
 
@@ -4323,16 +4728,16 @@ msgstr ""
 "Traducción y Generación de Contenido a través del cuadro meta de Lingua "
 "Forge."
 
-#: ai/includes/Admin/SettingsPage.php:414
+#: ai/includes/Admin/SettingsPage.php:413
 msgid "Settings"
 msgstr "Configuraciones"
 
-#: ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Settings saved."
 msgstr "Configuraciones guardadas."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
 msgid "Settings → Permalinks"
 msgstr "Configuración → Enlaces permanentes"
 
@@ -4352,9 +4757,23 @@ msgstr "Compartir en Mastodon"
 msgid "Share via email (mailto:)"
 msgstr "Compartir por correo electrónico (mailto:)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
+msgid "Shared / compatibility mode"
+msgstr "Modo compartido / de compatibilidad"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:335
 msgid "Shop"
 msgstr "Tienda"
+
+#: ai/includes/Admin/SettingsHelp.php:154
+msgid ""
+"Short content (3 paragraphs or fewer) is never penalised for missing "
+"subheadings, regardless of profile. A concise page does not benefit from "
+"forced heading structure."
+msgstr ""
+"El contenido breve (3 párrafos o menos) nunca se penaliza por no tener "
+"subtítulos, independientemente del perfil. Una página concisa no se "
+"beneficia de una estructura de encabezados forzada."
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -4376,7 +4795,7 @@ msgid "Single %s"
 msgstr "Individual %s"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:981
 #, php-format
 msgid ""
 "Single-word title (%d chars) — adding a second word improves clarity and "
@@ -4448,27 +4867,27 @@ msgstr "Compartir en redes sociales"
 msgid "Social Share settings saved."
 msgstr "Configuraciones de Compartir en Redes Sociales guardadas."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "Some link fixes failed."
 msgstr "Algunos arreglos de enlaces fallaron."
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "Some nav ref fixes failed."
 msgstr "Algunas referencias de navegación no pudieron ser arregladas."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "Some part fixes failed."
 msgstr "Algunos arreglos de partes fallaron."
 
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some parts could not be created."
 msgstr "Algunas partes no pudieron ser creadas."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "Some templates could not be created."
 msgstr "Algunas plantillas no pudieron ser creadas."
 
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some translations failed."
 msgstr "Algunas traducciones fallaron."
 
@@ -4495,7 +4914,7 @@ msgstr "Idioma fuente"
 msgid "Source term"
 msgstr "Término fuente"
 
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Source title"
 msgstr "Título de origen"
 
@@ -4512,6 +4931,20 @@ msgstr ""
 "El modo estándar usa la temperatura ajustada de cada función: Traducción T=0."
 "2 (preciso), Traducción rápida T=0.4, Generador de contenido T=0.6 (creativo)"
 ". Los otros preajustes aplican una temperatura fija en todas las funciones."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:135
+msgid ""
+"Start typing in any field to see model suggestions, or use the reference "
+"table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini "
+"Flash) are fully sufficient for translation and content generation — "
+"flagship \"max\" models add cost with minimal quality gain for structured "
+"text."
+msgstr ""
+"Comience a escribir en cualquier campo para ver sugerencias del modelo, o "
+"use la tabla de referencia a continuación. Los modelos de calidad ligera y "
+"media (Haiku, GPT-4o mini, Gemini Flash) son completamente suficientes para "
+"traducción y generación de contenido — los modelos insignia \"max\" añaden "
+"costo con ganancia mínima de calidad para textos estructurados."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
@@ -4544,7 +4977,7 @@ msgstr ""
 msgid "Structured Outline"
 msgstr "Esquema estructurado"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:108
 msgid "Subdomain (de.example.com)"
 msgstr "Subdominio (de.ejemplo.com)"
 
@@ -4600,12 +5033,12 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "Suprimido: %s."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:256
 msgid "Switch to a post-name based structure in"
 msgstr "Cambia a una estructura basada en el nombre de la publicación en"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
-#: ai/includes/Admin/SettingsPage.php:639
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "System"
 msgstr "Sistema"
 
@@ -4715,11 +5148,11 @@ msgstr "Partes de plantilla"
 msgid "Templates"
 msgstr "Plantillas"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:98
 msgid "Test connection"
 msgstr "Probar conexión"
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:214
 msgid "Testing…"
 msgstr "Probando…"
 
@@ -4749,7 +5182,7 @@ msgstr ""
 "desactivación no elimina las entradas en caché — volver a activarla las "
 "restaura."
 
-#: ai/assets/admin-diff-modal.js:237
+#: ai/assets/admin-diff-modal.js:254
 msgid "The editor did not accept the content — please try again."
 msgstr "El editor no aceptó el contenido — por favor, intenta de nuevo."
 
@@ -4855,7 +5288,17 @@ msgstr ""
 "Estas notas al pie provienen de la página fuente y se muestran aquí solo "
 "para referencia. Agrégalas a esta página usando el editor de bloques."
 
-#: ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:266
+msgid ""
+"This catalog is updated with each Lingua Forge release. Testing a connection "
+"in the API Keys tab also fetches the live model list from the provider and "
+"refreshes the suggestions above."
+msgstr ""
+"Este catálogo se actualiza con cada versión de Lingua Forge. Probar una "
+"conexión en la pestaña de Claves API también obtiene la lista de modelos en "
+"vivo del proveedor y actualiza las sugerencias anteriores."
+
+#: ai/includes/Admin/SettingsPage.php:377
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -4873,7 +5316,7 @@ msgstr ""
 "editor de bloques."
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:132
 #, php-format
 msgid ""
 "This key is currently supplied by a server %s and cannot be removed here. "
@@ -4883,11 +5326,11 @@ msgstr ""
 "eliminada aquí. Ingresa una nueva clave arriba para sobrescribirla con un "
 "valor de la base de datos."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:500
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:542
 msgid "This language is protected and cannot be uninstalled."
 msgstr "Este idioma está protegido y no puede desinstalarse."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:442
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid ""
 "This language matches the WordPress instance locale and cannot be "
 "uninstalled."
@@ -4895,7 +5338,11 @@ msgstr ""
 "Este idioma coincide con la configuración regional de WordPress y no puede "
 "desinstalarse."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:246
+msgid "Tier"
+msgstr "Nivel"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:226
 msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr ""
@@ -4903,13 +5350,26 @@ msgstr ""
 "borra el campo y guarda."
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:353
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Title"
 msgstr "Título"
 
+#: ai/includes/Admin/SettingsHelp.php:144
+msgid ""
+"Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts "
+"· Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 "
+"chars; word count warns below 300, fails below 100; H2 required; internal "
+"links required."
+msgstr ""
+"Título 15 pts · Meta descripción 20 pts · Recuento de palabras 15 pts · "
+"Encabezados 20 pts · Imágenes 10 pts · Enlaces 10 pts. Límite de título en "
+"SERP 60 caracteres; meta 120–210 caracteres; advertencias de recuento de "
+"palabras por debajo de 300, fallos por debajo de 100; H2 requerido; enlaces "
+"internos requeridos."
+
 #. translators: %1$d: character count, %2$d: SERP limit
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:971
 #, php-format
 #| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
@@ -4918,12 +5378,27 @@ msgstr ""
 "sea menor de %2$d)."
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:976
 #, php-format
-msgid "Title is only %d chars — aim for more than 10 characters."
-msgstr "El título tiene solo %d caracteres — apunta a más de 10 caracteres."
+#| msgid "Title is only %d chars — aim for more than 10 characters."
+msgid "Title is only %d chars — aim for at least 10 characters."
+msgstr ""
+"El título tiene solo %d caracteres — intenta con al menos 10 caracteres."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+#: ai/includes/Admin/SettingsHelp.php:138
+msgid ""
+"Title scoring rules (all profiles): fail if empty; warn if fewer than 10 "
+"characters; warn if only one word; warn if longer than the profile's SERP "
+"limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 "
+"characters, at least 2 words, and within the SERP limit."
+msgstr ""
+"Reglas de puntuación de título (todos los perfiles): fallar si está vacío; "
+"advertir si tiene menos de 10 caracteres; advertir si solo tiene una palabra;"
+" advertir si es más largo que el límite SERP del perfil (60 caracteres para "
+"Blog, 70 para Producto/Landing); OK si tiene al menos 10 caracteres, al "
+"menos 2 palabras y está dentro del límite SERP."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:163
 msgid ""
 "To use a custom encryption secret (instead of the derived wp_salt value), "
 "add this to wp-config.php:"
@@ -4965,11 +5440,11 @@ msgid "Too many AI requests. Please retry in %d seconds."
 msgstr ""
 "Demasiadas solicitudes de IA. Por favor, intenta de nuevo en %d segundos."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:177
 msgid "Total"
 msgstr "Total"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:139
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:159
 msgid "Total tokens"
 msgstr "Tokens totales"
 
@@ -4980,9 +5455,9 @@ msgstr "Tokens totales"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:271
-#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:276 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -5048,9 +5523,9 @@ msgstr ""
 "navegación y slugs de plantillas no se actualizan automáticamente."
 
 #: ai/includes/Admin/PostListColumn.php:235
-#: ai/includes/Admin/SettingsPage.php:258
-#: ai/includes/Admin/SettingsPage.php:272
-#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Traduciendo…"
@@ -5113,7 +5588,7 @@ msgstr[1] "Memoria de traducción borrada. Se eliminaron %d bloques en caché."
 msgid "Translation Memory setting saved."
 msgstr "Configuración de memoria de traducción guardada."
 
-#: ai/includes/Admin/SettingsHelp.php:135
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid ""
 "Translation Memory: stores the full translated post per content hash. Clear "
 "it when you want to force a retranslation of all posts regardless of whether "
@@ -5123,12 +5598,11 @@ msgstr ""
 "de contenido. Límpiala cuando quieras forzar una retraducción de todas las "
 "publicaciones, independientemente de si su contenido cambió."
 
-#: ai/includes/Admin/SettingsHelp.php:150
+#: ai/includes/Admin/SettingsHelp.php:181
 msgid "Translation workflow"
 msgstr "Flujo de trabajo de traducción"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:86
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Translation, Content Generator"
 msgstr "Traducción, Generador de contenido"
 
@@ -5138,7 +5612,7 @@ msgstr "Tratar H2 como equivalente a H1"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Type"
 msgstr "Tipo"
 
@@ -5147,9 +5621,15 @@ msgstr "Tipo"
 msgid "Uli Hake"
 msgstr "Uli Hake"
 
+#. translators: %d: HTTP status code
+#: ai/includes/Providers/AbstractProvider.php:108
+#, php-format
+msgid "Unexpected provider error (HTTP %d)."
+msgstr "Error inesperado del proveedor (HTTP %d)."
+
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:427
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:465
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:469
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:507
 #, php-format
 msgid "Uninstall %s"
 msgstr "Desinstalar %s"
@@ -5166,7 +5646,7 @@ msgstr "Configuración de desinstalación guardada."
 msgid "unknown error"
 msgstr "error desconocido"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:211
 msgid "Unknown provider."
 msgstr "Proveedor desconocido."
 
@@ -5190,8 +5670,7 @@ msgstr ""
 "plugins SEO activos y añade solo lo que no puedan proporcionar: og:locale "
 "(idioma actual) y og:locale:alternate (todos los demás idiomas configurados)."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:216
 msgid "Unlimited"
 msgstr "Ilimitado"
 
@@ -5228,7 +5707,7 @@ msgstr ""
 "La URL no pudo ser mapeada a una publicación — verifica que el destino del "
 "enlace exista"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:105
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "Estructura de URL"
@@ -5294,7 +5773,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Usando meta descripción personalizada."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1000
 msgid "Using LF AI meta description."
 msgstr "Usando meta descripción de AI de LF."
 
@@ -5302,8 +5781,12 @@ msgstr "Usando meta descripción de AI de LF."
 msgid "Value source"
 msgstr "Fuente del valor"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:462
+msgid "Version"
+msgstr "Versión"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "View"
 msgstr "Ver"
 
@@ -5331,7 +5814,7 @@ msgstr "Visitar sitio del plugin"
 msgid "Warning:"
 msgstr "Advertencia:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:364
 msgid "WcPageBridge active"
 msgstr "WcPageBridge activo"
 
@@ -5417,6 +5900,19 @@ msgstr ""
 "Cuando está habilitado, la URL del sitemap se anuncia automáticamente en "
 "robots.txt y se actualiza la caché cuando se guarda contenido traducido."
 
+#: ai/includes/Admin/SettingsHelp.php:153
+msgid ""
+"When the Blog profile requires an H2 and none is found, the analyser first "
+"checks for H3 subheadings before issuing a warning. Accordion and Details "
+"blocks default to H3 for their headers; those H3s are accepted as valid "
+"structure and produce an ok result, not a warning."
+msgstr ""
+"Cuando el perfil de Blog requiere un H2 y no se encuentra ninguno, el "
+"analizador primero verifica los subtítulos H3 antes de emitir una "
+"advertencia. Los bloques de acordeón y Detalles predeterminan H3 para sus "
+"encabezados; esos H3 se aceptan como estructura válida y producen un "
+"resultado correcto, no una advertencia."
+
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
 msgid ""
 "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua "
@@ -5452,16 +5948,16 @@ msgstr ""
 "solo etiquetas de idioma (modo automático). Quitar esto cambia LF a modo "
 "completo de OG automáticamente."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:310
 msgid "WooCommerce is not active."
 msgstr "WooCommerce no está activo."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:379
 msgid "WooCommerce page translations"
 msgstr "Traducciones de páginas de WooCommerce"
 
@@ -5487,16 +5983,16 @@ msgstr ""
 "están excluidas — su contenido es gestionado por WooCommerce y no puede "
 "mejorarse mediante ediciones SEO."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "WooCommerce version"
 msgstr "Versión de WooCommerce"
 
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Word count"
 msgstr "Recuento de palabras"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:86
 msgid "WordPress version"
 msgstr "Versión de WordPress"
 
@@ -5504,7 +6000,11 @@ msgstr "Versión de WordPress"
 msgid "WP core canonical active (hreflang disabled)"
 msgstr "Canonical de WP core activo (hreflang desactivado)"
 
-#: ai/includes/Admin/SettingsHelp.php:152
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:113
+msgid "WP instance language"
+msgstr "Idioma de la instancia de WP"
+
+#: ai/includes/Admin/SettingsHelp.php:183
 msgid "WP-CLI reference"
 msgstr "Referencia de WP-CLI"
 
@@ -5518,11 +6018,11 @@ msgstr ""
 msgid "XML Sitemap"
 msgstr "Mapa del sitio XML"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:368
 msgid "Yes"
 msgstr "Sí"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:156
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
 "config.php). Those sources are used automatically as a fallback when no "
@@ -5532,7 +6032,7 @@ msgstr ""
 "ejemplo, en wp-config.php). Esas fuentes se usan automáticamente como "
 "respaldo cuando no se almacena una clave en la base de datos."
 
-#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:425
 msgid "You do not have permission to manage these settings."
 msgstr "No tienes permiso para gestionar estas configuraciones."
 
@@ -5545,12 +6045,17 @@ msgid "{n} stale path(s)"
 msgstr "{n} ruta(s) obsoleta(s)"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:935
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d min de lectura"
 msgstr[1] "~%d min de lectura"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:192
+#| msgid "Not set — AI features are disabled."
+msgid "— AI features are disabled."
+msgstr "— Las funciones de IA están deshabilitadas."
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
 msgid "— Any source language —"
@@ -5569,7 +6074,7 @@ msgid "— Any —"
 msgstr "— Cualquiera —"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:367
 msgid "— Auto-detect —"
 msgstr "— Detectar automáticamente —"
 
@@ -5589,12 +6094,12 @@ msgstr "— Desactivado"
 msgid "— Not detected"
 msgstr "— No detectado"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr "— selecciona un idioma —"
 
-#: ai/assets/admin.js:1141 ai/assets/admin.js:1305
+#: ai/assets/admin.js:1141 ai/assets/admin.js:1313
 #: ai/assets/block-action.js:334
 msgid "← Back"
 msgstr "← Atrás"
@@ -5616,7 +6121,7 @@ msgstr "→ Solo etiquetas de idioma — aplazando OG base a plugin"
 msgid "↺ Re-translate"
 msgstr "↺ Re-traducir"
 
-#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1298
+#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1306
 #: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
 #: ai/assets/toolbar-translate.js:351 ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
@@ -5708,23 +6213,23 @@ msgstr "✓ Activo — OG completo + Tarjetas de Twitter"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Activo — solo etiquetas de idioma (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ All parts created."
 msgstr "✓ Todas las partes creadas."
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "✓ All templates created."
 msgstr "✓ Todas las plantillas creadas."
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ All translated."
 msgstr "✓ Todo traducido."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:83
 msgid "✓ Configured"
 msgstr "Configurado ✓"
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ Connection OK"
 msgstr "✓ Conexión OK"
 
@@ -5753,7 +6258,7 @@ msgstr "✓ Hreflang activo"
 msgid "✓ In safe storage"
 msgstr "✓ En almacenamiento seguro"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "✓ Language installed."
 msgstr "✓ Idioma instalado."
 
@@ -5773,19 +6278,19 @@ msgstr "✓ Salidas LF OG completo + Tarjetas de Twitter"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ Salidas LF — plugin hreflang suprimido"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "✓ Links fixed."
 msgstr "✓ Enlaces arreglados."
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:274
 msgid "✓ Nav refs fixed."
 msgstr "✓ Referencias de navegación arregladas."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:267
 msgid "✓ Parts fixed."
 msgstr "✓ Partes arregladas."
 
-#: ai/includes/Admin/SettingsPage.php:279
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "✓ Pattern translated."
 msgstr "✓ Patrón traducido."
 
@@ -5794,12 +6299,12 @@ msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
 msgstr ""
 "✓ robots.txt físico encontrado. La directiva Sitemap de LF está presente."
 
-#: ai/assets/admin-content-gen-modal.js:331 ai/assets/admin.js:1450
+#: ai/assets/admin-content-gen-modal.js:341 ai/assets/admin.js:1458
 msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Refinado — revisa el borrador actualizado arriba."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "✓ Translation saved"
 msgstr "✓ Traducción guardada"
 
@@ -5821,15 +6326,15 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Desactivado"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✗ Error:"
 msgstr "✗ Error:"
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✗ Failed:"
 msgstr "✗ Fallido:"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:88
 msgid "✗ Not configured"
 msgstr "No configurado ✗"
 

@@ -355,11 +355,19 @@ class QueryFilter {
 	 * meta, so injecting the meta constraint returns zero results and silently
 	 * breaks form rendering on any page.
 	 *
+	 * wp_sync_storage is always included: WordPress uses this post type internally
+	 * to store language-pack sync data for the installed site languages. It never
+	 * carries _lf_lang meta and must not be language-filtered.
+	 *
+	 * flamingo_contact / flamingo_inbound are always included: Flamingo (CF7
+	 * companion plugin) stores form contacts and inbound messages in these types.
+	 * They carry no _lf_lang meta and must not be language-filtered.
+	 *
 	 * @param  array<string> $types  Types already excluded by other callbacks.
 	 * @return array<string>
 	 */
 	public function builtin_excluded_post_types( array $types ): array {
-		$builtin    = [ 'wpcf7_contact_form' ];
+		$builtin    = [ 'wpcf7_contact_form', 'wp_sync_storage', 'flamingo_contact', 'flamingo_inbound' ];
 		$saved      = (string) get_option( 'linguaforge_secondary_query_excluded_types', '' );
 		$user_types = array_filter( array_map( 'sanitize_key', explode( ',', $saved ) ) );
 		return array_values( array_unique( array_merge( $types, $builtin, $user_types ) ) );

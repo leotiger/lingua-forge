@@ -35,19 +35,20 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.11';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.11/lingua-forge-2.2.11.zip';
+	$version      = '2.2.12';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.12/lingua-forge-2.2.12.zip';
 	$last_updated = '2026-06-10';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.11 — 2026-06-10</h4>' .
+		'<h4>2.2.12 — 2026-06-10</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> Model catalog — Settings → General → Models inputs now suggest known model identifiers via browser autocomplete (datalist). A collapsible reference table lists all catalogued models with tier and notes.</li>' .
-			'<li><strong>Added:</strong> Live model list on test connection — "Test connection" now also queries the provider&#8217;s models endpoint and refreshes autocomplete suggestions immediately, including newly-released models not yet in the catalog.</li>' .
-			'<li><strong>Changed:</strong> &#8220;General&#8221; and &#8220;API Keys&#8221; settings tabs merged into a single &#8220;AI Provider&#8221; tab — provider selection, model overrides, API keys, and test connection in one place.</li>' .
+			'<li><strong>Improved:</strong> Test connection now shows a specific failure reason — invalid API key, no credits remaining, rate limited, access forbidden, or network error — instead of the generic &#8220;check the error log&#8221; message.</li>' .
+			'<li><strong>Improved:</strong> AI Provider and AI Usage tabs now include direct links to Anthropic Console, OpenAI Platform, and Google AI Studio for quick access to account and billing dashboards.</li>' .
+			'<li><strong>Improved:</strong> Batch Analysis language cards now show the last run&#8217;s avg score and ok/warn/fail counts on every page load, not only immediately after a run.</li>' .
+			'<li><strong>Updated:</strong> Plugin language translations updated to cover new strings from 2.2.11 and 2.2.12.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

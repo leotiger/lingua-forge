@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-08 19:26+0000\n"
+"PO-Revision-Date: 2026-06-10 14:33+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: ko_KR\n"
@@ -40,8 +40,18 @@ msgstr "\"%s\"이(가) 생성되었습니다."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"상품\" (\"기사\"를 대체)"
 
+#: ai/includes/Admin/SettingsHelp.php:155
+msgid ""
+"\"Treat H2 as H1 equivalent\" (Settings → SEO → Analysis): enable this when "
+"your theme renders the post title inside an H2 instead of an H1. The "
+"analyser promotes the first H2 to H1 so the score is not incorrectly "
+"penalised."
+msgstr ""
+"\"H2를 H1과 동등하게 취급\" (설정 → SEO → 분석): 테마가 게시물 제목을 H2 내부에 렌더링하는 경우 활성화하세요. "
+"분석기는 첫 번째 H2를 H1으로 승격시켜 점수가 잘못 감점되지 않도록 합니다."
+
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1020
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -49,59 +59,59 @@ msgid ""
 msgstr "%1$d 글자 — 좋음, 이상적인 %2$d보다 약간 높지만 허용된 %3$d 글자 범위 내입니다. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1024
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d자 — 이상적인 길이입니다. %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1015
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr "%1$d 글자 — 검색 엔진 결과 페이지에서 잘릴 가능성 있음 (%2$d 이하로 유지). %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1010
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d자 — 너무 짧음 (%2$d–%3$d를 목표로 함). %4$s"
 
 #. translators: %1$d: character count, %2$d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:986
 #, php-format
 msgid "%1$d chars, %2$d words — good title."
 msgstr "%1$d 문자, %2$d 단어 — 좋은 제목입니다."
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1195
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d 내부 링크, %2$d 외부 링크."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1152
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d개의 이미지 중 %2$d개가 대체 텍스트가 없습니다."
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1037
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
 msgstr[0] "%1$d 게시물이 _lf_lang = %2$s로 태그되었습니다."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d개 단어 — 권장 최소값 %2$d 이하입니다."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1039
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -110,13 +120,13 @@ msgid ""
 msgstr "%1$d개 단어 — 매우 얇은 콘텐츠입니다. 최소한 %2$d개 단어로 확장하는 것을 고려하세요."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1187
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "외부 링크 %d개, 내부 링크 없음."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1182
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -124,13 +134,13 @@ msgid ""
 msgstr "%d개의 외부 링크, 내부 링크 없음. 관련 콘텐츠에 내부 링크를 추가하세요."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1098
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d개의 H1 태그 발견 — 페이지에는 정확히 하나의 H1이 있어야 합니다."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1158
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d개의 이미지, 모두 대체 텍스트가 있음."
@@ -172,7 +182,7 @@ msgid_plural "%d locale files removed."
 msgstr[0] "%d개의 로케일 파일이 삭제됨."
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
@@ -200,14 +210,14 @@ msgid_plural "%d posts"
 msgstr[0] "%d 개의 게시물"
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:670
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
 msgstr[0] "%d 개의 규칙이 등록됨"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d words."
 msgstr "%d단어."
@@ -247,6 +257,10 @@ msgstr ""
 "제출해야 합니다: SEO 플러그인 사이트맵은 콘텐츠를 나열하고, LF 사이트맵은 다국어 대체 링크를 추가합니다. LF의 사이트맵은 "
 "자동으로 robots.txt에 공지됩니다."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "(active)"
+msgstr "(활성화됨)"
+
 #. translators: %s is the average hits per cached block.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
@@ -259,7 +273,7 @@ msgstr "(평균 %.1f 적중/블록)"
 msgid "(avg %.1f hits/entry)"
 msgstr "(평균 %.1f 건/항목)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:100
 msgid "(classic theme)"
 msgstr "(클래식 테마)"
 
@@ -267,15 +281,23 @@ msgstr "(클래식 테마)"
 msgid "(disabled)"
 msgstr "(비활성화됨)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:99
 msgid "(FSE / block theme)"
 msgstr "(FSE / 블록 테마)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:745
 #, php-format
 msgid "(no title) #%d"
 msgstr "(제목 없음) #%d"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:431
+msgid "(partial)"
+msgstr "(부분적)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:130
+msgid "(server/FPM timeout still applies)"
+msgstr "(서버/FPM 시간 초과 여전히 적용됨)"
 
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
@@ -289,16 +311,31 @@ msgstr ".txt 파일이 디렉터리에 있습니다."
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1122
+#| msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgid "1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure."
+msgstr "1 H1 ✓ — H2 또는 H3 소제목을 찾을 수 없습니다. H2를 추가하면 구조가 개선됩니다."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1119
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "1개의 H1 ✓ — H2 부제목 없음 (이 콘텐츠 유형에 적합)."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
-msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
-msgstr "1개의 H1 ✓ — H2 부제목이 발견되지 않음. H2를 추가하면 구조가 향상됩니다."
+#. translators: %d: number of H3 headings found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1107
+#, php-format
+msgid ""
+"1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details "
+"headers). Structure is acceptable."
+msgstr "1 H1 ✓ — H2는 없지만 %d 개의 H3 부제목이 발견됨 (예: 아코디언/세부 헤더). 구조는 허용됩니다."
+
+#. translators: %d: number of paragraphs in the content
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1118
+#, php-format
+msgid "1 H1 ✓ — short content (%d paragraph(s)), subheadings not required."
+msgstr "1 H1 ✓ — 짧은 콘텐츠 (%d 단락), 부제목 필요 없음."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1129
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1개의 H1 ✓, %1$d개의 H2, %2$d개의 H3."
@@ -333,7 +370,7 @@ msgstr "<strong>{n}</strong> 오래된 경로"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> 템플릿 문제"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:554
 msgid "_lf_lang Coverage"
 msgstr "_lf_lang 커버리지"
 
@@ -355,6 +392,12 @@ msgstr ""
 "컴파일된 .mo 파일만 허용됩니다. 파일 이름은 {textdomain}-{locale}.mo 패턴을 따라야 합니다. 기존 파일과 같은 "
 "이름의 파일을 업로드하면 교체됩니다."
 
+#: ai/includes/Providers/AbstractProvider.php:85
+msgid ""
+"Access forbidden — your account may be suspended or the key lacks the "
+"required permissions."
+msgstr "접근 금지 — 계정이 정지되었거나 키에 필요한 권한이 없습니다."
+
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
@@ -362,15 +405,15 @@ msgstr ""
 msgid "Action"
 msgstr "작업"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:183
 msgid "active"
 msgstr "활성"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:265
 msgid "Active Languages"
 msgstr "활성 언어"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:121
 msgid "Active languages"
 msgstr "활성 언어"
 
@@ -382,24 +425,24 @@ msgstr ""
 "활성 언어: 지원하려는 각 언어를 추가하세요. 각 언어는 URL 접두사 또는 하위 도메인과 페이지 &lt;head&gt;에 "
 "hreflang 태그를 갖게 됩니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
+msgid "Active Plugins"
+msgstr "활성 플러그인"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:210
 msgid "Active preset"
 msgstr "활성 프리셋"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:59
 msgid "Active Provider"
 msgstr "활성 공급자"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
-msgid "Active provider"
-msgstr "활성 제공자"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:94
 msgid "Active theme"
 msgstr "활성 테마"
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:290
 #, php-format
 msgid "Active: %s."
 msgstr "활성: %s."
@@ -414,13 +457,13 @@ msgid ""
 "conclusion section, use a more formal register, include an FAQ block…"
 msgstr "초안을 개선하기 위한 지침 추가 — 예: 더 짧게 만들기, 결론 섹션 추가, 더 공식적인 표현 사용, FAQ 블록 포함…"
 
-#: ai/assets/admin.js:1295
+#: ai/assets/admin.js:1303
 msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
 msgstr "초안 개선을 위한 지침 추가 — 예: 더 짧게 만들기, 결론 섹션 추가, 더 공식적인 어조 사용…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
 msgid "Add key →"
 msgstr "키 추가 →"
 
@@ -486,7 +529,7 @@ msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "AI 캐시가 지워졌습니다. %d 항목이 제거되었습니다."
 
-#: ai/includes/Admin/SettingsHelp.php:134
+#: ai/includes/Admin/SettingsHelp.php:165
 msgid ""
 "AI Cache: lists cached AI responses with hit counts. Clear the whole cache "
 "or a single post's entries. Use \"Clear\" before testing a translation "
@@ -496,7 +539,7 @@ msgstr ""
 "AI 캐시: 캐시된 AI 응답과 히트 수를 나열합니다. 전체 캐시 또는 특정 게시물의 항목을 삭제하세요. 번역 변경을 테스트하기 전에 "
 "\"지우기\"를 사용하세요 — 캐시된 결과는 AI 프리셋 또는 모델을 변경하더라도 캐시 항목이 제거될 때까지 반환됩니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "AI Configuration"
 msgstr "AI 구성"
 
@@ -511,6 +554,12 @@ msgstr ""
 msgid "AI Limits & Security"
 msgstr "AI 제한 및 보안"
 
+#: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
+#: ai/includes/Admin/SettingsPage.php:629
+#| msgid "Active provider"
+msgid "AI Provider"
+msgstr "AI 제공자"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:120
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:161
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:295
@@ -521,16 +570,16 @@ msgstr "AI 제공자가 빈 응답을 반환했습니다."
 msgid "AI Recommendations"
 msgstr "AI 추천"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1539
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI가 예상치 못한 응답 형식을 반환했습니다. 다시 시도하세요."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:139
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr "AI 번역 및 배치 분석이 시간 초과될 수 있습니다. 120초 이상 권장합니다."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:637
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "AI Usage"
 msgstr "AI 사용량"
 
@@ -553,7 +602,7 @@ msgstr ""
 "자동으로 발견합니다. 수동 조치는 필요 없습니다. 아래 버튼은 즉시 핑을 보내어 엔진이 다음 예약된 robots.txt 검사 대신 지금 "
 "사이트맵을 다시 크롤링하게 합니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:562
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr "모든 게시된 게시물에는 _lf_lang 값이 있습니다. 간격이 감지되지 않았습니다."
 
@@ -584,7 +633,7 @@ msgstr "언인스톨 시 언어 할당, 번역 관계, 메타 설명, 용어집,
 msgid "Also generate meta description"
 msgstr "메타 설명도 생성하세요"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:154
 msgid "Alternative (server-side):"
 msgstr "대체 (서버 측):"
 
@@ -609,7 +658,7 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "알 수 없는 오류가 발생했습니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:447
 msgid "Analyse"
 msgstr "분석"
 
@@ -617,7 +666,7 @@ msgstr "분석"
 msgid "Analyse all languages"
 msgstr "모든 언어 분석"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:366
 msgid "Analyse…"
 msgstr "분석 중…"
 
@@ -625,7 +674,7 @@ msgstr "분석 중…"
 msgid "Analysis"
 msgstr "분석"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:371
 msgid "Analysis request failed. Please try again."
 msgstr "분석 요청 실패. 다시 시도하세요."
 
@@ -637,9 +686,14 @@ msgstr "분석 중…"
 msgid "and"
 msgstr "및"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:104
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:106
+msgid "Anthropic Console"
+msgstr "Anthropic 콘솔"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
@@ -650,17 +704,13 @@ msgstr "모든"
 msgid "API calls saved by cache"
 msgstr "캐시된 API 호출"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:62
 msgid "API Key"
 msgstr "API 키"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
-msgid "API key"
-msgstr "API 키"
-
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:29
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:38
+#: ai/includes/Admin/SettingsHelp.php:83
 msgid "API Keys"
 msgstr "API 키"
 
@@ -683,14 +733,14 @@ msgstr "API 응답 캐시 설정이 저장되었습니다."
 msgid "Appends the following line to your existing robots.txt: %s"
 msgstr "다음 줄을 기존 robots.txt에 추가합니다: %s"
 
-#: ai/assets/admin-content-gen-modal.js:247 ai/assets/admin-diff-modal.js:271
-#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1229
-#: ai/assets/admin.js:1380 ai/assets/block-action.js:964
+#: ai/assets/admin-content-gen-modal.js:257 ai/assets/admin-diff-modal.js:288
+#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1237
+#: ai/assets/admin.js:1388 ai/assets/block-action.js:964
 #: ai/assets/block-action.js:989
 msgid "Applied ✓"
 msgstr "적용됨 ✓"
 
-#: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
+#: ai/assets/admin-diff-modal.js:306 ai/assets/admin.js:1254
 msgid "Apply failed — please try again."
 msgstr "적용 실패 — 다시 시도하세요."
 
@@ -706,7 +756,7 @@ msgstr "블록에 적용"
 
 #: ai/assets/admin-content-gen-modal.js:89
 #: ai/assets/admin-content-gen-modal.js:140 ai/assets/admin.js:322
-#: ai/assets/admin.js:697 ai/assets/admin.js:1311
+#: ai/assets/admin.js:697 ai/assets/admin.js:1319
 msgid "Apply to Editor"
 msgstr "편집기에 적용"
 
@@ -718,13 +768,13 @@ msgstr "각주에 적용하기"
 msgid "Apply to Meta Description"
 msgstr "메타 설명에 적용"
 
-#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:280
-#: ai/assets/admin.js:1144 ai/assets/admin.js:1238
+#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:297
+#: ai/assets/admin.js:1144 ai/assets/admin.js:1246
 msgid "Apply translation"
 msgstr "번역 적용"
 
 #: ai/assets/admin-content-gen-modal.js:217 ai/assets/admin-diff-modal.js:204
-#: ai/assets/admin.js:1192 ai/assets/admin.js:1357
+#: ai/assets/admin.js:1192 ai/assets/admin.js:1365
 msgid "Applying…"
 msgstr "적용 중…"
 
@@ -768,12 +818,40 @@ msgstr ""
 "자동 감지 할당: WooCommerce 제품 → 제품 프로필; 정적 홈페이지 → 랜딩 프로필; 그 외 → 블로그 프로필. 특정 프로필을 "
 "선택하여 모든 게시물에 대해 이 설정을 재정의하세요."
 
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid ""
+"Auto-detected for the static front page; can be selected manually. Title 20 "
+"pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images "
+"15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, "
+"fails below 60; H2 and internal links optional."
+msgstr ""
+"정적 홈페이지에 대해 자동 감지됨; 수동 선택 가능. 제목 20점 · 메타 설명 30점 · 단어 수 15점 · 헤딩 10점 · 이미지 "
+"15점 · 링크 0점. 제목 SERP 제한 70자; 단어 수는 150 이하 경고, 60 이하 실패; H2 및 내부 링크는 선택 사항입니다."
+
+#: ai/includes/Admin/SettingsHelp.php:146
+msgid ""
+"Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 "
+"pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. "
+"Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and "
+"internal links optional."
+msgstr ""
+"WooCommerce 제품에 대해 자동 감지됨. 제목 20점 · 메타 설명 30점 · 단어 수 15점 · 헤딩 5점 · 이미지 20점 · "
+"링크 0점. 제목 SERP 제한 70자; 단어 수는 80 이하 경고, 40 이하 실패; H2 및 내부 링크는 선택 사항입니다."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:231
+msgid "Available models reference"
+msgstr "사용 가능한 모델 참조"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:427
+msgid "avg"
+msgstr "평균"
+
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 msgid "Batch Analysis"
 msgstr "배치 분석"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:631
 msgid "Behavior"
 msgstr "행동"
 
@@ -868,6 +946,10 @@ msgstr ""
 msgid "Blog / Editorial"
 msgstr "블로그 / 편집"
 
+#: ai/includes/Admin/SettingsHelp.php:143
+msgid "Blog / Editorial (default)"
+msgstr "블로그 / 에디토리얼 (기본)"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -881,7 +963,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "브라우저 언어 리디렉션"
 
-#: ai/includes/Admin/SettingsPage.php:329
+#: ai/includes/Admin/SettingsPage.php:328
 msgid "Built-in preset instructions:"
 msgstr "내장된 사전 설정 지침:"
 
@@ -940,7 +1022,7 @@ msgstr ""
 "사이트가 생성할 수 있는 AI 사용량을 제한하고 유료 AI 호출을 트리거할 수 있는 사용자 역할을 제한합니다. 이미 보호하는 사용자별 "
 "요청 제한(30 요청/분, 하드코딩) 위에 위치합니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 msgid "Cart"
 msgstr "장바구니"
 
@@ -949,7 +1031,13 @@ msgstr "장바구니"
 msgid "chars"
 msgstr "문자 수"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:101
+msgid ""
+"Check your account, billing, or remaining credits directly on the provider "
+"console:"
+msgstr "계정, 결제 또는 남은 크레딧을 제공자 콘솔에서 직접 확인하세요:"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:337
 msgid "Checkout"
 msgstr "결제"
 
@@ -1040,9 +1128,18 @@ msgstr ""
 "사이트의 모든 언어에 대해 hreflang, Open Graph, Schema.org, 사이트맵, 소셜 공유를 구성하세요. 아래 각 "
 "섹션은 다국어 SEO의 한 측면을 다룹니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
 msgid "Configured"
 msgstr "구성됨"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
+msgid ""
+"Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other "
+"third-party post types whose content should not be language-filtered, one "
+"per line or comma-separated."
+msgstr ""
+"Contact Form 7 (wpcf7_contact_form)는 자동 제외됩니다. 언어 필터링이 필요 없는 기타 타사 게시물 유형을 한 "
+"줄 또는 쉼표로 구분하여 추가하세요."
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1051,6 +1148,10 @@ msgstr "콘텐츠 생성됨"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
 msgid "Content Generator"
 msgstr "콘텐츠 생성기"
+
+#: ai/includes/Admin/SettingsHelp.php:140
+msgid "Content profiles and weights"
+msgstr "콘텐츠 프로필 및 가중치"
 
 #: ai/assets/admin.js:683
 msgid "Content ready"
@@ -1093,13 +1194,13 @@ msgid "Conversational"
 msgstr "대화형"
 
 #: ai/assets/admin-content-gen-modal.js:180 ai/assets/admin.js:495
-#: ai/assets/admin.js:505 ai/assets/admin.js:1343 ai/assets/block-action.js:450
+#: ai/assets/admin.js:505 ai/assets/admin.js:1351 ai/assets/block-action.js:450
 #: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr "복사됨 ✓"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:728
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:734
 msgid "Copied!"
 msgstr "복사됨!"
 
@@ -1111,7 +1212,7 @@ msgstr "복사됨!"
 msgid "Copy"
 msgstr "복사"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:699
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr "GitHub 이슈 또는 지원 요청에 복사하여 붙여넣기 하세요."
 
@@ -1119,11 +1220,11 @@ msgstr "GitHub 이슈 또는 지원 요청에 복사하여 붙여넣기 하세�
 msgid "Copy failed — please copy the URL manually."
 msgstr "복사 실패 — URL을 수동으로 복사하세요."
 
-#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
+#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1316
 msgid "Copy markup"
 msgstr "마크업 복사"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:703
 msgid "Copy system info"
 msgstr "시스템 정보 복사"
 
@@ -1155,7 +1256,7 @@ msgstr "항목을 추가할 수 없습니다: 원본 용어와 대상 용어가 
 msgid "Could not copy the file. Check that the uploads folder is writable."
 msgstr "파일을 복사할 수 없습니다. 업로드 폴더가 쓰기 가능 상태인지 확인하세요."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:250
 msgid "Could not instantiate the provider."
 msgstr "공급자를 인스턴스화할 수 없습니다."
 
@@ -1193,7 +1294,7 @@ msgid ""
 "Please ensure the required integration is installed and active."
 msgstr "\"%s\" 게시물 유형에 대한 번역 생성은 활성화된 통합이 필요합니다. 필요한 통합이 설치되고 활성화되어 있는지 확인하세요."
 
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Creating…"
 msgstr "생성 중…"
 
@@ -1228,7 +1329,7 @@ msgid "Currently emitting"
 msgstr "현재 발행 중"
 
 #. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:88
 #, php-format
 msgid ""
 "Currently inherited from the %s constant. Selecting a value here will "
@@ -1252,13 +1353,17 @@ msgstr "현재:"
 msgid "Custom"
 msgstr "사용자 지정"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
+msgid "Custom tables — LF post-meta filters do not affect orders."
+msgstr "맞춤 테이블 — LF 게시물-메타 필터는 주문에 영향을 미치지 않습니다."
+
 #. translators: 1: quota number, 2: reset time.
 #: ai/includes/REST/RateLimiter.php:169
 #, php-format
 msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr "일일 AI 할당량 도달 (%1$d 요청). UTC %2$s에 재설정됩니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Daily quota"
 msgstr "일일 할당량"
 
@@ -1266,7 +1371,7 @@ msgstr "일일 할당량"
 msgid "Daily request limit"
 msgstr "일일 요청 제한"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:462
 msgid "Danger Zone"
 msgstr "위험 구역"
 
@@ -1281,7 +1386,7 @@ msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "디버그 파일이 지워졌습니다. %d 개의 파일이 제거되었습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:697
 msgid "Debug Info"
 msgstr "디버그 정보"
 
@@ -1297,7 +1402,7 @@ msgstr "디버그 로깅이 비활성화되었습니다."
 msgid "Debug logging enabled."
 msgstr "디버그 로깅이 활성화되었습니다."
 
-#: ai/includes/Admin/SettingsHelp.php:137
+#: ai/includes/Admin/SettingsHelp.php:168
 msgid ""
 "Debug: enable the debug log to capture AI prompts and API responses to a "
 "local file. Disable after troubleshooting — debug mode writes a file on "
@@ -1340,6 +1445,10 @@ msgstr "이 용어집 항목을 삭제하시겠습니까?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "작성할 내용을 설명하세요 — 주제, 핵심 포인트, 구조…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:610
+msgid "Destructive action — read before proceeding"
+msgstr "파괴적 조치 — 진행 전에 읽어보세요"
 
 #: ai/includes/Admin/MetaBox.php:391
 msgid "Details ↗"
@@ -1404,7 +1513,7 @@ msgstr "Lingua Forge 언어 전환기를 표시합니다."
 msgid "Do not output any OG tags."
 msgstr "OG 태그를 출력하지 마십시오."
 
-#: ai/includes/Admin/SettingsHelp.php:166
+#: ai/includes/Admin/SettingsHelp.php:197
 msgid "Documentation"
 msgstr "문서"
 
@@ -1420,7 +1529,7 @@ msgstr "완료 — {done}개 중 {total}개 게시물이 수정됨."
 msgid "Down"
 msgstr "아래로"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:293
 msgid ""
 "Download and install a WordPress core language pack directly from WordPress."
 "org. Once installed, the locale becomes available for URL routing and the AI "
@@ -1434,7 +1543,28 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "드롭다운 방향"
 
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsHelp.php:137
+msgid ""
+"Each metric yields one of four statuses: ok (full weight), warn (50 % of "
+"weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 "
+"amber, below 50 red."
+msgstr ""
+"각 지표는 네 가지 상태 중 하나를 산출합니다: ok (전체 가중치), warn (50% 가중치), fail (0), 또는 info (0,"
+" 감점 없음). 점수 ≥ 80은 초록색, 50–79는 호박색, 50 미만은 빨간색입니다."
+
+#: ai/includes/Admin/SettingsHelp.php:136
+msgid ""
+"Each post is scored 0–100 from six rule-based metrics: title, meta "
+"description, word count, heading structure, image alt coverage, and internal "
+"links. Ten points are always awarded for reading time (informational only). "
+"The remaining 90 points are distributed across the other metrics with "
+"weights that vary by content profile (see below)."
+msgstr ""
+"각 게시물은 제목, 메타 설명, 단어 수, 헤딩 구조, 이미지 대체 텍스트 커버리지, 내부 링크의 여섯 규칙 기반 지표에서 "
+"0~100점으로 평가됩니다. 읽기 시간은 항상 10점이 부여됩니다(정보용). 나머지 90점은 콘텐츠 프로필에 따라 가중치가 달리 "
+"배분됩니다(아래 참조)."
+
+#: ai/includes/Admin/SettingsPage.php:368
 msgid "edit"
 msgstr "편집"
 
@@ -1473,11 +1603,11 @@ msgstr ""
 "적어도 하나의 AI 공급자에 대한 API 키를 입력하세요. 키는 AES-256-GCM을 사용하여 사이트별 "
 "비밀(LINGUAFORGE_SECRET)로 암호화되어 저장됩니다. 비밀을 먼저 교체하지 않고 데이터베이스 내보내기를 공유하지 마세요."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:77
 msgid "Environment"
 msgstr "환경"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "environment variable"
 msgstr "환경 변수"
 
@@ -1485,10 +1615,65 @@ msgstr "환경 변수"
 msgid "Error"
 msgstr "오류"
 
+#: ai/includes/Admin/SettingsHelp.php:158
+msgid ""
+"Every time a post is analysed the score is stored in post meta. The post "
+"list Lang column shows a colour-coded \"SEO N\" badge for any post that has "
+"been analysed at least once. When two scores are stored a delta indicator "
+"(↑N / ↓N) shows the change since the previous run."
+msgstr ""
+"게시물이 분석될 때마다 점수는 게시물 메타에 저장됩니다. 게시물 목록의 언어 열에는 분석된 게시물에 대해 색상으로 구분된 \"SEO "
+"N\" 배지가 표시됩니다. 두 점수가 저장되면 이전 실행 이후의 변화를 보여주는 델타 표시기(↑N / ↓N)가 나타납니다."
+
+#: ai/includes/Admin/SettingsHelp.php:152
+msgid ""
+"Exactly one H1 is required. The H1 is normally the post title rendered by "
+"the theme — it is read from the live rendered page when possible, and from "
+"post content as a fallback."
+msgstr ""
+"정확히 하나의 H1이 필요합니다. H1은 일반적으로 테마가 렌더링하는 게시물 제목입니다 — 가능하면 실시간 렌더링된 페이지에서 읽으며, "
+"그렇지 않으면 게시물 내용에서 읽습니다."
+
 #: language-router/includes/admin/class-columns.php:169
 #: language-router/includes/admin/class-meta-boxes.php:90
 msgid "Exclude from navigation menus"
 msgstr "네비게이션 메뉴에서 제외"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:588
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:807
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:813
+msgid "Exclude from routing"
+msgstr "라우팅에서 제외"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:587
+msgid ""
+"Exclude this post type from language routing — its posts will no longer "
+"appear here or receive _lf_lang. This cannot be undone automatically."
+msgstr ""
+"이 게시물 유형을 언어 라우팅에서 제외 — 게시물이 더 이상 여기 나타나거나 _lf_lang를 받지 않습니다. 자동으로 되돌릴 수 "
+"없습니다."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:778
+msgid ""
+"Exclude this post type from language routing? Its posts will no longer "
+"appear in this list or receive _lf_lang. You can reverse this in Settings → "
+"Router → Query Filter Exclusions."
+msgstr ""
+"이 게시물 유형을 언어 라우팅에서 제외하시겠습니까? 게시물이 더 이상 이 목록에 나타나거나 _lf_lang를 받지 않습니다. 설정 → "
+"라우터 → 쿼리 필터 제외에서 되돌릴 수 있습니다."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:597
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:799
+msgid "excluded from routing"
+msgstr "라우팅에서 제외됨"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
+msgid "Excluded post types"
+msgstr "제외된 게시물 유형"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:782
+msgid "Excluding…"
+msgstr "제외 중…"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1510,6 +1695,10 @@ msgstr "추가 안내 — 톤, 스타일, 제약 조건, 대상 독자…"
 msgid "Extra guidance — tone, style, constraints…"
 msgstr "추가 안내 — 톤, 스타일, 제약 조건…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:808
+msgid "Failed to save exclusion."
+msgstr "제외 저장 실패."
+
 #: ai/assets/block-action.js:730 ai/assets/block-action.js:921
 msgid "Failed. Please try again."
 msgstr "실패했습니다. 다시 시도하세요."
@@ -1524,11 +1713,11 @@ msgstr ""
 "페이지의 소셜 미리보기에서 표시됩니다."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:153
 msgid "Feature"
 msgstr "기능"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:127
 msgid ""
 "Features are grouped into two tiers. Enter the exact model identifier for "
 "each tier and provider. Leave a field blank to use the built-in default "
@@ -1583,7 +1772,7 @@ msgid ""
 msgstr "언어포지 디버그 디렉터리로 디버그 출력을 리디렉션하려면 linguaforge_debug_dir로 필터링하세요."
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Finding"
 msgstr "찾기"
 
@@ -1607,19 +1796,19 @@ msgstr "모든 부분 수정"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Fix Links"
 msgstr "링크 수정"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Fix Nav"
 msgstr "네비게이션 수정"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Fix Parts"
 msgstr "부분 수정"
 
@@ -1631,19 +1820,19 @@ msgstr "템플릿 수정"
 msgid "Fixing {n} / {total}…"
 msgstr "{n} / {total} 수정 중…"
 
-#: ai/includes/Admin/SettingsPage.php:263
-#: ai/includes/Admin/SettingsPage.php:267
-#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:273
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "수정 중…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:227
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:261
 msgid "Flush Permalink Rules"
 msgstr "퍼멀링크 규칙 플러시"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
 msgid "Flush Permalinks"
 msgstr "퍼멀링크 플러시"
 
@@ -1667,9 +1856,9 @@ msgstr "각주"
 msgid "Footnotes payload (advanced)"
 msgstr "각주 페이로드 (고급)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:364
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:393
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:490
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:398
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:435
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:532
 msgid "Forbidden"
 msgstr "금지됨"
 
@@ -1735,8 +1924,13 @@ msgstr "전체 기사"
 msgid "Full post"
 msgstr "전체 게시물"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:43
+msgid ""
+"Full-page Translation, Content Generator (mid-tier models are fully "
+"sufficient)"
+msgstr "전체 페이지 번역, 콘텐츠 생성기 (중간 수준 모델도 충분함)"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:23
 msgid "General"
 msgstr "일반"
 
@@ -1770,7 +1964,7 @@ msgid "Generated Content"
 msgstr "생성된 콘텐츠"
 
 #: ai/assets/admin-content-gen-modal.js:59 ai/assets/admin-diff-modal.js:82
-#: ai/assets/admin.js:1118 ai/assets/admin.js:1273
+#: ai/assets/admin.js:1118 ai/assets/admin.js:1281
 msgid "Generated meta description"
 msgstr "생성된 메타 설명"
 
@@ -1783,7 +1977,7 @@ msgstr "생성 중…"
 msgid "Generation failed."
 msgstr "생성 실패."
 
-#: ai/includes/Admin/SettingsHelp.php:148
+#: ai/includes/Admin/SettingsHelp.php:179
 msgid "Getting started"
 msgstr "시작하기"
 
@@ -1800,7 +1994,7 @@ msgstr "글로벌 기본값 (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Glossary"
 msgstr "용어집"
 
@@ -1816,11 +2010,16 @@ msgstr "용어집 항목이 제거되었습니다."
 msgid "Glossary Tab"
 msgstr "용어집 탭"
 
-#: ai/includes/Admin/SettingsPage.php:67
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:106
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:108
+msgid "Google AI Studio"
+msgstr "Google AI Studio"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1829,14 +2028,22 @@ msgstr ""
 "H2를 H1으로 간주하는 모드 활성화 — 제목이 H1과 동일하게 계산됨. (헤딩 태그가 렌더링된 페이지에서 감지되지 않을 수 있음; "
 "테마가 제목을 올바르게 출력하는지 확인)."
 
+#: ai/includes/Admin/SettingsHelp.php:151
+msgid "Heading structure rules"
+msgstr "헤딩 구조 규칙"
+
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Headings"
 msgstr "제목"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Hide"
 msgstr "숨기기"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+msgid "High-Performance Order Storage (HPOS)"
+msgstr "고성능 주문 저장소 (HPOS)"
 
 #: ai/includes/Features/ContentGenerator.php:185
 msgid "Hints"
@@ -1855,6 +2062,11 @@ msgstr "번역에 어떻게 나타나야 하는지. AI에게 그대로 유지하
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
 msgid "How to use"
 msgstr "사용 방법"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:356
+msgid ""
+"HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
+msgstr "HPOS + CPT 동기화 — 과도기; LF 게시물-메타 필터는 CPT 복사본에 적용됩니다."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
@@ -1928,7 +2140,7 @@ msgstr ""
 "남겨둡니다. Schema.org의 경우, LF는 충돌 방지를 위해 자체 출력을 완전히 비활성화합니다."
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Images"
 msgstr "이미지"
 
@@ -1963,15 +2175,15 @@ msgstr "사이트 이름, URL, inLanguage를 포함합니다."
 msgid "Informative"
 msgstr "정보 제공"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:137
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
 msgid "Input tokens"
 msgstr "입력 토큰"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:278
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:312
 msgid "Install"
 msgstr "설치"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
 msgid "Install a Language"
 msgstr "언어 설치"
 
@@ -1979,7 +2191,7 @@ msgstr "언어 설치"
 msgid "Installed SEO plugins"
 msgstr "설치된 SEO 플러그인"
 
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Installing…"
 msgstr "설치 중…"
 
@@ -1995,7 +2207,7 @@ msgstr "지침 (선택 사항)"
 msgid "Instructions / key points"
 msgstr "지침 / 핵심 포인트"
 
-#: ai/includes/Admin/SettingsHelp.php:153
+#: ai/includes/Admin/SettingsHelp.php:184
 msgid "Integration API"
 msgstr "통합 API"
 
@@ -2007,6 +2219,11 @@ msgstr "내부 링크 수정기"
 msgid "Introduction only"
 msgstr "소개만"
 
+#: ai/includes/Providers/AbstractProvider.php:81
+msgid ""
+"Invalid API key — double-check the key entered in the AI Provider settings."
+msgstr "잘못된 API 키 — AI 제공자 설정에서 입력한 키를 다시 확인하세요."
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:225
 msgid "Invalid file reference."
 msgstr "잘못된 파일 참조입니다."
@@ -2015,7 +2232,7 @@ msgstr "잘못된 파일 참조입니다."
 msgid "Invalid filename."
 msgstr "잘못된 파일 이름입니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:494
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:536
 msgid "Invalid language code."
 msgstr "잘못된 언어 코드입니다."
 
@@ -2023,7 +2240,7 @@ msgstr "잘못된 언어 코드입니다."
 msgid "Invalid language."
 msgstr "잘못된 언어입니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:586
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:628
 msgid "Invalid locale code."
 msgstr "잘못된 로케일 코드입니다."
 
@@ -2037,13 +2254,14 @@ msgstr "잘못된 로케일 코드입니다."
 msgid "Invalid or primary language."
 msgstr "잘못되었거나 기본 언어입니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:777
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1397
 msgid "Invalid post ID."
 msgstr "잘못된 게시물 ID입니다."
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1065
 msgid "Invalid post type."
 msgstr "잘못된 게시물 유형."
 
@@ -2059,7 +2277,7 @@ msgstr "잘못된 템플릿 유형입니다."
 msgid "JavaScript-powered actions"
 msgstr "JavaScript 기반 액션"
 
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Just now"
 msgstr "방금 전"
 
@@ -2067,7 +2285,7 @@ msgstr "방금 전"
 msgid "Key points, ideas, or structure to build from…"
 msgstr "기반이 될 핵심 포인트, 아이디어 또는 구조…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:42
 msgid ""
 "Keys are encrypted with AES-256-CBC before being stored in the WordPress "
 "database. The encryption secret is derived from your WordPress auth salts "
@@ -2077,6 +2295,7 @@ msgstr ""
 "config.php)에서 파생되므로 평문 키는 데이터베이스에 저장되지 않습니다."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+#: ai/includes/Admin/SettingsHelp.php:147
 msgid "Landing / Short-form"
 msgstr "랜딩 / 짧은 형식"
 
@@ -2086,7 +2305,7 @@ msgid "Language"
 msgstr "언어"
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:612
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:654
 #, php-format
 msgid "Language %s installed successfully."
 msgstr "언어 %s가 성공적으로 설치되었습니다."
@@ -2095,13 +2314,13 @@ msgstr "언어 %s가 성공적으로 설치되었습니다."
 msgid "Language (optional)"
 msgstr "언어 (선택 사항)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:623
+#: ai/includes/Admin/SettingsPage.php:250
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr "이 서버에서는 언어 설치가 비활성화되어 있습니다 (DISALLOW_FILE_MODS가 설정됨)."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:298
 msgid ""
 "Language installation is disabled on this server. The DISALLOW_FILE_MODS "
 "constant is set in wp-config.php. Install language packs manually via WP-CLI:"
@@ -2118,7 +2337,7 @@ msgstr "언어 라벨"
 msgid "Language Overrides"
 msgstr "언어 재정의"
 
-#: ai/includes/Admin/SettingsHelp.php:136
+#: ai/includes/Admin/SettingsHelp.php:167
 msgid ""
 "Language Overrides: manage custom .po/.mo override files for the Lingua "
 "Forge UI strings. Use this instead of editing plugin files directly — "
@@ -2127,13 +2346,13 @@ msgstr ""
 "언어 오버라이드: Lingua Forge UI 문자열에 대한 사용자 지정 .po/.mo 오버라이드 파일을 관리하세요. 플러그인 파일을 "
 "직접 편집하는 대신 사용하세요 — 오버라이드는 업데이트 후에도 유지됩니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:615
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:657
 msgid ""
 "Language pack installation failed. The language may already be installed, "
 "the locale code may be incorrect, or your server may block file writes."
 msgstr "언어 팩 설치에 실패했습니다. 이미 설치되어 있거나, 로케일 코드가 잘못되었거나, 서버가 파일 쓰기를 차단할 수 있습니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:310
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Language Setup"
 msgstr "언어 설정"
 
@@ -2142,7 +2361,7 @@ msgstr "언어 설정"
 msgid "Language Switcher"
 msgstr "언어 전환기"
 
-#: ai/includes/Admin/SettingsHelp.php:151
+#: ai/includes/Admin/SettingsHelp.php:182
 msgid "Language switcher"
 msgstr "언어 전환기"
 
@@ -2163,7 +2382,7 @@ msgstr "테마의 템플릿 부분에 대한 언어별 복사본. 스캐폴딩 �
 msgid "Language:"
 msgstr "언어:"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid ""
 "Languages currently known to the router (derived from installed WordPress "
 "locale packs plus the primary language). Install additional language packs "
@@ -2224,7 +2443,7 @@ msgstr ""
 "이 항목을 모든 대상 언어에 적용하려면 공백으로 두세요 — 브랜드 이름, 약어, 그리고 모든 번역에서 그대로 유지해야 하는 용어에 "
 "적합합니다."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:109
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr "기존 키를 유지하려면 비워두세요. 새 값을 입력하여 교체하세요."
 
@@ -2248,6 +2467,10 @@ msgstr ""
 "레거시 lf-social-share mu-플러그인이 감지되었습니다. LF는 기본 OG 세트를 mu-플러그인에 위임하며, og:locale "
 "+ og:locale:alternate만 출력합니다. mu-플러그인을 비활성화할 수 있습니다 — LF의 내장 소셜 공유(SEO → 소셜 "
 "공유 탭)와 Open Graph가 동일 기능을 커버합니다."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+msgid "Legacy post-based (CPT)"
+msgstr "레거시 게시물 기반 (CPT)"
 
 #: ai/includes/Core/Config.php:61
 msgid "Legal / Compliance"
@@ -2333,7 +2556,7 @@ msgstr ""
 "hreflang x-default가 다국어 사이트의 올바른 정규 신호이기 때문입니다. 이는 SEO 플러그인도 정규 태그를 출력하는 경우 "
 "이중 정규 태그를 방지합니다. LF는 자체 정규 태그를 추가하지 않으며, 언어 라우팅이 이미 각 URL을 정규화하기 때문입니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:663
 msgid ""
 "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
 "Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
@@ -2342,8 +2565,8 @@ msgstr ""
 "현재 $wp_rewrite->extra_rules_top에 등록된 LF 소유 항목. 404 또는 라우팅 충돌 진단에 유용합니다. 버그 "
 "신고 시 복사하세요."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:81
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Light"
 msgstr "가벼움"
 
@@ -2355,7 +2578,7 @@ msgstr "경량 (기본값 — 빠르고 비용 효율적)"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "경량 (빠르고 비용 효율적 — Haiku / Flash)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
 msgid "Light model"
 msgstr "경량 모델"
 
@@ -2364,12 +2587,12 @@ msgid ""
 "Light: used for meta descriptions and excerpt generation — fast, low cost."
 msgstr "라이트: 메타 설명 및 발췌 생성에 사용 — 빠르고 저렴합니다."
 
-#: language-router/includes/rewrite/class-query-filter.php:95
+#: language-router/includes/rewrite/class-query-filter.php:99
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "지정된 Lingua Forge 언어 코드에 해당하는 페이지로 결과를 제한합니다."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Limits"
 msgstr "제한"
 
@@ -2472,6 +2695,16 @@ msgstr ""
 "Lingua Forge는 언어 간 편집 행동의 일관성을 유지하기 위해 기본적으로 두 가지 Gutenberg 기능을 제한합니다. 필요할 때 "
 "여기서 전체 Gutenberg / FSE 기능을 선택하세요."
 
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template "
+"blocks, plugin lookups) to the active language by injecting a _lf_lang meta "
+"constraint. Post types listed here are excluded from that constraint — their "
+"queries are always unfiltered."
+msgstr ""
+"Lingua Forge는 활성 언어에 대해 보조 WP_Query 인스턴스(사이드바 위젯, 템플릿 블록, 플러그인 조회)를 _lf_lang "
+"메타 제약 조건을 주입하여 범위 지정합니다. 여기 나열된 게시물 유형은 해당 제약 조건에서 제외되며 — 쿼리는 항상 필터링되지 않습니다."
+
 #: ai/includes/Admin/SettingsHelp.php:66
 msgid "Lingua Forge Settings"
 msgstr "Lingua Forge 설정"
@@ -2488,7 +2721,7 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge는 공급자별로 두 개의 모델 계층을 사용합니다:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:82
 msgid "Lingua Forge version"
 msgstr "Lingua Forge 버전"
 
@@ -2496,7 +2729,7 @@ msgstr "Lingua Forge 버전"
 msgid "Lingua Forge — Quick Translate"
 msgstr "링구아 포지 — 빠른 번역"
 
-#: ai/includes/Admin/SettingsPage.php:619
+#: ai/includes/Admin/SettingsPage.php:618
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — 설정"
 
@@ -2518,12 +2751,12 @@ msgid "link(s)"
 msgstr "링크"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:358
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "링크"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:303
 msgid "Load available languages"
 msgstr "사용 가능한 언어 로드"
 
@@ -2535,7 +2768,7 @@ msgstr "콘텐츠 로드"
 msgid "Loaded from cache."
 msgstr "캐시에서 로드됨."
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Loading…"
 msgstr "로딩 중…"
 
@@ -2575,12 +2808,12 @@ msgstr ""
 "linguaforge_required_capability 필터를 통해 조정할 수 있습니다."
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:638
+#: ai/includes/Admin/SettingsHelp.php:162
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "Maintenance"
 msgstr "유지보수"
 
-#: ai/includes/Admin/SettingsHelp.php:133
+#: ai/includes/Admin/SettingsHelp.php:164
 msgid "Maintenance Tab"
 msgstr "유지보수 탭"
 
@@ -2595,6 +2828,10 @@ msgstr "간결하게 만들기"
 #: ai/assets/block-action.js:67
 msgid "Make formal"
 msgstr "공식적으로 만들기"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:103
+msgid "Manage your account, review usage, or top up credits:"
+msgstr "계정을 관리하거나 사용량을 검토하거나 크레딧을 충전하세요:"
 
 #: ai/assets/block-action.js:73
 msgid "Mark citations needed"
@@ -2668,17 +2905,20 @@ msgid "Meta Description"
 msgstr "메타 설명"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Meta description"
 msgstr "메타 설명"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:82
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Meta Description, Excerpt Generator"
 msgstr "메타 설명, 발췌 생성기"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:39
+msgid "Meta Description, Excerpt Generator, quick translate"
+msgstr "메타 설명, 발췌 생성기, 빠른 번역"
+
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Metric"
 msgstr "지표"
 
@@ -2686,7 +2926,7 @@ msgstr "지표"
 msgid "Minimum role"
 msgstr "최소 역할"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:571
 msgid "Missing"
 msgstr "누락됨"
 
@@ -2698,16 +2938,20 @@ msgstr "패턴 이름 또는 언어가 누락되었습니다."
 msgid "Mode"
 msgstr "모드"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:155
 msgid "Model"
 msgstr "모델"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:244
+msgid "Model ID"
+msgstr "모델 ID"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
 msgid "Model tier"
 msgstr "모델 계층"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:123
 #: ai/includes/Admin/SettingsHelp.php:92
 msgid "Models"
 msgstr "모델"
@@ -2716,7 +2960,7 @@ msgstr "모델"
 msgid "Models Tab (General)"
 msgstr "모델 탭(일반)"
 
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Modified"
 msgstr "수정됨"
 
@@ -2743,13 +2987,17 @@ msgstr ""
 msgid "Multilingual SEO"
 msgstr "다국어 SEO"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Multilingual SEO overview"
 msgstr "다국어 SEO 개요"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:338
 msgid "My Account"
 msgstr "내 계정"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:245
+msgid "Name"
+msgstr "이름"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2782,11 +3030,18 @@ msgstr "네비게이션 번역은 활성 AI 제공자가 필요합니다. API �
 msgid "Navigations"
 msgstr "네비게이션"
 
-#: ai/includes/Admin/SettingsPage.php:219
+#. translators: %s: technical error detail from the HTTP layer
+#: ai/includes/Providers/AbstractProvider.php:134
+#, php-format
+msgid "Network error — could not reach the provider: %s"
+msgstr "네트워크 오류 — 공급자에 연결할 수 없음: %s"
+
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "네트워크 오류 — WordPress AJAX 엔드포인트에 연결할 수 없음."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:769
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:814
 msgid "Network error."
 msgstr "네트워크 오류."
 
@@ -2810,35 +3065,43 @@ msgstr ""
 "조치 필요 없음. Google은 2024년 1월에 사이트맵 핑 엔드포인트를 더 이상 사용하지 않으며, 이제 robots.txt "
 "Sitemap: 지시문을 통해서만 사이트맵을 검색합니다 — LF가 이미 구성했습니다. Google은 다음 크롤링 시 이를 인식할 것입니다."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
+msgid "No active plugins detected."
+msgstr "활성 플러그인이 감지되지 않음."
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:224
 msgid "No AI provider configured."
 msgstr "AI 제공자가 구성되지 않았습니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1409
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr "AI 제공자가 구성되지 않았습니다. 설정 → API 키에서 API 키를 추가하세요."
 
 #. translators: %s is a date-range label like "Today" or "Last 7 days".
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:143
 #, php-format
 msgid ""
 "No AI usage recorded in the selected window (%s). Pick a wider range above."
 msgstr "선택된 기간(%s) 동안 AI 사용량이 기록되지 않았습니다. 위에서 더 넓은 범위를 선택하세요."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:115
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
 msgid ""
 "No AI usage recorded yet. Once an editor runs a translation, generates a "
 "meta description, or uses any other AI feature, totals will appear here."
 msgstr ""
 "아직 AI 사용량이 기록되지 않았습니다. 편집자가 번역, 메타 설명 생성 또는 기타 AI 기능을 사용하면 총계가 이곳에 표시됩니다."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:219
 msgid "No API key configured for this provider."
 msgstr "이 공급자에 대해 구성된 API 키가 없습니다."
 
-#: ai/includes/Admin/SettingsPage.php:330
+#: ai/includes/Providers/AbstractProvider.php:121
+msgid "No API key configured — enter your key in the AI Provider settings."
+msgstr "API 키가 구성되지 않음 — AI 제공자 설정에서 키를 입력하세요."
+
+#: ai/includes/Admin/SettingsPage.php:329
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -2852,6 +3115,12 @@ msgid ""
 "No conflicting SEO plugins detected. Lingua Forge is handling all SEO output "
 "independently."
 msgstr "충돌하는 SEO 플러그인이 감지되지 않았습니다. Lingua Forge는 모든 SEO 출력을 독립적으로 처리합니다."
+
+#: ai/includes/Providers/OpenAI.php:91
+msgid ""
+"No credits remaining — top up your OpenAI account at platform.openai."
+"com/account/billing."
+msgstr "남은 크레딧 없음 — platform.openai.com/account/billing에서 OpenAI 계정을 충전하세요."
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid ""
@@ -2882,13 +3151,13 @@ msgid ""
 "translations."
 msgstr "아직 용어집 항목이 없습니다. 아래에 하나를 추가하여 번역에서 용어를 강제 적용하세요."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1094
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
 msgstr "H1이 발견되지 않았습니다. 일반적으로 게시물 제목이 H1입니다 — 테마가 이를 출력하는지 확인하세요."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1146
 msgid "No images found in content."
 msgstr "콘텐츠에 이미지가 없습니다."
 
@@ -2896,28 +3165,32 @@ msgstr "콘텐츠에 이미지가 없습니다."
 msgid "No internal links found to update."
 msgstr "업데이트할 내부 링크를 찾을 수 없습니다."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "No key"
+msgstr "키 없음"
+
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
 msgstr "매핑할 언어별 템플릿 부분을 찾을 수 없습니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1001
 msgid "No LF meta description set — using excerpt/content."
 msgstr "LF 메타 설명이 설정되지 않았습니다 — 발췌/내용을 사용합니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:676
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr "LF 재작성 규칙이 발견되지 않았습니다. 예상치 못한 경우 퍼머링크를 새로 고치세요."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1174
 msgid "No links found."
 msgstr "링크를 찾을 수 없음."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1173
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr "링크가 발견되지 않았습니다. 내부 링크는 크롤링 가능성과 사용자 탐색을 향상시킵니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1005
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr "메타 설명이 발견되지 않았습니다. AI 메타 설명 기능을 통해 생성하세요."
@@ -2930,6 +3203,10 @@ msgstr "업데이트할 네비게이션 참조가 없습니다."
 msgid "No override files uploaded yet."
 msgstr "아직 업로드된 재정의 파일이 없습니다."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:129
+msgid "No PHP limit"
+msgstr "PHP 제한 없음"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
 msgid ""
 "No physical robots.txt file found. WordPress is generating it virtually and "
@@ -2937,23 +3214,23 @@ msgid ""
 msgstr ""
 "물리적 robots.txt 파일이 없습니다. WordPress는 가상으로 생성하며, LF의 사이트맵 지시문이 자동으로 포함됩니다."
 
-#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "No published posts found for the selected filters."
 msgstr "선택한 필터에 대해 게시된 게시물이 없습니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1529
 msgid "No response from AI provider. Check your API key and try again."
 msgstr "AI 제공자로부터 응답이 없습니다. API 키를 확인하고 다시 시도하세요."
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "No response from provider — check the error log for details."
 msgstr "공급자로부터 응답 없음 — 자세한 내용은 오류 로그를 확인하세요."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:412
 msgid "No secondary languages configured."
 msgstr "보조 언어가 구성되지 않았습니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:348
 msgid ""
 "No secondary languages configured. Install a language pack above to enable "
 "template scaffolding."
@@ -2971,13 +3248,13 @@ msgstr "아직 원본 페이지가 연결되지 않았습니다."
 msgid "No template part references needed updating."
 msgstr "업데이트할 템플릿 부분 참조가 필요하지 않습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid ""
 "No third-party SEO plugins detected. Lingua Forge handles all multilingual "
 "SEO output."
 msgstr "서드파티 SEO 플러그인이 감지되지 않았습니다. Lingua Forge는 모든 다국어 SEO 출력을 처리합니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
 msgstr "제목이 설정되지 않았습니다."
 
@@ -2987,7 +3264,7 @@ msgid ""
 "translated."
 msgstr "번역된 콘텐츠가 없습니다. 게시물이 번역되면 사이트맵이 채워집니다."
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:370
 msgid "No translation found — analyzed the source language version."
 msgstr "번역이 발견되지 않았습니다 — 원본 언어 버전을 분석했습니다."
 
@@ -2995,13 +3272,9 @@ msgstr "번역이 발견되지 않았습니다 — 원본 언어 버전을 분�
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "등록된 {lang} 번역이 없음 (TRID 누락)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:371
 msgid "No — WooCommerce integration class not loaded"
 msgstr "아니오 — WooCommerce 통합 클래스가 로드되지 않음"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
-msgid "Not set — AI features are disabled."
-msgstr "설정되지 않음 — AI 기능이 비활성화됨."
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3009,6 +3282,7 @@ msgid ""
 "URL and cached for 24 hours."
 msgstr "아직 생성되지 않았습니다. 사이트맵은 사이트맵 URL에 처음 방문할 때 생성되며 24시간 동안 캐시됩니다."
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:247
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
 msgid "Notes"
@@ -3030,7 +3304,7 @@ msgstr "공지 설정"
 msgid "Notify search engines"
 msgstr "검색 엔진에 알림"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
 msgid "Numeric permalink structure is not supported."
 msgstr "숫자형 퍼머링크 구조는 지원되지 않습니다."
 
@@ -3081,9 +3355,14 @@ msgid ""
 msgstr ""
 "브라우저의 기본 Web Share 시트(iOS, Android, 일부 데스크탑)를 엽니다. 지원되지 않으면 클립보드 복사로 대체됩니다."
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:107
+msgid "OpenAI Platform"
+msgstr "OpenAI 플랫폼"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
 msgid ""
@@ -3110,6 +3389,14 @@ msgid ""
 msgstr ""
 "선택 사항. Yandex는 이미 robots.txt의 Sitemap: 지시문을 읽으며, 이는 즉시 재크롤을 트리거합니다. 다음 예약 "
 "검사까지 기다리지 않습니다."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+msgid "Order storage"
+msgstr "주문 저장소"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:359
+msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
+msgstr "wp_posts의 주문 — shop_order는 LF 라우팅에서 제외되도록 하세요."
 
 #: ai/includes/Features/ContentGenerator.php:197
 msgid "Output"
@@ -3139,7 +3426,7 @@ msgstr "WooCommerce 제품 페이지에 Product 스키마 출력"
 msgid "Output Schema.org JSON-LD in wp_head"
 msgstr "wp_head에 Schema.org JSON-LD 출력"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:138
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:158
 msgid "Output tokens"
 msgstr "출력 토큰"
 
@@ -3148,11 +3435,11 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "홈페이지 및 블로그 인덱스에 WebSite 스키마 출력"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "Overall SEO score"
 msgstr "전체 SEO 점수"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:212
 msgid "overridden"
 msgstr "재정의됨"
 
@@ -3185,7 +3472,7 @@ msgstr "개요"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:383
 msgid "Page"
 msgstr "페이지"
 
@@ -3205,11 +3492,11 @@ msgstr "텍스트를 붙여넣거나 먼저 에디터에서 텍스트를 선택�
 msgid "Paste text, or select text on the page first…"
 msgstr "먼저 텍스트를 붙여넣거나 페이지에서 텍스트를 선택하세요…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:75
 msgid "Paste your API key…"
 msgstr "API 키를 붙여넣기…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:109
 msgid "Path prefix (/de/)"
 msgstr "경로 접두사 (/de/)"
 
@@ -3217,7 +3504,7 @@ msgstr "경로 접두사 (/de/)"
 msgid "Path prefix — example.com/de/"
 msgstr "경로 접두사 — example.com/de/"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:249
 msgid ""
 "Path routing requires a post-name based permalink structure. Change it in"
 msgstr "경로 라우팅은 게시물 이름 기반 퍼머링크 구조를 필요로 합니다. 이를 변경하려면"
@@ -3243,9 +3530,13 @@ msgstr ""
 "패턴이 번역되어 저장되었습니다. 콘텐츠를 블록 편집기 패턴 삽입기를 통해 CPT 게시물에 복사하거나 재사용 가능한 블록의 시작점으로 "
 "사용하세요."
 
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Pattern translation failed."
 msgstr "패턴 번역 실패."
+
+#: ai/includes/Providers/AbstractProvider.php:83
+msgid "Payment required — your account has no remaining credits."
+msgstr "결제 필요 — 귀하의 계정에 남은 크레딧이 없습니다."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
 msgid "Per-Post Analysis"
@@ -3263,15 +3554,15 @@ msgstr ""
 msgid "Permalink rules flushed successfully."
 msgstr "퍼머링크 규칙이 성공적으로 플러시되었습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
 msgid "Permalink Structure"
 msgstr "퍼머링크 구조"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr "퍼머링크 구조는 Lingua Forge 경로 라우팅과 호환됩니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:475
 msgid ""
 "Permanently deletes all templates, template parts, patterns, navigation "
 "menus, posts, pages, custom post types, products, and product variations "
@@ -3284,7 +3575,7 @@ msgstr ""
 "취소할 수 없습니다."
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:455
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:497
 #, php-format
 msgid ""
 "Permanently uninstall %s? This will delete all translated content for this "
@@ -3312,22 +3603,23 @@ msgstr "영구적으로 %s를 삭제하시겠습니까? 이 작업은 이 언어
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:701
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1388
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:990
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1060
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:577
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:619
 msgid "Permission denied."
 msgstr "권한이 거부되었습니다."
 
@@ -3336,19 +3628,19 @@ msgstr "권한이 거부되었습니다."
 msgid "Persuasive"
 msgstr "설득력"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:138
 msgid "PHP constant"
 msgstr "PHP 상수"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:125
 msgid "PHP max_execution_time"
 msgstr "PHP 최대 실행 시간"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:145
 msgid "PHP memory_limit"
 msgstr "PHP 메모리 제한"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:90
 msgid "PHP version"
 msgstr "PHP 버전"
 
@@ -3378,7 +3670,7 @@ msgstr "얀덱스에 핑하기"
 msgid "Plain language"
 msgstr "쉬운 언어"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:248
 msgid "Plain permalinks are not supported."
 msgstr "일반 퍼머링크는 지원되지 않습니다."
 
@@ -3391,6 +3683,7 @@ msgid "Please enter some text first…"
 msgstr "먼저 텍스트를 입력하세요…"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "Plugin"
 msgstr "플러그인"
 
@@ -3398,11 +3691,11 @@ msgstr "플러그인"
 msgid "Post"
 msgstr "게시물"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:783
 msgid "Post not found or not published."
 msgstr "게시물을 찾을 수 없거나 게시되지 않았습니다."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1403
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "게시물을 찾을 수 없습니다."
@@ -3412,15 +3705,21 @@ msgid "Post on X / Twitter"
 msgstr "X / 트위터에 게시하기"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:570
 msgid "Post type"
 msgstr "게시물 유형"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+msgid ""
+"Post type slugs separated by commas or newlines. Changes take effect "
+"immediately on save — no permalink flush required."
+msgstr "쉼표 또는 새줄로 구분된 게시물 유형 슬러그. 변경 사항은 저장 즉시 적용되며 — 고유주소 플러시가 필요 없습니다."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "포스트 타입"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:557
 msgid ""
 "Posts without _lf_lang are invisible to every Lingua Forge language filter. "
 "This can happen when content is imported or created before the plugin was "
@@ -3442,11 +3741,14 @@ msgstr ""
 "가격과 가용성은 항상 원본 언어 제품(공유 재고 모델)을 반영합니다. 태그는 LF의 오픈 그래프 모듈이 \"전체\" 또는 \"자동\" "
 "모드로 설정되고 충돌하는 SEO 플러그인이 감지되지 않을 때만 출력됩니다."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:117
+msgid "Primary content language"
+msgstr "기본 콘텐츠 언어"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
 msgid "Primary Language"
 msgstr "기본 언어"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "기본 언어"
@@ -3472,6 +3774,7 @@ msgid "Product"
 msgstr "제품"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+#: ai/includes/Admin/SettingsHelp.php:145
 msgid "Product / eCommerce"
 msgstr "제품 / 전자상거래"
 
@@ -3484,24 +3787,42 @@ msgid "Product — WooCommerce product pages"
 msgstr "제품 — WooCommerce 제품 페이지"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Profile"
 msgstr "프로필"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+#: ai/includes/Admin/SettingsHelp.php:141
+msgid ""
+"Profiles adapt thresholds and weights to the type of content being analysed. "
+"Profile is resolved automatically; you can override it per analysis run from "
+"the profile dropdown."
+msgstr ""
+"프로필은 분석 대상 콘텐츠 유형에 맞게 임계값과 가중치를 조정합니다. 프로필은 자동으로 해결되며, 분석 실행 시 프로필 드롭다운에서 "
+"수동으로 재정의할 수 있습니다."
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:154
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:65
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:161
 msgid "Provider"
 msgstr "제공자"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
-msgid ""
-"Provider returned no text. Check the WordPress error log for the detailed "
-"failure reason."
-msgstr "공급자가 텍스트를 반환하지 않았습니다. 자세한 실패 원인은 WordPress 오류 로그를 확인하세요."
+#. translators: 1: HTTP status code, 2: error message from the provider API
+#: ai/includes/Providers/AbstractProvider.php:102
+#, php-format
+msgid "Provider error (HTTP %1$d): %2$s"
+msgstr "제공자 오류 (HTTP %1$d): %2$s"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:85
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:268
+msgid ""
+"Provider returned no response. Check the WordPress error log for details."
+msgstr "제공자가 응답하지 않았습니다. 자세한 내용은 WordPress 오류 로그를 확인하세요."
+
+#: ai/includes/Providers/AbstractProvider.php:97
+msgid "Provider service temporarily unavailable — try again in a moment."
+msgstr "제공자 서비스가 일시적으로 이용 불가 — 잠시 후 다시 시도하세요."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Quality"
 msgstr "품질"
 
@@ -3513,7 +3834,7 @@ msgstr "품질 (기본값 — Sonnet / GPT-4o / Gemini Pro)"
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "품질 (Sonnet / GPT-4o / Gemini Pro)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "Quality model"
 msgstr "품질 모델"
 
@@ -3522,6 +3843,10 @@ msgid ""
 "Quality: used for post translation and content generation — higher quality, "
 "higher cost."
 msgstr "품질: 게시물 번역 및 콘텐츠 생성에 사용 — 더 높은 품질, 더 높은 비용."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Query Filter Exclusions"
+msgstr "쿼리 필터 제외 목록"
 
 #: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
@@ -3541,6 +3866,12 @@ msgid ""
 msgstr ""
 "빠른 번역은 스니펫/청크 모드에 사용됩니다 — 툴바, 편집기 또는 블록 팝오버에서 요청 시 짧은 구절을 번역합니다. 전체 페이지 번역과는 "
 "별개로 가볍고 빠른 구성을 사용하여 응답 속도와 비용 효율성을 유지합니다."
+
+#: ai/includes/Providers/AbstractProvider.php:92
+msgid ""
+"Rate limited — too many requests sent to the provider; wait a moment and try "
+"again."
+msgstr "속도 제한 — 제공자에게 너무 많은 요청을 보냈습니다; 잠시 기다렸다가 다시 시도하세요."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
@@ -3571,12 +3902,12 @@ msgstr "다시 스캔 중…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Re-translate"
 msgstr "다시 번역"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Reading time"
 msgstr "읽기 시간"
 
@@ -3590,26 +3921,26 @@ msgstr "브라우저의 Accept-Language 헤더를 기반으로 방문자를 선�
 msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
 msgstr "더 세밀하게 다듬기 — 예: \"더 짧게 만들기\" 또는 \"공식적인 어조 사용\"…"
 
-#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1288
+#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1296
 msgid "Refine further:"
 msgstr "더 세밀하게 다듬기:"
 
 #. translators: %d is the refinement iteration number
-#: ai/assets/admin-content-gen-modal.js:326 ai/assets/admin.js:1446
+#: ai/assets/admin-content-gen-modal.js:336 ai/assets/admin.js:1454
 #: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr "다듬기 (translators: %d는 다듬기 반복 횟수입니다)"
 
-#: ai/assets/admin-content-gen-modal.js:302 ai/assets/admin.js:1427
+#: ai/assets/admin-content-gen-modal.js:312 ai/assets/admin.js:1435
 msgid "Refinement failed — please try again."
 msgstr "다듬기에 실패했습니다 — 다시 시도하세요."
 
-#: ai/assets/admin-content-gen-modal.js:274 ai/assets/admin.js:1404
+#: ai/assets/admin-content-gen-modal.js:284 ai/assets/admin.js:1412
 #: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr "다듬기 중…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:221
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
 msgid ""
 "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
 " and archive rewrites are all in sync. Necessary after changing the primary "
@@ -3618,37 +3949,41 @@ msgstr ""
 "URL 접두사, 언어별 슬러그, 아카이브 재작성 규칙을 모두 일치시키기 위해 WordPress 재작성 규칙을 재생성합니다. 기본 언어를 "
 "변경하거나 새 언어 지원을 추가한 후에 필요합니다."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:124
 msgid "Remove stored key"
 msgstr "저장된 키 제거"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
-msgid ""
-"Repair assigns the source language to every affected post. Run after "
-"importing content or after initial plugin activation on an existing site."
-msgstr ""
-"수리 작업은 영향을 받는 모든 게시물에 원본 언어를 할당합니다. 콘텐츠를 가져온 후 또는 기존 사이트에서 플러그인 초기 활성화 후에 "
-"실행하세요."
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:763
 msgid "Repair failed."
 msgstr "수리 실패."
 
-#. translators: %s: source language code shown in upper case, e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#. translators: %s: source language code in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:616
 #, php-format
-msgid "Repair — assign _lf_lang = %s to all affected posts"
-msgstr "수리 — 영향을 받는 모든 게시물에 _lf_lang = %s 할당"
+msgid ""
+"Repair tags every routable post listed above with _lf_lang = %s. Posts in "
+"routing-excluded post types are not touched. Only run this after importing "
+"content or on initial activation — do not use as a bulk language-"
+"reassignment tool."
+msgstr ""
+"위에 나열된 라우팅 가능한 게시물의 태그를 _lf_lang = %s로 수정하세요. 라우팅 제외 게시물 유형의 게시물은 수정하지 않습니다. "
+"콘텐츠를 가져온 후 또는 초기 활성화 시에만 실행하세요 — 대량 언어 재지정 도구로 사용하지 마세요."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+#. translators: %s: source language code shown in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all routable posts above"
+msgstr "수리 — 위의 모든 라우팅 가능한 게시물에 _lf_lang = %s 할당"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
 msgid "Repairing…"
 msgstr "수리 중…"
 
-#: ai/includes/Admin/SettingsHelp.php:169
+#: ai/includes/Admin/SettingsHelp.php:200
 msgid "Report an issue on GitHub"
 msgstr "GitHub에서 문제 신고"
 
-#: ai/assets/admin-content-gen-modal.js:340 ai/assets/admin.js:1455
+#: ai/assets/admin-content-gen-modal.js:350 ai/assets/admin.js:1463
 msgid "Request failed — please try again."
 msgstr "요청 실패 — 다시 시도하세요."
 
@@ -3665,11 +4000,11 @@ msgstr "요청 실패. 연결을 확인하세요."
 msgid "Request failed. Please try again."
 msgstr "요청 실패. 다시 시도하세요."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:156
 msgid "Requests"
 msgstr "요청 수"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:217
 msgid "requests / day"
 msgstr "요청 / 일"
 
@@ -3691,7 +4026,7 @@ msgstr "재번역"
 msgid "Retranslating…"
 msgstr "재번역 중…"
 
-#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Review carefully — links and slugs not updated."
 msgstr "꼼꼼히 검토하세요 — 링크와 슬러그가 업데이트되지 않았습니다."
 
@@ -3711,7 +4046,7 @@ msgstr "수정"
 msgid "Revision Type"
 msgstr "수정 유형"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:661
 msgid "Rewrite Rules"
 msgstr "재작성 규칙"
 
@@ -3724,7 +4059,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "사이트맵 지시어로 업데이트된 robots.txt"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:632
 msgid "Router"
 msgstr "라우터"
 
@@ -3766,7 +4101,7 @@ msgstr "Hreflang 설정 저장"
 msgid "Save Open Graph Settings"
 msgstr "Open Graph 설정 저장"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:214
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
 msgid "Save Router Settings"
 msgstr "라우터 설정 저장"
 
@@ -3774,7 +4109,7 @@ msgstr "라우터 설정 저장"
 msgid "Save Schema.org Settings"
 msgstr "Schema.org 설정 저장"
 
-#: ai/includes/Admin/SettingsPage.php:675
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Save Settings"
 msgstr "설정 저장"
 
@@ -3786,7 +4121,7 @@ msgstr "사이트맵 설정 저장"
 msgid "Save Social Share Settings"
 msgstr "소셜 공유 설정 저장"
 
-#: ai/assets/admin-diff-modal.js:273
+#: ai/assets/admin-diff-modal.js:290
 msgid "Save the post to persist changes."
 msgstr "변경 사항을 저장하려면 게시물을 저장하세요."
 
@@ -3834,11 +4169,19 @@ msgstr "Schema.org 출력"
 msgid "Schema.org settings saved."
 msgstr "Schema.org 설정이 저장됨."
 
-#: ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Score"
 msgstr "점수"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Score computation"
+msgstr "점수 계산"
+
+#: ai/includes/Admin/SettingsHelp.php:157
+msgid "Score history and badges"
+msgstr "점수 기록 및 배지"
+
+#: ai/includes/Admin/SettingsPage.php:376
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -3868,12 +4211,12 @@ msgstr "검색 결과"
 msgid "Security check failed — file path is not permitted."
 msgstr "보안 검사 실패 — 파일 경로가 허용되지 않습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:294
 msgid ""
 "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr "전체 기능별 동작 표는 설정 → SEO → 호환성에서 확인하세요."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:353
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
@@ -3899,7 +4242,7 @@ msgstr "WhatsApp으로 보내기"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:636
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "SEO"
 msgstr "SEO"
 
@@ -3921,7 +4264,7 @@ msgstr ""
 "감지된 SEO 플러그인: %s. LF는 og:locale 및 og:locale:alternate만 출력하며, 감지된 플러그인은 전체 OG "
 "세트를 처리합니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:281
 msgid "SEO Plugins"
 msgstr "SEO 플러그인"
 
@@ -3929,11 +4272,19 @@ msgstr "SEO 플러그인"
 msgid "SEO plugins and conflict avoidance:"
 msgstr "SEO 플러그인 및 충돌 방지:"
 
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "SEO Score System"
+msgstr "SEO 점수 시스템"
+
+#: ai/includes/Admin/SettingsHelp.php:131
+msgid "SEO Scores"
+msgstr "SEO 점수"
+
 #: ai/includes/Admin/SettingsHelp.php:121
 msgid "SEO Tab"
 msgstr "SEO 탭"
 
-#: ai/includes/Admin/SettingsHelp.php:149
+#: ai/includes/Admin/SettingsHelp.php:180
 msgid "Server setup (subdomain)"
 msgstr "서버 설정(하위 도메인)"
 
@@ -3946,16 +4297,16 @@ msgstr ""
 "사이트 전체의 모든 기능에 대한 기본 AI 동작을 설정합니다. 개별 게시물은 Lingua Forge 메타 박스를 통해 번역 및 콘텐츠 "
 "생성에 대해 이 설정을 재정의할 수 있습니다."
 
-#: ai/includes/Admin/SettingsPage.php:414
+#: ai/includes/Admin/SettingsPage.php:413
 msgid "Settings"
 msgstr "설정"
 
-#: ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Settings saved."
 msgstr "설정이 저장되었습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
 msgid "Settings → Permalinks"
 msgstr "설정 → 퍼머링크"
 
@@ -3975,9 +4326,22 @@ msgstr "마스토돈에 공유하기"
 msgid "Share via email (mailto:)"
 msgstr "이메일로 공유 (mailto:)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
+msgid "Shared / compatibility mode"
+msgstr "공유 / 호환 모드"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:335
 msgid "Shop"
 msgstr "쇼핑"
+
+#: ai/includes/Admin/SettingsHelp.php:154
+msgid ""
+"Short content (3 paragraphs or fewer) is never penalised for missing "
+"subheadings, regardless of profile. A concise page does not benefit from "
+"forced heading structure."
+msgstr ""
+"짧은 콘텐츠(3단락 이하)는 프로필에 관계없이 하위 제목 누락 시 절대 감점되지 않습니다. 간결한 페이지는 강제 제목 구조의 이점을 "
+"누리지 못합니다."
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -3999,7 +4363,7 @@ msgid "Single %s"
 msgstr "단일 %s"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:981
 #, php-format
 msgid ""
 "Single-word title (%d chars) — adding a second word improves clarity and "
@@ -4063,27 +4427,27 @@ msgstr "소셜 공유"
 msgid "Social Share settings saved."
 msgstr "소셜 공유 설정이 저장됨."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "Some link fixes failed."
 msgstr "일부 링크 수정이 실패했습니다."
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "Some nav ref fixes failed."
 msgstr "일부 네비게이션 참조 수정이 실패했습니다."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "Some part fixes failed."
 msgstr "일부 부품 수정이 실패했습니다."
 
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some parts could not be created."
 msgstr "일부 부품을 생성할 수 없습니다."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "Some templates could not be created."
 msgstr "일부 템플릿을 생성할 수 없습니다."
 
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some translations failed."
 msgstr "일부 번역이 실패했습니다."
 
@@ -4110,7 +4474,7 @@ msgstr "원본 언어"
 msgid "Source term"
 msgstr "원본 용어"
 
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Source title"
 msgstr "원본 제목"
 
@@ -4126,6 +4490,18 @@ msgid ""
 msgstr ""
 "표준은 각 기능의 자체 조정된 온도값을 사용합니다: 번역 T=0.2(정확), 빠른 번역 T=0.4, 콘텐츠 생성 T=0.6(창의적). "
 "다른 사전설정은 모든 기능에 단일 고정 온도를 적용합니다."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:135
+msgid ""
+"Start typing in any field to see model suggestions, or use the reference "
+"table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini "
+"Flash) are fully sufficient for translation and content generation — "
+"flagship \"max\" models add cost with minimal quality gain for structured "
+"text."
+msgstr ""
+"모델 제안을 보거나 아래 참조 표를 사용하려면 어떤 필드에든 입력을 시작하세요. 가볍고 중간 수준의 품질 모델(하이쿠, GPT-4o 미니,"
+" Gemini Flash)은 번역 및 콘텐츠 생성에 충분하며 — 플래그십 \"max\" 모델은 비용이 증가하지만 구조화된 텍스트의 품질 "
+"향상은 미미합니다."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
@@ -4155,7 +4531,7 @@ msgstr ""
 msgid "Structured Outline"
 msgstr "구조화된 개요"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:108
 msgid "Subdomain (de.example.com)"
 msgstr "서브도메인 (de.example.com)"
 
@@ -4206,12 +4582,12 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "숨김됨: %s."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:256
 msgid "Switch to a post-name based structure in"
 msgstr "이동하여 게시물 이름 기반 구조로 변경 in"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
-#: ai/includes/Admin/SettingsPage.php:639
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "System"
 msgstr "시스템"
 
@@ -4319,11 +4695,11 @@ msgstr "템플릿 부분"
 msgid "Templates"
 msgstr "템플릿"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:98
 msgid "Test connection"
 msgstr "연결 테스트"
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:214
 msgid "Testing…"
 msgstr "테스트 중…"
 
@@ -4349,7 +4725,7 @@ msgstr ""
 "제공자, 모델)의 해시로 키가 지정됩니다. 프롬프트 튜닝 중이거나 모든 요청이 AI 제공자에 도달해야 할 때는 비활성화하세요. "
 "비활성화하면 캐시된 항목이 삭제되지 않으며, 다시 활성화하면 복원됩니다."
 
-#: ai/assets/admin-diff-modal.js:237
+#: ai/assets/admin-diff-modal.js:254
 msgid "The editor did not accept the content — please try again."
 msgstr "편집자가 내용을 수락하지 않았습니다 — 다시 시도하세요."
 
@@ -4444,7 +4820,16 @@ msgid ""
 "only. Add them to this page using the block editor."
 msgstr "이 각주는 원본 페이지에서 가져온 것이며 참고용으로만 표시됩니다. 블록 편집기를 사용하여 이 페이지에 추가하세요."
 
-#: ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:266
+msgid ""
+"This catalog is updated with each Lingua Forge release. Testing a connection "
+"in the API Keys tab also fetches the live model list from the provider and "
+"refreshes the suggestions above."
+msgstr ""
+"이 카탈로그는 각 Lingua Forge 릴리스와 함께 업데이트됩니다. API 키 탭에서 연결을 테스트하면 제공자로부터 실시간 모델 "
+"목록을 가져오고 위 제안을 새로 고칩니다."
+
+#: ai/includes/Admin/SettingsPage.php:377
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -4459,48 +4844,73 @@ msgid ""
 msgstr "이것은 원본 페이지입니다. 각주는 블록 편집기에서 직접 편집됩니다."
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:132
 #, php-format
 msgid ""
 "This key is currently supplied by a server %s and cannot be removed here. "
 "Enter a new key above to override it with a database value."
 msgstr "이 키는 현재 서버 %s에서 제공되며 여기서 제거할 수 없습니다. 위에 새 키를 입력하여 데이터베이스 값으로 덮어쓰세요."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:500
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:542
 msgid "This language is protected and cannot be uninstalled."
 msgstr "이 언어는 보호되어 있으며 제거할 수 없습니다."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:442
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid ""
 "This language matches the WordPress instance locale and cannot be "
 "uninstalled."
 msgstr "이 언어는 WordPress 인스턴스 로케일과 일치하며 제거할 수 없습니다."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:246
+msgid "Tier"
+msgstr "등급"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:226
 msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr "팁: 모델을 내장 기본값으로 재설정하려면 필드를 지우고 저장하세요."
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:353
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Title"
 msgstr "제목"
 
+#: ai/includes/Admin/SettingsHelp.php:144
+msgid ""
+"Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts "
+"· Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 "
+"chars; word count warns below 300, fails below 100; H2 required; internal "
+"links required."
+msgstr ""
+"제목 15점 · 메타 설명 20점 · 단어 수 15점 · 헤딩 20점 · 이미지 10점 · 링크 10점. 제목 SERP 제한 60자; "
+"메타 120–210자; 단어 수는 300 이하에서 경고, 100 이하에서 실패; H2 필요; 내부 링크 필요."
+
 #. translators: %1$d: character count, %2$d: SERP limit
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:971
 #, php-format
 #| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
 msgstr "제목은 %1$d자입니다 — SERP에서 잘릴 수 있습니다 (%2$d자 이하를 목표로 하세요)."
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:976
 #, php-format
-msgid "Title is only %d chars — aim for more than 10 characters."
-msgstr "제목은 %d자에 불과합니다 — 10자 이상을 목표로 하세요."
+#| msgid "Title is only %d chars — aim for more than 10 characters."
+msgid "Title is only %d chars — aim for at least 10 characters."
+msgstr "제목은 %d자만 있습니다 — 최소 10자 이상을 목표로 하세요."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+#: ai/includes/Admin/SettingsHelp.php:138
+msgid ""
+"Title scoring rules (all profiles): fail if empty; warn if fewer than 10 "
+"characters; warn if only one word; warn if longer than the profile's SERP "
+"limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 "
+"characters, at least 2 words, and within the SERP limit."
+msgstr ""
+"제목 점수 규칙(모든 프로필): 비어 있으면 실패; 10자 미만이면 경고; 한 단어만 있으면 경고; 프로필의 SERP 제한(블로그 60자,"
+" 제품/랜딩 70자)을 초과하면 경고; 최소 10자, 최소 2단어, SERP 제한 내에 있으면 적합."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:163
 msgid ""
 "To use a custom encryption secret (instead of the derived wp_salt value), "
 "add this to wp-config.php:"
@@ -4538,11 +4948,11 @@ msgstr "어조:"
 msgid "Too many AI requests. Please retry in %d seconds."
 msgstr "AI 요청이 너무 많습니다. %d초 후에 다시 시도하세요."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:177
 msgid "Total"
 msgstr "합계"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:139
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:159
 msgid "Total tokens"
 msgstr "총 토큰"
 
@@ -4553,9 +4963,9 @@ msgstr "총 토큰"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:271
-#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:276 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4619,9 +5029,9 @@ msgid ""
 msgstr "번역 완료. 사이트 편집기에서 검토 — 내부 링크, 탐색 URL, 템플릿 슬러그는 자동으로 업데이트되지 않습니다."
 
 #: ai/includes/Admin/PostListColumn.php:235
-#: ai/includes/Admin/SettingsPage.php:258
-#: ai/includes/Admin/SettingsPage.php:272
-#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "번역 중…"
@@ -4680,7 +5090,7 @@ msgstr[0] "번역 메모리 삭제 완료. %d개의 캐시된 블록이 제거�
 msgid "Translation Memory setting saved."
 msgstr "번역 메모리 설정이 저장되었습니다."
 
-#: ai/includes/Admin/SettingsHelp.php:135
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid ""
 "Translation Memory: stores the full translated post per content hash. Clear "
 "it when you want to force a retranslation of all posts regardless of whether "
@@ -4689,12 +5099,11 @@ msgstr ""
 "번역 메모리: 콘텐츠 해시별로 전체 번역된 게시물을 저장합니다. 콘텐츠가 변경되었는지 여부와 관계없이 모든 게시물의 재번역을 강제하려면 "
 "이를 지우세요."
 
-#: ai/includes/Admin/SettingsHelp.php:150
+#: ai/includes/Admin/SettingsHelp.php:181
 msgid "Translation workflow"
 msgstr "번역 워크플로우"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:86
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Translation, Content Generator"
 msgstr "번역, 콘텐츠 생성기"
 
@@ -4704,7 +5113,7 @@ msgstr "H2를 H1과 동일하게 간주"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Type"
 msgstr "유형"
 
@@ -4713,9 +5122,15 @@ msgstr "유형"
 msgid "Uli Hake"
 msgstr "우리 하케"
 
+#. translators: %d: HTTP status code
+#: ai/includes/Providers/AbstractProvider.php:108
+#, php-format
+msgid "Unexpected provider error (HTTP %d)."
+msgstr "예상치 못한 제공자 오류 (HTTP %d)."
+
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:427
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:465
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:469
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:507
 #, php-format
 msgid "Uninstall %s"
 msgstr "%s 제거"
@@ -4732,7 +5147,7 @@ msgstr "언인스톨 설정 저장됨."
 msgid "unknown error"
 msgstr "알 수 없는 오류"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:211
 msgid "Unknown provider."
 msgstr "알 수 없는 공급자."
 
@@ -4754,8 +5169,7 @@ msgstr ""
 "자동 모드에서 LF는 활성화된 SEO 플러그인을 감지하고, 그들이 제공하지 못하는 og:locale(현재 언어)와 og:locale:"
 "alternate(기타 구성된 언어들)만 추가합니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:216
 msgid "Unlimited"
 msgstr "무제한"
 
@@ -4788,7 +5202,7 @@ msgstr "재정의 업로드"
 msgid "URL could not be mapped to a post — check the link target exists"
 msgstr "URL이 게시물에 매핑되지 않음 — 링크 대상이 존재하는지 확인하세요"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:105
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "URL 구조"
@@ -4842,7 +5256,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "커스텀 메타 설명 사용 중."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1000
 msgid "Using LF AI meta description."
 msgstr "LF AI 메타 설명 사용 중."
 
@@ -4850,8 +5264,12 @@ msgstr "LF AI 메타 설명 사용 중."
 msgid "Value source"
 msgstr "값 출처"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:462
+msgid "Version"
+msgstr "버전"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "View"
 msgstr "보기"
 
@@ -4879,7 +5297,7 @@ msgstr "플러그인 사이트 방문"
 msgid "Warning:"
 msgstr "경고:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:364
 msgid "WcPageBridge active"
 msgstr "WcPageBridge 활성화됨"
 
@@ -4953,6 +5371,16 @@ msgid ""
 "the cache is refreshed when translated content is saved."
 msgstr "활성화 시, 사이트맵 URL이 robots.txt에 자동으로 공지되며, 번역된 콘텐츠 저장 시 캐시가 새로 고쳐집니다."
 
+#: ai/includes/Admin/SettingsHelp.php:153
+msgid ""
+"When the Blog profile requires an H2 and none is found, the analyser first "
+"checks for H3 subheadings before issuing a warning. Accordion and Details "
+"blocks default to H3 for their headers; those H3s are accepted as valid "
+"structure and produce an ok result, not a warning."
+msgstr ""
+"블로그 프로필이 H2를 요구하는데 찾을 수 없으면, 분석기는 먼저 H3 하위 제목을 확인한 후 경고를 발행합니다. 아코디언 및 디테일 "
+"블록은 기본적으로 헤더로 H3를 사용하며, 이 H3는 유효한 구조로 간주되어 정상 결과를 생성하며 경고는 발생하지 않습니다."
+
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
 msgid ""
 "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua "
@@ -4983,16 +5411,16 @@ msgstr ""
 "활성 상태일 때, mu-플러그인은 기본 OG 세트만 처리하며 LF는 로케일 태그만(자동 모드) 출력합니다. 이를 제거하면 LF는 자동으로 "
 "전체 OG 모드로 전환됩니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "우커머스"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:310
 msgid "WooCommerce is not active."
 msgstr "WooCommerce가 활성화되지 않았습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:379
 msgid "WooCommerce page translations"
 msgstr "WooCommerce 페이지 번역"
 
@@ -5017,16 +5445,16 @@ msgstr ""
 "WooCommerce 시스템 페이지(쇼핑, 장바구니, 결제, 내 계정)는 제외됩니다 — 콘텐츠는 WooCommerce에서 관리하며 SEO "
 "편집을 통해 개선할 수 없습니다."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "WooCommerce version"
 msgstr "WooCommerce 버전"
 
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Word count"
 msgstr "단어 수"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:86
 msgid "WordPress version"
 msgstr "WordPress 버전"
 
@@ -5034,7 +5462,11 @@ msgstr "WordPress 버전"
 msgid "WP core canonical active (hreflang disabled)"
 msgstr "WP 핵심 정규화 활성화( hreflang 비활성화)"
 
-#: ai/includes/Admin/SettingsHelp.php:152
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:113
+msgid "WP instance language"
+msgstr "WP 인스턴스 언어"
+
+#: ai/includes/Admin/SettingsHelp.php:183
 msgid "WP-CLI reference"
 msgstr "WP-CLI 참고 문서"
 
@@ -5047,11 +5479,11 @@ msgstr "문제 해결을 위해 AI 프롬프트와 응답을 디스크에 기록
 msgid "XML Sitemap"
 msgstr "XML 사이트맵"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:368
 msgid "Yes"
 msgstr "예"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:156
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
 "config.php). Those sources are used automatically as a fallback when no "
@@ -5060,7 +5492,7 @@ msgstr ""
 "키를 상수 또는 환경 변수(예: wp-config.php에)를 정의할 수도 있습니다. 이러한 소스는 데이터베이스 키가 저장되지 않은 경우 "
 "자동으로 대체로 사용됩니다."
 
-#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:425
 msgid "You do not have permission to manage these settings."
 msgstr "이 설정을 관리할 권한이 없습니다."
 
@@ -5073,11 +5505,16 @@ msgid "{n} stale path(s)"
 msgstr "{n} 개의 오래된 경로"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:935
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d 분 읽기"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:192
+#| msgid "Not set — AI features are disabled."
+msgid "— AI features are disabled."
+msgstr "— AI 기능이 비활성화되었습니다."
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
 msgid "— Any source language —"
@@ -5096,7 +5533,7 @@ msgid "— Any —"
 msgstr "— 모두 —"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:367
 msgid "— Auto-detect —"
 msgstr "— 자동 감지 —"
 
@@ -5116,12 +5553,12 @@ msgstr "비활성화됨"
 msgid "— Not detected"
 msgstr "감지되지 않음"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr "— 언어 선택 —"
 
-#: ai/assets/admin.js:1141 ai/assets/admin.js:1305
+#: ai/assets/admin.js:1141 ai/assets/admin.js:1313
 #: ai/assets/block-action.js:334
 msgid "← Back"
 msgstr "← 뒤로"
@@ -5143,7 +5580,7 @@ msgstr "→ 로케일 태그만 — 기본 OG를 플러그인에 위임"
 msgid "↺ Re-translate"
 msgstr "↺ 다시 번역"
 
-#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1298
+#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1306
 #: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
 #: ai/assets/toolbar-translate.js:351 ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
@@ -5230,23 +5667,23 @@ msgstr "✓ 활성화됨 — 전체 OG + 트위터 카드"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ 활성화됨 — 로케일 태그만 (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ All parts created."
 msgstr "✓ 모든 부품이 생성되었습니다."
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "✓ All templates created."
 msgstr "✓ 모든 템플릿이 생성되었습니다."
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ All translated."
 msgstr "✓ 모두 번역됨."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:83
 msgid "✓ Configured"
 msgstr "✓ 구성됨"
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ Connection OK"
 msgstr "✓ 연결 성공"
 
@@ -5274,7 +5711,7 @@ msgstr "✓ Hreflang 활성화됨"
 msgid "✓ In safe storage"
 msgstr "✓ 안전 저장소에 있음"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "✓ Language installed."
 msgstr "✓ 언어가 설치되었습니다."
 
@@ -5294,19 +5731,19 @@ msgstr "✓ LF는 전체 OG + 트위터 카드 출력"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF 출력 — 플러그인 hreflang 억제됨"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "✓ Links fixed."
 msgstr "✓ 링크가 수정되었습니다."
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:274
 msgid "✓ Nav refs fixed."
 msgstr "✓ 네비게이션 참조가 수정됨."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:267
 msgid "✓ Parts fixed."
 msgstr "✓ 부품이 수정되었습니다."
 
-#: ai/includes/Admin/SettingsPage.php:279
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "✓ Pattern translated."
 msgstr "✓ 패턴이 번역됨."
 
@@ -5314,12 +5751,12 @@ msgstr "✓ 패턴이 번역됨."
 msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
 msgstr "✓ 물리적 robots.txt 발견. LF의 사이트맵 지시문이 존재함."
 
-#: ai/assets/admin-content-gen-modal.js:331 ai/assets/admin.js:1450
+#: ai/assets/admin-content-gen-modal.js:341 ai/assets/admin.js:1458
 msgid "✓ Refined — review the updated draft above."
 msgstr "✓ 다듬기 완료 — 위의 수정된 초안을 검토하세요."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "✓ Translation saved"
 msgstr "✓ 번역 저장됨"
 
@@ -5339,15 +5776,15 @@ msgstr "✗ %s 핑 실패. 사이트맵 URL이 여전히 robots.txt에 공지되
 msgid "✗ Disabled"
 msgstr "✗ 비활성화됨"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✗ Error:"
 msgstr "✗ 오류:"
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✗ Failed:"
 msgstr "✗ 실패:"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:88
 msgid "✗ Not configured"
 msgstr "✗ 구성되지 않음"
 

@@ -33,11 +33,92 @@ abstract class AbstractProvider implements AIProviderInterface {
         protected readonly WorkerConfig $config
     ) {}
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // ERROR SURFACING
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Human-readable description of the last failure, or '' on success.
+     * Populated at every early-return point in chat() so callers (e.g. the
+     * test-connection AJAX handler) can surface a specific reason to the admin
+     * rather than the generic "check the error log" fallback.
+     *
+     * @var string
+     */
+    protected string $last_error = '';
+
+    /** Return the last failure reason set by chat(). Empty string on success. */
+    public function get_last_error(): string {
+        return $this->last_error;
+    }
+
+    /**
+     * Extract the human-readable error message from a provider error-response body.
+     *
+     * Default covers the shape shared by Anthropic and Gemini:
+     *   { "error": { "message": "..." } }
+     *
+     * Override in concrete providers for divergent formats (e.g. OpenAI maps
+     * error.code === 'insufficient_quota' to a more specific label).
+     *
+     * @param array $decoded JSON-decoded error response body.
+     * @return string Error message, or '' when none is found.
+     */
+    protected function extract_api_error(array $decoded): string {
+        return (string) ($decoded['error']['message'] ?? '');
+    }
+
+    /**
+     * Map an HTTP status code and optional provider message to an admin-friendly
+     * one-line failure description.
+     *
+     * @param int    $code        HTTP status code.
+     * @param string $api_message Provider-extracted message (may be '').
+     */
+    private function http_error_message(int $code, string $api_message): string {
+        switch ($code) {
+            case 401:
+                return __('Invalid API key — double-check the key entered in the AI Provider settings.', 'lingua-forge');
+            case 402:
+                return __('Payment required — your account has no remaining credits.', 'lingua-forge');
+            case 403:
+                return __('Access forbidden — your account may be suspended or the key lacks the required permissions.', 'lingua-forge');
+            case 429:
+                // Prefer the provider-specific message: OpenAI overrides this to an
+                // "insufficient_quota" label that distinguishes quota exhaustion from
+                // ordinary rate limiting.
+                return $api_message !== ''
+                    ? $api_message
+                    : __('Rate limited — too many requests sent to the provider; wait a moment and try again.', 'lingua-forge');
+            case 500:
+            case 502:
+            case 503:
+            case 504:
+                return __('Provider service temporarily unavailable — try again in a moment.', 'lingua-forge');
+            default:
+                return $api_message !== ''
+                    ? sprintf(
+                        /* translators: 1: HTTP status code, 2: error message from the provider API */
+                        __('Provider error (HTTP %1$d): %2$s', 'lingua-forge'),
+                        $code,
+                        $api_message
+                    )
+                    : sprintf(
+                        /* translators: %d: HTTP status code */
+                        __('Unexpected provider error (HTTP %d).', 'lingua-forge'),
+                        $code
+                    );
+        }
+    }
+
     final public function chat(array $messages): ?string {
+
+        $this->last_error = '';
 
         $api_key = KeyStore::get($this->key_slug());
 
         if (!$api_key) {
+            $this->last_error = __('No API key configured — enter your key in the AI Provider settings.', 'lingua-forge');
             $this->log_error('no API key found — check Settings → Lingua Forge or set the ' . strtoupper($this->key_slug()) . '_API_KEY environment variable');
             return null;
         }
@@ -48,16 +129,25 @@ abstract class AbstractProvider implements AIProviderInterface {
 
         if (is_wp_error($response)) {
             // Final-attempt failure already logged inside post_with_retry().
+            $this->last_error = sprintf(
+                /* translators: %s: technical error detail from the HTTP layer */
+                __('Network error — could not reach the provider: %s', 'lingua-forge'),
+                $response->get_error_message()
+            );
             return null;
         }
 
         $http_code = (int) wp_remote_retrieve_response_code($response);
 
         if ($http_code < 200 || $http_code >= 300) {
+            $raw_body      = wp_remote_retrieve_body($response);
+            $decoded_error = json_decode($raw_body, true);
+            $api_message   = is_array($decoded_error) ? $this->extract_api_error($decoded_error) : '';
+            $this->last_error = $this->http_error_message($http_code, $api_message);
             $this->log_error(sprintf(
                 'unexpected HTTP %d: %s',
                 $http_code,
-                wp_remote_retrieve_body($response)
+                $raw_body
             ));
             return null;
         }

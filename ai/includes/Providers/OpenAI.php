@@ -80,4 +80,16 @@ class OpenAI extends AbstractProvider {
             'output' => (int) ($usage['completion_tokens'] ?? 0),
         ];
     }
+
+    protected function extract_api_error(array $decoded): string {
+        $error = $decoded['error'] ?? [];
+        // Distinguish quota exhaustion from ordinary rate-limiting. Both arrive
+        // as HTTP 429 from OpenAI; the 'insufficient_quota' code identifies the
+        // former so the admin sees "no credits" rather than "rate limited".
+        if (($error['code'] ?? '') === 'insufficient_quota'
+            || ($error['type'] ?? '') === 'insufficient_quota') {
+            return __('No credits remaining — top up your OpenAI account at platform.openai.com/account/billing.', 'lingua-forge');
+        }
+        return (string) ($error['message'] ?? '');
+    }
 }

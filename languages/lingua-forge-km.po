@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-08 19:25+0000\n"
+"PO-Revision-Date: 2026-06-10 14:30+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: km\n"
@@ -40,8 +40,20 @@ msgstr "\"%s\" បានបង្កើត។"
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"ផលិតផល\" (ជំនួស \"អត្ថបទ\")"
 
+#: ai/includes/Admin/SettingsHelp.php:155
+msgid ""
+"\"Treat H2 as H1 equivalent\" (Settings → SEO → Analysis): enable this when "
+"your theme renders the post title inside an H2 instead of an H1. The "
+"analyser promotes the first H2 to H1 so the score is not incorrectly "
+"penalised."
+msgstr ""
+"\"ព្យាយាម H2 ជា H1 ស្មើគ្នា\" (ការកំណត់ → SEO → វិភាគ): "
+"បើកវាឡើងនៅពេលដែលប្រធានបទរបស់អ្នកបង្ហាញចូលក្នុង H2 ជំនួស H1។ "
+"អ្នកវិភាគលើកទីមួយលើ H2 ទៅ H1 "
+"ដើម្បីឲ្យពិន្ទុមិនត្រូវបានប៉ះពាល់ដោយមិនត្រឹមត្រូវ។"
+
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1020
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -51,60 +63,60 @@ msgstr ""
 "%3$d តួអក្សរ។ %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1024
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d តួអក្សរ — ប្រវែងល្អបំផុត។ %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1015
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr ""
 "%1$d តួអក្សរ — ប្រហែលជាត្រូវបានកាត់ចេញក្នុង SERPs (រក្សាទុកក្រោម %2$d)។ %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1010
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d តួអក្សរ — ខ្លីពេក (គោលដៅ %2$d–%3$d)។ %4$s"
 
 #. translators: %1$d: character count, %2$d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:986
 #, php-format
 msgid "%1$d chars, %2$d words — good title."
 msgstr "%1$d តួអក្សរ, %2$d ពាក្យ — ចំណងជើងល្អ។"
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1195
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d ក្នុងសរុប, %2$d ខាងក្រៅ។"
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1152
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d រូបភាពក្នុងចំនួន %2$d ខ្វះអត្ថបទ alt។"
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1037
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
 msgstr[0] "%1$d បង្ហោះបានស្លាកសញ្ញា _lf_lang = %2$s។"
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d ពាក្យ — ក្រោមលេខអប្បបរមាដែលបានណែនាំ %2$d។"
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1039
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -115,13 +127,13 @@ msgstr ""
 "ពាក្យ។"
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1187
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "%d តំណភ្ជាប់ខាងក្រៅ ដោយគ្មានតំណភ្ជាប់ខាងក្នុង។"
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1182
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -129,13 +141,13 @@ msgid ""
 msgstr "%d តំណខាងក្រៅ, គ្មានតំណក្នុង។ បន្ថែមតំណក្នុងទៅមាតិកាដែលពាក់ព័ន្ធ។"
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1098
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "រកឃើញ %d ស្លាក H1 — ទំព័រត្រូវមាន H1 មួយតែមួយ។"
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1158
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d រូបភាព, មានអត្ថបទ alt ទាំងអស់។"
@@ -178,7 +190,7 @@ msgid_plural "%d locale files removed."
 msgstr[0] "ឯកសារភាសា %d ត្រូវបានលុប។"
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
@@ -206,14 +218,14 @@ msgid_plural "%d posts"
 msgstr[0] "%d បង្ហោះ"
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:670
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
 msgstr[0] "ច្បាប់  %d បានចុះបញ្ជី"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d words."
 msgstr "%d ពាក្យ។"
@@ -255,6 +267,10 @@ msgstr ""
 "បង្ហាញមាតិការបស់អ្នក; sitemap LF បន្ថែមតំណភ្ជាប់ជាច្រើនភាសា។ សitemap LF "
 "ត្រូវបានប្រកាសក្នុង robots.txt ដោយស្វ័យប្រវត្តិ។"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "(active)"
+msgstr "(សកម្ម)"
+
 #. translators: %s is the average hits per cached block.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
@@ -267,7 +283,7 @@ msgstr "(មធ្យម %.1f ចុច/ប្លុក)"
 msgid "(avg %.1f hits/entry)"
 msgstr "(មធ្យម %.1f ចុច/ចូល)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:100
 msgid "(classic theme)"
 msgstr "(ប្រធានបទបុរាណ)"
 
@@ -275,15 +291,23 @@ msgstr "(ប្រធានបទបុរាណ)"
 msgid "(disabled)"
 msgstr "(បិទ)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:99
 msgid "(FSE / block theme)"
 msgstr "(FSE / ប្រធានបទប្លុក)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:745
 #, php-format
 msgid "(no title) #%d"
 msgstr "(មិនមានចំណងជើង) #%d"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:431
+msgid "(partial)"
+msgstr "(ផ្នែកខ្លះ)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:130
+msgid "(server/FPM timeout still applies)"
+msgstr "(ការរង់ចាំម៉ាស៊ីនបម្រើ/FPM នៅតែមានប្រសិទ្ធភាព)"
 
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
@@ -298,18 +322,35 @@ msgstr ".txt ឯកសារ(ៗ) នៅក្នុងថតឯកសារ"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1122
+#| msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgid "1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure."
+msgstr ""
+"1 H1 ✓ — រកមិនឃើញ H2 ឬ H3 ចំណងជើងរង។ ការបន្ថែម H2s "
+"ធ្វើឱ្យប្រសើរឡើងនូវរចនាសម្ព័ន្ធ។"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1119
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "H1 1 ✓ — គ្មានចំណងជើងរង H2 (អាចអនុញ្ញាតសម្រាប់ប្រភេទមាតិកានេះ)។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
-msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+#. translators: %d: number of H3 headings found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1107
+#, php-format
+msgid ""
+"1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details "
+"headers). Structure is acceptable."
 msgstr ""
-"1 H1 ✓ — មិនមានចំណងជើង H2។ ការបន្ថែម H2 "
-"ធ្វើឲ្យប្រើប្រាស់ប្រើប្រាស់ប្រើប្រាស់។"
+"1 H1 ✓ — គ្មាន H2, ប៉ុន្តែមាន %d ចំណងជើងរង H3 (ឧទាហរណ៍, ចំណងជើង "
+"accordion/details)។ រចនាសម្ព័ន្ធអាចទទួលយកបាន។"
+
+#. translators: %d: number of paragraphs in the content
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1118
+#, php-format
+msgid "1 H1 ✓ — short content (%d paragraph(s)), subheadings not required."
+msgstr "1 H1 ✓ — មាតិកាសង្ខេប (%d ប្រសាទ), មិនចាំបាច់មានចំណងជើងរង។"
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1129
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3។"
@@ -347,7 +388,7 @@ msgstr "<strong>{n}</strong> ផ្លូវចាស់ៗ"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> បញ្ហាកំណត់គំរូ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:554
 msgid "_lf_lang Coverage"
 msgstr "ការគ្រប់គ្រង _lf_lang"
 
@@ -370,6 +411,14 @@ msgstr ""
 "ទទួលយកតែឯកសារ .mo ដែលបានបញ្ចូល។ ឈ្មោះឯកសារត្រូវតែអនុលោមលំនាំ {textdomain}-"
 "{locale}.mo។ ការផ្ទុកឯកសារដែលមានឈ្មោះដូចគ្នានឹងជំនួសឯកសារដែលមានស្រាប់។"
 
+#: ai/includes/Providers/AbstractProvider.php:85
+msgid ""
+"Access forbidden — your account may be suspended or the key lacks the "
+"required permissions."
+msgstr ""
+"ការចូលប្រើត្រូវបានហាមឃាត់ — គណនីរបស់អ្នកអាចត្រូវបានផ្អាក "
+"ឬកូនសោអវត្តមានសិទ្ធិចាំបាច់។"
+
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
@@ -377,15 +426,15 @@ msgstr ""
 msgid "Action"
 msgstr "សកម្មភាព"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:183
 msgid "active"
 msgstr "សកម្ម"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:265
 msgid "Active Languages"
 msgstr "ភាសាដែលមានសកម្មភាព"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:121
 msgid "Active languages"
 msgstr "ភាសាដែលសកម្ម"
 
@@ -397,24 +446,24 @@ msgstr ""
 "ភាសាដែលសកម្ម៖ បន្ថែមភាសាណាមួយដែលអ្នកចង់គាំទ្រ។ ភាសាEach gets a URL prefix or "
 "subdomain and an hreflang tag in the page &lt;head&gt;."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
+msgid "Active Plugins"
+msgstr "កម្មវិធីផ្លាកសញ្ញាដែលដំណើរការ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:210
 msgid "Active preset"
 msgstr "ការកំណត់ជាមុនសកម្ម"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:59
 msgid "Active Provider"
 msgstr "អ្នកផ្គត់ផ្គង់ដែលបានប្រើប្រាស់"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
-msgid "Active provider"
-msgstr "អ្នកផ្គត់ផ្គង់សកម្ម"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:94
 msgid "Active theme"
 msgstr "ប្រធានបទសកម្ម"
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:290
 #, php-format
 msgid "Active: %s."
 msgstr "សកម្ម: %s។"
@@ -431,7 +480,7 @@ msgstr ""
 "បន្ថែមការណែនាំដើម្បីកែលម្អសេចក្ដីព្រាង — ឧ. ធ្វើឲ្យខ្លីជាង, "
 "បន្ថែមផ្នែកសេចក្ដីសង្ខេប, ប្រើសមាជិកផ្លូវការជាង, រួមបញ្ចូលផ្នែកសំណួរញឹកញាប់…"
 
-#: ai/assets/admin.js:1295
+#: ai/assets/admin.js:1303
 msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
@@ -439,7 +488,7 @@ msgstr ""
 "បន្ថែមការណែនាំដើម្បីធ្វើឱ្យសេចក្ដីព្រាងប្រសើរឡើង — ឧ. ធ្វើឱ្យខ្លីស្រួល, "
 "បន្ថែមផ្នែកសន្និដ្ឋាន, ប្រើសម្លេងផ្លូវការជាងមុន…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
 msgid "Add key →"
 msgstr "បន្ថែមកូនសោ →"
 
@@ -509,7 +558,7 @@ msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "Cache AI ត្រូវបានសម្អាត។ %d ធាតុត្រូវបានយកចេញ។"
 
-#: ai/includes/Admin/SettingsHelp.php:134
+#: ai/includes/Admin/SettingsHelp.php:165
 msgid ""
 "AI Cache: lists cached AI responses with hit counts. Clear the whole cache "
 "or a single post's entries. Use \"Clear\" before testing a translation "
@@ -522,7 +571,7 @@ msgstr ""
 "លទ្ធផលដែលបានផ្ទុកជាសមាជិកត្រូវបានផ្តល់វិញ even when you change the AI preset "
 "or model until the cache entry is evicted."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "AI Configuration"
 msgstr "ការកំណត់ AI"
 
@@ -538,6 +587,12 @@ msgstr ""
 msgid "AI Limits & Security"
 msgstr "កំណត់ AI និងសុវត្ថិភាព"
 
+#: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
+#: ai/includes/Admin/SettingsPage.php:629
+#| msgid "Active provider"
+msgid "AI Provider"
+msgstr "ក្រុមហ៊ុនផ្តល់សេវាកម្ម AI"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:120
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:161
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:295
@@ -548,18 +603,18 @@ msgstr "អ្នកផ្គត់ផ្គង់ AI បានផ្តល់�
 msgid "AI Recommendations"
 msgstr "ការណែនាំ AI"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1539
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI បានផ្តល់ចម្លើយមិនច្បាស់។ សូមព្យាយាមម្តងទៀត។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:139
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr ""
 "ការប្រែសម្រួល AI និងការវិភាគជាក្រុមអាចប្រើពេលច្រើន។ ផ្តល់អនុសាសន៍ 120 វិនាទី "
 "ឬច្រើនជាងនេះ។"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:637
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "AI Usage"
 msgstr "ការប្រើប្រាស់ AI"
 
@@ -585,7 +640,7 @@ msgstr ""
 "ដើម្បីឲ្យម៉ាស៊ីនស្វែងរកស្ទួចសitemap ឥឡូវនេះ ជាជាងការរង់ចាំការត្រួតពិនិត្យ "
 "robots.txt បន្ទាប់។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:562
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr "បង្ហោះប្លុកទាំងអស់មានតម្លៃ _lf_lang។ មិនមានចន្លោះ។"
 
@@ -618,7 +673,7 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr "បង្កើតការពិពណ៌នាផងដែរ"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:154
 msgid "Alternative (server-side):"
 msgstr "ជំនួស (ផ្នែកម៉ាស៊ីនមេ):"
 
@@ -643,7 +698,7 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "មានកំហុសមិនស្គាល់កើតឡើង។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:447
 msgid "Analyse"
 msgstr "វិភាគ"
 
@@ -651,7 +706,7 @@ msgstr "វិភាគ"
 msgid "Analyse all languages"
 msgstr "វិភាគភាសាទាំងអស់"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:366
 msgid "Analyse…"
 msgstr "វិភាគ…"
 
@@ -659,7 +714,7 @@ msgstr "វិភាគ…"
 msgid "Analysis"
 msgstr "វិភាគ"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:371
 msgid "Analysis request failed. Please try again."
 msgstr "ការស្នើសុំវិភាគបរាជ័យ។ សូមព្យាយាមម្តងទៀត។"
 
@@ -671,9 +726,14 @@ msgstr "កំពុងវិភាគ…"
 msgid "and"
 msgstr "និង"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:104
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:106
+msgid "Anthropic Console"
+msgstr "កុងសូល Anthropic"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
@@ -684,17 +744,13 @@ msgstr "អ្វីៗ"
 msgid "API calls saved by cache"
 msgstr "ការហៅ API ដែលបានរក្សាទុកដោយ cache"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:62
 msgid "API Key"
 msgstr "កូនសោ API"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
-msgid "API key"
-msgstr "កូនសោ API"
-
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:29
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:38
+#: ai/includes/Admin/SettingsHelp.php:83
 msgid "API Keys"
 msgstr "កូនសោ API"
 
@@ -717,14 +773,14 @@ msgstr "ការកំណត់ Cache ចម្លើយ API បានរក្
 msgid "Appends the following line to your existing robots.txt: %s"
 msgstr "បន្ថែមបន្ទាត់ខាងក្រោមទៅក្នុង robots.txt របស់អ្នក: %s"
 
-#: ai/assets/admin-content-gen-modal.js:247 ai/assets/admin-diff-modal.js:271
-#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1229
-#: ai/assets/admin.js:1380 ai/assets/block-action.js:964
+#: ai/assets/admin-content-gen-modal.js:257 ai/assets/admin-diff-modal.js:288
+#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1237
+#: ai/assets/admin.js:1388 ai/assets/block-action.js:964
 #: ai/assets/block-action.js:989
 msgid "Applied ✓"
 msgstr "បានអនុវត្ត ✓"
 
-#: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
+#: ai/assets/admin-diff-modal.js:306 ai/assets/admin.js:1254
 msgid "Apply failed — please try again."
 msgstr "ការអនុវត្តបរាជ័យ — សូមព្យាយាមម្តងទៀត។"
 
@@ -740,7 +796,7 @@ msgstr "អនុវត្តទៅកាន់ផ្ទាំង"
 
 #: ai/assets/admin-content-gen-modal.js:89
 #: ai/assets/admin-content-gen-modal.js:140 ai/assets/admin.js:322
-#: ai/assets/admin.js:697 ai/assets/admin.js:1311
+#: ai/assets/admin.js:697 ai/assets/admin.js:1319
 msgid "Apply to Editor"
 msgstr "អនុវត្តទៅកែប្រែ"
 
@@ -752,13 +808,13 @@ msgstr "ដាក់ពាក្យសុំទៅកាន់ Footnote"
 msgid "Apply to Meta Description"
 msgstr "ដាក់ពាក្យស្នើសុំទៅកាន់ការពិពណ៌នាផ្នែកមេ"
 
-#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:280
-#: ai/assets/admin.js:1144 ai/assets/admin.js:1238
+#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:297
+#: ai/assets/admin.js:1144 ai/assets/admin.js:1246
 msgid "Apply translation"
 msgstr "អនុវត្តការបកប្រែ"
 
 #: ai/assets/admin-content-gen-modal.js:217 ai/assets/admin-diff-modal.js:204
-#: ai/assets/admin.js:1192 ai/assets/admin.js:1357
+#: ai/assets/admin.js:1192 ai/assets/admin.js:1365
 msgid "Applying…"
 msgstr "កំពុងអនុវត្ត…"
 
@@ -803,12 +859,46 @@ msgstr ""
 "ទំព័រមុខស្ថេរភាព → ប្រវត្តិ Landing; អ្វីផ្សេងទៀត → ប្រវត្តិ Blog។ "
 "ជ្រើសប្រវត្តិជាក់លាក់ដើម្បីលើកលែងការនេះសម្រាប់ប្លុកទាំងអស់។"
 
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid ""
+"Auto-detected for the static front page; can be selected manually. Title 20 "
+"pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images "
+"15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, "
+"fails below 60; H2 and internal links optional."
+msgstr ""
+"បានស្វែងរកស្វ័យប្រវត្តិសម្រាប់ទំព័រមុខស្ថានភាព; អាចជ្រើសរើសដោយដៃ។ ចំណងជើង 20 "
+"ពិន្ទុ · ការពិពណ៌នាផ្សាយ 30 ពិន្ទុ · ចំនួនពាក្យ 15 ពិន្ទុ · ចំណងជើង 10 "
+"ពិន្ទុ · រូបភាព 15 ពិន្ទុ · តំណភ្ជាប់ 0 ពិន្ទុ។ កំណត់សមត្ថភាព SERP ចំណងជើង "
+"70 តួអក្សរ; ការព្រមានចំនួនពាក្យក្រោម 150, បរាជ័យក្រោម 60; H2 "
+"និងតំណភ្ជាប់ក្នុងសំណុំជាជម្រើស។"
+
+#: ai/includes/Admin/SettingsHelp.php:146
+msgid ""
+"Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 "
+"pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. "
+"Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and "
+"internal links optional."
+msgstr ""
+"បានស្វែងរកស្វ័យប្រវត្តិសម្រាប់ផលិតផល WooCommerce។ ចំណងជើង 20 ពិន្ទុ · "
+"ការពិពណ៌នាផ្សាយ 30 ពិន្ទុ · ចំនួនពាក្យ 15 ពិន្ទុ · ចំណងជើង 5 ពិន្ទុ · រូបភាព "
+"20 ពិន្ទុ · តំណភ្ជាប់ 0 ពិន្ទុ។ កំណត់សមត្ថភាព SERP ចំណងជើង 70 តួអក្សរ; "
+"ការព្រមានចំនួនពាក្យក្រោម 80, បរាជ័យក្រោម 40; H2 "
+"និងតំណភ្ជាប់ក្នុងសំណុំជាជម្រើស។"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:231
+msgid "Available models reference"
+msgstr "យោងម៉ូដែលដែលអាចប្រើបាន"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:427
+msgid "avg"
+msgstr "មធ្យម"
+
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 msgid "Batch Analysis"
 msgstr "វិភាគជាក្រុម"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:631
 msgid "Behavior"
 msgstr "អាកប្បកិរិយា"
 
@@ -909,6 +999,10 @@ msgstr ""
 msgid "Blog / Editorial"
 msgstr "ប្លុក / ការបោះពុម្ព"
 
+#: ai/includes/Admin/SettingsHelp.php:143
+msgid "Blog / Editorial (default)"
+msgstr "ប្លុក / ការបោះពុម្ព (លំនាំដើម)"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -923,7 +1017,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "ការបញ្ជូនទៅភាសាដោយកម្មវិធីរុករក"
 
-#: ai/includes/Admin/SettingsPage.php:329
+#: ai/includes/Admin/SettingsPage.php:328
 msgid "Built-in preset instructions:"
 msgstr "ការណែនាំលំនាំមុនដែលមានស្រាប់៖"
 
@@ -986,7 +1080,7 @@ msgstr ""
 "នាទី, ត្រូវបានកំណត់ជាខ្លាំង) "
 "ដែលបានការពារការរត់លើកមួយរបស់អ្នកប្រើប្រាស់តែម្នាក់ឯង។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 msgid "Cart"
 msgstr "កាត"
 
@@ -995,7 +1089,14 @@ msgstr "កាត"
 msgid "chars"
 msgstr "តួអក្សរ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:101
+msgid ""
+"Check your account, billing, or remaining credits directly on the provider "
+"console:"
+msgstr ""
+"ពិនិត្យមើលគណនីរបស់អ្នក, ការបង់ប្រាក់, ឬសមាជិកនៅផ្ទាល់លើកុងសូលអ្នកផ្គត់ផ្គង់៖"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:337
 msgid "Checkout"
 msgstr "ការទូទាត់"
 
@@ -1091,9 +1192,19 @@ msgstr ""
 "និងការចែករំលែកសង្គមសម្រាប់រាល់ភាសានៅលើគេហទំព័ររបស់អ្នក។ "
 "ផ្នែកនីមួយៗខាងក្រោមគ្រប់គ្រងមុខងារមួយនៃ SEO ភាសាច្រើន។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
 msgid "Configured"
 msgstr "បានកំណត់រួចហើយ"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
+msgid ""
+"Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other "
+"third-party post types whose content should not be language-filtered, one "
+"per line or comma-separated."
+msgstr ""
+"ទម្រង់ទំនាក់ទំនង 7 (wpcf7_contact_form) ត្រូវបានលើកលែងដោយស្វ័យប្រវត្តិ។ "
+"បន្ថែមប្រភេទអត្ថបទទីបីផ្សេងទៀតដែលមិនគួរត្រូវបានច្រានចោលភាសា, "
+"មួយក្នុងបន្ទាត់ឬចែកចាយដោយក្បៀស។"
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1102,6 +1213,10 @@ msgstr "មាតិកាបានបង្កើត"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
 msgid "Content Generator"
 msgstr "អ្នកបង្កើតមាតិកា"
+
+#: ai/includes/Admin/SettingsHelp.php:140
+msgid "Content profiles and weights"
+msgstr "ប្រវត្តិមាតិកា និងទំងន់"
 
 #: ai/assets/admin.js:683
 msgid "Content ready"
@@ -1149,13 +1264,13 @@ msgid "Conversational"
 msgstr "ការសន្ទនា"
 
 #: ai/assets/admin-content-gen-modal.js:180 ai/assets/admin.js:495
-#: ai/assets/admin.js:505 ai/assets/admin.js:1343 ai/assets/block-action.js:450
+#: ai/assets/admin.js:505 ai/assets/admin.js:1351 ai/assets/block-action.js:450
 #: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr "បានចម្លង ✓"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:728
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:734
 msgid "Copied!"
 msgstr "បានចម្លង!"
 
@@ -1167,7 +1282,7 @@ msgstr "បានចម្លង!"
 msgid "Copy"
 msgstr "ចម្លង"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:699
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr "ចម្លង និងភ្ជាប់ទៅក្នុងបញ្ហា GitHub ឬសំណើគាំទ្រ។"
 
@@ -1175,11 +1290,11 @@ msgstr "ចម្លង និងភ្ជាប់ទៅក្នុងបញ�
 msgid "Copy failed — please copy the URL manually."
 msgstr "ការចម្លងបរាជ័យ — សូមចម្លង URL ដោយដៃ។"
 
-#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
+#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1316
 msgid "Copy markup"
 msgstr "ចម្លង markup"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:703
 msgid "Copy system info"
 msgstr "ចម្លងព័ត៌មានប្រព័ន្ធ"
 
@@ -1214,7 +1329,7 @@ msgstr "មិនអាចបន្ថែមពាក្យស្លាកបា
 msgid "Could not copy the file. Check that the uploads folder is writable."
 msgstr "មិនអាចចម្លងឯកសារ។ ពិនិត្យមើលថាតើថតផ្ទុកឯកសារអាចសរសេរបានឬអត់។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:250
 msgid "Could not instantiate the provider."
 msgstr "មិនអាចបង្កើតអ្នកផ្គត់ផ្គង់បាន។"
 
@@ -1254,7 +1369,7 @@ msgstr ""
 "ការបង្កើតការបកប្រែសម្រាប់ប្រភេទប្រការ \"%s\" ត្រូវការតំណភ្ជាប់សកម្ម។ "
 "សូមធានាថាការតំណភ្ជាប់ដែលត្រូវការត្រូវបានដំឡើង និងសកម្ម។"
 
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Creating…"
 msgstr "កំពុងបង្កើត…"
 
@@ -1289,7 +1404,7 @@ msgid "Currently emitting"
 msgstr "កំពុងបញ្ចេញសំឡេង"
 
 #. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:88
 #, php-format
 msgid ""
 "Currently inherited from the %s constant. Selecting a value here will "
@@ -1313,6 +1428,10 @@ msgstr "បច្ចុប្បន្ន៖"
 msgid "Custom"
 msgstr "ផ្ទាល់ខ្លួន"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
+msgid "Custom tables — LF post-meta filters do not affect orders."
+msgstr "តារាងផ្ទាល់ខ្លួន — តម្រង LF post-meta មិនមានឥទ្ធិពលលើការបញ្ជាទិញទេ។"
+
 #. translators: 1: quota number, 2: reset time.
 #: ai/includes/REST/RateLimiter.php:169
 #, php-format
@@ -1320,7 +1439,7 @@ msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr ""
 "កំណត់ត្រាអាយអាយប្រចាំថ្ងៃបានសម្រេច (%1$d សំណើរ)។ វាអាចកំណត់ឡើងវិញនៅ %2$s UTC។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Daily quota"
 msgstr "កម្រិតប្រចាំថ្ងៃ"
 
@@ -1328,7 +1447,7 @@ msgstr "កម្រិតប្រចាំថ្ងៃ"
 msgid "Daily request limit"
 msgstr "កំណត់សំណើរ​ប្រចាំថ្ងៃ"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:462
 msgid "Danger Zone"
 msgstr "តំបន់គ្រោះថ្នាក់"
 
@@ -1343,7 +1462,7 @@ msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "ឯកសារសាកល្បងត្រូវបានសម្អាត។ %d ឯកសារត្រូវបានយកចេញ។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:697
 msgid "Debug Info"
 msgstr "ព័ត៌មាន Debug"
 
@@ -1359,7 +1478,7 @@ msgstr "ការចុះហត្ថលេខាការត្រួតពិ
 msgid "Debug logging enabled."
 msgstr "ការចាប់ផ្តើមកំណត់តាមដំណាក់កាលត្រូវបានបើក។"
 
-#: ai/includes/Admin/SettingsHelp.php:137
+#: ai/includes/Admin/SettingsHelp.php:168
 msgid ""
 "Debug: enable the debug log to capture AI prompts and API responses to a "
 "local file. Disable after troubleshooting — debug mode writes a file on "
@@ -1404,6 +1523,10 @@ msgstr "តើចុះបញ្ជីវចនានុក្រមនេះត
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "ពិពណ៌នាអំពីអ្វីដែលត្រូវសរសេរ — ប្រធានបទ ចំណុចសំខាន់ៗ រចនាសម្ព័ន្ធ…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:610
+msgid "Destructive action — read before proceeding"
+msgstr "សកម្មភាពបំផ្លាញ — អានមុនពេលបន្ត។"
 
 #: ai/includes/Admin/MetaBox.php:391
 msgid "Details ↗"
@@ -1470,7 +1593,7 @@ msgstr "បង្ហាញការប្ដូរភាសា Lingua Forge"
 msgid "Do not output any OG tags."
 msgstr "មិនបញ្ចេញស្លាក OG ទេ។"
 
-#: ai/includes/Admin/SettingsHelp.php:166
+#: ai/includes/Admin/SettingsHelp.php:197
 msgid "Documentation"
 msgstr "ឯកសារ"
 
@@ -1486,7 +1609,7 @@ msgstr "បានធ្វើរួចហើយ — បានជួសជុល 
 msgid "Down"
 msgstr "ចុះ"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:293
 msgid ""
 "Download and install a WordPress core language pack directly from WordPress."
 "org. Once installed, the locale becomes available for URL routing and the AI "
@@ -1502,7 +1625,32 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "ទិសដៅ dropdown"
 
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsHelp.php:137
+msgid ""
+"Each metric yields one of four statuses: ok (full weight), warn (50 % of "
+"weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 "
+"amber, below 50 red."
+msgstr ""
+"មាត្រដ្ឋាននីមួយៗផ្តល់ស្ថានភាពមួយចំនួនបួន: ok (ទំងន់ពេញ), warn (50% នៃទំងន់), "
+"fail (0), ឬ info (0, គ្មានការប៉ះពាល់)។ ពិន្ទុ ≥ 80 គឺពណ៌បៃតង, 50–79 "
+"ពណ៌សំណុំនៅលើ, តូចជាង 50 ពណ៌ក្រហម។"
+
+#: ai/includes/Admin/SettingsHelp.php:136
+msgid ""
+"Each post is scored 0–100 from six rule-based metrics: title, meta "
+"description, word count, heading structure, image alt coverage, and internal "
+"links. Ten points are always awarded for reading time (informational only). "
+"The remaining 90 points are distributed across the other metrics with "
+"weights that vary by content profile (see below)."
+msgstr ""
+"រាល់ប្រសាទត្រូវបានវាយតម្លៃ 0–100 ពីមាត្រដ្ឋានចំនួនប្រាំមួយដែលផ្អែកលើច្បាប់: "
+"ចំណងជើង, ការពិពណ៌នាផ្សាយ, ចំនួនពាក្យ, រចនាសម្ព័ន្ធចំណងជើង, "
+"ការគ្រប់គ្រងរូបភាព alt, និងតំណភ្ជាប់ក្នុងសំណុំ។ "
+"ពិន្ទុដប់ចំនួនតែងតែផ្តល់សម្រាប់ពេលវេលាអាន (ព័ត៌មានតែប៉ុណ្ណោះ)។ 90 "
+"ពិន្ទុដែលនៅសល់ចែកចាយទៅលើមាត្រដ្ឋានផ្សេងទៀតដែលមានទំងន់ខុសគ្នាតាមប្រវត្តិមាតិកា"
+" (មើលខាងក្រោម)។"
+
+#: ai/includes/Admin/SettingsPage.php:368
 msgid "edit"
 msgstr "កែសម្រួល"
 
@@ -1545,11 +1693,11 @@ msgstr ""
 "ជាមួយសម្ងាត់ផ្ទៃក្នុងសម្រាប់គេហទំព័រ (LINGUAFORGE_SECRET)។ "
 "កុំចែករំលែកនាំចេញទិន្នន័យមូលដ្ឋានដោយមិនបង្វិលសម្ងាត់ជាមុន។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:77
 msgid "Environment"
 msgstr "បរិស្ថាន"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "environment variable"
 msgstr "អថេរបរិស្ថាន"
 
@@ -1557,10 +1705,71 @@ msgstr "អថេរបរិស្ថាន"
 msgid "Error"
 msgstr "កំហុស"
 
+#: ai/includes/Admin/SettingsHelp.php:158
+msgid ""
+"Every time a post is analysed the score is stored in post meta. The post "
+"list Lang column shows a colour-coded \"SEO N\" badge for any post that has "
+"been analysed at least once. When two scores are stored a delta indicator "
+"(↑N / ↓N) shows the change since the previous run."
+msgstr ""
+"រាល់ពេលដែលមានការវិភាគប្រសាទ ពិន្ទុត្រូវបានរក្សាទុកក្នុងមេតា​ប្រសាទ។ "
+"ជួរឈរភាសារបស់បញ្ជីប្រសាទបង្ហាញសញ្ញាប័ណ្ណ \"SEO N\" "
+"មានពណ៌សម្រាប់ប្រសាទណាមួយដែលបានវិភាគយ៉ាងហោចណាស់មួយដង។ "
+"ពេលដែលមានពិន្ទុពីរត្រូវបានរក្សាទុក សញ្ញាស្លាក delta (↑N / ↓N) "
+"បង្ហាញការផ្លាស់ប្តូរពីការរត់មុន។"
+
+#: ai/includes/Admin/SettingsHelp.php:152
+msgid ""
+"Exactly one H1 is required. The H1 is normally the post title rendered by "
+"the theme — it is read from the live rendered page when possible, and from "
+"post content as a fallback."
+msgstr ""
+"ត្រូវការតែមួយ H1 ប៉ុណ្ណោះ។ H1 "
+"ជាទូទៅគឺជា​ចំណងជើងប្រសាទដែលបានបង្ហាញដោយប្រធានបទ — "
+"វាត្រូវបានអានពីទំព័រដែលបានបង្ហាញនៅក្នុងសកម្មភាពពេលមានសក្តានុពល, "
+"ហើយពីមាតិកាប្រសាទជាជម្រើសបន្ថែម។"
+
 #: language-router/includes/admin/class-columns.php:169
 #: language-router/includes/admin/class-meta-boxes.php:90
 msgid "Exclude from navigation menus"
 msgstr "កាត់ចេញពីម៉ឺនុយនាវីហ្គេសិន"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:588
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:807
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:813
+msgid "Exclude from routing"
+msgstr "ដកចេញពីការរុករក"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:587
+msgid ""
+"Exclude this post type from language routing — its posts will no longer "
+"appear here or receive _lf_lang. This cannot be undone automatically."
+msgstr ""
+"ដកប្រភេទប្រសាទនេះចេញពីការរុករកភាសា — ប្រសាទរបស់វានឹងមិនបង្ហាញនៅទីនេះឬទទួល "
+"_lf_lang ទេ។ នេះមិនអាចត្រូវបានធ្វើឲ្យស្វ័យប្រវត្តិវិញបាន។"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:778
+msgid ""
+"Exclude this post type from language routing? Its posts will no longer "
+"appear in this list or receive _lf_lang. You can reverse this in Settings → "
+"Router → Query Filter Exclusions."
+msgstr ""
+"ដកប្រភេទប្រសាទនេះចេញពីការរុករកភាសា? "
+"ប្រសាទរបស់វានឹងមិនបង្ហាញនៅក្នុងបញ្ជីនេះឬទទួល _lf_lang។ "
+"អ្នកអាចផ្លាស់ប្តូរវានៅក្នុងការកំណត់ → Router → ការលើកលែងសំណួរ។"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:597
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:799
+msgid "excluded from routing"
+msgstr "បានដកចេញពីការរុករក"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
+msgid "Excluded post types"
+msgstr "ប្រភេទប្រសាទដែលបានដកចេញ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:782
+msgid "Excluding…"
+msgstr "កំពុងដកចេញ…"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1582,6 +1791,10 @@ msgstr "ការណែនាំបន្ថែម — សម្លេង, ស�
 msgid "Extra guidance — tone, style, constraints…"
 msgstr "ការណែនាំបន្ថែម — សម្លេង, ស្តាយ, កំណត់…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:808
+msgid "Failed to save exclusion."
+msgstr "បរាជ័យក្នុងការរក្សាទុកការលើកលែង។"
+
 #: ai/assets/block-action.js:730 ai/assets/block-action.js:921
 msgid "Failed. Please try again."
 msgstr "បរាជ័យ។ សូមព្យាយាមម្តងទៀត។"
@@ -1597,11 +1810,11 @@ msgstr ""
 "និងទំព័រពិសេសណាមួយដែលមិនមាន thumbnail។"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:153
 msgid "Feature"
 msgstr "លក្ខណៈពិសេស"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:127
 msgid ""
 "Features are grouped into two tiers. Enter the exact model identifier for "
 "each tier and provider. Leave a field blank to use the built-in default "
@@ -1661,7 +1874,7 @@ msgstr ""
 "តម្រង់ជាមួយ linguaforge_debug_dir ដើម្បីបញ្ជូនចេញ debug ទៅទីតាំងមិនសាធារណៈ។"
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Finding"
 msgstr "ការរកឃើញ"
 
@@ -1685,19 +1898,19 @@ msgstr "ជួសជុលផ្នែកទាំងអស់"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Fix Links"
 msgstr "ជួសជុលតំណភ្ជាប់"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Fix Nav"
 msgstr "ជួសជុលការរុករក"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Fix Parts"
 msgstr "ជួសជុលផ្នែក"
 
@@ -1709,19 +1922,19 @@ msgstr "ជួសជុល Templates"
 msgid "Fixing {n} / {total}…"
 msgstr "កំពុងជួសជុល {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:263
-#: ai/includes/Admin/SettingsPage.php:267
-#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:273
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "កំពុងជួសជុល…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:227
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:261
 msgid "Flush Permalink Rules"
 msgstr "បិទបញ្ជីច្បាប់ Permalink"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
 msgid "Flush Permalinks"
 msgstr "បិទបញ្ជី Permalinks"
 
@@ -1745,9 +1958,9 @@ msgstr "សម្គាល់"
 msgid "Footnotes payload (advanced)"
 msgstr "Payload សម្គាល់ចំណុចសម្គាល់ (កម្រិតខ្ពស់)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:364
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:393
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:490
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:398
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:435
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:532
 msgid "Forbidden"
 msgstr "ហាមឃាត់"
 
@@ -1821,8 +2034,14 @@ msgstr "អត្ថបទពេញ"
 msgid "Full post"
 msgstr "អត្ថបទពេញ"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:43
+msgid ""
+"Full-page Translation, Content Generator (mid-tier models are fully "
+"sufficient)"
+msgstr ""
+"ការប្រែសម្រួលទំព័រពេញ, អ្នកបង្កើតមាតិកា (ម៉ូដែលកម្រិតមធ្យមគឺគ្រប់គ្រាន់)"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:23
 msgid "General"
 msgstr "ទូទៅ"
 
@@ -1856,7 +2075,7 @@ msgid "Generated Content"
 msgstr "មាតិកាដែលបានបង្កើត"
 
 #: ai/assets/admin-content-gen-modal.js:59 ai/assets/admin-diff-modal.js:82
-#: ai/assets/admin.js:1118 ai/assets/admin.js:1273
+#: ai/assets/admin.js:1118 ai/assets/admin.js:1281
 msgid "Generated meta description"
 msgstr "ការពិពណ៌នាមេតាដែលបានបង្កើត"
 
@@ -1869,7 +2088,7 @@ msgstr "កំពុងបង្កើត…"
 msgid "Generation failed."
 msgstr "ការបង្កើតបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsHelp.php:148
+#: ai/includes/Admin/SettingsHelp.php:179
 msgid "Getting started"
 msgstr "ចាប់ផ្តើម"
 
@@ -1886,7 +2105,7 @@ msgstr "លំនាំដើមសកល (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Glossary"
 msgstr "ពាក្យស្លាក"
 
@@ -1902,11 +2121,16 @@ msgstr "លុបចោលពាក្យស្លាក។"
 msgid "Glossary Tab"
 msgstr "ផ្ទាំងពាក្យសព្ទ"
 
-#: ai/includes/Admin/SettingsPage.php:67
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:106
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:108
+msgid "Google AI Studio"
+msgstr "ស្ថានីយ៍ Google AI"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1916,14 +2140,22 @@ msgstr ""
 "(ស្លាកចំណងជើងមិនអាចរកឃើញពីទំព័រដែលបានបង្ហាញ; "
 "សូមផ្ទៀងផ្ទាត់ថាប្រធានបទរបស់អ្នកបញ្ចេញចំណងជើងត្រឹមត្រូវ។)"
 
+#: ai/includes/Admin/SettingsHelp.php:151
+msgid "Heading structure rules"
+msgstr "ច្បាប់រចនាសម្ព័ន្ធចំណងជើង"
+
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Headings"
 msgstr "ចំណងជើង"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Hide"
 msgstr "លាក់"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+msgid "High-Performance Order Storage (HPOS)"
+msgstr "ការរក្សាទុកតម្រៀបប្រសិទ្ធភាពខ្ពស់ (HPOS)"
 
 #: ai/includes/Features/ContentGenerator.php:185
 msgid "Hints"
@@ -1944,6 +2176,11 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
 msgid "How to use"
 msgstr "វិធីប្រើ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:356
+msgid ""
+"HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
+msgstr "HPOS + CPT ត្រូវបានសមកាល; តម្រង LF post-meta អនុវត្តទៅលើចម្លង CPT។"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
@@ -2024,7 +2261,7 @@ msgstr ""
 "ដែលមានការប្រកួតប្រជែង។"
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Images"
 msgstr "រូបភាព"
 
@@ -2062,15 +2299,15 @@ msgstr "រួមមានឈ្មោះតំបន់, url, និង inLangu
 msgid "Informative"
 msgstr "ព័ត៌មាន"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:137
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
 msgid "Input tokens"
 msgstr "Token បញ្ចូល"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:278
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:312
 msgid "Install"
 msgstr "ដំឡើង"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
 msgid "Install a Language"
 msgstr "ដំឡើងភាសា"
 
@@ -2078,7 +2315,7 @@ msgstr "ដំឡើងភាសា"
 msgid "Installed SEO plugins"
 msgstr "កម្មវិធី SEO ដែលបានដំឡើង"
 
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Installing…"
 msgstr "កំពុងដំឡើង…"
 
@@ -2094,7 +2331,7 @@ msgstr "ការណែនាំ (ជាជម្រើស)"
 msgid "Instructions / key points"
 msgstr "ការណែនាំ / ចំណុចសំខាន់ៗ"
 
-#: ai/includes/Admin/SettingsHelp.php:153
+#: ai/includes/Admin/SettingsHelp.php:184
 msgid "Integration API"
 msgstr "API ការរួមបញ្ចូល"
 
@@ -2106,6 +2343,13 @@ msgstr "ជួសជុលតំណភ្ជាប់ក្នុង"
 msgid "Introduction only"
 msgstr "តែការណែនាំ"
 
+#: ai/includes/Providers/AbstractProvider.php:81
+msgid ""
+"Invalid API key — double-check the key entered in the AI Provider settings."
+msgstr ""
+"កូនសោ API មិនត្រឹមត្រូវ — "
+"ពិនិត្យមើលកូនសោដែលបានបញ្ចូលក្នុងការកំណត់រចនាសម្ព័ន្ធអ្នកផ្គត់ផ្គង់ AI។"
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:225
 msgid "Invalid file reference."
 msgstr "យោងឯកសារមិនត្រឹមត្រូវ។"
@@ -2114,7 +2358,7 @@ msgstr "យោងឯកសារមិនត្រឹមត្រូវ។"
 msgid "Invalid filename."
 msgstr "ឈ្មោះឯកសារមិនត្រឹមត្រូវ។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:494
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:536
 msgid "Invalid language code."
 msgstr "កូដភាសាមិនត្រឹមត្រូវ។"
 
@@ -2122,7 +2366,7 @@ msgstr "កូដភាសាមិនត្រឹមត្រូវ។"
 msgid "Invalid language."
 msgstr "ភាសាមិនត្រឹមត្រូវ។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:586
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:628
 msgid "Invalid locale code."
 msgstr "កូដ locale មិនត្រឹមត្រូវ។"
 
@@ -2136,13 +2380,14 @@ msgstr "កូដ locale មិនត្រឹមត្រូវ។"
 msgid "Invalid or primary language."
 msgstr "ភាសាខុសឬមេមិនត្រឹមត្រូវ។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:777
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1397
 msgid "Invalid post ID."
 msgstr "លេខសម្គាល់អត្ថបទមិនត្រឹមត្រូវ។"
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1065
 msgid "Invalid post type."
 msgstr "ប្រភេទអត្ថបទមិនត្រឹមត្រូវ។"
 
@@ -2158,7 +2403,7 @@ msgstr "ប្រភេទគំរូមិនត្រឹមត្រូវ។
 msgid "JavaScript-powered actions"
 msgstr "សកម្មភាពដែលផ្អែកលើ JavaScript"
 
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Just now"
 msgstr "ឥឡូវនេះប៉ុណ្ណោះ"
 
@@ -2166,7 +2411,7 @@ msgstr "ឥឡូវនេះប៉ុណ្ណោះ"
 msgid "Key points, ideas, or structure to build from…"
 msgstr "ចំណុចសំខាន់ៗ, គំនិត, ឬរចនាសម្ព័ន្ធដែលត្រូវសាងសង់ពី…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:42
 msgid ""
 "Keys are encrypted with AES-256-CBC before being stored in the WordPress "
 "database. The encryption secret is derived from your WordPress auth salts "
@@ -2178,6 +2423,7 @@ msgstr ""
 "មិនធ្លាប់ចូលទៅក្នុងមូលដ្ឋានទិន្នន័យ។"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+#: ai/includes/Admin/SettingsHelp.php:147
 msgid "Landing / Short-form"
 msgstr "Landing / Short-form"
 
@@ -2187,7 +2433,7 @@ msgid "Language"
 msgstr "ភាសា"
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:612
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:654
 #, php-format
 msgid "Language %s installed successfully."
 msgstr "ភាសា %s ត្រូវបានដំឡើងដោយជោគជ័យ។"
@@ -2196,14 +2442,14 @@ msgstr "ភាសា %s ត្រូវបានដំឡើងដោយជោ�
 msgid "Language (optional)"
 msgstr "ភាសា (ជាជម្រើស)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:623
+#: ai/includes/Admin/SettingsPage.php:250
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 "ការដំឡើងភាសាត្រូវបានបិទនៅលើម៉ាស៊ីនបម្រើនេះ (បានកំណត់ DISALLOW_FILE_MODS)។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:298
 msgid ""
 "Language installation is disabled on this server. The DISALLOW_FILE_MODS "
 "constant is set in wp-config.php. Install language packs manually via WP-CLI:"
@@ -2221,7 +2467,7 @@ msgstr "ស្លាកភាសា"
 msgid "Language Overrides"
 msgstr "ការប្រែសម្រួលភាសា"
 
-#: ai/includes/Admin/SettingsHelp.php:136
+#: ai/includes/Admin/SettingsHelp.php:167
 msgid ""
 "Language Overrides: manage custom .po/.mo override files for the Lingua "
 "Forge UI strings. Use this instead of editing plugin files directly — "
@@ -2230,7 +2476,7 @@ msgstr ""
 "ការបញ្ជូនភាសា: គ្រប់គ្រងឯកសារ .po/.mo ផ្ទាល់ខ្លួនសម្រាប់អក្សររបស់ UI Lingua "
 "Forge។ ប្រើវាជំនួសការកែសម្រួលឯកសារផ្លាស់ប្តូរ — ការបញ្ជូនភាសានៅរស់នៅ។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:615
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:657
 msgid ""
 "Language pack installation failed. The language may already be installed, "
 "the locale code may be incorrect, or your server may block file writes."
@@ -2238,7 +2484,7 @@ msgstr ""
 "ការដំឡើងកញ្ចប់ភាសាបរាជ័យ។ ភាសាអាចមានរួចហើយ, កូដ locale អាចមិនត្រឹមត្រូវ, "
 "ឬម៉ាស៊ីនបម្រើរបស់អ្នកអាចបិទការសរសេរឯកសារ។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:310
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Language Setup"
 msgstr "ការរៀបចំភាសា"
 
@@ -2247,7 +2493,7 @@ msgstr "ការរៀបចំភាសា"
 msgid "Language Switcher"
 msgstr "ប្ដូរភាសា"
 
-#: ai/includes/Admin/SettingsHelp.php:151
+#: ai/includes/Admin/SettingsHelp.php:182
 msgid "Language switcher"
 msgstr "អ្នកផ្លាស់ប្តូភាសា"
 
@@ -2270,7 +2516,7 @@ msgstr ""
 msgid "Language:"
 msgstr "ភាសា៖"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid ""
 "Languages currently known to the router (derived from installed WordPress "
 "locale packs plus the primary language). Install additional language packs "
@@ -2339,7 +2585,7 @@ msgstr ""
 "ទុកវាឲ្យទទេដើម្បីអនុវត្តចុះបញ្ជីនេះទៅភាសាគោលទាំងអស់ — សម្រាប់ឈ្មោះម៉ាក "
 "អក្សរអក្សរ និងពាក្យដែលត្រូវរក្សាទុកតាមពិតក្នុងការប្រែប្រែទាំងអស់។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:109
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr "ទុកវាឲ្យទទេដើម្បីរក្សាកូនសោចាស់។ បញ្ចូលតម្លៃថ្មីដើម្បីជំនួសវា។"
 
@@ -2366,6 +2612,10 @@ msgstr ""
 "មូលដ្ឋានទៅ mu-plugin ហើយបញ្ចេញ og:locale + og:locale:alternate តែប៉ុណ្ណោះ។ "
 "អ្នកអាចបិទ mu-plugin — LF មានសមត្ថភាពសង្គមផ្ទៃក្នុង (ផ្ទាំង SEO → "
 "ផ្ទាំងសង្គម) និង Open Graph មានមុខងារដូចគ្នា។"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+msgid "Legacy post-based (CPT)"
+msgstr "ប្រព័ន្ធចាស់ដែលផ្អែកលើប្រសាទ (CPT)"
 
 #: ai/includes/Core/Config.php:61
 msgid "Legal / Compliance"
@@ -2462,7 +2712,7 @@ msgstr ""
 "ផងដែរ ផ្តល់ចេញមួយ។ LF មិនបន្ថែមស្លាកសញ្ញាសម្រង់ផ្ទាល់ខ្លួនទេ — "
 "ការរុករកផ្លូវភាសានalready makes each URL canonical."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:663
 msgid ""
 "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
 "Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
@@ -2472,8 +2722,8 @@ msgstr ""
 "មានប្រយោជន៍សម្រាប់ការរកឃើញ 404 ឬការប្រឈមមុខនឹងការរៀបចំផ្លូវ។ "
 "ចម្លងទាំងនេះពេលដាក់របាយការណ៍កំហុស។"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:81
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Light"
 msgstr "ភ្លឺៗ"
 
@@ -2485,7 +2735,7 @@ msgstr "ភ្លឺ (លំនាំដើម — លឿន និងមាន�
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "ភ្លឺ (លឿន និងមានថ្លៃសមរម្យ — Haiku / Flash)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
 msgid "Light model"
 msgstr "ម៉ូដែលសLight"
 
@@ -2496,12 +2746,12 @@ msgstr ""
 "ភ្លឺ: ប្រើសម្រាប់ការពិពណ៌នាអំពីមេតា និងការបង្កើតសេចក្ដីសង្ខេប — លឿន, "
 "តម្លៃទាប។"
 
-#: language-router/includes/rewrite/class-query-filter.php:95
+#: language-router/includes/rewrite/class-query-filter.php:99
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "កំណត់លទ្ធផលទៅទំព័រដែលមានកូដភាសា Lingua Forge ដែលបានផ្ដល់។"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Limits"
 msgstr "កំណត់"
 
@@ -2615,6 +2865,18 @@ msgstr ""
 "ដើម្បីរក្សាការប្រព្រឹត្តិការណ៍នៃការប្រែសម្រួលឲ្យសមស្របគ្នានៅក្នុងភាសាផ្សេងៗ។ "
 "ជ្រើសរើសនៅទីនេះបើអ្នកត្រូវការសមត្ថភាពពេញលេញនៃ Gutenberg / FSE។"
 
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template "
+"blocks, plugin lookups) to the active language by injecting a _lf_lang meta "
+"constraint. Post types listed here are excluded from that constraint — their "
+"queries are always unfiltered."
+msgstr ""
+"Lingua Forge កំណត់សមាជិក WP_Query ទSecondary (វីហ្គេត sidebar, ប្លុកទំរង់, "
+"ការស្វែងរកកម្មវិធីផ្លាស់ទី) ទៅភាសាដែលសកម្មដោយបញ្ចូលកម្រង _lf_lang។ "
+"ប្រភេទប្រសាទដែលបានរាយនៅទីនេះត្រូវបានដកចេញពីកម្រងនោះ — "
+"ការស្វែងរករបស់ពួកវាតែងតែគ្មានការតម្រង។"
+
 #: ai/includes/Admin/SettingsHelp.php:66
 msgid "Lingua Forge Settings"
 msgstr "ការកំណត់ Lingua Forge"
@@ -2631,7 +2893,7 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge ប្រើស្រទាប់ម៉ូដែលពីរពីអ្នកផ្គត់ផ្គង់:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:82
 msgid "Lingua Forge version"
 msgstr "កំណែ Lingua Forge"
 
@@ -2639,7 +2901,7 @@ msgstr "កំណែ Lingua Forge"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — ប្រែរយៈពេលរហ័ស"
 
-#: ai/includes/Admin/SettingsPage.php:619
+#: ai/includes/Admin/SettingsPage.php:618
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — ការកំណត់"
 
@@ -2662,12 +2924,12 @@ msgid "link(s)"
 msgstr "តំណភ្ជាប់"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:358
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "តំណភ្ជាប់"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:303
 msgid "Load available languages"
 msgstr "ផ្ទុកភាសាដែលអាចប្រើបាន"
 
@@ -2679,7 +2941,7 @@ msgstr "ផ្ទុកមាតិកា។"
 msgid "Loaded from cache."
 msgstr "បានផ្ទុកពី cache។"
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Loading…"
 msgstr "កំពុងផ្ទុក…"
 
@@ -2723,12 +2985,12 @@ msgstr ""
 "\"linguaforge_required_capability\"។"
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:638
+#: ai/includes/Admin/SettingsHelp.php:162
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "Maintenance"
 msgstr "ការថែទាំ"
 
-#: ai/includes/Admin/SettingsHelp.php:133
+#: ai/includes/Admin/SettingsHelp.php:164
 msgid "Maintenance Tab"
 msgstr "ផ្ទាំងថែទាំ"
 
@@ -2743,6 +3005,10 @@ msgstr "ធ្វើឱ្យខ្លី"
 #: ai/assets/block-action.js:67
 msgid "Make formal"
 msgstr "ធ្វើឱ្យផ្លូវការ"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:103
+msgid "Manage your account, review usage, or top up credits:"
+msgstr "គ្រប់គ្រងគណនីរបស់អ្នក, ពិនិត្យការប្រើប្រាស់, ឬបន្ថែមប្រាក់កម្ចី៖"
 
 #: ai/assets/block-action.js:73
 msgid "Mark citations needed"
@@ -2825,17 +3091,20 @@ msgid "Meta Description"
 msgstr "ការពិពណ៌នាមេតា"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Meta description"
 msgstr "ការពិពណ៌នាផ្ទាល់ខ្លួន។"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:82
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Meta Description, Excerpt Generator"
 msgstr "ម៉េតាអធិប្បាយ, អ្នកបង្កើតសេចក្ដីសង្ខេប"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:39
+msgid "Meta Description, Excerpt Generator, quick translate"
+msgstr "ការពិពណ៌នាផ្សាយ, អ្នកបង្កើតសេចក្ដីសង្ខេប, ប្រែសម្រួលយ៉ាងរហ័ស"
+
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Metric"
 msgstr "មាត្រា។"
 
@@ -2843,7 +3112,7 @@ msgstr "មាត្រា។"
 msgid "Minimum role"
 msgstr "តួនាទីអប្បបរមា"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:571
 msgid "Missing"
 msgstr "ខ្វះ"
 
@@ -2855,16 +3124,20 @@ msgstr "ខ្វះឈ្មោះលំនាំឬភាសា។"
 msgid "Mode"
 msgstr "របៀប"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:155
 msgid "Model"
 msgstr "ម៉ូដែល"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:244
+msgid "Model ID"
+msgstr "ID ម៉ូដែល"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
 msgid "Model tier"
 msgstr "កម្រិតម៉ូដែល"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:123
 #: ai/includes/Admin/SettingsHelp.php:92
 msgid "Models"
 msgstr "គំរូ"
@@ -2873,7 +3146,7 @@ msgstr "គំរូ"
 msgid "Models Tab (General)"
 msgstr "ផ្ទាំងម៉ូដែល (ទូទៅ)"
 
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Modified"
 msgstr "បានកែប្រែ។"
 
@@ -2902,13 +3175,17 @@ msgstr ""
 msgid "Multilingual SEO"
 msgstr "SEO ភាសាច្រើន"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Multilingual SEO overview"
 msgstr "ទិដ្ឋភាពទូទៅ SEO ភាសាច្រើន"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:338
 msgid "My Account"
 msgstr "គណនីរបស់ខ្ញុំ"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:245
+msgid "Name"
+msgstr "ឈ្មោះ"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -2945,11 +3222,18 @@ msgstr ""
 msgid "Navigations"
 msgstr "ការរុករក"
 
-#: ai/includes/Admin/SettingsPage.php:219
+#. translators: %s: technical error detail from the HTTP layer
+#: ai/includes/Providers/AbstractProvider.php:134
+#, php-format
+msgid "Network error — could not reach the provider: %s"
+msgstr "កំហុសបណ្តាញ — មិនអាចទំនាក់ទំនងទៅកាន់អ្នកផ្គត់ផ្គង់បាន: %s"
+
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "កំហុសបណ្តាញ — មិនអាចចូលដំណើរការចំណុច AJAX របស់ WordPress បាន។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:769
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:814
 msgid "Network error."
 msgstr "កំហុសបណ្តាញ។"
 
@@ -2974,20 +3258,24 @@ msgstr ""
 "2024 ហើយឥឡូវនេះរកឃើញផែនទីសាយតែម្នាក់ឯងតាមរយៈការណែនាំ robots.txt Sitemap: — "
 "ដែល LF បានកំណត់រួចហើយ។ Google នឹងយកវាទៅវិញនៅលើការរុករកបន្ទាប់។"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
+msgid "No active plugins detected."
+msgstr "មិនមានកម្មវិធីផ្លាកសញ្ញាដែលដំណើរការឡើយ។"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:224
 msgid "No AI provider configured."
 msgstr "មិនមានផ្គត់ផ្គង់ AI ត្រូវបានកំណត់។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1409
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "មិនមានអ្នកផ្ដល់ AI ត្រូវបានកំណត់។ បន្ថែមកូនសោ API នៅក្នុងការកំណត់ → កូនសោ "
 "API។"
 
 #. translators: %s is a date-range label like "Today" or "Last 7 days".
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:143
 #, php-format
 msgid ""
 "No AI usage recorded in the selected window (%s). Pick a wider range above."
@@ -2995,7 +3283,7 @@ msgstr ""
 "មិនមានការប្រើប្រាស់ AI ត្រូវបានកត់ត្រានៅក្នុងវិនដូដែលបានជ្រើស (%s)។ "
 "ជ្រើសរើសវែងជាងនេះខាងលើ។"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:115
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
 msgid ""
 "No AI usage recorded yet. Once an editor runs a translation, generates a "
 "meta description, or uses any other AI feature, totals will appear here."
@@ -3003,11 +3291,17 @@ msgstr ""
 "មិនមានការប្រើប្រាស់ AI ត្រូវបានកត់ត្រាទេ។ នៅពេលកែសម្រួលចាប់ផ្តើមការបកប្រែ "
 "បង្កើតការពិពណ៌នាអំពីមេតា ឬប្រើលក្ខណៈពិសេស AI ផ្សេងទៀត សរុបនឹងបង្ហាញនៅទីនេះ។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:219
 msgid "No API key configured for this provider."
 msgstr "មិនមានកូនសោ API បានកំណត់សម្រាប់អ្នកផ្គត់ផ្គង់នេះ។"
 
-#: ai/includes/Admin/SettingsPage.php:330
+#: ai/includes/Providers/AbstractProvider.php:121
+msgid "No API key configured — enter your key in the AI Provider settings."
+msgstr ""
+"គ្មានកូនសោ API ត្រូវបានកំណត់ — "
+"បញ្ចូលកូនសោរបស់អ្នកក្នុងការកំណត់រចនាសម្ព័ន្ធអ្នកផ្គត់ផ្គង់ AI។"
+
+#: ai/includes/Admin/SettingsPage.php:329
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -3024,6 +3318,14 @@ msgid ""
 msgstr ""
 "មិនមានកម្មវិធី SEO ដែលមានការប្រកួតប្រជែងត្រូវបានរកឃើញ។ Lingua Forge "
 "កំពុងគ្រប់គ្រងការចេញផល SEO ដោយឡែក។"
+
+#: ai/includes/Providers/OpenAI.php:91
+msgid ""
+"No credits remaining — top up your OpenAI account at platform.openai."
+"com/account/billing."
+msgstr ""
+"គ្មានប្រាក់កម្ចីនៅសល់ — បន្ថែមប្រាក់ក្នុងគណនី OpenAI របស់អ្នកនៅ platform."
+"openai.com/account/billing។"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid ""
@@ -3061,7 +3363,7 @@ msgstr ""
 "មិនមានចុះបញ្ជីវចនានុក្រមទេ។ "
 "បន្ថែមមួយខាងក្រោមដើម្បីចាប់ផ្តើមអនុវត្តន៍ពាក្យសម្ងាត់ក្នុងការប្រែប្រែ។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1094
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -3069,7 +3371,7 @@ msgstr ""
 "មិនមាន H1 ត្រូវបានរកឃើញ។ ជាទូទៅចំណងជើងប្រកាសគឺជា H1 — "
 "សូមបញ្ជាក់ថាតើប្រធានបទរបស់អ្នកកំពុងបញ្ចេញវាឬអត់។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1146
 msgid "No images found in content."
 msgstr "មិនមានរូបភាពក្នុងមាតិកា។"
 
@@ -3077,31 +3379,35 @@ msgstr "មិនមានរូបភាពក្នុងមាតិកា។
 msgid "No internal links found to update."
 msgstr "មិនមានតំណភ្ជាប់ក្នុងផ្នែកខាងក្នុងដែលត្រូវអាប់ដេត។"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "No key"
+msgstr "គ្មានកូនសោ"
+
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
 msgstr "មិនមានផ្នែកគំរូជាស្រេចសម្រាប់ផែនទី។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1001
 msgid "No LF meta description set — using excerpt/content."
 msgstr "មិនមានការកំណត់ meta description — កំពុងប្រើសេចក្ដីអត្ថបទ/មាតិកា។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:676
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr ""
 "មិនមានច្បាប់សរសេរឡើងវិញ LF។ បញ្ចូល permalinks ប្រសិនបើនេះមិនមែនជាការរំពឹងទុក។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1174
 msgid "No links found."
 msgstr "រកមិនឃើញតំណភ្ជាប់ណាមួយ។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1173
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "មិនមានតំណភ្ជាប់។ តំណភ្ជាប់ក្នុងផ្នែកក្នុងបង្កើនភាពងាយស្រួលក្នុងការរុករក "
 "និងការរុករកអ្នកប្រើ។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1005
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -3115,6 +3421,10 @@ msgstr "មិនមានការចាប់យកយោងនាវីហ្
 msgid "No override files uploaded yet."
 msgstr "មិនមានឯកសារប្តូរណាមួយដែលបានផ្ទុកឡើងទេ។"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:129
+msgid "No PHP limit"
+msgstr "គ្មានកំណត់ PHP"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
 msgid ""
 "No physical robots.txt file found. WordPress is generating it virtually and "
@@ -3123,27 +3433,27 @@ msgstr ""
 "មិនមានឯកសារ robots.txt ផ្ទាល់ខ្លួនទេ។ WordPress កំពុងបង្កើតវាឡើងវិញ "
 "និងការណែនាំ Sitemap របស់ LF ត្រូវបានបញ្ចូលដោយស្វ័យប្រវត្តិ។"
 
-#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "No published posts found for the selected filters."
 msgstr "មិនមានប្រកាសផ្សាយទេសម្រាប់តម្រូវការជ្រើសរើស។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1529
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "មិនមានការឆ្លើយតបពីអ្នកផ្ដល់ AI។ សូមពិនិត្យកូនសោ API របស់អ្នក "
 "ហើយព្យាយាមម្តងទៀត។"
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "No response from provider — check the error log for details."
 msgstr ""
 "មិនមានការឆ្លើយតបពីអ្នកផ្គត់ផ្គង់ — "
 "សូមពិនិត្យកំណត់ហេតុកំហុសសម្រាប់ព័ត៌មានលម្អិត។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:412
 msgid "No secondary languages configured."
 msgstr "មិនមានភាសាឧទ្ទេសន៍បានកំណត់។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:348
 msgid ""
 "No secondary languages configured. Install a language pack above to enable "
 "template scaffolding."
@@ -3163,7 +3473,7 @@ msgstr "មិនទាន់ភ្ជាប់ទំព័រខ្សែប្
 msgid "No template part references needed updating."
 msgstr "មិនមានការចាប់យកផ្នែកគំរូដែលត្រូវការអាប់ដេត។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid ""
 "No third-party SEO plugins detected. Lingua Forge handles all multilingual "
 "SEO output."
@@ -3171,7 +3481,7 @@ msgstr ""
 "មិនមានកម្មវិធីផ្នែកទីបីសម្រាប់ SEO ត្រូវបានរកឃើញ។ Lingua Forge "
 "គ្រប់គ្រងផលិតផល SEO ភាសាច្រើនទាំងអស់។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
 msgstr "មិនមានចំណងជើងកំណត់។"
 
@@ -3181,7 +3491,7 @@ msgid ""
 "translated."
 msgstr "មិនមានមាតិកាដែលបានបកប្រែទេ។ ផែនទីសាយនឹងបំពេញពេលដែលមានការបកប្រែប្រកាស។"
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:370
 msgid "No translation found — analyzed the source language version."
 msgstr "មិនមានការបកប្រែទេ — បានវិភាគចំណុចប្រភពភាសា។"
 
@@ -3189,13 +3499,9 @@ msgstr "មិនមានការបកប្រែទេ — បានវិ�
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "មិនមានការចុះបញ្ជីបកប្រែ {lang} (TRID ខ្វះ)។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:371
 msgid "No — WooCommerce integration class not loaded"
 msgstr "មិនមាន — ថ្នាក់ចង្វាក់សមាសភាព WooCommerce មិនបានផ្ទុកឡើង"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
-msgid "Not set — AI features are disabled."
-msgstr "មិនកំណត់ — លក្ខណៈ AI ត្រូវបានបិទ"
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3205,6 +3511,7 @@ msgstr ""
 "មិនទាន់បានបង្កើត។ ផែនទីសាយត្រូវបានបង្កើតនៅលើការអញ្ជើញដំបូងទៅ URL ផែនទីសាយ "
 "ហើយបាន cache សម្រាប់ 24 ម៉ោង។"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:247
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
 msgid "Notes"
@@ -3226,7 +3533,7 @@ msgstr "ការកំណត់ការជូនដំណឹង"
 msgid "Notify search engines"
 msgstr "ជូនដំណឹងម៉ាស៊ីនស្វែងរក។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
 msgid "Numeric permalink structure is not supported."
 msgstr "រចនាសម្ព័ន្ធ permalink លេខមិនគាំទ្រ"
 
@@ -3278,9 +3585,14 @@ msgstr ""
 "បើកសន្លឹកចែករំលែក Web Share ដើម (iOS, Android, បណ្តាញខ្លះ)។ "
 "វាផ្ដល់ជូនវិញទៅកាន់ចម្លងច្បាប់បើមិនគាំទ្រឡើយ។"
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:107
+msgid "OpenAI Platform"
+msgstr "វេទិកា OpenAI"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
 msgid ""
@@ -3307,6 +3619,14 @@ msgid ""
 msgstr ""
 "ជាជម្រើស។ Yandex បានអានការណែនាំ Sitemap: ពី robots.txt "
 "ហើយនេះគ្រាន់តែជាការបញ្ជាក់ឲ្យបង្រៀនការរុករកឲ្យឆាប់ឡើងវិញ។"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+msgid "Order storage"
+msgstr "ការរក្សាទុកការបញ្ជាទិញ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:359
+msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
+msgstr "បញ្ជាទិញក្នុង wp_posts — ធានាថា shop_order ត្រូវបានដកចេញពីការចងចាំ LF។"
 
 #: ai/includes/Features/ContentGenerator.php:197
 msgid "Output"
@@ -3336,7 +3656,7 @@ msgstr "បញ្ចេញ schema ផលិតផលនៅលើទំព័រ�
 msgid "Output Schema.org JSON-LD in wp_head"
 msgstr "បញ្ចេញ JSON-LD Schema.org នៅក្នុង wp_head។"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:138
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:158
 msgid "Output tokens"
 msgstr "Token ផលចេញ"
 
@@ -3345,11 +3665,11 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "បញ្ចេញ schema WebSite នៅលើទំព័រដើម និងបញ្ជីប្លុក។"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "Overall SEO score"
 msgstr "ពិន្ទុ SEO សរុប។"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:212
 msgid "overridden"
 msgstr "បានផ្លាស់ប្តូរ"
 
@@ -3386,7 +3706,7 @@ msgstr "ទិដ្ឋភាពទូទៅ"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:383
 msgid "Page"
 msgstr "ទំព័រ"
 
@@ -3406,11 +3726,11 @@ msgstr "ចម្លងអត្ថបទ ឬ ជ្រើសអត្ថបទ�
 msgid "Paste text, or select text on the page first…"
 msgstr "ចម្លងអត្ថបទ ឬ ជ្រើសអត្ថបទនៅលើទំព័រជាមុន…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:75
 msgid "Paste your API key…"
 msgstr "បិទកូនសោ API របស់អ្នក…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:109
 msgid "Path prefix (/de/)"
 msgstr "ផ្លូវបន្ថែម (/de/)"
 
@@ -3418,7 +3738,7 @@ msgstr "ផ្លូវបន្ថែម (/de/)"
 msgid "Path prefix — example.com/de/"
 msgstr "ផ្លូវ prefix — example.com/de/"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:249
 msgid ""
 "Path routing requires a post-name based permalink structure. Change it in"
 msgstr ""
@@ -3446,9 +3766,13 @@ msgstr ""
 "លំនាំបានបកប្រែ និងរក្សាទុក។ ចម្លងមាតិកាទៅក្នុងអត្ថបទ CPT "
 "របស់អ្នកតាមកម្មវិធីបញ្ចូលលំនាំឬប្រើវាជាចំណុចចាប់ផ្តើមសម្រាប់ប្លុកដែលអាចប្រើបាន។"
 
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Pattern translation failed."
 msgstr "ការបកប្រែគំរូបរាជ័យ។"
+
+#: ai/includes/Providers/AbstractProvider.php:83
+msgid "Payment required — your account has no remaining credits."
+msgstr "ការទូទាត់ត្រូវការ — គណនីរបស់អ្នកមិនមានឥណទាននៅសល់ទេ។"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
 msgid "Per-Post Analysis"
@@ -3469,15 +3793,15 @@ msgstr ""
 msgid "Permalink rules flushed successfully."
 msgstr "ច្បាប់ Permalink បានលុបចោលដោយជោគជ័យ។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
 msgid "Permalink Structure"
 msgstr "រចនាសម្ព័ន្ធ Permalink"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr "រចនាសម្ព័ន្ធ Permalink សមត្ថភាពជាមួយផ្លូវ Lingua Forge"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:475
 msgid ""
 "Permanently deletes all templates, template parts, patterns, navigation "
 "menus, posts, pages, custom post types, products, and product variations "
@@ -3492,7 +3816,7 @@ msgstr ""
 "សកម្មភាពនេះមិនអាចត្រឡប់ក្រោយបានទេ។"
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:455
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:497
 #, php-format
 msgid ""
 "Permanently uninstall %s? This will delete all translated content for this "
@@ -3522,22 +3846,23 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:701
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1388
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:990
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1060
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:577
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:619
 msgid "Permission denied."
 msgstr "ការអនុញ្ញាតបានបដិសេធ។"
 
@@ -3546,19 +3871,19 @@ msgstr "ការអនុញ្ញាតបានបដិសេធ។"
 msgid "Persuasive"
 msgstr "ការជំរុញ"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:138
 msgid "PHP constant"
 msgstr "អថេររបស់ PHP"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:125
 msgid "PHP max_execution_time"
 msgstr "ពេលវេលាអនុវត្ត PHP สูงสุด"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:145
 msgid "PHP memory_limit"
 msgstr "កម្រិតអង្គចងចាំ PHP"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:90
 msgid "PHP version"
 msgstr "កំណែ PHP"
 
@@ -3590,7 +3915,7 @@ msgstr "Ping Yandex"
 msgid "Plain language"
 msgstr "ភាសាសាមញ្ញ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:248
 msgid "Plain permalinks are not supported."
 msgstr "Permalinks ធម្មតាមិនគាំទ្រ"
 
@@ -3603,6 +3928,7 @@ msgid "Please enter some text first…"
 msgstr "សូមបញ្ចូលអត្ថបទមួយចំនួនជាមុន…"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "Plugin"
 msgstr "ផ្លាកសញ្ញា"
 
@@ -3610,11 +3936,11 @@ msgstr "ផ្លាកសញ្ញា"
 msgid "Post"
 msgstr "អត្ថបទ"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:783
 msgid "Post not found or not published."
 msgstr "អត្ថបទមិនមានឬមិនបានបោះពុម្ពផ្សាយ។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1403
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "អត្ថបទមិនមាន។"
@@ -3624,15 +3950,24 @@ msgid "Post on X / Twitter"
 msgstr "អត្ថបទនៅលើ X / Twitter"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:570
 msgid "Post type"
 msgstr "ប្រភេទអត្ថបទ"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+msgid ""
+"Post type slugs separated by commas or newlines. Changes take effect "
+"immediately on save — no permalink flush required."
+msgstr ""
+"ស្លាកប្រភេទប្រកាសដែលបែងចែកដោយក្បៀសឬបន្ទាត់ថ្មី។ "
+"ការផ្លាស់ប្តូរនឹងមានប្រសិទ្ធភាពភ្លាមៗនៅពេលរក្សាទុក — មិនចាំបាច់បញ្ចូល "
+"permalink។"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "ប្រភេទ post"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:557
 msgid ""
 "Posts without _lf_lang are invisible to every Lingua Forge language filter. "
 "This can happen when content is imported or created before the plugin was "
@@ -3655,11 +3990,14 @@ msgstr ""
 "ស្លាកសញ្ញាត្រូវបានបញ្ចេញតែពេលដែលម៉ូឌុល Open Graph របស់ LF ត្រូវបានកំណត់ជា "
 "\"ពេញ\" ឬ \"ស្វ័យប្រវត្តិ\" ដោយគ្មានកម្មវិធី SEO ដែលផ្ទុយគ្នា។"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:117
+msgid "Primary content language"
+msgstr "ភាសាអត្ថបទសំខាន់"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
 msgid "Primary Language"
 msgstr "ភាសាចម្បង"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "ភាសាចម្បង"
@@ -3687,6 +4025,7 @@ msgid "Product"
 msgstr "ផលិតផល"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+#: ai/includes/Admin/SettingsHelp.php:145
 msgid "Product / eCommerce"
 msgstr "ផលិតផល / អ៊ីមើស"
 
@@ -3699,26 +4038,47 @@ msgid "Product — WooCommerce product pages"
 msgstr "ផលិតផល — ទំព័រផលិតផល WooCommerce"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Profile"
 msgstr "ប្រវត្តិរូប"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+#: ai/includes/Admin/SettingsHelp.php:141
+msgid ""
+"Profiles adapt thresholds and weights to the type of content being analysed. "
+"Profile is resolved automatically; you can override it per analysis run from "
+"the profile dropdown."
+msgstr ""
+"ប្រវត្តិរូបអាចបត់បែនកម្រិតនិងទំងន់ទៅតាមប្រភេទមាតិកាដែលកំពុងវិភាគ។ "
+"ប្រវត្តិរូបត្រូវបានដោះសោដោយស្វ័យប្រវត្តិ; អ្នកអាចបដិសេធវា​តាមការវិភាគមួយពី "
+"dropdown ប្រវត្តិរូប។"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:154
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:65
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:161
 msgid "Provider"
 msgstr "អ្នកផ្គត់ផ្គង់"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
-msgid ""
-"Provider returned no text. Check the WordPress error log for the detailed "
-"failure reason."
-msgstr ""
-"អ្នកផ្គត់ផ្គង់មិនបានផ្តល់អត្ថបទណាមួយ។ សូមពិនិត្យកំណត់ហេតុកំហុស WordPress "
-"សម្រាប់មូលហេតុបរាជ័យលម្អិត។"
+#. translators: 1: HTTP status code, 2: error message from the provider API
+#: ai/includes/Providers/AbstractProvider.php:102
+#, php-format
+msgid "Provider error (HTTP %1$d): %2$s"
+msgstr "កំហុសអ្នកផ្គត់ផ្គង់ (HTTP %1$d): %2$s"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:85
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:268
+msgid ""
+"Provider returned no response. Check the WordPress error log for details."
+msgstr ""
+"អ្នកផ្គត់ផ្គង់មិនបានផ្តល់ចម្លើយទេ។ ពិនិត្យកំណត់ត្រាកំហុស WordPress "
+"សម្រាប់ព័ត៌មានលម្អិត។"
+
+#: ai/includes/Providers/AbstractProvider.php:97
+msgid "Provider service temporarily unavailable — try again in a moment."
+msgstr ""
+"សេវាកម្មអ្នកផ្គត់ផ្គង់មិនអាចប្រើបានជាបណ្តោះអាសន្ន — "
+"សូមព្យាយាមម្តងទៀតក្នុងពេលខាងមុខ។"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Quality"
 msgstr "គុណភាព"
 
@@ -3730,7 +4090,7 @@ msgstr "គុណភាព (លំនាំដើម — Sonnet / GPT-4o / Gemin
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "គុណភាព (Sonnet / GPT-4o / Gemini Pro)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "Quality model"
 msgstr "គំរូគុណភាព"
 
@@ -3741,6 +4101,10 @@ msgid ""
 msgstr ""
 "គុណភាព: ប្រើសម្រាប់ការប្រែសម្រួលអត្ថបទ និងការបង្កើតមាតិកា — គុណភាពខ្ពស់, "
 "តម្លៃខ្ពស់។"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Query Filter Exclusions"
+msgstr "ការលើកលែងតម្រងសំណួរ"
 
 #: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
@@ -3762,6 +4126,14 @@ msgstr ""
 "ប្រយោគខ្លីដែលត្រូវបានប្រែប្រែតាមតម្រូវការ ពី Toolbar, អ្នកកែសម្រួល ឬ "
 "popovers ប្លុក។ វាប្រើការកំណត់ផ្សេងទៀតសម្រាប់ការប្រែប្រែទំព័រពេញ "
 "ដើម្បីរក្សាការឆ្លើយតបឲ្យមានល្បឿន និងថ្លៃសមរម្យ។"
+
+#: ai/includes/Providers/AbstractProvider.php:92
+msgid ""
+"Rate limited — too many requests sent to the provider; wait a moment and try "
+"again."
+msgstr ""
+"កំណត់អត្រា — មានការផ្ញើសំណើច្រើនពេកទៅអ្នកផ្គត់ផ្គង់; "
+"សូមរងចាំមួយភ្លែតហើយព្យាយាមម្តងទៀត។"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
@@ -3794,12 +4166,12 @@ msgstr "កំពុងស្កេនឡើងវិញ…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Re-translate"
 msgstr "បកប្រែម្ដងទៀត"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Reading time"
 msgstr "ពេលវេលាអាន"
 
@@ -3815,26 +4187,26 @@ msgstr ""
 msgid "Refine further — e.g. \"make it shorter\" or \"use a formal tone\"…"
 msgstr "កែលម្អបន្ថែម — ឧ. \"ធ្វើឲ្យខ្លីសង្ខេប\" ឬ \"ប្រើសម្លេងផ្លូវការ\"…"
 
-#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1288
+#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1296
 msgid "Refine further:"
 msgstr "កែលម្អបន្ថែម៖"
 
 #. translators: %d is the refinement iteration number
-#: ai/assets/admin-content-gen-modal.js:326 ai/assets/admin.js:1446
+#: ai/assets/admin-content-gen-modal.js:336 ai/assets/admin.js:1454
 #: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr "ការកែលម្អ (អ្នកបកប្រែ: %d ជាលេខចំនួននៃការកែលម្អ)"
 
-#: ai/assets/admin-content-gen-modal.js:302 ai/assets/admin.js:1427
+#: ai/assets/admin-content-gen-modal.js:312 ai/assets/admin.js:1435
 msgid "Refinement failed — please try again."
 msgstr "ការកែលម្អបរាជ័យ — សូមព្យាយាមម្តងទៀត។"
 
-#: ai/assets/admin-content-gen-modal.js:274 ai/assets/admin.js:1404
+#: ai/assets/admin-content-gen-modal.js:284 ai/assets/admin.js:1412
 #: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr "កំពុងកែលម្អ…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:221
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
 msgid ""
 "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
 " and archive rewrites are all in sync. Necessary after changing the primary "
@@ -3844,37 +4216,43 @@ msgstr ""
 "និងការសរសេរអារង់សម្របសម្រួលគ្នា។ ត្រូវការបន្ទាប់ពីផ្លាស់ទីភាសាសំខាន់ "
 "ឬបន្ថែមការគាំទ្រភាសាថ្មី។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:124
 msgid "Remove stored key"
 msgstr "យកកូនសោដែលបានផ្ទុកចេញ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
-msgid ""
-"Repair assigns the source language to every affected post. Run after "
-"importing content or after initial plugin activation on an existing site."
-msgstr ""
-"ការជួសជុលផ្ដល់ភាសាដើមទៅអត្ថបទដែលមានផលប៉ះពាល់។ ប្រើក្រោយនាំចូលមាតិកា "
-"ឬក្រោយការចាប់ផ្តើមដំបូងនៅលើគេហទំព័រដែលមានស្រាប់។"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:763
 msgid "Repair failed."
 msgstr "ការជួសជុលបរាជ័យ។"
 
-#. translators: %s: source language code shown in upper case, e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#. translators: %s: source language code in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:616
 #, php-format
-msgid "Repair — assign _lf_lang = %s to all affected posts"
-msgstr "ការជួសជុល — ផ្ដល់ _lf_lang = %s ទៅអត្ថបទដែលមានផលប៉ះពាល់"
+msgid ""
+"Repair tags every routable post listed above with _lf_lang = %s. Posts in "
+"routing-excluded post types are not touched. Only run this after importing "
+"content or on initial activation — do not use as a bulk language-"
+"reassignment tool."
+msgstr ""
+"ជួសជុលស្លាកពេលរៀបចំប្រកាសដែលអាចផ្លាស់ទីបានខាងលើជាមួយ _lf_lang = %s។ "
+"ប្រកាសក្នុងប្រភេទប្រកាសដែលមិនត្រូវបានចងចាំមិនត្រូវបានប៉ះពាល់។ "
+"ប្រើវានៅក្រោយនាំចូលមាតិកាឬនៅលើការចាប់ផ្តើមដំបូង — "
+"កុំប្រើជាឧបករណ៍ផ្លាស់ទីភាសាជាច្រើន។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+#. translators: %s: source language code shown in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all routable posts above"
+msgstr "ជួសជុល — ផ្ដល់ _lf_lang = %s ទៅកាន់ប្រកាសដែលអាចផ្លាស់ទីបានខាងលើ"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
 msgid "Repairing…"
 msgstr "កំពុងជួសជុល…"
 
-#: ai/includes/Admin/SettingsHelp.php:169
+#: ai/includes/Admin/SettingsHelp.php:200
 msgid "Report an issue on GitHub"
 msgstr "រាយការណ៍បញ្ហានៅលើ GitHub"
 
-#: ai/assets/admin-content-gen-modal.js:340 ai/assets/admin.js:1455
+#: ai/assets/admin-content-gen-modal.js:350 ai/assets/admin.js:1463
 msgid "Request failed — please try again."
 msgstr "សំណើបរាជ័យ — សូមព្យាយាមម្តងទៀត។"
 
@@ -3891,11 +4269,11 @@ msgstr "ការស្នើសុំបរាជ័យ។ សូមពិន�
 msgid "Request failed. Please try again."
 msgstr "ការស្នើសុំបរាជ័យ។ សូមព្យាយាមម្តងទៀត។"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:156
 msgid "Requests"
 msgstr "សំណើរ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:217
 msgid "requests / day"
 msgstr "សំណើរ / ថ្ងៃ"
 
@@ -3917,7 +4295,7 @@ msgstr "បកប្រែម្ដងទៀត"
 msgid "Retranslating…"
 msgstr "កំពុងបកប្រែម្ដងទៀត…"
 
-#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Review carefully — links and slugs not updated."
 msgstr ""
 "ពិនិត្យយ៉ាងប្រុងប្រយ័ត្ន — តំណភ្ជាប់ និងស្លាកឈ្មោះមិនបានធ្វើបច្ចុប្បន្នភាព។"
@@ -3938,7 +4316,7 @@ msgstr "ការកែសម្រួល"
 msgid "Revision Type"
 msgstr "ប្រភេទការកែសម្រួល"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:661
 msgid "Rewrite Rules"
 msgstr "ច្បាប់សរសេរ מחדש"
 
@@ -3951,7 +4329,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt បានធ្វើបច្ចុប្បន្នភាពជាមួយសេចក្តីណែនាំ Sitemap។"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:632
 msgid "Router"
 msgstr "Router"
 
@@ -3994,7 +4372,7 @@ msgstr "រក្សាទុកការកំណត់ Hreflang"
 msgid "Save Open Graph Settings"
 msgstr "រក្សាទុកការកំណត់ Open Graph"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:214
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
 msgid "Save Router Settings"
 msgstr "រក្សាទុកការកំណត់ Router"
 
@@ -4002,7 +4380,7 @@ msgstr "រក្សាទុកការកំណត់ Router"
 msgid "Save Schema.org Settings"
 msgstr "រក្សាទុកការកំណត់ Schema.org"
 
-#: ai/includes/Admin/SettingsPage.php:675
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Save Settings"
 msgstr "រក្សាទុកការកំណត់"
 
@@ -4014,7 +4392,7 @@ msgstr "រក្សាទុកការកំណត់ Sitemap"
 msgid "Save Social Share Settings"
 msgstr "រក្សាទុកការកំណត់ការចែករំលែកសង្គម"
 
-#: ai/assets/admin-diff-modal.js:273
+#: ai/assets/admin-diff-modal.js:290
 msgid "Save the post to persist changes."
 msgstr "រក្សាទុកអត្ថបទដើម្បីរក្សាការផ្លាស់ប្តូរ។"
 
@@ -4062,11 +4440,19 @@ msgstr "លទ្ធផល Schema.org"
 msgid "Schema.org settings saved."
 msgstr "ការកំណត់ Schema.org បានរក្សាទុក។"
 
-#: ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Score"
 msgstr "ពិន្ទុ"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Score computation"
+msgstr "ការគណនាកะแนน"
+
+#: ai/includes/Admin/SettingsHelp.php:157
+msgid "Score history and badges"
+msgstr "ប្រវត្តិកะแนนនិងសញ្ញាបត្រ"
+
+#: ai/includes/Admin/SettingsPage.php:376
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -4100,12 +4486,12 @@ msgstr "លទ្ធផលស្វែងរក"
 msgid "Security check failed — file path is not permitted."
 msgstr "ការត្រួតពិនិត្យសុវត្ថិភាពបរាជ័យ — ផ្លូវឯកសារមិនអនុញ្ញាត។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:294
 msgid ""
 "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr "មើលការកំណត់ → SEO → សមត្ថភាពសម្រាប់តារាងសមត្ថភាពលម្អិត។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:353
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
@@ -4133,7 +4519,7 @@ msgstr "ផ្ញើតាម WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:636
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "SEO"
 msgstr "SEO"
 
@@ -4155,7 +4541,7 @@ msgstr ""
 "កម្មវិធី SEO ដែលបានរកឃើញ: %s។ LF កំពុងបញ្ចេញ og:locale និង og:locale:"
 "alternate តែប៉ុណ្ណោះ; កម្មវិធីដែលបានរកឃើញគ្រប់ OG ត្រូវបានគ្រប់គ្រង។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:281
 msgid "SEO Plugins"
 msgstr "កម្មវិធីផ្នែក SEO"
 
@@ -4163,11 +4549,19 @@ msgstr "កម្មវិធីផ្នែក SEO"
 msgid "SEO plugins and conflict avoidance:"
 msgstr "កម្មវិធី SEO និងការជៀសវាងការប្រឈមមុខ៖"
 
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "SEO Score System"
+msgstr "ប្រព័ន្ធពិន្ទុ SEO"
+
+#: ai/includes/Admin/SettingsHelp.php:131
+msgid "SEO Scores"
+msgstr "ពិន្ទុ SEO"
+
 #: ai/includes/Admin/SettingsHelp.php:121
 msgid "SEO Tab"
 msgstr "ផ្ទាំង SEO"
 
-#: ai/includes/Admin/SettingsHelp.php:149
+#: ai/includes/Admin/SettingsHelp.php:180
 msgid "Server setup (subdomain)"
 msgstr "ការរៀបចំម៉ាស៊ីនបម្រើ (ឧបករណ៍បណ្តាញរង)"
 
@@ -4180,16 +4574,16 @@ msgstr ""
 "កំណត់សីតុណ្ហភាព AI ដោយលំនាំដើមសម្រាប់គេហទំព័រ។ ប្រសិនបើចង់ផ្លាស់ប្តូរពីនេះ "
 "អ្នកអាចកំណត់តាមប្រកាសដោយប្រើប្រអប់មេតា Lingua Forge។"
 
-#: ai/includes/Admin/SettingsPage.php:414
+#: ai/includes/Admin/SettingsPage.php:413
 msgid "Settings"
 msgstr "ការកំណត់"
 
-#: ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Settings saved."
 msgstr "ការកំណត់ត្រូវបានរក្សាទុក។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
 msgid "Settings → Permalinks"
 msgstr "ការកំណត់ → Permalinks"
 
@@ -4209,9 +4603,22 @@ msgstr "ចែករំលែកនៅលើ Mastodon"
 msgid "Share via email (mailto:)"
 msgstr "ចែករំលែកតាមអ៊ីមែល (mailto:)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
+msgid "Shared / compatibility mode"
+msgstr "របៀបចែករំលែក / សមត្ថភាពសម្របសម្រួល"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:335
 msgid "Shop"
 msgstr "ហាង"
+
+#: ai/includes/Admin/SettingsHelp.php:154
+msgid ""
+"Short content (3 paragraphs or fewer) is never penalised for missing "
+"subheadings, regardless of profile. A concise page does not benefit from "
+"forced heading structure."
+msgstr ""
+"មាតិកាខ្លី (3 ប្រយោគឬតិចជាងនេះ) មិនត្រូវបានពិន័យសម្រាប់ការខ្វះចំណងជើងរងទេ។ "
+"ទំព័រខ្លីមិនមានអត្ថប្រយោជន៍ពីរចនាសម្ព័ន្ធចំណងជើងដែលបានបង្ខំ។"
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -4233,7 +4640,7 @@ msgid "Single %s"
 msgstr "តែមួយ %s"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:981
 #, php-format
 msgid ""
 "Single-word title (%d chars) — adding a second word improves clarity and "
@@ -4304,27 +4711,27 @@ msgstr "ការចែករំលែកសង្គម"
 msgid "Social Share settings saved."
 msgstr "ការកំណត់ការចែករំលែកសង្គមបានរក្សាទុក។"
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "Some link fixes failed."
 msgstr "ការជួសជុលតំណភ្ជាប់ខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "Some nav ref fixes failed."
 msgstr "ការជួសជុលយោងនាវីហ្គេសិនខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "Some part fixes failed."
 msgstr "ការជួសជុលផ្នែកខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some parts could not be created."
 msgstr "ផ្នែកខ្លះមិនអាចបង្កើតបាន។"
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "Some templates could not be created."
 msgstr "មានគំរូខ្លះមិនអាចបង្កើតបាន។"
 
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some translations failed."
 msgstr "ការបកប្រែខ្លះបរាជ័យ។"
 
@@ -4351,7 +4758,7 @@ msgstr "ភាសាដើម"
 msgid "Source term"
 msgstr "ពាក្យប្រភព"
 
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Source title"
 msgstr "ចំណងជើងប្រភព"
 
@@ -4368,6 +4775,19 @@ msgstr ""
 "ប្រើសីតុណ្ហភាពដែលបានកំណត់សម្រាប់មុខងារនីមួយៗ: ប្រែសម្រួល T=0.2 (ច្បាស់), "
 "ប្រែសម្រួលរហ័ស T=0.4, អ្នកបង្កើតមាតិកា T=0.6 (ច្នៃប្រឌិត)។ "
 "ប្រើសេតុភាពផ្សេងទៀតសម្រាប់គ្រប់មុខងារ។"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:135
+msgid ""
+"Start typing in any field to see model suggestions, or use the reference "
+"table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini "
+"Flash) are fully sufficient for translation and content generation — "
+"flagship \"max\" models add cost with minimal quality gain for structured "
+"text."
+msgstr ""
+"ចាប់ផ្តើមវាយពាក្យនៅក្នុងវាលណាមួយដើម្បីមើលការណែនាំម៉ូដែល "
+"ឬប្រើតារាងយោងខាងក្រោម។ ម៉ូដែលគុណភាពទាបនិងមធ្យម (Haiku, GPT-4o mini, Gemini "
+"Flash) គ្រប់គ្រាន់សម្រាប់ការប្រែសម្រួលនិងបង្កើតមាតិកា — ម៉ូដែល \"max\" "
+"សំខាន់ៗបន្ថែមចំណាយជាមួយនឹងគុណភាពតិចតួចសម្រាប់អត្ថបទមានរចនាសម្ព័ន្ធ។"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
@@ -4399,7 +4819,7 @@ msgstr ""
 msgid "Structured Outline"
 msgstr "រចនាសម្ព័ន្ធសេចក្ដីផ្តើម"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:108
 msgid "Subdomain (de.example.com)"
 msgstr "ឧបសម្ព័ន្ធរង (de.example.com)"
 
@@ -4455,12 +4875,12 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "បានបិទ: %s។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:256
 msgid "Switch to a post-name based structure in"
 msgstr "ផ្លាស់ទីទៅរចនាសម្ព័ន្ធផ្អែកលើឈ្មោះអត្ថបទក្នុង"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
-#: ai/includes/Admin/SettingsPage.php:639
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "System"
 msgstr "ប្រព័ន្ធ"
 
@@ -4570,11 +4990,11 @@ msgstr "ផ្នែកគំរូ"
 msgid "Templates"
 msgstr "គំរូ"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:98
 msgid "Test connection"
 msgstr "សាកល្បងការតភ្ជាប់"
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:214
 msgid "Testing…"
 msgstr "កំពុងសាកល្បង…"
 
@@ -4602,7 +5022,7 @@ msgstr ""
 "prompt ឬពេលដែលអ្នកត្រូវការឲ្យសំណើរ​ទៅដល់ AI។ "
 "ការបិទមិនលុបចោលឯកតាដែលបានរក្សាទុក — ការបើកវិញនឹងស្ដារឡើងវិញ។"
 
-#: ai/assets/admin-diff-modal.js:237
+#: ai/assets/admin-diff-modal.js:254
 msgid "The editor did not accept the content — please try again."
 msgstr "កែប្រែដោយកែប្រែ មិនទទួលយកមាតិកា — សូមព្យាយាមម្តងទៀត។"
 
@@ -4709,7 +5129,18 @@ msgstr ""
 "ហើយត្រូវបានបង្ហាញនៅទីនេះសម្រាប់យោងតែប៉ុណ្ណោះ។ "
 "បន្ថែមវាទៅក្នុងទំព័រនេះដោយប្រើកម្មវិធីកែសម្រួលប្លុក។"
 
-#: ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:266
+msgid ""
+"This catalog is updated with each Lingua Forge release. Testing a connection "
+"in the API Keys tab also fetches the live model list from the provider and "
+"refreshes the suggestions above."
+msgstr ""
+"បញ្ជីនេះត្រូវបានធ្វើឱ្យទាន់សម័យជាមួយការចេញផ្សាយ Lingua Forge មួយៗ។ "
+"ការធ្វើតេស្តការតភ្ជាប់នៅក្នុងផ្ទាំងកូនសោ API "
+"ក៏ទាញយកបញ្ជីម៉ូដែលផ្សាយបន្តផ្ទាល់ពីអ្នកផ្គត់ផ្គង់ "
+"និងធ្វើឱ្យបញ្ជីណែនាំខាងលើទាន់សម័យ។"
+
+#: ai/includes/Admin/SettingsPage.php:377
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -4728,7 +5159,7 @@ msgstr ""
 "កំណត់ចំណុចសម្គាល់ត្រូវបានកែសម្រួលដោយផ្ទាល់ក្នុងកម្មវិធីកែសម្រួលប្លុក។"
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:132
 #, php-format
 msgid ""
 "This key is currently supplied by a server %s and cannot be removed here. "
@@ -4737,29 +5168,45 @@ msgstr ""
 "កូនសោនេះផ្គត់ផ្គង់ដោយម៉ាស៊ីនមេ %s ហើយមិនអាចយកចេញនៅទីនេះទេ។ "
 "បញ្ចូលកូនសោថ្មីខាងលើដើម្បីជំនួសវាជាមួយតម្លៃក្នុងមូលដ្ឋានទិន្នន័យ។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:500
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:542
 msgid "This language is protected and cannot be uninstalled."
 msgstr "ភាសានេះមានការពារ ហើយមិនអាចដំឡើងចេញបាន។"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:442
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid ""
 "This language matches the WordPress instance locale and cannot be "
 "uninstalled."
 msgstr "ភាសានេះផ្គូផ្គងនឹងទីតាំង WordPress ហើយមិនអាចដំឡើងចេញបាន។"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:246
+msgid "Tier"
+msgstr "កម្រិត"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:226
 msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr "គន្លឹះ: ដើម្បីកំណត់ម៉ូដែលទៅលើលំនាំដើម បើកវាល និងរក្សាទុក។"
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:353
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Title"
 msgstr "ចំណងជើង"
 
+#: ai/includes/Admin/SettingsHelp.php:144
+msgid ""
+"Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts "
+"· Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 "
+"chars; word count warns below 300, fails below 100; H2 required; internal "
+"links required."
+msgstr ""
+"ចំណងជើង 15 ពិន្ទុ · ពិពណ៌នាផ្សាយ 20 ពិន្ទុ · ចំនួនពាក្យ 15 ពិន្ទុ · ចំណងជើង "
+"20 ពិន្ទុ · រូបភាព 10 ពិន្ទុ · តំណភ្ជាប់ 10 ពិន្ទុ។ កំណត់ហេតុ SERP ចំណងជើង "
+"60 តួអក្សរ; ពិពណ៌នា 120–210 តួអក្សរ; ការព្រមានចំនួនពាក្យក្រោម 300, "
+"បរាជ័យក្រោម 100; តម្រូវ H2; តម្រូវតំណភ្ជាប់ក្នុងស្រុក។"
+
 #. translators: %1$d: character count, %2$d: SERP limit
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:971
 #, php-format
 #| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
@@ -4767,12 +5214,26 @@ msgstr ""
 "ចំណងជើងគឺ %1$d តួអក្សរ — អាចត្រូវបានកាត់ខ្លីក្នុង SERPs (ព្យាយាមក្រោម %2$d)។"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:976
 #, php-format
-msgid "Title is only %d chars — aim for more than 10 characters."
-msgstr "ចំណងជើងមានតែ %d តួអក្សរ — ត្រូវការច្រើនជាង 10 តួអក្សរ។"
+#| msgid "Title is only %d chars — aim for more than 10 characters."
+msgid "Title is only %d chars — aim for at least 10 characters."
+msgstr "ចំណងជើងមានតែ %d តួអក្សរប៉ុណ្ណោះ — ព្យាយាមឱ្យមានយ៉ាងហោចណាស់ ១០ តួអក្សរ។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+#: ai/includes/Admin/SettingsHelp.php:138
+msgid ""
+"Title scoring rules (all profiles): fail if empty; warn if fewer than 10 "
+"characters; warn if only one word; warn if longer than the profile's SERP "
+"limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 "
+"characters, at least 2 words, and within the SERP limit."
+msgstr ""
+"ច្បាប់ពិន្ទុចំណងជើង (គ្រប់ប្រវត្តិរូប): បរាជ័យបើវាអត់មាន; "
+"ព្រមានបើមានតួអក្សរតិចជាង 10; ព្រមានបើមានពាក្យតែមួយ; ព្រមានបើវាយតាមកំណត់ SERP "
+"(60 តួអក្សរសម្រាប់ Blog, 70 សម្រាប់ផលិតផល/Landing); "
+"ត្រូវប្រសិនបើមានតួអក្សរយ៉ាងហោចណាស់ 10, មានពាក្យយ៉ាងហោចណាស់ 2, "
+"និងនៅក្នុងកម្រិត SERP។"
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:163
 msgid ""
 "To use a custom encryption secret (instead of the derived wp_salt value), "
 "add this to wp-config.php:"
@@ -4813,11 +5274,11 @@ msgstr "សម្លេង៖"
 msgid "Too many AI requests. Please retry in %d seconds."
 msgstr "សំណើរអាយអាយច្រើនពេក។ សូមព្យាយាមម្តងទៀតក្នុង %d វិនាទី។"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:177
 msgid "Total"
 msgstr "សរុប"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:139
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:159
 msgid "Total tokens"
 msgstr "Token សរុប"
 
@@ -4828,9 +5289,9 @@ msgstr "Token សរុប"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:271
-#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:276 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4897,9 +5358,9 @@ msgstr ""
 "និងស្លាកស្លាកគំរូមិនត្រូវបានធ្វើឱ្យទាន់សម័យដោយស្វ័យប្រវត្តិទេ។"
 
 #: ai/includes/Admin/PostListColumn.php:235
-#: ai/includes/Admin/SettingsPage.php:258
-#: ai/includes/Admin/SettingsPage.php:272
-#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "កំពុងបកប្រែ…"
@@ -4962,7 +5423,7 @@ msgstr[0] "អង្គចងចាំការបកប្រែបានសម
 msgid "Translation Memory setting saved."
 msgstr "ការកំណត់អង្គចងចាំការប្រែសម្រួលបានរក្សាទុក។"
 
-#: ai/includes/Admin/SettingsHelp.php:135
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid ""
 "Translation Memory: stores the full translated post per content hash. Clear "
 "it when you want to force a retranslation of all posts regardless of whether "
@@ -4972,12 +5433,11 @@ msgstr ""
 "រក្សាទុកអត្ថបទដែលបានប្រែសម្រួលពេញលេញតាមការចងចាំមាតិកា។ "
 "សម្អាតវាពេលដែលអ្នកចង់បង្ខំឲ្យមានការប្រែសម្រួលម្ដងទៀតដោយគ្មានការពិចារណាថាតើមាតិកាប្រែប្រួលឬអត់។"
 
-#: ai/includes/Admin/SettingsHelp.php:150
+#: ai/includes/Admin/SettingsHelp.php:181
 msgid "Translation workflow"
 msgstr "ដំណើរការប្រែសម្រួល"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:86
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Translation, Content Generator"
 msgstr "ការប្រែសម្រួល, អ្នកបង្កើតមាតិកា"
 
@@ -4987,7 +5447,7 @@ msgstr "ចាត់ទុក H2 ជាសមាជិក H1"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Type"
 msgstr "ប្រភេទ"
 
@@ -4996,9 +5456,15 @@ msgstr "ប្រភេទ"
 msgid "Uli Hake"
 msgstr "Uli Hake"
 
+#. translators: %d: HTTP status code
+#: ai/includes/Providers/AbstractProvider.php:108
+#, php-format
+msgid "Unexpected provider error (HTTP %d)."
+msgstr "កំហុសអ្នកផ្គត់ផ្គង់មិនទៀងទាត់ (HTTP %d)."
+
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:427
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:465
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:469
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:507
 #, php-format
 msgid "Uninstall %s"
 msgstr "ដំឡើងចេញ %s"
@@ -5015,7 +5481,7 @@ msgstr "ការកំណត់លុបកម្មវិធីត្រូវ
 msgid "unknown error"
 msgstr "កំហុសមិនស្គាល់"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:211
 msgid "Unknown provider."
 msgstr "អ្នកផ្គត់ផ្គង់មិនស្គាល់។"
 
@@ -5040,8 +5506,7 @@ msgstr ""
 "និងបន្ថែមតែអ្វីដែលពួកវាមិនអាចផ្តល់បាន: og:locale (ភាសាបច្ចុប្បន្ន) និង og:"
 "locale:alternate (ភាសាផ្សេងទៀតដែលបានកំណត់)។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:216
 msgid "Unlimited"
 msgstr "គ្មានកំណត់"
 
@@ -5076,7 +5541,7 @@ msgid "URL could not be mapped to a post — check the link target exists"
 msgstr ""
 "URL មិនអាចផ្គូផ្គងទៅអត្ថបទបាន — សូមពិនិត្យមើលថាតើគោលដៅតំណភ្ជាប់មានទេឬទេ។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:105
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "រចនាសម្ព័ន្ធ URL"
@@ -5137,7 +5602,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "ប្រើការពិពណ៌នាមេតាខ្លួនឯង។"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1000
 msgid "Using LF AI meta description."
 msgstr "ប្រើ meta description AI របស់ LF។"
 
@@ -5145,8 +5610,12 @@ msgstr "ប្រើ meta description AI របស់ LF។"
 msgid "Value source"
 msgstr "ប្រភពតម្លៃ"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:462
+msgid "Version"
+msgstr "កំណែ"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "View"
 msgstr "មើល"
 
@@ -5174,7 +5643,7 @@ msgstr "ចូលទៅកាន់តំបន់បន្ថែម"
 msgid "Warning:"
 msgstr "ការព្រមាន៖"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:364
 msgid "WcPageBridge active"
 msgstr "WcPageBridge ប្រើបាន"
 
@@ -5258,6 +5727,19 @@ msgstr ""
 "ដោយស្វ័យប្រវត្តិ ហើយ cache "
 "ត្រូវបានធ្វើឱ្យថ្មីនៅពេលដែលបានរក្សាទុកមាតិកាដែលបានបកប្រែ។"
 
+#: ai/includes/Admin/SettingsHelp.php:153
+msgid ""
+"When the Blog profile requires an H2 and none is found, the analyser first "
+"checks for H3 subheadings before issuing a warning. Accordion and Details "
+"blocks default to H3 for their headers; those H3s are accepted as valid "
+"structure and produce an ok result, not a warning."
+msgstr ""
+"ពេលប្រវត្តិរូប Blog ត្រូវការជា H2 ហើយមិនមានអ្វីទេ "
+"អ្នកវិភាគចាប់ផ្តើមពិនិត្យមើលសម្រាប់ចំណងជើងរង H3 មុនពេលផ្តល់ការព្រមាន។ ប្លុក "
+"Accordion និង Details ដំណើរការជា H3 សម្រាប់ចំណងជើងរបស់ពួកវា; "
+"អ្នកទាំងនោះទទួលស្គាល់ថាជាស្ថាបត្យកម្មត្រឹមត្រូវ ហើយបង្កើតលទ្ធផល ok "
+"មិនមែនការព្រមាន។"
+
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
 msgid ""
 "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua "
@@ -5292,16 +5774,16 @@ msgstr ""
 "បញ្ចេញស្លាកភាសាទេ (របៀបស្វ័យប្រវត្តិ)។ ដកចេញវាប្តូរឲ្យ LF ទៅរបៀប OG "
 "ពេញដោយស្វ័យប្រវត្តិ។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:310
 msgid "WooCommerce is not active."
 msgstr "WooCommerce មិនដំណើរការឡើយ។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:379
 msgid "WooCommerce page translations"
 msgstr "ការប្រែសម្រួលទំព័រ WooCommerce"
 
@@ -5327,16 +5809,16 @@ msgstr ""
 "ត្រូវបានដកចេញ — មាតិការបស់ពួកវាត្រូវបានគ្រប់គ្រងដោយ WooCommerce "
 "ហើយមិនអាចកែលម្អតាម SEO។"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "WooCommerce version"
 msgstr "កំណែ WooCommerce"
 
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Word count"
 msgstr "ចំនួនពាក្យ"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:86
 msgid "WordPress version"
 msgstr "កំណែ WordPress"
 
@@ -5344,7 +5826,11 @@ msgstr "កំណែ WordPress"
 msgid "WP core canonical active (hreflang disabled)"
 msgstr "WordPress core canonical សកម្ម (hreflang មិនដំណើរការ)"
 
-#: ai/includes/Admin/SettingsHelp.php:152
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:113
+msgid "WP instance language"
+msgstr "ភាសា WordPress"
+
+#: ai/includes/Admin/SettingsHelp.php:183
 msgid "WP-CLI reference"
 msgstr "យោង WP-CLI"
 
@@ -5357,11 +5843,11 @@ msgstr "សរសេរពិចារណា AI និងចម្លើយទ�
 msgid "XML Sitemap"
 msgstr "XML Sitemap"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:368
 msgid "Yes"
 msgstr "បាទ"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:156
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
 "config.php). Those sources are used automatically as a fallback when no "
@@ -5370,7 +5856,7 @@ msgstr ""
 "អ្នកអាចកំណត់កូនសោជា អថេរ ឬ អថេរបរិស្ថាន (ឧទាហរណ៍នៅក្នុង wp-config.php)។ "
 "ប្រភពទាំងនេះត្រូវបានប្រើដោយស្វ័យប្រវត្តិជាការជំនួសនៅពេលដែលមិនមានកូនសោមូលដ្ឋានទិន្នន័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:425
 msgid "You do not have permission to manage these settings."
 msgstr "អ្នកមិនមានសិទ្ធិគ្រប់គ្រងការកំណត់ទាំងនេះទេ។"
 
@@ -5383,11 +5869,16 @@ msgid "{n} stale path(s)"
 msgstr "{n} ផ្លូវចាស់ៗ"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:935
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d នាទីអាន"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:192
+#| msgid "Not set — AI features are disabled."
+msgid "— AI features are disabled."
+msgstr "— លក្ខណៈពិសេស AI ត្រូវបានបិទ។"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
 msgid "— Any source language —"
@@ -5406,7 +5897,7 @@ msgid "— Any —"
 msgstr "— អ្វីៗ —"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:367
 msgid "— Auto-detect —"
 msgstr "— ស្វ័យប្រវត្តិរកឃើញ —"
 
@@ -5426,12 +5917,12 @@ msgstr "— បានបិទ"
 msgid "— Not detected"
 msgstr "— មិនបានរកឃើញ"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr "— ជ្រើសរើសភាសា —"
 
-#: ai/assets/admin.js:1141 ai/assets/admin.js:1305
+#: ai/assets/admin.js:1141 ai/assets/admin.js:1313
 #: ai/assets/block-action.js:334
 msgid "← Back"
 msgstr "← ត្រឡប់ក្រោយ"
@@ -5453,7 +5944,7 @@ msgstr "→ ស្លាកភាសាទេ — កំពុងផ្តល់
 msgid "↺ Re-translate"
 msgstr "↺ ប្រែសម្រួលម្ដងទៀត"
 
-#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1298
+#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1306
 #: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
 #: ai/assets/toolbar-translate.js:351 ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
@@ -5543,23 +6034,23 @@ msgstr "✓ សកម្មភាព — OG ពេញ + កាត Twitter"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ សកម្មភាព — ស្លាកភាសាតែ (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ All parts created."
 msgstr "✓ ផ្នែកទាំងអស់ត្រូវបានបង្កើត។"
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "✓ All templates created."
 msgstr "✓ គំរូទាំងអស់ត្រូវបានបង្កើត។"
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ All translated."
 msgstr "✓ បានបកប្រែទាំងអស់។"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:83
 msgid "✓ Configured"
 msgstr "បានកំណត់រួចហើយ"
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ Connection OK"
 msgstr "✓ ការតភ្ជាប់បានសម្រេច"
 
@@ -5587,7 +6078,7 @@ msgstr "✓ Hreflang សកម្មភាព"
 msgid "✓ In safe storage"
 msgstr "✓ នៅក្នុងសុវត្ថិភាព"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "✓ Language installed."
 msgstr "✓ ភាសាត្រូវបានដំឡើង។"
 
@@ -5607,19 +6098,19 @@ msgstr "✓ ផលិតផល LF ពេញ OG + កាត Twitter"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ ផលិតផល LF — ការចុះបញ្ជី hreflang ត្រូវបានបិទ"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "✓ Links fixed."
 msgstr "✓ តំណភ្ជាប់ត្រូវបានជួសជុល។"
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:274
 msgid "✓ Nav refs fixed."
 msgstr "✓ ការជួសជុលយោងនាវីហ្គេសិនត្រូវបានកំណត់។"
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:267
 msgid "✓ Parts fixed."
 msgstr "✓ ផ្នែកត្រូវបានជួសជុល។"
 
-#: ai/includes/Admin/SettingsPage.php:279
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "✓ Pattern translated."
 msgstr "✓ គំរូត្រូវបានបកប្រែ។"
 
@@ -5627,12 +6118,12 @@ msgstr "✓ គំរូត្រូវបានបកប្រែ។"
 msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
 msgstr "✓ ឯកសារ robots.txt ផ្ទាល់បានរកឃើញ។ ការណែនាំ Sitemap របស់ LF មានស្រេច។"
 
-#: ai/assets/admin-content-gen-modal.js:331 ai/assets/admin.js:1450
+#: ai/assets/admin-content-gen-modal.js:341 ai/assets/admin.js:1458
 msgid "✓ Refined — review the updated draft above."
 msgstr "✓ បានកែលម្អ — សូមពិនិត្យសេចក្ដីព្រាងដែលបានធ្វើបច្ចុប្បន្នភាពខាងលើ។"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "✓ Translation saved"
 msgstr "✓ ប្រែសម្រួលបានរក្សាទុក"
 
@@ -5654,15 +6145,15 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ បានបិទ"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✗ Error:"
 msgstr "✗ កំហុស៖"
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✗ Failed:"
 msgstr "✗ បរាជ័យ៖"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:88
 msgid "✗ Not configured"
 msgstr "មិនបានកំណត់"
 

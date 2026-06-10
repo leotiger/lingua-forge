@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.11
+Stable tag: 2.2.12
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,14 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.12 =
+* Improved: Test connection now surfaces a specific failure reason — invalid API key, no credits remaining, rate limited, access forbidden, network error — instead of the generic "check the error log" message.
+* Improved: AI Provider tab and AI Usage tab now include direct links to Anthropic Console, OpenAI Platform, and Google AI Studio for quick access to account and billing dashboards.
+* Improved: Batch Analysis language cards now show the last run's avg score and ok/warn/fail counts on every page load, not only immediately after a run.
+* Updated: Plugin language translations updated to cover new strings from 2.2.11 and 2.2.12.
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.11 =
 * Added: Model catalog — Settings → General → Models fields now suggest known model identifiers via browser autocomplete (datalist). Light-to-mid-tier models are recommended for translation and content generation; a collapsible reference table lists all catalogued models with tier and notes.
 * Added: Live model list on test connection — "Test connection" in the API Keys tab now also queries the provider's models endpoint (Anthropic /v1/models, OpenAI /v1/models, Gemini /v1beta/models) and refreshes the autocomplete suggestions with the current live list, including any newly-released models not yet in the catalog.
@@ -332,6 +340,9 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 
 == Upgrade Notice ==
+
+= 2.2.12 =
+Improves test-connection error messages, adds provider console links to AI Provider and AI Usage tabs, and persists batch-analysis results across page loads. No DB schema changes; no permalink flush required.
 
 = 2.2.11 =
 Merges "General" and "API Keys" into a single "AI Provider" tab; adds model autocomplete and live model refresh on test connection. No DB changes; no permalink flush required.

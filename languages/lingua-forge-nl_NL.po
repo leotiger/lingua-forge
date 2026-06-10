@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-01T15:14:22+00:00\n"
-"PO-Revision-Date: 2026-06-08 18:25+0000\n"
+"PO-Revision-Date: 2026-06-10 13:41+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: lingua-forge\n"
 "Language: nl_NL\n"
@@ -41,8 +41,20 @@ msgstr "\"%s\" gemaakt."
 msgid "\"product\" (replaces \"article\")"
 msgstr "\"product\" (vervangt \"artikel\")"
 
+#: ai/includes/Admin/SettingsHelp.php:155
+msgid ""
+"\"Treat H2 as H1 equivalent\" (Settings → SEO → Analysis): enable this when "
+"your theme renders the post title inside an H2 instead of an H1. The "
+"analyser promotes the first H2 to H1 so the score is not incorrectly "
+"penalised."
+msgstr ""
+"Behandel H2 als H1 gelijkwaardig (Instellingen → SEO → Analyse): schakel dit "
+"in wanneer je thema de berichttitel binnen een H2 weergeeft in plaats van "
+"een H1. De analyzer promoot de eerste H2 naar H1 zodat de score niet "
+"onterecht wordt bestraft."
+
 #. translators: %1$d: number of characters, %2$d: ideal max, %3$d: hard max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:975
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1020
 #, php-format
 msgid ""
 "%1$d chars — good, slightly above the ideal %2$d but within the accepted "
@@ -52,46 +64,46 @@ msgstr ""
 "%3$d-tekens bereik. %4$s"
 
 #. translators: %1$d: number of characters, %2$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:979
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1024
 #, php-format
 #| msgid "%1$d chars — good length. %2$s"
 msgid "%1$d chars — ideal length. %2$s"
 msgstr "%1$d tekens — ideale lengte. %2$s"
 
 #. translators: %1$d: number of characters, %2$d: hard max, %3$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:970
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1015
 #, php-format
 msgid "%1$d chars — likely truncated in SERPs (keep under %2$d). %3$s"
 msgstr ""
 "%1$d tekens — waarschijnlijk afgekapt in SERP's (houd onder %2$d). %3$s"
 
 #. translators: %1$d: number of characters, %2$d: ideal min, %3$d: ideal max, %4$s: source note
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:965
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1010
 #, php-format
 #| msgid "%1$d chars — too short (aim for 140–160). %2$s"
 msgid "%1$d chars — too short (aim for %2$d–%3$d). %4$s"
 msgstr "%1$d tekens — te kort (streef naar %2$d–%3$d). %4$s"
 
 #. translators: %1$d: character count, %2$d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:941
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:986
 #, php-format
 msgid "%1$d chars, %2$d words — good title."
 msgstr "%1$d tekens, %2$d woorden — goede titel."
 
 #. translators: %1$d: number of internal links, %2$d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1124
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1195
 #, php-format
 msgid "%1$d internal, %2$d external."
 msgstr "%1$d intern, %2$d extern."
 
 #. translators: %1$d: number of images missing alt text, %2$d: total image count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1081
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1152
 #, php-format
 msgid "%1$d of %2$d image(s) missing alt text."
 msgstr "%1$d van %2$d afbeeldingen missen alt-tekst."
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:786
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1037
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
@@ -99,14 +111,14 @@ msgstr[0] "%1$d bericht getagd met _lf_lang = %2$s."
 msgstr[1] "%1$d berichten getagd met _lf_lang = %2$s."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:999
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
 #, php-format
 #| msgid "%d words — below recommended minimum of 300."
 msgid "%1$d words — below recommended minimum of %2$d."
 msgstr "%1$d woorden — onder de aanbevolen minimum van %2$d."
 
 #. translators: %1$d: word count, %2$d: recommended minimum
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:994
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1039
 #, php-format
 #| msgid ""
 #| "%d words — very thin content. Consider expanding to at least 300 words."
@@ -117,13 +129,13 @@ msgstr ""
 "woorden."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1116
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1187
 #, php-format
 msgid "%d external link(s), no internal links."
 msgstr "%d externe link(en), geen interne links."
 
 #. translators: %d: number of external links
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1111
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1182
 #, php-format
 msgid ""
 "%d external link(s), no internal links. Add internal links to related "
@@ -133,13 +145,13 @@ msgstr ""
 "gerelateerde inhoud."
 
 #. translators: %d: number of H1 tags found
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1098
 #, php-format
 msgid "%d H1 tags found — a page should have exactly one H1."
 msgstr "%d H1-tags gevonden — een pagina moet precies één H1 hebben."
 
 #. translators: %d: number of images
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1158
 #, php-format
 msgid "%d image(s), all have alt text."
 msgstr "%d afbeelding(en), allemaal met alt-tekst."
@@ -189,7 +201,7 @@ msgstr[0] "%d locale-bestand verwijderd."
 msgstr[1] "%d locale-bestanden verwijderd."
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
@@ -221,7 +233,7 @@ msgstr[0] "%d bericht"
 msgstr[1] "%d berichten"
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:505
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:670
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
@@ -229,7 +241,7 @@ msgstr[0] "%d regel geregistreerd"
 msgstr[1] "%d regels geregistreerd"
 
 #. translators: %d: word count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1003
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1048
 #, php-format
 msgid "%d words."
 msgstr "%d woorden."
@@ -274,6 +286,10 @@ msgstr ""
 "alternatieve links toe. De LF sitemap wordt automatisch aangekondigd in "
 "robots.txt."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
+msgid "(active)"
+msgstr "(actief)"
+
 #. translators: %s is the average hits per cached block.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:214
 #, php-format
@@ -286,7 +302,7 @@ msgstr "(gemiddeld %.1f hits/blok)"
 msgid "(avg %.1f hits/entry)"
 msgstr "(gemiddeld %.1f hits/entry)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:100
 msgid "(classic theme)"
 msgstr "(klassiek thema)"
 
@@ -294,15 +310,23 @@ msgstr "(klassiek thema)"
 msgid "(disabled)"
 msgstr "uitgeschakeld"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:97
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:99
 msgid "(FSE / block theme)"
 msgstr "(FSE / blokthema)"
 
 #. translators: %d: post ID
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:702
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:745
 #, php-format
 msgid "(no title) #%d"
 msgstr "(geen titel) #%d"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:431
+msgid "(partial)"
+msgstr "(gedeeltelijk)"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:130
+msgid "(server/FPM timeout still applies)"
+msgstr "(server/FPM time-out geldt nog steeds)"
 
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
@@ -317,18 +341,35 @@ msgstr ".txt-bestand(en) in de map"
 msgid "/ 100"
 msgstr "/ 100"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1053
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1122
+#| msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+msgid "1 H1 ✓ — no H2 or H3 subheadings found. Adding H2s improves structure."
+msgstr ""
+"1 H1 ✓ — geen H2 of H3 subkoppen gevonden. H2's toevoegen verbetert de "
+"structuur."
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1119
 msgid "1 H1 ✓ — no H2 subheadings (acceptable for this content type)."
 msgstr "1 H1 ✓ — geen H2-kopjes (acceptabel voor dit type inhoud)."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1052
-msgid "1 H1 ✓ — no H2 subheadings found. Adding H2s improves structure."
+#. translators: %d: number of H3 headings found
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1107
+#, php-format
+msgid ""
+"1 H1 ✓ — no H2, but %d H3 subheading(s) found (e.g. accordion/details "
+"headers). Structure is acceptable."
 msgstr ""
-"1 H1 ✓ — geen H2-kopjes gevonden. Het toevoegen van H2's verbetert de "
-"structuur."
+"1 H1 ✓ — geen H2, maar %d H3-kopjes gevonden (bijvoorbeeld accordeon/details "
+"headers). Structuur is acceptabel."
+
+#. translators: %d: number of paragraphs in the content
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1118
+#, php-format
+msgid "1 H1 ✓ — short content (%d paragraph(s)), subheadings not required."
+msgstr "1 H1 ✓ — korte inhoud (%d alinea('s)), subkoppen niet vereist."
 
 #. translators: %1$d: number of H2 headings, %2$d: number of H3 headings
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1058
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1129
 #, php-format
 msgid "1 H1 ✓, %1$d H2, %2$d H3."
 msgstr "1 H1 ✓, %1$d H2, %2$d H3."
@@ -365,7 +406,7 @@ msgstr "<strong>{n}</strong> verouderd(e) pad(pad(en))"
 msgid "<strong>{n}</strong> template issue(s)"
 msgstr "<strong>{n}</strong> sjabloonprobleem(pen)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:554
 msgid "_lf_lang Coverage"
 msgstr "_lf_lang Dekking"
 
@@ -389,6 +430,14 @@ msgstr ""
 "{textdomain}-{locale}.mo volgen. Het uploaden van een bestand met dezelfde "
 "naam als een bestaand bestand zal het vervangen."
 
+#: ai/includes/Providers/AbstractProvider.php:85
+msgid ""
+"Access forbidden — your account may be suspended or the key lacks the "
+"required permissions."
+msgstr ""
+"Toegang verboden — je account kan geschorst zijn of de sleutel mist de "
+"benodigde rechten."
+
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:120
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:141
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:82
@@ -396,15 +445,15 @@ msgstr ""
 msgid "Action"
 msgstr "Actie"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:138
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:183
 msgid "active"
 msgstr "actief"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:231
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:265
 msgid "Active Languages"
 msgstr "Actieve talen"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:121
 msgid "Active languages"
 msgstr "Actieve talen"
 
@@ -417,24 +466,24 @@ msgstr ""
 "een URL-prefix of subdomein en een hreflang-tag in de &lt;head&gt; van de "
 "pagina."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
+msgid "Active Plugins"
+msgstr "Actieve Plugins"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:210
 msgid "Active preset"
 msgstr "Actieve preset"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:58
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:59
 msgid "Active Provider"
 msgstr "Actieve provider"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
-msgid "Active provider"
-msgstr "Actieve provider"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:92
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:94
 msgid "Active theme"
 msgstr "Actief thema"
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:290
 #, php-format
 msgid "Active: %s."
 msgstr "Actief: %s."
@@ -451,7 +500,7 @@ msgstr ""
 "Instructies toevoegen om de concepttekst te verbeteren — bv. korter maken, "
 "een conclusie toevoegen, een formelere toon gebruiken, een FAQ-blok opnemen…"
 
-#: ai/assets/admin.js:1295
+#: ai/assets/admin.js:1303
 msgid ""
 "Add instructions to improve the draft — e.g. make it shorter, add a "
 "conclusion section, use a more formal register…"
@@ -459,7 +508,7 @@ msgstr ""
 "Voeg instructies toe om de concept te verbeteren — bijvoorbeeld korter maken,"
 " een conclusie toevoegen, een formelere toon gebruiken…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:184
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
 msgid "Add key →"
 msgstr "Voeg sleutel toe →"
 
@@ -533,7 +582,7 @@ msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "AI-cache geleegd. %d item(s) verwijderd."
 msgstr[1] "AI-cache geleegd. %d items verwijderd."
 
-#: ai/includes/Admin/SettingsHelp.php:134
+#: ai/includes/Admin/SettingsHelp.php:165
 msgid ""
 "AI Cache: lists cached AI responses with hit counts. Clear the whole cache "
 "or a single post's entries. Use \"Clear\" before testing a translation "
@@ -546,7 +595,7 @@ msgstr ""
 "je de AI-voorinstelling of het model wijzigt, totdat de cache-invoer wordt "
 "verwijderd."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:166
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "AI Configuration"
 msgstr "AI-configuratie"
 
@@ -563,6 +612,12 @@ msgstr ""
 msgid "AI Limits & Security"
 msgstr "AI Limieten & Beveiliging"
 
+#: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
+#: ai/includes/Admin/SettingsPage.php:629
+#| msgid "Active provider"
+msgid "AI Provider"
+msgstr "AI-provider"
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:120
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:161
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:295
@@ -573,18 +628,18 @@ msgstr "AI-provider gaf een lege reactie."
 msgid "AI Recommendations"
 msgstr "AI-aanbevelingen"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1454
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1539
 msgid "AI returned an unexpected response format. Please try again."
 msgstr "AI gaf een onverwacht antwoordformaat. Probeer het opnieuw."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:139
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr ""
 "AI-vertaling en batchanalyse kunnen time-out krijgen. Aanbevolen 120s of "
 "meer."
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
-#: ai/includes/Admin/SettingsPage.php:637
+#: ai/includes/Admin/SettingsPage.php:635
 msgid "AI Usage"
 msgstr "AI-gebruik"
 
@@ -611,7 +666,7 @@ msgstr ""
 "de sitemap nu opnieuw crawlt in plaats van te wachten op de volgende "
 "geplande robots.txt-controle."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:431
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:562
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr ""
 "Alle gepubliceerde berichten hebben een _lf_lang waarde. Geen gaten "
@@ -646,7 +701,7 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr "Ook meta beschrijving genereren"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:153
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:154
 msgid "Alternative (server-side):"
 msgstr "Alternatief (serverzijde):"
 
@@ -671,7 +726,7 @@ msgstr ""
 msgid "An unknown error occurred."
 msgstr "Er is een onbekende fout opgetreden."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:415
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:447
 msgid "Analyse"
 msgstr "Analyse"
 
@@ -679,7 +734,7 @@ msgstr "Analyse"
 msgid "Analyse all languages"
 msgstr "Analyseer alle talen"
 
-#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/MetaBox.php:460 ai/includes/Admin/SettingsPage.php:366
 msgid "Analyse…"
 msgstr "Analyseren…"
 
@@ -687,7 +742,7 @@ msgstr "Analyseren…"
 msgid "Analysis"
 msgstr "Analyse"
 
-#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/MetaBox.php:532 ai/includes/Admin/SettingsPage.php:371
 msgid "Analysis request failed. Please try again."
 msgstr "Analyseren aanvraag mislukt. Probeer het opnieuw."
 
@@ -699,9 +754,14 @@ msgstr "Bezig met analyseren…"
 msgid "and"
 msgstr "en"
 
-#: ai/includes/Admin/SettingsPage.php:65
+#: ai/includes/Admin/SettingsPage.php:64
 msgid "Anthropic (Claude)"
 msgstr "Anthropic (Claude)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:104
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:106
+msgid "Anthropic Console"
+msgstr "Anthropic Console"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:164
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:173
@@ -712,17 +772,13 @@ msgstr "any"
 msgid "API calls saved by cache"
 msgstr "API-aanroepen opgeslagen door cache"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:61
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:62
 msgid "API Key"
 msgstr "API-sleutel"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:175
-msgid "API key"
-msgstr "API-sleutel"
-
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:28
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:37
-#: ai/includes/Admin/SettingsHelp.php:83 ai/includes/Admin/SettingsPage.php:631
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:29
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:38
+#: ai/includes/Admin/SettingsHelp.php:83
 msgid "API Keys"
 msgstr "API-sleutels"
 
@@ -745,14 +801,14 @@ msgstr "API-responscache-instelling opgeslagen."
 msgid "Appends the following line to your existing robots.txt: %s"
 msgstr "Voegt de volgende regel toe aan je bestaande robots.txt: %s"
 
-#: ai/assets/admin-content-gen-modal.js:247 ai/assets/admin-diff-modal.js:271
-#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1229
-#: ai/assets/admin.js:1380 ai/assets/block-action.js:964
+#: ai/assets/admin-content-gen-modal.js:257 ai/assets/admin-diff-modal.js:288
+#: ai/assets/admin.js:319 ai/assets/admin.js:550 ai/assets/admin.js:1237
+#: ai/assets/admin.js:1388 ai/assets/block-action.js:964
 #: ai/assets/block-action.js:989
 msgid "Applied ✓"
 msgstr "Toegepast ✓"
 
-#: ai/assets/admin-diff-modal.js:289 ai/assets/admin.js:1246
+#: ai/assets/admin-diff-modal.js:306 ai/assets/admin.js:1254
 msgid "Apply failed — please try again."
 msgstr "Toepassen mislukt — probeer het opnieuw."
 
@@ -768,7 +824,7 @@ msgstr "Toepassen op blok"
 
 #: ai/assets/admin-content-gen-modal.js:89
 #: ai/assets/admin-content-gen-modal.js:140 ai/assets/admin.js:322
-#: ai/assets/admin.js:697 ai/assets/admin.js:1311
+#: ai/assets/admin.js:697 ai/assets/admin.js:1319
 msgid "Apply to Editor"
 msgstr "Toepassen op Editor"
 
@@ -780,13 +836,13 @@ msgstr "Toepassen op voetnoot"
 msgid "Apply to Meta Description"
 msgstr "Toepassen op Meta Beschrijving"
 
-#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:280
-#: ai/assets/admin.js:1144 ai/assets/admin.js:1238
+#: ai/assets/admin-diff-modal.js:92 ai/assets/admin-diff-modal.js:297
+#: ai/assets/admin.js:1144 ai/assets/admin.js:1246
 msgid "Apply translation"
 msgstr "Vertaling toepassen"
 
 #: ai/assets/admin-content-gen-modal.js:217 ai/assets/admin-diff-modal.js:204
-#: ai/assets/admin.js:1192 ai/assets/admin.js:1357
+#: ai/assets/admin.js:1192 ai/assets/admin.js:1365
 msgid "Applying…"
 msgstr "Toepassen…"
 
@@ -831,12 +887,45 @@ msgstr ""
 "statische startpagina → Landingsprofiel; alles andere → Blogprofiel. Kies "
 "een specifiek profiel om dit voor alle berichten te overschrijven."
 
+#: ai/includes/Admin/SettingsHelp.php:148
+msgid ""
+"Auto-detected for the static front page; can be selected manually. Title 20 "
+"pts · Meta description 30 pts · Word count 15 pts · Headings 10 pts · Images "
+"15 pts · Links 0 pts. Title SERP limit 70 chars; word count warns below 150, "
+"fails below 60; H2 and internal links optional."
+msgstr ""
+"Automatisch gedetecteerd voor de statische voorpagina; kan handmatig worden "
+"geselecteerd. Titel 20 pts · Meta beschrijving 30 pts · Woordtelling 15 pts "
+"· Koppen 10 pts · Afbeeldingen 15 pts · Links 0 pts. Titel SERP limiet 70 "
+"tekens; woordtelling waarschuwt onder 150, faalt onder 60; H2 en interne "
+"links optioneel."
+
+#: ai/includes/Admin/SettingsHelp.php:146
+msgid ""
+"Auto-detected for WooCommerce products. Title 20 pts · Meta description 30 "
+"pts · Word count 15 pts · Headings 5 pts · Images 20 pts · Links 0 pts. "
+"Title SERP limit 70 chars; word count warns below 80, fails below 40; H2 and "
+"internal links optional."
+msgstr ""
+"Automatisch gedetecteerd voor WooCommerce-producten. Titel 20 pts · Meta "
+"beschrijving 30 pts · Woordtelling 15 pts · Koppen 5 pts · Afbeeldingen 20 "
+"pts · Links 0 pts. Titel SERP limiet 70 tekens; woordtelling waarschuwt "
+"onder 80, faalt onder 40; H2 en interne links optioneel."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:231
+msgid "Available models reference"
+msgstr "Referentie beschikbare modellen"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:427
+msgid "avg"
+msgstr "gemiddeld"
+
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:334
 msgid "Batch Analysis"
 msgstr "Batchanalyse"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsPage.php:633
+#: ai/includes/Admin/SettingsPage.php:631
 msgid "Behavior"
 msgstr "Gedrag"
 
@@ -940,6 +1029,10 @@ msgstr ""
 msgid "Blog / Editorial"
 msgstr "Blog / Redactie"
 
+#: ai/includes/Admin/SettingsHelp.php:143
+msgid "Blog / Editorial (default)"
+msgstr "Blog / Redactie (standaard)"
+
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:123
 msgid ""
 "Blog posts use Article; all other post types and pages use WebPage. Includes "
@@ -954,7 +1047,7 @@ msgstr ""
 msgid "Browser language redirect"
 msgstr "Browsertaal omleiding"
 
-#: ai/includes/Admin/SettingsPage.php:329
+#: ai/includes/Admin/SettingsPage.php:328
 msgid "Built-in preset instructions:"
 msgstr "Ingebouwde preset-instructies:"
 
@@ -1016,7 +1109,7 @@ msgstr ""
 "gebruiker limiet (30 verzoeken / minuut, hardcoded) die al bescherming biedt "
 "tegen runaway loops van één gebruiker."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 msgid "Cart"
 msgstr "Winkelwagen"
 
@@ -1025,7 +1118,15 @@ msgstr "Winkelwagen"
 msgid "chars"
 msgstr "tekens"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:101
+msgid ""
+"Check your account, billing, or remaining credits directly on the provider "
+"console:"
+msgstr ""
+"Controleer je account, facturering of resterende credits direct op de "
+"provider console:"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:337
 msgid "Checkout"
 msgstr "Afrekenen"
 
@@ -1123,9 +1224,19 @@ msgstr ""
 "elke taal op je site. Elk gedeelte hieronder behandelt één aspect van "
 "meertalige SEO."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:179
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
 msgid "Configured"
 msgstr "Geconfigureerd"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
+msgid ""
+"Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other "
+"third-party post types whose content should not be language-filtered, one "
+"per line or comma-separated."
+msgstr ""
+"Contact Formulier 7 (wpcf7_contact_form) wordt automatisch uitgesloten. Voeg "
+"andere third-party berichttypen toe waarvan de inhoud niet vertaald moet "
+"worden, één per regel of comma-gescheiden."
 
 #: ai/assets/admin.js:679
 msgid "Content generated"
@@ -1134,6 +1245,10 @@ msgstr "Inhoud gegenereerd"
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:302
 msgid "Content Generator"
 msgstr "Content Generator"
+
+#: ai/includes/Admin/SettingsHelp.php:140
+msgid "Content profiles and weights"
+msgstr "Inhoudsprofielen en gewichten"
 
 #: ai/assets/admin.js:683
 msgid "Content ready"
@@ -1183,13 +1298,13 @@ msgid "Conversational"
 msgstr "Conversatie"
 
 #: ai/assets/admin-content-gen-modal.js:180 ai/assets/admin.js:495
-#: ai/assets/admin.js:505 ai/assets/admin.js:1343 ai/assets/block-action.js:450
+#: ai/assets/admin.js:505 ai/assets/admin.js:1351 ai/assets/block-action.js:450
 #: ai/assets/editor-translate.js:383 ai/assets/toolbar-translate.js:128
 msgid "Copied ✓"
 msgstr "Gekopieerd ✓"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:563
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:569
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:728
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:734
 msgid "Copied!"
 msgstr "Gekopieerd!"
 
@@ -1201,7 +1316,7 @@ msgstr "Gekopieerd!"
 msgid "Copy"
 msgstr "Kopiëren"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:534
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:699
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr "Kopieer en plak in een GitHub-issue of supportverzoek."
 
@@ -1209,11 +1324,11 @@ msgstr "Kopieer en plak in een GitHub-issue of supportverzoek."
 msgid "Copy failed — please copy the URL manually."
 msgstr "Kopiëren mislukt — kopieer de URL handmatig."
 
-#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1308
+#: ai/assets/admin-content-gen-modal.js:86 ai/assets/admin.js:1316
 msgid "Copy markup"
 msgstr "Markup kopiëren"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:538
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:703
 msgid "Copy system info"
 msgstr "Systeeminfo kopiëren"
 
@@ -1251,7 +1366,7 @@ msgid "Could not copy the file. Check that the uploads folder is writable."
 msgstr ""
 "Kon het bestand niet kopiëren. Controleer of de uploads-map schrijfbaar is."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:248
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:250
 msgid "Could not instantiate the provider."
 msgstr "Kon de provider niet initialiseren."
 
@@ -1293,7 +1408,7 @@ msgstr ""
 "integratie. Zorg ervoor dat de benodigde integratie is geïnstalleerd en "
 "actief."
 
-#: ai/includes/Admin/SettingsPage.php:252
+#: ai/includes/Admin/SettingsPage.php:251
 msgid "Creating…"
 msgstr "Bezig met maken…"
 
@@ -1328,7 +1443,7 @@ msgid "Currently emitting"
 msgstr "Momenteel wordt uitgezonden"
 
 #. translators: %s is the PHP constant name LINGUAFORGE_PROVIDER, wrapped in <code> tags.
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:87
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:88
 #, php-format
 msgid ""
 "Currently inherited from the %s constant. Selecting a value here will "
@@ -1355,13 +1470,18 @@ msgstr "Momenteel:"
 msgid "Custom"
 msgstr "Aangepast"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
+msgid "Custom tables — LF post-meta filters do not affect orders."
+msgstr ""
+"Aangepaste tabellen — LF post-meta filters beïnvloeden geen bestellingen."
+
 #. translators: 1: quota number, 2: reset time.
 #: ai/includes/REST/RateLimiter.php:169
 #, php-format
 msgid "Daily AI quota reached (%1$d requests). Resets at %2$s UTC."
 msgstr "Dagelijkse AI-quotum bereikt (%1$d verzoeken). Reset om %2$s UTC."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Daily quota"
 msgstr "Dagelijkse quota"
 
@@ -1369,7 +1489,7 @@ msgstr "Dagelijkse quota"
 msgid "Daily request limit"
 msgstr "Dagelijkse verzoeklimiet"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:420
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:462
 msgid "Danger Zone"
 msgstr "Gevaarlijke zone"
 
@@ -1385,7 +1505,7 @@ msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "Foutopsporingsbestanden gewist. %d bestand is verwijderd."
 msgstr[1] "Foutopsporingsbestanden gewist. %d bestanden zijn verwijderd."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:697
 msgid "Debug Info"
 msgstr "Debug-info"
 
@@ -1401,7 +1521,7 @@ msgstr "Foutopsporing uitgeschakeld."
 msgid "Debug logging enabled."
 msgstr "Foutopsporing ingeschakeld."
 
-#: ai/includes/Admin/SettingsHelp.php:137
+#: ai/includes/Admin/SettingsHelp.php:168
 msgid ""
 "Debug: enable the debug log to capture AI prompts and API responses to a "
 "local file. Disable after troubleshooting — debug mode writes a file on "
@@ -1448,6 +1568,10 @@ msgstr "Wil je dit woordenlijstitem verwijderen?"
 #: ai/assets/editor-translate.js:274 ai/assets/toolbar-translate.js:280
 msgid "Describe what to write — topic, key points, structure…"
 msgstr "Beschrijf wat je wilt schrijven — onderwerp, kernpunten, structuur…"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:610
+msgid "Destructive action — read before proceeding"
+msgstr "Verwoestende actie — lees voordat je doorgaat"
 
 #: ai/includes/Admin/MetaBox.php:391
 msgid "Details ↗"
@@ -1517,7 +1641,7 @@ msgstr "Toont de Lingua Forge-taalwisselaar."
 msgid "Do not output any OG tags."
 msgstr "Geen OG-tags weergeven."
 
-#: ai/includes/Admin/SettingsHelp.php:166
+#: ai/includes/Admin/SettingsHelp.php:197
 msgid "Documentation"
 msgstr "Documentatie"
 
@@ -1533,7 +1657,7 @@ msgstr "Klaar — {done} van {total} bericht(en) gerepareerd."
 msgid "Down"
 msgstr "Omlaag"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:293
 msgid ""
 "Download and install a WordPress core language pack directly from WordPress."
 "org. Once installed, the locale becomes available for URL routing and the AI "
@@ -1549,7 +1673,32 @@ msgstr ""
 msgid "Dropdown direction"
 msgstr "Dropdownrichting"
 
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsHelp.php:137
+msgid ""
+"Each metric yields one of four statuses: ok (full weight), warn (50 % of "
+"weight), fail (0), or info (0, no penalty). A score ≥ 80 is green, 50–79 "
+"amber, below 50 red."
+msgstr ""
+"Elke metriek geeft een van vier statussen: ok (volledige gewicht), "
+"waarschuwing (50% van het gewicht), falen (0), of info (0, geen straf). Een "
+"score ≥ 80 is groen, 50–79 amber, onder 50 rood."
+
+#: ai/includes/Admin/SettingsHelp.php:136
+msgid ""
+"Each post is scored 0–100 from six rule-based metrics: title, meta "
+"description, word count, heading structure, image alt coverage, and internal "
+"links. Ten points are always awarded for reading time (informational only). "
+"The remaining 90 points are distributed across the other metrics with "
+"weights that vary by content profile (see below)."
+msgstr ""
+"Elke post wordt beoordeeld van 0–100 op basis van zes regelgebaseerde "
+"metrics: titel, meta beschrijving, woordtelling, kopstructuur, "
+"afbeeldingsalt-dekking en interne links. Tien punten worden altijd toegekend "
+"voor leestijd (alleen informatief). De resterende 90 punten worden verdeeld "
+"over de andere metrics met gewichten die variëren per inhoudsprofiel (zie "
+"hieronder)."
+
+#: ai/includes/Admin/SettingsPage.php:368
 msgid "edit"
 msgstr "bewerken"
 
@@ -1592,11 +1741,11 @@ msgstr ""
 "(LINGUAFORGE_SECRET). Deel geen database-exporten zonder eerst het geheim te "
 "roteren."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:75
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:77
 msgid "Environment"
 msgstr "Omgeving"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:136
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
 msgid "environment variable"
 msgstr "omgevingsvariabele"
 
@@ -1604,10 +1753,71 @@ msgstr "omgevingsvariabele"
 msgid "Error"
 msgstr "Fout"
 
+#: ai/includes/Admin/SettingsHelp.php:158
+msgid ""
+"Every time a post is analysed the score is stored in post meta. The post "
+"list Lang column shows a colour-coded \"SEO N\" badge for any post that has "
+"been analysed at least once. When two scores are stored a delta indicator "
+"(↑N / ↓N) shows the change since the previous run."
+msgstr ""
+"Elke keer dat een post wordt geanalyseerd, wordt de score opgeslagen in de "
+"post meta. De kolom Taal in de postlijst toont een kleurgecodeerde \"SEO N\" "
+"badge voor elke post die minstens één keer is geanalyseerd. Wanneer twee "
+"scores worden opgeslagen, toont een delta-indicator (↑N / ↓N) de verandering "
+"sinds de vorige run."
+
+#: ai/includes/Admin/SettingsHelp.php:152
+msgid ""
+"Exactly one H1 is required. The H1 is normally the post title rendered by "
+"the theme — it is read from the live rendered page when possible, and from "
+"post content as a fallback."
+msgstr ""
+"Exact één H1 is vereist. De H1 is normaal de posttitel die door het thema "
+"wordt weergegeven — het wordt gelezen van de live weergegeven pagina indien "
+"mogelijk, en van de postinhoud als fallback."
+
 #: language-router/includes/admin/class-columns.php:169
 #: language-router/includes/admin/class-meta-boxes.php:90
 msgid "Exclude from navigation menus"
 msgstr "Uitsluiten van navigatiemenu's"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:588
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:807
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:813
+msgid "Exclude from routing"
+msgstr "Uitsluiten van routing"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:587
+msgid ""
+"Exclude this post type from language routing — its posts will no longer "
+"appear here or receive _lf_lang. This cannot be undone automatically."
+msgstr ""
+"Sluit dit berichttype uit van taalkoppeling — de berichten verschijnen hier "
+"niet meer of ontvangen _lf_lang. Dit kan niet automatisch worden "
+"teruggedraaid."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:778
+msgid ""
+"Exclude this post type from language routing? Its posts will no longer "
+"appear in this list or receive _lf_lang. You can reverse this in Settings → "
+"Router → Query Filter Exclusions."
+msgstr ""
+"Sluit dit berichttype uit van taalkoppeling? De berichten verschijnen niet "
+"meer in deze lijst of ontvangen _lf_lang. Je kunt dit terugdraaien in "
+"Instellingen → Router → Query Filter Uitsluitingen."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:597
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:799
+msgid "excluded from routing"
+msgstr "uitgesloten van routing"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
+msgid "Excluded post types"
+msgstr "Uitgesloten berichttypen"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:782
+msgid "Excluding…"
+msgstr "Wordt uitgesloten…"
 
 #: ai/assets/block-action.js:70
 msgid "Expand"
@@ -1629,6 +1839,10 @@ msgstr "Extra begeleiding — toon, stijl, beperkingen, doelgroep…"
 msgid "Extra guidance — tone, style, constraints…"
 msgstr "Extra begeleiding — toon, stijl, beperkingen…"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:808
+msgid "Failed to save exclusion."
+msgstr "Het opslaan van uitsluiting is mislukt."
+
 #: ai/assets/block-action.js:730 ai/assets/block-action.js:921
 msgid "Failed. Please try again."
 msgstr "Mislukt. Probeer het opnieuw."
@@ -1645,11 +1859,11 @@ msgstr ""
 "miniatuur."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:130
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:133
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:153
 msgid "Feature"
 msgstr "Functie"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:127
 msgid ""
 "Features are grouped into two tiers. Enter the exact model identifier for "
 "each tier and provider. Leave a field blank to use the built-in default "
@@ -1713,7 +1927,7 @@ msgstr ""
 "locatie te leiden."
 
 #: ai/includes/Admin/MetaBox.php:395 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:361
 msgid "Finding"
 msgstr "Vinden"
 
@@ -1737,19 +1951,19 @@ msgstr "Repareer alle onderdelen"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:261
 msgid "Fix Links"
 msgstr "Links corrigeren"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:297
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "Fix Nav"
 msgstr "Navigatie corrigeren"
 
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:146
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:265
 msgid "Fix Parts"
 msgstr "Onderdelen corrigeren"
 
@@ -1761,19 +1975,19 @@ msgstr "Sjabloon repareren"
 msgid "Fixing {n} / {total}…"
 msgstr "Reparatie van {n} / {total}…"
 
-#: ai/includes/Admin/SettingsPage.php:263
-#: ai/includes/Admin/SettingsPage.php:267
-#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:273
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "Bezig met repareren…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:227
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:261
 msgid "Flush Permalink Rules"
 msgstr "Permalinkregels verversen"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
 msgid "Flush Permalinks"
 msgstr "Permalinks verversen"
 
@@ -1797,9 +2011,9 @@ msgstr "Voetnoten"
 msgid "Footnotes payload (advanced)"
 msgstr "Voetnoten payload (gevorderd)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:364
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:393
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:490
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:398
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:435
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:532
 msgid "Forbidden"
 msgstr "Verboden"
 
@@ -1873,8 +2087,15 @@ msgstr "Volledig artikel"
 msgid "Full post"
 msgstr "Volledige bericht"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:22
-#: ai/includes/Admin/SettingsPage.php:630
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:43
+msgid ""
+"Full-page Translation, Content Generator (mid-tier models are fully "
+"sufficient)"
+msgstr ""
+"Volledige pagina Vertaling, Content Generator (middelgrote modellen zijn "
+"volledig voldoende)"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:23
 msgid "General"
 msgstr "Algemeen"
 
@@ -1908,7 +2129,7 @@ msgid "Generated Content"
 msgstr "Gegenereerde inhoud"
 
 #: ai/assets/admin-content-gen-modal.js:59 ai/assets/admin-diff-modal.js:82
-#: ai/assets/admin.js:1118 ai/assets/admin.js:1273
+#: ai/assets/admin.js:1118 ai/assets/admin.js:1281
 msgid "Generated meta description"
 msgstr "Gegenereerde meta beschrijving"
 
@@ -1921,7 +2142,7 @@ msgstr "Aan het genereren…"
 msgid "Generation failed."
 msgstr "Generatie mislukt."
 
-#: ai/includes/Admin/SettingsHelp.php:148
+#: ai/includes/Admin/SettingsHelp.php:179
 msgid "Getting started"
 msgstr "Aan de slag"
 
@@ -1938,7 +2159,7 @@ msgstr "Standaard wereldwijd (%s)"
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:635
+#: ai/includes/Admin/SettingsPage.php:633
 msgid "Glossary"
 msgstr "Woordenlijst"
 
@@ -1954,11 +2175,16 @@ msgstr "Woordenlijstitem verwijderd."
 msgid "Glossary Tab"
 msgstr "Woordenlijst tabblad"
 
-#: ai/includes/Admin/SettingsPage.php:67
+#: ai/includes/Admin/SettingsPage.php:66
 msgid "Google (Gemini)"
 msgstr "Google (Gemini)"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1037
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:106
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:108
+msgid "Google AI Studio"
+msgstr "Google AI Studio"
+
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1087
 msgid ""
 "H2-as-H1 mode enabled — title counted as H1 equivalent. (Heading tags could "
 "not be detected from the rendered page; verify your theme outputs the title "
@@ -1968,14 +2194,22 @@ msgstr ""
 "konden niet worden gedetecteerd op de gerenderde pagina; controleer of je "
 "thema de titel correct weergeeft.)"
 
+#: ai/includes/Admin/SettingsHelp.php:151
+msgid "Heading structure rules"
+msgstr "Regels voor kopstructuur"
+
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:526
-#: ai/includes/Admin/SettingsPage.php:357
+#: ai/includes/Admin/SettingsPage.php:356
 msgid "Headings"
 msgstr "Koppen"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Hide"
 msgstr "Verberg"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+msgid "High-Performance Order Storage (HPOS)"
+msgstr "High-Performance Order Storage (HPOS)"
 
 #: ai/includes/Features/ContentGenerator.php:185
 msgid "Hints"
@@ -1996,6 +2230,13 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:105
 msgid "How to use"
 msgstr "Hoe te gebruiken"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:356
+msgid ""
+"HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
+msgstr ""
+"HPOS + CPT gesynchroniseerd — overgangsperiode; LF post-meta filters worden "
+"toegepast op kopie van CPT."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:139
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:50
@@ -2078,7 +2319,7 @@ msgstr ""
 "grafieken te voorkomen."
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:527
-#: ai/includes/Admin/SettingsPage.php:358
+#: ai/includes/Admin/SettingsPage.php:357
 msgid "Images"
 msgstr "Afbeeldingen"
 
@@ -2116,15 +2357,15 @@ msgstr "Bevat sitenaam, url en inLanguage."
 msgid "Informative"
 msgstr "Informatief"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:137
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
 msgid "Input tokens"
 msgstr "Invoertokens"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:278
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:312
 msgid "Install"
 msgstr "Installeren"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:290
 msgid "Install a Language"
 msgstr "Een taal installeren"
 
@@ -2132,7 +2373,7 @@ msgstr "Een taal installeren"
 msgid "Installed SEO plugins"
 msgstr "Geïnstalleerde SEO-plugins"
 
-#: ai/includes/Admin/SettingsPage.php:247
+#: ai/includes/Admin/SettingsPage.php:246
 msgid "Installing…"
 msgstr "Installeren…"
 
@@ -2148,7 +2389,7 @@ msgstr "Instructies (optioneel)"
 msgid "Instructions / key points"
 msgstr "Instructies / kernpunten"
 
-#: ai/includes/Admin/SettingsHelp.php:153
+#: ai/includes/Admin/SettingsHelp.php:184
 msgid "Integration API"
 msgstr "Integratie API"
 
@@ -2160,6 +2401,13 @@ msgstr "Interne link reparateur"
 msgid "Introduction only"
 msgstr "Alleen introductie"
 
+#: ai/includes/Providers/AbstractProvider.php:81
+msgid ""
+"Invalid API key — double-check the key entered in the AI Provider settings."
+msgstr ""
+"Ongeldige API-sleutel — controleer de ingevoerde sleutel in de AI Provider-"
+"instellingen."
+
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:225
 msgid "Invalid file reference."
 msgstr "Ongeldige bestandsreferentie."
@@ -2168,7 +2416,7 @@ msgstr "Ongeldige bestandsreferentie."
 msgid "Invalid filename."
 msgstr "Ongeldig bestandsnaam."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:494
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:536
 msgid "Invalid language code."
 msgstr "Ongeldige taalcodering."
 
@@ -2176,7 +2424,7 @@ msgstr "Ongeldige taalcodering."
 msgid "Invalid language."
 msgstr "Ongeldige taal."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:586
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:628
 msgid "Invalid locale code."
 msgstr "Ongeldige locale-code."
 
@@ -2190,13 +2438,14 @@ msgstr "Ongeldige locale-code."
 msgid "Invalid or primary language."
 msgstr "Ongeldige of primaire taal."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:734
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1312
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:777
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1397
 msgid "Invalid post ID."
 msgstr "Ongeldige bericht-ID."
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1065
 msgid "Invalid post type."
 msgstr "Ongeldig berichttype."
 
@@ -2212,7 +2461,7 @@ msgstr "Ongeldig sjabloontype."
 msgid "JavaScript-powered actions"
 msgstr "JavaScript-gestuurde acties"
 
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Just now"
 msgstr "Zojuist"
 
@@ -2220,7 +2469,7 @@ msgstr "Zojuist"
 msgid "Key points, ideas, or structure to build from…"
 msgstr "Belangrijke punten, ideeën of structuur om vanaf te bouwen…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:41
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:42
 msgid ""
 "Keys are encrypted with AES-256-CBC before being stored in the WordPress "
 "database. The encryption secret is derived from your WordPress auth salts "
@@ -2232,6 +2481,7 @@ msgstr ""
 "nooit de database raken."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:110
+#: ai/includes/Admin/SettingsHelp.php:147
 msgid "Landing / Short-form"
 msgstr "Landingspagina / Kort formaat"
 
@@ -2241,7 +2491,7 @@ msgid "Language"
 msgstr "Taal"
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:612
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:654
 #, php-format
 msgid "Language %s installed successfully."
 msgstr "Taal %s succesvol geïnstalleerd."
@@ -2250,15 +2500,15 @@ msgstr "Taal %s succesvol geïnstalleerd."
 msgid "Language (optional)"
 msgstr "Taal (optioneel)"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:581
-#: ai/includes/Admin/SettingsPage.php:251
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:623
+#: ai/includes/Admin/SettingsPage.php:250
 msgid ""
 "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 "Taalinstallatie is uitgeschakeld op deze server (DISALLOW_FILE_MODS is "
 "ingesteld)."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:298
 msgid ""
 "Language installation is disabled on this server. The DISALLOW_FILE_MODS "
 "constant is set in wp-config.php. Install language packs manually via WP-CLI:"
@@ -2276,7 +2526,7 @@ msgstr "Taallabel"
 msgid "Language Overrides"
 msgstr "Taal Overrides"
 
-#: ai/includes/Admin/SettingsHelp.php:136
+#: ai/includes/Admin/SettingsHelp.php:167
 msgid ""
 "Language Overrides: manage custom .po/.mo override files for the Lingua "
 "Forge UI strings. Use this instead of editing plugin files directly — "
@@ -2286,7 +2536,7 @@ msgstr ""
 "voor de Lingua Forge UI-strings. Gebruik dit in plaats van het direct "
 "bewerken van plugin-bestanden — overschrijvingen blijven bestaan na updates."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:615
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:657
 msgid ""
 "Language pack installation failed. The language may already be installed, "
 "the locale code may be incorrect, or your server may block file writes."
@@ -2295,7 +2545,7 @@ msgstr ""
 "locale-code is mogelijk onjuist, of je server blokkeert "
 "bestandschrijfbevoegdheden."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:310
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Language Setup"
 msgstr "Taalinstelling"
 
@@ -2304,7 +2554,7 @@ msgstr "Taalinstelling"
 msgid "Language Switcher"
 msgstr "Taalschakelaar"
 
-#: ai/includes/Admin/SettingsHelp.php:151
+#: ai/includes/Admin/SettingsHelp.php:182
 msgid "Language switcher"
 msgstr "Taalomschakelaar"
 
@@ -2329,7 +2579,7 @@ msgstr ""
 msgid "Language:"
 msgstr "Taal:"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:234
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:268
 msgid ""
 "Languages currently known to the router (derived from installed WordPress "
 "locale packs plus the primary language). Install additional language packs "
@@ -2399,7 +2649,7 @@ msgstr ""
 "merknamen, afkortingen en termen die in elke vertaling woord voor woord "
 "behouden moeten blijven."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:108
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:109
 msgid "Leave blank to keep the existing key. Enter a new value to replace it."
 msgstr ""
 "Laat leeg om de bestaande sleutel te behouden. Voer een nieuwe waarde in om "
@@ -2428,6 +2678,10 @@ msgstr ""
 "naar de mu-plugin en geeft alleen og:locale + og:locale:alternate weer. Je "
 "kunt de mu-plugin deactiveren — LF's ingebouwde Social Share (SEO → Social "
 "Share-tab) en Open Graph dekken dezelfde functionaliteit."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+msgid "Legacy post-based (CPT)"
+msgstr "Legacy berichtgebaseerd (CPT)"
 
 #: ai/includes/Core/Config.php:61
 msgid "Legal / Compliance"
@@ -2525,7 +2779,7 @@ msgstr ""
 "canonieke tag als een SEO-plugin er ook een uitzendt. LF voegt geen eigen "
 "canonical toe — de taalroutering maakt elke URL al canoniek."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:498
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:663
 msgid ""
 "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. "
 "Useful for diagnosing 404s or routing conflicts. Copy these when filing a "
@@ -2535,8 +2789,8 @@ msgstr ""
 "Handig voor het diagnosticeren van 404-fouten of routeringsconflicten. "
 "Kopieer deze bij het indienen van een bugrapport."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:37
-#: ai/includes/Admin/SettingsPage.php:81
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
+#: ai/includes/Admin/SettingsPage.php:80
 msgid "Light"
 msgstr "Licht"
 
@@ -2548,7 +2802,7 @@ msgstr "Licht (standaard — snel en kosteneffectief)"
 msgid "Light (fast and cost-effective — Haiku / Flash)"
 msgstr "Licht (snel en kosteneffectief — Haiku / Flash)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:202
 msgid "Light model"
 msgstr "Lichtmodel"
 
@@ -2559,12 +2813,12 @@ msgstr ""
 "Licht: gebruikt voor meta-beschrijvingen en samenvattinggeneratie — snel, "
 "lage kosten."
 
-#: language-router/includes/rewrite/class-query-filter.php:95
+#: language-router/includes/rewrite/class-query-filter.php:99
 msgid "Limit results to pages in the given Lingua Forge language code."
 msgstr "Beperk resultaten tot pagina's in de gegeven Lingua Forge-taalcode."
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:632
+#: ai/includes/Admin/SettingsPage.php:630
 msgid "Limits"
 msgstr "Limieten"
 
@@ -2679,6 +2933,19 @@ msgstr ""
 "gedrag consistent te houden over talen. Meld je hier aan als je volledige "
 "Gutenberg / FSE-mogelijkheden nodig hebt."
 
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:218
+msgid ""
+"Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template "
+"blocks, plugin lookups) to the active language by injecting a _lf_lang meta "
+"constraint. Post types listed here are excluded from that constraint — their "
+"queries are always unfiltered."
+msgstr ""
+"Lingua Forge beperkt secundaire WP_Query-instanties (zijbalk-widgets, "
+"sjabloonblokken, plugin-zoekopdrachten) tot de actieve taal door een "
+"_lf_lang meta-constraint te injecteren. Berichttypen die hier worden vermeld,"
+" worden uitgesloten van die beperking — hun zoekopdrachten worden altijd "
+"niet-gefiltred."
+
 #: ai/includes/Admin/SettingsHelp.php:66
 msgid "Lingua Forge Settings"
 msgstr "Lingua Forge-instellingen"
@@ -2696,7 +2963,7 @@ msgstr ""
 msgid "Lingua Forge uses two model tiers per provider:"
 msgstr "Lingua Forge gebruikt twee modelniveaus per provider:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:80
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:82
 msgid "Lingua Forge version"
 msgstr "Lingua Forge-versie"
 
@@ -2704,7 +2971,7 @@ msgstr "Lingua Forge-versie"
 msgid "Lingua Forge — Quick Translate"
 msgstr "Lingua Forge — Snelle Vertaling"
 
-#: ai/includes/Admin/SettingsPage.php:619
+#: ai/includes/Admin/SettingsPage.php:618
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Instellingen"
 
@@ -2727,12 +2994,12 @@ msgid "link(s)"
 msgstr "link(en)"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:359
+#: ai/includes/Admin/SettingsPage.php:358
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Links"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:303
 msgid "Load available languages"
 msgstr "Beschikbare talen laden"
 
@@ -2744,7 +3011,7 @@ msgstr "Inhoud laden"
 msgid "Loaded from cache."
 msgstr "Geladen uit cache."
 
-#: ai/includes/Admin/SettingsPage.php:246
+#: ai/includes/Admin/SettingsPage.php:245
 msgid "Loading…"
 msgstr "Laden…"
 
@@ -2790,12 +3057,12 @@ msgstr ""
 "de linguaforge_required_capability filter."
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
-#: ai/includes/Admin/SettingsHelp.php:131
-#: ai/includes/Admin/SettingsPage.php:638
+#: ai/includes/Admin/SettingsHelp.php:162
+#: ai/includes/Admin/SettingsPage.php:636
 msgid "Maintenance"
 msgstr "Onderhoud"
 
-#: ai/includes/Admin/SettingsHelp.php:133
+#: ai/includes/Admin/SettingsHelp.php:164
 msgid "Maintenance Tab"
 msgstr "Onderhoud tabblad"
 
@@ -2810,6 +3077,10 @@ msgstr "Bondiger maken"
 #: ai/assets/block-action.js:67
 msgid "Make formal"
 msgstr "Formeler maken"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:103
+msgid "Manage your account, review usage, or top up credits:"
+msgstr "Beheer je account, bekijk gebruik of vul credits bij:"
 
 #: ai/assets/block-action.js:73
 msgid "Mark citations needed"
@@ -2894,17 +3165,20 @@ msgid "Meta Description"
 msgstr "Meta Beschrijving"
 
 #: ai/includes/Admin/MetaBox.php:397 ai/includes/Admin/MetaBox.php:523
-#: ai/includes/Admin/SettingsPage.php:354
+#: ai/includes/Admin/SettingsPage.php:353
 msgid "Meta description"
 msgstr "Meta-beschrijving"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:38
-#: ai/includes/Admin/SettingsPage.php:82
+#: ai/includes/Admin/SettingsPage.php:81
 msgid "Meta Description, Excerpt Generator"
 msgstr "Meta Beschrijving, Uittreksel Generator"
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:39
+msgid "Meta Description, Excerpt Generator, quick translate"
+msgstr "Meta Beschrijving, Uittreksel Generator, snelle vertaling"
+
 #: ai/includes/Admin/MetaBox.php:394 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:360
 msgid "Metric"
 msgstr "Metriek"
 
@@ -2912,7 +3186,7 @@ msgstr "Metriek"
 msgid "Minimum role"
 msgstr "Minimale rol"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:440
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:571
 msgid "Missing"
 msgstr "Ontbrekend"
 
@@ -2924,16 +3198,20 @@ msgstr "Ontbrekende patroonnaam of taal."
 msgid "Mode"
 msgstr "Modus"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:155
 msgid "Model"
 msgstr "Model"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:244
+msgid "Model ID"
+msgstr "Model ID"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:131
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:225
 msgid "Model tier"
 msgstr "Modelniveau"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:101
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:123
 #: ai/includes/Admin/SettingsHelp.php:92
 msgid "Models"
 msgstr "Modellen"
@@ -2942,7 +3220,7 @@ msgstr "Modellen"
 msgid "Models Tab (General)"
 msgstr "Modellen tabblad (Algemeen)"
 
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:364
 msgid "Modified"
 msgstr "Gewijzigd"
 
@@ -2971,13 +3249,17 @@ msgstr ""
 msgid "Multilingual SEO"
 msgstr "Meertalige SEO"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Multilingual SEO overview"
 msgstr "Overzicht meertalige SEO"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:315
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:338
 msgid "My Account"
 msgstr "Mijn account"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:245
+msgid "Name"
+msgstr "Naam"
 
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
@@ -3014,11 +3296,18 @@ msgstr ""
 msgid "Navigations"
 msgstr "Navigaties"
 
-#: ai/includes/Admin/SettingsPage.php:219
+#. translators: %s: technical error detail from the HTTP layer
+#: ai/includes/Providers/AbstractProvider.php:134
+#, php-format
+msgid "Network error — could not reach the provider: %s"
+msgstr "Netwerkfout — kon de provider niet bereiken: %s"
+
+#: ai/includes/Admin/SettingsPage.php:218
 msgid "Network error — could not reach the WordPress AJAX endpoint."
 msgstr "Netwerkfout — kon de WordPress AJAX-eindpunt niet bereiken."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:607
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:769
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:814
 msgid "Network error."
 msgstr "Netwerkfout."
 
@@ -3044,20 +3333,24 @@ msgstr ""
 "directive — die LF al heeft geconfigureerd. Google pikt het op bij de "
 "volgende crawl."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
+msgid "No active plugins detected."
+msgstr "Geen actieve plugins gedetecteerd."
+
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:224
 msgid "No AI provider configured."
 msgstr "Geen AI-provider geconfigureerd."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1324
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1409
 msgid "No AI provider configured. Add an API key in Settings → API Keys."
 msgstr ""
 "Geen AI-provider geconfigureerd. Voeg een API-sleutel toe in Instellingen → "
 "API-sleutels."
 
 #. translators: %s is a date-range label like "Today" or "Last 7 days".
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:123
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:143
 #, php-format
 msgid ""
 "No AI usage recorded in the selected window (%s). Pick a wider range above."
@@ -3065,7 +3358,7 @@ msgstr ""
 "Geen AI-gebruik geregistreerd in het geselecteerde venster (%s). Kies een "
 "breder bereik hierboven."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:115
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:135
 msgid ""
 "No AI usage recorded yet. Once an editor runs a translation, generates a "
 "meta description, or uses any other AI feature, totals will appear here."
@@ -3074,11 +3367,17 @@ msgstr ""
 "een meta-beschrijving genereert of een andere AI-functie gebruikt, "
 "verschijnen de totalen hier."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:217
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:219
 msgid "No API key configured for this provider."
 msgstr "Geen API-sleutel geconfigureerd voor deze provider."
 
-#: ai/includes/Admin/SettingsPage.php:330
+#: ai/includes/Providers/AbstractProvider.php:121
+msgid "No API key configured — enter your key in the AI Provider settings."
+msgstr ""
+"Geen API-sleutel geconfigureerd — voer je sleutel in bij de AI Provider-"
+"instellingen."
+
+#: ai/includes/Admin/SettingsPage.php:329
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -3095,6 +3394,14 @@ msgid ""
 msgstr ""
 "Geen conflicterende SEO-plugins gedetecteerd. Lingua Forge handelt alle SEO-"
 "uitvoer onafhankelijk af."
+
+#: ai/includes/Providers/OpenAI.php:91
+msgid ""
+"No credits remaining — top up your OpenAI account at platform.openai."
+"com/account/billing."
+msgstr ""
+"Geen credits meer — vul je OpenAI-account bij op platform.openai."
+"com/account/billing."
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:273
 msgid ""
@@ -3132,7 +3439,7 @@ msgstr ""
 "Nog geen woordenlijstitems. Voeg er hieronder een toe om terminologie in "
 "vertalingen af te dwingen."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1044
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1094
 msgid ""
 "No H1 found. Typically the post title is the H1 — verify your theme is "
 "outputting it."
@@ -3140,7 +3447,7 @@ msgstr ""
 "Geen H1 gevonden. Gewoonlijk is de posttitel de H1 — controleer of je thema "
 "deze uitzendt."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1075
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1146
 msgid "No images found in content."
 msgstr "Geen afbeeldingen gevonden in de inhoud."
 
@@ -3148,31 +3455,35 @@ msgstr "Geen afbeeldingen gevonden in de inhoud."
 msgid "No internal links found to update."
 msgstr "Geen interne links gevonden om bij te werken."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
+msgid "No key"
+msgstr "Geen sleutel"
+
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
 msgstr "Geen taal-specifieke sjabloononderdelen gevonden om te koppelen."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:956
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1001
 msgid "No LF meta description set — using excerpt/content."
 msgstr "Geen LF-meta-beschrijving ingesteld — gebruik excerpt/inhoud."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:511
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:676
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr ""
 "Geen LF herschrijfregels gevonden. Leeg de permalinks als dit onverwacht is."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1103
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1174
 msgid "No links found."
 msgstr "Geen links gevonden."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1102
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1173
 msgid ""
 "No links found. Internal links improve crawlability and user navigation."
 msgstr ""
 "Geen links gevonden. Interne links verbeteren crawlbaarheid en "
 "gebruikersnavigatie."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:960
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1005
 msgid ""
 "No meta description found. Generate one via the AI meta description feature."
 msgstr ""
@@ -3187,6 +3498,10 @@ msgstr "Geen navigatielinks die bijgewerkt hoeven te worden."
 msgid "No override files uploaded yet."
 msgstr "Nog geen overschrijvingsbestanden geüpload."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:129
+msgid "No PHP limit"
+msgstr "Geen PHP-limiet"
+
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:390
 msgid ""
 "No physical robots.txt file found. WordPress is generating it virtually and "
@@ -3195,24 +3510,24 @@ msgstr ""
 "Geen fysiek robots.txt-bestand gevonden. WordPress genereert het virtueel en "
 "LF's Sitemap-directive is automatisch inbegrepen."
 
-#: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:369
 msgid "No published posts found for the selected filters."
 msgstr "Geen gepubliceerde berichten gevonden voor de geselecteerde filters."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1444
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1529
 msgid "No response from AI provider. Check your API key and try again."
 msgstr ""
 "Geen reactie van AI-provider. Controleer je API-sleutel en probeer opnieuw."
 
-#: ai/includes/Admin/SettingsPage.php:218
+#: ai/includes/Admin/SettingsPage.php:217
 msgid "No response from provider — check the error log for details."
 msgstr "Geen reactie van de provider — controleer het foutlog voor details."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:374
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:412
 msgid "No secondary languages configured."
 msgstr "Geen secundaire talen geconfigureerd."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:314
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:348
 msgid ""
 "No secondary languages configured. Install a language pack above to enable "
 "template scaffolding."
@@ -3232,7 +3547,7 @@ msgstr "Nog geen bronpagina gekoppeld."
 msgid "No template part references needed updating."
 msgstr "Geen sjabloononderdeelreferenties die bijgewerkt hoeven te worden."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:272
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid ""
 "No third-party SEO plugins detected. Lingua Forge handles all multilingual "
 "SEO output."
@@ -3240,7 +3555,7 @@ msgstr ""
 "Geen detectie van SEO-plugins van derden. Lingua Forge behandelt alle "
 "meertalige SEO-uitvoer."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:921
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
 msgstr "Geen titel ingesteld."
 
@@ -3252,7 +3567,7 @@ msgstr ""
 "Geen vertaalde inhoud gevonden. De sitemap wordt gevuld zodra berichten "
 "vertaald zijn."
 
-#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/MetaBox.php:533 ai/includes/Admin/SettingsPage.php:370
 msgid "No translation found — analyzed the source language version."
 msgstr "Geen vertaling gevonden — geanalyseerd de bronversie."
 
@@ -3260,13 +3575,9 @@ msgstr "Geen vertaling gevonden — geanalyseerd de bronversie."
 msgid "No {lang} translation registered (TRID missing)"
 msgstr "Geen {lang} vertaling geregistreerd (TRID ontbreekt)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:333
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:371
 msgid "No — WooCommerce integration class not loaded"
 msgstr "Geen — WooCommerce-integratieklasse niet geladen"
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
-msgid "Not set — AI features are disabled."
-msgstr "Niet ingesteld — AI-functies zijn uitgeschakeld."
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:134
 msgid ""
@@ -3276,6 +3587,7 @@ msgstr ""
 "Nog niet gegenereerd. De sitemap wordt gebouwd bij het eerste bezoek aan de "
 "sitemap-URL en gecached voor 24 uur."
 
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:247
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:152
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:256
 msgid "Notes"
@@ -3297,7 +3609,7 @@ msgstr "Kennisgevingsinstellingen"
 msgid "Notify search engines"
 msgstr "Zoekmachines informeren"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:243
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
 msgid "Numeric permalink structure is not supported."
 msgstr "Numerieke permalinkstructuur wordt niet ondersteund."
 
@@ -3349,9 +3661,14 @@ msgstr ""
 "Open de native Web Share-sheet van de browser (iOS, Android, sommige "
 "desktops). Valt terug op kopiëren naar klembord als niet ondersteund."
 
-#: ai/includes/Admin/SettingsPage.php:66
+#: ai/includes/Admin/SettingsPage.php:65
 msgid "OpenAI (GPT)"
 msgstr "OpenAI (GPT)"
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:105
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:107
+msgid "OpenAI Platform"
+msgstr "OpenAI Platform"
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:260
 msgid ""
@@ -3380,6 +3697,16 @@ msgstr ""
 "Optioneel. Yandex leest al de Sitemap: directive uit robots.txt — dit "
 "triggert een onmiddellijke hercrawl in plaats van te wachten op de volgende "
 "geplande controle."
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+msgid "Order storage"
+msgstr "Order opslag"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:359
+msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
+msgstr ""
+"Bestellingen in wp_posts — zorg dat shop_order niet wordt meegenomen in LF-"
+"routing."
 
 #: ai/includes/Features/ContentGenerator.php:197
 msgid "Output"
@@ -3410,7 +3737,7 @@ msgstr "Output Product-schema op WooCommerce-productpagina's"
 msgid "Output Schema.org JSON-LD in wp_head"
 msgstr "Output Schema.org JSON-LD in wp_head"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:138
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:158
 msgid "Output tokens"
 msgstr "Uitvoertokens"
 
@@ -3419,11 +3746,11 @@ msgid "Output WebSite schema on the front page and blog index"
 msgstr "Output WebSite schema op de voorpagina en blogindex"
 
 #: ai/includes/Admin/MetaBox.php:393 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:360
+#: ai/includes/Admin/SettingsPage.php:359
 msgid "Overall SEO score"
 msgstr "Algemene SEO-score"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:165
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:212
 msgid "overridden"
 msgstr "overschreven"
 
@@ -3459,7 +3786,7 @@ msgstr "Overzicht"
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:383
 msgid "Page"
 msgstr "Pagina"
 
@@ -3479,11 +3806,11 @@ msgstr "Plak tekst, of selecteer eerst tekst in de editor…"
 msgid "Paste text, or select text on the page first…"
 msgstr "Plak tekst, of selecteer eerst tekst op de pagina…"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:74
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:75
 msgid "Paste your API key…"
 msgstr "Plak je API-sleutel…"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:107
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:109
 msgid "Path prefix (/de/)"
 msgstr "Padvoorvoegsel (/de/)"
 
@@ -3491,7 +3818,7 @@ msgstr "Padvoorvoegsel (/de/)"
 msgid "Path prefix — example.com/de/"
 msgstr "Padvoorvoegsel — example.com/de/"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:237
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:249
 msgid ""
 "Path routing requires a post-name based permalink structure. Change it in"
 msgstr ""
@@ -3520,9 +3847,13 @@ msgstr ""
 "blokeditor Pattern-inserter of gebruik het als startpunt voor een "
 "Herbruikbaar Blok."
 
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Pattern translation failed."
 msgstr "Patroonvertaling mislukt."
+
+#: ai/includes/Providers/AbstractProvider.php:83
+msgid "Payment required — your account has no remaining credits."
+msgstr "Betaling vereist — je account heeft geen resterende tegoeden."
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:246
 msgid "Per-Post Analysis"
@@ -3542,15 +3873,15 @@ msgstr ""
 msgid "Permalink rules flushed successfully."
 msgstr "Permalink-regels succesvol gewist."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
 msgid "Permalink Structure"
 msgstr "Permalinkstructuur"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:232
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr "Permalinkstructuur is compatibel met Lingua Forge padroutering."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:433
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:475
 msgid ""
 "Permanently deletes all templates, template parts, patterns, navigation "
 "menus, posts, pages, custom post types, products, and product variations "
@@ -3565,7 +3896,7 @@ msgstr ""
 "Deze actie kan niet ongedaan gemaakt worden."
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:455
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:497
 #, php-format
 msgid ""
 "Permanently uninstall %s? This will delete all translated content for this "
@@ -3595,22 +3926,23 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/OpenGraphPanel.php:199
 #: ai/includes/Admin/Settings/Panels/SchemaPanel.php:217
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:188
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:500
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:658
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:724
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1303
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:532
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:701
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1388
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:416
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:438
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:743
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:990
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1060
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:196
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:577
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:619
 msgid "Permission denied."
 msgstr "Toestemming geweigerd."
 
@@ -3619,19 +3951,19 @@ msgstr "Toestemming geweigerd."
 msgid "Persuasive"
 msgstr "Overtuigend"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:137
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:138
 msgid "PHP constant"
 msgstr "PHP-constante"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:119
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:125
 msgid "PHP max_execution_time"
 msgstr "PHP max_execution_time"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:138
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:145
 msgid "PHP memory_limit"
 msgstr "PHP memory_limit"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:88
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:90
 msgid "PHP version"
 msgstr "PHP-versie"
 
@@ -3664,7 +3996,7 @@ msgstr "Ping Yandex"
 msgid "Plain language"
 msgstr "Eenvoudige taal"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:248
 msgid "Plain permalinks are not supported."
 msgstr "Eenvoudige permalinks worden niet ondersteund."
 
@@ -3677,6 +4009,7 @@ msgid "Please enter some text first…"
 msgstr "Voer eerst wat tekst in…"
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "Plugin"
 msgstr "Plugin"
 
@@ -3684,11 +4017,11 @@ msgstr "Plugin"
 msgid "Post"
 msgstr "Bericht"
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:740
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:783
 msgid "Post not found or not published."
 msgstr "Bericht niet gevonden of niet gepubliceerd."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1318
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1403
 #: language-router/includes/rest/class-data-endpoints.php:125
 msgid "Post not found."
 msgstr "Bericht niet gevonden."
@@ -3698,15 +4031,23 @@ msgid "Post on X / Twitter"
 msgstr "Bericht op X / Twitter"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:570
 msgid "Post type"
 msgstr "Berichttype"
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+msgid ""
+"Post type slugs separated by commas or newlines. Changes take effect "
+"immediately on save — no permalink flush required."
+msgstr ""
+"Posttype-slugs gescheiden door komma's of nieuwe regels. Wijzigingen worden "
+"onmiddellijk doorgevoerd bij opslaan — geen permalink-flush nodig."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:50
 msgid "Post Types"
 msgstr "Berichttypen"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:557
 msgid ""
 "Posts without _lf_lang are invisible to every Lingua Forge language filter. "
 "This can happen when content is imported or created before the plugin was "
@@ -3731,11 +4072,14 @@ msgstr ""
 "Graph-module is ingesteld op \"Volledig\" of \"Auto\" modus zonder "
 "conflicterende SEO-plugin."
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:117
+msgid "Primary content language"
+msgstr "Primaire inhoudstaal"
+
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:143
 msgid "Primary Language"
 msgstr "Primaire taal"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:111
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:157
 msgid "Primary language"
 msgstr "Primaire taal"
@@ -3763,6 +4107,7 @@ msgid "Product"
 msgstr "Product"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:91
+#: ai/includes/Admin/SettingsHelp.php:145
 msgid "Product / eCommerce"
 msgstr "Product / eCommerce"
 
@@ -3775,26 +4120,46 @@ msgid "Product — WooCommerce product pages"
 msgstr "Product — WooCommerce productpagina's"
 
 #: ai/includes/Admin/MetaBox.php:390 ai/includes/Admin/MetaBox.php:456
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:365
 msgid "Profile"
 msgstr "Profiel"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:134
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:64
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:116
+#: ai/includes/Admin/SettingsHelp.php:141
+msgid ""
+"Profiles adapt thresholds and weights to the type of content being analysed. "
+"Profile is resolved automatically; you can override it per analysis run from "
+"the profile dropdown."
+msgstr ""
+"Profielen passen drempels en gewichten aan op basis van het type inhoud dat "
+"wordt geanalyseerd. Het profiel wordt automatisch bepaald; je kunt het per "
+"analyse uitvoeren overschrijven via de profielkeuzelijst."
+
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:154
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:65
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:161
 msgid "Provider"
 msgstr "Provider"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:263
-msgid ""
-"Provider returned no text. Check the WordPress error log for the detailed "
-"failure reason."
-msgstr ""
-"Provider gaf geen tekst terug. Controleer het WordPress-foutlog voor de "
-"gedetailleerde reden van de fout."
+#. translators: 1: HTTP status code, 2: error message from the provider API
+#: ai/includes/Providers/AbstractProvider.php:102
+#, php-format
+msgid "Provider error (HTTP %1$d): %2$s"
+msgstr "Fout van de provider (HTTP %1$d): %2$s"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:41
-#: ai/includes/Admin/SettingsPage.php:85
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:268
+msgid ""
+"Provider returned no response. Check the WordPress error log for details."
+msgstr ""
+"De provider gaf geen reactie. Controleer het WordPress-foutlog voor details."
+
+#: ai/includes/Providers/AbstractProvider.php:97
+msgid "Provider service temporarily unavailable — try again in a moment."
+msgstr ""
+"De service van de provider is tijdelijk niet beschikbaar — probeer het over "
+"een moment opnieuw."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
+#: ai/includes/Admin/SettingsPage.php:84
 msgid "Quality"
 msgstr "Kwaliteit"
 
@@ -3806,7 +4171,7 @@ msgstr "Kwaliteit (standaard — Sonnet / GPT-4o / Gemini Pro)"
 msgid "Quality (Sonnet / GPT-4o / Gemini Pro)"
 msgstr "Kwaliteit (Sonnet / GPT-4o / Gemini Pro)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:194
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "Quality model"
 msgstr "Kwaliteitsmodel"
 
@@ -3817,6 +4182,10 @@ msgid ""
 msgstr ""
 "Kwaliteit: gebruikt voor berichtvertaling en inhoudsgeneratie — hogere "
 "kwaliteit, hogere kosten."
+
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:215
+msgid "Query Filter Exclusions"
+msgstr "Uitsluitingen voor Query Filter"
 
 #: ai/assets/editor-translate.js:179 ai/assets/editor-translate.js:181
 #: ai/assets/editor-translate.js:213 ai/assets/editor-translate.js:220
@@ -3838,6 +4207,13 @@ msgstr ""
 "vertaald op aanvraag vanuit de werkbalk, editor of blokpopovers. Het "
 "gebruikt een aparte, lichtere configuratie dan de volledige pagina vertaling "
 "om reacties snel en kosteneffectief te houden."
+
+#: ai/includes/Providers/AbstractProvider.php:92
+msgid ""
+"Rate limited — too many requests sent to the provider; wait a moment and try "
+"again."
+msgstr ""
+"Beperkt — te veel verzoeken naar de provider; wacht even en probeer opnieuw."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:54
 msgid ""
@@ -3869,12 +4245,12 @@ msgstr "Opnieuw scannen…"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:269
 msgid "Re-translate"
 msgstr "Hertaal opnieuw"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:525
-#: ai/includes/Admin/SettingsPage.php:356
+#: ai/includes/Admin/SettingsPage.php:355
 msgid "Reading time"
 msgstr "Leestijd"
 
@@ -3892,26 +4268,26 @@ msgstr ""
 "Verdere verfijning — bijvoorbeeld \"korter maken\" of \"gebruik een formele "
 "toon\"…"
 
-#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1288
+#: ai/assets/admin-content-gen-modal.js:65 ai/assets/admin.js:1296
 msgid "Refine further:"
 msgstr "Verder verfijnen:"
 
 #. translators: %d is the refinement iteration number
-#: ai/assets/admin-content-gen-modal.js:326 ai/assets/admin.js:1446
+#: ai/assets/admin-content-gen-modal.js:336 ai/assets/admin.js:1454
 #: ai/assets/editor-translate.js:727 ai/assets/toolbar-translate.js:665
 msgid "Refinement"
 msgstr "Vernieuwing"
 
-#: ai/assets/admin-content-gen-modal.js:302 ai/assets/admin.js:1427
+#: ai/assets/admin-content-gen-modal.js:312 ai/assets/admin.js:1435
 msgid "Refinement failed — please try again."
 msgstr "Vernieuwing mislukt — probeer het opnieuw."
 
-#: ai/assets/admin-content-gen-modal.js:274 ai/assets/admin.js:1404
+#: ai/assets/admin-content-gen-modal.js:284 ai/assets/admin.js:1412
 #: ai/assets/editor-translate.js:656 ai/assets/toolbar-translate.js:574
 msgid "Refining…"
 msgstr "Aan het verfijnen…"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:221
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:255
 msgid ""
 "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs,"
 " and archive rewrites are all in sync. Necessary after changing the primary "
@@ -3921,38 +4297,43 @@ msgstr ""
 "en archiefherschrijvingen allemaal in sync zijn. Nodig na het wijzigen van "
 "de primaire taal of het toevoegen van nieuwe taalondersteuning."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:123
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:124
 msgid "Remove stored key"
 msgstr "Verwijder opgeslagen sleutel"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:472
-msgid ""
-"Repair assigns the source language to every affected post. Run after "
-"importing content or after initial plugin activation on an existing site."
-msgstr ""
-"Reparatie wijst de brontaal toe aan elk getroffen bericht. Voer uit na het "
-"importeren van inhoud of na de eerste activatie van de plugin op een "
-"bestaande site."
-
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:601
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:763
 msgid "Repair failed."
 msgstr "Reparatie mislukt."
 
-#. translators: %s: source language code shown in upper case, e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:464
+#. translators: %s: source language code in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:616
 #, php-format
-msgid "Repair — assign _lf_lang = %s to all affected posts"
-msgstr "Reparatie — wijs _lf_lang = %s toe aan alle getroffen berichten"
+msgid ""
+"Repair tags every routable post listed above with _lf_lang = %s. Posts in "
+"routing-excluded post types are not touched. Only run this after importing "
+"content or on initial activation — do not use as a bulk language-"
+"reassignment tool."
+msgstr ""
+"Repareer tags voor elke routable post die hierboven wordt vermeld met "
+"_lf_lang = %s. Posts in routing-uitgesloten posttypes worden niet aangepast. "
+"Voer dit alleen uit na het importeren van inhoud of bij eerste activatie — "
+"gebruik het niet als bulk-taaltoewijzingstool."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:579
+#. translators: %s: source language code shown in upper case, e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#, php-format
+msgid "Repair — assign _lf_lang = %s to all routable posts above"
+msgstr "Repareer — ken _lf_lang = %s toe aan alle routable posts hierboven"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
 msgid "Repairing…"
 msgstr "Repareren…"
 
-#: ai/includes/Admin/SettingsHelp.php:169
+#: ai/includes/Admin/SettingsHelp.php:200
 msgid "Report an issue on GitHub"
 msgstr "Meld een probleem op GitHub"
 
-#: ai/assets/admin-content-gen-modal.js:340 ai/assets/admin.js:1455
+#: ai/assets/admin-content-gen-modal.js:350 ai/assets/admin.js:1463
 msgid "Request failed — please try again."
 msgstr "Verzoek mislukt — probeer het opnieuw."
 
@@ -3969,11 +4350,11 @@ msgstr "Aanvraag mislukt. Controleer je verbinding."
 msgid "Request failed. Please try again."
 msgstr "Aanvraag mislukt. Probeer het opnieuw."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:136
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:156
 msgid "Requests"
 msgstr "Verzoeken"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:205
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:217
 msgid "requests / day"
 msgstr "verzoeken / dag"
 
@@ -3995,7 +4376,7 @@ msgstr "Vertaal opnieuw"
 msgid "Retranslating…"
 msgstr "Hervertalen…"
 
-#: ai/includes/Admin/SettingsPage.php:261
+#: ai/includes/Admin/SettingsPage.php:260
 msgid "Review carefully — links and slugs not updated."
 msgstr "Bekijk het zorgvuldig — links en slugs niet bijgewerkt."
 
@@ -4015,7 +4396,7 @@ msgstr "Herziening"
 msgid "Revision Type"
 msgstr "Herzieningstype"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:496
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:661
 msgid "Rewrite Rules"
 msgstr "Herschrijfregels"
 
@@ -4028,7 +4409,7 @@ msgid "robots.txt updated with Sitemap directive."
 msgstr "robots.txt bijgewerkt met Sitemap-richtlijn."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:38
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:634
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:632
 msgid "Router"
 msgstr "Router"
 
@@ -4071,7 +4452,7 @@ msgstr "Opslaan Hreflang-instellingen"
 msgid "Save Open Graph Settings"
 msgstr "Opslaan Open Graph-instellingen"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:214
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:248
 msgid "Save Router Settings"
 msgstr "Routerinstellingen opslaan"
 
@@ -4079,7 +4460,7 @@ msgstr "Routerinstellingen opslaan"
 msgid "Save Schema.org Settings"
 msgstr "Opslaan Schema.org-instellingen"
 
-#: ai/includes/Admin/SettingsPage.php:675
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Save Settings"
 msgstr "Instellingen opslaan"
 
@@ -4091,7 +4472,7 @@ msgstr "Opslaan Sitemap-instellingen"
 msgid "Save Social Share Settings"
 msgstr "Opslaan Sociale Deel-instellingen"
 
-#: ai/assets/admin-diff-modal.js:273
+#: ai/assets/admin-diff-modal.js:290
 msgid "Save the post to persist changes."
 msgstr "Sla het bericht op om wijzigingen te behouden."
 
@@ -4139,11 +4520,19 @@ msgstr "Schema.org-uitvoer"
 msgid "Schema.org settings saved."
 msgstr "Schema.org-instellingen opgeslagen."
 
-#: ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Score"
 msgstr "Score"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsHelp.php:135
+msgid "Score computation"
+msgstr "Scoreberekening"
+
+#: ai/includes/Admin/SettingsHelp.php:157
+msgid "Score history and badges"
+msgstr "Scoregeschiedenis en badges"
+
+#: ai/includes/Admin/SettingsPage.php:376
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -4177,14 +4566,14 @@ msgstr "Zoekresultaten"
 msgid "Security check failed — file path is not permitted."
 msgstr "Beveiligingscontrole mislukt — bestandslocatie is niet toegestaan."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:294
 msgid ""
 "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr ""
 "Zie Instellingen → SEO → Compatibiliteit voor de volledige tabel met gedrag "
 "per functie."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:353
 msgid ""
 "Select a language to manage its FSE templates, template parts, and "
 "navigation menus."
@@ -4214,7 +4603,7 @@ msgstr "Verstuur via WhatsApp"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:636
+#: ai/includes/Admin/SettingsPage.php:634
 msgid "SEO"
 msgstr "SEO"
 
@@ -4236,7 +4625,7 @@ msgstr ""
 "SEO-plugin(s) gedetecteerd: %s. LF geeft alleen og:locale en og:locale:"
 "alternate weer; de gedetecteerde plugin behandelt de volledige OG-set."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:281
 msgid "SEO Plugins"
 msgstr "SEO-plugins"
 
@@ -4244,11 +4633,19 @@ msgstr "SEO-plugins"
 msgid "SEO plugins and conflict avoidance:"
 msgstr "SEO-plugins en conflictoplossing:"
 
+#: ai/includes/Admin/SettingsHelp.php:133
+msgid "SEO Score System"
+msgstr "SEO Score Systeem"
+
+#: ai/includes/Admin/SettingsHelp.php:131
+msgid "SEO Scores"
+msgstr "SEO Scores"
+
 #: ai/includes/Admin/SettingsHelp.php:121
 msgid "SEO Tab"
 msgstr "SEO-tabblad"
 
-#: ai/includes/Admin/SettingsHelp.php:149
+#: ai/includes/Admin/SettingsHelp.php:180
 msgid "Server setup (subdomain)"
 msgstr "Serverinstelling (subdomein)"
 
@@ -4262,16 +4659,16 @@ msgstr ""
 "berichten kunnen dit overschrijven voor Vertaling en Inhoudsgeneratie via de "
 "Lingua Forge meta box."
 
-#: ai/includes/Admin/SettingsPage.php:414
+#: ai/includes/Admin/SettingsPage.php:413
 msgid "Settings"
 msgstr "Instellingen"
 
-#: ai/includes/Admin/SettingsPage.php:624
+#: ai/includes/Admin/SettingsPage.php:623
 msgid "Settings saved."
 msgstr "Instellingen opgeslagen."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:239
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:246
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:251
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
 msgid "Settings → Permalinks"
 msgstr "Instellingen → Permalinks"
 
@@ -4291,9 +4688,23 @@ msgstr "Delen op Mastodon"
 msgid "Share via email (mailto:)"
 msgstr "Delen via e-mail (mailto:)"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
+msgid "Shared / compatibility mode"
+msgstr "Gedeelde / compatibiliteitsmodus"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:335
 msgid "Shop"
 msgstr "Winkel"
+
+#: ai/includes/Admin/SettingsHelp.php:154
+msgid ""
+"Short content (3 paragraphs or fewer) is never penalised for missing "
+"subheadings, regardless of profile. A concise page does not benefit from "
+"forced heading structure."
+msgstr ""
+"Korte inhoud (3 paragrafen of minder) wordt nooit bestraft voor het "
+"ontbreken van subkoppen, ongeacht het profiel. Een beknopte pagina "
+"profiteert niet van een gedwongen kopstructuur."
 
 #: language-router/blocks/missing-translation-notice/index.js:73
 msgid "Show home link"
@@ -4315,7 +4726,7 @@ msgid "Single %s"
 msgstr "Enkelvoud %s"
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:936
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:981
 #, php-format
 msgid ""
 "Single-word title (%d chars) — adding a second word improves clarity and "
@@ -4386,27 +4797,27 @@ msgstr "Social Share"
 msgid "Social Share settings saved."
 msgstr "Social Share-instellingen opgeslagen."
 
-#: ai/includes/Admin/SettingsPage.php:265
+#: ai/includes/Admin/SettingsPage.php:264
 msgid "Some link fixes failed."
 msgstr "Sommige linkreparaties zijn mislukt."
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:275
 msgid "Some nav ref fixes failed."
 msgstr "Sommige navigatieverwijzingen reparaties zijn mislukt."
 
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/SettingsPage.php:268
 msgid "Some part fixes failed."
 msgstr "Sommige onderdeelreparaties zijn mislukt."
 
-#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:255
 msgid "Some parts could not be created."
 msgstr "Sommige onderdelen konden niet worden gemaakt."
 
-#: ai/includes/Admin/SettingsPage.php:254
+#: ai/includes/Admin/SettingsPage.php:253
 msgid "Some templates could not be created."
 msgstr "Sommige sjablonen konden niet worden gemaakt."
 
-#: ai/includes/Admin/SettingsPage.php:260
+#: ai/includes/Admin/SettingsPage.php:259
 msgid "Some translations failed."
 msgstr "Sommige vertalingen zijn mislukt."
 
@@ -4433,7 +4844,7 @@ msgstr "Bron taal"
 msgid "Source term"
 msgstr "Bronterm"
 
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Source title"
 msgstr "Bron titel"
 
@@ -4451,6 +4862,20 @@ msgstr ""
 "Vertaling T=0.2 (nauwkeurig), Snelle Vertaling T=0.4, Inhoudsgenerator T=0.6 "
 "(creatief). De andere presets passen een enkele vaste temperatuur toe op "
 "alle functies."
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:135
+msgid ""
+"Start typing in any field to see model suggestions, or use the reference "
+"table below. Light and mid-tier Quality models (Haiku, GPT-4o mini, Gemini "
+"Flash) are fully sufficient for translation and content generation — "
+"flagship \"max\" models add cost with minimal quality gain for structured "
+"text."
+msgstr ""
+"Begin met typen in elk veld om modelvoorstellen te zien, of gebruik de "
+"referentietabel hieronder. Licht- en middenklasse kwaliteitsmodellen (Haiku, "
+"GPT-4o mini, Gemini Flash) zijn volledig geschikt voor vertaling en "
+"inhoudsgeneratie — vlaggenschip \"max\"-modellen brengen kosten met zich mee "
+"met minimale kwaliteitswinst voor gestructureerde tekst."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:99
 msgid "Status"
@@ -4484,7 +4909,7 @@ msgstr ""
 msgid "Structured Outline"
 msgstr "Gestructureerde schets"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:108
 msgid "Subdomain (de.example.com)"
 msgstr "Subdomein (de.voorbeeld.com)"
 
@@ -4539,12 +4964,12 @@ msgstr ""
 msgid "Suppressed: %s."
 msgstr "Onderdrukt: %s."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:244
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:256
 msgid "Switch to a post-name based structure in"
 msgstr "Schakel over naar een structuur op basis van berichtnaam in"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
-#: ai/includes/Admin/SettingsPage.php:639
+#: ai/includes/Admin/SettingsPage.php:637
 msgid "System"
 msgstr "Systeem"
 
@@ -4653,11 +5078,11 @@ msgstr "Sjabloononderdelen"
 msgid "Templates"
 msgstr "Sjablonen"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:97
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:98
 msgid "Test connection"
 msgstr "Testverbinding"
 
-#: ai/includes/Admin/SettingsPage.php:215
+#: ai/includes/Admin/SettingsPage.php:214
 msgid "Testing…"
 msgstr "Bezig met testen…"
 
@@ -4686,7 +5111,7 @@ msgstr ""
 "bereikt. Deactiveren verwijdert niet de cache-invoer — opnieuw inschakelen "
 "herstelt ze."
 
-#: ai/assets/admin-diff-modal.js:237
+#: ai/assets/admin-diff-modal.js:254
 msgid "The editor did not accept the content — please try again."
 msgstr "De editor heeft de inhoud niet geaccepteerd — probeer het opnieuw."
 
@@ -4793,7 +5218,17 @@ msgstr ""
 "Deze voetnoten komen van de bronpagina en worden hier alleen ter referentie "
 "weergegeven. Voeg ze toe aan deze pagina met de blokbewerker."
 
-#: ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:266
+msgid ""
+"This catalog is updated with each Lingua Forge release. Testing a connection "
+"in the API Keys tab also fetches the live model list from the provider and "
+"refreshes the suggestions above."
+msgstr ""
+"Deze catalogus wordt bijgewerkt bij elke Lingua Forge-release. Het testen "
+"van een verbinding in het tabblad API-sleutels haalt ook de live model-lijst "
+"op van de provider en vernieuwt de suggesties hierboven."
+
+#: ai/includes/Admin/SettingsPage.php:377
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -4810,7 +5245,7 @@ msgstr ""
 "Dit is de bronpagina. Voetnoten worden direct in de blokbewerker bewerkt."
 
 #. translators: %s is the key source: either "environment variable" or "PHP constant".
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:131
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:132
 #, php-format
 msgid ""
 "This key is currently supplied by a server %s and cannot be removed here. "
@@ -4820,11 +5255,11 @@ msgstr ""
 "worden verwijderd. Voer een nieuwe sleutel hierboven in om deze te "
 "overschrijven met een databasewaarde."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:500
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:542
 msgid "This language is protected and cannot be uninstalled."
 msgstr "Deze taal is beschermd en kan niet worden verwijderd."
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:442
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid ""
 "This language matches the WordPress instance locale and cannot be "
 "uninstalled."
@@ -4832,7 +5267,11 @@ msgstr ""
 "Deze taal komt overeen met de locale van de WordPress-instantie en kan niet "
 "worden verwijderd."
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:180
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:246
+msgid "Tier"
+msgstr "Niveau"
+
+#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:226
 msgid ""
 "Tip: to reset a model to the built-in default, clear the field and save."
 msgstr ""
@@ -4840,13 +5279,25 @@ msgstr ""
 "en sla op."
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:522
-#: ai/includes/Admin/SettingsPage.php:353
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:352
+#: ai/includes/Admin/SettingsPage.php:362
 msgid "Title"
 msgstr "Titel"
 
+#: ai/includes/Admin/SettingsHelp.php:144
+msgid ""
+"Title 15 pts · Meta description 20 pts · Word count 15 pts · Headings 20 pts "
+"· Images 10 pts · Links 10 pts. Title SERP limit 60 chars; meta 120–210 "
+"chars; word count warns below 300, fails below 100; H2 required; internal "
+"links required."
+msgstr ""
+"Titel 15 pts · Meta beschrijving 20 pts · Woordtelling 15 pts · Koppen 20 "
+"pts · Afbeeldingen 10 pts · Links 10 pts. Titel SERP-limiet 60 tekens; meta "
+"120–210 tekens; woordtelling waarschuwt onder 300, faalt onder 100; H2 "
+"vereist; interne links vereist."
+
 #. translators: %1$d: character count, %2$d: SERP limit
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:926
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:971
 #, php-format
 #| msgid "Title is %1$d chars — may be truncated in SERPs (aim for %2$d–%3$d)."
 msgid "Title is %1$d chars — may be truncated in SERPs (aim for under %2$d)."
@@ -4855,12 +5306,26 @@ msgstr ""
 "%2$d)."
 
 #. translators: %d: character count
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:931
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:976
 #, php-format
-msgid "Title is only %d chars — aim for more than 10 characters."
-msgstr "Titel is slechts %d tekens — streef naar meer dan 10 tekens."
+#| msgid "Title is only %d chars — aim for more than 10 characters."
+msgid "Title is only %d chars — aim for at least 10 characters."
+msgstr "Titel is slechts %d tekens — streef naar minstens 10 tekens."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:162
+#: ai/includes/Admin/SettingsHelp.php:138
+msgid ""
+"Title scoring rules (all profiles): fail if empty; warn if fewer than 10 "
+"characters; warn if only one word; warn if longer than the profile's SERP "
+"limit (60 chars for Blog, 70 for Product/Landing); ok if at least 10 "
+"characters, at least 2 words, and within the SERP limit."
+msgstr ""
+"Regels voor score van titels (alle profielen): falen als leeg; waarschuwen "
+"bij minder dan 10 tekens; waarschuwen bij slechts één woord; waarschuwen als "
+"langer dan de SERP-limiet van het profiel (60 tekens voor Blog, 70 voor "
+"Product/Landing); ok als minimaal 10 tekens, minimaal 2 woorden, en binnen "
+"de SERP-limiet."
+
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:163
 msgid ""
 "To use a custom encryption secret (instead of the derived wp_salt value), "
 "add this to wp-config.php:"
@@ -4901,11 +5366,11 @@ msgstr "Toon:"
 msgid "Too many AI requests. Please retry in %d seconds."
 msgstr "Te veel AI-verzoeken. Probeer het opnieuw over %d seconden."
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:157
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:177
 msgid "Total"
 msgstr "Totaal"
 
-#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:139
+#: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:159
 msgid "Total tokens"
 msgstr "Totaal tokens"
 
@@ -4916,9 +5381,9 @@ msgstr "Totaal tokens"
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:257
-#: ai/includes/Admin/SettingsPage.php:271
-#: ai/includes/Admin/SettingsPage.php:277 ai/assets/block-action.js:249
+#: ai/includes/Admin/SettingsPage.php:256
+#: ai/includes/Admin/SettingsPage.php:270
+#: ai/includes/Admin/SettingsPage.php:276 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -4984,9 +5449,9 @@ msgstr ""
 "sjabloon-slugs worden niet automatisch bijgewerkt."
 
 #: ai/includes/Admin/PostListColumn.php:235
-#: ai/includes/Admin/SettingsPage.php:258
-#: ai/includes/Admin/SettingsPage.php:272
-#: ai/includes/Admin/SettingsPage.php:278 ai/assets/editor-translate.js:682
+#: ai/includes/Admin/SettingsPage.php:257
+#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:277 ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr "Bezig met vertalen…"
@@ -5048,7 +5513,7 @@ msgstr[1] "Vertaalgeheugen gewist. %d gecachte blokken zijn verwijderd."
 msgid "Translation Memory setting saved."
 msgstr "Vertaalgeheugeninstelling opgeslagen."
 
-#: ai/includes/Admin/SettingsHelp.php:135
+#: ai/includes/Admin/SettingsHelp.php:166
 msgid ""
 "Translation Memory: stores the full translated post per content hash. Clear "
 "it when you want to force a retranslation of all posts regardless of whether "
@@ -5058,12 +5523,11 @@ msgstr ""
 "Wis het wanneer je een hervertaling van alle berichten wilt forceren, "
 "ongeacht of de inhoud is gewijzigd."
 
-#: ai/includes/Admin/SettingsHelp.php:150
+#: ai/includes/Admin/SettingsHelp.php:181
 msgid "Translation workflow"
 msgstr "Vertaalworkflow"
 
-#: ai/includes/Admin/Settings/Tabs/GeneralTab.php:42
-#: ai/includes/Admin/SettingsPage.php:86
+#: ai/includes/Admin/SettingsPage.php:85
 msgid "Translation, Content Generator"
 msgstr "Vertaling, Inhoudsgenerator"
 
@@ -5073,7 +5537,7 @@ msgstr "H2 als H1 behandelen"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:363
 msgid "Type"
 msgstr "Type"
 
@@ -5082,9 +5546,15 @@ msgstr "Type"
 msgid "Uli Hake"
 msgstr "Uli Hake"
 
+#. translators: %d: HTTP status code
+#: ai/includes/Providers/AbstractProvider.php:108
+#, php-format
+msgid "Unexpected provider error (HTTP %d)."
+msgstr "Onverwachte fout van de provider (HTTP %d)."
+
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:427
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:465
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:469
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:507
 #, php-format
 msgid "Uninstall %s"
 msgstr "Verwijder %s"
@@ -5101,7 +5571,7 @@ msgstr "Deïnstallatie-instelling opgeslagen."
 msgid "unknown error"
 msgstr "onbekende fout"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:209
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:211
 msgid "Unknown provider."
 msgstr "Onbekende provider."
 
@@ -5126,8 +5596,7 @@ msgstr ""
 "bieden: og:locale (huidige taal) en og:locale:alternate (alle andere "
 "geconfigureerde talen)."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:123
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:204
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:216
 msgid "Unlimited"
 msgstr "Onbeperkt"
 
@@ -5164,7 +5633,7 @@ msgstr ""
 "URL kon niet worden gekoppeld aan een bericht — controleer of de linkdoel "
 "bestaat"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:103
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:105
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:176
 msgid "URL structure"
 msgstr "URL-structuur"
@@ -5228,7 +5697,7 @@ msgstr ""
 msgid "Using custom meta description."
 msgstr "Gebruik van aangepaste meta beschrijving."
 
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:955
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:1000
 msgid "Using LF AI meta description."
 msgstr "Gebruik van LF AI meta-beschrijving."
 
@@ -5236,8 +5705,12 @@ msgstr "Gebruik van LF AI meta-beschrijving."
 msgid "Value source"
 msgstr "Bron van waarde"
 
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:462
+msgid "Version"
+msgstr "Versie"
+
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "View"
 msgstr "Bekijken"
 
@@ -5265,7 +5738,7 @@ msgstr "Bezoek plugin-site"
 msgid "Warning:"
 msgstr "Waarschuwing:"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:364
 msgid "WcPageBridge active"
 msgstr "WcPageBridge actief"
 
@@ -5351,6 +5824,19 @@ msgstr ""
 "robots.txt en wordt de cache vernieuwd wanneer vertaalde inhoud wordt "
 "opgeslagen."
 
+#: ai/includes/Admin/SettingsHelp.php:153
+msgid ""
+"When the Blog profile requires an H2 and none is found, the analyser first "
+"checks for H3 subheadings before issuing a warning. Accordion and Details "
+"blocks default to H3 for their headers; those H3s are accepted as valid "
+"structure and produce an ok result, not a warning."
+msgstr ""
+"Wanneer het Blog-profiel een H2 vereist en er geen wordt gevonden, "
+"controleert de analyzer eerst op H3-subkoppen voordat een waarschuwing wordt "
+"gegeven. Accordion- en Details-blokken gebruiken standaard H3 voor hun "
+"koppen; die H3's worden geaccepteerd als geldige structuur en geven een ok-"
+"resultaat, geen waarschuwing."
+
 #: ai/includes/Admin/Settings/Panels/HreflangPanel.php:56
 msgid ""
 "When Yoast SEO, Rank Math, All in One SEO, or SEOPress is active, Lingua "
@@ -5386,16 +5872,16 @@ msgstr ""
 "locale tags weer (auto-modus). Verwijdering schakelt LF automatisch over "
 "naar volledige OG-modus."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:295
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:298
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:310
 msgid "WooCommerce is not active."
 msgstr "WooCommerce is niet actief."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:379
 msgid "WooCommerce page translations"
 msgstr "WooCommerce-paginatranslaties"
 
@@ -5421,16 +5907,16 @@ msgstr ""
 "zijn uitgesloten — hun inhoud wordt beheerd door WooCommerce en kan niet "
 "worden verbeterd via SEO-bewerkingen."
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:322
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "WooCommerce version"
 msgstr "WooCommerce-versie"
 
 #: ai/includes/Admin/MetaBox.php:398 ai/includes/Admin/MetaBox.php:524
-#: ai/includes/Admin/SettingsPage.php:355
+#: ai/includes/Admin/SettingsPage.php:354
 msgid "Word count"
 msgstr "Woorden tellen"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:84
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:86
 msgid "WordPress version"
 msgstr "WordPress-versie"
 
@@ -5438,7 +5924,11 @@ msgstr "WordPress-versie"
 msgid "WP core canonical active (hreflang disabled)"
 msgstr "WP-kern canonical actief (hreflang uitgeschakeld)"
 
-#: ai/includes/Admin/SettingsHelp.php:152
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:113
+msgid "WP instance language"
+msgstr "WP-instantie taal"
+
+#: ai/includes/Admin/SettingsHelp.php:183
 msgid "WP-CLI reference"
 msgstr "WP-CLI referentie"
 
@@ -5451,11 +5941,11 @@ msgstr "Schrijf AI-prompts en antwoorden naar schijf voor probleemoplossing"
 msgid "XML Sitemap"
 msgstr "XML Sitemap"
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:330
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:368
 msgid "Yes"
 msgstr "Ja"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:155
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:156
 msgid ""
 "You can also define keys as constants or environment variables (e.g. in wp-"
 "config.php). Those sources are used automatically as a fallback when no "
@@ -5465,7 +5955,7 @@ msgstr ""
 "(bijvoorbeeld in wp-config.php). Die bronnen worden automatisch gebruikt als "
 "fallback wanneer er geen database-sleutel is opgeslagen."
 
-#: ai/includes/Admin/SettingsPage.php:426
+#: ai/includes/Admin/SettingsPage.php:425
 msgid "You do not have permission to manage these settings."
 msgstr "Je hebt geen toestemming om deze instellingen te beheren."
 
@@ -5478,12 +5968,17 @@ msgid "{n} stale path(s)"
 msgstr "{n} verouderd(e) pad(pad(en))"
 
 #. translators: %d: minutes
-#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:890
+#: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:935
 #, php-format
 msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d min lezen"
 msgstr[1] "~%d min lezen"
+
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:192
+#| msgid "Not set — AI features are disabled."
+msgid "— AI features are disabled."
+msgstr "— AI-functies zijn uitgeschakeld."
 
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:232
 msgid "— Any source language —"
@@ -5502,7 +5997,7 @@ msgid "— Any —"
 msgstr "— Any —"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:367
 msgid "— Auto-detect —"
 msgstr "— Automatisch detecteren —"
 
@@ -5522,12 +6017,12 @@ msgstr "— Uitgeschakeld"
 msgid "— Not detected"
 msgstr "— Niet gedetecteerd"
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:275
-#: ai/includes/Admin/SettingsPage.php:250
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
+#: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr "— kies een taal —"
 
-#: ai/assets/admin.js:1141 ai/assets/admin.js:1305
+#: ai/assets/admin.js:1141 ai/assets/admin.js:1313
 #: ai/assets/block-action.js:334
 msgid "← Back"
 msgstr "← Terug"
@@ -5549,7 +6044,7 @@ msgstr "→ Alleen locale-tags — basis OG uitstellen tot plugin"
 msgid "↺ Re-translate"
 msgstr "↺ Hervertalen"
 
-#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1298
+#: ai/assets/admin-content-gen-modal.js:75 ai/assets/admin.js:1306
 #: ai/assets/editor-translate.js:335 ai/assets/editor-translate.js:665
 #: ai/assets/toolbar-translate.js:351 ai/assets/toolbar-translate.js:584
 msgid "↺ Refine"
@@ -5640,23 +6135,23 @@ msgstr "✓ Actief — volledige OG + Twitter Cards"
 msgid "✓ Active — locale tags only (og:locale, og:locale:alternate)"
 msgstr "✓ Actief — alleen locale-tags (og:locale, og:locale:alternate)"
 
-#: ai/includes/Admin/SettingsPage.php:255
+#: ai/includes/Admin/SettingsPage.php:254
 msgid "✓ All parts created."
 msgstr "✓ Alle onderdelen gemaakt."
 
-#: ai/includes/Admin/SettingsPage.php:253
+#: ai/includes/Admin/SettingsPage.php:252
 msgid "✓ All templates created."
 msgstr "✓ Alle sjablonen gemaakt."
 
-#: ai/includes/Admin/SettingsPage.php:259
+#: ai/includes/Admin/SettingsPage.php:258
 msgid "✓ All translated."
 msgstr "✓ Alles vertaald."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:82
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:83
 msgid "✓ Configured"
 msgstr "✓ Geconfigureerd"
 
-#: ai/includes/Admin/SettingsPage.php:216
+#: ai/includes/Admin/SettingsPage.php:215
 msgid "✓ Connection OK"
 msgstr "✓ Verbinding OK"
 
@@ -5686,7 +6181,7 @@ msgstr "✓ Hreflang actief"
 msgid "✓ In safe storage"
 msgstr "✓ In veilige opslag"
 
-#: ai/includes/Admin/SettingsPage.php:248
+#: ai/includes/Admin/SettingsPage.php:247
 msgid "✓ Language installed."
 msgstr "✓ Taal geïnstalleerd."
 
@@ -5706,19 +6201,19 @@ msgstr "✓ LF voert volledige OG + Twitter Cards uit"
 msgid "✓ LF outputs — plugin hreflang suppressed"
 msgstr "✓ LF-uitvoer — plugin hreflang onderdrukt"
 
-#: ai/includes/Admin/SettingsPage.php:264
+#: ai/includes/Admin/SettingsPage.php:263
 msgid "✓ Links fixed."
 msgstr "✓ Links gerepareerd."
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:274
 msgid "✓ Nav refs fixed."
 msgstr "✓ Navigatieverwijzingen gerepareerd."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:267
 msgid "✓ Parts fixed."
 msgstr "✓ Onderdelen gerepareerd."
 
-#: ai/includes/Admin/SettingsPage.php:279
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "✓ Pattern translated."
 msgstr "✓ Patroon vertaald."
 
@@ -5726,12 +6221,12 @@ msgstr "✓ Patroon vertaald."
 msgid "✓ Physical robots.txt found. LF's Sitemap directive is present."
 msgstr "✓ Fysiek robots.txt gevonden. LF's Sitemap-richtlijn is aanwezig."
 
-#: ai/assets/admin-content-gen-modal.js:331 ai/assets/admin.js:1450
+#: ai/assets/admin-content-gen-modal.js:341 ai/assets/admin.js:1458
 msgid "✓ Refined — review the updated draft above."
 msgstr "✓ Vernieuwd — bekijk de bijgewerkte versie hierboven."
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
 msgid "✓ Translation saved"
 msgstr "✓ Vertaling opgeslagen"
 
@@ -5753,15 +6248,15 @@ msgstr ""
 msgid "✗ Disabled"
 msgstr "✗ Uitgeschakeld"
 
-#: ai/includes/Admin/SettingsPage.php:249
+#: ai/includes/Admin/SettingsPage.php:248
 msgid "✗ Error:"
 msgstr "✗ Fout:"
 
-#: ai/includes/Admin/SettingsPage.php:217
+#: ai/includes/Admin/SettingsPage.php:216
 msgid "✗ Failed:"
 msgstr "✗ Mislukt:"
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:87
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:88
 msgid "✗ Not configured"
 msgstr "✗ Niet geconfigureerd"
 

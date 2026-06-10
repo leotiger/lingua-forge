@@ -2,6 +2,16 @@
 
 ---
 
+## [2.2.12] — 2026-06-10
+
+### Improved
+- **Precise provider error messages on test connection** — the "Test connection" button now surfaces the specific failure reason instead of the generic "check the error log" message. Failures are mapped to actionable labels: invalid API key (HTTP 401), no credits remaining (HTTP 402 or OpenAI `insufficient_quota`), access forbidden (403), rate limited (429), service unavailable (5xx), or a network-layer error with the underlying detail. (`AbstractProvider.php`, `OpenAI.php`, `ApiKeysTab.php`)
+- **Provider console links** — both the AI Provider tab and the AI Usage tab now include direct links (open in new tab) to Anthropic Console, OpenAI Platform, and Google AI Studio for quick access to account, billing, and usage dashboards. (`GeneralTab.php`, `UsageStatsPanel.php`)
+- **Batch analysis results persisted across page loads** — each language card in Settings → SEO → Batch Analysis now shows the last run's avg score, analyzed/total count, and ok/warn/fail tally on every page load, not only immediately after running a fresh batch. (`SeoAnalysisPanel.php`)
+- **Updated plugin language translations** — `.pot` file and all bundled `.po`/`.mo` translation files updated to cover strings introduced in 2.2.11 and 2.2.12.
+
+---
+
 ## [2.2.11] — 2026-06-10
 
 ### Added

@@ -259,10 +259,13 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
         ]);
 
         if ($reply === null || $reply === '') {
+            $error_detail = $provider_instance->get_last_error();
             wp_send_json([
                 'success'  => false,
                 'provider' => $provider_slug,
-                'message'  => __('Provider returned no text. Check the WordPress error log for the detailed failure reason.', 'lingua-forge'),
+                'message'  => $error_detail !== ''
+                    ? $error_detail
+                    : __('Provider returned no response. Check the WordPress error log for details.', 'lingua-forge'),
             ]);
         }
 
