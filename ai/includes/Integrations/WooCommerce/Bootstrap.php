@@ -51,7 +51,11 @@ class Bootstrap {
 		CatalogQuery::init();
 		TermNameFilter::init();
 		TermNameAdmin::init();
+		AttributeLabelAdmin::init();
+		TermNameTranslator::init();
+		LocalAttributeTranslator::init();
 		RestWriteGuard::init();
+		AdminSaveGuard::init();
 		SeoSupport::init();
 		PageTagRepair::init();
 		WcPageBridge::init();

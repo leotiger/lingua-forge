@@ -249,7 +249,36 @@ class Context {
 			}
 		}
 
-		// 3. Cookie
+		// 3. WooCommerce add-to-cart AJAX — detect language from the product being added.
+		//
+		// WC product pages use language-neutral URLs (/product/slug/) rather than
+		// language-prefixed ones (/es/producto/slug/).  Visiting such a page causes
+		// detect_lang_safe() to see a non-lang URL prefix, reset the lf_lang cookie
+		// to the source language, and return the source language — even though the
+		// product itself is a translation (e.g. _lf_lang = 'es').  The locale is
+		// then corrected for that page request via maybe_switch_locale_for_post(),
+		// but the lf_lang cookie remains set to the source language.
+		//
+		// When the visitor subsequently clicks "Add to cart", WooCommerce fires a
+		// POST to /?wc-ajax=add_to_cart — a URL with no language prefix and no
+		// meaningful cookie.  Without this step, LF_LANG would default to the source
+		// language, causing WC to generate the notice text and cart URL in the
+		// source language instead of the product's translation language.
+		//
+		// This step reads _lf_lang from the product being added (one postmeta query,
+		// cached by WP_Object_Cache on first access) and returns that language so
+		// LF_LANG, the locale, and all WC page-ID translations are correct for the
+		// duration of the AJAX request.
+		if ( ! empty( $_REQUEST['wc-ajax'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- language detection; nonces not applicable to URL-based routing
+			&& 'add_to_cart' === sanitize_key( wp_unslash( $_REQUEST['wc-ajax'] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Recommended -- sanitized immediately via sanitize_key(); language detection; nonce not applicable
+			&& ! empty( $_POST['product_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WC verifies its own nonce before processing add_to_cart; we read product_id only for language detection
+			$wc_product_lang = sanitize_key( (string) get_post_meta( absint( $_POST['product_id'] ), '_lf_lang', true ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified by WC
+			if ( $wc_product_lang !== '' && in_array( $wc_product_lang, $langs, true ) ) {
+				return $wc_product_lang;
+			}
+		}
+
+		// 4. Cookie
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
 		if ( ! empty( $_COOKIE['lf_lang'] ) ) {
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is a language code validated immediately via is_valid_lang().
@@ -260,7 +289,7 @@ class Context {
 			if ( in_array( $cookie_lang, $langs, true ) ) return $cookie_lang;
 		}
 
-		// 4. Browser Accept-Language header (opt-in).
+		// 5. Browser Accept-Language header (opt-in).
 		// Only reachable when URL has no language prefix, no ?lang= param, and
 		// no lf_lang cookie — i.e. the genuine first visit of a new visitor.
 		// The cookie written at steps 1/2 above ensures this step is skipped on

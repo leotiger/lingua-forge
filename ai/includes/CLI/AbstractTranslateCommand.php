@@ -302,8 +302,16 @@ abstract class AbstractTranslateCommand {
         $target_id = (int) $translations[ $target_lang ];
 
         $update_args = [
-            'ID'           => $target_id,
-            'post_content' => (string) ( $result['output'] ?? '' ),
+            'ID'            => $target_id,
+            'post_content'  => (string) ( $result['output'] ?? '' ),
+            // Reset page_template to 'default' to prevent an invalid_page_template
+            // WP_Error on WP 6.7+ when updating a post type that supports 'page-attributes'
+            // (e.g. WooCommerce 'product') that already has an FSE slug such as
+            // 'single-product-es' stored in _wp_page_template.  WP 6.7+ includes that meta
+            // value in WP_Post::to_array(), and FSE slugs are not in get_page_templates().
+            // assign_template_if_needed() is called explicitly below to restore the correct
+            // language-specific template after the save (hooks are bypassed in this path).
+            'page_template' => 'default',
         ];
 
         if ( ! empty( $result['translated_title'] ) ) {

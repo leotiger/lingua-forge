@@ -145,6 +145,18 @@ class MetaBoxes {
 		// silently excluded so products don't see page-ca, etc.
 		if ( $post->post_type === 'page' ) {
 			$bases = [ 'page', 'singular' ];
+			// Include front-page-{lang} templates only when this page is the
+			// static front page or a translation of it (same trid group).
+			// For all other pages, front-page templates are irrelevant.
+			$front_id = (int) get_option( 'page_on_front' );
+			if ( $front_id > 0 ) {
+				$post_trid  = $this->router->trid_group->get_trid( $post->ID );
+				$front_trid = $this->router->trid_group->get_trid( $front_id );
+				if ( $post->ID === $front_id ||
+					( null !== $post_trid && $post_trid === $front_trid ) ) {
+					$bases[] = 'front-page';
+				}
+			}
 		} elseif ( $post->post_type === 'post' ) {
 			$bases = [ 'single', 'singular' ];
 		} else {

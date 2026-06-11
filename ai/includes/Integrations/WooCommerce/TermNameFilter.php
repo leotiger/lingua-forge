@@ -80,6 +80,13 @@ class TermNameFilter {
 		// individual term is fetched, giving us the correct hook point for the
 		// Store API JSON path (block themes, all store visitors).
 		add_filter( 'get_term', [ self::class, 'translate_single_term_name' ], 10, 2 );
+
+		// Translate global attribute labels (e.g. "Color" → "Farbe").
+		// wc_attribute_label() wraps its return with this filter; $name is the
+		// full taxonomy slug (e.g. 'pa_color') for global attributes.
+		// Translations are stored by AttributeLabelAdmin under
+		// linguaforge_attr_labels_{$taxonomy} in wp_options.
+		add_filter( 'woocommerce_attribute_label', [ self::class, 'translate_attribute_label' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce hook
 	}
 
 	// =========================================================================
@@ -377,6 +384,58 @@ class TermNameFilter {
 		$translated = (string) get_term_meta( $term->term_id, self::META_PREFIX . $lang, true );
 
 		return '' !== $translated ? $translated : $name;
+	}
+
+	// =========================================================================
+	// Attribute label filter
+	// =========================================================================
+
+	/**
+	 * Return the translated attribute label for the current language.
+	 *
+	 * Hooked on `woocommerce_attribute_label` (priority 10).  Only acts on
+	 * global pa_* attribute taxonomies — custom per-product attributes are left
+	 * unchanged.  Falls back to the original $label when no translation is stored.
+	 *
+	 * Translations are stored by AttributeLabelAdmin in wp_options under the key
+	 * `linguaforge_attr_labels_{$name}` (e.g. `linguaforge_attr_labels_pa_color`).
+	 *
+	 * @param string $label The resolved attribute label (from WooCommerce).
+	 * @param string $name  The attribute name passed to wc_attribute_label().
+	 * @return string
+	 */
+	public static function translate_attribute_label( string $label, string $name ): string {
+
+		// Only translate global pa_* attribute taxonomies.
+		if ( ! str_starts_with( $name, 'pa_' ) ) {
+			return $label;
+		}
+
+		$router      = Router::get_instance();
+		$source_lang = $router->source_language();
+
+		// Prefer _lf_lang from the queried product post — WC product pages at
+		// /product/{slug}/ have no URL prefix, so detect_lang_safe() returns the
+		// source language for all WC product pages.  Same pattern as
+		// translate_single_term_name() and translate_term_objects().
+		$lang       = '';
+		$queried_obj = isset( $GLOBALS['wp_query'] ) ? $GLOBALS['wp_query']->queried_object : null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- read-only access
+		if ( $queried_obj instanceof \WP_Post ) {
+			$lang = (string) get_post_meta( $queried_obj->ID, '_lf_lang', true );
+		}
+		if ( '' === $lang ) {
+			$lang = $router->detect_lang_safe();
+		}
+
+		if ( '' === $lang || $lang === $source_lang ) {
+			return $label;
+		}
+
+		$translations = (array) get_option( AttributeLabelAdmin::OPTION_PREFIX . $name, [] );
+
+		return isset( $translations[ $lang ] ) && '' !== $translations[ $lang ]
+			? (string) $translations[ $lang ]
+			: $label;
 	}
 
 	// =========================================================================

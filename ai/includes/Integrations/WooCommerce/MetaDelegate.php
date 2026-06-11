@@ -58,6 +58,7 @@ class MetaDelegate {
 		'_sale_price_dates_to',
 		// Identity
 		'_sku',
+		'_global_unique_id', // GTIN / EAN / UPC — introduced in WC 9.2
 		// Stock
 		'_stock',
 		'_stock_qty',

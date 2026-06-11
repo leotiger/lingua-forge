@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 2.2.11\n"
+"Project-Id-Version: Lingua Forge 2.2.14\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-10T13:14:44+00:00\n"
+"POT-Creation-Date: 2026-06-11T14:07:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -566,53 +566,55 @@ msgid "Translate missing"
 msgstr ""
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:130
+#: ai/includes/Admin/PostListColumn.php:139
 msgid "From"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:140
+#: ai/includes/Admin/PostListColumn.php:149
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
 msgid "Retranslate"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:191
+#: ai/includes/Admin/PostListColumn.php:200
 msgid "Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to update."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:235
+#: ai/includes/Admin/PostListColumn.php:244
 #: ai/includes/Admin/SettingsPage.php:257
 #: ai/includes/Admin/SettingsPage.php:271
 #: ai/includes/Admin/SettingsPage.php:277
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:325
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:338
 #: ai/assets/editor-translate.js:682
 #: ai/assets/toolbar-translate.js:604
 msgid "Translating…"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:236
+#: ai/includes/Admin/PostListColumn.php:245
 msgid "Retranslating…"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:237
+#: ai/includes/Admin/PostListColumn.php:246
 msgid "✓ Done"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:238
+#: ai/includes/Admin/PostListColumn.php:247
 msgid "Error"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:280
+#: ai/includes/Admin/PostListColumn.php:289
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr ""
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:319
+#: ai/includes/Admin/PostListColumn.php:328
 #, php-format
 msgid "Creating translations for post type \"%s\" requires an active integration. Please ensure the required integration is installed and active."
 msgstr ""
 
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:448
+#: ai/includes/Admin/PostListColumn.php:469
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr ""
@@ -3161,7 +3163,7 @@ msgid "Lingua Forge scopes secondary WP_Query instances (sidebar widgets, templa
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:222
-msgid "Contact Form 7 (wpcf7_contact_form) is excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated."
+msgid "Contact Form 7 (wpcf7_contact_form), Flamingo contacts and inbound messages (flamingo_contact, flamingo_inbound), and WordPress language-pack sync storage (wp_sync_storage) are excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated."
 msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
@@ -3985,20 +3987,98 @@ msgstr ""
 msgid "Also generate meta description"
 msgstr ""
 
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:108
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:145
+msgid "Translated Labels"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:121
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:154
+msgid "Attribute label displayed in this language. Leave empty to use the default label."
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:239
+msgid "Translate all labels (AI)"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:265
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:265
+msgid "Insufficient permissions."
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:326
+msgid "All labels already translated."
+msgstr ""
+
+#. translators: %d: number of attribute labels translated
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:328
+#, php-format
+msgid "%d label(s) translated."
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:329
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:346
+msgid "Translation failed. Check the browser console."
+msgstr ""
+
 #. translators: 1: translated product ID, 2: language code, 3: source product hint e.g. " (source product ID: 42)", 4: translated product ID for the translations REST endpoint.
 #: ai/includes/Integrations/WooCommerce/RestWriteGuard.php:90
 #, php-format
 msgid "Cannot write to product %1$d: it is a translated version (language: %2$s)%3$s. Operational data (price, stock, SKU, dimensions) must be updated on the source product. Resolve the source product ID via: GET /wp-json/lingua-forge/v1/post/%4$d/translations"
 msgstr ""
 
-#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:109
-#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:150
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:121
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:163
 msgid "Translated Names"
 msgstr ""
 
-#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:123
-#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:161
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:135
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:175
 msgid "Name displayed in this language. Leave empty to use the source name."
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:226
+msgid "Translate all tags (AI)"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:230
+msgid "Translate all categories (AI)"
+msgstr ""
+
+#. translators: %s: WooCommerce attribute label, e.g. "Color"
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:238
+#, php-format
+msgid "Translate all %s terms (AI)"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:242
+msgid "Translate all terms (AI)"
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:270
+msgid "Invalid taxonomy."
+msgstr ""
+
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:339
+msgid "No terms found."
+msgstr ""
+
+#. translators: %d: number of term names translated
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:341
+#, php-format
+msgid "%d term(s) translated."
+msgstr ""
+
+#. translators: %d: number of terms skipped because already translated
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:343
+#, php-format
+msgid "%d already translated — <a href=\"#\" class=\"lf-force-translate\">force retranslate</a>"
+msgstr ""
+
+#. translators: 1: number translated, 2: number skipped
+#: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:345
+#, php-format
+msgid "%1$d translated, %2$d skipped."
 msgstr ""
 
 #: ai/includes/Providers/AbstractProvider.php:81
@@ -4082,32 +4162,32 @@ msgid "Apply to all language versions"
 msgstr ""
 
 #. translators: %d: number of languages without a translation post
-#: language-router/includes/admin/class-meta-boxes.php:282
+#: language-router/includes/admin/class-meta-boxes.php:294
 #, php-format
 msgid "%d language not yet linked"
 msgid_plural "%d languages not yet linked"
 msgstr[0] ""
 msgstr[1] ""
 
-#: language-router/includes/admin/class-meta-boxes.php:347
+#: language-router/includes/admin/class-meta-boxes.php:359
 msgid "This is the source page. Footnotes are edited directly in the block editor."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:355
+#: language-router/includes/admin/class-meta-boxes.php:367
 msgid "No source page linked yet."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:362
-#: language-router/includes/admin/class-meta-boxes.php:369
+#: language-router/includes/admin/class-meta-boxes.php:374
+#: language-router/includes/admin/class-meta-boxes.php:381
 msgid "The source page has no footnotes."
 msgstr ""
 
-#: language-router/includes/admin/class-meta-boxes.php:374
+#: language-router/includes/admin/class-meta-boxes.php:386
 msgid "These footnotes come from the source page and are shown here for reference only. Add them to this page using the block editor."
 msgstr ""
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:314
+#: language-router/includes/class-language-router.php:319
 #, php-format
 msgid "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;%2$s&#8221; theme are preserved in the database but are currently inactive. They will become active again if you reactivate that theme. To carry your translations to the new theme, regenerate them via <strong>Settings → Lingua Forge → Router → FSE scaffold</strong>."
 msgstr ""

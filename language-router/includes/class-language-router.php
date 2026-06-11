@@ -21,7 +21,8 @@ defined( 'ABSPATH' ) || exit;
  *   I18n\Overrides   – loads .mo overrides from uploads/lingua-forge/i18n-overrides/
  *   Rewrite\Manager  – rewrite rules, query vars, lang_permalink filter
  *   Rewrite\QueryFilter – parse_query, pre_get_posts, query helpers
- *   Routing\Redirector  – redirect handlers, fix_site_logo_link, menu translation
+ *   Routing\Redirector      – redirect handlers, fix_site_logo_link, menu translation
+ *   Routing\FrontPageQuery  – front-page block template language substitution
  *   Seo\Hreflang     – hreflang output, canonical removal, SEO plugin compat
  *   Seo\SeoManager   – Open Graph / Twitter Card output, og:locale, og:locale:alternate
  *   Seo\SocialShare  – Social Icons block share: URL rewriting + JS actions
@@ -44,6 +45,7 @@ use LinguaForge\Router\I18n\Overrides      as I18nOverrides;
 use LinguaForge\Router\Rewrite\Manager     as RewriteManager;
 use LinguaForge\Router\Rewrite\QueryFilter as RewriteQueryFilter;
 use LinguaForge\Router\Routing\Redirector;
+use LinguaForge\Router\Routing\FrontPageQuery;
 use LinguaForge\Router\Seo\Hreflang;
 use LinguaForge\Router\Seo\SeoManager;
 use LinguaForge\Router\Seo\SchemaManager;
@@ -101,7 +103,8 @@ class Router {
 		$this->schema_manager   = new SchemaManager( $this );
 		$this->sitemap_manager  = new SitemapManager( $this );
 		$this->search_index  = new SearchIndex();
-		$this->search_query  = new SearchQuery();
+		$this->search_query      = new SearchQuery();
+		$this->front_page_query  = new FrontPageQuery();
 		$this->trid_group    = new TridGroup( $this );
 		$this->sync          = new TranslationSync( $this );
 		$this->migrator      = new Migrator();
@@ -148,6 +151,7 @@ class Router {
 	public SitemapManager   $sitemap_manager;
 	public SearchIndex      $search_index;
 	public SearchQuery      $search_query;
+	public FrontPageQuery   $front_page_query;
 	public TridGroup        $trid_group;
 	public TranslationSync  $sync;
 	public Migrator         $migrator;
@@ -214,8 +218,9 @@ class Router {
 		$this->schema_manager->register_hooks();
 		$this->sitemap_manager->register_hooks();
 
-		// Search
+		// Search + front-page template override
 		$this->search_query->register_hooks();
+		$this->front_page_query->register_hooks();
 
 		// Save handler + cache clear
 		$this->sync->register_hooks();

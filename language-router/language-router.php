@@ -28,6 +28,7 @@ require_once __DIR__ . '/includes/translation/class-sync.php';
 require_once __DIR__ . '/includes/rewrite/class-manager.php';
 require_once __DIR__ . '/includes/rewrite/class-query-filter.php';
 require_once __DIR__ . '/includes/routing/class-redirector.php';
+require_once __DIR__ . '/includes/routing/class-front-page-query.php';
 require_once __DIR__ . '/includes/seo/class-hreflang.php';
 require_once __DIR__ . '/includes/seo/class-seo-manager.php';
 require_once __DIR__ . '/includes/seo/class-social-share.php';

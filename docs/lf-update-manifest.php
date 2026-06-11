@@ -35,20 +35,23 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.12';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.12/lingua-forge-2.2.12.zip';
-	$last_updated = '2026-06-10';
+	$version      = '2.2.14';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.14/lingua-forge-2.2.14.zip';
+	$last_updated = '2026-06-11';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.12 — 2026-06-10</h4>' .
+		'<h4>2.2.14 &#8212; 2026-06-11</h4>' .
 		'<ul>' .
-			'<li><strong>Improved:</strong> Test connection now shows a specific failure reason — invalid API key, no credits remaining, rate limited, access forbidden, or network error — instead of the generic &#8220;check the error log&#8221; message.</li>' .
-			'<li><strong>Improved:</strong> AI Provider and AI Usage tabs now include direct links to Anthropic Console, OpenAI Platform, and Google AI Studio for quick access to account and billing dashboards.</li>' .
-			'<li><strong>Improved:</strong> Batch Analysis language cards now show the last run&#8217;s avg score and ok/warn/fail counts on every page load, not only immediately after a run.</li>' .
-			'<li><strong>Updated:</strong> Plugin language translations updated to cover new strings from 2.2.11 and 2.2.12.</li>' .
+			'<li><strong>Added:</strong> WooCommerce local attribute translation &#8212; Component A translates <code>_product_attributes</code> (name + values) via a batched AI call; Component B rewrites <code>attribute_{key}</code> meta on translated variation children so WooCommerce variation matching works correctly. (<code>LocalAttributeTranslator.php</code>)</li>' .
+			'<li><strong>Added:</strong> WooCommerce attribute label translations &#8212; per-language label fields on the Product Attributes edit/add forms; applied on the frontend via the <code>woocommerce_attribute_label</code> filter. (<code>AttributeLabelAdmin.php</code>)</li>' .
+			'<li><strong>Added:</strong> Batch AI translate for attribute labels and WC taxonomy term names &#8212; one-click buttons on the Product Attributes page and term admin screens; skip-existing by default, force-retranslate link available.</li>' .
+			'<li><strong>Added:</strong> Front-page language routing &#8212; <code>FrontPageQuery</code> handles <code>/{lang}/front-page/</code> URLs and auto-assigns <code>front-page-{lang}</code> FSE templates.</li>' .
+			'<li><strong>Fixed:</strong> WC SKU duplicate error incorrectly raised on translated product saves &#8212; suppressed for posts with <code>_lf_source</code> meta.</li>' .
+			'<li><strong>Fixed:</strong> <code>invalid_page_template</code> on WC product retranslation; <code>linguaforge_translation_complete</code> not firing from PostListColumn admin buttons; add-to-cart AJAX notice served in wrong language.</li>' .
+			'<li><strong>Improved:</strong> TermNameAdmin batch reports skipped count with force-retranslate link; TermNameTranslator uses scalable token budget to prevent JSON truncation on large taxonomies.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

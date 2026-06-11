@@ -103,7 +103,17 @@ class TranslationTrigger {
 		array  $result
 	): int|\WP_Error {
 
-		$post_data = [ 'ID' => $existing_id ];
+		$post_data = [
+			'ID'            => $existing_id,
+			// Reset page_template to 'default' to prevent an invalid_page_template
+			// WP_Error on WP 6.7+ when updating a post type that supports 'page-attributes'
+			// (e.g. WooCommerce 'product') that already has an FSE slug such as
+			// 'single-product-es' stored in _wp_page_template.  WP 6.7+ includes that meta
+			// value in WP_Post::to_array(), and FSE slugs are not in get_page_templates().
+			// handle_save_post → assign_template_if_needed() re-assigns the correct template
+			// on wp_after_insert_post once the save has completed successfully.
+			'page_template' => 'default',
+		];
 
 		if ( ! empty( $result['output'] ) ) {
 			$post_data['post_content'] = (string) $result['output'];

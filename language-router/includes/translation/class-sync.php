@@ -63,10 +63,6 @@ class Sync {
 		return (int) $trans < (int) $source;
 	}
 
-	// =========================================================
-	// TEMPLATE HANDLING
-	// =========================================================
-
 	public function resolve_template_for_lang( $post, string $lang ): ?string {
 		if ( ! $post || ! $lang ) return null;
 
@@ -76,9 +72,25 @@ class Sync {
 
 		$type = $post->post_type;
 
-		if ( $type === 'page' )      $base = 'page';
-		elseif ( $type === 'post' )  $base = 'single';
-		else                         $base = 'single-' . $type; // CPT: e.g. single-product
+		if ( $type === 'page' ) {
+			// Use front-page-{lang} when this page is the static front page or
+			// a translation of it. WordPress applies front-page.html automatically
+			// for the static front page; the lang variant mirrors that behaviour.
+			$front_id = (int) get_option( 'page_on_front' );
+			if ( $front_id > 0 ) {
+				$post_trid  = $this->router->trid_group->get_trid( $post->ID );
+				$front_trid = $this->router->trid_group->get_trid( $front_id );
+				if ( $post->ID === $front_id ||
+					( null !== $post_trid && $post_trid === $front_trid ) ) {
+					return 'front-page-' . $lang;
+				}
+			}
+			$base = 'page';
+		} elseif ( $type === 'post' ) {
+			$base = 'single';
+		} else {
+			$base = 'single-' . $type; // CPT: e.g. single-product
+		}
 
 		return $base . '-' . $lang;
 	}

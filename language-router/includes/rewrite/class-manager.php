@@ -93,6 +93,19 @@ class Manager {
 		// correct taxonomy archive rather than being consumed by `pagename`.
 		$this->add_general_taxonomy_archive_rewrite_rules( $langs );
 
+		// Generic top-level slug with pagination — handles translated shop page,
+		// blog index page, and any other top-level page that has paginated views.
+		// Must sit after the CPT-archive and taxonomy pagination rules (which are
+		// more specific) but before the generic pagename fallback below so that
+		// /es/tienda/page/2/ resolves to pagename=tienda&paged=2 rather than
+		// pagename=tienda/page/2 (which would fail to match the shop slug check
+		// in WcPageBridge::inject_shop_post_type() and render no products).
+		add_rewrite_rule(
+			'^(' . $langs . ')/([^/]+)/page/([0-9]+)/?$',
+			'index.php?lang=$matches[1]&pagename=$matches[2]&paged=$matches[3]',
+			'top'
+		);
+
 		// Generic fallback
 		add_rewrite_rule(
 			'^(' . $langs . ')/(.+)$',

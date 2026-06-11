@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.2.12 — stable, open for testing.**
+> **Version 2.2.14 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -1074,8 +1074,10 @@ from within the editor of post objects and WooCommerce products. For most websit
 
 ---
 
-**Current release — 2.2.5**
+**Current release — 2.2.14**
 
+- **WooCommerce attribute label translations** *(2.2.14)* — Per-language label fields added to the Product Attributes edit and add forms. Translations stored in `wp_options` and applied on the frontend via the `woocommerce_attribute_label` filter — labels like "Color" and "Size" now appear in the active language without any companion plugin. (`AttributeLabelAdmin.php`, `TermNameFilter.php`)
+- **Batch AI translate for attribute labels** *(2.2.14)* — "Translate all labels (AI)" button on the Product Attributes page sends all untranslated labels to the AI in a single call per target language. Existing manual translations are never overwritten. (`AttributeLabelAdmin.php`)
 - **Multilingual SEO overview** *(2.2.5)* — Batch analysis results are now presented as a per-language tabbed parity view. Every analyzed post appears in its language's tab with a colour-coded score, a direct edit link, the source-language title for cross-language comparison, post type, and SEO profile. WooCommerce system pages (Shop, Cart, Checkout, My Account, Terms) are excluded from batch scoring. A parity hint below the heading explains that a low score reflects structural limits and is a signal rather than a mandate.
 - **Batch Analysis card grid** *(2.2.5)* — New section in Settings → SEO → Analysis with one card per active language. Shows post count, last run time, average score, and ok/warn/fail distribution. "Analyse all languages" runs sequentially in fast mode.
 - **Settings → System tab** *(2.2.5)* — Diagnostic tab with environment info, permalink compatibility check, active SEO plugin detection, WooCommerce page translation coverage, `_lf_lang` repair tool, rewrite-rule dump, and a one-click debug copy button.

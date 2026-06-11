@@ -107,6 +107,15 @@ class PostListColumn {
 	 */
 	public static function render_retranslate_button( int $post_id ): void {
 		$current_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+
+		// Never show "Retranslate" on source-language posts.  The source is the
+		// authoritative content; overwriting it via back-translation would be
+		// destructive.  Editors update source content directly.
+		$source_lang = Router::get_instance()->source_language();
+		if ( '' === $current_lang || $current_lang === $source_lang ) {
+			return;
+		}
+
 		$translations = function_exists( 'linguaforge_get_translations' )
 			? linguaforge_get_translations( $post_id )
 			: [];
@@ -369,6 +378,11 @@ class PostListColumn {
 			if ( 'error' === $outcome['status'] ) {
 				++$errors;
 			} else {
+				// Notify listeners (e.g. TermNameTranslator) that a translation was
+				// created or updated.  Fired before meta-description generation so
+				// that any post-translation side-effects are in place first.
+				do_action( 'linguaforge_translation_complete', (int) $outcome['id'], $post_id, $lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+
 				// Generate and persist a meta description for the new/updated post,
 				// reusing the same MetaDescription::run() stack as the CLI's
 				// --with-meta-description flag.
@@ -435,6 +449,13 @@ class PostListColumn {
 			wp_send_json_error( [ 'message' => 'Cannot retranslate a post into the same language it is already in.' ] );
 		}
 
+		// Block retranslation of source-language posts.  The source is authoritative;
+		// overwriting it via back-translation from a translated version would corrupt
+		// the content that all other translations derive from.
+		if ( $target_lang === $router->source_language() ) {
+			wp_send_json_error( [ 'message' => 'The source-language post cannot be retranslated. Edit it directly.' ] );
+		}
+
 		$translations = function_exists( 'linguaforge_get_translations' )
 			? linguaforge_get_translations( $target_id )
 			: [];
@@ -491,6 +512,9 @@ class PostListColumn {
 		if ( function_exists( 'linguaforge_mark_translation_synced' ) ) {
 			linguaforge_mark_translation_synced( $target_id );
 		}
+
+		// ── Notify listeners (e.g. TermNameTranslator) ───────────────────────
+		do_action( 'linguaforge_translation_complete', $target_id, $source_id, $target_lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
 
 		// ── Regenerate meta description ───────────────────────────────────────
 		self::generate_meta_description( $target_id );
@@ -613,8 +637,17 @@ class PostListColumn {
 	 */
 	private static function update_linked_post( int $target_id, array $result ): array {
 		$update = [
-			'ID'           => $target_id,
-			'post_content' => (string) ( $result['output'] ?? '' ),
+			'ID'            => $target_id,
+			'post_content'  => (string) ( $result['output'] ?? '' ),
+			// Reset page_template to 'default' so wp_insert_post()'s validation never
+			// sees the FSE slug already stored in _wp_page_template (e.g. 'single-product-es').
+			// WP 6.7+ reads _wp_page_template via WP_Post::to_array() for any post type that
+			// supports 'page-attributes' (WooCommerce adds that support to 'product'), so the
+			// stored FSE slug ends up in the merged $postarr.  FSE slugs are absent from
+			// get_page_templates() → invalid_page_template WP_Error when $wp_error = true.
+			// assign_template_if_needed() running on wp_after_insert_post writes the correct
+			// language-specific template back immediately after the save completes.
+			'page_template' => 'default',
 		];
 
 		if ( ! empty( $result['translated_title'] ) ) {

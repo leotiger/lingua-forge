@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.12
+Stable tag: 2.2.14
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,109 +263,24 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 2.2.12 =
-* Improved: Test connection now surfaces a specific failure reason — invalid API key, no credits remaining, rate limited, access forbidden, network error — instead of the generic "check the error log" message.
-* Improved: AI Provider tab and AI Usage tab now include direct links to Anthropic Console, OpenAI Platform, and Google AI Studio for quick access to account and billing dashboards.
-* Improved: Batch Analysis language cards now show the last run's avg score and ok/warn/fail counts on every page load, not only immediately after a run.
-* Updated: Plugin language translations updated to cover new strings from 2.2.11 and 2.2.12.
+= 2.2.14 =
+* Added: WooCommerce local attribute translation — Component A translates `_product_attributes` (name + pipe-separated values) via a batched AI call; Component B rewrites `attribute_{key}` meta on translated variation children so `find_matching_product_variation()` matches correctly. (`LocalAttributeTranslator.php`)
+* Added: WooCommerce attribute label translations — per-language label fields on the Product Attributes edit/add forms; applied on the frontend via the `woocommerce_attribute_label` filter. (`AttributeLabelAdmin.php`, `TermNameFilter.php`)
+* Added: Batch AI translate for attribute labels — "Translate all labels (AI)" button on the Product Attributes page; skip-existing semantics, same as the term batch button. (`AttributeLabelAdmin.php`)
+* Added: Batch AI translate for WC taxonomy term names — "Translate all terms (AI)" button on Products → Categories, Tags, Attributes, and any pa_* term admin screen; force-retranslate link overrides skip. (`TermNameAdmin.php`)
+* Added: Front-page language routing — `FrontPageQuery` class handles `/{lang}/front-page/` URLs and auto-assigns `front-page-{lang}` FSE templates. (`FrontPageQuery.php`)
+* Fixed: WC SKU duplicate error on translated product saves — suppressed for posts with `_lf_source` meta (Lingua Forge translations that share source SKU by design). (`AdminSaveGuard.php`)
+* Fixed: `invalid_page_template` on WC product retranslation — template assignment deferred until after WooCommerce sets the post type.
+* Fixed: `linguaforge_translation_complete` not firing from PostListColumn — "Retranslate" and "Translate missing" buttons in the admin post list now fire the action. (`PostListColumn.php`)
+* Fixed: WC add-to-cart AJAX notice generated in source language — locale is now switched for the duration of the handler.
+* Improved: TermNameAdmin batch now reports skipped count and offers a force-retranslate link; status messages clarified. (`TermNameAdmin.php`)
+* Improved: TermNameTranslator accepts `$max_tokens` parameter; batch handler passes `max(512, count * 20)` to avoid truncated JSON on large taxonomies. (`TermNameTranslator.php`)
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.11 =
-* Added: Model catalog — Settings → General → Models fields now suggest known model identifiers via browser autocomplete (datalist). Light-to-mid-tier models are recommended for translation and content generation; a collapsible reference table lists all catalogued models with tier and notes.
-* Added: Live model list on test connection — "Test connection" in the API Keys tab now also queries the provider's models endpoint (Anthropic /v1/models, OpenAI /v1/models, Gemini /v1beta/models) and refreshes the autocomplete suggestions with the current live list, including any newly-released models not yet in the catalog.
-* Changed: "General" and "API Keys" tabs merged into a single "AI Provider" tab — provider selection, model configuration, API keys, and test connection are now in one place.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.10 =
-* Improved: Apply logic for full-page translation and content generation — the editor canvas is now updated explicitly via resetBlocks() after every Apply dispatch, ensuring the visual editor reflects new content immediately across all three Apply paths.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.9 =
-* Improved: System tab → AI Configuration now lists all configured providers (Anthropic, OpenAI, Gemini) with individual key status; the active provider is marked with an "(active)" badge.
-* Improved: System tab → _lf_lang Coverage now separates routable post types (need attention) from routing-excluded post types (shown muted, informational only). The Repair action carries a danger warning and skips excluded post types.
-* Added: Per-row "Exclude from routing" button in _lf_lang Coverage — adds the post type to the Router exclusion list without leaving the System tab.
-* Improved: System tab → Environment now shows "WP instance language" (WordPress locale, e.g. ca_ES) separately from "Primary content language".
-* Fixed: PHP max_execution_time = 0 was labelled "Unlimited" in the System tab; now correctly shown as "No PHP limit (server/FPM timeout still applies)".
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.8 =
-* Improved: SEO heading analysis now accepts H3 subheadings (e.g. from Accordion / Details blocks) as valid structure when no H2 is present — no longer warns unnecessarily on pages that use H3-based heading patterns.
-* Improved: SEO heading analysis no longer penalises short content (3 paragraphs or fewer) for missing subheadings. A concise page does not benefit from forced heading structure.
-* Fixed: SEO title length threshold corrected from strictly greater than 10 to at least 10 characters (≥ 10). A 10-character title is now scored as passing.
-* Added: WP Admin contextual help tab "SEO Scores" — explains content profiles and their weights, score computation (ok/warn/fail → points), heading rules (H3 acceptance, short-content exemption, H2-as-H1 option), and score history badges.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.7 =
-* Fixed: Contact Form 7 forms and other third-party shortcodes broken on the frontend — `QueryFilter::handle_secondary_pre_get_posts()` was injecting a `_lf_lang` meta constraint into `get_posts()` calls made by plugins whose post types carry no `_lf_lang` meta (e.g. `wpcf7_contact_form` for non-numeric shortcode IDs), returning zero results. `wpcf7_contact_form` is now excluded automatically. Admins can exclude additional post types via Settings → Router → "Excluded post types".
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.6 =
-* Fixed: Block editor link control showing only source-language pages when inserting a link inside a non-source-language template part (e.g. `footer-it`). `QueryFilter::handle_secondary_pre_get_posts()` was injecting `_lf_lang = LF_LANG` on REST API search queries; since REST URLs carry no language prefix, `LF_LANG` resolved to the source language and silently excluded all other-language pages from search results. Fix: `handle_secondary_pre_get_posts()` now early-returns for all REST requests. REST endpoints that need explicit language scoping use the registered `lf_lang` query param.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.5 =
-* Added: SEO Analysis Batch Analysis grid — one card per active language showing post count, last run time, average score, and ok/warn/fail distribution. "Analyse all languages" runs them sequentially in fast mode (no per-post HTTP request).
-* Added: Multilingual SEO overview — batch results render as per-language tabs. Every analyzed post appears with its SEO score, a direct edit link, the source-language title for parity comparison, post type, and profile. A parity hint explains that low scores can reflect structural limits, not necessarily improvable content.
-* Added: Settings → System tab with environment info, permalink compatibility check, SEO plugin detection, WooCommerce page translation coverage, `_lf_lang` repair tool, rewrite-rule dump, and debug copy button.
-* Added: SEO score history badge in the Lang column — colour-coded `SEO N` badge with ↑/↓ delta after two runs.
-* Added: `_lf_page_menu_exclude` meta flag to hide pages from all language navigations via the Language meta box or Quick Edit.
-* Changed: WooCommerce system pages (Shop, Cart, Checkout, My Account, Terms) and their translations are excluded from batch analysis and do not affect the score distribution.
-* Fixed: Template scaffold action buttons absent after creating an FSE template or part without a page reload.
-* Fixed: Navigation filter returning empty menus on WooCommerce product pages (language-neutral URLs).
-* Fixed: Home link and logo/site-title href not localised on WooCommerce product pages.
-* Fixed: `core/home-link` block not covered by the lang home URL handler.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.4 =
-* Fixed: WooCommerce My Account sub-endpoint URLs under a language prefix (e.g. `/es/mi-cuenta/orders/`) returning 404. WC's endpoint rewrite rule intercepted the URL before LF's fallback and set `error=404` before the `request` filter fires. New `fix_myaccount_endpoint_request` parses the URI directly and rebuilds query vars from scratch.
-* Fixed: WooCommerce Terms & Conditions page ID not translated on checkout. Added `woocommerce_get_terms_page_id` and `woocommerce_terms_and_conditions_page_id` filters in `WcPageBridge`, both delegating to the shared `translate_wc_page_id()` cache.
-* Fixed: WooCommerce Privacy Policy link on checkout pointing to the source-language page. WC resolves the privacy policy via `woocommerce_privacy_policy_page_id` (not WordPress's `get_privacy_policy_url()`); new `translate_privacy_policy_page_id` filter resolves the translation via `TridGroup::get_translations()`. The `privacy_policy_url` filter in `Redirector` covers WP-core contexts (login footer, FSE blocks).
-* Fixed: WooCommerce Brands (`product_brand`) and other product taxonomy archives not routing correctly under a language prefix — silently falling back to the source-language archive. The three taxonomy-archive hooks (`register_taxonomy_archive_rewrite_rules`, `translate_wc_term_link`, `inject_taxonomy_archive_lang`) now read the taxonomy list dynamically from `get_product_archive_taxonomies()` (default: `product_cat`, `product_tag`, `product_brand`), filterable via `lf_wc_product_archive_taxonomies`.
-* Fixed: Site Title block (`core/site-title`) wrapping link not localised — added `fix_site_title_link()` on `render_block` priority 20, mirroring the existing `fix_site_logo_link()` pattern and delegating to the shared `lang_home_url()` helper.
-* Fixed: Custom taxonomy archive URLs returning 404 under a language prefix. New `add_general_taxonomy_archive_rewrite_rules()` registers explicit top-priority rules for all public custom taxonomies with a rewrite slug; `translate_general_term_link()` prefixes `get_term_link()` output with the active language path.
-* Fixed: WooCommerce Product structured data duplicated when no third-party SEO plugin is active (two `Product` JSON-LD blocks plus a redundant `WebPage`). `SeoSupport` now injects `inLanguage` via `woocommerce_structured_data_product` instead of emitting a parallel schema block; `SchemaManager` skips the Article/WebPage block on product singulars.
-* Fixed: Secondary (non-main) WP_Query instances — sidebar widgets, `get_posts()` calls in templates, Latest Posts/Latest Events blocks — receiving no `_lf_lang` constraint and returning mixed-language results. New `handle_secondary_pre_get_posts()` injects `_lf_lang` on all secondary frontend queries; ID-only lookups (`fields=ids`) are correctly skipped.
-* Fixed: Navigation block injecting unexpected new items. `handle_secondary_pre_get_posts()` was missing an exclusion for WordPress system post types. `wp_navigation` queries (used by `WP_Navigation_Fallback` and by the internal page-list lang filter) received a `_lf_lang` constraint, returned zero results, and WordPress silently created a new navigation post from the latest classic menu. System types (`wp_navigation`, `nav_menu_item`, `wp_template`, `wp_template_part`, etc.) are now excluded.
-* Changed: Translation Memory and API Response Cache enable/disable toggles moved from Settings → Behavior to Settings → AI Usage & Cache (each in its own inner sub-tab), where stats, cache management, and enable/disable controls now live together.
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
 
 == Upgrade Notice ==
 
-= 2.2.12 =
-Improves test-connection error messages, adds provider console links to AI Provider and AI Usage tabs, and persists batch-analysis results across page loads. No DB schema changes; no permalink flush required.
-
-= 2.2.11 =
-Merges "General" and "API Keys" into a single "AI Provider" tab; adds model autocomplete and live model refresh on test connection. No DB changes; no permalink flush required.
-
-= 2.2.10 =
-Improves Apply logic for full-page translations and content generation: editor canvas now updates immediately on Apply. No DB changes; no permalink flush required.
-
-= 2.2.9 =
-Improves System tab diagnostics: all providers shown, _lf_lang Coverage split with per-row exclude action, WP locale row, accurate PHP timeout label. No DB changes; no permalink flush required.
-
-= 2.2.8 =
-Improves SEO heading and title scoring; adds SEO Scores help tab. No DB changes; no permalink flush required.
-
-= 2.2.7 =
-Fixes CF7 forms and other third-party shortcodes broken on the frontend. No DB changes; no permalink flush required.
-
-= 2.2.6 =
-Fixes block editor link control returning only source-language pages when inserting links inside non-source-language template parts. No DB changes; no permalink flush required.
-
-= 2.2.5 =
-Adds Batch Analysis grid, Multilingual SEO overview tabs, System tab, SEO score badges, and nav-exclusion flag. WC system pages excluded from batch scoring. No DB changes; no permalink flush required.
-
-= 2.2.4 =
-Fixes WC My Account 404s, T&C/Privacy Policy links, Brands & custom taxonomy archives, Site Title href, secondary query scoping, WC schema duplication, nav-block regression. Caching toggles moved to AI Usage tab. Flush permalinks after upgrading.
+= 2.2.14 =
+Adds WooCommerce local attribute translation (product meta + variations), attribute label translations, and batch AI translate for labels and term names. Fixes WC SKU duplicate error on translated product saves and add-to-cart language notice. No flush required.
 
 

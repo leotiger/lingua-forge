@@ -17,6 +17,69 @@ use LinguaForge\Router\Router;
 class VariationSync {
 
 	// =========================================================================
+	// Request-level enable / disable
+	// =========================================================================
+
+	/**
+	 * Whether variation sync is allowed to run in this request.
+	 *
+	 * AdminSaveGuard sets this to false when a translated product is saved from
+	 * the WooCommerce admin editor.  In that flow the structural sync is not
+	 * needed (retranslation owns it) and running it would trigger WC's
+	 * price-recalculation cascade, risking a PHP timeout.
+	 *
+	 * @var bool
+	 */
+	private static bool $enabled = true;
+
+	/**
+	 * Disable variation sync for the remainder of this request.
+	 *
+	 * Called by AdminSaveGuard at the start of an intercepted translated-product
+	 * admin save; re-enabled via enable_for_request() once the save completes.
+	 */
+	public static function disable_for_request(): void {
+		self::$enabled = false;
+	}
+
+	/**
+	 * Re-enable variation sync (called by AdminSaveGuard teardown).
+	 */
+	public static function enable_for_request(): void {
+		self::$enabled = true;
+	}
+
+	// =========================================================================
+	// Re-entrance guard
+	// =========================================================================
+
+	/**
+	 * Prevents re-entrant calls to maybe_sync_on_save() within a single request.
+	 *
+	 * Root cause of the cascade:
+	 *   sync_variations_for() calls wp_insert_post() to create a translated
+	 *   variation.  WooCommerce listens to save_post_product_variation and calls
+	 *   $variable_product->save() on the parent to recalculate its min/max price
+	 *   range.  That triggers wp_update_post() on the translated product, which
+	 *   fires wp_after_insert_post → maybe_sync_on_save() again at priority 30.
+	 *   The second pass syncs attribute_pa_* meta on all existing variations via
+	 *   update_post_meta(); each of those writes re-triggers WC's cache-invalidation
+	 *   hook, which calls $variable_product->save() again → another
+	 *   wp_after_insert_post → another variation-sync pass → unbounded loop until
+	 *   PHP max_execution_time is exceeded.
+	 *
+	 * The guard is per-request (static bool): once sync_variations_for() begins,
+	 * any further wp_after_insert_post callbacks for any product are no-ops until
+	 * the outer call returns.  This is safe because:
+	 *   • PHP is single-threaded — no true concurrency within a request.
+	 *   • New or updated variations created by the first pass will be picked up on
+	 *     the next explicit admin save of the translated product.
+	 *
+	 * @var bool
+	 */
+	private static bool $syncing = false;
+
+	// =========================================================================
 	// Boot
 	// =========================================================================
 
@@ -49,6 +112,17 @@ class VariationSync {
 	 */
 	public static function maybe_sync_on_save( int $post_id, \WP_Post $post ): void {
 
+		// Request-level disable — set by AdminSaveGuard during translated-product
+		// admin saves so WC's price-recalculation cascade cannot trigger here.
+		if ( ! self::$enabled ) {
+			return;
+		}
+
+		// Re-entrance guard — see $syncing property docblock for full explanation.
+		if ( self::$syncing ) {
+			return;
+		}
+
 		if ( 'product' !== $post->post_type ) {
 			return;
 		}
@@ -75,7 +149,12 @@ class VariationSync {
 			return;
 		}
 
-		self::sync_variations_for( $post_id );
+		self::$syncing = true;
+		try {
+			self::sync_variations_for( $post_id );
+		} finally {
+			self::$syncing = false;
+		}
 	}
 
 	// =========================================================================

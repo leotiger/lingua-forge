@@ -2,6 +2,39 @@
 
 ---
 
+## [2.2.14] — 2026-06-11
+
+### Added
+- **WooCommerce local attribute translation** — `LocalAttributeTranslator` hooks `linguaforge_translation_complete` (priority 20, after VariationSync) to translate local (non-taxonomy, `is_taxonomy=0`) product attributes in two passes. Component A translates the `_product_attributes` postmeta array: attribute `name` labels and all pipe-separated `value` options are batched into a single AI call per target language and written back as the translated product's own `_product_attributes`, bypassing `MetaDelegate` delegation for those fields. Component B rewrites `attribute_{key}` meta on every translated variation child so that WooCommerce's `find_matching_product_variation()` can match on the translated value string. Empty ("Any") variation slots are preserved. (`ai/includes/Integrations/WooCommerce/LocalAttributeTranslator.php`, `Bootstrap.php`)
+- **WooCommerce attribute label translations** — per-language label fields added to the Product Attributes edit and add forms. Translations are stored in `wp_options` under `linguaforge_attr_labels_{taxonomy}` and applied on the frontend via the `woocommerce_attribute_label` filter, so labels like "Color" and "Size" appear translated without any companion plugin. (`ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php`, `TermNameFilter.php`)
+- **Batch AI translate for attribute labels** — "Translate all labels (AI)" button on the Product Attributes page translates all untranslated attribute labels in a single AI call per target language. Skips labels that already have a manual translation, mirroring the skip-existing semantics of the term-name batch button. (`AttributeLabelAdmin.php`)
+- **Batch AI translate for WC taxonomy term names** — "Translate all terms (AI)" button on the term admin screen (Products → Categories, Tags, Attributes, and any `pa_*` taxonomy) translates all untranslated term names in a single AI call per language. Already-translated terms are skipped by default; a "Force retranslate" link overrides the skip. (`ai/includes/Integrations/WooCommerce/TermNameAdmin.php`)
+- **Front-page language routing** — new `FrontPageQuery` class handles language-prefixed front-page URLs (`/{lang}/front-page/`) and auto-assigns `front-page-{lang}` FSE templates when a post carries the front-page flag for a given language. The Translation meta box now includes `front-page` in its base-template list for front-page posts. (`includes/Routing/FrontPageQuery.php`, `class-language-router.php`, `ai/includes/Admin/TranslationMetaBox.php`)
+
+### Fixed
+- **WC SKU duplicate error on translated product saves** — WooCommerce raised a "Duplicate SKU" notice on translated products that intentionally share the source SKU. `AdminSaveGuard` now suppresses the error when the post has `_lf_source` meta (i.e. is a Lingua Forge translation), while leaving real SKU conflicts on non-translated products untouched. (`ai/includes/Integrations/WooCommerce/AdminSaveGuard.php`)
+- **`invalid_page_template` on WC product retranslation** — WordPress rejected the Lingua Forge FSE template slug as invalid on retranslation because template validation ran before WooCommerce set the post type. Template assignment is now deferred to fire after the post type is fully registered.
+- **`linguaforge_translation_complete` not firing from PostListColumn** — the action was only fired from the post-editor save path. The Lang-column "Retranslate" and "Translate missing" buttons in the admin post list now also fire it, so `TermNameTranslator` and `LocalAttributeTranslator` run for those paths too. (`ai/includes/Admin/PostListColumn.php`)
+- **WC add-to-cart AJAX notice in wrong language** — WooCommerce's AJAX add-to-cart handler served notices in the source language regardless of the visitor's active language. Lingua Forge now switches locale for the duration of that handler.
+
+### Improved
+- **TermNameAdmin batch: force retranslate + skipped count** — the batch-translate button reports how many terms were skipped, with a "Force retranslate" link to override them. A `force` POST flag triggers a full retranslation pass that overwrites existing entries. Status messages updated: "No terms found", "N already translated — force retranslate?", and "X translated, Y skipped". (`TermNameAdmin.php`)
+- **TermNameTranslator scalable token budget** — `translate_term_names()` accepts an optional `$max_tokens` parameter (default 256). The batch-translate handler passes `max(512, count($pending) * 20)` so large taxonomies (e.g. 50+ product tags) no longer produce truncated JSON and silent translation failures. (`TermNameTranslator.php`)
+- **AdminSaveGuard PHPCS/PluginCheck compliance** — `defined('ABSPATH') || exit;` moved before line 50 (Plugin Check requirement); `phpcs:disable`/`phpcs:enable` blocks wrap the multi-line `$wpdb->prepare()` call; `phpcs:ignore WordPress.WP.I18n.TextDomainMismatch` added where the `woocommerce` text domain is used intentionally for error-string comparison.
+
+---
+
+## [2.2.13] — 2026-06-10
+
+### Fixed
+- **WooCommerce shop pagination (and translated page pagination)** — language-prefixed paginated URLs such as `/es/tienda/page/2/` were matched by the generic fallback rewrite rule as `pagename=tienda/page/2`. That compound slug failed the slug-equality check in `WcPageBridge::inject_shop_post_type()`, so the query was never converted to a product archive and the page rendered empty. A new `{lang}/([^/]+)/page/([0-9]+)` rewrite rule, inserted before the generic fallback, splits the URL correctly into `pagename=tienda&paged=2`. **Flush permalinks after upgrading.** (`class-manager.php`)
+- **"Save Settings" button missing on AI Provider tab** — `settings-tabs.js` was checking for the stale tab slugs `general` and `api-keys` (removed in 2.2.11) when deciding whether to show the submit button, so the button was always hidden on the AI Provider tab. Updated `FORM_TABS` to `['ai-provider', 'limits', 'behavior']` and corrected the default-tab fallback from `'general'` to `'ai-provider'`. (`settings-tabs.js`)
+
+### Updated
+- **Gemini default models** — default Light tier model changed from the retired `gemini-2.0-flash` to `gemini-2.5-flash-lite`; default Quality tier changed from the retired `gemini-1.5-pro` to `gemini-2.5-flash`. The models `gemini-2.0-flash-lite` and `gemini-2.0-flash` have been removed from the model catalog. (`Config.php`, `ModelCatalog.php`)
+
+---
+
 ## [2.2.12] — 2026-06-10
 
 ### Improved
