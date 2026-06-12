@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.14
+Stable tag: 2.2.15
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,24 +263,23 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 2.2.14 =
-* Added: WooCommerce local attribute translation — Component A translates `_product_attributes` (name + pipe-separated values) via a batched AI call; Component B rewrites `attribute_{key}` meta on translated variation children so `find_matching_product_variation()` matches correctly. (`LocalAttributeTranslator.php`)
-* Added: WooCommerce attribute label translations — per-language label fields on the Product Attributes edit/add forms; applied on the frontend via the `woocommerce_attribute_label` filter. (`AttributeLabelAdmin.php`, `TermNameFilter.php`)
-* Added: Batch AI translate for attribute labels — "Translate all labels (AI)" button on the Product Attributes page; skip-existing semantics, same as the term batch button. (`AttributeLabelAdmin.php`)
-* Added: Batch AI translate for WC taxonomy term names — "Translate all terms (AI)" button on Products → Categories, Tags, Attributes, and any pa_* term admin screen; force-retranslate link overrides skip. (`TermNameAdmin.php`)
-* Added: Front-page language routing — `FrontPageQuery` class handles `/{lang}/front-page/` URLs and auto-assigns `front-page-{lang}` FSE templates. (`FrontPageQuery.php`)
-* Fixed: WC SKU duplicate error on translated product saves — suppressed for posts with `_lf_source` meta (Lingua Forge translations that share source SKU by design). (`AdminSaveGuard.php`)
-* Fixed: `invalid_page_template` on WC product retranslation — template assignment deferred until after WooCommerce sets the post type.
-* Fixed: `linguaforge_translation_complete` not firing from PostListColumn — "Retranslate" and "Translate missing" buttons in the admin post list now fire the action. (`PostListColumn.php`)
-* Fixed: WC add-to-cart AJAX notice generated in source language — locale is now switched for the duration of the handler.
-* Improved: TermNameAdmin batch now reports skipped count and offers a force-retranslate link; status messages clarified. (`TermNameAdmin.php`)
-* Improved: TermNameTranslator accepts `$max_tokens` parameter; batch handler passes `max(512, count * 20)` to avoid truncated JSON on large taxonomies. (`TermNameTranslator.php`)
+= 2.2.15 =
+* Fixed: Theme template-part blocks (header, footer, etc.) loaded the source-language version on archive pages — a new `get_block_template` filter in `Redirector` now switches to the `{slug}-{lang}` variant when one exists. (`class-redirector.php`)
+* Fixed: WooCommerce taxonomy archive page titles showed the taxonomy type noun (e.g. "categoria") in the source language on translated pages — `WcPageBridge::fix_taxonomy_archive_title` now re-derives the singular label with a fresh gettext call in the switched locale. (`WcPageBridge.php`)
+* Fixed: WooCommerce catalogue blocks (Product Collection, etc.) showed no products on translated pages when a category or tag filter was set — `CatalogQuery` applies a trid-lookup strategy, replacing the `tax_query` with `_lf_trid IN` + `_lf_lang` in meta_query; a Phase 3a pre-check falls back to `_lf_lang` when no translated matches exist. (`CatalogQuery.php`)
+* Fixed: WooCommerce "Handpicked Products" and hand-picked product-collection blocks showed no products on translated pages — `CatalogQuery` now maps source-language `post__in` IDs to their translated siblings. (`CatalogQuery.php`)
+* Fixed: Admin Pages list did not show "— Front Page" / "— Posts Page" labels on translated equivalents — `Columns::add_translated_core_page_states()` copies those labels from the source page via `get_post_states()`, honouring the admin locale. (`class-columns.php`)
+* Fixed: WP site locale (`en_US`) was injected into the valid content-language list when no primary language option was set — `Context::languages()` now skips `get_locale()` when `linguaforge_primary_language` is explicitly configured, preventing a spurious "EN" entry in the language switcher and the `lf_lang=en` cookie contamination cascade. (`language-router/includes/class-context.php`)
+* Fixed: Plugin Check false positive `PluginCheck.Security.DirectDB.UnescapedDBParameter` in `RepairHandler::get_lf_template_posts()` — variable contains only safe `array_fill()` placeholders; `phpcs:ignore` comment extended with explanation. (`ai/includes/Admin/FseLocalisation/RepairHandler.php`)
+* Improved: WP locale mismatch alert added to Router and System settings tabs — when the WordPress site language is not an active Lingua Forge content language, a `notice-error` banner identifies the conflict and links directly to Settings → General → Site Language. The System tab environment row also marks the WP instance language with a ✗ indicator. (`RouterTab.php`, `SystemPanel.php`)
+* Improved: Contextual help tabs fully revised — API Keys + Models merged into AI Provider; Translation tab renamed to Behavior; Router section expanded with WP site language requirement; AI Usage and System help tabs added; Maintenance content corrected (cache items moved to AI Usage); Uninstall Behaviour entry added; all tabs reordered to match the settings bar. (`ai/includes/Admin/SettingsHelp.php`)
+* Improved: README corrected — "WP site language vs. primary content language" section now documents the requirement and seven failure modes; Known Issues entry added for the unsupported WP locale / content locale mismatch configuration. (`README.md`)
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
 
-= 2.2.14 =
-Adds WooCommerce local attribute translation (product meta + variations), attribute label translations, and batch AI translate for labels and term names. Fixes WC SKU duplicate error on translated product saves and add-to-cart language notice. No flush required.
+= 2.2.15 =
+Fixes WooCommerce catalogue blocks, taxonomy archive titles, theme template parts, and a WP site locale leak into the content-language list. Adds WP locale mismatch alerts in Router and System tabs. Admin pages list labels translated front/posts pages. No flush required.
 
 

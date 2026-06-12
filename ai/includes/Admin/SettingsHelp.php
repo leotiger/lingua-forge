@@ -69,6 +69,29 @@ class SettingsHelp {
 					'<p>' . esc_html__( 'After changing URL structure settings (path prefix ↔ subdomain), always visit Settings → Permalinks and click Save Changes to flush the rewrite rules.', 'lingua-forge' ) . '</p>',
 			],
 			[
+				'id'      => 'lf-help-ai-provider',
+				'title'   => __( 'AI Provider', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'AI Provider Tab', 'lingua-forge' ) . '</h3>' .
+					'<p>' . esc_html__( 'Supported providers: Anthropic (Claude), OpenAI (GPT), Google (Gemini). Select the active provider from the dropdown — only one provider is used at a time. Enter an API key for that provider to enable AI features.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Keys are encrypted at rest using AES-256-GCM with a site-specific secret (LINGUAFORGE_SECRET). Do not share database exports without rotating the secret first.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'AI features are optional. Language routing, hreflang, the language switcher, and the translation group system all work without a provider configured.', 'lingua-forge' ) . '</p>' .
+					'<h4>' . esc_html__( 'Model tiers', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Lingua Forge uses two model tiers per provider:', 'lingua-forge' ) . '</p>' .
+					'<ul><li>' . esc_html__( 'Light: used for meta descriptions and excerpt generation — fast, low cost.', 'lingua-forge' ) . '</li>' .
+					'<li>' . esc_html__( 'Quality: used for post translation and content generation — higher quality, higher cost.', 'lingua-forge' ) . '</li></ul>' .
+					'<p>' . esc_html__( 'Leave a model field blank to use the built-in default for that tier. The placeholder text shows which model will be used.', 'lingua-forge' ) . '</p>',
+			],
+			[
+				'id'      => 'lf-help-behavior',
+				'title'   => __( 'Behavior', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'Translation Limits & Behavior', 'lingua-forge' ) . '</h3>' .
+					'<p>' . esc_html__( 'Translation Limits: control which user roles can trigger AI translation, and set a monthly token budget. Exceeding the budget suspends AI calls until the month resets.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Behavior: choose the AI preset (Literal, Balanced, Creative), add site-wide custom prompt instructions, enable or disable automatic post-save translation, and configure the Translation Memory.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Translation Memory caches AI results by content hash, language pair, provider, and model. Editing a post invalidates the cache entry so the next translate call gets a fresh result.', 'lingua-forge' ) . '</p>',
+			],
+			[
 				'id'      => 'lf-help-router',
 				'title'   => __( 'Router', 'lingua-forge' ),
 				'content' =>
@@ -76,35 +99,12 @@ class SettingsHelp {
 					'<p>' . esc_html__( 'Primary language: the language your existing content is written in. All translations are produced from this language; changing it does not move or delete any posts.', 'lingua-forge' ) . '</p>' .
 					'<p>' . esc_html__( 'URL structure: path-prefix mode (example.com/de/) requires no server changes. Subdomain mode (de.example.com) requires a wildcard DNS record, a wildcard SSL certificate, and a web server configuration change — see the Server Setup guide.', 'lingua-forge' ) . '</p>' .
 					'<p>' . esc_html__( 'Active languages: add each language you want to support. Each language gets a URL prefix or subdomain and an hreflang tag in the page &lt;head&gt;.', 'lingua-forge' ) . '</p>' .
+					'<h4>' . esc_html__( 'WP site language requirement', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'The WordPress site language (Settings → General → Site Language) must be set to one of the languages you use for content — either the primary content language or one of the secondary languages. It cannot be a language that has no content on the site.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Example of a supported configuration: WP site language = CA (Catalan), content languages = CA + ES.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Example of an unsupported configuration: WP site language = EN (English), content languages = CA + ES only. English is not a content language, so Lingua Forge cannot map the WP locale to any translation group.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'When the WP site language is not a content language: WooCommerce product queries return zero results on all catalogue blocks; product image delegation fails; all language-filtered content queries break; the language switcher may show a spurious non-content language option. If you see a red configuration alert at the top of the Router or System tab, correct the site language first.', 'lingua-forge' ) . '</p>' .
 					'<p>' . esc_html__( 'FSE localisation: scaffold, translate, and fix links in Full Site Editing templates and template parts directly from this tab.', 'lingua-forge' ) . '</p>',
-			],
-			[
-				'id'      => 'lf-help-api-keys',
-				'title'   => __( 'API Keys', 'lingua-forge' ),
-				'content' =>
-					'<h3>' . esc_html__( 'API Keys Tab', 'lingua-forge' ) . '</h3>' .
-					'<p>' . esc_html__( 'Enter your API key for at least one AI provider. Keys are encrypted at rest using AES-256-GCM with a site-specific secret (LINGUAFORGE_SECRET). Do not share database exports without rotating the secret first.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'Supported providers: Anthropic (Claude), OpenAI (GPT), Google (Gemini). Only one provider is active at a time. Select the active provider on the General tab.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'AI features are optional. Language routing, hreflang, the language switcher, and the translation group system all work without a provider configured.', 'lingua-forge' ) . '</p>',
-			],
-			[
-				'id'      => 'lf-help-models',
-				'title'   => __( 'Models', 'lingua-forge' ),
-				'content' =>
-					'<h3>' . esc_html__( 'Models Tab (General)', 'lingua-forge' ) . '</h3>' .
-					'<p>' . esc_html__( 'Lingua Forge uses two model tiers per provider:', 'lingua-forge' ) . '</p>' .
-					'<ul><li>' . esc_html__( 'Light: used for meta descriptions and excerpt generation — fast, low cost.', 'lingua-forge' ) . '</li>' .
-					'<li>' . esc_html__( 'Quality: used for post translation and content generation — higher quality, higher cost.', 'lingua-forge' ) . '</li></ul>' .
-					'<p>' . esc_html__( 'Leave a model field blank to use the built-in default for that tier. The placeholder text shows which model will be used.', 'lingua-forge' ) . '</p>',
-			],
-			[
-				'id'      => 'lf-help-translation',
-				'title'   => __( 'Translation', 'lingua-forge' ),
-				'content' =>
-					'<h3>' . esc_html__( 'Translation Limits & Behavior', 'lingua-forge' ) . '</h3>' .
-					'<p>' . esc_html__( 'Translation Limits: control which user roles can trigger AI translation, and set a monthly token budget. Exceeding the budget suspends AI calls until the month resets.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'Behavior: choose the AI preset (Literal, Balanced, Creative), add site-wide custom prompt instructions, enable or disable automatic post-save translation, and configure the Translation Memory.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'Translation Memory caches AI results by content hash, language pair, provider, and model. Editing a post invalidates the cache entry so the next translate call gets a fresh result.', 'lingua-forge' ) . '</p>',
 			],
 			[
 				'id'      => 'lf-help-glossary',
@@ -158,14 +158,58 @@ class SettingsHelp {
 					'<p>' . esc_html__( 'Every time a post is analysed the score is stored in post meta. The post list Lang column shows a colour-coded "SEO N" badge for any post that has been analysed at least once. When two scores are stored a delta indicator (↑N / ↓N) shows the change since the previous run.', 'lingua-forge' ) . '</p>',
 			],
 			[
+				'id'      => 'lf-help-ai-usage',
+				'title'   => __( 'AI Usage', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'AI Usage & Cache Tab', 'lingua-forge' ) . '</h3>' .
+					'<h4>' . esc_html__( 'Token usage', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'The usage table shows AI token consumption broken down by feature (translation, meta description, excerpt, FSE template, batch analysis), provider, and model. Use the date-range buttons to filter by today, last 7 days, last 30 days, or all time.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'The daily quota (configured in Behavior → Limits) is tracked here. When the quota is reached, AI calls are suspended for the rest of the day. The table shows how much of the quota has been consumed.', 'lingua-forge' ) . '</p>' .
+					'<h4>' . esc_html__( 'Translation caching', 'lingua-forge' ) . '</h4>' .
+					'<p>' . esc_html__( 'Lingua Forge uses two independent caching layers to reduce redundant AI API calls:', 'lingua-forge' ) . '</p>' .
+					'<ul><li><strong>' . esc_html__( 'API Response Cache', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Stores raw AI responses keyed by content hash, language pair, provider, model, and preset. Cache entries are invalidated automatically when the source post content changes. Clear individual post entries or the whole cache from this tab.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Translation Memory', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Stores the full translated post output per content hash. Opt-in (enabled in Behavior). Speeds up repeated translations of unchanged content. Clear it here when you want to force a fresh AI pass regardless of whether the content has changed.', 'lingua-forge' ) . '</li></ul>',
+			],
+			[
 				'id'      => 'lf-help-maintenance',
 				'title'   => __( 'Maintenance', 'lingua-forge' ),
 				'content' =>
 					'<h3>' . esc_html__( 'Maintenance Tab', 'lingua-forge' ) . '</h3>' .
-					'<p>' . esc_html__( 'AI Cache: lists cached AI responses with hit counts. Clear the whole cache or a single post\'s entries. Use "Clear" before testing a translation change — cached results are returned even when you change the AI preset or model until the cache entry is evicted.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'Translation Memory: stores the full translated post per content hash. Clear it when you want to force a retranslation of all posts regardless of whether their content changed.', 'lingua-forge' ) . '</p>' .
 					'<p>' . esc_html__( 'Language Overrides: manage custom .po/.mo override files for the Lingua Forge UI strings. Use this instead of editing plugin files directly — overrides survive updates.', 'lingua-forge' ) . '</p>' .
-					'<p>' . esc_html__( 'Debug: enable the debug log to capture AI prompts and API responses to a local file. Disable after troubleshooting — debug mode writes a file on every AI request.', 'lingua-forge' ) . '</p>',
+					'<p>' . esc_html__( 'Debug: enable the debug log to capture AI prompts and API responses to a local file. Disable after troubleshooting — debug mode writes a file on every AI request.', 'lingua-forge' ) . '</p>' .
+					'<p>' . esc_html__( 'Uninstall Behaviour: controls what is deleted when the plugin is removed from Plugins → Installed Plugins → Delete. Plugin settings and AI caches are always removed. Language assignments, translation relationships, meta descriptions, glossary, and Translation Memory are kept by default so an accidental uninstall or reinstall can pick up where it left off. Enable "Delete content data on uninstall" only when you are fully removing multilingual support from the site — this cannot be undone.', 'lingua-forge' ) . '</p>',
+			],
+			[
+				'id'      => 'lf-help-system',
+				'title'   => __( 'System', 'lingua-forge' ),
+				'content' =>
+					'<h3>' . esc_html__( 'System Tab', 'lingua-forge' ) . '</h3>' .
+					'<p>' . esc_html__( 'Read-only diagnostics for the current installation. No settings are changed here — use it to verify configuration, spot problems, and gather information for bug reports.', 'lingua-forge' ) . '</p>' .
+					'<h4>' . esc_html__( 'Sections', 'lingua-forge' ) . '</h4>' .
+					'<ul>' .
+					'<li><strong>' . esc_html__( 'Environment', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Lingua Forge, WordPress, and PHP versions; active theme; URL structure; WP site language and primary content language. A red indicator next to the WP site language means it is not one of the active content languages — fix it in Settings → General before anything else.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'AI Configuration', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Active provider, configured keys, model tier selections, preset, and daily quota.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Permalink Structure', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Confirms the permalink structure is compatible with Lingua Forge path routing. Plain and numeric-only structures are not supported.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'SEO Plugins', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Lists any active third-party SEO plugins. Lingua Forge adapts its output when these are present — see Settings → SEO → Compatibility for the per-feature breakdown.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'WooCommerce', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'WooCommerce version, order storage mode (CPT / HPOS / shared), and a per-language translation coverage table for the four built-in WC pages (Shop, Cart, Checkout, My Account).', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( '_lf_lang Coverage', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Lists post types that have published posts without a _lf_lang meta value. Posts missing this tag are invisible to all language filters. Use the Repair button to tag them with the source language, or Exclude to remove the post type from language routing entirely.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Rewrite Rules', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'Collapsible dump of all LF-owned entries in $wp_rewrite->extra_rules_top. Useful for diagnosing 404s or routing conflicts after adding a new language.', 'lingua-forge' ) . '</li>' .
+					'<li><strong>' . esc_html__( 'Debug Info', 'lingua-forge' ) . '</strong> — ' .
+					esc_html__( 'One-click copy of a plain-text system summary covering all of the above sections. Paste this into a GitHub issue or support request so the full environment is visible at a glance.', 'lingua-forge' ) . '</li>' .
+					'</ul>' .
+					'<p>' . esc_html__( 'Found a bug or unexpected behaviour? Please open an issue on GitHub — include the Debug Info block above and a short description of what you expected vs. what happened.', 'lingua-forge' ) . ' ' .
+					'<a href="' . esc_url( 'https://github.com/leotiger/lingua-forge/issues' ) . '" target="_blank" rel="noopener noreferrer">' .
+					esc_html__( 'Open an issue →', 'lingua-forge' ) .
+					'</a></p>',
 			],
 		];
 	}

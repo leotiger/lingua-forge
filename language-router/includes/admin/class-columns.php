@@ -16,6 +16,16 @@ class Columns {
 
 	private Router $router;
 
+	/**
+	 * Per-request cache of post states for core source pages (front page,
+	 * posts page).  Keyed by source post ID.  Populated lazily on first trid
+	 * match so the apply_filters() call never fires more than once per source
+	 * page regardless of how many translated siblings appear in the list.
+	 *
+	 * @var array<int,array<string,string>>
+	 */
+	private array $core_source_states = [];
+
 	public function __construct( Router $router ) {
 		$this->router = $router;
 	}
@@ -33,6 +43,10 @@ class Columns {
 		// CPT-specific column hooks must be registered after post types are defined.
 		// Priority 20 fires after most plugins register their CPTs at init priority 10.
 		add_action( 'init', [ $this, 'register_cpt_column_hooks' ], 20 );
+
+		// Priority 20 — after WordPress core adds its own labels at priority 10 so
+		// we only need to handle translated equivalents, not the source page itself.
+		add_filter( 'display_post_states', [ $this, 'add_translated_core_page_states' ], 20, 2 );
 	}
 
 	public function register_cpt_column_hooks(): void {
@@ -174,5 +188,68 @@ class Columns {
 			</label>
 		</fieldset>
 		<?php
+	}
+
+	// =========================================================
+	// DISPLAY_POST_STATES — translated core pages
+	// =========================================================
+
+	/**
+	 * Appends WordPress core page-type labels to translated equivalents of the
+	 * front page and posts page.
+	 *
+	 * WordPress core hooks display_post_states at priority 10 and labels the
+	 * source-language pages (page_on_front, page_for_posts).  This hook runs at
+	 * priority 20 and attaches the same labels to every translated sibling so
+	 * the admin Pages list shows "— Front Page" / "— Posts Page" for translated
+	 * versions just as it does for the originals.
+	 *
+	 * The source page itself is skipped — core has already handled it.
+	 *
+	 * @param array<string,string> $states Existing post states.
+	 * @param \WP_Post             $post   The post row being rendered.
+	 * @return array<string,string>
+	 */
+	public function add_translated_core_page_states( array $states, \WP_Post $post ): array {
+		// Only relevant when a static front page is configured.
+		if ( 'page' !== get_option( 'show_on_front' ) ) {
+			return $states;
+		}
+
+		$trid = (string) get_post_meta( $post->ID, '_lf_trid', true );
+		if ( '' === $trid ) {
+			return $states;
+		}
+
+		foreach ( [ 'page_on_front', 'page_for_posts' ] as $option ) {
+			$source_id = (int) get_option( $option );
+			if ( $source_id <= 0 || $source_id === $post->ID ) {
+				continue; // Not configured, or this IS the source page — skip.
+			}
+			$source_trid = (string) get_post_meta( $source_id, '_lf_trid', true );
+			if ( '' === $source_trid || $source_trid !== $trid ) {
+				continue;
+			}
+
+			// Read the label WordPress core assigned to the source page by calling
+			// get_post_states() — WP core populates labels before calling the
+			// display_post_states filter, so apply_filters() alone would miss them.
+			// get_post_states() re-enters this hook at priority 20 but the source
+			// page bails on the $source_id === $post->ID check above, so there is
+			// no infinite recursion.  get_post_states() is available on all admin
+			// pages (loaded via wp-admin/includes/template.php).
+			if ( ! isset( $this->core_source_states[ $source_id ] ) ) {
+				$source_post = get_post( $source_id );
+				$this->core_source_states[ $source_id ] = $source_post instanceof \WP_Post
+					? (array) get_post_states( $source_post )
+					: [];
+			}
+
+			if ( isset( $this->core_source_states[ $source_id ][ $option ] ) ) {
+				$states[ $option ] = $this->core_source_states[ $source_id ][ $option ];
+			}
+		}
+
+		return $states;
 	}
 }

@@ -31,6 +31,7 @@ class SystemPanel {
     // =========================================================================
 
     public static function render(): void {
+        self::render_wp_locale_warning();
         self::render_environment();
         self::render_ai_config();
         self::render_permalink_check();
@@ -53,6 +54,59 @@ class SystemPanel {
     public static function register_hooks(): void {
         add_action( 'wp_ajax_linguaforge_repair_lf_lang',      [ self::class, 'ajax_repair_lf_lang' ] );
         add_action( 'wp_ajax_linguaforge_exclude_post_type',   [ self::class, 'ajax_exclude_post_type' ] );
+    }
+
+    // =========================================================================
+    // §0 — WP site language mismatch notice
+    // =========================================================================
+
+    /**
+     * Render a top-of-page error notice when the WordPress instance locale is
+     * not one of the active Lingua Forge content languages.
+     *
+     * This is a critical misconfiguration: WooCommerce product queries filter by
+     * LF_LANG, which can resolve to the WP site locale code when no content
+     * language matches — returning zero products on every catalogue block.
+     */
+    private static function render_wp_locale_warning(): void {
+
+        $primary_lang = (string) get_option( 'linguaforge_primary_language', '' );
+        if ( '' === $primary_lang ) {
+            // No primary language configured yet — routing not active, skip check.
+            return;
+        }
+
+        $router           = \LinguaForge\Router\Router::get_instance();
+        $content_langs    = $router->languages();
+        $wp_locale_code   = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $locale_mismatch  = ! in_array( $wp_locale_code, $content_langs, true );
+
+        if ( ! $locale_mismatch ) {
+            return;
+        }
+
+        ?>
+        <div class="notice notice-error">
+            <p>
+                <strong><?php esc_html_e( 'Configuration issue: WP site language is not a content language', 'lingua-forge' ); ?></strong>
+            </p>
+            <p>
+                <?php echo esc_html( sprintf(
+                    /* translators: 1: WP site locale e.g. en_US  2: comma-separated upper-case content language codes e.g. CA, ES */
+                    __( 'The WordPress site language (%1$s) is not among the active Lingua Forge content languages (%2$s). This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
+                    get_locale(),
+                    implode( ', ', array_map( 'strtoupper', $content_langs ) )
+                ) ); ?>
+            </p>
+            <p>
+                <?php esc_html_e( 'Fix: go to', 'lingua-forge' ); ?>
+                <a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">
+                    <?php esc_html_e( 'Settings → General → Site Language', 'lingua-forge' ); ?>
+                </a>
+                <?php esc_html_e( 'and set it to one of the active content languages listed above.', 'lingua-forge' ); ?>
+            </p>
+        </div>
+        <?php
     }
 
     // =========================================================================
@@ -109,9 +163,23 @@ class SystemPanel {
                             : esc_html__( 'Path prefix (/de/)',         'lingua-forge' ); ?>
                     </td>
                 </tr>
+                <?php
+                $env_wp_locale_code  = strtolower( substr( (string) get_locale(), 0, 2 ) );
+                $env_locale_mismatch = '' !== $primary_lang && ! in_array( $env_wp_locale_code, $active_langs, true );
+                ?>
                 <tr>
                     <th><?php esc_html_e( 'WP instance language', 'lingua-forge' ); ?></th>
-                    <td><?php echo esc_html( get_locale() ); ?></td>
+                    <td>
+                        <?php echo esc_html( get_locale() ); ?>
+                        <?php if ( $env_locale_mismatch ) : ?>
+                            <span style="color:#d63638;font-weight:700;margin-left:6px;">&#10007;</span>
+                            <span style="color:#d63638;font-size:12px;margin-left:4px;">
+                                <?php esc_html_e( 'not a content language — see notice above', 'lingua-forge' ); ?>
+                            </span>
+                        <?php else : ?>
+                            <span style="color:#46b450;font-weight:700;margin-left:6px;">&#10003;</span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <tr>
                     <th><?php esc_html_e( 'Primary content language', 'lingua-forge' ); ?></th>

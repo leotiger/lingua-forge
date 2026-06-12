@@ -74,7 +74,12 @@ class ScaffoldHandler {
             // (e.g. woocommerce//cart, woocommerce//checkout).
             $candidates = get_block_templates( [ 'slug__in' => [ $base_slug ] ] );
             foreach ( $candidates as $candidate ) {
-                if ( 'plugin' === $candidate->source ) {
+                // Accept any non-user-customised template from a different owner.
+                // WooCommerce uses source='theme' with theme='woocommerce'; other
+                // plugins may use source='plugin'. Exclude 'custom'/'user' (already-
+                // edited Site-Editor templates) and anything from the active theme.
+                if ( ! in_array( $candidate->source, [ 'custom', 'user' ], true ) &&
+                     $candidate->theme !== $theme ) {
                     $source = $candidate;
                     break;
                 }
@@ -108,9 +113,11 @@ class ScaffoldHandler {
             wp_send_json_error( $post_id->get_error_message() );
         }
 
-        // Associate the new template with the active theme so the Site Editor
-        // can find and display it under that theme's template list.
-        wp_set_post_terms( (int) $post_id, $theme, 'wp_theme' );
+        // Associate the new template with the source template's actual owner so
+        // the Site Editor groups it correctly — WooCommerce-derived templates
+        // appear under WooCommerce rather than under the active theme.
+        $namespace = ( $source && $source->theme ) ? (string) $source->theme : $theme;
+        wp_set_post_terms( (int) $post_id, $namespace, 'wp_theme' );
 
         // Tag the template with its language so the theme-switch notice can
         // count localized templates from the previous theme (class-language-router.php

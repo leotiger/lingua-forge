@@ -35,23 +35,21 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.14';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.14/lingua-forge-2.2.14.zip';
-	$last_updated = '2026-06-11';
+	$version      = '2.2.15';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.15/lingua-forge-2.2.15.zip';
+	$last_updated = '2026-06-12';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.14 &#8212; 2026-06-11</h4>' .
+		'<h4>2.2.15 &#8212; 2026-06-12</h4>' .
 		'<ul>' .
-			'<li><strong>Added:</strong> WooCommerce local attribute translation &#8212; Component A translates <code>_product_attributes</code> (name + values) via a batched AI call; Component B rewrites <code>attribute_{key}</code> meta on translated variation children so WooCommerce variation matching works correctly. (<code>LocalAttributeTranslator.php</code>)</li>' .
-			'<li><strong>Added:</strong> WooCommerce attribute label translations &#8212; per-language label fields on the Product Attributes edit/add forms; applied on the frontend via the <code>woocommerce_attribute_label</code> filter. (<code>AttributeLabelAdmin.php</code>)</li>' .
-			'<li><strong>Added:</strong> Batch AI translate for attribute labels and WC taxonomy term names &#8212; one-click buttons on the Product Attributes page and term admin screens; skip-existing by default, force-retranslate link available.</li>' .
-			'<li><strong>Added:</strong> Front-page language routing &#8212; <code>FrontPageQuery</code> handles <code>/{lang}/front-page/</code> URLs and auto-assigns <code>front-page-{lang}</code> FSE templates.</li>' .
-			'<li><strong>Fixed:</strong> WC SKU duplicate error incorrectly raised on translated product saves &#8212; suppressed for posts with <code>_lf_source</code> meta.</li>' .
-			'<li><strong>Fixed:</strong> <code>invalid_page_template</code> on WC product retranslation; <code>linguaforge_translation_complete</code> not firing from PostListColumn admin buttons; add-to-cart AJAX notice served in wrong language.</li>' .
-			'<li><strong>Improved:</strong> TermNameAdmin batch reports skipped count with force-retranslate link; TermNameTranslator uses scalable token budget to prevent JSON truncation on large taxonomies.</li>' .
+			'<li><strong>Fixed:</strong> Theme template-part blocks (header, footer, etc.) loaded the source-language version on archive pages. A new <code>get_block_template</code> filter in <code>Redirector</code> now switches to the <code>{slug}-{lang}</code> variant when one exists. (<code>class-redirector.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce taxonomy archive titles showed the taxonomy noun in the source language on translated pages. <code>WcPageBridge::fix_taxonomy_archive_title</code> re-derives the noun with a fresh gettext call in the switched locale. (<code>WcPageBridge.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce catalogue blocks (Product Collection, etc.) showed no products on translated pages when a category or tag filter was set. <code>CatalogQuery</code> applies a trid-lookup strategy, replacing the <code>tax_query</code> with <code>_lf_trid IN</code> + <code>_lf_lang</code> in meta_query; a Phase 3a pre-check falls back to <code>_lf_lang</code> when no translated matches exist. (<code>CatalogQuery.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> &#8220;Handpicked Products&#8221; and hand-picked product-collection blocks showed no products on translated pages. <code>CatalogQuery</code> now maps source-language <code>post__in</code> IDs to their translated siblings. (<code>CatalogQuery.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> Admin Pages list did not show &#8220;&#8212; Front Page&#8221; / &#8220;&#8212; Posts Page&#8221; labels on translated pages. <code>Columns::add_translated_core_page_states()</code> copies those labels from the source page via <code>get_post_states()</code>, respecting the admin locale. (<code>class-columns.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

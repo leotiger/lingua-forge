@@ -16,6 +16,12 @@
  *    `woocommerce_product_query` action (also main-query-only via pre_get_posts).
  *    We intercept every secondary WP_Query whose post_type is 'product' and
  *    inject the language meta constraint if it is not already present.
+ *    When the secondary query carries a `tax_query` (e.g. a Product Collection
+ *    block filtered to a category embedded on a normal page), translated products
+ *    have no wp_term_relationships rows and the SQL JOIN returns zero.  The same
+ *    trid-lookup strategy used by WcPageBridge::inject_taxonomy_archive_lang() is
+ *    applied: source products matching the tax_query are looked up first, their
+ *    trids collected, and the tax_query replaced with _lf_trid IN + _lf_lang.
  *    `woocommerce_product_query` is kept as a lightweight belt-and-suspenders
  *    fallback for any path we may have missed.
  *
@@ -131,6 +137,25 @@ class CatalogQuery {
 	 *  • ProductCollection / QueryBuilder
 	 *  • Any code that creates a new WP_Query( ['post_type' => 'product', …] )
 	 *
+	 * Tax-query handling for catalogue blocks on normal pages:
+	 *  WooCommerce catalogue blocks (Product Collection, Products, HandpickedProducts, …)
+	 *  embedded on a regular page carry a `tax_query` for their category/tag filter.
+	 *  WordPress resolves `tax_query` with a SQL JOIN on `wp_term_relationships`.
+	 *  In LF's shared-stock model, translated products have no rows in that table
+	 *  (TaxonomyDelegate virtualises the assignment at the PHP layer via
+	 *  `wp_get_object_terms`, not at the SQL layer).  A plain `_lf_lang` meta
+	 *  constraint combined with a `tax_query` therefore returns zero results on
+	 *  any non-source-language page.
+	 *
+	 *  When a `tax_query` is present and the active language is not the source
+	 *  language, we apply the same three-phase trid-lookup strategy used by
+	 *  WcPageBridge::inject_taxonomy_archive_lang() for category archive pages:
+	 *   1. Fetch source-language product IDs that satisfy the original tax_query
+	 *      (suppress_filters=true + explicit _lf_lang=$source_lang so that this
+	 *      same callback's early-return guard fires and prevents recursion).
+	 *   2. Collect their _lf_trid values.
+	 *   3. Replace the tax_query with _lf_trid IN ($trids) + _lf_lang in meta_query.
+	 *
 	 * Skips:
 	 *  • Main query (handled by QueryFilter).
 	 *  • Admin requests (product management must show all languages).
@@ -188,6 +213,159 @@ class CatalogQuery {
 			}
 		}
 
+		// ── Tax-query path: catalogue blocks on normal pages ──────────────────────
+		//
+		// When the query carries a tax_query (e.g. Product Collection block filtered
+		// to a category) AND we are not on the source-language page, the SQL JOIN on
+		// wp_term_relationships returns zero rows for translated products.
+		// Resolve using the trid-lookup strategy: fetch source products that match
+		// the taxonomy constraints, collect their trids, and replace the tax_query
+		// with _lf_trid IN ($trids) + _lf_lang in meta_query.
+		$source_lang = \LinguaForge\Router\Router::get_instance()->source_language();
+		$tax_query   = (array) $query->get( 'tax_query', [] );
+
+		// ── post__in path: handpicked / explicitly-IDed product blocks ────────────
+		//
+		// Handpicked product blocks (woocommerce/handpicked-products and
+		// woocommerce/product-collection with woocommerceHandPickedProducts) store
+		// source-language post IDs in post__in.  On a non-source-language page a
+		// plain _lf_lang constraint combined with those IDs returns zero, because
+		// the specific post IDs belong to the source language.
+		//
+		// Map each source ID to its translated sibling via _lf_trid, then clear
+		// any tax_query: translated products have no wp_term_relationships rows of
+		// their own, so any visibility/category JOIN would filter them out again.
+		$post_in = array_values( array_filter( array_map( 'intval', (array) $query->get( 'post__in', [] ) ) ) );
+
+		if ( ! empty( $post_in ) && $effective_lang !== $source_lang ) {
+			$router         = \LinguaForge\Router\Router::get_instance();
+			$translated_ids = [];
+
+			foreach ( $post_in as $src_id ) {
+				if ( $effective_lang === $router->get_lang( $src_id ) ) {
+					// ID is already in the target language (block on a translated page).
+					$translated_ids[] = $src_id;
+					continue;
+				}
+				// Walk the translation group to find the target-language sibling.
+				foreach ( $router->get_translations( $src_id ) as $sibling_id ) {
+					if ( $effective_lang === $router->get_lang( $sibling_id ) ) {
+						$translated_ids[] = $sibling_id;
+						break;
+					}
+				}
+			}
+
+			$query->set( 'post__in', ! empty( $translated_ids ) ? $translated_ids : [ -1 ] );
+			$query->set( 'tax_query', [] );
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$meta_query[] = [ 'key' => '_lf_lang', 'value' => $effective_lang ];
+			$query->set( 'meta_query', $meta_query );
+			return;
+		}
+
+		if ( ! empty( $tax_query ) && $effective_lang !== $source_lang ) {
+
+			// Phase 1: source products that satisfy the original tax_query.
+			// We pass _lf_lang = $source_lang explicitly so that our own
+			// pre_get_posts callback sees the _lf_lang key and returns early,
+			// preventing recursion.  suppress_filters=true prevents post_results /
+			// the_posts filters from firing (TaxonomyDelegate is not needed here
+			// since source products have their own wp_term_relationships rows).
+			// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query,WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$source_ids = get_posts( [
+				'post_type'        => 'product',
+				'post_status'      => 'publish',
+				'posts_per_page'   => -1,
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => true,
+				'tax_query'        => $tax_query,
+				'meta_query'       => [ [ 'key' => '_lf_lang', 'value' => $source_lang ] ],
+			] );
+			// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query,WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+
+			// Phase 2: collect _lf_trid values.
+			$trids = [];
+			foreach ( (array) $source_ids as $id ) {
+				$trid = (string) get_post_meta( (int) $id, '_lf_trid', true );
+				if ( '' !== $trid ) {
+					$trids[] = $trid;
+				}
+			}
+
+			// Phase 3: replace the tax_query with a meta_query trid+lang scope.
+			$query->set( 'tax_query', [] );
+
+			if ( empty( $trids ) ) {
+				if ( empty( $source_ids ) ) {
+					// No source products satisfy the original tax_query — nothing to
+					// translate; return an impossible condition so the block is empty.
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					$query->set( 'meta_query', [ [ 'key' => '_lf_lang', 'value' => '__lf_no_match__' ] ] );
+				} else {
+					// Source products exist but none carry _lf_trid — products
+					// pre-date _lf_trid being written by class-sync.php (e.g. imported
+					// without an authenticated admin user).  tax_query already cleared;
+					// fall back to a plain _lf_lang constraint so translated products
+					// (if any) are still shown.
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					$meta_query[] = [ 'key' => '_lf_lang', 'value' => $effective_lang ];
+					$query->set( 'meta_query', $meta_query );
+				}
+				return;
+			}
+
+			// Phase 3a: verify that translated products with these trids actually
+			// exist before committing to the trid-based query.  Without this check,
+			// products created programmatically (e.g. AI-batch translation, WC CSV
+			// import, REST without the translations-metabox nonce) receive their
+			// own fresh UUID rather than inheriting the source's _lf_trid, causing
+			// Phase 3 to silently return zero results.
+			//
+			// The check is cached per (trid-set, language) pair per request so that
+			// multiple blocks with the same taxonomy filter on the same page pay the
+			// cost of at most one extra query.
+			static $trid_match_cache = [];
+			$trid_cache_key = md5( implode( ',', $trids ) ) . ':' . $effective_lang;
+
+			if ( ! array_key_exists( $trid_cache_key, $trid_match_cache ) ) {
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				$trid_matches = get_posts( [
+					'post_type'        => 'product',
+					'post_status'      => 'publish',
+					'posts_per_page'   => 1,
+					'fields'           => 'ids',
+					'no_found_rows'    => true,
+					'suppress_filters' => true,
+					'meta_query'       => [
+						[ 'key' => '_lf_trid', 'value' => $trids, 'compare' => 'IN' ],
+						[ 'key' => '_lf_lang', 'value' => $effective_lang ],
+					],
+				] );
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				$trid_match_cache[ $trid_cache_key ] = ! empty( $trid_matches );
+			}
+
+			if ( ! $trid_match_cache[ $trid_cache_key ] ) {
+				// Trids were resolved from source products but no translated products
+				// carry matching trids — translation group linkage is incomplete
+				// (class-sync.php will fix on next admin save of the source product).
+				// Fall back to _lf_lang so any translated products are still shown.
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				$meta_query[] = [ 'key' => '_lf_lang', 'value' => $effective_lang ];
+				$query->set( 'meta_query', $meta_query );
+				return;
+			}
+
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$meta_query[] = [ 'key' => '_lf_trid', 'value' => $trids, 'compare' => 'IN' ];
+			$meta_query[] = [ 'key' => '_lf_lang', 'value' => $effective_lang ]; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			$query->set( 'meta_query', $meta_query );
+			return;
+		}
+
+		// ── Simple path: no tax_query (or source-language page) ──────────────────
 		$meta_query[] = [
 			'key'   => '_lf_lang',
 			'value' => $effective_lang,

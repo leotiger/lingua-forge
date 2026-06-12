@@ -43,6 +43,23 @@ class Redirector {
 		add_filter( 'render_block', [ $this, 'fix_site_title_link' ], 20, 2 );
 		add_filter( 'render_block', [ $this, 'fix_home_link' ], 20, 2 );
 
+		// Redirect base template parts (header, footer, …) to their per-language
+		// variants on translated pages.  Theme-provided templates (WC shop archive,
+		// product_cat/tag archive, 404, etc.) hardcode the base slug; LF-assigned
+		// templates already reference the lang-specific slug directly.
+		//
+		// render_block_data (priority 5, before WC's priority 10): required on WP 6.7+
+		// where WooCommerce's core/template-part callback replacement causes
+		// render_block_core_template_part() to check WP_Block_Templates_Registry
+		// before get_block_template(), bypassing the filter below for parts that live
+		// on the theme filesystem (e.g. "footer").  Swapping the slug attribute here
+		// routes whatever lookup mechanism the callback uses to the localised variant.
+		add_filter( 'render_block_data', [ $this, 'redirect_template_part_via_block_data' ], 5, 3 );
+		// get_block_template (priority 10): still needed for WP < 6.7, non-WC pages,
+		// and the slug-only fallback that resolves localised parts whose wp_theme
+		// taxonomy term is absent or wrong.
+		add_filter( 'get_block_template', [ $this, 'redirect_template_part_to_lang' ], 10, 3 );
+
 		// WooCommerce breadcrumb "Home" link
 		add_filter( 'woocommerce_breadcrumb_home_url', [ $this, 'translate_breadcrumb_home_url' ] );
 
@@ -314,6 +331,175 @@ class Redirector {
 		}
 
 		return home_url( '/' . $lang . '/' );
+	}
+
+	// =========================================================
+	// TEMPLATE-PART LANGUAGE ROUTING
+	// =========================================================
+
+	/**
+	 * Rewrites core/template-part block attributes before the render callback runs.
+	 *
+	 * On WordPress 6.7+, WooCommerce globally replaces the core/template-part render
+	 * callback (via BlockTemplatesController::add_plugin_templates_parts_support on the
+	 * block_type_metadata_settings filter).  Its replacement, render_woocommerce_template_part(),
+	 * falls through to \render_block_core_template_part() for non-WC parts.  In WP 6.7+
+	 * that function checks WP_Block_Templates_Registry *before* calling get_block_template(),
+	 * so the get_block_template filter (where redirect_template_part_to_lang lives) is
+	 * never reached for filesystem-resident parts such as "footer".
+	 *
+	 * Hooking render_block_data at priority 5 — before WC's AbstractTemplateCompatibility
+	 * (priority 10) — lets us swap the slug attribute (e.g. "footer" → "footer-es") before
+	 * any callback or registry lookup runs.  The render callback then receives the localised
+	 * slug; since localised parts live only in the DB (not on the filesystem), the registry
+	 * lookup misses and falls back to get_block_template(), where redirect_template_part_to_lang
+	 * resolves it via a slug-only DB query.
+	 *
+	 * The static cache avoids repeated DB queries for the same (slug, lang) pair within a
+	 * single request (e.g. the header template part appears on every page).
+	 *
+	 * @param  array          $parsed_block The block being rendered — may be modified.
+	 * @param  array          $source_block Un-modified copy of $parsed_block (unused).
+	 * @param  \WP_Block|null $parent_block Parent block instance, or null (unused).
+	 * @return array
+	 */
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $source_block and $parent_block are required by add_filter() arity (3 accepted args); WordPress passes them but this method only uses $parsed_block.
+	public function redirect_template_part_via_block_data( array $parsed_block, array $source_block, $parent_block ): array {
+		if ( ( $parsed_block['blockName'] ?? '' ) !== 'core/template-part' ) {
+			return $parsed_block;
+		}
+
+		if ( is_admin() ) {
+			return $parsed_block;
+		}
+
+		if ( ! defined( 'LF_LANG' ) || '' === LF_LANG ) {
+			return $parsed_block;
+		}
+
+		if ( LF_LANG === $this->router->context->source_language() ) {
+			return $parsed_block;
+		}
+
+		$slug  = (string) ( $parsed_block['attrs']['slug']  ?? '' );
+		$theme = (string) ( $parsed_block['attrs']['theme'] ?? get_stylesheet() );
+
+		if ( '' === $slug ) {
+			return $parsed_block;
+		}
+
+		// Reentrancy / double-suffix guard: slug already points to the localised part.
+		if ( str_ends_with( $slug, '-' . LF_LANG ) ) {
+			return $parsed_block;
+		}
+
+		// Only redirect parts belonging to the active theme.  Plugin-owned parts
+		// (e.g. theme='woocommerce') have no localised variants — do not touch them.
+		if ( $theme !== get_stylesheet() ) {
+			return $parsed_block;
+		}
+
+		// Static existence cache: one DB query per unique (slug, lang) pair per request.
+		static $cache = [];
+		$cache_key = $slug . ':' . LF_LANG;
+
+		if ( ! array_key_exists( $cache_key, $cache ) ) {
+			$lang_slug  = $slug . '-' . LF_LANG;
+			$candidates = get_block_templates( [ 'slug__in' => [ $lang_slug ] ], 'wp_template_part' );
+			$cache[ $cache_key ] = ! empty( $candidates ) ? $lang_slug : false;
+		}
+
+		if ( false === $cache[ $cache_key ] ) {
+			return $parsed_block;
+		}
+
+		$parsed_block['attrs']['slug'] = $cache[ $cache_key ];
+		return $parsed_block;
+	}
+
+	/**
+	 * Redirects a base template-part lookup to its per-language variant.
+	 *
+	 * WordPress resolves template parts via get_block_template( "{theme}//{slug}", 'wp_template_part' ).
+	 * Theme-provided archive templates (WooCommerce shop, product_cat / product_tag,
+	 * 404, etc.) hardcode the base slug (e.g. "footer") in their block markup.
+	 * LF-assigned per-post templates already reference "footer-{lang}" directly
+	 * and are unaffected.
+	 *
+	 * When this filter fires for a base slug:
+	 *   1. Guards exit early if LF_LANG is not set, equals the source language,
+	 *      if the theme prefix does not match the active stylesheet (plugin-owned
+	 *      parts such as "woocommerce//checkout-header" are never redirected —
+	 *      no "-{lang}" variant exists on the plugin filesystem), or if the slug
+	 *      already ends with "-{lang}" (reentrancy / double-suffix).
+	 *   2. A lang-specific variant is looked up: "{theme}//{slug}-{lang}".
+	 *   3. If found, it is returned instead of the base template part.
+	 *
+	 * @param  \WP_Block_Template|null $template       Resolved template (or null).
+	 * @param  string                  $id             Template identifier: "{theme}//{slug}".
+	 * @param  string                  $template_type  'wp_template' or 'wp_template_part'.
+	 * @return \WP_Block_Template|null
+	 */
+	public function redirect_template_part_to_lang( $template, string $id, string $template_type ) {
+		// Only act on template parts — templates (page-level) are handled by Search\Query
+		// and FrontPageQuery which swap entire templates via get_block_templates.
+		if ( 'wp_template_part' !== $template_type ) {
+			return $template;
+		}
+
+		if ( is_admin() ) {
+			return $template;
+		}
+
+		if ( ! defined( 'LF_LANG' ) || '' === LF_LANG ) {
+			return $template;
+		}
+
+		if ( LF_LANG === $this->router->context->source_language() ) {
+			return $template;
+		}
+
+		// Parse "{theme}//{slug}".
+		$sep = strpos( $id, '//' );
+		if ( false === $sep ) {
+			return $template;
+		}
+
+		// Only redirect template parts that belong to the active theme.
+		// Parts owned by plugins (e.g. "woocommerce//checkout-header") must never
+		// be redirected — they live on the plugin filesystem and no "-{lang}" variant
+		// exists there, causing a PHP file_get_contents warning in WC's BlockTemplateUtils.
+		$theme_prefix = substr( $id, 0, $sep );
+		if ( $theme_prefix !== get_stylesheet() ) {
+			return $template;
+		}
+
+		$slug = substr( $id, $sep + 2 );
+
+		// Guard: slug already carries the lang suffix.
+		// • Ordinary path: the part slug was already localised (either by the
+		//   redirect_template_part_via_block_data hook above, or because the page
+		//   template references "footer-{lang}" directly).
+		// • Reentrancy: the get_block_template() call on line ~415 below re-enters
+		//   this filter for the localised slug; in both cases we must not recurse.
+		//
+		// When $template is still null WordPress will run its own DB query, which
+		// requires a matching wp_theme taxonomy term.  Fall back to a slug-only
+		// get_block_templates() lookup so the part is found even when its wp_theme
+		// term is absent or wrong (e.g. before RepairHandler has been run).
+		if ( str_ends_with( $slug, '-' . LF_LANG ) ) {
+			if ( null !== $template ) {
+				return $template; // already resolved by an earlier filter
+			}
+			$candidates = get_block_templates( [ 'slug__in' => [ $slug ] ], 'wp_template_part' );
+			return ! empty( $candidates ) ? $candidates[0] : $template;
+		}
+
+		// Look up the lang-specific variant.  The recursive call above will trip the
+		// str_ends_with guard and return immediately, so there is no infinite loop.
+		$lang_template = get_block_template( substr( $id, 0, $sep + 2 ) . $slug . '-' . LF_LANG, 'wp_template_part' );
+
+		return ( $lang_template instanceof \WP_Block_Template ) ? $lang_template : $template;
 	}
 
 	public function fix_site_logo_link( string $block_content, array $block ): string {

@@ -5,6 +5,7 @@ namespace LinguaForge\AI\Admin\Settings\Tabs;
 use LinguaForge\AI\Admin\FseLocalisation\LinkFixer;
 use LinguaForge\AI\Admin\FseLocalisation\PartRefFixer;
 use LinguaForge\AI\Admin\FseLocalisation\PatternHandler;
+use LinguaForge\AI\Admin\FseLocalisation\RepairHandler;
 use LinguaForge\AI\Admin\FseLocalisation\ScaffoldHandler;
 use LinguaForge\AI\Admin\FseLocalisation\TranslateHandler;
 use LinguaForge\AI\Admin\Settings\Tabs\Sections\NavigationsSection;
@@ -49,6 +50,7 @@ class RouterTab extends Tab {
         LinkFixer::register_hooks();
         PartRefFixer::register_hooks();
         PatternHandler::register_hooks();
+        RepairHandler::register_hooks();
     }
 
     // ── AI helpers ────────────────────────────────────────────────────────────
@@ -137,6 +139,38 @@ class RouterTab extends Tab {
                 </p>
             </div>
         <?php endif; ?>
+        <?php endif; ?>
+
+        <?php
+        // ── WP site language mismatch notice ─────────────────────────────────
+        // Fires when the WP instance locale (used as the admin UI language) is
+        // not one of the active Lingua Forge content languages.
+        // E.g. WP = en_US but content languages are CA + ES only.
+        // In this configuration WooCommerce product queries return zero results,
+        // product images fail to delegate, and all language-filtered queries break.
+        $lf_wp_locale_code    = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $lf_locale_mismatch   = $primary_stored !== '' && ! in_array( $lf_wp_locale_code, $router_langs, true );
+        if ( $lf_locale_mismatch ) : ?>
+            <div class="notice notice-error">
+                <p>
+                    <strong><?php esc_html_e( 'Configuration issue: WP site language is not a content language', 'lingua-forge' ); ?></strong>
+                </p>
+                <p>
+                    <?php echo esc_html( sprintf(
+                        /* translators: 1: WP site locale e.g. en_US  2: comma-separated upper-case content language codes e.g. CA, ES */
+                        __( 'The WordPress site language (%1$s) is not among the active Lingua Forge content languages (%2$s). This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
+                        get_locale(),
+                        implode( ', ', array_map( 'strtoupper', $router_langs ) )
+                    ) ); ?>
+                </p>
+                <p>
+                    <?php esc_html_e( 'Fix: go to', 'lingua-forge' ); ?>
+                    <a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">
+                        <?php esc_html_e( 'Settings → General → Site Language', 'lingua-forge' ); ?>
+                    </a>
+                    <?php esc_html_e( 'and set it to one of the active content languages listed above.', 'lingua-forge' ); ?>
+                </p>
+            </div>
         <?php endif; ?>
 
         <!-- ── Primary Language ────────────────────────────────────────────── -->
@@ -316,6 +350,7 @@ class RouterTab extends Tab {
         <?php endif; ?>
 
         <?php self::render_language_panels(); ?>
+        <?php self::render_template_repair(); ?>
 
     <?php
     }
@@ -385,6 +420,74 @@ class RouterTab extends Tab {
         <?php endforeach; ?>
 
     <?php
+    }
+
+    // ── Template Metadata Repair ─────────────────────────────────────────────
+
+    /**
+     * Render the "Repair Template Metadata" admin section.
+     *
+     * Bulk-repairs two things on all LF-scaffolded FSE templates stored in the DB:
+     *   - wp_theme taxonomy: WooCommerce-derived templates get theme='woocommerce'
+     *     instead of the active-theme slug so the Site Editor groups them correctly.
+     *   - _lf_lang meta: tags any scaffolded template that is missing it so coverage
+     *     reports and the theme-switch notice can find it.
+     */
+    private static function render_template_repair(): void {
+        $nonce = wp_create_nonce( 'linguaforge_repair_fse_metadata' );
+        ?>
+        <hr style="margin:24px 0 16px;">
+        <h2><?php esc_html_e( 'Repair Template Metadata', 'lingua-forge' ); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Fixes the Site Editor namespace and _lf_lang tag on all LF-scaffolded FSE templates stored in the database. Run this once after updating from an earlier version of Lingua Forge — it moves WooCommerce-derived templates from the active-theme group to the WooCommerce group in the Site Editor, and ensures all scaffolded templates are discoverable by coverage reports.', 'lingua-forge' ); ?>
+        </p>
+
+        <p>
+            <button type="button"
+                    id="lf-repair-fse-btn"
+                    class="button"
+                    data-nonce="<?php echo esc_attr( $nonce ); ?>">
+                <?php esc_html_e( 'Repair template metadata', 'lingua-forge' ); ?>
+            </button>
+            <span id="lf-repair-fse-msg" style="margin-left:10px;font-size:13px;"></span>
+        </p>
+
+        <script>
+        (function () {
+            var btn = document.getElementById('lf-repair-fse-btn');
+            var msg = document.getElementById('lf-repair-fse-msg');
+            if (!btn || !msg) { return; }
+            btn.addEventListener('click', function () {
+                btn.disabled = true;
+                msg.style.color = '#646970';
+                msg.textContent = '<?php echo esc_js( __( 'Repairing…', 'lingua-forge' ) ); ?>';
+                var data = new FormData();
+                data.append('action', 'linguaforge_repair_fse_metadata');
+                data.append('nonce', btn.dataset.nonce);
+                fetch(ajaxurl, { method: 'POST', body: data })
+                    .then(function (r) { return r.json(); })
+                    .then(function (resp) {
+                        if (resp.success) {
+                            msg.style.color = '#46b450';
+                            msg.textContent = resp.data.message;
+                        } else {
+                            msg.style.color = '#b32d2e';
+                            msg.textContent = (resp.data && resp.data.message)
+                                ? resp.data.message
+                                : '<?php echo esc_js( __( 'Repair failed.', 'lingua-forge' ) ); ?>';
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(function () {
+                        msg.style.color = '#b32d2e';
+                        msg.textContent = '<?php echo esc_js( __( 'Request failed.', 'lingua-forge' ) ); ?>';
+                        btn.disabled = false;
+                    });
+            });
+        }());
+        </script>
+        <?php
     }
 
     // ── Handlers ──────────────────────────────────────────────────────────────

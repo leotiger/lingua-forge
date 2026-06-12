@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.2.14 — stable, open for testing.**
+> **Version 2.2.15 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -246,13 +246,31 @@ Languages are configured entirely inside **Settings → Lingua Forge → Router*
 
 #### WP site language vs. primary content language
 
-These are two independent settings and it is intentional that they can differ.
-
-**WordPress site language** (`Settings → General → Site Language`) controls the admin interface and the locale WordPress uses internally. This is typically set to a well-supported locale such as `en_US` or `de_DE`.
+**WordPress site language** (`Settings → General → Site Language`) controls the admin interface and the locale WordPress uses internally.
 
 **Primary content language** (set in **Settings → Lingua Forge → Router**) is the language your actual content is written in — the language that maps to the root URL path (no prefix) and acts as the source for all translations. Developers can override it via the `lf_primary_language` filter.
 
-A practical example: the site admin works in `en_US`, but the primary content is Catalan (`ca`). The WordPress site language is left at `en_US` so the admin backend stays in English. The plugin's source language is set to `ca` so Catalan content lives at `/your-page/` and other languages are served at `/es/your-page/`, `/de/your-page/`, etc.
+> **Requirement: the WP site language must be one of the languages used for content.**
+
+Lingua Forge builds its valid-language list from installed WordPress language packs, plugin `.mo` files in the i18n-overrides folder, and the explicitly configured primary language. WordPress's own site locale is intentionally excluded from this list when the primary content language is explicitly set — to prevent the admin UI language from being treated as a content language.
+
+However, WordPress core and WooCommerce use `get_locale()` directly in a number of operations (object-cache keys, REST API locale, early text domain loads, locale-sensitive number and date formatting). Even with Lingua Forge switching the locale via `switch_to_locale()`, some of those operations happen before or outside the switch. When the WP site language is completely outside the content language set, mismatches accumulate:
+
+- **WooCommerce product queries break** — language detection falls back to the WP site locale, injecting the wrong `_lf_lang` constraint and returning zero products.
+- **Product image delegation fails** — source product ID resolution relies on correctly identified language codes throughout the TRID chain.
+- **The language switcher may render a spurious non-content language** option (fixed in 2.2.16 for the routing layer, but the locale-level conflicts in WooCommerce remain).
+- **REST API responses** always use the WP site locale (REST is excluded from locale switching); this affects Gutenberg block data fetched via REST.
+
+**Supported configurations:**
+
+| WP site language | Content languages | Result |
+|---|---|---|
+| `ca` | `ca` (primary), `es` | Fully supported — site locale matches primary content |
+| `es_ES` | `ca` (primary), `es` | Fully supported — site locale is one of the content languages |
+| `en_US` | `ca` (primary), `es`, `en` | Fully supported — English is an active content language |
+| `en_US` | `ca` (primary), `es` | ⚠ **Not supported** — English is not a content language; WooCommerce and product image delegation will not work reliably |
+
+**Recommendation:** Set `Settings → General → Site Language` to the primary content language, or to one of the active secondary languages. For WooCommerce sites the restriction is strict — mismatched locales cause product queries and image delegation to fail in ways that cannot be reliably patched at the plugin layer.
 
 ---
 
@@ -964,6 +982,34 @@ wp linguaforge missing_translations ca page --format=json \
 
 **Status:** A fix is planned for a future release. The approach under consideration (`render_block` filter on `core/navigation-link` for render-time link swapping) would replace the need for per-language navigation posts entirely and resolve this issue as a side effect.
 
+### WP site language set to a non-content language (WooCommerce products missing, language switcher shows extra option)
+
+**Symptom:** WooCommerce catalogue blocks show no products; product photos do not appear on translated product pages; the language switcher block renders a language option (e.g. "EN") that has no corresponding content; quick-edit language dropdowns in the admin offer that spurious language; translated product pages redirect to the wrong WC page; all secondary content queries return zero results.
+
+**Root cause:** WordPress core and WooCommerce rely on `get_locale()` for query filtering, cache keys, number/date formatting, and page routing. Lingua Forge performs a `switch_to_locale()` early in the request lifecycle, but a number of operations — object-cache key generation, REST API requests (which bypass the locale switch), early text-domain loads, third-party plugin hooks that fire before `plugins_loaded` priority 0 — still see the WP site locale. When the WP site language is not one of the content languages (e.g. WP = `en_US`, content = `ca` + `es` only), the following breaks:
+
+- **Language routing** — the WP site locale's two-char code (`en`) enters the valid-language list and can be set as `LF_LANG` via cookie contamination
+- **`CatalogQuery`** — all secondary WC product queries inject `_lf_lang = en` → zero products on every catalogue block
+- **`WcPageBridge`** — WC page ID resolution (`translate_page_id()`) fails for `LF_LANG = en` → wrong page on translated checkout and shop URLs
+- **`QueryFilter`** — all secondary content queries (not just WC) inject `_lf_lang = en` → zero results on non-WC archive and loop pages
+- **Language switcher block** — renders a non-content language option; clicking it writes a `lf_lang=en` cookie that persists until cleared and cascades all of the above
+- **Quick-edit language dropdown** — admin can accidentally assign `_lf_lang = en` to posts and products
+- **REST API** — Gutenberg block data fetched via REST always uses the WP site locale (REST is excluded from locale switching); WC block data is formatted in the wrong locale
+- **Locale switching overhead** — every single source-language front-end page incurs an extra `switch_to_locale()` call that would not be needed if WP site language matched content language
+
+**Fix:** Go to **Settings → General → Site Language** and set it to one of the languages actively used for content — either the primary content language or one of the configured secondary languages.
+
+Supported configurations:
+
+| WP site language | Content languages | Supported |
+|---|---|---|
+| `ca` | `ca` (primary) + `es` | ✅ |
+| `es_ES` | `ca` (primary) + `es` | ✅ — site locale is a content language |
+| `en_US` | `ca` (primary) + `es` + `en` | ✅ — English is an active content language |
+| `en_US` | `ca` (primary) + `es` | ❌ — English is not a content language |
+
+There is no workaround for keeping WP site language outside the content language set and having WooCommerce work reliably. This is a fundamental constraint of how WordPress core and WooCommerce use `get_locale()` throughout the stack.
+
 ---
 
 ## Language Overrides
@@ -1074,8 +1120,10 @@ from within the editor of post objects and WooCommerce products. For most websit
 
 ---
 
-**Current release — 2.2.14**
+**Current release — 2.2.15**
 
+- **WooCommerce taxonomy archive title locale fix** *(2.2.15)* — `woocommerce_page_title()` assembles the archive title from a translated format string and `$tax->labels->singular_name`. The format string uses the switched locale correctly; the singular noun was frozen in `$wp_taxonomies` at registration time (source locale), causing titles like "Productes per categoria" to appear on Spanish pages. `WcPageBridge::fix_taxonomy_archive_title` re-calls WooCommerce's own registration strings in the switched locale to fix the noun. Built-in WC taxonomies handled explicitly; `pa_*` attribute taxonomies use AttributeLabelAdmin translations when available. (`WcPageBridge.php`)
+- **WooCommerce catalogue blocks on translated pages** *(2.2.15)* — Product Collection, HandpickedProducts, and similar blocks with a category or tag filter showed no products on translated pages because the `tax_query` JOIN targets `wp_term_relationships`, which has no rows for translated products. `CatalogQuery` now applies the same three-phase trid-lookup as taxonomy archive pages. (`CatalogQuery.php`)
 - **WooCommerce attribute label translations** *(2.2.14)* — Per-language label fields added to the Product Attributes edit and add forms. Translations stored in `wp_options` and applied on the frontend via the `woocommerce_attribute_label` filter — labels like "Color" and "Size" now appear in the active language without any companion plugin. (`AttributeLabelAdmin.php`, `TermNameFilter.php`)
 - **Batch AI translate for attribute labels** *(2.2.14)* — "Translate all labels (AI)" button on the Product Attributes page sends all untranslated labels to the AI in a single call per target language. Existing manual translations are never overwritten. (`AttributeLabelAdmin.php`)
 - **Multilingual SEO overview** *(2.2.5)* — Batch analysis results are now presented as a per-language tabbed parity view. Every analyzed post appears in its language's tab with a colour-coded score, a direct edit link, the source-language title for cross-language comparison, post type, and SEO profile. WooCommerce system pages (Shop, Cart, Checkout, My Account, Terms) are excluded from batch scoring. A parity hint below the heading explains that a low score reflects structural limits and is a signal rather than a mandate.

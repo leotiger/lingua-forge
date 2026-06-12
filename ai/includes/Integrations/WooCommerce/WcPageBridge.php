@@ -140,6 +140,16 @@ class WcPageBridge {
 		// instead of falling back to slug-stripping (which produces /es/shop/ rather
 		// than /es/tienda/).
 		add_action( 'wp', [ self::class, 'set_source_shop_page_id_query_var' ] );
+
+		// Fix taxonomy archive page titles on translated pages.
+		// woocommerce_page_title() builds the title as:
+		//   sprintf( __('Products by %s', 'woocommerce'), $tax->labels->singular_name )
+		// $tax->labels->singular_name is cached in $wp_taxonomies at init time in the
+		// source locale and does not update when switch_to_locale() fires, so the
+		// taxonomy type noun ("Category", "Tag", …) stays in the source language even
+		// though the rest of the page is in the target language.  This filter rebuilds
+		// the title using live gettext calls in the already-switched locale.
+		add_filter( 'woocommerce_page_title', [ self::class, 'fix_taxonomy_archive_title' ] );
 	}
 
 	// =========================================================================
@@ -881,6 +891,104 @@ class WcPageBridge {
 		}
 
 		return in_array( $slug, self::$myaccount_slugs, true );
+	}
+
+	// =========================================================================
+	// Hook: woocommerce_page_title — taxonomy archive title locale fix
+	// =========================================================================
+
+	/**
+	 * Re-derives the taxonomy archive page title in the current switched locale.
+	 *
+	 * WooCommerce's woocommerce_page_title() calls:
+	 *   sprintf( __( 'Products by %s', 'woocommerce' ), $tax->labels->singular_name )
+	 *
+	 * The __() call for the format string correctly uses the switched locale because
+	 * it fires at template render time.  But $tax->labels->singular_name is stored
+	 * in $wp_taxonomies at taxonomy registration time (init); if WooCommerce's
+	 * plugins_loaded callback loads its text domain before LF's switch_to_locale()
+	 * fires, the singular_name is left in the source locale (e.g. "categoria" in
+	 * Catalan instead of "Categoría" in Spanish).
+	 *
+	 * This filter explicitly re-calls WooCommerce's own registration strings (same
+	 * gettext keys, same text domain) in the already-switched locale so the
+	 * complete title — format string AND taxonomy noun — appears in the target language.
+	 *
+	 * @param  string $title  Title produced by woocommerce_page_title().
+	 * @return string         Corrected title, or $title unchanged when the fix is not needed.
+	 */
+	public static function fix_taxonomy_archive_title( string $title ): string {
+		if ( ! defined( 'LF_LANG' ) ) {
+			return $title;
+		}
+		$source_lang = \LinguaForge\Router\Router::get_instance()->context->source_language();
+		if ( LF_LANG === $source_lang ) {
+			return $title;
+		}
+		if ( ! is_tax() ) {
+			return $title;
+		}
+		$term = get_queried_object();
+		if ( ! $term instanceof \WP_Term ) {
+			return $title;
+		}
+
+		$singular = self::get_wc_taxonomy_singular( $term->taxonomy );
+		if ( '' === $singular ) {
+			return $title;
+		}
+
+		// Re-call the WC format string — uses the switched locale, so it returns
+		// the translated form (e.g. "Productos por %s" for es_ES).
+		// translators: %s: taxonomy singular name (e.g. "Category", "Tag", "Brand").
+		return sprintf( __( 'Products by %s', 'woocommerce' ), $singular ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- intentionally calling WooCommerce's own string in the switched locale to match its registered translation.
+	}
+
+	/**
+	 * Returns the singular label for a WooCommerce taxonomy in the current locale.
+	 *
+	 * For WooCommerce's built-in taxonomies the return value comes from a live
+	 * gettext call (same key used at registration) in the switched locale.
+	 * For pa_* attribute taxonomies, the AttributeLabelAdmin per-language option
+	 * is checked first; if absent, the cached source-language label is returned
+	 * as a fallback.
+	 *
+	 * @param  string $taxonomy  Taxonomy slug (e.g. 'product_cat', 'pa_color').
+	 * @return string            Singular label, or '' if the taxonomy is unknown.
+	 */
+	private static function get_wc_taxonomy_singular( string $taxonomy ): string {
+		// Built-in WC taxonomies — re-call their registration gettext strings in
+		// the current locale.  Explicit literals required by WordPress.WP.I18n sniffs.
+		// phpcs:disable WordPress.WP.I18n.TextDomainMismatch -- 'woocommerce' domain is intentional: we are re-calling the exact strings WooCommerce uses to register each taxonomy's singular_name label.
+		switch ( $taxonomy ) {
+			case 'product_cat':
+				return __( 'Category', 'woocommerce' );
+			case 'product_tag':
+				return __( 'Tag', 'woocommerce' );
+			case 'product_brand':
+				return __( 'Brand', 'woocommerce' );
+			case 'product_type':
+				return __( 'Product type', 'woocommerce' );
+			case 'product_shipping_class':
+				return __( 'Shipping class', 'woocommerce' );
+			case 'product_visibility':
+				return __( 'Visibility', 'woocommerce' );
+		}
+		// phpcs:enable WordPress.WP.I18n.TextDomainMismatch
+
+		// pa_* attribute taxonomies: prefer AttributeLabelAdmin's per-language
+		// translation stored in linguaforge_attr_labels_{taxonomy}.
+		if ( str_starts_with( $taxonomy, 'pa_' ) ) {
+			$labels = (array) get_option( 'linguaforge_attr_labels_' . $taxonomy, [] );
+			if ( ! empty( $labels[ LF_LANG ] ) ) {
+				return (string) $labels[ LF_LANG ];
+			}
+			// Fall back to whatever the cached label is (may be source-language).
+			$tax = get_taxonomy( $taxonomy );
+			return $tax instanceof \WP_Taxonomy ? (string) $tax->labels->singular_name : '';
+		}
+
+		return '';
 	}
 
 	// =========================================================================

@@ -81,9 +81,21 @@ class Context {
 	public function languages(): array {
 		if ( $this->cached_languages !== null ) return $this->cached_languages;
 
-		// Start with languages WordPress core knows about.
-		$locales   = get_available_languages();
-		$locales[] = get_locale();
+		// Start with languages WordPress core knows about (installed language packs).
+		$locales = get_available_languages();
+
+		// Include the WP site locale only when Lingua Forge has no explicit primary
+		// language configured.  In that unconfigured state the site locale IS the
+		// content language (the fallback in source_language() uses it).  When
+		// linguaforge_primary_language IS set, the WP site locale is the admin UI
+		// language — not a content language — and must not be added here.
+		// Example: WP UI = en_US, LF primary = ca.  Without this guard, 'en' would
+		// enter the valid-language list, the language switcher would show an EN option,
+		// and clicking it would set lf_lang=en cookie, causing CatalogQuery to inject
+		// _lf_lang=en and return zero products on every non-prefixed page.
+		if ( '' === sanitize_key( (string) get_option( 'linguaforge_primary_language', '' ) ) ) {
+			$locales[] = get_locale();
+		}
 
 		// Also auto-discover languages from the plugin's own .mo files so that
 		// adding e.g. vikbooking-it_IT.mo is sufficient — no WP core language
