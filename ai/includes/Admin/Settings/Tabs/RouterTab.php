@@ -143,24 +143,40 @@ class RouterTab extends Tab {
 
         <?php
         // ── WP site language mismatch notice ─────────────────────────────────
-        // Fires when the WP instance locale (used as the admin UI language) is
-        // not one of the active Lingua Forge content languages.
-        // E.g. WP = en_US but content languages are CA + ES only.
-        // In this configuration WooCommerce product queries return zero results,
-        // product images fail to delegate, and all language-filtered queries break.
-        $lf_wp_locale_code    = strtolower( substr( (string) get_locale(), 0, 2 ) );
-        $lf_locale_mismatch   = $primary_stored !== '' && ! in_array( $lf_wp_locale_code, $router_langs, true );
+        // Fires ONLY when the WP instance locale resolves to a language code with
+        // no actual content on this site (no posts tagged _lf_lang with that code)
+        // and the code is not the primary language.  Language pack presence is NOT
+        // used as a proxy: a pack can be installed purely for the admin UI without
+        // any content in that language.  The _lf_lang postmeta existence check is
+        // the only reliable signal.
+        //
+        // Should fire:     WP=en_US, primary=ca, zero _lf_lang=en posts.
+        // Must NOT fire:   WP=en_US, primary=ca, English content exists.
+        // Must NOT fire:   WP=en_US, primary=en  (locale == primary).
+        $lf_wp_locale_code  = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $lf_locale_mismatch = false;
+
+        if ( $primary_stored !== '' && $lf_wp_locale_code !== $primary_stored ) {
+            global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Admin settings page only; single-row existence check; no WP API equivalent for a raw meta key + value lookup without loading full post objects.
+            $lf_locale_has_posts = (bool) $wpdb->get_var( $wpdb->prepare(
+                "SELECT meta_id FROM {$wpdb->postmeta} WHERE meta_key = '_lf_lang' AND meta_value = %s LIMIT 1",
+                $lf_wp_locale_code
+            ) );
+            $lf_locale_mismatch = ! $lf_locale_has_posts;
+        }
+
         if ( $lf_locale_mismatch ) : ?>
             <div class="notice notice-error">
                 <p>
-                    <strong><?php esc_html_e( 'Configuration issue: WP site language is not a content language', 'lingua-forge' ); ?></strong>
+                    <strong><?php esc_html_e( 'Configuration issue: WP site language has no content on this site', 'lingua-forge' ); ?></strong>
                 </p>
                 <p>
                     <?php echo esc_html( sprintf(
-                        /* translators: 1: WP site locale e.g. en_US  2: comma-separated upper-case content language codes e.g. CA, ES */
-                        __( 'The WordPress site language (%1$s) is not among the active Lingua Forge content languages (%2$s). This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
+                        /* translators: 1: WP site locale e.g. en_US  2: two-char language code e.g. en */
+                        __( 'The WordPress site language (%1$s) maps to the language code "%2$s", but no posts on this site are tagged _lf_lang=%2$s. This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
                         get_locale(),
-                        implode( ', ', array_map( 'strtoupper', $router_langs ) )
+                        $lf_wp_locale_code
                     ) ); ?>
                 </p>
                 <p>
@@ -168,7 +184,11 @@ class RouterTab extends Tab {
                     <a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">
                         <?php esc_html_e( 'Settings → General → Site Language', 'lingua-forge' ); ?>
                     </a>
-                    <?php esc_html_e( 'and set it to one of the active content languages listed above.', 'lingua-forge' ); ?>
+                    <?php echo esc_html( sprintf(
+                        /* translators: %s: upper-case primary language code e.g. CA */
+                        __( 'and set it to one of your actual content languages (e.g. %s).', 'lingua-forge' ),
+                        strtoupper( $primary_stored )
+                    ) ); ?>
                 </p>
             </div>
         <?php endif; ?>

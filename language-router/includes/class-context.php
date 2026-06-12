@@ -84,18 +84,18 @@ class Context {
 		// Start with languages WordPress core knows about (installed language packs).
 		$locales = get_available_languages();
 
-		// Include the WP site locale only when Lingua Forge has no explicit primary
-		// language configured.  In that unconfigured state the site locale IS the
-		// content language (the fallback in source_language() uses it).  When
-		// linguaforge_primary_language IS set, the WP site locale is the admin UI
-		// language — not a content language — and must not be added here.
-		// Example: WP UI = en_US, LF primary = ca.  Without this guard, 'en' would
-		// enter the valid-language list, the language switcher would show an EN option,
-		// and clicking it would set lf_lang=en cookie, causing CatalogQuery to inject
-		// _lf_lang=en and return zero products on every non-prefixed page.
-		if ( '' === sanitize_key( (string) get_option( 'linguaforge_primary_language', '' ) ) ) {
-			$locales[] = get_locale();
-		}
+		// Always include the WP site locale so that the admin UI language contributes
+		// to routing when it happens to be a real content language.  For example, a
+		// site with WP=en_US and English content must have 'en' in this list — an
+		// English language pack is not installed in that case (en_US is the WP
+		// default, not a separate pack), so get_available_languages() would miss it.
+		//
+		// The problematic case — WP=en_US but no English content, causing a spurious
+		// EN option in the switcher — is detected separately in RouterTab and
+		// SystemPanel via a _lf_lang postmeta existence check, which is the only
+		// reliable ground truth.  Language pack presence is NOT a valid proxy for
+		// "is a content language": packs can be installed for admin UI use only.
+		$locales[] = get_locale();
 
 		// Also auto-discover languages from the plugin's own .mo files so that
 		// adding e.g. vikbooking-it_IT.mo is sufficient — no WP core language

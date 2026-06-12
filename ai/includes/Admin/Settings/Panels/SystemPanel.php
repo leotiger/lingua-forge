@@ -26,6 +26,15 @@ defined( 'ABSPATH' ) || exit;
 
 class SystemPanel {
 
+    /**
+     * Cached result of the locale-has-no-content check, computed once per
+     * request in render_wp_locale_warning() and read again in render_environment()
+     * to avoid two identical DB round-trips on the same settings page load.
+     * null = not yet computed; true = mismatch (WP locale has no _lf_lang posts);
+     * false = no mismatch.
+     */
+    private static ?bool $cached_locale_mismatch = null;
+
     // =========================================================================
     // Public entry point
     // =========================================================================
@@ -61,41 +70,56 @@ class SystemPanel {
     // =========================================================================
 
     /**
-     * Render a top-of-page error notice when the WordPress instance locale is
-     * not one of the active Lingua Forge content languages.
+     * Render a top-of-page error notice when the WordPress instance locale maps
+     * to a language code that has no actual content on this site.
      *
-     * This is a critical misconfiguration: WooCommerce product queries filter by
-     * LF_LANG, which can resolve to the WP site locale code when no content
-     * language matches — returning zero products on every catalogue block.
+     * Language pack presence is NOT used as a proxy — packs can be installed for
+     * the admin UI without any content in that language.  The _lf_lang postmeta
+     * existence check is the only reliable signal.
+     *
+     * Computes and caches the result in $cached_locale_mismatch so that
+     * render_environment() can read the same value without a second DB query.
      */
     private static function render_wp_locale_warning(): void {
 
         $primary_lang = (string) get_option( 'linguaforge_primary_language', '' );
         if ( '' === $primary_lang ) {
-            // No primary language configured yet — routing not active, skip check.
+            self::$cached_locale_mismatch = false;
             return;
         }
 
-        $router           = \LinguaForge\Router\Router::get_instance();
-        $content_langs    = $router->languages();
-        $wp_locale_code   = strtolower( substr( (string) get_locale(), 0, 2 ) );
-        $locale_mismatch  = ! in_array( $wp_locale_code, $content_langs, true );
+        $wp_locale_code = strtolower( substr( (string) get_locale(), 0, 2 ) );
 
-        if ( ! $locale_mismatch ) {
+        if ( $wp_locale_code === $primary_lang ) {
+            // WP locale IS the primary language — never a mismatch.
+            self::$cached_locale_mismatch = false;
+            return;
+        }
+
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Admin settings page only; single-row existence check; no WP API equivalent for raw meta key+value lookup.
+        $locale_has_posts = (bool) $wpdb->get_var( $wpdb->prepare(
+            "SELECT meta_id FROM {$wpdb->postmeta} WHERE meta_key = '_lf_lang' AND meta_value = %s LIMIT 1",
+            $wp_locale_code
+        ) );
+
+        self::$cached_locale_mismatch = ! $locale_has_posts;
+
+        if ( ! self::$cached_locale_mismatch ) {
             return;
         }
 
         ?>
         <div class="notice notice-error">
             <p>
-                <strong><?php esc_html_e( 'Configuration issue: WP site language is not a content language', 'lingua-forge' ); ?></strong>
+                <strong><?php esc_html_e( 'Configuration issue: WP site language has no content on this site', 'lingua-forge' ); ?></strong>
             </p>
             <p>
                 <?php echo esc_html( sprintf(
-                    /* translators: 1: WP site locale e.g. en_US  2: comma-separated upper-case content language codes e.g. CA, ES */
-                    __( 'The WordPress site language (%1$s) is not among the active Lingua Forge content languages (%2$s). This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
+                    /* translators: 1: WP site locale e.g. en_US  2: two-char language code e.g. en */
+                    __( 'The WordPress site language (%1$s) maps to the language code "%2$s", but no posts on this site are tagged _lf_lang=%2$s. This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break.', 'lingua-forge' ),
                     get_locale(),
-                    implode( ', ', array_map( 'strtoupper', $content_langs ) )
+                    $wp_locale_code
                 ) ); ?>
             </p>
             <p>
@@ -103,7 +127,11 @@ class SystemPanel {
                 <a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">
                     <?php esc_html_e( 'Settings → General → Site Language', 'lingua-forge' ); ?>
                 </a>
-                <?php esc_html_e( 'and set it to one of the active content languages listed above.', 'lingua-forge' ); ?>
+                <?php echo esc_html( sprintf(
+                    /* translators: %s: upper-case primary language code e.g. CA */
+                    __( 'and set it to one of your actual content languages (e.g. %s).', 'lingua-forge' ),
+                    strtoupper( $primary_lang )
+                ) ); ?>
             </p>
         </div>
         <?php
@@ -164,8 +192,9 @@ class SystemPanel {
                     </td>
                 </tr>
                 <?php
-                $env_wp_locale_code  = strtolower( substr( (string) get_locale(), 0, 2 ) );
-                $env_locale_mismatch = '' !== $primary_lang && ! in_array( $env_wp_locale_code, $active_langs, true );
+                // $cached_locale_mismatch was computed (and potentially cached) by
+                // render_wp_locale_warning() which always runs before this method.
+                $env_locale_mismatch = (bool) self::$cached_locale_mismatch;
                 ?>
                 <tr>
                     <th><?php esc_html_e( 'WP instance language', 'lingua-forge' ); ?></th>

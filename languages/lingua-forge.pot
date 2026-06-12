@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-12T17:40:19+00:00\n"
+"POT-Creation-Date: 2026-06-12T18:33:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -128,14 +128,14 @@ msgstr ""
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:482
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:500
 #: ai/includes/Admin/Settings/Panels/SocialSharePanel.php:178
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1058
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1128
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1087
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1157
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:91
 #: ai/includes/Admin/Settings/Panels/WooCommerceSeoPanel.php:142
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:198
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:283
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:318
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:722
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:742
 msgid "Permission denied."
 msgstr ""
 
@@ -148,7 +148,7 @@ msgstr ""
 
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:54
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:55
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1133
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1162
 msgid "Invalid post type."
 msgstr ""
 
@@ -321,7 +321,7 @@ msgstr[1] ""
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:451
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:480
 msgid "Page"
 msgstr ""
 
@@ -786,7 +786,7 @@ msgid "Installed SEO plugins"
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:98
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:529
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:558
 msgid "Plugin"
 msgstr ""
 
@@ -1460,7 +1460,7 @@ msgid "WooCommerce system pages (Shop, Cart, Checkout, My Account) are excluded 
 msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:346
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:638
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:667
 msgid "Post type"
 msgstr ""
 
@@ -2006,415 +2006,417 @@ msgstr ""
 msgid "The share URL always reflects the current page — no manual URL entry needed. The linguaforge_social_share_url filter lets you override the resolved URL for any service."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:91
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:156
-msgid "Configuration issue: WP site language is not a content language"
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:115
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:172
+msgid "Configuration issue: WP site language has no content on this site"
 msgstr ""
 
-#. translators: 1: WP site locale e.g. en_US  2: comma-separated upper-case content language codes e.g. CA, ES
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:96
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:161
+#. translators: 1: WP site locale e.g. en_US  2: two-char language code e.g. en
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:120
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:177
 #, php-format
-msgid "The WordPress site language (%1$s) is not among the active Lingua Forge content languages (%2$s). This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break."
+msgid "The WordPress site language (%1$s) maps to the language code \"%2$s\", but no posts on this site are tagged _lf_lang=%2$s. This causes WooCommerce product queries to return zero results, product images to fail, and all language-filtered content queries to break."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:102
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:167
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:126
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:183
 msgid "Fix: go to"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:104
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:169
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:128
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:185
 msgid "Settings → General → Site Language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:106
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:171
-msgid "and set it to one of the active content languages listed above."
+#. translators: %s: upper-case primary language code e.g. CA
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:132
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:189
+#, php-format
+msgid "and set it to one of your actual content languages (e.g. %s)."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:131
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:159
 #: ai/includes/Admin/SettingsHelp.php:192
 msgid "Environment"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:136
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:164
 msgid "Lingua Forge version"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:140
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:168
 msgid "WordPress version"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:144
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:172
 msgid "PHP version"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:148
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:176
 msgid "Active theme"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:153
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:181
 msgid "(FSE / block theme)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:154
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:182
 msgid "(classic theme)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:159
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:210
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:187
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:230
 msgid "URL structure"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:162
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:190
 msgid "Subdomain (de.example.com)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:163
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:191
 msgid "Path prefix (/de/)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:171
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:200
 msgid "WP instance language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:177
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:206
 msgid "not a content language — see notice above"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:185
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:214
 msgid "Primary content language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:189
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:218
 msgid "Active languages"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:193
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:222
 msgid "PHP max_execution_time"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:197
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:226
 msgid "No PHP limit"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:198
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:227
 msgid "(server/FPM timeout still applies)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:207
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:236
 msgid "AI translation and batch analysis may time out. Recommend 120s or more."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:213
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:242
 msgid "PHP memory_limit"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:240
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:269
 #: ai/includes/Admin/SettingsHelp.php:194
 msgid "AI Configuration"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:250
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:279
 msgid "(active)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:255
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
 msgid "Configured"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:258
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:287
 msgid "No key"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:260
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:289
 msgid "— AI features are disabled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:262
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:291
 msgid "Add key →"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:270
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:299
 msgid "Light model"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:274
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:303
 msgid "Quality model"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:278
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
 msgid "Active preset"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:282
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:311
 msgid "Daily quota"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:284
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:313
 msgid "Unlimited"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:285
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:314
 msgid "requests / day"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:307
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:336
 #: ai/includes/Admin/SettingsHelp.php:196
 msgid "Permalink Structure"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:312
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:341
 msgid "Permalink structure is compatible with Lingua Forge path routing."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:316
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:345
 msgid "Plain permalinks are not supported."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:317
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:346
 msgid "Path routing requires a post-name based permalink structure. Change it in"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:319
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:326
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:348
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:355
 msgid "Settings → Permalinks"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:323
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
 msgid "Numeric permalink structure is not supported."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:324
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:353
 msgid "Switch to a post-name based structure in"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:349
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:378
 #: ai/includes/Admin/SettingsHelp.php:198
 msgid "SEO Plugins"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:352
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:381
 msgid "No third-party SEO plugins detected. Lingua Forge handles all multilingual SEO output."
 msgstr ""
 
 #. translators: %s: comma-separated list of plugin names
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:358
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:387
 #, php-format
 msgid "Active: %s."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:362
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:391
 msgid "See Settings → SEO → Compatibility for the full per-feature behaviour table."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:375
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:404
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:378
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:407
 msgid "WooCommerce is not active."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:403
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:432
 msgid "Shop"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:404
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:433
 msgid "Cart"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:405
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:434
 msgid "Checkout"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:435
 msgid "My Account"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:413
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:442
 msgid "WooCommerce version"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:417
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:446
 msgid "Order storage"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:420
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:449
 msgid "High-Performance Order Storage (HPOS)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:421
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:450
 msgid "Custom tables — LF post-meta filters do not affect orders."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:423
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:452
 msgid "Shared / compatibility mode"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:424
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:453
 msgid "HPOS + CPT synced — transitional; LF post-meta filters apply to CPT copy."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:426
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:455
 msgid "Legacy post-based (CPT)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:427
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:456
 msgid "Orders in wp_posts — ensure shop_order is excluded from LF routing."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:432
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:461
 msgid "WcPageBridge active"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:436
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:465
 msgid "Yes"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:439
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:468
 msgid "No — WooCommerce integration class not loaded"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:447
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:476
 msgid "WooCommerce page translations"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:480
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:509
 msgid "No secondary languages configured."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:521
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:550
 msgid "Active Plugins"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:524
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:553
 msgid "No active plugins detected."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:530
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:559
 msgid "Version"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:622
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:651
 #: ai/includes/Admin/SettingsHelp.php:202
 msgid "_lf_lang Coverage"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:625
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:654
 msgid "Posts without _lf_lang are invisible to every Lingua Forge language filter. This can happen when content is imported or created before the plugin was activated."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:630
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:659
 msgid "All published posts have a _lf_lang value. No gaps detected."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:639
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:668
 msgid "Missing"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:655
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:684
 msgid "Exclude this post type from language routing — its posts will no longer appear here or receive _lf_lang. This cannot be undone automatically."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:656
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:875
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:881
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:685
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:904
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:910
 msgid "Exclude from routing"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:665
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:867
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:694
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:896
 msgid "excluded from routing"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:678
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:707
 msgid "Destructive action — read before proceeding"
 msgstr ""
 
 #. translators: %s: source language code in upper case, e.g. CA
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:684
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:713
 #, php-format
 msgid "Repair tags every routable post listed above with _lf_lang = %s. Posts in routing-excluded post types are not touched. Only run this after importing content or on initial activation — do not use as a bulk language-reassignment tool."
 msgstr ""
 
 #. translators: %s: source language code shown in upper case, e.g. CA
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:698
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:727
 #, php-format
 msgid "Repair — assign _lf_lang = %s to all routable posts above"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:729
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:758
 #: ai/includes/Admin/SettingsHelp.php:204
 msgid "Rewrite Rules"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:731
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:760
 msgid "LF-owned entries currently registered in $wp_rewrite->extra_rules_top. Useful for diagnosing 404s or routing conflicts. Copy these when filing a bug report."
 msgstr ""
 
 #. translators: %d: number of rewrite rules
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:738
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:767
 #, php-format
 msgid "%d rule registered"
 msgid_plural "%d rules registered"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:744
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:773
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:765
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:794
 #: ai/includes/Admin/SettingsHelp.php:206
 msgid "Debug Info"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:767
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:796
 msgid "Copy and paste into a GitHub issue or support request."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:771
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:800
 msgid "Copy system info"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:796
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:802
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:825
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:831
 msgid "Copied!"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:812
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:464
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:841
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
 msgid "Repairing…"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:831
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:478
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:860
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:498
 msgid "Repair failed."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:837
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:882
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:866
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:911
 msgid "Network error."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:846
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:875
 msgid "Exclude this post type from language routing? Its posts will no longer appear in this list or receive _lf_lang. You can reverse this in Settings → Router → Query Filter Exclusions."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:850
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:879
 msgid "Excluding…"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:876
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:905
 msgid "Failed to save exclusion."
 msgstr ""
 
 #. translators: 1: count of repaired posts, 2: source language code in upper case e.g. EN
-#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1105
+#: ai/includes/Admin/Settings/Panels/SystemPanel.php:1134
 #, php-format
 msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
@@ -3171,207 +3173,207 @@ msgid_plural "%d locale files could not be removed automatically (DISALLOW_FILE_
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:177
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:197
 msgid "Primary Language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:180
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:200
 msgid "The primary language is always served at the root of your site — no URL prefix in path mode, no language subdomain in subdomain mode. All other languages use either a /lang/ path prefix (e.g. example.com/de/) or a language subdomain (e.g. de.example.com), depending on the URL structure setting below."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:191
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:211
 msgid "Primary language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:203
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:223
 msgid "After changing the primary language, flush permalinks (section below) for the URL routing to update."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:216
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:236
 msgid "Path prefix — example.com/de/"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:219
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:239
 msgid "Subdomain — de.example.com/"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:223
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:243
 msgid "Subdomain mode requires your web server to point all language subdomains (e.g. de.example.com) to this WordPress installation. After switching modes, flush permalink rules and clear any caches. If your home URL includes www (e.g. www.example.com), use the lf_base_domain filter to set the bare apex domain so subdomains are constructed correctly."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:229
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:249
 msgid "Browser language redirect"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:239
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:259
 msgid "Redirect visitors to their preferred language based on the browser's Accept-Language header"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:242
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:262
 msgid "When enabled, first-time visitors with no language cookie and no language prefix in the URL are redirected to the closest matching language version. The redirect is skipped if the browser's preferred language is not among the active router languages. Once a visitor selects a language via the switcher, the cookie takes priority and the browser header is ignored on all future visits."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:249
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:269
 msgid "Query Filter Exclusions"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:252
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:272
 msgid "Lingua Forge scopes secondary WP_Query instances (sidebar widgets, template blocks, plugin lookups) to the active language by injecting a _lf_lang meta constraint. Post types listed here are excluded from that constraint — their queries are always unfiltered."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:256
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:276
 msgid "Contact Form 7 (wpcf7_contact_form), Flamingo contacts and inbound messages (flamingo_contact, flamingo_inbound), and WordPress language-pack sync storage (wp_sync_storage) are excluded automatically. Add any other third-party post types whose content should not be language-filtered, one per line or comma-separated."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:264
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:284
 msgid "Excluded post types"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:276
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:296
 msgid "Post type slugs separated by commas or newlines. Changes take effect immediately on save — no permalink flush required."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:282
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:302
 msgid "Save Router Settings"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:286
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:306
 msgid "Flush Permalinks"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:289
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:309
 msgid "Regenerates WordPress rewrite rules so URL prefixes, language-specific slugs, and archive rewrites are all in sync. Necessary after changing the primary language or adding new language support."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:295
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:315
 msgid "Flush Permalink Rules"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:299
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:319
 msgid "Active Languages"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:302
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:322
 msgid "Languages currently known to the router (derived from installed WordPress locale packs plus the primary language). Install additional language packs in the section below to make more languages available for routing and translation."
 msgstr ""
 
 #. translators: %d: count of installed locale packs
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:316
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:336
 #, php-format
 msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:324
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:344
 msgid "Install a Language"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:327
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:347
 msgid "Download and install a WordPress core language pack directly from WordPress.org. Once installed, the locale becomes available for URL routing and the AI translation workflow. The list of available languages is fetched on demand — click the button below to load it."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:332
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:352
 msgid "Language installation is disabled on this server. The DISALLOW_FILE_MODS constant is set in wp-config.php. Install language packs manually via WP-CLI: wp language core install de_DE"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:337
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:357
 msgid "Load available languages"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:343
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:363
 #: ai/includes/Admin/SettingsPage.php:249
 msgid "— select a language —"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:346
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:366
 msgid "Install"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:379
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:399
 msgid "Language Setup"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:383
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:403
 msgid "No secondary languages configured. Install a language pack above to enable template scaffolding."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:388
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:408
 msgid "Select a language to manage its FSE templates, template parts, and navigation menus."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:440
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:460
 msgid "Repair Template Metadata"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:443
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:463
 msgid "Fixes the Site Editor namespace and _lf_lang tag on all LF-scaffolded FSE templates stored in the database. Run this once after updating from an earlier version of Lingua Forge — it moves WooCommerce-derived templates from the active-theme group to the WooCommerce group in the Site Editor, and ensures all scaffolded templates are discoverable by coverage reports."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:451
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:471
 msgid "Repair template metadata"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:484
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:504
 #: ai/assets/admin.js:625
 msgid "Request failed."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:501
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:538
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:635
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:521
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:558
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:655
 msgid "Forbidden"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:565
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:585
 msgid "Danger Zone"
 msgstr ""
 
 #. translators: %s: two-character language code displayed in upper case, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:572
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:610
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:592
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:630
 #, php-format
 msgid "Uninstall %s"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:578
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:598
 msgid "Permanently deletes all templates, template parts, patterns, navigation menus, posts, pages, custom post types, products, and product variations associated with this language. Also removes the WordPress locale pack files so this language no longer appears in the router. This action cannot be undone."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:587
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:607
 msgid "This language matches the WordPress instance locale and cannot be uninstalled."
 msgstr ""
 
 #. translators: %s: upper-case language code, e.g. DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:600
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:620
 #, php-format
 msgid "Permanently uninstall %s? This will delete all translated content for this language and cannot be undone."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:639
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:659
 msgid "Invalid language code."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:645
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:665
 msgid "This language is protected and cannot be uninstalled."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:726
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:746
 #: ai/includes/Admin/SettingsPage.php:250
 msgid "Language installation is disabled on this server (DISALLOW_FILE_MODS is set)."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:731
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:751
 msgid "Invalid locale code."
 msgstr ""
 
 #. translators: %s: locale code such as de_DE
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:757
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:777
 #, php-format
 msgid "Language %s installed successfully."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/RouterTab.php:760
+#: ai/includes/Admin/Settings/Tabs/RouterTab.php:780
 msgid "Language pack installation failed. The language may already be installed, the locale code may be incorrect, or your server may block file writes."
 msgstr ""
 
