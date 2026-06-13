@@ -35,21 +35,22 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.2.15';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.15/lingua-forge-2.2.15.zip';
-	$last_updated = '2026-06-12';
+	$version      = '2.2.16';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.2.16/lingua-forge-2.2.16.zip';
+	$last_updated = '2026-06-13';
 	$tested       = '7.0';
 
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.2.15 &#8212; 2026-06-12</h4>' .
+		'<h4>2.2.16 &#8212; 2026-06-13</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> Theme template-part blocks (header, footer, etc.) loaded the source-language version on archive pages. A new <code>get_block_template</code> filter in <code>Redirector</code> now switches to the <code>{slug}-{lang}</code> variant when one exists. (<code>class-redirector.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce taxonomy archive titles showed the taxonomy noun in the source language on translated pages. <code>WcPageBridge::fix_taxonomy_archive_title</code> re-derives the noun with a fresh gettext call in the switched locale. (<code>WcPageBridge.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce catalogue blocks (Product Collection, etc.) showed no products on translated pages when a category or tag filter was set. <code>CatalogQuery</code> applies a trid-lookup strategy, replacing the <code>tax_query</code> with <code>_lf_trid IN</code> + <code>_lf_lang</code> in meta_query; a Phase 3a pre-check falls back to <code>_lf_lang</code> when no translated matches exist. (<code>CatalogQuery.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> &#8220;Handpicked Products&#8221; and hand-picked product-collection blocks showed no products on translated pages. <code>CatalogQuery</code> now maps source-language <code>post__in</code> IDs to their translated siblings. (<code>CatalogQuery.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Admin Pages list did not show &#8220;&#8212; Front Page&#8221; / &#8220;&#8212; Posts Page&#8221; labels on translated pages. <code>Columns::add_translated_core_page_states()</code> copies those labels from the source page via <code>get_post_states()</code>, respecting the admin locale. (<code>class-columns.php</code>)</li>' .
+			'<li><strong>Added:</strong> IndexNow protocol replaces the defunct Bing/Yandex sitemap ping. <code>IndexNowManager</code> handles key generation, <code>/{key}.txt</code> serving, auto-submit on post save (all TRID siblings), and a manual &#8220;Submit all URLs&#8221; action in the Sitemap panel. (<code>class-indexnow-manager.php</code>, <code>SitemapPanel.php</code>)</li>' .
+			'<li><strong>Added:</strong> Per-language noindex &#8212; new <code>_lf_noindex</code> post meta with a &#8220;Noindex&#8221; checkbox in the Language meta box. Emits <code>&lt;meta name="robots" content="noindex,follow"&gt;</code> for that language version only. (<code>class-hreflang.php</code>, <code>class-meta-boxes.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> Self-referencing <code>&lt;link rel="canonical"&gt;</code> now emitted for all LF-managed pages. Previously WP&#8217;s canonical was removed with no replacement, contradicting Google&#8217;s hreflang guidance. Skipped when a third-party SEO plugin is active. (<code>class-hreflang.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> hreflang alternates on paginated archives (e.g. <code>/es/category/foo/page/2/</code>) pointed at blog-home pagination. <code>is_paged()</code> branch removed; <code>is_archive()||is_home()</code> now runs first and handles paged archives correctly via REQUEST_URI. (<code>class-hreflang.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> All 25 admin handler redirects corrected from <code>options-general.php?page=</code> to <code>admin.php?page=</code>, eliminating PHP 8.1 <code>strip_tags(null)</code> deprecation notices on settings saves. (13 Admin files)</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce Catalogue Block pagination on the source-language front page required a browser reload to display products on page 2+. <code>frontend-lang.js</code> was appending <code>?lang=&lt;source&gt;</code> to the WC Interactivity API navigation fetch (<code>?cst</code>), preventing the Product Collection block&#8217;s render callback from running. A new <code>isInteractivityRequest()</code> guard skips <code>?lang=</code> injection for any URL carrying <code>?cst</code> or a <code>query-N-page</code> parameter. (<code>frontend-lang.js</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

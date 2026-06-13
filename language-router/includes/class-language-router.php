@@ -27,7 +27,8 @@ defined( 'ABSPATH' ) || exit;
  *   Seo\SeoManager   – Open Graph / Twitter Card output, og:locale, og:locale:alternate
  *   Seo\SocialShare  – Social Icons block share: URL rewriting + JS actions
  *   Seo\SchemaManager  – Schema.org JSON-LD output (Article, WebPage, WebSite)
- *   Seo\SitemapManager – Multilingual XML sitemap at /lf-sitemap.xml
+ *   Seo\SitemapManager   – Multilingual XML sitemap at /lf-sitemap.xml
+ *   Seo\IndexNowManager  – IndexNow protocol: key management, key-file serving, URL submission
  *   Search\Index     – build_search_content, extract_block_text
  *   Search\Query     – search template override, form fix, SQL extend/boost
  *   Translation\TridGroup – get/set lang/trid, get_translations, cache clear
@@ -49,6 +50,7 @@ use LinguaForge\Router\Routing\FrontPageQuery;
 use LinguaForge\Router\Seo\Hreflang;
 use LinguaForge\Router\Seo\SeoManager;
 use LinguaForge\Router\Seo\SchemaManager;
+use LinguaForge\Router\Seo\IndexNowManager;
 use LinguaForge\Router\Seo\SitemapManager;
 use LinguaForge\Router\Seo\SocialShare;
 use LinguaForge\Router\Search\Index        as SearchIndex;
@@ -101,7 +103,8 @@ class Router {
 		$this->seo_manager   = new SeoManager( $this );
 		$this->social_share   = new SocialShare();
 		$this->schema_manager   = new SchemaManager( $this );
-		$this->sitemap_manager  = new SitemapManager( $this );
+		$this->sitemap_manager   = new SitemapManager( $this );
+		$this->indexnow_manager  = new IndexNowManager( $this );
 		$this->search_index  = new SearchIndex();
 		$this->search_query      = new SearchQuery();
 		$this->front_page_query  = new FrontPageQuery();
@@ -149,6 +152,7 @@ class Router {
 	public SocialShare      $social_share;
 	public SchemaManager    $schema_manager;
 	public SitemapManager   $sitemap_manager;
+	public IndexNowManager  $indexnow_manager;
 	public SearchIndex      $search_index;
 	public SearchQuery      $search_query;
 	public FrontPageQuery   $front_page_query;
@@ -217,6 +221,7 @@ class Router {
 		$this->social_share->register_hooks();
 		$this->schema_manager->register_hooks();
 		$this->sitemap_manager->register_hooks();
+		$this->indexnow_manager->register_hooks();
 
 		// Search + front-page template override
 		$this->search_query->register_hooks();
@@ -355,6 +360,13 @@ class Router {
 
 		register_post_meta( '', '_lf_translation_source_updated_at', [
 			'type'          => 'number',
+			'single'        => true,
+			'show_in_rest'  => true,
+			'auth_callback' => $auth,
+		] );
+
+		register_post_meta( '', '_lf_noindex', [
+			'type'          => 'boolean',
 			'single'        => true,
 			'show_in_rest'  => true,
 			'auth_callback' => $auth,

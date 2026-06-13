@@ -364,7 +364,7 @@ class CacheStatsPanel {
         wp_safe_redirect( add_query_arg(
             'lf_cache_cleared',
             (int) $count,
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }
@@ -385,7 +385,7 @@ class CacheStatsPanel {
         wp_safe_redirect( add_query_arg(
             'lf_tm_cleared',
             (int) $count,
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }
@@ -412,7 +412,7 @@ class CacheStatsPanel {
 
         wp_safe_redirect( add_query_arg(
             'lf_api_cache_saved', '1',
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }
@@ -439,7 +439,7 @@ class CacheStatsPanel {
 
         wp_safe_redirect( add_query_arg(
             'lf_tm_enabled_saved', '1',
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }

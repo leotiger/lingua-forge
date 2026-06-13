@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.2.15 — stable, open for testing.**
+> **Version 2.2.16 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome. As this is a new plugin that pretends solve one of the most important intrinsic problems of Wordpress we continue to update and improve. (With a community behind, aware, we could do a better job.)
 
 > **A note on WordPress.org.**
@@ -1120,8 +1120,12 @@ from within the editor of post objects and WooCommerce products. For most websit
 
 ---
 
-**Current release — 2.2.15**
+**Current release — 2.2.16**
 
+- **IndexNow protocol** *(2.2.16)* — Replaces the defunct Bing/Yandex sitemap ping (gone since 2021/22). A new `IndexNowManager` generates and serves a site verification key, auto-submits all TRID translation siblings on post save, and exposes a manual "Submit all URLs" action in the Sitemap settings panel. All IndexNow-participating engines (Bing, Yandex, Seznam, Naver) pick up submissions from the shared `api.indexnow.org` endpoint. (`class-indexnow-manager.php`, `SitemapPanel.php`)
+- **Self-referencing canonical** *(2.2.16)* — WordPress's canonical tag was removed without replacement on LF-managed pages; Google's hreflang guidance requires a self-referencing canonical on every language version. `Hreflang::print_canonical()` now emits the correct self URL for singulars, archives, home, and paginated pages. Deferred to third-party SEO plugins when one is active. (`class-hreflang.php`)
+- **hreflang fix on paginated archives** *(2.2.16)* — `/es/category/noticias/page/2/` was emitting blog-home-style alternates (`/page/2/`, `/es/page/2/`) because the `is_paged()` branch ran before `is_archive()`. Branch removed; archive branch handles all paged cases via REQUEST_URI. (`class-hreflang.php`)
+- **Per-language noindex** *(2.2.16)* — New "Noindex" checkbox in the Language meta box sets `_lf_noindex` on any post. `Hreflang::print_robots()` emits `<meta name="robots" content="noindex,follow">` in `wp_head` for that language version only. (`class-hreflang.php`, `class-meta-boxes.php`)
 - **WooCommerce taxonomy archive title locale fix** *(2.2.15)* — `woocommerce_page_title()` assembles the archive title from a translated format string and `$tax->labels->singular_name`. The format string uses the switched locale correctly; the singular noun was frozen in `$wp_taxonomies` at registration time (source locale), causing titles like "Productes per categoria" to appear on Spanish pages. `WcPageBridge::fix_taxonomy_archive_title` re-calls WooCommerce's own registration strings in the switched locale to fix the noun. Built-in WC taxonomies handled explicitly; `pa_*` attribute taxonomies use AttributeLabelAdmin translations when available. (`WcPageBridge.php`)
 - **WooCommerce catalogue blocks on translated pages** *(2.2.15)* — Product Collection, HandpickedProducts, and similar blocks with a category or tag filter showed no products on translated pages because the `tax_query` JOIN targets `wp_term_relationships`, which has no rows for translated products. `CatalogQuery` now applies the same three-phase trid-lookup as taxonomy archive pages. (`CatalogQuery.php`)
 - **WooCommerce attribute label translations** *(2.2.14)* — Per-language label fields added to the Product Attributes edit and add forms. Translations stored in `wp_options` and applied on the frontend via the `woocommerce_attribute_label` filter — labels like "Color" and "Size" now appear in the active language without any companion plugin. (`AttributeLabelAdmin.php`, `TermNameFilter.php`)

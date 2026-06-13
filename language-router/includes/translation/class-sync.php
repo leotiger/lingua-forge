@@ -497,6 +497,15 @@ class Sync {
 			}
 		}
 
+		// Per-language noindex flag.
+		if ( $has_lang_nonce ) {
+			if ( ! empty( $_POST['lf_noindex'] ) ) {
+				update_post_meta( $post_id, '_lf_noindex', '1' );
+			} else {
+				delete_post_meta( $post_id, '_lf_noindex' );
+			}
+		}
+
 		// Search index
 		$this->router->search_index->build_search_content( $post_id );
 	}

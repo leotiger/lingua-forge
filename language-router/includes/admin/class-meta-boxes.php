@@ -97,6 +97,14 @@ class MetaBoxes {
 		echo ' ' . esc_html__( 'Apply to all language versions', 'lingua-forge' );
 		echo '</label>';
 		echo '</p>';
+
+		$noindex = (bool) get_post_meta( $post->ID, '_lf_noindex', true );
+		echo '<p style="margin-top:10px">';
+		echo '<label>';
+		echo '<input type="checkbox" name="lf_noindex" value="1"' . checked( $noindex, true, false ) . ' />';
+		echo ' ' . esc_html__( 'Noindex (hide this language version from search engines)', 'lingua-forge' );
+		echo '</label>';
+		echo '</p>';
 	}
 
 	// =========================================================

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.15
+Stable tag: 2.2.16
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -263,6 +263,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.2.16 =
+* Fixed: WooCommerce Catalogue Block pagination — source-language page 2+ required a browser reload because `frontend-lang.js` appended `?lang=<source>` to the WC Interactivity API navigation fetch (`?cst`), preventing the Product Collection block's render callback from firing. New `isInteractivityRequest()` guard skips `?lang=` injection for `?cst` and `query-N-page` URLs. (`frontend-lang.js`)
+* Fixed: IndexNow protocol replaces the defunct Bing/Yandex sitemap ping — `IndexNowManager` handles key generation, key-file serving, and auto-submit on post save; Sitemap panel updated with IndexNow status and manual submit. (`class-indexnow-manager.php`, `SitemapPanel.php`)
+* Fixed: All admin handler redirects corrected from `options-general.php?page=` to `admin.php?page=`, eliminating PHP 8.1 `strip_tags(null)` deprecation notices on settings saves. (13 Admin files)
+* Fixed: Self-referencing `<link rel="canonical">` now emitted for all LF-managed pages (singular, archive, home, paginated). Previously WP's canonical was removed with no replacement. Deferred to SEO plugins when one is active. (`class-hreflang.php`, `CompatibilityPanel.php`, `HreflangPanel.php`)
+* Fixed: hreflang alternates on paginated archives (`/es/category/foo/page/2/`) pointed at blog-home pagination — `is_paged()` branch was evaluated before `is_archive()`; removed and replaced by the REQUEST_URI-based archive branch which naturally includes the page segment. Same fix applied to the canonical output. (`class-hreflang.php`)
+* Added: Per-language noindex — new `_lf_noindex` post meta, checkbox in the Language meta box, and `<meta name="robots" content="noindex,follow">` output in `wp_head` when set. (`class-hreflang.php`, `class-language-router.php`, `class-meta-boxes.php`, `class-sync.php`)
+
+For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
+
 = 2.2.15 =
 * Fixed: Theme template-part blocks (header, footer, etc.) loaded the source-language version on archive pages — a new `get_block_template` filter in `Redirector` now switches to the `{slug}-{lang}` variant when one exists. (`class-redirector.php`)
 * Fixed: WooCommerce taxonomy archive page titles showed the taxonomy type noun (e.g. "categoria") in the source language on translated pages — `WcPageBridge::fix_taxonomy_archive_title` now re-derives the singular label with a fresh gettext call in the switched locale. (`WcPageBridge.php`)
@@ -278,6 +288,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.2.16 =
+SEO correctness release: IndexNow replaces dead Bing/Yandex ping, self-referencing canonicals added, hreflang fixed on paginated archives, per-language noindex flag added. Fixes WooCommerce Catalogue Block pagination on source-language pages. No flush required.
 
 = 2.2.15 =
 Fixes WooCommerce catalogue blocks, taxonomy archive titles, theme template parts, and a WP site locale leak into the content-language list. Adds WP locale mismatch alerts in Router and System tabs. Admin pages list labels translated front/posts pages. No flush required.

@@ -34,6 +34,7 @@ require_once __DIR__ . '/includes/seo/class-seo-manager.php';
 require_once __DIR__ . '/includes/seo/class-social-share.php';
 require_once __DIR__ . '/includes/seo/class-schema-manager.php';
 require_once __DIR__ . '/includes/seo/class-sitemap-manager.php';
+require_once __DIR__ . '/includes/seo/class-indexnow-manager.php';
 require_once __DIR__ . '/includes/search/class-index.php';
 require_once __DIR__ . '/includes/search/class-query.php';
 require_once __DIR__ . '/includes/admin/class-meta-boxes.php';

@@ -99,7 +99,7 @@ class UninstallSettingsPanel {
         wp_safe_redirect( add_query_arg(
             'lf_uninstall_setting_saved',
             '1',
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) . '#maintenance' );
         exit;
     }

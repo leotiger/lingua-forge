@@ -47,6 +47,36 @@
 	}
 
 	/**
+	 * Returns true when the URL belongs to a WooCommerce Interactivity API
+	 * navigation or prefetch request, identified by the `cst` (client-side
+	 * transition) query parameter WC appends to every server-render fetch it
+	 * makes for pagination, or by a `query-N-page` pagination argument.
+	 *
+	 * These requests MUST NOT receive `?lang=X`:
+	 *   - For translated languages the path prefix already establishes the lang.
+	 *   - For the source language the server falls back to it by default.
+	 *     Injecting `?lang=<source>` on the root path `/` prevents the
+	 *     WooCommerce Product Collection block from executing its render
+	 *     callback, producing an empty response for page 2+.
+	 *
+	 * @param  {string} url
+	 * @return {boolean}
+	 */
+	function isInteractivityRequest( url ) {
+		try {
+			var u    = new URL( url, window.location.href );
+			if ( u.searchParams.has( 'cst' ) ) return true;
+			var keys = Array.prototype.slice.call( u.searchParams.keys() );
+			for ( var i = 0; i < keys.length; i++ ) {
+				if ( /^query-\d+-page$/.test( keys[ i ] ) ) return true;
+			}
+			return false;
+		} catch ( e ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Appends `lang=X` to the query string of a URL if it is not already
 	 * present. Always returns an absolute URL string.
 	 *
@@ -73,7 +103,7 @@
 	var _xhrOpen = XMLHttpRequest.prototype.open;
 	XMLHttpRequest.prototype.open = function ( method, url ) {
 		var args = Array.prototype.slice.call( arguments );
-		if ( typeof url === 'string' && isSameOrigin( url ) ) {
+		if ( typeof url === 'string' && isSameOrigin( url ) && ! isInteractivityRequest( url ) ) {
 			args[ 1 ] = appendLangParam( url );
 		}
 		return _xhrOpen.apply( this, args );
@@ -89,7 +119,7 @@
 		window.fetch = function ( input, init ) {
 			try {
 				var url = ( input instanceof Request ) ? input.url : String( input || '' );
-				if ( isSameOrigin( url ) ) {
+				if ( isSameOrigin( url ) && ! isInteractivityRequest( url ) ) {
 					var patched = appendLangParam( url );
 					input = ( input instanceof Request )
 						? new Request( patched, input )

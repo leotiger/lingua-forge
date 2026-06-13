@@ -257,7 +257,7 @@ class CompatibilityPanel {
 					<td>
 						<?php if ( $hreflang_on ) : ?>
 							<span style="color:#00a32a;font-weight:600;">
-								<?php esc_html_e( '✓ WP core canonical removed', 'lingua-forge' ); ?>
+								<?php esc_html_e( '✓ WP canonical replaced (self-referencing)', 'lingua-forge' ); ?>
 							</span>
 						<?php else : ?>
 							<span style="color:#646970;"><?php esc_html_e( 'WP core canonical active (hreflang disabled)', 'lingua-forge' ); ?></span>
@@ -266,7 +266,7 @@ class CompatibilityPanel {
 					<td class="description">
 						<?php
 						esc_html_e(
-							'LF removes the WordPress core canonical tag on multilingual pages because the router\'s language-prefixed rewrite rules and the hreflang x-default are the correct canonical signals for a multilingual site. This prevents a double-canonical if a SEO plugin also outputs one. LF does not add its own canonical — the language routing already makes each URL canonical.',
+							'LF removes the WordPress core canonical tag and replaces it with a self-referencing canonical pointing to the correct language-prefixed URL. When a third-party SEO plugin (Yoast, Rank Math, AIOSEO, SEOPress) is active, LF defers canonical management to that plugin entirely.',
 							'lingua-forge'
 						);
 						?>

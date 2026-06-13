@@ -289,7 +289,7 @@ class LanguageOverridesPanel {
 
         check_admin_referer( 'linguaforge_copy_loco', 'linguaforge_loco_nonce' );
 
-        $redirect_base = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $redirect_base = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
         $base          = sanitize_file_name( wp_unslash( $_POST['linguaforge_loco_base'] ?? '' ) );
         $type          = sanitize_key( wp_unslash( $_POST['linguaforge_loco_type'] ?? '' ) );
 
@@ -346,7 +346,7 @@ class LanguageOverridesPanel {
 
         check_admin_referer( 'linguaforge_upload_override', 'linguaforge_override_nonce' );
 
-        $redirect_base = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $redirect_base = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
 
         if ( empty( $_FILES['linguaforge_mo_file']['name'] ) ) {
             wp_safe_redirect( add_query_arg( 'lf_override_error', 'empty', $redirect_base ) );
@@ -410,7 +410,7 @@ class LanguageOverridesPanel {
 
         check_admin_referer( 'linguaforge_delete_override', 'linguaforge_override_nonce' );
 
-        $redirect_base = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $redirect_base = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
         $filename      = sanitize_file_name( wp_unslash( $_POST['linguaforge_override_file'] ?? '' ) );
 
         if ( $filename === '' || strpos( $filename, '/' ) !== false || strpos( $filename, '\\' ) !== false ) {

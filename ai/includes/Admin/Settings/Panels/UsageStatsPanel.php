@@ -83,7 +83,7 @@ class UsageStatsPanel {
         $total_total  = array_sum( array_column( $rows, 'total_tokens' ) );
         $total_reqs   = array_sum( array_column( $rows, 'request_count' ) );
 
-        $base_url = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $base_url = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
 
         ?>
         <h2><?php esc_html_e( 'AI Usage', 'lingua-forge' ); ?></h2>

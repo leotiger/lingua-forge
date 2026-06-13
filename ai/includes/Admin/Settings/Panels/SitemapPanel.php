@@ -185,86 +185,99 @@ class SitemapPanel {
 			</p>
 		</form>
 
-		<!-- ── Notify search engines ─────────────────────────── -->
+		<!-- ── IndexNow ─────────────────────────────────────────── -->
 		<hr style="margin-top:2em;">
-		<h3><?php esc_html_e( 'Notify search engines', 'lingua-forge' ); ?></h3>
+		<h3><?php esc_html_e( 'IndexNow', 'lingua-forge' ); ?></h3>
 
 		<p>
 			<?php
 			esc_html_e(
-				'All major search engines — Google, Bing, and Yandex — discover the sitemap automatically via the Sitemap: directive in robots.txt. No manual action is required. The buttons below send an immediate ping so the engine recrawls the sitemap now rather than waiting for its next scheduled robots.txt check.',
+				'IndexNow is an open protocol supported by Bing, Yandex, and other search engines. When a translated post is published or updated, Lingua Forge automatically notifies all participating engines in a single push — no polling, no waiting for the next robots.txt crawl.',
+				'lingua-forge'
+			);
+			?>
+		</p>
+		<p>
+			<?php
+			esc_html_e(
+				'IndexNow replaces the deprecated Bing and Yandex sitemap-ping endpoints. Google discovers sitemaps via the robots.txt Sitemap: directive as before.',
 				'lingua-forge'
 			);
 			?>
 		</p>
 
 		<?php
-		// Result notices from ping actions.
+		$indexnow = \LinguaForge\Router\Router::get_instance()->indexnow_manager;
+		$in_key   = $indexnow->get_key();
+
+		// Result notice from manual submit.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only GET flag.
-		$ping_engine = isset( $_GET['lf_ping_engine'] ) ? sanitize_key( $_GET['lf_ping_engine'] ) : '';
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$ping_result = isset( $_GET['lf_ping_result'] ) ? sanitize_key( $_GET['lf_ping_result'] ) : '';
+		$in_result = isset( $_GET['lf_indexnow_result'] ) ? sanitize_key( $_GET['lf_indexnow_result'] ) : '';
 
-		if ( '' !== $ping_engine && '' !== $ping_result ) :
-			$label = 'bing' === $ping_engine ? 'Bing' : 'Yandex';
-			if ( 'ok' === $ping_result ) : ?>
-				<div class="notice notice-success is-dismissible">
-					<p>
-						<?php
-						echo esc_html( sprintf(
-							/* translators: %s: search engine name */
-							__( '✓ %s notified successfully.', 'lingua-forge' ),
-							$label
-						) );
-						?>
-					</p>
-				</div>
-			<?php else : ?>
-				<div class="notice notice-error is-dismissible">
-					<p>
-						<?php
-						echo esc_html( sprintf(
-							/* translators: %s: search engine name */
-							__( '✗ %s ping failed. The sitemap URL is still announced in robots.txt — the search engine will discover it on its next crawl.', 'lingua-forge' ),
-							$label
-						) );
-						?>
-					</p>
-				</div>
-			<?php endif;
-		endif;
-		?>
+		if ( 'ok' === $in_result ) : ?>
+			<div class="notice notice-success is-dismissible">
+				<p><?php esc_html_e( '✓ All URLs submitted to IndexNow successfully.', 'lingua-forge' ); ?></p>
+			</div>
+		<?php elseif ( 'empty' === $in_result ) : ?>
+			<div class="notice notice-warning is-dismissible">
+				<p><?php esc_html_e( 'No translated URLs found to submit. Publish some translated posts first.', 'lingua-forge' ); ?></p>
+			</div>
+		<?php elseif ( 'error' === $in_result ) : ?>
+			<div class="notice notice-error is-dismissible">
+				<p><?php esc_html_e( '✗ IndexNow submission failed. Check that the key file is publicly reachable (see below) and try again.', 'lingua-forge' ); ?></p>
+			</div>
+		<?php endif; ?>
 
-		<table class="form-table" role="presentation" style="max-width:600px;">
+		<table class="form-table" role="presentation" style="max-width:700px;">
 			<tr>
-				<th scope="row" style="width:120px;">Bing</th>
+				<th scope="row"><?php esc_html_e( 'Verification key', 'lingua-forge' ); ?></th>
 				<td>
-					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;">
-						<input type="hidden" name="action" value="linguaforge_ping_sitemap">
-						<input type="hidden" name="engine" value="bing">
-						<?php wp_nonce_field( 'linguaforge_ping_sitemap', 'linguaforge_sitemap_ping_nonce' ); ?>
-						<button type="submit" class="button button-secondary">
-							<?php esc_html_e( 'Ping Bing', 'lingua-forge' ); ?>
-						</button>
-					</form>
-					<p class="description" style="margin-top:4px;">
-						<?php esc_html_e( 'Optional. Bing already reads the Sitemap: directive from robots.txt — this just triggers an immediate recrawl instead of waiting for the next scheduled check.', 'lingua-forge' ); ?>
-					</p>
+					<?php if ( '' !== $in_key ) : ?>
+						<code><?php echo esc_html( $in_key ); ?></code>
+						<p class="description" style="margin-top:4px;">
+							<?php
+							echo esc_html( sprintf(
+								/* translators: %s: key file URL */
+								__( 'Key file served automatically at: %s', 'lingua-forge' ),
+								$indexnow->key_file_url()
+							) );
+							?>
+						</p>
+					<?php else : ?>
+						<p style="color:#d63638;"><?php esc_html_e( 'Key could not be generated. Check that the site has write access to WordPress options.', 'lingua-forge' ); ?></p>
+					<?php endif; ?>
 				</td>
 			</tr>
 			<tr>
-				<th scope="row">Yandex</th>
+				<th scope="row"><?php esc_html_e( 'Key file status', 'lingua-forge' ); ?></th>
+				<td>
+					<?php
+					$reachable = '' !== $in_key && $indexnow->key_file_reachable();
+					if ( $reachable ) : ?>
+						<p style="color:#00a32a;font-weight:600;"><?php esc_html_e( '✓ Key file is publicly reachable.', 'lingua-forge' ); ?></p>
+					<?php else : ?>
+						<p style="color:#d63638;font-weight:600;"><?php esc_html_e( '✗ Key file is not reachable.', 'lingua-forge' ); ?></p>
+						<p class="description">
+							<?php esc_html_e( 'IndexNow engines verify the key file before accepting submissions. If the file is not reachable, submissions will be rejected with a 403 error.', 'lingua-forge' ); ?>
+						</p>
+						<p class="description">
+							<?php esc_html_e( 'Common causes: full-page caching (clear it), a security plugin blocking .txt files, or a custom Nginx/Apache rule. The file is served by LF on every request — no physical file is written to disk.', 'lingua-forge' ); ?>
+						</p>
+					<?php endif; ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Submit all URLs', 'lingua-forge' ); ?></th>
 				<td>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;">
-						<input type="hidden" name="action" value="linguaforge_ping_sitemap">
-						<input type="hidden" name="engine" value="yandex">
-						<?php wp_nonce_field( 'linguaforge_ping_sitemap', 'linguaforge_sitemap_ping_nonce' ); ?>
-						<button type="submit" class="button button-secondary">
-							<?php esc_html_e( 'Ping Yandex', 'lingua-forge' ); ?>
+						<input type="hidden" name="action" value="linguaforge_indexnow_submit">
+						<?php wp_nonce_field( 'linguaforge_indexnow_submit', 'linguaforge_indexnow_nonce' ); ?>
+						<button type="submit" class="button button-secondary"<?php echo $reachable ? '' : ' disabled'; ?>>
+							<?php esc_html_e( 'Submit all URLs via IndexNow', 'lingua-forge' ); ?>
 						</button>
 					</form>
 					<p class="description" style="margin-top:4px;">
-						<?php esc_html_e( 'Optional. Yandex already reads the Sitemap: directive from robots.txt — this just triggers an immediate recrawl instead of waiting for the next scheduled check.', 'lingua-forge' ); ?>
+						<?php esc_html_e( 'Pushes every published, LF-managed URL to IndexNow in one batch. Automatic submission already runs on every publish/update — use this only after a bulk import or when setting up IndexNow for the first time.', 'lingua-forge' ); ?>
 					</p>
 				</td>
 			</tr>
@@ -274,13 +287,12 @@ class SitemapPanel {
 					<p class="description">
 						<?php
 						esc_html_e(
-							'No action needed. Google deprecated its sitemap ping endpoint in January 2024 and now discovers sitemaps exclusively via the robots.txt Sitemap: directive — which LF has already configured. Google will pick it up on its next crawl.',
+							'Google does not participate in IndexNow. It discovers sitemaps via the robots.txt Sitemap: directive — which LF has already configured. Use Google Search Console to monitor indexing coverage.',
 							'lingua-forge'
 						);
 						?>
 					</p>
 					<p class="description" style="margin-top:4px;">
-						<?php esc_html_e( 'Search Console is useful for monitoring indexing and coverage errors, but is not required for discovery.', 'lingua-forge' ); ?>
 						<a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Open Search Console →', 'lingua-forge' ); ?>
 						</a>
@@ -427,51 +439,25 @@ class SitemapPanel {
 		wp_safe_redirect( add_query_arg(
 			'lf_seo_sitemap_saved',
 			'1',
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}
 
-	public static function handle_ping(): void {
+	public static function handle_indexnow_submit(): void {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'Permission denied.', 'lingua-forge' ), 403 );
 		}
 
-		check_admin_referer( 'linguaforge_ping_sitemap', 'linguaforge_sitemap_ping_nonce' );
+		check_admin_referer( 'linguaforge_indexnow_submit', 'linguaforge_indexnow_nonce' );
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitize_key handles unslashing.
-		$engine = sanitize_key( $_POST['engine'] ?? '' );
-
-		$sitemap_url = Router::get_instance()->sitemap_manager->get_sitemap_url();
-
-		$ping_endpoints = [
-			'bing'   => 'https://www.bing.com/ping?sitemap=' . rawurlencode( $sitemap_url ),
-			'yandex' => 'https://webmaster.yandex.com/ping?sitemap=' . rawurlencode( $sitemap_url ),
-		];
-
-		if ( ! isset( $ping_endpoints[ $engine ] ) ) {
-			wp_die( esc_html__( 'Unknown search engine.', 'lingua-forge' ), 400 );
-		}
-
-		$response = wp_remote_get(
-			$ping_endpoints[ $engine ],
-			[
-				'timeout'    => 10,
-				'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url(),
-			]
-		);
-
-		$result = ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 )
-			? 'ok'
-			: 'error';
+		$result = Router::get_instance()->indexnow_manager->submit_all();
 
 		wp_safe_redirect( add_query_arg(
-			[
-				'lf_ping_engine' => $engine,
-				'lf_ping_result' => $result,
-			],
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			'lf_indexnow_result',
+			$result,
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}
@@ -489,7 +475,7 @@ class SitemapPanel {
 		wp_safe_redirect( add_query_arg(
 			'lf_sitemap_flushed',
 			'1',
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}
@@ -518,7 +504,7 @@ class SitemapPanel {
 		if ( str_contains( $content, $sitemap_url ) ) {
 			wp_safe_redirect( add_query_arg(
 				'lf_robots_updated', '1',
-				admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+				admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 			) . '#seo' );
 			exit;
 		}
@@ -541,7 +527,7 @@ class SitemapPanel {
 
 		wp_safe_redirect( add_query_arg(
 			'lf_robots_updated', '1',
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}

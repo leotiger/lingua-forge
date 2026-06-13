@@ -174,7 +174,7 @@ class DebugFilesPanel {
         wp_safe_redirect( add_query_arg(
             'lf_debug_cleared',
             (int) $count,
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }
@@ -193,7 +193,7 @@ class DebugFilesPanel {
         wp_safe_redirect( add_query_arg(
             'lf_debug_setting_saved',
             $enabled ? '1' : '0',
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) );
         exit;
     }

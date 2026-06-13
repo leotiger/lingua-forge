@@ -14,6 +14,18 @@ require_once LINGUAFORGE_AI_PATH . '/includes/Core/Autoloader.php';
 
 \LinguaForge\AI\Core\Plugin::init();
 
+// ── WooCommerce HPOS + Cart Checkout Blocks compatibility ────────────────────
+// FeaturesUtil::declare_compatibility() must be called on before_woocommerce_init,
+// which fires before plugins_loaded p10 where WooCommerce itself boots.
+// Registering at file scope (not inside a plugins_loaded callback) guarantees
+// the hook is in place in time. The closure is a harmless no-op when WC is absent.
+add_action( 'before_woocommerce_init', static function () {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables',  LINGUAFORGE_FILE, true );
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', LINGUAFORGE_FILE, true );
+	}
+} );
+
 // ── WooCommerce integration ───────────────────────────────────────────────────
 // Registers the shared-stock delegation filters (MetaDelegate, StockRouter,
 // VariationDelegate, TaxonomyDelegate, CatalogQuery) on every request — not just

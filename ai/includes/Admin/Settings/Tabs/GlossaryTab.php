@@ -41,7 +41,7 @@ class GlossaryTab extends Tab {
         if ( $filter_target !== '' ) $criteria['target_lang'] = $filter_target;
 
         $entries  = Glossary::get_all( $criteria );
-        $base_url = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $base_url = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
 
         // Available languages for the dropdowns — only the languages the
         // router actively knows about (installed locale packs + primary
@@ -291,7 +291,7 @@ class GlossaryTab extends Tab {
         $target_lang = sanitize_key( wp_unslash( $_POST['target_lang'] ?? '' ) );
         $notes       = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
 
-        $base = admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG );
+        $base = admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG );
 
         if ( $source_term === '' || $target_term === '' ) {
             wp_safe_redirect( add_query_arg( 'lf_glossary_error', 'missing_fields', $base ) . '#glossary' );
@@ -329,7 +329,7 @@ class GlossaryTab extends Tab {
         wp_safe_redirect( add_query_arg(
             'lf_glossary_deleted',
             '1',
-            admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) . '#glossary' );
         exit;
     }

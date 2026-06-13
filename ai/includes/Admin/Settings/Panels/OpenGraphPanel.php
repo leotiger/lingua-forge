@@ -220,7 +220,7 @@ class OpenGraphPanel {
 		wp_safe_redirect( add_query_arg(
 			'lf_seo_og_saved',
 			'1',
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}

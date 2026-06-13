@@ -139,7 +139,7 @@ class SettingsPage {
         add_action('admin_post_linguaforge_save_seo_schema',        [SchemaPanel::class,           'handle_save']);
         add_action('admin_post_linguaforge_save_seo_sitemap',       [SitemapPanel::class,          'handle_save']);
         add_action('admin_post_linguaforge_flush_sitemap_cache',    [SitemapPanel::class,          'handle_flush_cache']);
-        add_action('admin_post_linguaforge_ping_sitemap',           [SitemapPanel::class,          'handle_ping']);
+        add_action('admin_post_linguaforge_indexnow_submit',        [SitemapPanel::class,          'handle_indexnow_submit']);
         add_action('admin_post_linguaforge_update_robots_txt',      [SitemapPanel::class,          'handle_update_robots']);
         add_action('admin_post_linguaforge_save_seo_analysis',       [SeoAnalysisPanel::class,      'handle_save_analysis_settings']);
 
@@ -598,7 +598,7 @@ class SettingsPage {
             add_query_arg(
                 'linguaforge_saved',
                 '1',
-                admin_url('options-general.php?page=' . self::PAGE_SLUG)
+                admin_url('admin.php?page=' . self::PAGE_SLUG)
             )
         );
         exit;

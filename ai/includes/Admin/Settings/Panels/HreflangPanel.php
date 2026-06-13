@@ -104,7 +104,7 @@ class HreflangPanel {
 							<?php esc_html_e( '✓ Hreflang active', 'lingua-forge' ); ?>
 						</p>
 						<p class="description">
-							<?php esc_html_e( 'LF is outputting hreflang tags and has removed the WordPress core canonical tag on multilingual pages.', 'lingua-forge' ); ?>
+							<?php esc_html_e( 'LF is outputting hreflang tags and is replacing the WordPress core canonical with a self-referencing canonical for each language version.', 'lingua-forge' ); ?>
 						</p>
 
 						<?php if ( ! empty( $suppressed ) ) : ?>
@@ -146,7 +146,7 @@ class HreflangPanel {
 		wp_safe_redirect( add_query_arg(
 			'lf_seo_hreflang_saved',
 			'1',
-			admin_url( 'options-general.php?page=' . SettingsPage::PAGE_SLUG )
+			admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
 		) . '#seo' );
 		exit;
 	}
