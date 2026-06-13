@@ -23,16 +23,21 @@
  * crawlers find it automatically without manual submission.
  *
  * ── Caching ───────────────────────────────────────────────────────────────
- * Generated XML is stored in a 24-hour transient (linguaforge_sitemap_xml).
- * The cache is flushed automatically on any save_post event that affects
- * an LF-managed post.  It can also be flushed manually from the admin panel.
+ * The sitemap is split into a sitemap index at /lf-sitemap.xml and per-chunk
+ * urlset files at /lf-sitemap-0.xml, /lf-sitemap-1.xml, …  Each chunk holds
+ * up to GROUPS_PER_CHUNK (1 000) TRID groups.  All chunks are generated in a
+ * single DB query and cached in separate transients (24 h TTL).  The index
+ * transient key is linguaforge_sitemap_xml; chunk keys are
+ * linguaforge_sitemap_chunk_{N}.  The cache is flushed automatically on any
+ * save_post that affects an LF-managed post and can be flushed manually from
+ * the admin panel.
  *
  * ── Options ───────────────────────────────────────────────────────────────
  *   linguaforge_seo_sitemap_enabled  bool  Master switch (default true).
  *
  * ── Filters ───────────────────────────────────────────────────────────────
  *   linguaforge_seo_sitemap_slug  string  URL slug (default 'lf-sitemap.xml').
- *   linguaforge_seo_sitemap_xml   string  Full XML string before output.
+ *   linguaforge_seo_sitemap_xml   string  Sitemap index XML string before output.
  *
  * @package LinguaForge\Router\Seo
  * @since   2.2.0
@@ -46,8 +51,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class SitemapManager {
 
-	private const CACHE_KEY = 'linguaforge_sitemap_xml';
-	private const CACHE_TTL = DAY_IN_SECONDS;
+	private const CACHE_KEY        = 'linguaforge_sitemap_xml';    // sitemap index transient
+	private const CACHE_KEY_CHUNK  = 'linguaforge_sitemap_chunk_'; // + N (0-based chunk index)
+	private const CACHE_TTL        = DAY_IN_SECONDS;
+	private const GROUPS_PER_CHUNK = 1000;                         // TRID groups per chunk file
 
 	private Router $router;
 
@@ -84,7 +91,10 @@ class SitemapManager {
 	// =========================================================
 
 	/**
-	 * Serve the sitemap XML when the request URL matches the sitemap slug.
+	 * Serve the sitemap index or a chunk when the request URL matches.
+	 *
+	 * /lf-sitemap.xml        → sitemap index (<sitemapindex>)
+	 * /lf-sitemap-{N}.xml   → chunk N urlset (<urlset> with hreflang alternates)
 	 */
 	public function maybe_serve_sitemap(): void {
 
@@ -93,16 +103,28 @@ class SitemapManager {
 			? (string) wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH )
 			: '/';
 
-		$home_path   = (string) wp_parse_url( home_url(), PHP_URL_PATH );
-		$home_path   = rtrim( $home_path, '/' );
-		$sitemap_url = $home_path . '/' . $this->sitemap_slug();
+		$home_path = rtrim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+		$base_slug = $this->sitemap_slug();
+		$stem      = (string) preg_replace( '/\.xml$/i', '', $base_slug );
 
-		if ( rtrim( $request_path, '/' ) !== $sitemap_url ) {
-			return;
+		// Index: /lf-sitemap.xml
+		if ( rtrim( $request_path, '/' ) === $home_path . '/' . $base_slug ) {
+			$this->serve_xml( $this->get_sitemap_xml() );
 		}
 
-		$xml = $this->get_sitemap_xml();
+		// Chunk: /lf-sitemap-{N}.xml (N is 0-based)
+		$pattern = '#^' . preg_quote( $home_path . '/' . $stem, '#' ) . '-(\d+)\.xml$#';
+		if ( preg_match( $pattern, rtrim( $request_path, '/' ), $m ) ) {
+			$this->serve_xml( $this->get_sitemap_chunk_xml( (int) $m[1] ) );
+		}
+	}
 
+	/**
+	 * Output XML and exit.
+	 *
+	 * @param string $xml
+	 */
+	private function serve_xml( string $xml ): void {
 		header( 'Content-Type: application/xml; charset=UTF-8' );
 		header( 'X-Robots-Tag: noindex, follow' );
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- XML is generated internally; esc_xml() would corrupt valid XML entities.
@@ -154,10 +176,18 @@ class SitemapManager {
 	}
 
 	/**
-	 * Delete the cached sitemap XML.
+	 * Delete the cached sitemap index and all chunk transients.
 	 */
 	public function flush_cache(): void {
 		delete_transient( self::CACHE_KEY );
+
+		$chunk_count = max( (int) get_option( 'linguaforge_sitemap_chunk_count', 0 ), 1 );
+		for ( $i = 0; $i < $chunk_count; $i++ ) {
+			delete_transient( self::CACHE_KEY_CHUNK . $i );
+		}
+
+		delete_option( 'linguaforge_sitemap_chunk_count' );
+		delete_option( 'linguaforge_sitemap_url_count' );
 	}
 
 	/**
@@ -176,42 +206,56 @@ class SitemapManager {
 	// =========================================================
 
 	/**
-	 * Return the sitemap XML, reading from cache or generating fresh.
+	 * Return the sitemap index XML, reading from cache or generating fresh.
+	 *
+	 * /lf-sitemap.xml is always a <sitemapindex> pointing to chunk files.
+	 * Chunk files are generated and cached in the same pass.
 	 *
 	 * @return string
 	 */
 	public function get_sitemap_xml(): string {
-
+		$this->ensure_cache_populated();
 		$cached = get_transient( self::CACHE_KEY );
-
-		if ( is_string( $cached ) && '' !== $cached ) {
-			return $cached;
-		}
-
-		$xml = $this->generate_xml();
-		set_transient( self::CACHE_KEY, $xml, self::CACHE_TTL );
-		update_option( 'linguaforge_sitemap_cached_at', wp_date( 'c' ), false );
-
-		return $xml;
+		return ( is_string( $cached ) && '' !== $cached ) ? $cached : $this->empty_index_xml();
 	}
 
 	/**
-	 * Generate the full sitemap XML string.
+	 * Return a single chunk urlset XML, reading from cache or generating fresh.
 	 *
-	 * Queries every published post that carries _lf_trid meta, groups by TRID,
-	 * and outputs one <url> block per post with <xhtml:link> alternates for
-	 * every language in the same translation group.
-	 *
+	 * @param  int    $chunk  0-based chunk index.
 	 * @return string
 	 */
-	private function generate_xml(): string {
+	public function get_sitemap_chunk_xml( int $chunk ): string {
+		$this->ensure_cache_populated();
+		$cached = get_transient( self::CACHE_KEY_CHUNK . $chunk );
+		return ( is_string( $cached ) && '' !== $cached ) ? $cached : $this->empty_urlset_xml();
+	}
+
+	/**
+	 * Populate the index and all chunk transients if the cache is cold.
+	 *
+	 * One DB query feeds the index and every chunk; all transients are written
+	 * together so they always expire and flush as a unit.
+	 */
+	private function ensure_cache_populated(): void {
+		$cached = get_transient( self::CACHE_KEY );
+		if ( is_string( $cached ) && '' !== $cached ) {
+			return;
+		}
+		$this->generate_and_cache();
+	}
+
+	/**
+	 * Run the sitemap DB query, split results into chunks, and cache everything.
+	 */
+	private function generate_and_cache(): void {
 
 		global $wpdb;
 
 		$source_lang = $this->router->context->source_language();
 
 		// ── Fetch all published LF-managed posts ──────────────────────────────
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query intentional; result is transient-cached.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query intentional; result is transient-cached by ensure_cache_populated().
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT p.ID, p.post_modified_gmt, pm_trid.meta_value AS trid, pm_lang.meta_value AS lang
@@ -220,7 +264,7 @@ class SitemapManager {
 				 INNER JOIN {$wpdb->postmeta} pm_lang ON p.ID = pm_lang.post_id AND pm_lang.meta_key = '_lf_lang'
 				 WHERE p.post_status = %s
 				   AND p.post_type NOT IN (
-				       'revision', 'nav_menu_item', 'custom_css', 'customize_changeset',
+				       'attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset',
 				       'oembed_cache', 'user_request', 'wp_block',
 				       'wp_template', 'wp_template_part', 'wp_navigation',
 				       'wp_global_styles', 'wp_font_face', 'wp_font_family',
@@ -232,23 +276,80 @@ class SitemapManager {
 		);
 
 		if ( empty( $rows ) ) {
-			return $this->empty_xml();
+			// Cache empty responses so we don't re-query on every request.
+			set_transient( self::CACHE_KEY, $this->empty_index_xml(), self::CACHE_TTL );
+			set_transient( self::CACHE_KEY_CHUNK . '0', $this->empty_urlset_xml(), self::CACHE_TTL );
+			update_option( 'linguaforge_sitemap_chunk_count', 1, false );
+			update_option( 'linguaforge_sitemap_url_count', 0, false );
+			update_option( 'linguaforge_sitemap_cached_at', wp_date( 'c' ), false );
+			return;
 		}
 
-		// ── Group by TRID ──────────────────────────────────────────────────────
+		// ── Group rows by TRID ────────────────────────────────────────────────
 		$groups = [];
 		foreach ( $rows as $row ) {
 			$groups[ $row->trid ][] = $row;
 		}
 
-		// ── Build XML ──────────────────────────────────────────────────────────
+		// ── Split into chunks of GROUPS_PER_CHUNK TRIDs each ─────────────────
+		$group_chunks = array_chunk( array_values( $groups ), self::GROUPS_PER_CHUNK );
+		$chunk_count  = count( $group_chunks );
+		$total_urls   = 0;
+
+		foreach ( $group_chunks as $i => $chunk_groups ) {
+			$chunk_xml   = $this->generate_chunk_xml( $chunk_groups, $source_lang );
+			$total_urls += substr_count( $chunk_xml, '<url>' );
+			set_transient( self::CACHE_KEY_CHUNK . $i, $chunk_xml, self::CACHE_TTL );
+		}
+
+		// ── Generate and cache the sitemap index ──────────────────────────────
+		$index_xml = $this->generate_index_xml( $chunk_count );
+		$index_xml = (string) apply_filters( 'linguaforge_seo_sitemap_xml', $index_xml );
+		set_transient( self::CACHE_KEY, $index_xml, self::CACHE_TTL );
+
+		update_option( 'linguaforge_sitemap_chunk_count', $chunk_count, false );
+		update_option( 'linguaforge_sitemap_url_count', $total_urls, false );
+		update_option( 'linguaforge_sitemap_cached_at', wp_date( 'c' ), false );
+	}
+
+	/**
+	 * Build the <sitemapindex> XML listing all chunk URLs.
+	 *
+	 * @param  int    $chunk_count  Number of chunk files.
+	 * @return string
+	 */
+	private function generate_index_xml( int $chunk_count ): string {
+
+		$now = (string) wp_date( 'c' );
+		$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+		$xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+		for ( $i = 0; $i < $chunk_count; $i++ ) {
+			$xml .= "\t<sitemap>\n";
+			$xml .= "\t\t<loc>" . esc_url( $this->chunk_url( $i ) ) . "</loc>\n";
+			$xml .= "\t\t<lastmod>" . esc_html( $now ) . "</lastmod>\n";
+			$xml .= "\t</sitemap>\n";
+		}
+
+		$xml .= '</sitemapindex>';
+		return $xml;
+	}
+
+	/**
+	 * Build one <urlset> chunk containing the given TRID groups.
+	 *
+	 * @param  array  $groups       Array of TRID groups; each group is an array of row objects.
+	 * @param  string $source_lang  Source language code for x-default selection.
+	 * @return string
+	 */
+	private function generate_chunk_xml( array $groups, string $source_lang ): string {
+
 		$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
 		$xml .= '        xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
-		foreach ( $groups as $trid => $posts ) {
+		foreach ( $groups as $posts ) {
 
-			// Build the alternates list: lang → permalink.
 			$alternates = [];
 			$latest_mod = '';
 
@@ -267,8 +368,8 @@ class SitemapManager {
 				continue;
 			}
 
-			$lastmod     = '' !== $latest_mod ? wp_date( 'c', strtotime( $latest_mod . ' UTC' ) ) : '';
-			$x_default   = $alternates[ $source_lang ] ?? reset( $alternates );
+			$lastmod   = '' !== $latest_mod ? wp_date( 'c', strtotime( $latest_mod . ' UTC' ) ) : '';
+			$x_default = $alternates[ $source_lang ] ?? reset( $alternates );
 
 			// One <url> block per language version.
 			foreach ( $alternates as $lang => $url ) {
@@ -281,25 +382,55 @@ class SitemapManager {
 				}
 
 				foreach ( $alternates as $alt_lang => $alt_url ) {
-					$xml .= "\t\t<xhtml:link rel=\"alternate\" hreflang=\"" . esc_attr( $alt_lang ) . '" href="' . esc_url( $alt_url ) . '"/>' . "\n";
+					$xml .= "\t\t<xhtml:link rel=\"alternate\" hreflang=\"" . esc_attr( SchemaManager::lang_to_bcp47( $alt_lang ) ) . '" href="' . esc_url( $alt_url ) . '"/>' . "\n";
 				}
 
 				// x-default.
 				$xml .= "\t\t<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"" . esc_url( $x_default ) . "\"/>\n";
-
 				$xml .= "\t</url>\n";
 			}
 		}
 
 		$xml .= '</urlset>';
-
-		return (string) apply_filters( 'linguaforge_seo_sitemap_xml', $xml );
+		return $xml;
 	}
 
 	/**
-	 * Return an empty but valid sitemap XML string.
+	 * Chunk slug derived from the base sitemap slug.
+	 *
+	 * e.g. 'lf-sitemap.xml' → 'lf-sitemap-0.xml'
+	 *
+	 * @param  int    $chunk  0-based chunk index.
+	 * @return string
 	 */
-	private function empty_xml(): string {
+	private function chunk_slug( int $chunk ): string {
+		$stem = (string) preg_replace( '/\.xml$/i', '', $this->sitemap_slug() );
+		return $stem . '-' . $chunk . '.xml';
+	}
+
+	/**
+	 * Absolute URL to a chunk file.
+	 *
+	 * @param  int    $chunk  0-based chunk index.
+	 * @return string
+	 */
+	private function chunk_url( int $chunk ): string {
+		return home_url( '/' . $this->chunk_slug( $chunk ) );
+	}
+
+	/**
+	 * Return an empty but valid sitemap index XML string.
+	 */
+	private function empty_index_xml(): string {
+		return '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+			. '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+			. "\n</sitemapindex>";
+	}
+
+	/**
+	 * Return an empty but valid urlset XML string.
+	 */
+	private function empty_urlset_xml(): string {
 		return '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
 			. '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
 			. ' xmlns:xhtml="http://www.w3.org/1999/xhtml">'
@@ -329,7 +460,7 @@ class SitemapManager {
 	}
 
 	/**
-	 * Count of URL entries from the cache only — never triggers generation.
+	 * Total <url> count across all chunks, from cache only — never triggers generation.
 	 *
 	 * Returns null when the sitemap has not been generated yet.
 	 * Use this in admin UI to avoid running a full DB query on every page load.
@@ -338,13 +469,16 @@ class SitemapManager {
 	 */
 	public function get_cached_entry_count(): ?int {
 
+		// Use the index transient as the presence sentinel — if it is absent the
+		// cache has not been populated (or has been flushed).
 		$cached = get_transient( self::CACHE_KEY );
 
 		if ( ! is_string( $cached ) || '' === $cached ) {
 			return null;
 		}
 
-		return max( 0, substr_count( $cached, '<url>' ) );
+		$count = get_option( 'linguaforge_sitemap_url_count', null );
+		return null !== $count ? max( 0, (int) $count ) : null;
 	}
 
 	/**

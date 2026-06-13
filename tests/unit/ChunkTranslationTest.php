@@ -82,6 +82,10 @@ function lf_make_mock_provider( ?string $return_value, ?\stdClass $holder = null
 			}
 			return $this->return_value;
 		}
+
+		public function get_last_error(): string {
+			return '';
+		}
 	};
 }
 

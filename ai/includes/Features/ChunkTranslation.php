@@ -125,9 +125,12 @@ class ChunkTranslation {
 		$result = UsageRecorder::tracked( 'translation-chunk', fn() => $this->provider->chat( $messages ) );
 
 		if ( empty( $result ) ) {
+			$provider_error = $this->provider->get_last_error();
 			return [
 				'success' => false,
-				'error'   => 'Translation failed. Please try again.',
+				'error'   => $provider_error !== ''
+					? $provider_error
+					: 'Translation failed. Please try again.',
 			];
 		}
 

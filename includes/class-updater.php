@@ -73,6 +73,16 @@ class Linguaforge_Updater {
 	const PLUGIN_BASENAME = 'lingua-forge/lingua-forge.php';
 
 	/**
+	 * Hosts permitted as the origin of the plugin download ZIP.
+	 *
+	 * A manipulated manifest cannot redirect the update to an arbitrary host.
+	 * Subdomains of these hosts (e.g. releases.github.com) are also accepted.
+	 *
+	 * @var string[]
+	 */
+	const ALLOWED_DOWNLOAD_HOSTS = [ 'lingua-forge.com', 'github.com', 'objects.githubusercontent.com' ];
+
+	/**
 	 * Register all WordPress hooks.
 	 *
 	 * Call once from lingua-forge.php, gated on is_admin() so the remote
@@ -117,6 +127,15 @@ class Linguaforge_Updater {
 			[ self::class, 'add_view_details_link' ],
 			10,
 			2
+		);
+
+		// Intercept our own package download to enforce host pinning and
+		// verify the SHA-256 hash declared in the manifest (when present).
+		add_filter(
+			'upgrader_pre_download',
+			[ self::class, 'verify_and_download' ],
+			10,
+			3
 		);
 	}
 
@@ -295,6 +314,103 @@ class Linguaforge_Updater {
 		}
 
 		return $links;
+	}
+
+	// -------------------------------------------------------------------------
+	// Package integrity verification
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Hook: upgrader_pre_download
+	 *
+	 * Intercepts the download of our own update package to:
+	 *  1. Pin the download host — a manipulated manifest cannot redirect the
+	 *     upgrade to an arbitrary server.
+	 *  2. Verify the SHA-256 hash declared in the manifest (when the field is
+	 *     present).  The check is skipped gracefully when the manifest omits
+	 *     `sha256` so that existing releases without the field still update.
+	 *
+	 * We download the ZIP ourselves, verify it, and return the local temp-file
+	 * path.  WordPress then uses that path directly instead of re-downloading,
+	 * so the file is only fetched once.
+	 *
+	 * Returns false for any package that is not ours, letting WordPress handle
+	 * it normally.  Returns a WP_Error to abort the update on a failed check.
+	 *
+	 * @param false|string|\WP_Error $pre      Pre-existing result (false = not handled yet).
+	 * @param string                 $package  Download URL passed to the upgrader.
+	 * @param \WP_Upgrader           $_upgrader The upgrader instance (unused).
+	 * @return false|string|\WP_Error
+	 */
+	public static function verify_and_download( $pre, string $package, \WP_Upgrader $_upgrader ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- $_upgrader required by upgrader_pre_download filter signature.
+		// If a prior filter already handled this, respect it.
+		if ( false !== $pre ) {
+			return $pre;
+		}
+
+		$manifest = self::fetch_manifest();
+		if ( ! $manifest || empty( $manifest->download_url ) ) {
+			return false;
+		}
+
+		// Only intercept our own package URL.
+		if ( $package !== $manifest->download_url ) {
+			return false;
+		}
+
+		// Host pinning — block if the download URL resolves to an unexpected host.
+		$host = wp_parse_url( $package, PHP_URL_HOST );
+		if ( ! self::is_allowed_download_host( (string) $host ) ) {
+			return new \WP_Error(
+				'linguaforge_updater_host_blocked',
+				sprintf(
+					/* translators: %s: download URL hostname */
+					__( 'Lingua Forge update blocked: download host "%s" is not on the allowlist.', 'lingua-forge' ),
+					(string) $host
+				)
+			);
+		}
+
+		// Download to a temp file.
+		$tmp = download_url( $package );
+		if ( is_wp_error( $tmp ) ) {
+			return $tmp;
+		}
+
+		// SHA-256 verification — skipped when the manifest omits the field so
+		// existing releases without a hash still update cleanly.
+		if ( ! empty( $manifest->sha256 ) ) {
+			$actual   = hash_file( 'sha256', $tmp );
+			$expected = strtolower( trim( (string) $manifest->sha256 ) );
+
+			if ( ! hash_equals( $expected, (string) $actual ) ) {
+				wp_delete_file( $tmp );
+				return new \WP_Error(
+					'linguaforge_updater_checksum_mismatch',
+					__( 'Lingua Forge update blocked: SHA-256 of the downloaded package does not match the manifest. The file may have been tampered with.', 'lingua-forge' )
+				);
+			}
+		}
+
+		return $tmp;
+	}
+
+	/**
+	 * Returns true when the given hostname is on the download allowlist.
+	 *
+	 * Exact matches and subdomains of allowlisted hosts are both accepted
+	 * (e.g. "releases.github.com" matches "github.com").
+	 *
+	 * @param string $host Hostname to check.
+	 * @return bool
+	 */
+	private static function is_allowed_download_host( string $host ): bool {
+		foreach ( self::ALLOWED_DOWNLOAD_HOSTS as $allowed ) {
+			if ( $host === $allowed || str_ends_with( $host, '.' . $allowed ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// -------------------------------------------------------------------------

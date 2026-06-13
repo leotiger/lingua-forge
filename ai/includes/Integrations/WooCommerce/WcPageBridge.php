@@ -199,8 +199,8 @@ class WcPageBridge {
 	 *
 	 * All five WC page types (shop, cart, checkout, myaccount, terms) follow
 	 * the same pattern: look up the source page's `_lf_trid`, then find the
-	 * page that matches that trid AND `_lf_lang = LF_LANG`.  This is the single
-	 * implementation; the public callbacks below are thin wrappers.
+	 * page that matches that trid AND `_lf_lang = $active_lang`.  This is the
+	 * single implementation; the public callbacks below are thin wrappers.
 	 *
 	 * Result is cached in `$translated_page_ids` after the first resolution so
 	 * repeated calls to `wc_get_page_id()` within the same request (breadcrumbs,
@@ -208,9 +208,17 @@ class WcPageBridge {
 	 *
 	 * Returns the original `$page_id` when:
 	 *  - `is_admin()` is true.
-	 *  - `LF_LANG` is not defined — source-language request; router did not fire.
+	 *  - No active language is resolvable (source-language request, or email
+	 *    context without a stored order language).
 	 *  - Source page has no `_lf_trid` — WC pages not linked into LF groups.
-	 *  - No page with matching `_lf_trid` + `_lf_lang` found in the DB.
+	 *  - No page with matching `_lf_trid` + `$active_lang` found in the DB.
+	 *
+	 * Language resolution order:
+	 *  1. `LF_LANG` constant — set on every normal frontend request.
+	 *  2. `linguaforge_email_order_lang` filter — set by `WcOrderLang` during the
+	 *     locale-switched window of a customer email render, enabling correct
+	 *     order-received / my-account / checkout links in transactional emails
+	 *     where `LF_LANG` is not defined (cron / email context).
 	 *
 	 * @param  mixed  $page_id    Raw value from the WC option.
 	 * @param  string $option_key e.g. 'woocommerce_cart_page_id'.
@@ -220,7 +228,14 @@ class WcPageBridge {
 		if ( is_admin() ) {
 			return $page_id;
 		}
-		if ( ! defined( 'LF_LANG' ) || '' === LF_LANG ) {
+
+		// Resolve active language: URL-derived LF_LANG first, then email context.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
+		$active_lang = defined( 'LF_LANG' ) && '' !== LF_LANG
+			? LF_LANG
+			: (string) apply_filters( 'linguaforge_email_order_lang', '' );
+
+		if ( '' === $active_lang ) {
 			return $page_id;
 		}
 
@@ -244,7 +259,7 @@ class WcPageBridge {
 			'meta_query'     => [
 				'relation' => 'AND',
 				[ 'key' => '_lf_trid', 'value' => $source_trid ],
-				[ 'key' => '_lf_lang', 'value' => LF_LANG ],
+				[ 'key' => '_lf_lang', 'value' => $active_lang ],
 			],
 		] );
 

@@ -44,6 +44,7 @@ class Bootstrap {
 		}
 
 		MetaDelegate::init();
+		CouponTridMap::init();
 		StockRouter::init();
 		VariationDelegate::init();
 		VariationSync::init();
@@ -59,6 +60,9 @@ class Bootstrap {
 		SeoSupport::init();
 		PageTagRepair::init();
 		WcPageBridge::init();
+		WcOrderLang::init();
+		ProductReviewRouter::init();
+		OrderItemNormalizer::init();
 
 		self::$active = true;
 

@@ -51,6 +51,34 @@ class ApiKeysTab extends Tab {
             <?php foreach (SettingsPage::providers() as $slug => $label): ?>
 
                 <?php
+                // WordPress AI Client manages credentials through WP's Connectors screen.
+                // No API key is stored by Lingua Forge for this provider.
+                if ( $slug === 'wp-ai-client' ):
+                ?>
+                <tr>
+                    <th scope="row"><?php echo esc_html( $label ); ?></th>
+                    <td>
+                        <p class="description">
+                            <?php
+                            printf(
+                                /* translators: %s is a link to the WordPress Connectors settings screen. */
+                                esc_html__(
+                                    'API credentials are managed by WordPress in %s. No key is stored by Lingua Forge.',
+                                    'lingua-forge'
+                                ),
+                                sprintf(
+                                    '<a href="%s">%s</a>',
+                                    esc_url( admin_url( 'options-general.php?page=connectors' ) ),
+                                    esc_html__( 'Settings → Connectors', 'lingua-forge' )
+                                )
+                            );
+                            ?>
+                        </p>
+                    </td>
+                </tr>
+                <?php continue; endif; ?>
+
+                <?php
                 $source     = KeyStore::source($slug);
                 $configured = $source !== null;
                 ?>

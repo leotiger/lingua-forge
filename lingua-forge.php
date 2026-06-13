@@ -3,7 +3,7 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, complete multilingual SEO (hreflang, Open Graph, Schema.org, sitemap), and AI content tools for WordPress. Language detection, URL routing, translation, content generation, and a full SEO layer — no companion plugin required.
- * Version:           2.2.16
+ * Version:           2.3.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Uli Hake
@@ -11,6 +11,7 @@
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       lingua-forge
+ * Domain Path:       /languages
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -32,7 +33,7 @@ if ( defined( 'LINGUAFORGE_FILE' ) ) {
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '2.2.16' );
+define( 'LINGUAFORGE_VERSION', '2.3.0' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION
@@ -108,6 +109,17 @@ add_action( 'admin_init', function () {
 register_deactivation_hook( __FILE__, function () {
     flush_rewrite_rules();
 } );
+
+// Load bundled .mo / .l10n.php translations (WP 6.5+ performant format).
+// Must run on 'init' or later (WP 6.7+ requirement).  Priority 1 so it fires
+// before any subscriber that calls __() on init.
+add_action( 'init', static function () {
+    load_plugin_textdomain( // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Self-hosted plugin; WP.org automatic translation loading does not apply. Explicit call required so bundled .mo/.l10n.php files are registered.
+        'lingua-forge',
+        false,
+        dirname( plugin_basename( __FILE__ ) ) . '/languages'
+    );
+}, 1 );
 
 add_action( 'init', function () {
     if ( get_option( 'linguaforge_flush_rewrite_rules' ) ) {

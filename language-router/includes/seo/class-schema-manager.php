@@ -13,18 +13,20 @@
  * or SEOPress is active, SchemaManager registers no hooks at all and the
  * active plugin handles structured data output.
  *
- * ── Types emitted (sprint 2) ──────────────────────────────────────────────
+ * ── Types emitted ─────────────────────────────────────────────────────────
  *   Article / WebPage   — singular posts and pages (independently togglable)
  *   WebSite             — front page / blog index only
+ *   BreadcrumbList      — all non-front-page contexts with a resolvable crumb chain
  *
  * WooCommerce Product schema is handled by
  * LinguaForge\AI\Integrations\WooCommerce\SeoSupport which hooks into the
  * linguaforge_seo_schema_extra_types action fired at the end of print_schema().
  *
  * ── Options ───────────────────────────────────────────────────────────────
- *   linguaforge_seo_schema_enabled  bool  Master switch (default true).
- *   linguaforge_seo_schema_article  bool  Article / WebPage output (default true).
- *   linguaforge_seo_schema_website  bool  WebSite output on front page (default true).
+ *   linguaforge_seo_schema_enabled    bool  Master switch (default true).
+ *   linguaforge_seo_schema_article    bool  Article / WebPage output (default true).
+ *   linguaforge_seo_schema_website    bool  WebSite output on front page (default true).
+ *   linguaforge_seo_schema_breadcrumb bool  BreadcrumbList output (default true).
  *
  * ── Filters ───────────────────────────────────────────────────────────────
  *   linguaforge_seo_schema_data  array  Modify the full schema array before encoding.
@@ -97,6 +99,16 @@ class SchemaManager {
 				$post          = get_post();
 				if ( $post && ! $is_wc_product ) {
 					self::output_schema( $this->build_article_schema( $post, $in_language ) );
+				}
+			}
+		}
+
+		// ── BreadcrumbList — all non-front-page contexts ──────────────────────
+		if ( get_option( 'linguaforge_seo_schema_breadcrumb', true ) ) {
+			if ( ! is_front_page() && ! is_home() ) {
+				$breadcrumb = $this->build_breadcrumb_schema();
+				if ( ! empty( $breadcrumb ) ) {
+					self::output_schema( $breadcrumb );
 				}
 			}
 		}
@@ -185,6 +197,226 @@ class SchemaManager {
 		}
 
 		return (array) apply_filters( 'linguaforge_seo_schema_data', $data, $type );
+	}
+
+	/**
+	 * Build BreadcrumbList schema for the current page.
+	 *
+	 * Handles four chains:
+	 *   post      — Home › Primary Category Ancestors › Primary Category › Post
+	 *   page      — Home › Ancestor Pages › Page
+	 *   CPT       — Home › Ancestor Posts (hierarchical) or Primary Taxonomy (flat)
+	 *   taxonomy  — Home › Ancestor Terms › Current Term
+	 *
+	 * Returns an empty array on front page, search results, author/date archives,
+	 * or when fewer than two breadcrumb items can be resolved.
+	 *
+	 * URLs flow through get_permalink() / get_term_link() / home_url() — all of
+	 * which pass through Lingua Forge's rewrite filters so the generated paths
+	 * are automatically language-prefixed for the current request.
+	 *
+	 * @return array<string, mixed>
+	 * @since 2.3.0
+	 */
+	private function build_breadcrumb_schema(): array {
+
+		$items = [];
+		$pos   = 1;
+
+		// ── Home crumb (always first) ──────────────────────────────────────────
+		$items[] = [
+			'@type'    => 'ListItem',
+			'position' => $pos++,
+			'name'     => wp_strip_all_tags( get_bloginfo( 'name' ) ),
+			'item'     => home_url( '/' ),
+		];
+
+		if ( is_singular() ) {
+
+			$post = get_post();
+			if ( ! $post instanceof \WP_Post ) {
+				return [];
+			}
+
+			if ( 'post' === $post->post_type ) {
+
+				// ── Blog post: primary category ancestor chain ─────────────────────
+				$cats = get_the_category( $post->ID );
+				if ( ! empty( $cats ) ) {
+					$primary      = $cats[0];
+					$cat_ancestors = array_reverse( get_ancestors( $primary->term_id, 'category', 'taxonomy' ) );
+					foreach ( $cat_ancestors as $anc_id ) {
+						$anc  = get_term( $anc_id, 'category' );
+						$link = $anc instanceof \WP_Term ? get_term_link( $anc ) : null;
+						if ( is_string( $link ) ) {
+							$items[] = [
+								'@type'    => 'ListItem',
+								'position' => $pos++,
+								'name'     => wp_strip_all_tags( $anc->name ),
+								'item'     => $link,
+							];
+						}
+					}
+					$cat_link = get_term_link( $primary );
+					if ( is_string( $cat_link ) ) {
+						$items[] = [
+							'@type'    => 'ListItem',
+							'position' => $pos++,
+							'name'     => wp_strip_all_tags( $primary->name ),
+							'item'     => $cat_link,
+						];
+					}
+				}
+
+			} elseif ( 'page' === $post->post_type ) {
+
+				// ── Page: ancestor pages from root down ────────────────────────────
+				$page_ancestors = array_reverse( get_ancestors( $post->ID, 'page', 'post_type' ) );
+				foreach ( $page_ancestors as $anc_id ) {
+					$link = get_permalink( $anc_id );
+					if ( $link ) {
+						$items[] = [
+							'@type'    => 'ListItem',
+							'position' => $pos++,
+							'name'     => wp_strip_all_tags( get_the_title( $anc_id ) ),
+							'item'     => (string) $link,
+						];
+					}
+				}
+
+			} else {
+
+				// ── CPT: hierarchical → ancestor posts; flat → primary taxonomy ────
+				$pt_obj = get_post_type_object( $post->post_type );
+				if ( $pt_obj && $pt_obj->hierarchical ) {
+					$cpt_ancestors = array_reverse( get_ancestors( $post->ID, $post->post_type, 'post_type' ) );
+					foreach ( $cpt_ancestors as $anc_id ) {
+						$link = get_permalink( $anc_id );
+						if ( $link ) {
+							$items[] = [
+								'@type'    => 'ListItem',
+								'position' => $pos++,
+								'name'     => wp_strip_all_tags( get_the_title( $anc_id ) ),
+								'item'     => (string) $link,
+							];
+						}
+					}
+				} else {
+					$tax = $this->get_primary_taxonomy( $post->post_type );
+					if ( '' !== $tax ) {
+						$terms = get_the_terms( $post->ID, $tax );
+						if ( is_array( $terms ) && ! empty( $terms ) ) {
+							$primary_term   = $terms[0];
+							$term_ancestors = array_reverse( get_ancestors( $primary_term->term_id, $tax, 'taxonomy' ) );
+							foreach ( $term_ancestors as $anc_id ) {
+								$anc  = get_term( $anc_id, $tax );
+								$link = $anc instanceof \WP_Term ? get_term_link( $anc ) : null;
+								if ( is_string( $link ) ) {
+									$items[] = [
+										'@type'    => 'ListItem',
+										'position' => $pos++,
+										'name'     => wp_strip_all_tags( $anc->name ),
+										'item'     => $link,
+									];
+								}
+							}
+							$term_link = get_term_link( $primary_term );
+							if ( is_string( $term_link ) ) {
+								$items[] = [
+									'@type'    => 'ListItem',
+									'position' => $pos++,
+									'name'     => wp_strip_all_tags( $primary_term->name ),
+									'item'     => $term_link,
+								];
+							}
+						}
+					}
+				}
+			}
+
+			// ── Current singular (always last) ─────────────────────────────────
+			$permalink = get_permalink( $post );
+			$items[] = [
+				'@type'    => 'ListItem',
+				'position' => $pos,
+				'name'     => wp_strip_all_tags( get_the_title( $post ) ),
+				'item'     => $permalink ? (string) $permalink : '',
+			];
+
+		} elseif ( is_category() || is_tag() || is_tax() ) {
+
+			$term = get_queried_object();
+			if ( ! $term instanceof \WP_Term ) {
+				return [];
+			}
+
+			// ── Ancestor terms from root down ──────────────────────────────────
+			$term_ancestors = array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) );
+			foreach ( $term_ancestors as $anc_id ) {
+				$anc  = get_term( $anc_id, $term->taxonomy );
+				$link = $anc instanceof \WP_Term ? get_term_link( $anc ) : null;
+				if ( is_string( $link ) ) {
+					$items[] = [
+						'@type'    => 'ListItem',
+						'position' => $pos++,
+						'name'     => wp_strip_all_tags( $anc->name ),
+						'item'     => $link,
+					];
+				}
+			}
+
+			// ── Current term ───────────────────────────────────────────────────
+			$term_link = get_term_link( $term );
+			$items[] = [
+				'@type'    => 'ListItem',
+				'position' => $pos,
+				'name'     => wp_strip_all_tags( $term->name ),
+				'item'     => is_string( $term_link ) ? $term_link : '',
+			];
+
+		} else {
+			// Author archives, date archives, search, etc. — not enough context.
+			return [];
+		}
+
+		// A Home-only chain is not a useful BreadcrumbList.
+		if ( count( $items ) < 2 ) {
+			return [];
+		}
+
+		$data = [
+			'@context'        => 'https://schema.org',
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => $items,
+		];
+
+		return (array) apply_filters( 'linguaforge_seo_schema_data', $data, 'BreadcrumbList' );
+	}
+
+	/**
+	 * Resolve the primary taxonomy for deriving breadcrumbs on a flat CPT.
+	 *
+	 * Checks in this order:
+	 *   1. 'product_cat' for WooCommerce products (always preferred).
+	 *   2. First hierarchical taxonomy registered for the post type.
+	 *
+	 * @param  string $post_type
+	 * @return string Taxonomy name, or empty string if none found.
+	 */
+	private function get_primary_taxonomy( string $post_type ): string {
+
+		if ( 'product' === $post_type && taxonomy_exists( 'product_cat' ) ) {
+			return 'product_cat';
+		}
+
+		$taxonomies = get_object_taxonomies( $post_type, 'objects' );
+		foreach ( $taxonomies as $tax ) {
+			if ( $tax->hierarchical ) {
+				return $tax->name;
+			}
+		}
+
+		return '';
 	}
 
 	// =========================================================

@@ -98,6 +98,20 @@ class GeneralTab extends Tab {
             </tr>
         </table>
 
+        <?php if ( $active_provider === 'wp-ai-client' ): ?>
+        <div class="notice notice-warning inline" style="margin:12px 0 0;">
+            <p>
+                <strong><?php esc_html_e( 'WordPress AI Client — requirements:', 'lingua-forge' ); ?></strong>
+                <?php
+                esc_html_e(
+                    'Full-page translation uses JSON-schema-constrained output. This requires a connector plugin to be installed and active (not just an API key saved in Settings → Connectors). If translation fails, check the PHP error log for the specific error, or switch to a built-in provider.',
+                    'lingua-forge'
+                );
+                ?>
+            </p>
+        </div>
+        <?php endif; ?>
+
         <!-- ── Provider Consoles ─────────────────────────────────── -->
         <p class="description">
             <?php esc_html_e( 'Manage your account, review usage, or top up credits:', 'lingua-forge' ); ?>
@@ -113,6 +127,15 @@ class GeneralTab extends Tab {
                     '<a href="%s" target="_blank" rel="noopener noreferrer">%s ↗</a>',
                     esc_url( $lf_console['url'] ),
                     esc_html( $lf_console['label'] )
+                );
+            }
+            // On WP 7.0+ the WordPress AI Client provider is available; surface the
+            // Connectors screen link alongside the three API-key console links.
+            if ( array_key_exists( 'wp-ai-client', SettingsPage::providers() ) ) {
+                $lf_links[] = sprintf(
+                    '<a href="%s">%s</a>',
+                    esc_url( admin_url( 'options-general.php?page=connectors' ) ),
+                    esc_html__( 'WordPress Connectors', 'lingua-forge' )
                 );
             }
             echo implode( ' &middot; ', $lf_links ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- each link built with esc_url/esc_html above.
@@ -144,6 +167,8 @@ class GeneralTab extends Tab {
         // Populated from the static catalog; refreshed from the live API when
         // a "Test connection" succeeds in the API Keys tab (test-connection.js).
         foreach (SettingsPage::providers() as $provider_slug => $provider_label):
+            // WP AI Client has no model catalog — model selection is managed by WP core.
+            if ( $provider_slug === 'wp-ai-client' ) continue;
             $models  = ModelCatalog::for_provider($provider_slug);
             $list_id = 'lf-models-' . $provider_slug;
         ?>
@@ -185,6 +210,29 @@ class GeneralTab extends Tab {
                         <?php endif; ?>
                     </th>
 
+                    <?php if ( $slug === 'wp-ai-client' ): ?>
+
+                        <td colspan="2">
+                            <p class="description">
+                                <?php
+                                printf(
+                                    /* translators: %s is a link to the WordPress Connectors settings screen. */
+                                    esc_html__(
+                                        'Model selection is managed by WordPress in %s — no model identifier is stored by Lingua Forge for this provider.',
+                                        'lingua-forge'
+                                    ),
+                                    sprintf(
+                                        '<a href="%s">%s</a>',
+                                        esc_url( admin_url( 'options-general.php?page=connectors' ) ),
+                                        esc_html__( 'Settings → Connectors', 'lingua-forge' )
+                                    )
+                                );
+                                ?>
+                            </p>
+                        </td>
+
+                    <?php else: ?>
+
                     <?php foreach (self::tiers() as $tier_slug => $tier): ?>
 
                         <?php
@@ -215,6 +263,8 @@ class GeneralTab extends Tab {
                         </td>
 
                     <?php endforeach; ?>
+
+                    <?php endif; ?>
                 </tr>
 
             <?php endforeach; ?>

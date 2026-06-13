@@ -60,11 +60,19 @@ class SettingsPage {
      */
     public static function providers(): array {
 
-        return [
+        $list = [
             'anthropic' => __( 'Anthropic (Claude)', 'lingua-forge' ),
             'openai'    => __( 'OpenAI (GPT)',        'lingua-forge' ),
             'gemini'    => __( 'Google (Gemini)',     'lingua-forge' ),
         ];
+
+        // WordPress AI Client is only available on WP 7.0+ — omit the option
+        // on older installs so the dropdown doesn't show a non-functional choice.
+        if ( function_exists( 'wp_ai_client_prompt' ) ) {
+            $list['wp-ai-client'] = __( 'WordPress AI Client (WP 7.0+)', 'lingua-forge' );
+        }
+
+        return $list;
     }
 
     /**

@@ -66,7 +66,7 @@ class Hreflang {
 			if ( empty( $translations ) ) return;
 
 			foreach ( $translations as $lang => $id ) {
-				echo '<link rel="alternate" hreflang="' . esc_attr( $lang ) . '" href="' . esc_url( get_permalink( $id ) ) . '" />' . "\n";
+				echo '<link rel="alternate" hreflang="' . esc_attr( SchemaManager::lang_to_bcp47( $lang ) ) . '" href="' . esc_url( get_permalink( $id ) ) . '" />' . "\n";
 			}
 
 			// x-default — Google's spec says this should point at a page intended
@@ -111,7 +111,7 @@ class Hreflang {
 						? home_url( '/' . trailingslashit( $lang ) )
 						: home_url( '/' . trailingslashit( $lang . '/' . $path ) );
 				}
-				echo '<link rel="alternate" hreflang="' . esc_attr( $lang ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+				echo '<link rel="alternate" hreflang="' . esc_attr( SchemaManager::lang_to_bcp47( $lang ) ) . '" href="' . esc_url( $url ) . '" />' . "\n";
 			}
 		}
 	}

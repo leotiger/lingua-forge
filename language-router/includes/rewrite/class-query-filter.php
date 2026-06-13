@@ -125,6 +125,7 @@ class QueryFilter {
 	// =========================================================
 
 	public function handle_parse_query( $q ): void {
+		if ( ! $q->is_main_query() ) return;
 		if ( $this->router->context->is_system_request() ) return;
 		if ( is_admin() ) return;
 		if ( ! defined( 'LF_LANG' ) ) return;
@@ -675,16 +676,20 @@ class QueryFilter {
 			}
 		}
 
-		$args['meta_query'][] = [ 'key' => '_lf_lang', 'value' => LF_LANG ];
+		$lang = defined( 'LF_LANG' ) ? LF_LANG : $this->router->context->source_language();
+		$args['meta_query'][] = [ 'key' => '_lf_lang', 'value' => $lang ];
 
 		return new WP_Query( $args );
 	}
 
 	public function query_fallback( array $args = [] ): WP_Query {
+		$lang   = defined( 'LF_LANG' ) ? LF_LANG : $this->router->context->source_language();
+		$source = $this->router->context->source_language();
+
 		$args['meta_query'][] = [
 			'relation' => 'OR',
-			[ 'key' => '_lf_lang', 'value' => LF_LANG ],
-			[ 'key' => '_lf_lang', 'value' => $this->router->context->source_language() ],
+			[ 'key' => '_lf_lang', 'value' => $lang ],
+			[ 'key' => '_lf_lang', 'value' => $source ],
 		];
 
 		return new WP_Query( $args );

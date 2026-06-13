@@ -35,10 +35,11 @@ class ProviderFactory {
         );
 
         return match ($provider) {
-            'anthropic' => new Anthropic($config),
-            'openai'    => new OpenAI($config),
-            'gemini'    => new Gemini($config),
-            default     => new Anthropic($config),
+            'anthropic'    => new Anthropic($config),
+            'openai'       => new OpenAI($config),
+            'gemini'       => new Gemini($config),
+            'wp-ai-client' => new WpAiClient($config),
+            default        => new Anthropic($config),
         };
     }
 }

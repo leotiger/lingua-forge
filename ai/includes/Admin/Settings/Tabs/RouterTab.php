@@ -14,6 +14,7 @@ use LinguaForge\AI\Admin\Settings\Tabs\Sections\TemplatePartsSection;
 use LinguaForge\AI\Admin\Settings\Tabs\Sections\TemplatesSection;
 use LinguaForge\AI\Admin\Language\LanguageUninstaller;
 use LinguaForge\AI\Admin\SettingsPage;
+use LinguaForge\AI\Integrations\WooCommerce\OrderItemNormalizer;
 
 defined('ABSPATH') || exit;
 
@@ -299,6 +300,44 @@ class RouterTab extends Tab {
                 </tr>
             </table>
 
+            <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+
+            <!-- ── WooCommerce Integration ──────────────────────────────────── -->
+            <h2><?php esc_html_e( 'WooCommerce Integration', 'lingua-forge' ); ?></h2>
+
+            <p>
+                <?php esc_html_e( 'Controls how Lingua Forge integrates with WooCommerce order processing.', 'lingua-forge' ); ?>
+            </p>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Order line item source mapping', 'lingua-forge' ); ?>
+                    </th>
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="<?php echo esc_attr( OrderItemNormalizer::OPT_NORMALIZE ); ?>"
+                                value="yes"
+                                <?php checked( OrderItemNormalizer::is_enabled() ); ?>
+                            />
+                            <?php esc_html_e( 'Normalize order line item product IDs to the source-language product at checkout', 'lingua-forge' ); ?>
+                        </label>
+                        <p class="description">
+                            <?php
+                            esc_html_e(
+                                'When enabled (recommended), the product ID stored on each WooCommerce order line item is set to the source-language product. This ensures total_sales counts, WC Analytics revenue rows, and third-party ERP exports reference one product ID per SKU rather than one per language version. Trade-off: "View product" links in order emails and My Account lead to the source-language page. Disable only if a connected system relies on translated product IDs in orders. Use the linguaforge_wc_order_item_source_mapping filter for per-item overrides.',
+                                'lingua-forge'
+                            );
+                            ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <?php endif; ?>
+
             <?php submit_button( __( 'Save Router Settings', 'lingua-forge' ), 'secondary' ); ?>
         </form>
 
@@ -544,6 +583,11 @@ class RouterTab extends Tab {
         $tokens       = preg_split( '/[\s,]+/', (string) $raw_excluded, -1, PREG_SPLIT_NO_EMPTY );
         $sanitized    = array_values( array_unique( array_filter( array_map( 'sanitize_key', (array) $tokens ) ) ) );
         update_option( 'linguaforge_secondary_query_excluded_types', implode( ',', $sanitized ), false );
+
+        // WooCommerce order line item source mapping (only when WC is active).
+        if ( class_exists( 'WooCommerce' ) ) {
+            update_option( OrderItemNormalizer::OPT_NORMALIZE, ! empty( $_POST[ OrderItemNormalizer::OPT_NORMALIZE ] ) ? 'yes' : 'no', false );
+        }
 
         wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . SettingsPage::PAGE_SLUG . '&lf_router_saved=1#router' );
         exit;

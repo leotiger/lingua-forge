@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.2.16
+Stable tag: 2.3.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -257,42 +257,39 @@ Used when the active provider is set to Google Gemini.
 * Terms of Service: https://ai.google.dev/gemini-api/terms
 * Privacy Policy: https://policies.google.com/privacy
 
+= Update checks (self-hosted updater) =
+The plugin periodically checks for updates by fetching a small JSON manifest from lingua-forge.com. The request includes the plugin version, WordPress version, and your site's home URL (sent as part of the User-Agent string). No other data is transmitted. This request is made from the WordPress admin area only and is never triggered on the frontend.
+* Endpoint: https://lingua-forge.com/wp-json/lingua-forge/v1/update
+* Data sent: plugin version, WordPress version, site home URL (User-Agent only).
+* Privacy Policy: https://lingua-forge.com/privacy-policy
+
 == Developers ==
 
 The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), passes PHPStan level 5 with WordPress stubs, and is verified clean by the official WordPress Plugin Check tool. JavaScript and CSS are linted via ESLint and Stylelint (@wordpress/scripts). A PHPUnit test suite (unit + integration) ships alongside the source. Source code and contributing guide at https://github.com/leotiger/lingua-forge.
 
 == Changelog ==
 
-= 2.2.16 =
-* Fixed: WooCommerce Catalogue Block pagination — source-language page 2+ required a browser reload because `frontend-lang.js` appended `?lang=<source>` to the WC Interactivity API navigation fetch (`?cst`), preventing the Product Collection block's render callback from firing. New `isInteractivityRequest()` guard skips `?lang=` injection for `?cst` and `query-N-page` URLs. (`frontend-lang.js`)
-* Fixed: IndexNow protocol replaces the defunct Bing/Yandex sitemap ping — `IndexNowManager` handles key generation, key-file serving, and auto-submit on post save; Sitemap panel updated with IndexNow status and manual submit. (`class-indexnow-manager.php`, `SitemapPanel.php`)
-* Fixed: All admin handler redirects corrected from `options-general.php?page=` to `admin.php?page=`, eliminating PHP 8.1 `strip_tags(null)` deprecation notices on settings saves. (13 Admin files)
-* Fixed: Self-referencing `<link rel="canonical">` now emitted for all LF-managed pages (singular, archive, home, paginated). Previously WP's canonical was removed with no replacement. Deferred to SEO plugins when one is active. (`class-hreflang.php`, `CompatibilityPanel.php`, `HreflangPanel.php`)
-* Fixed: hreflang alternates on paginated archives (`/es/category/foo/page/2/`) pointed at blog-home pagination — `is_paged()` branch was evaluated before `is_archive()`; removed and replaced by the REQUEST_URI-based archive branch which naturally includes the page segment. Same fix applied to the canonical output. (`class-hreflang.php`)
-* Added: Per-language noindex — new `_lf_noindex` post meta, checkbox in the Language meta box, and `<meta name="robots" content="noindex,follow">` output in `wp_head` when set. (`class-hreflang.php`, `class-language-router.php`, `class-meta-boxes.php`, `class-sync.php`)
-
-For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
-
-= 2.2.15 =
-* Fixed: Theme template-part blocks (header, footer, etc.) loaded the source-language version on archive pages — a new `get_block_template` filter in `Redirector` now switches to the `{slug}-{lang}` variant when one exists. (`class-redirector.php`)
-* Fixed: WooCommerce taxonomy archive page titles showed the taxonomy type noun (e.g. "categoria") in the source language on translated pages — `WcPageBridge::fix_taxonomy_archive_title` now re-derives the singular label with a fresh gettext call in the switched locale. (`WcPageBridge.php`)
-* Fixed: WooCommerce catalogue blocks (Product Collection, etc.) showed no products on translated pages when a category or tag filter was set — `CatalogQuery` applies a trid-lookup strategy, replacing the `tax_query` with `_lf_trid IN` + `_lf_lang` in meta_query; a Phase 3a pre-check falls back to `_lf_lang` when no translated matches exist. (`CatalogQuery.php`)
-* Fixed: WooCommerce "Handpicked Products" and hand-picked product-collection blocks showed no products on translated pages — `CatalogQuery` now maps source-language `post__in` IDs to their translated siblings. (`CatalogQuery.php`)
-* Fixed: Admin Pages list did not show "— Front Page" / "— Posts Page" labels on translated equivalents — `Columns::add_translated_core_page_states()` copies those labels from the source page via `get_post_states()`, honouring the admin locale. (`class-columns.php`)
-* Fixed: WP locale mismatch detection now uses a `_lf_lang` postmeta existence check instead of language-pack presence — packs can be installed for admin UI use without any content in that language. The alert fires only when the WP site locale maps to a language code with zero content posts and is not the primary language. `Context::languages()` continues to include `get_locale()` unconditionally so secondary content languages not covered by a pack (e.g. EN on an en_US WP install) remain routable. (`class-context.php`, `RouterTab.php`, `SystemPanel.php`)
-* Fixed: Plugin Check false positive `PluginCheck.Security.DirectDB.UnescapedDBParameter` in `RepairHandler::get_lf_template_posts()` — variable contains only safe `array_fill()` placeholders; `phpcs:ignore` comment extended with explanation. (`ai/includes/Admin/FseLocalisation/RepairHandler.php`)
-* Improved: WP locale mismatch alert added to Router and System settings tabs — when the WordPress site language is not an active Lingua Forge content language, a `notice-error` banner identifies the conflict and links directly to Settings → General → Site Language. The System tab environment row also marks the WP instance language with a ✗ indicator. (`RouterTab.php`, `SystemPanel.php`)
-* Improved: Contextual help tabs fully revised — API Keys + Models merged into AI Provider; Translation tab renamed to Behavior; Router section expanded with WP site language requirement; AI Usage and System help tabs added; Maintenance content corrected (cache items moved to AI Usage); Uninstall Behaviour entry added; all tabs reordered to match the settings bar. (`ai/includes/Admin/SettingsHelp.php`)
-* Improved: README corrected — "WP site language vs. primary content language" section now documents the requirement and seven failure modes; Known Issues entry added for the unsupported WP locale / content locale mismatch configuration. (`README.md`)
+= 2.3.0 =
+* Added: WP 7.0 AI Client as a fourth translation provider — `WpAiClient` delegates to core's `wp_ai_client_prompt()`; credentials managed in Settings → Connectors, no API key stored by LF. (`ai/includes/Providers/WpAiClient.php`)
+* Added: Sitemap index/chunking — `/lf-sitemap.xml` now serves a sitemap-index that splits URLs into 2,000-URL sub-sitemaps; handles the 50,000-URL protocol limit automatically. (`class-sitemap-manager.php`)
+* Added: BreadcrumbList JSON-LD — `SchemaManager` outputs BreadcrumbList for posts, pages, CPTs, and taxonomy archives; URLs auto language-prefixed. New `linguaforge_seo_schema_breadcrumb` option (default: on). (`class-schema-manager.php`)
+* Added: WooCommerce order language capture — `WcOrderLang` stores `_lf_order_lang` at checkout and switches locale for all WC transactional emails. (`WcOrderLang.php`, `WcPageBridge.php`)
+* Added: WooCommerce coupon product-restriction mapping — `CouponTridMap` remaps translated product IDs to source for coupon validation. (`CouponTridMap.php`)
+* Added: WooCommerce order line item normalisation — `OrderItemNormalizer` rewrites checkout `product_id` to source product, fixing `total_sales` fragmentation and WC Analytics row splitting. Toggle in Settings → Router. New `linguaforge_wc_order_item_source_mapping` filter. (`OrderItemNormalizer.php`)
+* Added: WooCommerce shared product review pool — `ProductReviewRouter` redirects review submissions to the source product and serves source reviews on translated pages. (`ProductReviewRouter.php`)
+* Fixed: AI provider errors now surfaced specifically (e.g. "No connector configured") — `AIProviderInterface` gains `get_last_error()`; `JsonEnvelopeTranslator` and `ChunkTranslation` use it instead of the generic fallback. (`AIProviderInterface.php`, `JsonEnvelopeTranslator.php`, `ChunkTranslation.php`)
+* Fixed: PHP 8 fatal `Undefined constant "LF_LANG"` in `QueryFilter::query()` / `query_fallback()` on WP-CLI and cron — guarded with `defined()`. (`class-query-filter.php`)
+* Fixed: `handle_parse_query()` main-query-only — missing `is_main_query()` guard caused search-flag mutations to bleed into secondary queries on search pages. (`class-query-filter.php`)
+* Fixed: Sitemap `xhtml:link hreflang` and head hreflang tags now route through `SchemaManager::lang_to_bcp47()` for correct BCP 47 casing. (`class-sitemap-manager.php`, `class-hreflang.php`)
+* Fixed: Bundled translations now load — `load_plugin_textdomain()` on `init` priority 1, `Domain Path: /languages` header added; `.l10n.php` performant-translation files active on WP 6.5+. (`lingua-forge.php`)
+* Fixed: `missing-translation-notice` block attributes marked `"role": "content"` for WP 7.0 `contentOnly` editing compatibility. (`blocks/missing-translation-notice/block.json`)
+* Fixed: Self-hosted updater includes `sha256` manifest field for ZIP integrity verification. (`docs/lf-update-manifest.php`, `class-updater.php`)
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
 
-= 2.2.16 =
-SEO correctness release: IndexNow replaces dead Bing/Yandex ping, self-referencing canonicals added, hreflang fixed on paginated archives, per-language noindex flag added. Fixes WooCommerce Catalogue Block pagination on source-language pages. No flush required.
-
-= 2.2.15 =
-Fixes WooCommerce catalogue blocks, taxonomy archive titles, theme template parts, and a WP site locale leak into the content-language list. Adds WP locale mismatch alerts in Router and System tabs. Admin pages list labels translated front/posts pages. No flush required.
+= 2.3.0 =
+WooCommerce commerce-lifecycle complete: order language, coupon mapping, sales normalisation, shared reviews. WP 7.0 AI Client provider, sitemap index/chunking, BreadcrumbList JSON-LD. Plugin translations now load correctly. No flush required.
 
 

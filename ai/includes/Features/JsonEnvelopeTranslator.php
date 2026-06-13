@@ -117,7 +117,13 @@ class JsonEnvelopeTranslator {
         }
 
         if ( empty( $result ) ) {
-            return [ 'success' => false, 'error' => 'Translation failed. Please try again.' ];
+            $provider_error = $provider->get_last_error();
+            return [
+                'success' => false,
+                'error'   => $provider_error !== ''
+                    ? $provider_error
+                    : 'Translation failed. Please try again.',
+            ];
         }
 
         $ctx['language_name'] = $language_name;
