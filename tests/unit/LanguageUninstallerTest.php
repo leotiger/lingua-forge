@@ -190,9 +190,14 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 	 */
 	private function rm_lang_dir( string $path ): void {
 		if ( ! is_dir( $path ) ) return;
-		foreach ( glob( $path . '/{,.}*', GLOB_BRACE ) ?: [] as $entry ) {
-			if ( basename( $entry ) === '.' || basename( $entry ) === '..' ) continue;
-			is_dir( $entry ) ? $this->rm_lang_dir( $entry ) : unlink( $entry ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test teardown removes temp fixture files; wp_delete_file() is not available without a WordPress runtime.
+		// scandir() returns all entries including dotfiles; GLOB_BRACE is not
+		// available on all PHP builds (e.g. Alpine), so avoid glob() here.
+		foreach ( scandir( $path ) ?: [] as $entry ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.scandir_scandir -- scandir is used here as the PHP-native GLOB_BRACE alternative; WP has no equivalent helper.
+			if ( '.' === $entry || '..' === $entry ) {
+				continue;
+			}
+			$full = $path . DIRECTORY_SEPARATOR . $entry;
+			is_dir( $full ) ? $this->rm_lang_dir( $full ) : unlink( $full ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test teardown removes temp fixture files; wp_delete_file() is not available without a WordPress runtime.
 		}
 		rmdir( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- test teardown removes temp fixture dir; WP_Filesystem is not available without a WordPress runtime.
 	}

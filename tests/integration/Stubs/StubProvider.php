@@ -51,6 +51,10 @@ class StubProvider implements AIProviderInterface {
 		$this->queue = is_array( $response ) ? array_values( $response ) : [ $response ];
 	}
 
+	public function get_last_error(): string {
+		return '';
+	}
+
 	/**
 	 * Return the next queued response and record the messages for assertion.
 	 *

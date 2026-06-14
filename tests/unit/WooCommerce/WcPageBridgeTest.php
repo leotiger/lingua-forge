@@ -500,4 +500,106 @@ final class WcPageBridgeTest extends WcUnitTestCase {
 		$this->assertSame( [], array_values( $result ) );
 	}
 
+	// =========================================================================
+	// 27–32. translate_privacy_policy_page_id
+	//
+	// The WC Privacy Policy page is a WordPress core page (not a WC option), so
+	// translate_privacy_policy_page_id() resolves the translation directly via
+	// TridGroup::get_translations() rather than the shared translate_wc_page_id()
+	// helper used by the other WC page types.
+	//
+	// LF_LANG = 'es' (defined at the top of this file).
+	// Default source_lang from inject_router() = 'en'.
+	// =========================================================================
+
+	/**
+	 * 27. is_admin() returns true → original page_id passed through.
+	 */
+	public function test_translate_privacy_policy_page_id_skips_on_admin(): void {
+		\LfWcMocks::$is_admin = true;
+
+		$result = WcPageBridge::translate_privacy_policy_page_id( 99 );
+
+		$this->assertSame( 99, $result, 'Admin requests must not translate the Privacy Policy page ID.' );
+	}
+
+	/**
+	 * 28. page_id ≤ 0 → return original (invalid page; no DB lookup performed).
+	 */
+	public function test_translate_privacy_policy_page_id_skips_non_positive_id(): void {
+		$result = WcPageBridge::translate_privacy_policy_page_id( 0 );
+
+		$this->assertSame( 0, $result, 'Non-positive page ID must be returned unchanged.' );
+	}
+
+	/**
+	 * 29. LF_LANG === source_language() → return original (no translation needed).
+	 */
+	public function test_translate_privacy_policy_page_id_skips_source_lang(): void {
+		// Override source_lang to 'es' so it equals LF_LANG ('es') → early return.
+		self::inject_router( 'es' );
+
+		$result = WcPageBridge::translate_privacy_policy_page_id( 55 );
+
+		$this->assertSame( 55, $result, 'Source-language requests must not translate the Privacy Policy page ID.' );
+	}
+
+	/**
+	 * 30. Translation found via TridGroup → translated page ID returned.
+	 */
+	public function test_translate_privacy_policy_page_id_returns_translation_when_found(): void {
+		self::inject_router_with_trid_group();
+
+		// Source Privacy Policy page: ID 60, trid 'T-pp-030'.
+		\LfWcMocks::$meta[60] = [ '_lf_trid' => 'T-pp-030' ];
+
+		// TridGroup::get_translations(60) will call $wpdb->get_results() →
+		// return the pre-set rows: EN original + ES translation.
+		\LfWcMocks::$db_results = [
+			(object) [ 'post_id' => '60',  'lang' => 'en' ],
+			(object) [ 'post_id' => '61', 'lang' => 'es' ],
+		];
+
+		$result = WcPageBridge::translate_privacy_policy_page_id( 60 );
+
+		$this->assertSame( 61, $result, 'Must return the translated page ID when a translation exists for LF_LANG.' );
+	}
+
+	/**
+	 * 31. No translation for LF_LANG in trid group → original ID returned.
+	 */
+	public function test_translate_privacy_policy_page_id_falls_back_when_no_translation(): void {
+		self::inject_router_with_trid_group();
+
+		// Source Privacy Policy page: ID 70, trid 'T-pp-031'.
+		\LfWcMocks::$meta[70] = [ '_lf_trid' => 'T-pp-031' ];
+
+		// Only the EN row exists — no ES translation.
+		\LfWcMocks::$db_results = [
+			(object) [ 'post_id' => '70', 'lang' => 'en' ],
+		];
+
+		$result = WcPageBridge::translate_privacy_policy_page_id( 70 );
+
+		$this->assertSame( 70, $result, 'Must return original page ID when no translation exists for LF_LANG.' );
+	}
+
+	/**
+	 * 32. Page has no _lf_trid → TridGroup returns [] → original ID returned.
+	 */
+	public function test_translate_privacy_policy_page_id_falls_back_when_no_trid(): void {
+		self::inject_router_with_trid_group();
+
+		// Source Privacy Policy page: ID 80, no _lf_trid stored.
+		\LfWcMocks::$meta[80] = []; // intentionally no _lf_trid
+
+		// DB would not be queried (get_trid returns '' → get_translations returns []),
+		// but even if queried, $db_results is empty.
+		\LfWcMocks::$db_results = [];
+
+		$result = WcPageBridge::translate_privacy_policy_page_id( 80 );
+
+		$this->assertSame( 80, $result, 'Must return original page ID when the page has no _lf_trid.' );
+	}
+
 }

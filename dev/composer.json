@@ -43,25 +43,30 @@
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
         "analyse": "phpstan analyse --memory-limit=2G",
-        "test": "@php -d pcov.directory=.. vendor/bin/phpunit",
-        "test:unit": "@php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
+        "test": "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit",
+        "test:unit": "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",
         "test:integration": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp eval \"\\LinguaForge\\AI\\Core\\CacheStore::ensure_table(); \\LinguaForge\\AI\\Core\\Glossary::ensure_table(); \\LinguaForge\\AI\\Core\\TranslationMemory::ensure_table(); \\LinguaForge\\AI\\Core\\UsageRecorder::ensure_table(); echo \\\"Plugin tables ready.\\n\\\";\"'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php -d memory_limit=512M vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --no-coverage'"
         ],
         "test:integration:wc": [
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp eval \"\\LinguaForge\\AI\\Core\\CacheStore::ensure_table(); \\LinguaForge\\AI\\Core\\Glossary::ensure_table(); \\LinguaForge\\AI\\Core\\TranslationMemory::ensure_table(); \\LinguaForge\\AI\\Core\\UsageRecorder::ensure_table(); echo \\\"Plugin tables ready.\\n\\\";\"'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php -d memory_limit=512M vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
+        ],
+        "test:wc-latest": [
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin install woocommerce --force --activate && echo \"=== WC VERSION MATRIX RUN ===\" && wp plugin get woocommerce --field=version'",
+            "@test:integration:wc"
         ],
         "coverage:setup": "bash scripts/setup-coverage.sh",
         "coverage:run": [
+            "@coverage:setup",
             "mkdir -p coverage/unit/html coverage/integration/html coverage/combined",
-            "@php -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit --coverage-clover coverage/unit/clover.xml --coverage-html coverage/unit/html --coverage-text=coverage/unit/coverage.txt",
+            "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit --coverage-clover coverage/unit/clover.xml --coverage-html coverage/unit/html --coverage-text=coverage/unit/coverage.txt",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp eval \"\\LinguaForge\\AI\\Core\\CacheStore::ensure_table(); \\LinguaForge\\AI\\Core\\Glossary::ensure_table(); \\LinguaForge\\AI\\Core\\TranslationMemory::ensure_table(); \\LinguaForge\\AI\\Core\\UsageRecorder::ensure_table(); echo \\\"Plugin tables ready.\\n\\\";\"'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'mkdir -p /var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration/html && cd /var/www/html/wp-content/plugins/lingua-forge/dev && XDEBUG_MODE=coverage php vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --coverage-clover coverage/integration/clover.xml --coverage-html coverage/integration/html --coverage-text=coverage/integration/coverage.txt'",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'mkdir -p /var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration/html && cd /var/www/html/wp-content/plugins/lingua-forge/dev && XDEBUG_MODE=coverage php -d memory_limit=512M vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --coverage-clover coverage/integration/clover.xml --coverage-html coverage/integration/html --coverage-text=coverage/integration/coverage.txt'",
             "bash scripts/copy-integration-coverage.sh"
         ],
         "coverage:merge": "@php scripts/merge-coverage.php",
@@ -75,6 +80,7 @@
             "./node_modules/.bin/wp-env run cli wp plugin check lingua-forge --exclude-directories=dev,tests --ignore-codes=plugin_updater_detected,update_modification_detected"
         ],
         "qa": [
+            "@coverage:setup",
             "@lint",
             "@analyse",
             "@test:unit"
@@ -94,7 +100,7 @@
         "coverage:merge": "Merge unit and integration Clover XMLs into coverage/combined/. Run after coverage:run.",
         "coverage": "Full coverage pipeline: coverage:run → coverage:merge. Reports land in coverage/unit/, coverage/integration/, coverage/combined/.",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
-        "qa": "Local pre-deploy gate: lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
+        "qa": "Local pre-deploy gate: coverage:setup → lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
         "make-pot": "Regenerate languages/lingua-forge.pot. Downloads wp-cli.phar to dev/ on first run (curl + php required); no Docker or global WP-CLI needed."
     }
 }

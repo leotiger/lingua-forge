@@ -46,6 +46,19 @@ defined( 'ABSPATH' ) || exit;
 
 class CatalogQuery {
 
+	/**
+	 * Per-request cache for Phase 3a trid-match checks.
+	 *
+	 * Keyed by md5(trids).':'.effective_lang — true when at least one translated
+	 * product with a matching _lf_trid exists, false when none do.
+	 *
+	 * Declared as a class property (not a function-local static) so that unit
+	 * tests can reset it via Reflection between test cases.
+	 *
+	 * @var array<string,bool>
+	 */
+	private static array $trid_match_cache = [];
+
 	// =========================================================================
 	// Boot
 	// =========================================================================
@@ -326,10 +339,9 @@ class CatalogQuery {
 			// The check is cached per (trid-set, language) pair per request so that
 			// multiple blocks with the same taxonomy filter on the same page pay the
 			// cost of at most one extra query.
-			static $trid_match_cache = [];
 			$trid_cache_key = md5( implode( ',', $trids ) ) . ':' . $effective_lang;
 
-			if ( ! array_key_exists( $trid_cache_key, $trid_match_cache ) ) {
+			if ( ! array_key_exists( $trid_cache_key, self::$trid_match_cache ) ) {
 				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				$trid_matches = get_posts( [
 					'post_type'        => 'product',
@@ -344,10 +356,10 @@ class CatalogQuery {
 					],
 				] );
 				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				$trid_match_cache[ $trid_cache_key ] = ! empty( $trid_matches );
+				self::$trid_match_cache[ $trid_cache_key ] = ! empty( $trid_matches );
 			}
 
-			if ( ! $trid_match_cache[ $trid_cache_key ] ) {
+			if ( ! self::$trid_match_cache[ $trid_cache_key ] ) {
 				// Trids were resolved from source products but no translated products
 				// carry matching trids — translation group linkage is incomplete
 				// (class-sync.php will fix on next admin save of the source product).

@@ -35,6 +35,7 @@ if ( ! class_exists( 'WP_Post' ) ) {
 		public string $post_type   = 'post';
 		public string $post_status = 'publish';
 		public string $post_title  = '';
+		public string $post_name   = '';
 		public int    $post_author = 0;
 		public int    $menu_order  = 0;
 	}
@@ -151,6 +152,16 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		 */
 		public static mixed $wpdb_get_var = null;
 
+		/**
+		 * Return value for $wpdb->get_col() calls.
+		 *
+		 * [] = no rows (default; variation loop is skipped).
+		 * Set to an array of int-string IDs to simulate variation children.
+		 *
+		 * @var array<int,string>
+		 */
+		public static array $wpdb_get_col = [];
+
 		/** @var bool Return value for the is_admin() polyfill. Default false (frontend). */
 		public static bool $is_admin = false;
 
@@ -177,6 +188,22 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 		 */
 		public static array $user_meta = [];
 
+		/** @var array<int,array<string,mixed>> term meta, keyed by [term_id][meta_key] */
+		public static array $term_meta = [];
+
+		/**
+		 * Raw rows returned by $wpdb->get_results() for the current test.
+		 * Shape: list of stdClass objects with `post_id` (string) and `lang` (string)
+		 * properties — matches the columns TridGroup::get_translations() SELECTs.
+		 *
+		 * Reset to [] by reset(). Set this before exercising code paths that call
+		 * TridGroup::get_translations() (e.g. post__in path in CatalogQuery,
+		 * translate_privacy_policy_page_id in WcPageBridge).
+		 *
+		 * @var list<object>
+		 */
+		public static array $db_results = [];
+
 		public static function reset(): void {
 			self::$posts             = [];
 			self::$meta              = [];
@@ -187,12 +214,15 @@ if ( ! class_exists( 'LfWcMocks' ) ) {
 			self::$cache_deletes     = [];
 			self::$wpdb_updates      = [];
 			self::$wpdb_get_var      = null;
+			self::$wpdb_get_col      = [];
 			self::$is_admin            = false;
 			self::$is_main_query       = false;
 			self::$queried_object_id   = 0;
 			\LfWpQueryStub::reset();
 			self::$current_user_can  = true;
 			self::$user_meta         = [];
+			self::$term_meta         = [];
+			self::$db_results        = [];
 		}
 	}
 }
@@ -254,6 +284,19 @@ if ( ! class_exists( 'LfWpdb' ) ) {
 		}
 
 		/**
+		 * Simulates $wpdb->get_col() — returns LfWcMocks::$wpdb_get_col.
+		 *
+		 * Default is [] (no variation children). Tests that need variation children
+		 * can set LfWcMocks::$wpdb_get_col = ['101', '102'] before the call.
+		 *
+		 * @param mixed $query Ignored in the stub.
+		 * @return array<int,string>  LfWcMocks::$wpdb_get_col.
+		 */
+		public function get_col( mixed $query = null ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- query intentionally ignored; stub returns mock value.
+			return LfWcMocks::$wpdb_get_col;
+		}
+
+		/**
 		 * Simulates $wpdb->get_var() — returns LfWcMocks::$wpdb_get_var.
 		 *
 		 * Default is null (no row found), which makes VariationDelegate's
@@ -283,16 +326,22 @@ if ( ! class_exists( 'LfWpdb' ) ) {
 		}
 
 		/**
-		 * Simulates $wpdb->get_results() — always returns an empty array.
-		 * Used by Glossary::get_for_pair() in unit tests where no glossary
-		 * entries exist; format arg matches the real $wpdb signature.
+		 * Simulates $wpdb->get_results() — returns LfWcMocks::$db_results.
+		 *
+		 * Default is [] (no rows). Tests that exercise code paths calling
+		 * TridGroup::get_translations() should pre-set LfWcMocks::$db_results to
+		 * an array of stdClass objects with `post_id` (string) and `lang` (string)
+		 * properties before the method under test is called.
+		 *
+		 * Previously always returned []; updated to be controllable per-test so
+		 * TridGroup can be injected into the stub Router without fataling.
 		 *
 		 * @param mixed $query  Ignored in stub.
 		 * @param mixed $output Ignored in stub.
-		 * @return array<int, mixed>  Always empty.
+		 * @return array<int, mixed>  LfWcMocks::$db_results.
 		 */
 		public function get_results( mixed $query = null, mixed $output = null ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found,Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- stub; args intentionally ignored.
-			return [];
+			return LfWcMocks::$db_results;
 		}
 	}
 }
@@ -640,6 +689,20 @@ if ( ! function_exists( '__' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	/**
+	 * Strips HTML tags and trims the result, matching WordPress's observable
+	 * behaviour for the strings our unit tests pass (plain integer IDs from
+	 * $_GET parameters — strip_tags + trim is sufficient here).
+	 *
+	 * @param  string $str  Input string.
+	 * @return string       Sanitized string.
+	 */
+	function sanitize_text_field( string $str ): string {
+		return trim( strip_tags( $str ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- polyfill; wp_strip_all_tags() is not available here.
+	}
+}
+
 if ( ! function_exists( 'get_posts' ) ) {
 	/**
 	 * Minimal get_posts stub — evaluates `meta_query` conditions with AND
@@ -692,5 +755,97 @@ if ( ! function_exists( 'get_posts' ) ) {
 		}
 
 		return $results;
+	}
+}
+
+if ( ! function_exists( 'wp_cache_get' ) ) {
+	/**
+	 * wp_cache_get polyfill — always returns false (cache miss).
+	 *
+	 * TridGroup::get_translations() calls wp_cache_get() first and skips the
+	 * database query when it returns anything other than false.  Returning false
+	 * unconditionally forces the method to go through $wpdb->get_results(), which
+	 * our LfWpdb stub can control via LfWcMocks::$db_results.
+	 *
+	 * @param mixed  $key    Cache key.  Ignored.
+	 * @param string $group  Cache group.  Ignored.
+	 * @param bool   $force  Force fetch.  Ignored.
+	 * @param mixed  $found  Set to false to indicate a cache miss.
+	 * @return false Always false (cache miss).
+	 */
+	function wp_cache_get( mixed $key, string $group = '', bool $force = false, mixed &$found = null ): false { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP API signature; $key/$group/$force intentionally ignored.
+		$found = false;
+		return false;
+	}
+}
+
+if ( ! function_exists( 'get_term_meta' ) ) {
+	/**
+	 * get_term_meta polyfill — returns values from LfWcMocks::$term_meta.
+	 *
+	 * Covers TermNameFilter::translate_variation_option_name() and similar
+	 * callers that need to look up translated term names stored as term meta.
+	 * Store test data via:
+	 *   LfWcMocks::$term_meta[$term_id][$meta_key] = 'value';
+	 *
+	 * @param int    $term_id  Term ID.
+	 * @param string $key      Meta key.
+	 * @param bool   $single   Return scalar or array.
+	 * @return mixed  Scalar value (or '') when $single is true; array otherwise.
+	 */
+	function get_term_meta( int $term_id, string $key = '', bool $single = false ): mixed {
+		$val = \LfWcMocks::$term_meta[ $term_id ][ $key ] ?? null;
+		if ( $single ) {
+			return $val !== null ? $val : '';
+		}
+		return $val !== null ? (array) $val : [];
+	}
+}
+
+// =============================================================================
+// LfTestTridGroup — TridGroup stub for unit tests
+// =============================================================================
+
+if ( ! class_exists( 'LfTestTridGroup' ) ) {
+	/**
+	 * Concrete TridGroup substitute for unit tests.
+	 *
+	 * Overrides get_trid(), get_lang(), and get_translations() to read directly
+	 * from LfWcMocks instead of going through get_post_meta() and $wpdb.  This
+	 * sidesteps any uncertainty about how global-namespace function lookups resolve
+	 * from within the LinguaForge\Router\Translation namespace and gives tests
+	 * deterministic, reset-safe control over mock data.
+	 *
+	 * Injected into the Router stub by WcUnitTestCase::inject_router_with_trid_group().
+	 * The typed property `Router::$trid_group` expects a TridGroup instance; this
+	 * class satisfies that constraint by extending TridGroup.
+	 */
+	class LfTestTridGroup extends \LinguaForge\Router\Translation\TridGroup {
+
+		public function get_trid( int $id ): string {
+			return (string) ( LfWcMocks::$meta[ $id ]['_lf_trid'] ?? '' );
+		}
+
+		public function get_lang( int $id ): string {
+			return (string) ( LfWcMocks::$meta[ $id ]['_lf_lang'] ?? '' );
+		}
+
+		/**
+		 * Returns a lang→post_id map built from LfWcMocks::$db_results.
+		 *
+		 * The real TridGroup queries the DB by trid; here the test controls which
+		 * rows are "in the DB" by setting LfWcMocks::$db_results before the call.
+		 * If the post has no _lf_trid, we return [] to match TridGroup behaviour.
+		 */
+		public function get_translations( int $post_id ): array {
+			if ( '' === $this->get_trid( $post_id ) ) {
+				return [];
+			}
+			$out = [];
+			foreach ( LfWcMocks::$db_results as $r ) {
+				$out[ $r->lang ] = (int) $r->post_id;
+			}
+			return $out;
+		}
 	}
 }

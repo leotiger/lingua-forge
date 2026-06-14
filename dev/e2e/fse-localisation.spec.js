@@ -207,7 +207,7 @@ test.describe( 'FSE Router tab — smoke', () => {
                 await langTab.click();
             }
             await expect(
-                page.locator( `tr.lf-tpl-row[data-lang="${ lang }"]` ).first()
+                page.locator( `.lf-tpl-row[data-lang="${ lang }"]` ).first()
             ).toBeVisible( { timeout: 5_000 } );
         }
     } );

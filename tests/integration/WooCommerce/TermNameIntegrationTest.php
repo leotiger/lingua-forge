@@ -410,4 +410,134 @@ final class TermNameIntegrationTest extends WcIntegrationTestCase {
 		$this->assertNotEmpty( $result, 'Expected at least one term from wp_get_object_terms().' );
 		$this->assertSame( 'History', $result[0]->name, 'Non-WC taxonomy must not be translated by translate_term_objects().' );
 	}
+
+	// =========================================================================
+	// 17–20. TermNameFilter::translate_variation_option_name()
+	//
+	// Hooked on `woocommerce_variation_option_name` (priority 10).
+	// Fires inside wc_dropdown_variation_attribute_options() for each dropdown
+	// option — WC passes the WP_Term object directly, bypassing term_name.
+	// =========================================================================
+
+	/**
+	 * 17. null $term (custom/non-taxonomy attribute) → pass-through unchanged.
+	 */
+	public function test_variation_option_name_passes_through_null_term(): void {
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_variation_option_name', 'Large', null, 'pa_size', null );
+
+		$this->assertSame( 'Large', $result, 'Null term (custom attribute) must pass through unchanged.' );
+	}
+
+	/**
+	 * 18. WP_Term for pa_color, source language → original name unchanged.
+	 */
+	public function test_variation_option_name_returns_original_in_source_lang(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$term = $this->make_term( 'pa_color', 'White' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Blanco' );
+
+		$this->set_current_lang( self::SOURCE_LANG );
+
+		$result = apply_filters( 'woocommerce_variation_option_name', $term->name, $term, 'pa_color', null );
+
+		$this->assertSame( 'White', $result, 'Source-language request must not translate variation option name.' );
+	}
+
+	/**
+	 * 19. WP_Term for pa_color, translated language, termmeta stored → translated name.
+	 */
+	public function test_variation_option_name_returns_translated_name(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$term = $this->make_term( 'pa_color', 'Black' );
+		update_term_meta( $term->term_id, TermNameFilter::META_PREFIX . self::TRANS_LANG, 'Negro' );
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_variation_option_name', $term->name, $term, 'pa_color', null );
+
+		$this->assertSame( 'Negro', $result, 'Translated name must be returned when termmeta is stored.' );
+	}
+
+	/**
+	 * 20. WP_Term for pa_color, translated language, no termmeta stored → original name.
+	 */
+	public function test_variation_option_name_falls_back_when_no_termmeta(): void {
+		if ( ! taxonomy_exists( 'pa_color' ) ) {
+			register_taxonomy( 'pa_color', 'product' );
+		}
+
+		$term = $this->make_term( 'pa_color', 'Yellow' );
+		// No termmeta stored for TRANS_LANG.
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_variation_option_name', $term->name, $term, 'pa_color', null );
+
+		$this->assertSame( 'Yellow', $result, 'Must fall back to original name when no termmeta is stored.' );
+	}
+
+	// =========================================================================
+	// 21–24. TermNameFilter::translate_attribute_label()
+	//
+	// Hooked on `woocommerce_attribute_label` (priority 10).
+	// Translations stored in wp_options under `linguaforge_attr_labels_{name}`.
+	// =========================================================================
+
+	/**
+	 * 21. Non-pa_* attribute name (e.g. custom per-product attribute) → pass-through.
+	 */
+	public function test_attribute_label_passes_through_non_pa_taxonomy(): void {
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_attribute_label', 'Material', 'material', null );
+
+		$this->assertSame( 'Material', $result, 'Non-pa_* attribute must pass through unchanged.' );
+	}
+
+	/**
+	 * 22. pa_* attribute, source language → original label unchanged.
+	 */
+	public function test_attribute_label_returns_original_in_source_lang(): void {
+		update_option( 'linguaforge_attr_labels_pa_color', [ self::TRANS_LANG => 'Color' ] );
+
+		$this->set_current_lang( self::SOURCE_LANG );
+
+		$result = apply_filters( 'woocommerce_attribute_label', 'Colour', 'pa_color', null );
+
+		$this->assertSame( 'Colour', $result, 'Source-language request must not translate attribute label.' );
+	}
+
+	/**
+	 * 23. pa_* attribute, translated language, option stored → translated label.
+	 */
+	public function test_attribute_label_returns_translated_label(): void {
+		update_option( 'linguaforge_attr_labels_pa_size', [ self::TRANS_LANG => 'Talla' ] );
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_attribute_label', 'Size', 'pa_size', null );
+
+		$this->assertSame( 'Talla', $result, 'Translated label must be returned when the option is stored.' );
+	}
+
+	/**
+	 * 24. pa_* attribute, translated language, no option stored → original label.
+	 */
+	public function test_attribute_label_falls_back_when_no_option_stored(): void {
+		// No option for pa_material in the DB.
+
+		$this->set_current_lang( self::TRANS_LANG );
+
+		$result = apply_filters( 'woocommerce_attribute_label', 'Material', 'pa_material', null );
+
+		$this->assertSame( 'Material', $result, 'Must fall back to original label when no translation is stored.' );
+	}
 }

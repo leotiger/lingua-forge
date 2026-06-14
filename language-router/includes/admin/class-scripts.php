@@ -254,6 +254,19 @@ class Scripts {
 			return;
 		}
 
+		// Skip injection for the source language entirely. The server always
+		// defaults to the source language when no ?lang= hint is present, so
+		// appending ?lang=<source> is not only redundant but actively harmful:
+		// WooCommerce's Interactivity API render callbacks reject the extra
+		// parameter and return an empty response, breaking catalogue-block
+		// pagination and client-side navigation for source-language pages.
+		// Translated-language pages still need the script because their AJAX
+		// calls go to prefix-less endpoints (/wp-admin/admin-ajax.php, etc.)
+		// that otherwise have no language indicator.
+		if ( LF_LANG === $this->router->context->source_language() ) {
+			return;
+		}
+
 		$version = defined( 'LINGUAFORGE_VERSION' ) ? LINGUAFORGE_VERSION : false;
 
 		wp_enqueue_script(

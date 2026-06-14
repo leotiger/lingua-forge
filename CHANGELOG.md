@@ -2,6 +2,22 @@
 
 ---
 
+## [2.3.1] — 2026-06-14
+
+### Fixed
+- **GDPR right-to-erasure gap in AI usage statistics** — the `lingua_forge_ai_usage` table stores rows keyed by WordPress `user_id` but had no `wp_privacy_personal_data_erasers` registration, so WP's Tools → Erase Personal Data flow did not reach LF data. `PrivacyIntegration` now registers both an **exporter** (returns all usage rows for the user's email as a `linguaforge-ai-usage` data group: date, feature, provider, model, token counts, request count) and an **eraser** (anonymises rather than deletes — merges the user's rows into the `user_id = 0` anonymous bucket via `UPDATE…JOIN` for existing anon rows and `INSERT IGNORE` for new ones, then deletes the user-identified originals). Aggregate billing data is preserved; the personal link (WP user ID) is removed. `_lf_order_lang` order meta rides WooCommerce's own order anonymiser — no separate eraser needed. (`ai/includes/Core/PrivacyIntegration.php`, `ai/ai.php`)
+- **WooCommerce catalogue block pagination broken on WC 10 / WP 6.5+** — the 2.2.16 `isInteractivityRequest()` guard detected WC ≤ 9.x interactivity requests by URL parameters (`?cst`, `query-N-page`). WP 6.5+ and WC 10+ dropped those parameters and instead send an `X-WP-Interactivity-Router-Nonce` request header to identify interactivity-router fetches. The URL-only guard missed these, causing `?lang=<source>` to be injected on WC 10+ catalogue pagination requests on the source-language root (`/`), which prevented the Product Collection block's server render callback from running on page 2+. `frontend-lang.js` now also inspects `init.headers` (both `Headers` objects and plain key-value objects) on `fetch()` calls for this header, and skips `?lang=` injection when present. XHR path is unchanged — the Interactivity Router uses `fetch` exclusively. (`language-router/assets/frontend-lang.js`)
+- **WooCommerce variation stock not routing to source product** — `StockRouter::maybe_route()` and `rewrite_stock_sql()` defaulted to `['product']` while `MetaDelegate` already defaulted to `['product', 'product_variation']`. When WooCommerce reduced `_stock` on a translated `product_variation` (e.g. on purchase), StockRouter passed through without routing, leaving the source variation stock unchanged. Both default arrays aligned to `['product', 'product_variation']`. Exposed by the new `PurchaseFlowIntegrationTest` variation scenario. (`ai/includes/Integrations/WooCommerce/StockRouter.php`)
+
+### Tests
+- **PrivacyIntegration** — `PrivacyIntegrationTest` (6 integration): unknown-email early-return (eraser + exporter), known user with no rows, no-collision anonymise (two rows → two user_id=0 rows, originals deleted), collision merge (user row + pre-existing anon row → counts summed into single anon row), export correct WP personal-data format (group_id, item_id, seven data fields). (`tests/integration/PrivacyIntegrationTest.php`)
+- **LocalAttributeTranslator** — `LocalAttributeTranslatorTest` (17 unit) + `LocalAttributeTranslatorIntegrationTest` (3 integration, guard conditions). (`tests/unit/WooCommerce/LocalAttributeTranslatorTest.php`, `tests/integration/WooCommerce/LocalAttributeTranslatorIntegrationTest.php`)
+- **AdminSaveGuard** — `AdminSaveGuardTest` (12 unit) + `AdminSaveGuardIntegrationTest` (5 integration, SQL conflict logic via Reflection). (`tests/unit/WooCommerce/AdminSaveGuardTest.php`, `tests/integration/WooCommerce/AdminSaveGuardIntegrationTest.php`)
+- **FrontPageQuery** — `FrontPageQueryIntegrationTest` (4 integration): page-on-front routing, posts-on-front pass-through, missing-translation fallback, paged front page. (`tests/integration/FrontPageQueryIntegrationTest.php`)
+- **PurchaseFlowIntegrationTest** — 4 integration tests: source stock reduced on purchase, translated post has no own stock row, refund restores source stock, variation stock routes to source variation. (`tests/integration/WooCommerce/PurchaseFlowIntegrationTest.php`)
+
+---
+
 ## [2.3.0] — 2026-06-13
 
 ### Added
@@ -21,6 +37,10 @@
 - **Bundled translations never loaded** — `load_plugin_textdomain( 'lingua-forge', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' )` registered on `init` (priority 1); `Domain Path: /languages` header added. Performant-translation `.l10n.php` files now load automatically on WP 6.5+; on earlier versions the `.mo` files are used. On self-hosted installs where files were previously hand-copied to `WP_LANG_DIR/plugins/`, both paths continue to work. (`lingua-forge.php`)
 - **WP 7.0 `contentOnly` editing — `missing-translation-notice` block** — `messageText` and `homeLinkText` attributes in `block.json` now carry `"role": "content"`. Without this, WP 7.0's default `contentOnly` mode for unsynced patterns and template parts made the block's text fields unselectable and hidden from List View. (`blocks/missing-translation-notice/block.json`)
 - **Self-hosted updater — SHA-256 manifest field** — the update manifest now includes a `sha256` field for the release ZIP; the updater verifies the digest before handing off to WP's upgrader. Host-pinning applied to the manifest endpoint. (`docs/lf-update-manifest.php`, `language-router/includes/class-updater.php`)
+
+### Tests
+- `dev/e2e/wc-checkout.spec.js` added — 4 E2E scenarios: DE add-to-cart, DE cart page (WcPageBridge redirect), DE cart contents, DE checkout page (WcPageBridge redirect). Scenarios 5–6 (COD order placement and order-received page) are deferred: WC Blocks Store API returns an empty payment-methods list for virtual-only carts even when COD is enabled, making automated order placement impossible without a physical product + shipping zone.
+- `test_missing_api_key_returns_null_with_error` removed from `ProviderChatIntegrationTest`: wp-env injects API keys as PHP constants, which cannot be unset at runtime, causing the test to skip for every provider with a key defined. The missing-key path is covered by the unit suite (KeyStoreTest + per-provider unit tests) and by the E2E Settings → AI ping test. (`tests/integration/ProviderChatIntegrationTest.php`)
 
 ---
 

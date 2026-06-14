@@ -59,24 +59,52 @@ async function findProductEditLink( page, titleSubstring ) {
 	return link;
 }
 
-// ── Helper: resolve a product ID via WC REST (admin nonce auth) ────────────────
-// WP REST API supports cookie + nonce authentication for admin sessions.
+// ── Helper: resolve a product ID from the product page HTML ──────────────────
+// Navigates to the product's language-prefixed frontend URL and extracts the
+// post ID using three methods in priority order:
+//   1. data-product_id attribute (WC classic add-to-cart button).
+//   2. ?add-to-cart={id} in any add-to-cart link href (WC archive-style link).
+//   3. postid-{N} body class (WP singular page fallback).
+// Avoids admin search (queries post_title, fails when slug ≠ title, e.g.
+// "Test-Hemd" vs slug "test-shirt-de") and admin bar (availability varies).
 async function resolveProductIdBySlug( page, slug ) {
-	const nonce = await page.evaluate( () => {
-		// wpApiSettings is available on admin screens where wp-api is enqueued.
-		return window.wpApiSettings?.nonce ?? null;
-	} );
-	if ( ! nonce ) {
+	// Infer the language prefix from the slug suffix so we land on the correct
+	// language-prefixed URL where LF sets the active language context.
+	let prefix = '/en/';
+	if ( slug.endsWith( '-de' ) ) {
+		prefix = '/de/';
+	} else if ( slug.endsWith( '-ca' ) ) {
+		prefix = '/ca/';
+	}
+
+	const response = await page.goto( `${ prefix }${ slug }` );
+	if ( ! response || response.status() >= 400 ) {
 		return null;
 	}
-	const response = await page.request.get( `/wp-json/wc/v3/products?slug=${ slug }&status=publish`, {
-		headers: { 'X-WP-Nonce': nonce },
+
+	return page.evaluate( () => {
+		// Method 1: WC classic single-product button carries value="{id}".
+		const btn = document.querySelector( 'button[name="add-to-cart"]' );
+		if ( btn ) {
+			const id = parseInt( btn.getAttribute( 'value' ), 10 );
+			if ( id ) return id;
+		}
+		// Method 2: WC adds data-product_id to link-style add-to-cart elements.
+		const atcEl = document.querySelector( '[data-product_id]' );
+		if ( atcEl ) {
+			const id = parseInt( atcEl.getAttribute( 'data-product_id' ), 10 );
+			if ( id ) return id;
+		}
+		// Method 3: link href ?add-to-cart={id} (archive-style or block theme).
+		const link = document.querySelector( 'a[href*="add-to-cart="]' );
+		if ( link ) {
+			const m = ( link.getAttribute( 'href' ) || '' ).match( /add-to-cart=(\d+)/ );
+			if ( m ) return parseInt( m[ 1 ], 10 );
+		}
+		// Fallback: WP adds postid-{N} to body class on singular posts.
+		const mc = document.body.className.match( /\bpostid-(\d+)\b/ );
+		return mc ? parseInt( mc[ 1 ], 10 ) : null;
 	} );
-	if ( ! response.ok() ) {
-		return null;
-	}
-	const products = await response.json();
-	return Array.isArray( products ) && products.length > 0 ? products[ 0 ].id : null;
 }
 
 // =============================================================================
@@ -254,10 +282,13 @@ test.describe( 'WooCommerce REST write guard', () => {
 	test( '13. GET /wc/v3/products returns 200 for EN source product', async ( { page } ) => {
 		const en_id = await resolveProductIdBySlug( page, 'test-shirt' );
 		if ( ! en_id ) {
-			test.skip( true, 'Could not resolve EN product ID — nonce or REST unavailable.' );
+			test.skip( true, 'Could not resolve EN product ID — run env:seed.' );
 			return;
 		}
 
+		// resolveProductIdBySlug navigated to the frontend; return to admin to
+		// get a valid wpApiSettings nonce (only injected on wp-admin pages).
+		await page.goto( '/wp-admin/edit.php?post_type=product' );
 		const nonce = await page.evaluate( () => window.wpApiSettings?.nonce ?? '' );
 		const response = await page.request.get( `/wp-json/wc/v3/products/${ en_id }`, {
 			headers: { 'X-WP-Nonce': nonce },
@@ -268,10 +299,12 @@ test.describe( 'WooCommerce REST write guard', () => {
 	test( '14. PUT /wc/v3/products/{de_id} returns 422 (RestWriteGuard)', async ( { page } ) => {
 		const de_id = await resolveProductIdBySlug( page, 'test-shirt-de' );
 		if ( ! de_id ) {
-			test.skip( true, 'Could not resolve DE product ID — nonce or REST unavailable.' );
+			test.skip( true, 'Could not resolve DE product ID — run env:seed.' );
 			return;
 		}
 
+		// Re-navigate to admin to get a valid nonce after frontend navigation.
+		await page.goto( '/wp-admin/edit.php?post_type=product' );
 		const nonce = await page.evaluate( () => window.wpApiSettings?.nonce ?? '' );
 		const response = await page.request.put( `/wp-json/wc/v3/products/${ de_id }`, {
 			headers: {
@@ -349,10 +382,12 @@ test.describe( 'WooCommerce REST write guard — translated variation', () => {
 	test( '17. PUT /wc/v3/products/{de_id}/variations/{var_id} returns 422 (RestWriteGuard)', async ( { page } ) => {
 		const de_id = await resolveProductIdBySlug( page, 'test-shirt-de' );
 		if ( ! de_id ) {
-			test.skip( true, 'Could not resolve DE product ID.' );
+			test.skip( true, 'Could not resolve DE product ID — run env:seed.' );
 			return;
 		}
 
+		// Re-navigate to admin to get a valid nonce after frontend navigation.
+		await page.goto( '/wp-admin/edit.php?post_type=product' );
 		const nonce = await page.evaluate( () => window.wpApiSettings?.nonce ?? '' );
 
 		// Fetch the DE product's variation children via WC REST.

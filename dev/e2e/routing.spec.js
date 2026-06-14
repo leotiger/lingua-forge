@@ -122,16 +122,19 @@ test.describe( 'Hreflang output', () => {
         );
 
         // The seeded env has at minimum en, de, ca — each must appear.
-        expect( hreflangs ).toContain( 'en' );
-        expect( hreflangs ).toContain( 'de' );
-        expect( hreflangs ).toContain( 'ca' );
+        // LF emits full BCP-47 locale codes (en-US, de-DE, ca-ES), so we
+        // check for prefix matches rather than bare language subtags.
+        expect( hreflangs.some( h => h === 'en' || h.startsWith( 'en-' ) ) ).toBe( true );
+        expect( hreflangs.some( h => h === 'de' || h.startsWith( 'de-' ) ) ).toBe( true );
+        expect( hreflangs.some( h => h === 'ca' || h.startsWith( 'ca-' ) ) ).toBe( true );
     } );
 
     test( 'DE page hreflang href points to the DE URL', async ( { page } ) => {
         await page.goto( '/de/startseite' );
 
         const deHref = await page.evaluate( () => {
-            const el = document.querySelector( 'link[rel="alternate"][hreflang="de"]' );
+            // LF emits full BCP-47 codes; match "de" or any "de-*" locale.
+            const el = document.querySelector( 'link[rel="alternate"][hreflang="de"], link[rel="alternate"][hreflang^="de-"]' );
             return el ? el.getAttribute( 'href' ) : null;
         } );
 

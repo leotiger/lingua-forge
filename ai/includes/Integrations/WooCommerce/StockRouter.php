@@ -186,7 +186,7 @@ class StockRouter {
 			return $sql;
 		}
 
-		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product' ] );
+		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product', 'product_variation' ] );
 		if ( ! in_array( $post->post_type, $delegate_types, true ) ) {
 			return $sql;
 		}
@@ -333,7 +333,7 @@ class StockRouter {
 			return $check;
 		}
 
-		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product' ] );
+		$delegate_types = (array) apply_filters( 'linguaforge_wc_delegate_post_types', [ 'product', 'product_variation' ] );
 		if ( ! in_array( $post->post_type, $delegate_types, true ) ) {
 			return $check;
 		}

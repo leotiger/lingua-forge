@@ -67,6 +67,10 @@ final class CatalogQueryTest extends WcUnitTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		\LfWcMocks::reset(); // resets $is_admin to false (frontend)
+		// Reset the per-request trid_match_cache so no test bleeds into another.
+		// CatalogQuery::$trid_match_cache is a private static property specifically
+		// to enable this Reflection-based reset between test cases.
+		self::reset_static_array( CatalogQuery::class, 'trid_match_cache' );
 	}
 
 	// =========================================================================
@@ -391,6 +395,104 @@ final class CatalogQueryTest extends WcUnitTestCase {
 
 		$this->assertCount( 1, $lf_clause );
 		$this->assertSame( LF_LANG, $lf_clause[0]['value'], 'No _lf_lang on product must fall back to LF_LANG.' );
+	}
+
+	// =========================================================================
+	// 20. tax_query path — no source products → impossible condition
+	// =========================================================================
+
+	public function test_tax_query_path_sets_impossible_condition_when_no_source_products(): void {
+		// No products with _lf_lang='en' in mock → Phase 1 returns [].
+		// (Any products in meta have _lf_lang != 'en' or are absent entirely.)
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+		$query->set( 'tax_query', [ [ 'taxonomy' => 'product_cat', 'field' => 'term_id', 'terms' => [ 20 ] ] ] );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$meta_query = $query->get( 'meta_query' );
+		$this->assertIsArray( $meta_query );
+		$lf_clause = array_values( array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		) );
+		$this->assertCount( 1, $lf_clause, 'Exactly one _lf_lang clause expected.' );
+		$this->assertSame( '__lf_no_match__', $lf_clause[0]['value'], 'Must set impossible condition when no source products exist.' );
+	}
+
+	// =========================================================================
+	// 21. tax_query path — source IDs found but none have _lf_trid → _lf_lang fallback
+	// =========================================================================
+
+	public function test_tax_query_path_falls_back_to_lang_when_no_trids(): void {
+		// Source product has _lf_lang='en' but no _lf_trid.
+		\LfWcMocks::$meta[2101] = [ '_lf_lang' => 'en' ]; // intentionally no _lf_trid
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+		$query->set( 'tax_query', [ [ 'taxonomy' => 'product_cat', 'field' => 'term_id', 'terms' => [ 30 ] ] ] );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$meta_query = $query->get( 'meta_query' );
+		$keys       = array_column( array_filter( $meta_query, 'is_array' ), 'key' );
+		$this->assertNotContains( '_lf_trid', $keys, 'No _lf_trid constraint should be added when trids are absent.' );
+		$lf_lang_clause = array_values( array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		) );
+		$this->assertCount( 1, $lf_lang_clause );
+		$this->assertSame( LF_LANG, $lf_lang_clause[0]['value'], 'Must fall back to plain _lf_lang when trids are missing.' );
+	}
+
+	// =========================================================================
+	// 22. tax_query path — trids found but no FR translations → _lf_lang fallback
+	// =========================================================================
+
+	public function test_tax_query_path_falls_back_when_no_translated_products_match_trids(): void {
+		// Source product (EN) has a trid, but no FR product with that trid exists in mock.
+		\LfWcMocks::$meta[2201] = [ '_lf_lang' => 'en', '_lf_trid' => 'T-tax-022-unique' ];
+		// Deliberately no 'fr' product with this trid → Phase 3a get_posts returns [].
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+		$query->set( 'tax_query', [ [ 'taxonomy' => 'product_cat', 'field' => 'term_id', 'terms' => [ 40 ] ] ] );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$meta_query = $query->get( 'meta_query' );
+		$keys       = array_column( array_filter( $meta_query, 'is_array' ), 'key' );
+		$this->assertNotContains( '_lf_trid', $keys, 'No trid constraint when translations do not exist.' );
+		$lf_lang_clause = array_values( array_filter(
+			$meta_query,
+			static fn( $c ) => is_array( $c ) && ( $c['key'] ?? '' ) === '_lf_lang'
+		) );
+		$this->assertCount( 1, $lf_lang_clause );
+		$this->assertSame( LF_LANG, $lf_lang_clause[0]['value'], 'Must fall back to plain _lf_lang when no translated products carry matching trids.' );
+	}
+
+	// =========================================================================
+	// 25. post__in path — no translation found → [-1]
+	// =========================================================================
+
+	public function test_post_in_path_sets_impossible_id_when_no_translation_found(): void {
+		self::inject_router_with_trid_group();
+
+		// Source post 2501 (EN). No FR translation exists in mock DB.
+		\LfWcMocks::$meta[2501] = [ '_lf_lang' => 'en', '_lf_trid' => 'T-pin-025' ];
+		// get_translations(2501) returns only the EN row — no FR row.
+		\LfWcMocks::$db_results = [
+			(object) [ 'post_id' => '2501', 'lang' => 'en' ],
+		];
+
+		$query = new \WP_Query();
+		$query->set( 'post_type', 'product' );
+		$query->set( 'post__in', [ 2501 ] );
+
+		CatalogQuery::apply_language_filter_to_secondary_query( $query );
+
+		$this->assertSame( [ -1 ], $query->get( 'post__in' ), 'post__in must be [-1] when no translation exists.' );
 	}
 
 }

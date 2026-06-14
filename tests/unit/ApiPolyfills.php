@@ -201,7 +201,7 @@ if ( ! function_exists( 'apply_filters' ) ) {
 // =============================================================================
 
 if ( ! class_exists( 'WP_Error' ) ) {
-	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound -- WP stub must coexist with polyfill functions.
+	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound,Generic.Classes.DuplicateClassName.Found -- WP stub must coexist with polyfill functions.
 	class WP_Error {
 		private string $code;
 		private string $message;
@@ -507,7 +507,7 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 // =============================================================================
 
 if ( ! class_exists( 'WP_Post' ) ) {
-	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound -- WP stub must coexist with polyfill functions in this bootstrap file.
+	// phpcs:ignore Generic.Files.OneObjectStructurePerFile.MultipleFound,Generic.Classes.DuplicateClassName.Found -- WP stub must coexist with polyfill functions in this bootstrap file.
 	class WP_Post {
 		public int    $ID          = 0;
 		public string $post_type   = 'post';

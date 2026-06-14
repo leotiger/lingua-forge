@@ -47,10 +47,20 @@
 	}
 
 	/**
-	 * Returns true when the URL belongs to a WooCommerce Interactivity API
-	 * navigation or prefetch request, identified by the `cst` (client-side
-	 * transition) query parameter WC appends to every server-render fetch it
-	 * makes for pagination, or by a `query-N-page` pagination argument.
+	 * Returns true when the URL (or headers) belong to a WooCommerce /
+	 * WordPress Interactivity API navigation or prefetch request.
+	 *
+	 * Two detection paths:
+	 *
+	 *  1. URL parameters (older WC ≤ 9.x):
+	 *     `cst` — client-side transition param WC appended to server-render
+	 *     fetches.  `query-N-page` — pagination argument on page-reload paths.
+	 *
+	 *  2. Request header (WP Interactivity Router, WP 6.5+ / WC 10+):
+	 *     The WP Interactivity Router identifies its fetches with the
+	 *     `X-WP-Interactivity-Router-Nonce` header instead of a URL param.
+	 *     The header is present on both `Headers` objects (WP 6.5 native fetch)
+	 *     and plain key-value objects passed as `init.headers`.
 	 *
 	 * These requests MUST NOT receive `?lang=X`:
 	 *   - For translated languages the path prefix already establishes the lang.
@@ -59,10 +69,11 @@
 	 *     WooCommerce Product Collection block from executing its render
 	 *     callback, producing an empty response for page 2+.
 	 *
-	 * @param  {string} url
+	 * @param  {string}                          url
+	 * @param  {Headers|Object|null|undefined}   headers  Optional request headers.
 	 * @return {boolean}
 	 */
-	function isInteractivityRequest( url ) {
+	function isInteractivityRequest( url, headers ) {
 		try {
 			var u    = new URL( url, window.location.href );
 			if ( u.searchParams.has( 'cst' ) ) return true;
@@ -70,10 +81,22 @@
 			for ( var i = 0; i < keys.length; i++ ) {
 				if ( /^query-\d+-page$/.test( keys[ i ] ) ) return true;
 			}
-			return false;
 		} catch ( e ) {
 			return false;
 		}
+
+		// WP Interactivity Router (WP 6.5+ / WC 10+) uses a header, not a URL param.
+		if ( headers ) {
+			try {
+				var nonce = ( typeof headers.get === 'function' )
+					? headers.get( 'X-WP-Interactivity-Router-Nonce' )
+					: ( headers[ 'X-WP-Interactivity-Router-Nonce' ] ||
+					    headers[ 'x-wp-interactivity-router-nonce' ] || null );
+				if ( nonce ) return true;
+			} catch ( e ) { /* ignore — treat as not an interactivity request */ }
+		}
+
+		return false;
 	}
 
 	/**
@@ -103,6 +126,9 @@
 	var _xhrOpen = XMLHttpRequest.prototype.open;
 	XMLHttpRequest.prototype.open = function ( method, url ) {
 		var args = Array.prototype.slice.call( arguments );
+		// XHR headers are set after open(), so we can only check URL params here.
+		// The WP Interactivity Router uses fetch (not XHR), so header detection is
+		// not needed here — URL-param detection covers legacy WC ≤ 9.x paths.
 		if ( typeof url === 'string' && isSameOrigin( url ) && ! isInteractivityRequest( url ) ) {
 			args[ 1 ] = appendLangParam( url );
 		}
@@ -118,8 +144,10 @@
 		var _fetch = window.fetch;
 		window.fetch = function ( input, init ) {
 			try {
-				var url = ( input instanceof Request ) ? input.url : String( input || '' );
-				if ( isSameOrigin( url ) && ! isInteractivityRequest( url ) ) {
+				var url     = ( input instanceof Request ) ? input.url : String( input || '' );
+				var headers = ( init && init.headers ) ? init.headers
+				            : ( input instanceof Request ? input.headers : null );
+				if ( isSameOrigin( url ) && ! isInteractivityRequest( url, headers ) ) {
 					var patched = appendLangParam( url );
 					input = ( input instanceof Request )
 						? new Request( patched, input )

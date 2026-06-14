@@ -27,11 +27,11 @@ test.describe( 'Settings page', () => {
         expect( jsErrors ).toHaveLength( 0 );
     } );
 
-    test( 'has all ten tabs', async ( { page } ) => {
+    test( 'has all nine tabs', async ( { page } ) => {
         await page.goto( SETTINGS_URL );
 
         const expectedTabs = [
-            'General', 'API Keys', 'Limits', 'Behavior',
+            'AI Provider', 'Limits', 'Behavior',
             'Router', 'Glossary', 'AI Usage', 'Maintenance', 'SEO', 'System',
         ];
 
@@ -60,9 +60,9 @@ test.describe( 'Settings page', () => {
         ).toBeVisible( { timeout: 8_000 } );
     } );
 
-    test( 'API Keys tab: provider fields are rendered', async ( { page } ) => {
-        await page.goto( SETTINGS_URL + '#api-keys' );
-        await page.locator( 'a[href*="#api-keys"], .nav-tab', { hasText: 'API Keys' } ).first().click();
+    test( 'AI Provider tab: provider fields are rendered', async ( { page } ) => {
+        await page.goto( SETTINGS_URL + '#ai-provider' );
+        await page.locator( 'a[href*="#ai-provider"], .nav-tab', { hasText: 'AI Provider' } ).first().click();
 
         // Wait for at least one API key input to be visible in the active panel.
         // This is more reliable than text-matching because the tab content may

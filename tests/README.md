@@ -102,9 +102,9 @@ tests/
 ```
 
 Latest counts (test methods; PHPUnit-reported run count is higher due to data-provider expansion):
-**678 unit**, **236 non-WC integration**, **138 WC integration** — **1052 total test methods**.
-PHPUnit reports ~372 integration tests (vs. 353 methods) because several methods use data providers.
-E2E: **7 spec files, 68 scenarios** (Playwright, `npm run test:e2e`).
+**678 unit**, **235 non-WC integration**, **138 WC integration** — **1051 total test methods**.
+PHPUnit reports ~372 integration tests (vs. 352 methods) because several methods use data providers.
+E2E: **8 spec files, 72 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 
 ## Running

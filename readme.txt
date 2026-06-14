@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -227,8 +227,9 @@ The plugin stores the following data in your WordPress database:
 * Encrypted API keys in `wp_options`.
 * AI cache entries (post content hashes and translated output) in a custom table. Cleared via Settings → Maintenance → Clear AI Cache or on plugin uninstall.
 * Translation Memory entries (block-level translated content) in a custom table. Cleared via Settings → Maintenance or on uninstall.
-* AI usage statistics (token counts per date, user, feature, provider) in a custom table. No personally identifiable information beyond the WordPress user ID. Dropped on uninstall.
+* AI usage statistics (token counts per date, user, feature, provider) in a custom table. No personally identifiable information beyond the WordPress user ID. Dropped on uninstall. Rows for a given user are removed when that user's data is erased via **Tools → Erase Personal Data** (WordPress privacy tools).
 * Language metadata (`_lang`, `_trid`, `_lf_trans_*`) stored as post meta on multilingual posts.
+* Order language (`_lf_order_lang`) stored as WooCommerce order meta when WooCommerce is active. This meta is covered by WooCommerce's own order anonymisation and erasure flows.
 
 All custom tables and plugin-specific options are removed on uninstall.
 
@@ -257,6 +258,21 @@ Used when the active provider is set to Google Gemini.
 * Terms of Service: https://ai.google.dev/gemini-api/terms
 * Privacy Policy: https://policies.google.com/privacy
 
+= AI model list fetches =
+When Settings → Lingua Forge is opened, the plugin fetches the current list of available models from each configured provider. These requests use the same API key already stored for content generation and transmit only the key (via the Authorization header).
+* Anthropic endpoint: https://api.anthropic.com/v1/models
+* OpenAI endpoint: https://api.openai.com/v1/models
+* Google Gemini endpoint: https://generativelanguage.googleapis.com/v1beta/models
+* Data sent: API key (Authorization header only). No post content is transmitted.
+* Terms of Service / Privacy Policy: see the respective provider sections above.
+
+= IndexNow (search engine notification) =
+When a post or page is saved, the plugin notifies the IndexNow network so search engines can recrawl the updated URL promptly. This is triggered only on public post saves and only when IndexNow is enabled in Settings → SEO → Sitemap.
+* Endpoint: https://api.indexnow.org/indexnow
+* Data sent: the updated URL, your site's host, and the IndexNow key stored in your uploads folder. No personal data is transmitted.
+* IndexNow protocol: https://www.indexnow.org/documentation
+* Privacy Policy: https://www.indexnow.org/privacy
+
 = Update checks (self-hosted updater) =
 The plugin periodically checks for updates by fetching a small JSON manifest from lingua-forge.com. The request includes the plugin version, WordPress version, and your site's home URL (sent as part of the User-Agent string). No other data is transmitted. This request is made from the WordPress admin area only and is never triggered on the frontend.
 * Endpoint: https://lingua-forge.com/wp-json/lingua-forge/v1/update
@@ -269,27 +285,16 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 2.3.0 =
-* Added: WP 7.0 AI Client as a fourth translation provider — `WpAiClient` delegates to core's `wp_ai_client_prompt()`; credentials managed in Settings → Connectors, no API key stored by LF. (`ai/includes/Providers/WpAiClient.php`)
-* Added: Sitemap index/chunking — `/lf-sitemap.xml` now serves a sitemap-index that splits URLs into 2,000-URL sub-sitemaps; handles the 50,000-URL protocol limit automatically. (`class-sitemap-manager.php`)
-* Added: BreadcrumbList JSON-LD — `SchemaManager` outputs BreadcrumbList for posts, pages, CPTs, and taxonomy archives; URLs auto language-prefixed. New `linguaforge_seo_schema_breadcrumb` option (default: on). (`class-schema-manager.php`)
-* Added: WooCommerce order language capture — `WcOrderLang` stores `_lf_order_lang` at checkout and switches locale for all WC transactional emails. (`WcOrderLang.php`, `WcPageBridge.php`)
-* Added: WooCommerce coupon product-restriction mapping — `CouponTridMap` remaps translated product IDs to source for coupon validation. (`CouponTridMap.php`)
-* Added: WooCommerce order line item normalisation — `OrderItemNormalizer` rewrites checkout `product_id` to source product, fixing `total_sales` fragmentation and WC Analytics row splitting. Toggle in Settings → Router. New `linguaforge_wc_order_item_source_mapping` filter. (`OrderItemNormalizer.php`)
-* Added: WooCommerce shared product review pool — `ProductReviewRouter` redirects review submissions to the source product and serves source reviews on translated pages. (`ProductReviewRouter.php`)
-* Fixed: AI provider errors now surfaced specifically (e.g. "No connector configured") — `AIProviderInterface` gains `get_last_error()`; `JsonEnvelopeTranslator` and `ChunkTranslation` use it instead of the generic fallback. (`AIProviderInterface.php`, `JsonEnvelopeTranslator.php`, `ChunkTranslation.php`)
-* Fixed: PHP 8 fatal `Undefined constant "LF_LANG"` in `QueryFilter::query()` / `query_fallback()` on WP-CLI and cron — guarded with `defined()`. (`class-query-filter.php`)
-* Fixed: `handle_parse_query()` main-query-only — missing `is_main_query()` guard caused search-flag mutations to bleed into secondary queries on search pages. (`class-query-filter.php`)
-* Fixed: Sitemap `xhtml:link hreflang` and head hreflang tags now route through `SchemaManager::lang_to_bcp47()` for correct BCP 47 casing. (`class-sitemap-manager.php`, `class-hreflang.php`)
-* Fixed: Bundled translations now load — `load_plugin_textdomain()` on `init` priority 1, `Domain Path: /languages` header added; `.l10n.php` performant-translation files active on WP 6.5+. (`lingua-forge.php`)
-* Fixed: `missing-translation-notice` block attributes marked `"role": "content"` for WP 7.0 `contentOnly` editing compatibility. (`blocks/missing-translation-notice/block.json`)
-* Fixed: Self-hosted updater includes `sha256` manifest field for ZIP integrity verification. (`docs/lf-update-manifest.php`, `class-updater.php`)
+= 2.3.1 =
+* Fixed: GDPR right-to-erasure gap — `PrivacyIntegration` now registers an exporter and an anonymising eraser for AI usage statistics (user_id anonymised to 0; aggregate token counts retained). (`ai/includes/Core/PrivacyIntegration.php`)
+* Fixed: WooCommerce catalogue block pagination broken on WC 10 / WP 6.5+ — `isInteractivityRequest()` now also detects `X-WP-Interactivity-Router-Nonce` request headers (WC 10+ dropped `?cst` URL params); `?lang=` no longer injected on interactivity-router fetches on WC 10+. (`language-router/assets/frontend-lang.js`)
+* Fixed: WooCommerce variation stock not routing to source product — `StockRouter` now defaults to `['product', 'product_variation']` matching `MetaDelegate`, so translated variation stock writes (e.g. `_stock` on purchase) correctly route to the source variation. (`StockRouter.php`)
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
 
-= 2.3.0 =
-WooCommerce commerce-lifecycle complete: order language, coupon mapping, sales normalisation, shared reviews. WP 7.0 AI Client provider, sitemap index/chunking, BreadcrumbList JSON-LD. Plugin translations now load correctly. No flush required.
+= 2.3.1 =
+Fixed: GDPR erasure for AI usage stats, WC 10+ catalogue block pagination, and variation stock routing. No database changes. No flush required.
 
 

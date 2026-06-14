@@ -104,11 +104,13 @@ class WpAiClient implements AIProviderInterface {
 		// Inline function_exists() guard (unreachable at runtime — early-return above covers it)
 		// satisfies Plugin Check's control-flow requirement for optional WP 7.0+ features.
 		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
-			return null; // @codeCoverageIgnore
+			// @codeCoverageIgnore
+			return null;
 		}
 		// call_user_func is used deliberately: Plugin Check's static analyser flags direct calls to
 		// wp_ai_client_prompt() against Requires at least: 6.4, but cannot resolve call_user_func()
 		// to the underlying function. Runtime safety is guaranteed by the function_exists() guards.
+		// @phpstan-ignore-next-line -- string literal is a valid callable; verified by function_exists() above.
 		$builder = call_user_func( 'wp_ai_client_prompt', $prompt_text );
 
 		if ( $system !== '' ) {

@@ -142,4 +142,41 @@ abstract class WcUnitTestCase extends TestCase {
 		$prop->setAccessible( true );
 		$prop->setValue( null, $value );
 	}
+
+	// =========================================================================
+	// TridGroup injection
+	// =========================================================================
+
+	/**
+	 * Plant a Router singleton with an LfTestTridGroup stub injected.
+	 *
+	 * Extends inject_router(): after setting up the stub Router + Context, this
+	 * method creates an LfTestTridGroup instance (defined in WcPolyfills.php) and
+	 * injects it into the Router's trid_group property via Reflection.
+	 *
+	 * LfTestTridGroup.get_lang() / get_trid() read directly from LfWcMocks::$meta;
+	 * get_translations() reads from LfWcMocks::$db_results.  This sidesteps the
+	 * global-namespace function lookup from within LinguaForge\Router\Translation
+	 * that the real TridGroup relies on, which is not reliably available in the
+	 * unit-test environment.
+	 *
+	 * Use in tests that exercise code paths calling Router::get_lang() or
+	 * Router::get_translations() (e.g. CatalogQuery post__in path,
+	 * WcPageBridge::translate_privacy_policy_page_id()).
+	 *
+	 * Remember to set LfWcMocks::$meta and LfWcMocks::$db_results before the
+	 * call under test.
+	 */
+	protected static function inject_router_with_trid_group( string $source_lang = 'en' ): void {
+		static::inject_router( $source_lang );
+
+		$router     = Router::get_instance();
+		$router_ref = new ReflectionClass( Router::class );
+
+		$trid_group = new \LfTestTridGroup( $router );
+
+		$tg_prop = $router_ref->getProperty( 'trid_group' );
+		$tg_prop->setAccessible( true );
+		$tg_prop->setValue( $router, $trid_group );
+	}
 }

@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+namespace LinguaForge\AI\Integrations\WooCommerce;
+
+defined( 'ABSPATH' ) || exit;
+
+use LinguaForge\Router\Router;
+use WC_Order;
+
 /**
  * Captures the purchase language on WC orders and switches locale for
  * customer-facing transactional emails.
@@ -17,14 +24,6 @@ declare(strict_types=1);
  * @package LinguaForge\AI\Integrations\WooCommerce
  * @since   2.3.0
  */
-
-namespace LinguaForge\AI\Integrations\WooCommerce;
-
-defined( 'ABSPATH' ) || exit;
-
-use LinguaForge\Router\Router;
-use WC_Order;
-
 class WcOrderLang {
 
 	// =========================================================================

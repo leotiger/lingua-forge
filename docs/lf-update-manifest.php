@@ -35,9 +35,9 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.3.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.3.0/lingua-forge-2.3.0.zip';
-	$last_updated = '2026-06-13';
+	$version      = '2.3.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.3.1/lingua-forge-2.3.1.zip';
+	$last_updated = '2026-06-14';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
@@ -48,6 +48,13 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// Current release only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.3.1 &#8212; 2026-06-14</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> GDPR right-to-erasure gap in AI usage statistics &#8212; <code>PrivacyIntegration</code> now registers an exporter (date, feature, provider, model, token counts per row) and an anonymising eraser: existing anonymous rows receive summed counts via <code>UPDATE&nbsp;&#8230;&nbsp;JOIN</code>; rows with no anonymous counterpart are inserted fresh via <code>INSERT&nbsp;IGNORE</code>; the user-identified originals are then deleted. Aggregate billing data is preserved; the personal link (WP user ID) is removed. <code>_lf_order_lang</code> order meta rides WooCommerce&#8217;s own order anonymiser. (<code>ai/includes/Core/PrivacyIntegration.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce catalogue block pagination broken on WC 10 / WP 6.5+ &#8212; the 2.2.16 <code>isInteractivityRequest()</code> guard detected interactivity requests by URL parameters (<code>?cst</code>, <code>query-N-page</code>). WP 6.5+ and WC 10+ dropped those parameters and send an <code>X-WP-Interactivity-Router-Nonce</code> header instead; the URL-only guard missed these, causing <code>?lang=</code> injection on pagination fetches and an empty page 2+ response. <code>frontend-lang.js</code> now also inspects request headers on <code>fetch()</code> calls for this header. (<code>language-router/assets/frontend-lang.js</code>)</li>' .
+			'<li><strong>Fixed:</strong> WooCommerce variation stock not routing to source product &#8212; <code>StockRouter::maybe_route()</code> and <code>rewrite_stock_sql()</code> defaulted to <code>[&#8216;product&#8217;]</code> while <code>MetaDelegate</code> already defaulted to <code>[&#8216;product&#8217;, &#8216;product_variation&#8217;]</code>. Translated variation stock writes (e.g. <code>_stock</code> reduced on purchase) passed through without routing to the source variation. Both default arrays aligned to <code>[&#8216;product&#8217;, &#8216;product_variation&#8217;]</code>. (<code>StockRouter.php</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.3.0 &#8212; 2026-06-13</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> WordPress 7.0 AI Client as a fourth translation provider &#8212; new <code>WpAiClient</code> class delegates to core&#8217;s <code>wp_ai_client_prompt()</code> builder; API credentials are managed through WordPress Settings &#8594; Connectors. Works alongside existing Anthropic, OpenAI, and Gemini providers. (<code>ai/includes/Providers/WpAiClient.php</code>)</li>' .
@@ -64,8 +71,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 			'<li><strong>Fixed:</strong> Bundled translations now load correctly &#8212; <code>load_plugin_textdomain()</code> registered on <code>init</code> (priority 1) and <code>Domain Path: /languages</code> added to the plugin header; <code>.l10n.php</code> performant-translation files load automatically on WP 6.5+. (<code>lingua-forge.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> <code>missing-translation-notice</code> block attributes marked with <code>"role": "content"</code> in <code>block.json</code> &#8212; required for WP 7.0&#8217;s <code>contentOnly</code> editing default so the block&#8217;s text fields remain selectable inside template parts and patterns. (<code>missing-translation-notice/block.json</code>)</li>' .
 			'<li><strong>Fixed:</strong> Self-hosted updater now includes a <code>sha256</code> field in the manifest and verifies the downloaded ZIP before handing off to WP&#8217;s upgrader; host pinning applied to the manifest endpoint. (<code>docs/lf-update-manifest.php</code>, <code>class-updater.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
+		'</ul>';
 
 	// -------------------------------------------------------------------------
 	// STATIC FIELDS — change rarely

@@ -37,6 +37,11 @@ add_action( 'plugins_loaded', function () {
 	\LinguaForge\AI\Integrations\WooCommerce\Bootstrap::init();
 }, 20 );
 
+// ── GDPR / privacy integration ───────────────────────────────────────────
+// Registers an exporter and eraser for the AI usage stats table so WordPress's
+// Tools → Export / Erase Personal Data flows cover user_id rows in that table.
+add_action( 'init', [ \LinguaForge\AI\Core\PrivacyIntegration::class, 'register' ] );
+
 // ── WP-CLI commands ───────────────────────────────────────────────────────
 // Registered eagerly so they're available the first time `wp linguaforge …`
 // dispatches. The Commands class itself is autoloaded lazily on the first
