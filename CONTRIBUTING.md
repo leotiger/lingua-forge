@@ -442,6 +442,15 @@ conventions they codify all live in this file.
 
 ## Coding conventions
 
+- **Direct-access guard must be within the first ~50 lines of every PHP
+  file.** Add `defined( 'ABSPATH' ) || exit;` (or `if ( ! defined( 'ABSPATH' ) ) exit;`)
+  immediately after the `namespace` declaration — *above* the class
+  docblock, not below it. WordPress **Plugin Check only scans the top of
+  the file**, so a guard placed after a long file/class docblock is
+  reported as `missing_direct_file_access_protection` even though it is
+  present. This is a recurring false-looking failure: put the guard near
+  the top and it never recurs. (Files that legitimately have no guard:
+  none — every shipped `.php` file needs one near the top.)
 - **PHP 8.1+ syntax** is fine — the plugin requires PHP 8.1 (declared in
   the header). Constructor property promotion, named arguments,
   `match` expressions, `readonly` properties, enums, never return type,
