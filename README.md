@@ -187,7 +187,7 @@ Lingua Forge's own interface is translated into 26 languages, so you can work in
 | `id_ID` | Indonesian | `it_IT` | Italian |
 | `ja` | Japanese | `km` | Khmer |
 
-All translation files (`languages/lingua-forge-{locale}.po/.mo/.l10n.php`) are bundled in the plugin. To contribute a new translation or improve an existing one, open a pull request against the `languages/` directory. Translation are AI generated, you may encounter inconsistencies, e.g. Light (AI tier) translated as Llum to Catalan, which should obviously be Lleuger... AI isn't perfect at all...
+All translation files (`languages/lingua-forge-{locale}.po/.mo/.l10n.php`) are bundled in the plugin. To contribute a new translation or improve an existing one, open a pull request against the `languages/` directory. Translation are AI generated, you may encounter inconsistencies, e.g. Light (AI tier) translated as Llum to Catalan, which should obviously be Lleuger... AI isn't perfect at all and Loco Translate does not offer a prompt to establish context awareness, what makes a feature implementation that subsitutes Loca Translate a roadmap feature for Lingua Forge... depende on your usage and demand...
 
 ---
 
