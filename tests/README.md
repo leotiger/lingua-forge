@@ -153,13 +153,9 @@ All commands run from `../dev/` (the dev-tooling folder).
 Code coverage is split into three stages. All commands run from `../dev/`.
 
 ```bash
-# Optional: install pcov for faster coverage collection.
-# xdebug (pre-installed in wp-env) is used automatically when pcov is absent.
-# pcov is faster but lost on container rebuild — re-run after env:stop / env:start.
-composer coverage:setup
-
 # Run unit + integration suites with Clover XML + HTML output.
-# Requires wp-env running (npm run env:start) + pcov installed.
+# Requires wp-env running (npm run env:start).
+# pcov is installed automatically by coverage:run; no separate setup step needed.
 # Activates lingua-forge + woocommerce before the integration run
 # so the full WC delegation layer is exercised.
 composer coverage:run

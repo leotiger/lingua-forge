@@ -57,8 +57,7 @@ composer test:integration:wc  # WooCommerce integration suite only (needs WC in 
 composer test                 # both suites
 composer qa                   # lint + analyse + unit tests
 composer plugin-check         # the official .org checker (inside wp-env)
-composer coverage:setup       # one-time: install pcov in the wp-env tests-cli container
-composer coverage:run         # unit + integration suites with Clover + HTML output
+composer coverage:run         # unit + integration suites with Clover + HTML output; installs pcov automatically
 composer coverage:merge       # merge unit + integration Clovers → combined/
 composer coverage             # full pipeline: coverage:run → coverage:merge
 
@@ -121,8 +120,7 @@ Only needed when you want to re-test scaffold from an empty state.
 | `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |
 | `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |
 | `composer plugin-check`       | starts wp-env CLI, runs the WP Plugin Check tool inside it         | Yes           |
-| `composer coverage:setup`     | optionally installs pcov in the tests-cli container (faster than xdebug) — once per `env:start` | Yes |
-| `composer coverage:run`       | unit + integration suites with Clover + HTML; copies integration report out of container | Yes |
+| `composer coverage:run`       | unit + integration suites with Clover + HTML; installs pcov automatically; copies integration report out of container | Yes |
 | `composer coverage:merge`     | merges `coverage/unit/clover.xml` + `coverage/integration/clover.xml` → `coverage/combined/` | No |
 | `composer coverage`           | `coverage:run` → `coverage:merge`; summary.txt + combined clover land in `coverage/combined/` | Yes |
 
