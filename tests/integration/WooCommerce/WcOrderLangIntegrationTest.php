@@ -404,4 +404,52 @@ final class WcOrderLangIntegrationTest extends WcIntegrationTestCase {
 		$last = array_key_last( $result );
 		$this->assertSame( 'wc_actions', $last, 'wc_actions must remain the last column.' );
 	}
+
+	// =========================================================================
+	// §1.6 — pending language must not outlive its transition (clear at p99)
+	// =========================================================================
+
+	/**
+	 * A seeded-but-unconsumed language must be discarded by clear_pending_email_lang(),
+	 * so it cannot bleed into a later email in the same request (the leak that an
+	 * admin-only status email — failed / cancelled — would otherwise cause).
+	 */
+	public function test_clear_pending_email_lang_discards_unconsumed_value(): void {
+		$order = $this->make_order( 'es' );
+
+		WcOrderLang::seed_pending_email_lang( $order->get_id(), $order );
+		$this->assertSame( 'es', $this->get_static( 'pending_email_lang' ),
+			'Seed must stash the order language.' );
+
+		WcOrderLang::clear_pending_email_lang();
+		$this->assertSame( '', $this->get_static( 'pending_email_lang' ),
+			'Clear must discard an un-consumed pending language.' );
+	}
+
+	/**
+	 * The priority-1 seed and the priority-99 clear must both be registered on the
+	 * status and refund hooks. Priority 99 guarantees the clear runs after WC's
+	 * priority-10 email triggers, so a transition's email has already had its
+	 * chance to consume the value before it is discarded.
+	 */
+	public function test_seed_and_clear_hooks_registered_with_correct_priorities(): void {
+		$this->assertSame(
+			1,
+			has_action( 'woocommerce_order_status_failed', [ WcOrderLang::class, 'seed_pending_email_lang' ] ),
+			'Seed must run at priority 1 (before WC email triggers).'
+		);
+		$this->assertSame(
+			99,
+			has_action( 'woocommerce_order_status_failed', [ WcOrderLang::class, 'clear_pending_email_lang' ] ),
+			'Clear must run at priority 99 (after WC email triggers).'
+		);
+		$this->assertSame(
+			99,
+			has_action( 'woocommerce_order_status_processing', [ WcOrderLang::class, 'clear_pending_email_lang' ] )
+		);
+		$this->assertSame(
+			99,
+			has_action( 'woocommerce_order_refunded', [ WcOrderLang::class, 'clear_pending_email_lang' ] )
+		);
+	}
 }

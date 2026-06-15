@@ -49,6 +49,22 @@ class IndexNowManager {
 	/** Option name for the stored verification key. */
 	private const KEY_OPTION = 'linguaforge_indexnow_key';
 
+	/**
+	 * Cron hook fired to submit a post's URLs asynchronously.
+	 *
+	 * The save handler schedules a single event on this hook so the outbound
+	 * IndexNow HTTP POST never runs inside the editor save / REST response.
+	 */
+	private const CRON_HOOK = 'linguaforge_indexnow_submit';
+
+	/**
+	 * Delay before the scheduled submit fires (seconds).  A short delay lets a
+	 * burst of related saves (e.g. "Translate missing" creating several
+	 * siblings) collapse into a single submission, since the URL set is
+	 * re-collected at run time.
+	 */
+	private const SUBMIT_DELAY = MINUTE_IN_SECONDS;
+
 	private Router $router;
 
 	public function __construct( Router $router ) {
@@ -63,8 +79,11 @@ class IndexNowManager {
 		// Serve the key-verification file on the front end.
 		add_action( 'template_redirect', [ $this, 'maybe_serve_key_file' ], 1 );
 
-		// Auto-submit when a translated post is published or updated.
+		// Auto-submit when a translated post is published or updated.  The save
+		// handler only schedules a cron event; the actual HTTP POST runs later
+		// on the CRON_HOOK so it never blocks the save request.
 		add_action( 'wp_after_insert_post', [ $this, 'on_post_saved' ], 20, 2 );
+		add_action( self::CRON_HOOK, [ $this, 'run_scheduled_submit' ], 10, 1 );
 	}
 
 	// =========================================================
@@ -73,10 +92,18 @@ class IndexNowManager {
 
 	/**
 	 * Serve /<key>.txt when the request matches the key-file path.
+	 *
+	 * Runs on every front-end request (template_redirect), so it reads the key
+	 * with read_key() — the read-only accessor that never writes an option.
+	 * The key is only ever generated in admin / cron / submission contexts
+	 * (Sitemap panel render, run_scheduled_submit, manual submit), never as a
+	 * side effect of an anonymous GET.  When no key exists yet there is also
+	 * nothing for a search engine to verify (no submission has carried a key
+	 * URL), so returning early is correct.
 	 */
 	public function maybe_serve_key_file(): void {
 
-		$key = $this->get_key();
+		$key = $this->read_key();
 		if ( '' === $key ) {
 			return;
 		}
@@ -104,10 +131,13 @@ class IndexNowManager {
 	// =========================================================
 
 	/**
-	 * Submit the updated post's URL + all its translation URLs to IndexNow.
+	 * Schedule an asynchronous IndexNow submission for the saved post.
 	 *
 	 * Fires on wp_after_insert_post so it covers both the classic meta-box
-	 * save and the REST block-editor save path.
+	 * save and the REST block-editor save path.  This method does no network
+	 * I/O — it only queues a single cron event.  The blocking HTTP POST runs
+	 * later in run_scheduled_submit() so the editor save / REST response is
+	 * never delayed by IndexNow.
 	 *
 	 * @param int      $post_id
 	 * @param \WP_Post $post
@@ -126,6 +156,43 @@ class IndexNowManager {
 		if ( '' === $this->router->trid_group->get_trid( $post_id ) ) {
 			return;
 		}
+
+		$this->schedule_submit( $post_id );
+	}
+
+	/**
+	 * Queue a single cron event to submit this post's URLs.
+	 *
+	 * Debounce: wp_schedule_single_event() (and the wp_next_scheduled() guard)
+	 * ignore a duplicate event with the same hook + args already queued, so
+	 * rapid re-saves of the same post collapse into one submission.  The URL
+	 * set is deliberately NOT passed as the cron argument — it is re-collected
+	 * at run time so the submission reflects the final state of the translation
+	 * group (and keeps the cron option row small).
+	 *
+	 * @param int $post_id
+	 */
+	private function schedule_submit( int $post_id ): void {
+
+		if ( wp_next_scheduled( self::CRON_HOOK, [ $post_id ] ) ) {
+			return;
+		}
+
+		wp_schedule_single_event( time() + self::SUBMIT_DELAY, self::CRON_HOOK, [ $post_id ] );
+	}
+
+	/**
+	 * Cron callback: collect the post's current URLs and submit them.
+	 *
+	 * Runs in a separate (cron) request, after the save that scheduled it has
+	 * already returned, so the blocking wp_remote_post() never affects the
+	 * editor experience.  Guards against a post that was unpublished or deleted
+	 * between scheduling and execution (collect_post_urls() returns only
+	 * currently-published siblings).
+	 *
+	 * @param int $post_id
+	 */
+	public function run_scheduled_submit( int $post_id ): void {
 
 		$urls = $this->collect_post_urls( $post_id );
 
@@ -292,13 +359,31 @@ class IndexNowManager {
 	// =========================================================
 
 	/**
+	 * Return the stored verification key WITHOUT generating one.
+	 *
+	 * Read-only — used by the front-end key-file serving path so an anonymous
+	 * GET can never trigger an option write (and two cold GETs can never race to
+	 * generate competing keys).  Returns '' when no key has been generated yet.
+	 *
+	 * @return string  32-char lowercase hex string, or '' when none is stored.
+	 */
+	public function read_key(): string {
+		return (string) get_option( self::KEY_OPTION, '' );
+	}
+
+	/**
 	 * Return the stored verification key, generating one if absent.
+	 *
+	 * This is the get-or-create accessor used by write-appropriate contexts:
+	 * the admin Sitemap panel render, the submission path (cron / manual), and
+	 * key_file_url().  The front-end serving path uses read_key() instead so it
+	 * never writes — see maybe_serve_key_file().
 	 *
 	 * @return string  32-char lowercase hex string, or '' on failure.
 	 */
 	public function get_key(): string {
 
-		$key = (string) get_option( self::KEY_OPTION, '' );
+		$key = $this->read_key();
 
 		if ( '' !== $key ) {
 			return $key;

@@ -65,8 +65,15 @@ class Hreflang {
 			$translations = $this->router->trid_group->get_translations( $post->ID );
 			if ( empty( $translations ) ) return;
 
+			// Each alternate carries the current page's in-post (<!--nextpage-->)
+			// and comment pagination suffix so the hreflang cluster stays
+			// reciprocal with the self-canonical on paginated singulars. (Edge:
+			// if a translation has fewer content pages than the current one, its
+			// paged alternate may not resolve — a rare authoring case for
+			// multipage posts with uneven translations.)
 			foreach ( $translations as $lang => $id ) {
-				echo '<link rel="alternate" hreflang="' . esc_attr( SchemaManager::lang_to_bcp47( $lang ) ) . '" href="' . esc_url( get_permalink( $id ) ) . '" />' . "\n";
+				$alt_url = $this->append_singular_pagination( (string) get_permalink( $id ) );
+				echo '<link rel="alternate" hreflang="' . esc_attr( SchemaManager::lang_to_bcp47( $lang ) ) . '" href="' . esc_url( $alt_url ) . '" />' . "\n";
 			}
 
 			// x-default — Google's spec says this should point at a page intended
@@ -75,7 +82,7 @@ class Hreflang {
 			// but expose lf_hreflang_x_default so sites can swap in a dedicated
 			// /global/ landing page or the English version when available.
 			if ( ! empty( $translations[$this->router->context->source_language()] ) ) {
-				$x_default_url = get_permalink( $translations[$this->router->context->source_language()] );
+				$x_default_url = $this->append_singular_pagination( (string) get_permalink( $translations[$this->router->context->source_language()] ) );
 				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 				$x_default_url = (string) apply_filters( 'lf_hreflang_x_default', $x_default_url, $post->ID, $translations );
 
@@ -136,7 +143,8 @@ class Hreflang {
 		if ( is_singular() ) {
 			global $post;
 			if ( ! $post ) return;
-			echo '<link rel="canonical" href="' . esc_url( get_permalink( $post->ID ) ) . '" />' . "\n";
+			$url = $this->append_singular_pagination( (string) get_permalink( $post->ID ) );
+			echo '<link rel="canonical" href="' . esc_url( $url ) . '" />' . "\n";
 			return;
 		}
 
@@ -166,6 +174,53 @@ class Hreflang {
 			}
 			echo '<link rel="canonical" href="' . esc_url( $url ) . '" />' . "\n";
 		}
+	}
+
+	/**
+	 * Append the current singular request's pagination suffix to a permalink.
+	 *
+	 * Mirrors WordPress core's own `wp_get_canonical_url()` logic so that the
+	 * canonical (and the reciprocal hreflang alternates) of a paginated singular
+	 * point at the actual page being viewed rather than page 1 — the segment that
+	 * was lost when LF removed core's `rel_canonical`. Two cases, with comment
+	 * pagination taking precedence over in-post pagination (same order as core):
+	 *
+	 *   - `cpage` (comment pagination): `.../comment-page-N/` (pretty) or
+	 *     `?cpage=N` (plain).
+	 *   - `page`  (in-post `<!--nextpage-->`): `.../N/` (pretty) or `?page=N`.
+	 *
+	 * Returns the URL unchanged on an unpaginated singular (page 1, no cpage).
+	 *
+	 * @param  string $url Base permalink.
+	 * @return string
+	 */
+	private function append_singular_pagination( string $url ): string {
+		if ( '' === $url ) {
+			return $url;
+		}
+
+		$pretty = (bool) get_option( 'permalink_structure' );
+
+		$cpage = (int) get_query_var( 'cpage' );
+		if ( $cpage >= 1 ) {
+			global $wp_rewrite;
+			$base = ( $wp_rewrite instanceof \WP_Rewrite && $wp_rewrite->comments_pagination_base )
+				? $wp_rewrite->comments_pagination_base
+				: 'comment-page';
+
+			return $pretty
+				? user_trailingslashit( trailingslashit( $url ) . $base . '-' . $cpage, 'commentpaged' )
+				: add_query_arg( 'cpage', $cpage, $url );
+		}
+
+		$page = (int) get_query_var( 'page' );
+		if ( $page >= 2 ) {
+			return $pretty
+				? trailingslashit( $url ) . user_trailingslashit( (string) $page, 'single_paged' )
+				: add_query_arg( 'page', $page, $url );
+		}
+
+		return $url;
 	}
 
 	// =========================================================

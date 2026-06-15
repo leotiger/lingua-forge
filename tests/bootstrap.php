@@ -114,6 +114,11 @@ if ( ! $wp_tests_dir || ! file_exists( $wp_tests_dir . '/includes/functions.php'
     $lf_classmap    = [
         'LinguaForge\\Router\\Router' =>
             $lf_plugin_root . '/language-router/includes/class-language-router.php',
+        // Shared WP_DEBUG-gated AI logger — a leaf dependency (no plugin boot)
+        // referenced by AbstractProvider, WpAiClient, KeyStore, and the
+        // translation Feature classes that unit tests load directly.
+        'LinguaForge\\AI\\Core\\Log' =>
+            $lf_plugin_root . '/ai/includes/Core/Log.php',
     ];
     spl_autoload_register(
         static function ( string $class ) use ( $lf_classmap ): void {

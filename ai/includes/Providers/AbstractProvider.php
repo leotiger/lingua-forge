@@ -4,6 +4,7 @@ namespace LinguaForge\AI\Providers;
 
 use LinguaForge\AI\Contracts\AIProviderInterface;
 use LinguaForge\AI\Core\KeyStore;
+use LinguaForge\AI\Core\Log;
 use LinguaForge\AI\Core\UsageRecorder;
 
 defined('ABSPATH') || exit;
@@ -15,7 +16,7 @@ defined('ABSPATH') || exit;
  * that actually differ between APIs:
  *
  *   - key_slug()       — which KeyStore entry holds the API key
- *   - provider_label() — human-readable label used in error_log prefixes
+ *   - provider_label() — human-readable label used in diagnostic-log prefixes
  *   - build_request()  — URL, headers, body for wp_remote_post
  *   - is_truncated()   — provider-specific "hit max_tokens" marker
  *   - extract_text()   — pull the assistant message text out of the response
@@ -198,7 +199,7 @@ abstract class AbstractProvider implements AIProviderInterface {
     /** KeyStore slug for the API key (e.g. 'anthropic'). */
     abstract protected function key_slug(): string;
 
-    /** Human-readable label used in error_log() messages (e.g. 'Anthropic'). */
+    /** Human-readable label used in Log::debug() messages (e.g. 'Anthropic'). */
     abstract protected function provider_label(): string;
 
     /**
@@ -335,8 +336,7 @@ abstract class AbstractProvider implements AIProviderInterface {
             $reason
         );
 
-        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for AI request retries; same channel as request failures.
-        error_log( $line );
+        Log::debug( $line );
         $this->maybe_wpcli_log( $line );
     }
 
@@ -359,8 +359,7 @@ abstract class AbstractProvider implements AIProviderInterface {
             $message
         );
 
-        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log; the plugin FAQ directs users here when AI requests fail.
-        error_log( $line );
+        Log::debug( $line );
         $this->maybe_wpcli_log( $line );
     }
 

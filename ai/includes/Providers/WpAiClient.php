@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Providers;
 
 use LinguaForge\AI\Contracts\AIProviderInterface;
+use LinguaForge\AI\Core\Log;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -145,16 +146,14 @@ class WpAiClient implements AIProviderInterface {
 
 		if ( is_wp_error( $result ) ) {
 			$this->last_error = $result->get_error_message();
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log; matches the format already documented in the plugin FAQ.
-			error_log( sprintf( 'Lingua Forge AI [WP AI Client] %s', $result->get_error_message() ) );
+			Log::debug( sprintf( 'Lingua Forge AI [WP AI Client] %s', $result->get_error_message() ) );
 			return null;
 		}
 
 		$text = trim( (string) $result );
 
 		if ( $text === '' ) {
-			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log.
-			error_log( 'Lingua Forge AI [WP AI Client] provider returned a successful response with empty text content — check connector configuration' );
+			Log::debug( 'Lingua Forge AI [WP AI Client] provider returned a successful response with empty text content — check connector configuration' );
 			return null;
 		}
 

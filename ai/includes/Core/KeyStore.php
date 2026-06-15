@@ -94,8 +94,7 @@ class KeyStore {
 
                 return $decrypted;
             }
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for a silent decryption failure, most likely caused by wp_salt('auth') changing after the key was stored. The fix is to re-save the API key in Settings → Lingua Forge.
-            error_log(sprintf(
+            Log::debug(sprintf(
                 'Lingua Forge AI [KeyStore] decryption failed for provider "%s" — the stored key could not be decrypted (wp_salt may have changed). Re-save the API key in Settings → Lingua Forge.',
                 $provider
             ));
@@ -241,8 +240,7 @@ class KeyStore {
     private static function encrypt_v2(string $plaintext, string $provider): string {
 
         if (!self::gcm_supported()) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic log for an unrecoverable cryptographic feature gap on the host.
-            error_log('Lingua Forge AI [KeyStore] AES-256-GCM is not available on this PHP/OpenSSL build; cannot store API keys.');
+            Log::debug('Lingua Forge AI [KeyStore] AES-256-GCM is not available on this PHP/OpenSSL build; cannot store API keys.');
             return '';
         }
 
@@ -251,8 +249,7 @@ class KeyStore {
         try {
             $iv = random_bytes(self::V2_IV_LEN);
         } catch (\Exception $e) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log for a cryptographic failure that would silently prevent API key storage.
-            error_log('Lingua Forge AI [KeyStore] could not generate IV: ' . $e->getMessage());
+            Log::debug('Lingua Forge AI [KeyStore] could not generate IV: ' . $e->getMessage());
             return '';
         }
 

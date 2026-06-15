@@ -314,4 +314,55 @@ final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
 		$this->assertSame( $original, $output,
 			'robots.txt must not receive a Sitemap: directive when the site is not public' );
 	}
+
+	// =========================================================================
+	// §1.4 — chunk eviction self-heal (chunk transient evicted, index survives)
+	// =========================================================================
+
+	/**
+	 * When a chunk transient is evicted independently of the index (object-cache
+	 * per-key eviction), get_sitemap_chunk_xml() must regenerate and serve the
+	 * real URLs rather than a valid-but-empty <urlset>.
+	 */
+	public function test_chunk_regenerated_after_independent_eviction(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_lf_post( 'en', $trid );
+
+		$sm = Router::get_instance()->sitemap_manager;
+
+		// Warm the cache (writes the index, chunk 0, and the chunk-count option).
+		$sm->get_sitemap_xml();
+		$this->assertNotFalse( get_transient( 'linguaforge_sitemap_xml' ),
+			'Index must be warm before the eviction test.' );
+
+		// Simulate per-key eviction: drop chunk 0 but leave the index intact.
+		delete_transient( 'linguaforge_sitemap_chunk_0' );
+		$this->assertFalse( get_transient( 'linguaforge_sitemap_chunk_0' ) );
+
+		$chunk = $sm->get_sitemap_chunk_xml( 0 );
+
+		$this->assertStringContainsString( '<url>', $chunk,
+			'An evicted in-range chunk must be regenerated, not served empty.' );
+		$this->assertStringContainsString( (string) get_permalink( $en_id ), $chunk );
+		// And the transient must be repopulated for subsequent requests.
+		$this->assertNotFalse( get_transient( 'linguaforge_sitemap_chunk_0' ) );
+	}
+
+	/**
+	 * An out-of-range chunk index must return a valid empty <urlset> (and must
+	 * not loop into a rebuild on every request — guarded by the chunk-count
+	 * range check).
+	 */
+	public function test_out_of_range_chunk_returns_empty_urlset(): void {
+		$this->make_lf_post( 'en', $this->trid() );
+
+		$sm = Router::get_instance()->sitemap_manager;
+		$sm->get_sitemap_xml(); // warm — one chunk (index 0) exists.
+
+		$chunk = $sm->get_sitemap_chunk_xml( 999 );
+
+		$this->assertStringContainsString( '<urlset', $chunk );
+		$this->assertStringNotContainsString( '<url>', $chunk,
+			'An out-of-range chunk must be an empty urlset.' );
+	}
 }

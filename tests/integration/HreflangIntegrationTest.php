@@ -308,4 +308,97 @@ final class HreflangIntegrationTest extends WP_UnitTestCase {
 
 		$this->assertSame( '', $output );
 	}
+
+	// =========================================================================
+	// §1.7 — singular pagination suffix on canonical + hreflang
+	// =========================================================================
+
+	/** Invoke the private append_singular_pagination() helper. */
+	private function paginate( string $url ): string {
+		$hreflang = Router::get_instance()->hreflang;
+		$m        = new \ReflectionMethod( $hreflang, 'append_singular_pagination' );
+		$m->setAccessible( true );
+		return (string) $m->invoke( $hreflang, $url );
+	}
+
+	private function set_pagination_query( int $page, int $cpage ): void {
+		$GLOBALS['wp_query']->set( 'page', $page );
+		$GLOBALS['wp_query']->set( 'cpage', $cpage );
+	}
+
+	public function test_pagination_helper_appends_in_post_page_pretty(): void {
+		update_option( 'permalink_structure', '/%postname%/' );
+		$GLOBALS['wp_rewrite']->init();
+		$this->set_pagination_query( 2, 0 );
+
+		$this->assertSame(
+			home_url( '/sample/2/' ),
+			$this->paginate( home_url( '/sample/' ) ),
+			'In-post pagination must append /2/ under pretty permalinks.'
+		);
+
+		$this->set_pagination_query( 0, 0 );
+		update_option( 'permalink_structure', '' );
+		$GLOBALS['wp_rewrite']->init();
+	}
+
+	public function test_pagination_helper_comment_page_takes_precedence_pretty(): void {
+		update_option( 'permalink_structure', '/%postname%/' );
+		$GLOBALS['wp_rewrite']->init();
+		// page is set too, but cpage must win (matches core wp_get_canonical_url).
+		$this->set_pagination_query( 5, 3 );
+
+		$this->assertSame(
+			home_url( '/sample/comment-page-3/' ),
+			$this->paginate( home_url( '/sample/' ) ),
+			'Comment pagination must take precedence and append /comment-page-3/.'
+		);
+
+		$this->set_pagination_query( 0, 0 );
+		update_option( 'permalink_structure', '' );
+		$GLOBALS['wp_rewrite']->init();
+	}
+
+	public function test_pagination_helper_plain_permalinks_use_query_args(): void {
+		update_option( 'permalink_structure', '' );
+		$GLOBALS['wp_rewrite']->init();
+		$this->set_pagination_query( 4, 0 );
+
+		$url = $this->paginate( home_url( '/?p=99' ) );
+		$this->assertStringContainsString( 'page=4', $url,
+			'Plain permalinks must carry the page as a query arg.' );
+
+		$this->set_pagination_query( 0, 0 );
+	}
+
+	public function test_pagination_helper_unpaginated_returns_unchanged(): void {
+		$this->set_pagination_query( 0, 0 );
+		$base = home_url( '/sample/' );
+		$this->assertSame( $base, $this->paginate( $base ),
+			'An unpaginated singular must return the permalink unchanged.' );
+	}
+
+	/**
+	 * End-to-end: a paged singular's self-canonical must carry the page suffix
+	 * (rather than pointing at page 1). Uses plain permalinks so the ?p= URL
+	 * always resolves without a rewrite flush.
+	 */
+	public function test_singular_canonical_carries_page_suffix(): void {
+		update_option( 'permalink_structure', '' );
+		$GLOBALS['wp_rewrite']->init();
+
+		$id = (int) $this->factory->post->create( [ 'post_status' => 'publish' ] );
+		$this->go_to( '/?p=' . $id );
+		$GLOBALS['wp_query']->set( 'page', 2 );
+
+		ob_start();
+		Router::get_instance()->hreflang->print_canonical();
+		$output = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'rel="canonical"', $output );
+		$this->assertStringContainsString( 'page=2', $output,
+			'A paged singular canonical must carry the in-post page suffix.' );
+
+		$GLOBALS['wp_query']->set( 'page', 0 );
+	}
 }

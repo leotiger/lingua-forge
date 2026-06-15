@@ -67,7 +67,13 @@ class WcOrderLang {
 		add_action( 'woocommerce_store_api_checkout_create_order', [ self::class, 'capture_order_lang' ], 10, 2 );
 
 		// --- Seed pending lang before email triggers ---------------------------
-		// Priority 1 fires before WC email triggers (default priority 10).
+		// Priority 1 fires before WC email triggers (default priority 10); the
+		// matching priority-99 clear fires *after* them so the stashed language
+		// can never outlive the transition that set it. This matters when a
+		// transition's email is admin-only (e.g. failed / cancelled) and never
+		// calls woocommerce_email_setup_locale to consume the value — without the
+		// clear, a stale language could be picked up by a later customer email in
+		// the same request (e.g. a bulk admin status change across orders).
 
 		$status_hooks = [
 			'pending', 'processing', 'completed', 'on-hold',
@@ -75,11 +81,14 @@ class WcOrderLang {
 		];
 		foreach ( $status_hooks as $status ) {
 			add_action( 'woocommerce_order_status_' . $status, [ self::class, 'seed_pending_email_lang' ], 1, 2 );
+			add_action( 'woocommerce_order_status_' . $status, [ self::class, 'clear_pending_email_lang' ], 99 );
 		}
 
 		// Refund emails fire on dedicated hooks, not order status transitions.
 		add_action( 'woocommerce_order_refunded',           [ self::class, 'seed_pending_email_lang_by_order_id' ], 1 );
+		add_action( 'woocommerce_order_refunded',           [ self::class, 'clear_pending_email_lang' ], 99 );
 		add_action( 'woocommerce_order_partially_refunded', [ self::class, 'seed_pending_email_lang_by_order_id' ], 1 );
+		add_action( 'woocommerce_order_partially_refunded', [ self::class, 'clear_pending_email_lang' ], 99 );
 
 		// Admin "Resend email" button.
 		add_action( 'woocommerce_before_resend_order_emails', [ self::class, 'seed_from_resend' ], 1, 1 );
@@ -181,6 +190,22 @@ class WcOrderLang {
 		if ( $lang ) {
 			self::$pending_email_lang = (string) $lang;
 		}
+	}
+
+	/**
+	 * Discard any pending language that was seeded for this transition but not
+	 * consumed by an email's `setup_locale`.
+	 *
+	 * Hooked at priority 99 on the same status / refund hooks that seed at
+	 * priority 1, so it runs *after* WC's priority-10 email triggers. For a
+	 * customer email the value is already consumed (and cleared) by
+	 * {@see maybe_switch_email_locale()} before we get here, making this a no-op;
+	 * for an admin-only email (failed / cancelled, etc.) nothing consumed it, and
+	 * this prevents the stale value from leaking into a later customer email in
+	 * the same request (e.g. a bulk admin status change across orders).
+	 */
+	public static function clear_pending_email_lang(): void {
+		self::$pending_email_lang = '';
 	}
 
 	// =========================================================================

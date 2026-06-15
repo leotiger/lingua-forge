@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,16 +285,19 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
-= 2.3.1 =
-* Fixed: GDPR right-to-erasure gap — `PrivacyIntegration` now registers an exporter and an anonymising eraser for AI usage statistics (user_id anonymised to 0; aggregate token counts retained). (`ai/includes/Core/PrivacyIntegration.php`)
-* Fixed: WooCommerce catalogue block pagination broken on WC 10 / WP 6.5+ — `isInteractivityRequest()` now also detects `X-WP-Interactivity-Router-Nonce` request headers (WC 10+ dropped `?cst` URL params); `?lang=` no longer injected on interactivity-router fetches on WC 10+. (`language-router/assets/frontend-lang.js`)
-* Fixed: WooCommerce variation stock not routing to source product — `StockRouter` now defaults to `['product', 'product_variation']` matching `MetaDelegate`, so translated variation stock writes (e.g. `_stock` on purchase) correctly route to the source variation. (`StockRouter.php`)
+= 2.3.2 =
+* Changed: IndexNow submission is now asynchronous — publishing or updating a translated post no longer blocks on the outbound IndexNow request. The save handler schedules a single WP-Cron event and the HTTP POST runs in the background; rapid re-saves of the same post are debounced. Manual "Submit all URLs" from the Sitemap panel stays synchronous. (`class-indexnow-manager.php`)
+* Changed: AI-module diagnostic logging is now gated behind WP_DEBUG (via a new shared logger), so production sites no longer accumulate AI request/translation diagnostics in debug.log. (`ai/includes/Core/Log.php`)
+* Fixed: The IndexNow verification key is no longer generated during a front-end request. Key-file serving now reads the key without writing it; the key is created only in admin / submission contexts. (`class-indexnow-manager.php`)
+* Fixed: On sites with a persistent object cache, a sitemap chunk evicted independently of the sitemap index is now regenerated on demand instead of serving an empty list. (`class-sitemap-manager.php`)
+* Fixed: WooCommerce order email language is now cleared after each status transition, so the language of one order's confirmation email can no longer leak to another order during bulk admin status changes. (`WcOrderLang.php`)
+* Fixed: On paginated singular content (multipage posts using <!--nextpage--> or paginated comments), the canonical and hreflang tags now point at the actual page being viewed instead of page 1. (`class-hreflang.php`)
 
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
 
-= 2.3.1 =
-Fixed: GDPR erasure for AI usage stats, WC 10+ catalogue block pagination, and variation stock routing. No database changes. No flush required.
+= 2.3.2 =
+IndexNow submission moved to a background WP-Cron job, so saving a translated post is no longer delayed by the outbound request. No database changes. No flush required.
 
 

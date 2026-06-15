@@ -28,6 +28,7 @@ use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
 use LinguaForge\AI\Core\Glossary;
 use LinguaForge\AI\Core\JsonRepair;
+use LinguaForge\AI\Core\Log;
 use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Core\TranslationMemory;
 use LinguaForge\AI\Core\UsageRecorder;
@@ -392,8 +393,7 @@ class TranslationMemoryTranslator {
 
         if ( ! is_array( $envelope ) ) {
             $looks_truncated = str_starts_with( $normalised, '{' ) && ! str_ends_with( $normalised, '}' );
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
-            error_log( sprintf(
+            Log::debug( sprintf(
                 'Lingua Forge AI [Translation/TM] post %d: response was not valid JSON%s. Falling back. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
@@ -411,8 +411,7 @@ class TranslationMemoryTranslator {
             : null;
 
         if ( $needs_blocks && count( $translated_blocks ) !== $expected_block_count ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for shape mismatch.
-            error_log( sprintf(
+            Log::debug( sprintf(
                 'Lingua Forge AI [Translation/TM] post %d: expected %d translated blocks, got %d. Falling back.',
                 $post_id,
                 $expected_block_count,

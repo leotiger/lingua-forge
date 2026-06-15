@@ -28,6 +28,7 @@ namespace LinguaForge\AI\Features;
 use LinguaForge\AI\Core\BlockTextExtractor;
 use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\JsonRepair;
+use LinguaForge\AI\Core\Log;
 use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Core\UsageRecorder;
 use LinguaForge\AI\Providers\ProviderFactory;
@@ -249,8 +250,7 @@ class JsonEnvelopeTranslator {
 
         if ( ! is_array( $envelope ) ) {
             $looks_truncated = str_starts_with( $normalised, '{' ) && ! str_ends_with( $normalised, '}' );
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
-            error_log( sprintf(
+            Log::debug( sprintf(
                 'Lingua Forge AI [Translation] post %d: response was not valid JSON%s. First 200 chars: %s',
                 $post_id,
                 $looks_truncated ? ' (response appears truncated — raise Max output tokens)' : '',
@@ -274,8 +274,7 @@ class JsonEnvelopeTranslator {
             : null;
 
         if ( $translated_content === '' ) {
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Diagnostic for empty content.
-            error_log( sprintf( 'Lingua Forge AI [Translation] post %d: JSON envelope decoded but "content" was empty.', $post_id ) );
+            Log::debug( sprintf( 'Lingua Forge AI [Translation] post %d: JSON envelope decoded but "content" was empty.', $post_id ) );
             return [ 'success' => false, 'error' => 'Translation failed: empty translated content. Please try again.' ];
         }
 

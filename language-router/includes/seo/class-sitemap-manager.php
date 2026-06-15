@@ -222,12 +222,31 @@ class SitemapManager {
 	/**
 	 * Return a single chunk urlset XML, reading from cache or generating fresh.
 	 *
+	 * `ensure_cache_populated()` keys regeneration on the *index* transient, but
+	 * under a persistent object cache (Redis / Memcached) an individual chunk
+	 * transient can be evicted independently while the index survives. Without a
+	 * guard that would serve a valid-but-empty <urlset>, hiding every URL in the
+	 * chunk from crawlers until the 24 h TTL lapses or a save flushes the cache.
+	 * So when an in-range chunk is missing we regenerate the whole set once and
+	 * re-read it. The in-range check (against the stored chunk count) keeps an
+	 * out-of-range or probe request from triggering a needless rebuild on every
+	 * hit.
+	 *
 	 * @param  int    $chunk  0-based chunk index.
 	 * @return string
 	 */
 	public function get_sitemap_chunk_xml( int $chunk ): string {
 		$this->ensure_cache_populated();
 		$cached = get_transient( self::CACHE_KEY_CHUNK . $chunk );
+
+		if ( ! is_string( $cached ) || '' === $cached ) {
+			$chunk_count = (int) get_option( 'linguaforge_sitemap_chunk_count', 0 );
+			if ( $chunk >= 0 && $chunk < $chunk_count ) {
+				$this->generate_and_cache();
+				$cached = get_transient( self::CACHE_KEY_CHUNK . $chunk );
+			}
+		}
+
 		return ( is_string( $cached ) && '' !== $cached ) ? $cached : $this->empty_urlset_xml();
 	}
 

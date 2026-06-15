@@ -13,6 +13,7 @@ use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Core\Config;
 use LinguaForge\AI\Core\Glossary;
 use LinguaForge\AI\Core\JsonRepair;
+use LinguaForge\AI\Core\Log;
 use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Core\TranslationMemory;
 use LinguaForge\AI\Core\UsageRecorder;
@@ -370,8 +371,7 @@ class Translation implements FeatureInterface {
 
         if ( $max_input > 0 && mb_strlen( $placeholder_content ) > $max_input ) {
             $content_to_translate = mb_substr( $placeholder_content, 0, $max_input );
-            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional diagnostic log.
-            error_log( sprintf(
+            Log::debug( sprintf(
                 'Lingua Forge AI [Translation] post %d: content trimmed to %d characters (limit set in Translation Limits settings). Blocks beyond that position will not be translated.',
                 $post_id,
                 $max_input

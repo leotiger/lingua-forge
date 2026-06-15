@@ -4,9 +4,7 @@
  *
  * Normalizes the product_id on WooCommerce order line items to the source-
  * language product at checkout, when the "Normalize order line items to source
- * product" setting is enabled (default: on).
- *
- * Why this matters:
+ * product" setting is enabled (default: on). Why this matters:
  *
  *  - `wc_update_total_sales_counts()` runs after payment and increments
  *    `total_sales` directly on the product_id stored in each order line item.
@@ -20,18 +18,27 @@
  *  - `_sku` is already delegated via MetaDelegate, so SKU-keyed exports and
  *    reports already aggregate correctly regardless of this setting.
  *
- * Trade-offs (deliberate, documented in CONTRIBUTING):
+ *  - Simple products: the line item's product_id becomes the source product, so
+ *    "View product" from the My Account order screen or transactional emails, and
+ *    the product title on the admin order screen, resolve to the source-language
+ *    product.
  *
- *  - "View product" from the My Account order screen or transactional emails
- *    links to the source-language page, not the customer's language.
- *  - The admin order screen shows the source-language product title.
+ *  - Variable products: ONLY product_id is normalized — variation_id is left as
+ *    the translated variation (see the note below). WooCommerce's
+ *    `WC_Order_Item_Product::get_product()` resolves variation_id first, so the
+ *    order line still hydrates the variation the customer actually purchased.
+ *    "View product" and the admin order title therefore surface the
+ *    purchased-language variation. This is intentional: the order keeps a record of 
+ *    which language version it was placed against, while `total_sales` and WC Analytics
+ *    still aggregate to the source product through the line item's (now source) product_id.
  *
  * The `linguaforge_wc_order_item_source_mapping` filter allows third-party code
  * to override normalization on a per-item basis (return false to skip an item).
  *
  * Note: variation_id on the line item is intentionally left unchanged. Stock
  * reduction for variable products uses variation_id, which StockRouter already
- * handles; variation-level normalization is a separate future concern.
+ * routes to the source variation; variation-level product_id normalization is a
+ * separate concern.
  *
  * @package LinguaForge\AI\Integrations\WooCommerce
  * @since   2.3.0
