@@ -381,7 +381,7 @@ WPML integrates with translation agencies and CAT tools via XLIFF export. Polyla
 
 ### Distribution — self-hosted, not on WordPress.org
 
-Polylang, TranslatePress, and Weglot's connector are all listed in the WordPress.org plugin directory; Lingua Forge is **not** — the name was rejected for the directory, so distribution is self-hosted via the built-in update checker. For technical operators this is a non-issue (download, install, auto-update). For non-technical buyers who discover and trust plugins through the in-dashboard directory and its review counts, the absence of a .org listing is a real discovery and trust disadvantage that the feature set does not offset. This is an honest gap, not a technical limitation.
+Polylang, TranslatePress, and Weglot's connector are all listed in the WordPress.org plugin directory; Lingua Forge is **not** — the name was rejected for the directory, so distribution is self-hosted via the built-in update checker. For technical operators this is a non-issue (download, install, auto-update). For less technical users who discover and trust plugins through the in-dashboard directory — searching, installing in one click, and reading the review counts and active-install figures — the absence of a .org listing is a real discovery and reach disadvantage that the feature set does not offset. This is an honest gap, not a technical limitation.
 
 ---
 
