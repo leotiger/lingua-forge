@@ -401,9 +401,26 @@ ai/                           AI features (translation, meta-description, excerp
     Core/                     Bootstrap, config, caching, TM, glossary, key store, utilities
     Features/                 Feature implementations (Translation, MetaDescription,
                               TranslationTrigger, …)
-    Integrations/WooCommerce/ WooCommerce delegation layer (Bootstrap, MetaDelegate,
-                              StockRouter, VariationDelegate, TaxonomyDelegate,
-                              CatalogQuery, TermNameFilter, TermNameAdmin, SeoSupport)
+    Integrations/WooCommerce/ WooCommerce delegation layer:
+                              Bootstrap — wires all WC integration hooks
+                              MetaDelegate — transparent price/stock/image reads from source
+                              StockRouter — routes stock writes to source product
+                              VariationDelegate — scopes variation queries to correct language
+                              VariationSync — creates/syncs translated product_variation children
+                              TaxonomyDelegate — delegates term assignments to source; object_id rewrite
+                              CatalogQuery — language filter for WC product queries
+                              RestWriteGuard — HTTP 422 for writes to translated products
+                              WcPageBridge — filters cart/checkout/my-account page IDs to translated page
+                              WcOrderLang — captures language to _lf_order_lang; switches email locale
+                              CouponTridMap — expands coupon product/category restrictions across TRID siblings
+                              ProductReviewRouter — routes review submissions + reads to source product
+                              OrderItemNormalizer — rewrites translated product ID on new order items to source
+                              LocalAttributeTranslator — copies custom (non-taxonomy) attribute meta to translated product
+                              AdminSaveGuard — suppresses duplicate-SKU notices when the conflict is a TRID sibling
+                              PageTagRepair — repairs product post-tag assignments wiped by WC type normalization
+                              TermNameFilter — translates pa_* term names in all rendering paths (blocks, Store API)
+                              TermNameAdmin — term edit/add screen fields; saves/deletes termmeta
+                              SeoSupport — WC-specific OG/schema (og:type=product, price, JSON-LD)
     Providers/                AI provider adapters (Anthropic, OpenAI, Gemini) + factory
     REST/                     REST controller + rate limiter
   assets/                     CSS / JS for the meta box, editor toolbar, Settings page, post list
@@ -417,10 +434,9 @@ meta-description/             Meta Description module — LinguaForge\MetaDescri
 Architectural review and audit notes live **outside** the public
 plugin tree — in a maintainer-only `lingua-forge-audit/` sibling
 folder (not tracked in this repo). The current snapshot is
-`AUDIT-2026-06-06.md`; older documents (`AUDIT-2026-06-04.md`, `AUDIT-2026-06-01.md`,
-`AUDIT-2026-05-29.md`, `AUDIT-2026-05-23.md`, `REVIEW.md`, `AUDIT-2026-05-19.md`) are
-kept as historical record only. Contributors don't need to read them to ship a correct
-change — the conventions they codify all live in this file.
+`AUDIT-2026-06-13.md`; older documents are kept as historical record only.
+Contributors don't need to read them to ship a correct change — the
+conventions they codify all live in this file.
 
 ---
 
@@ -640,6 +656,14 @@ from the source-language product at runtime:
 | `TaxonomyDelegate` | `wp_get_object_terms` priority 10 + `wp`/`the_post` cache clearing | Term assignments delegated to source; `object_id` rewritten on returned terms so `update_object_term_cache()` primes the correct bucket |
 | `CatalogQuery` | `woocommerce_product_query` | Language filter for secondary WC product queries |
 | `RestWriteGuard` | `woocommerce_rest_pre_insert_product_object` + `…_variation_object` | Returns HTTP 422 for PUT/PATCH to translated products/variations; includes source_id in response |
+| `WcPageBridge` | `option_woocommerce_cart_page_id`, `option_woocommerce_checkout_page_id`, `option_woocommerce_myaccount_page_id` + endpoint URL filters | Returns the TRID-linked translated page ID for the active language so WC cart/checkout/my-account URLs resolve to the correct language version |
+| `WcOrderLang` | `woocommerce_checkout_order_created`, `woocommerce_order_status_changed`, `woocommerce_email_before_order_table`, `woocommerce_email_footer` | Captures `LF_LANG` to `_lf_order_lang` on checkout; switches email locale to the saved order language for all transactional emails |
+| `CouponTridMap` | `woocommerce_coupon_is_valid_for_product` | Expands product and product-category IDs in coupon restrictions to include all TRID siblings so coupons apply correctly regardless of which language variant is in the cart |
+| `ProductReviewRouter` | `comment_post` priority 1, `comments_pre_query` priority 10 | Redirects review submissions targeting a translated product to the source product; serves source reviews on translated product pages |
+| `OrderItemNormalizer` | `woocommerce_new_order_item` priority 10 | Rewrites the translated product ID on new order line items to the source product ID so sales/stock statistics accumulate on the source |
+| `LocalAttributeTranslator` | `wp_after_insert_post` priority 35 | Copies custom (non-taxonomy) `_product_attributes` meta from source to translated product at save time so attribute labels are available without content delegation |
+| `AdminSaveGuard` | `woocommerce_product_duplicate_before_save` (pre-filter hook) | Resolves "duplicate SKU" conflicts by checking whether the conflicting product is a TRID sibling of the product being saved; suppresses the notice when the conflict is within the same translation group |
+| `PageTagRepair` | `wp_after_insert_post` priority 40 | Repairs `product` post-tag assignments on translated products when WC's type-normalization routine wipes them |
 | `SeoSupport` | `linguaforge_seo_og_type` (filter), `linguaforge_seo_og_extra_tags` (action), `linguaforge_seo_schema_extra_types` (action) | WC-specific SEO: `og:type=product`, `og:price:amount`, `og:price:currency`, `og:availability`, `product:*` namespace tags, and `Product` JSON-LD schema. Option-gated: `linguaforge_seo_wc_og_enabled` (OG) + `linguaforge_seo_schema_product` (schema). |
 
 ### WC structural taxonomy inheritance
@@ -719,8 +743,8 @@ and requires Docker + wp-env with WooCommerce active:
 ```bash
 cd dev/
 npm run env:start               # boots wp-env (only needed if stopped)
-composer test:integration:wc    # WC-only suite (~138 test cases)
-composer test:integration       # full suite including WC tests (~236 non-WC + ~138 WC = ~374; ~678 unit = ~1052 total)
+composer test:integration:wc    # WC-only suite (~211 test methods, ~270 PHPUnit runs)
+composer test:integration       # full suite (322 non-WC + 211 WC = 533 methods; PHPUnit reports 562 runs)
 ```
 
 A full stop/destroy/start is only needed when `.wp-env.json` changes
@@ -1204,26 +1228,16 @@ the wp-env Docker container, the two suites produce separate Clover files
 with different absolute paths. A custom PHP script (`dev/scripts/merge-coverage.php`)
 normalises the paths and merges them into a single combined report.
 
-**One-time setup** (after every `npm run env:start` or `npm run env:stop` /
-`npm run env:start` cycle):
-
-```bash
-cd dev/
-composer coverage:setup   # compiles + installs pcov inside the tests-cli container
-```
+pcov is installed automatically when `composer coverage:run` first runs inside
+the container — no separate setup step is needed.
 
 **Running coverage:**
 
 | Goal                                | Command                      |
 | ----------------------------------- | ---------------------------- |
-| Unit coverage only (local, ~6 s)    | `composer test:unit` ¹       |
 | Full combined coverage              | `composer coverage`          |
 | Re-run both suites (no merge)       | `composer coverage:run`      |
 | Re-merge existing Clover XML files  | `composer coverage:merge`    |
-
-¹ With pcov active the unit suite already writes `coverage/unit/clover.xml`
-and `coverage/unit/coverage.txt`. Run `composer coverage:merge` afterward if
-you also have a fresh integration Clover file.
 
 **Output directories** (all inside `dev/`; gitignored):
 
@@ -1241,19 +1255,16 @@ coverage/
     └── summary.txt       ← per-file ✅/🔶/❌ table + totals
 ```
 
-**Interpreting the numbers:** the raw headline (~27 % as of 2.1.10) understates
-real coverage — the denominator includes ~3,000 lines of Admin HTML render
-methods, ~1,200 lines of WP-CLI commands, and other untestable boilerplate.
-Stripping those, testable business-logic coverage is ~65–70 %. The meaningful
-signal is the per-file column: the core business logic classes (`BlockTextExtractor`,
-`Config`, `JsonRepair`, `TaxonomyDelegate`, `MetaDelegate`, `StockRouter`,
-`TridGroup`, `AbstractProvider`, `LanguageUninstaller`, etc.) should stay green
-(≥ 80 %). 29 files are at ≥ 80 % as of 2.1.10. See `lingua-forge-audit/COVERAGE-AUDIT-2026-06-05.md`
-for the full per-file breakdown.
+**Interpreting the numbers:** the raw headline understates real coverage — the
+denominator includes several thousand lines of Admin HTML render methods, WP-CLI
+command boilerplate, and other structurally untestable code. The meaningful signal
+is the per-file column in `dev/coverage/combined/summary.txt`: core business-logic
+classes (`BlockTextExtractor`, `Config`, `JsonRepair`, `TaxonomyDelegate`,
+`MetaDelegate`, `StockRouter`, `TridGroup`, `AbstractProvider`,
+`LanguageUninstaller`, etc.) should stay green (≥ 80 %).
 
-**Docker must be running** for `coverage:setup` and `composer coverage` (the
-integration step calls `wp-env run tests-cli`). If Docker isn't in your
-`$PATH`, prefix the command:
+**Docker must be running** for `composer coverage` (the integration step calls
+`wp-env run tests-cli`). If Docker isn't in your `$PATH`, prefix the command:
 
 ```bash
 PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH" composer coverage
@@ -1262,7 +1273,7 @@ PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH" composer coverage
 ### What ruleset each tool uses
 
 - **PHPCS (`dev/phpcs.xml.dist`)** loads `WordPress` + `WordPress-Extra`
-  + `WordPress-Docs` + `PHPCompatibilityWP`, targets WP 6.4 and PHP 8.1,
+  + `WordPress-Docs` + `PHPCompatibilityWP`, targets WP 6.7+ and PHP 8.1,
   and pre-configures the prefix list (`linguaforge_`, `LINGUAFORGE_`,
   `Linguaforge`, `LinguaForge`, `lf_`, `LF_`) so the `PrefixAllGlobals`
   sniff knows about them. The file-name sniff (`WordPress.Files.FileName`)
