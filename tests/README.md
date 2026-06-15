@@ -31,6 +31,8 @@ tests/
 │   ├── LocaleDetectorTest.php                     ← LocaleDetector language resolution
 │   ├── MetaBoxTest.php                            ← inject_instance_languages() Locale branch + fallback
 │   ├── MetaDescriptionCleanOutputTest.php         ← MetaDescription::clean_output()
+│   ├── QueryFilterArmTest.php                     ← QueryFilter frontend arm: nav-block pending flag, noop guards (singular, lang, block type)
+│   ├── QueryFilterPageMenuExcludeTest.php         ← QueryFilter page-menu exclusion: excluded pages hidden regardless of language
 │   ├── RateLimiterTest.php                        ← RateLimiter gate + quota logic
 │   ├── RegressionContractsTest.php                ← pin critical string constants + key shapes
 │   ├── RouterPureHelpersTest.php                  ← Manager::rewrite_lang_permalink(), Switcher::build_translated_url()
@@ -48,13 +50,17 @@ tests/
 │   └── WooCommerce/
 │       ├── WcUnitTestCase.php                     ← base: WcPolyfills + Router stub
 │       ├── WcPolyfills.php                        ← WP_Query/WP_Post stubs; get/update_post_meta; is_admin; LfWpdb stub
+│       ├── Stubs/
+│       │   └── TermNameTranslatorStub.php         ← stub for TermNameFilter unit tests
+│       ├── AdminSaveGuardTest.php                 ← AdminSaveGuard SKU-conflict resolution: trid-linked conflicts pass, unrelated fail (12 tests)
 │       ├── CatalogQueryTest.php                   ← apply_language_filter: append, double-application guard, admin skip
+│       ├── LocalAttributeTranslatorTest.php       ← LocalAttributeTranslator attribute-copy logic: taxonomy skip, custom attribute copy, empty guards (17 tests)
 │       ├── MetaDelegateTest.php                   ← price/stock/image delegation logic (individual + bulk reads)
 │       ├── PageTagRepairTest.php                  ← PageTagRepair lazy-repair + is_protected guard (9 tests)
 │       ├── StockRouterTest.php                    ← stock write routing to source
 │       ├── TaxonomyDelegateTest.php               ← wp_get_object_terms delegation
 │       ├── VariationDelegateTest.php              ← pre_get_posts filter; own-variations bypass
-│       └── WcPageBridgeTest.php                   ← WcPageBridge pure helper coverage (26 tests)
+│       └── WcPageBridgeTest.php                   ← WcPageBridge pure helper coverage (32 tests)
 │
 └── integration/                                   ← runs inside wp-env / WP test framework
     ├── Stubs/
@@ -65,8 +71,10 @@ tests/
     ├── ContextOptionsTest.php                     ← source_language, routing_mode, languages, detect_browser_lang, subdomain paths
     ├── CptArchiveIntegrationTest.php              ← CPT archive routing: language prefix + rewrite rules (8 tests)
     ├── FeatureControllerRestTest.php              ← REST HTTP layer: 401/403/400/404/429 + /feature/{feature}/{id} success dispatch
-    ├── GlossaryHashForPairTest.php                ← hash_for_pair stability + insert/delete/format_for_prompt write paths
+    ├── FrontPageQueryIntegrationTest.php          ← FrontPageQuery get_block_templates hook: wrong type noop, non-front-page noop, idempotency guard (4 tests)
     ├── GeneralTaxonomyArchiveIntegrationTest.php  ← general (non-WC) taxonomy archive routing under language prefix (7 tests)
+    ├── GlossaryHashForPairTest.php                ← hash_for_pair stability + insert/delete/format_for_prompt write paths
+    ├── HreflangIntegrationTest.php                ← print_hreflang_tags(), print_canonical(), print_robots(): 3-lang trid group, paged archive, noindex tag (9 tests)
     ├── LanguageUninstallerIntegrationTest.php     ← uninstall() end-to-end: posts deleted; protected lang noop; mods-disallowed path
     ├── LinkFixerScanTest.php                      ← scan_post(): wrong-language/no-translation/unresolved/correct-lang/shape
     ├── ManagerIntegrationTest.php                 ← lang_permalink() early exits: source-lang post, non-existent post ID
@@ -75,36 +83,50 @@ tests/
     ├── MissingTranslationNoticeBlockTest.php      ← FSE block render gating + escaping
     ├── PatternDiscoveryIntegrationTest.php        ← PatternDiscovery CPT pattern expansion
     ├── PluginBootTest.php                         ← constants + autoloader + class load
+    ├── PrivacyIntegrationTest.php                 ← AI usage GDPR exporter + anonymising eraser: export shape, erasure, unknown email guards (6 tests)
+    ├── ProviderChatIntegrationTest.php            ← AI provider chat() round-trips via pre_http_request (OpenAI, Gemini, Anthropic)
+    ├── QueryFilterIntegrationTest.php             ← QueryFilter query-cycle: handle_parse_query, handle_pre_get_posts admin branch, query(), query_fallback() (11 tests)
+    ├── RedirectorRedirectIntegrationTest.php      ← Redirector redirect firing + suppression: duplicate-slash, search-prefix, homepage, singular guards; wp_redirect seam (18 tests)
     ├── RedirectorSwitcherTest.php                 ← allow_lang_subdomains(), fix_site_logo_link(), translate_menu_items()
-    ├── SecondaryQueryFilterIntegrationTest.php    ← secondary query _lf_lang injection + fields=ids skip (21 tests)
+    ├── SchemaManagerIntegrationTest.php           ← output_schema() JSON-LD wrapping, print_schema() Article/WebPage/WebSite + inLanguage, hook suppression (7 tests)
     ├── SecondaryQueryFilterIntegrationTest.php    ← secondary query _lf_lang injection + fields=ids skip (21 tests)
     ├── SeoAnalysisPanelIntegrationTest.php        ← AJAX handler stack: nonce, capability, score output (5 tests)
-    ├── SystemPanelIntegrationTest.php             ← ajax_exclude_post_type + ajax_repair_lf_lang: option writes, exclusions, permission gates (10 tests)
+    ├── SeoManagerIntegrationTest.php              ← print_og_tags() og:locale/alternate, full/locale-only/disabled modes, get_og_description() priority (10 tests)
+    ├── SitemapManagerIntegrationTest.php          ← get_sitemap_chunk_xml() alternates + x-default, get_sitemap_xml() index, flush_on_save(), append_robots_txt() (10 tests)
     ├── SyncIntegrationTest.php                    ← handle_save_post(): new post gets _lf_lang + _lf_trid; lang preserved; wp_navigation
+    ├── SystemPanelIntegrationTest.php             ← ajax_exclude_post_type + ajax_repair_lf_lang: option writes, exclusions, permission gates (10 tests)
     ├── TranslationIntegrationTest.php             ← Translation::run() via StubProvider: cache hit, JSON-envelope, TM path, etc.
     ├── TranslationMemoryTest.php                  ← stats() shape, bytes_estimate, idempotent store(), clear_all()
     ├── TridGroupTest.php                          ← set/get lang+trid, get_translations SQL, cache clear
     ├── UsageRecorderTest.php                      ← record()+query() round-trip, ON DUPLICATE KEY, quota, row_count(), clear_all()
     └── WooCommerce/
         ├── WcIntegrationTestCase.php              ← base: WC bootstrap + product factory helpers
+        ├── AdminSaveGuardIntegrationTest.php      ← SKU-conflict resolution against real postmeta: trid-linked pass, unrelated fail (5 tests)
         ├── BootstrapIntegrationTest.php           ← WC module wiring + hook registration (incl. VariationSync, RestWriteGuard)
+        ├── CouponTridMapIntegrationTest.php       ← expand_ids(): source↔translated expansion, deduplication, 3-lang group, cache cross-population (9 tests)
         ├── HposOrderIsolationTest.php             ← shop_order/shop_booking never get _lf_lang; MetaDelegate not triggered
+        ├── LocalAttributeTranslatorIntegrationTest.php ← attribute copy early returns: non-product, no attributes meta, taxonomy-only (3 tests)
         ├── MetaDelegateIntegrationTest.php        ← per-key delegation round-trip against real postmeta
         ├── MetaDelegateWcApiIntegrationTest.php   ← wc_get_product() API path: price/SKU/stock on translated products/variations
+        ├── OrderItemNormalizerIntegrationTest.php ← normalize_product_id(): translated→source rewrite, setting disabled, per-item filter, zero-id guard (11 tests)
+        ├── ProductReviewRouterIntegrationTest.php ← redirect_submission() + serve_source_reviews(): translated→source routing, type guards, failsafe (11 tests)
+        ├── PurchaseFlowIntegrationTest.php        ← stock reduced/restored on source for simple + variation on simulated purchase/refund (4 tests)
         ├── RestWriteGuardIntegrationTest.php      ← HTTP 422 on PUT/PATCH to translated products and variations
+        ├── SeoSupportIntegrationTest.php          ← og:type=product, price, currency, availability; Product JSON-LD schema
         ├── StockRouterIntegrationTest.php         ← stock write routing in WP runtime
         ├── TaxonomyDelegateIntegrationTest.php    ← term delegation + cache clearing (clear_translated_product_term_cache_on_post)
         ├── TermNameIntegrationTest.php            ← _lf_term_name_{lang} swap; get_term + wp_get_object_terms Store API paths
         ├── VariationDelegateIntegrationTest.php   ← variation query scoping; translated variations not redirected
         ├── VariationSyncIntegrationTest.php       ← variation creation, TRID wiring, attribute meta, sync_wc_taxonomies_from_source
+        ├── WcOrderLangIntegrationTest.php         ← capture_order_lang(), seed_pending_email_lang(), maybe_switch_email_locale(): lang stored + applied per-order (15 tests)
         ├── WcPageBridgeArchiveIntegrationTest.php ← archive routing for product taxonomies incl. Brands (14 tests)
         └── WcPageBridgeEndpointIntegrationTest.php ← My Account sub-endpoint URL building and 404 prevention (7 tests)
 ```
 
-Latest counts (test methods; PHPUnit-reported run count is higher due to data-provider expansion):
-**678 unit**, **235 non-WC integration**, **138 WC integration** — **1051 total test methods**.
-PHPUnit reports ~562 integration tests (vs. 373 methods) because several methods use data providers.
-E2E: **8 spec files, 72 scenarios** (Playwright, `npm run test:e2e`).
+Latest counts (test methods, from source):
+**736 unit**, **322 non-WC integration**, **211 WC integration** — **1269 total test methods**.
+PHPUnit run counts (after data-provider expansion): **746 unit + 562 integration = 1308 total**.
+E2E: **9 spec files, 72 scenarios** (Playwright, `npm run test:e2e`).
 Run `composer test` for the exact PHPUnit count.
 
 ## Running
@@ -236,6 +258,16 @@ before the call).
 intentionally private API. Keep this for genuinely-private internals;
 prefer extracting + making `public static` over reflecting into a
 conceptually-public method. `JsonRepair` is the precedent.
+
+## Integration test patterns
+
+- **`Plugin::boot()` guard** — `should_boot()` returns false in CLI context (not admin, REST, or WP-CLI). Call `Registry::init()` and `FeatureController::init()` explicitly in `setUp()` for tests that need the full AI feature stack. See `FeatureControllerRestTest` for the pattern.
+- **REST layer** — use `rest_do_request()` with a fresh `WP_REST_Server` instance created in `setUp()` and reset to `null` in `tearDown()`.
+- **AI providers** — inject a `StubProvider` via the `linguaforge_ai_provider` filter. The stub supports a response queue for multi-call scenarios. See `tests/integration/Stubs/StubProvider.php`.
+- **AJAX handlers** — use `ob_start()` around the call and catch `WPDieException` for both error and success paths; parse the JSON output from the buffer.
+- **wp_redirect seam** — add a `PHP_INT_MAX`-priority `wp_redirect` filter that throws a local exception to assert redirect location + status without process exit. See `RedirectorRedirectIntegrationTest`.
+- **Custom DB tables** — call `ensure_table()` in `setUp()` (the activation hook does not run in CLI context and `admin_init` never fires). The `composer test:integration` script also runs a `wp eval` step that creates Glossary, CacheStore, TranslationMemory, and UsageRecorder tables before phpunit runs.
+- **SEO unit tests** — pure static helpers on `SeoManager`, `SchemaManager`, `SocialShare`, and `SeoAnalysisPanel` require no WP runtime. When a helper is extraction-worthy, promote it to `public static` so unit tests can call it without reflection — this is the established pattern. The `analyze_links()` helper accepts an optional `string $home = ''` parameter so tests can pass a fixed URL; at runtime it falls back to `home_url()`.
 
 ## See also
 
