@@ -1370,9 +1370,20 @@ A common scenario: editing in an environment without `php` on PATH
 In most restricted environments `sudo` and `apt-get install` are
 blocked, but `apt-get download` (pulls a .deb without installing it)
 and `dpkg-deb -x` (extracts a .deb into any directory) both work
-without root. The recipe — confirmed working in the Cowork sandbox
-this project is developed in — takes ~3 minutes and gives you the
-full `composer qa` toolchain:
+without root.
+
+**Shortcut — run the packaged script:**
+
+```bash
+bash dev/scripts/setup-php-sandbox.sh                       # ~3 min, idempotent, no root
+eval "$(bash dev/scripts/setup-php-sandbox.sh --print-path)"  # add php to PATH in this shell
+```
+
+It is arch-aware (aarch64 / x86_64) and exits immediately if `php` is
+already available. The sandbox is wiped between sessions, so re-run it
+once per new session. The manual recipe it automates — confirmed working
+in the Cowork sandbox this project is developed in, ~3 minutes, full
+`composer qa` toolchain:
 
 ```bash
 # 1) Pull the .deb files (no sudo).

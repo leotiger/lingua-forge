@@ -773,7 +773,7 @@ if ( ! function_exists( 'wp_cache_get' ) ) {
 	 * @param mixed  $found  Set to false to indicate a cache miss.
 	 * @return false Always false (cache miss).
 	 */
-	function wp_cache_get( mixed $key, string $group = '', bool $force = false, mixed &$found = null ): false { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP API signature; $key/$group/$force intentionally ignored.
+	function wp_cache_get( mixed $key, string $group = '', bool $force = false, mixed &$found = null ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- matches WP API signature; $key/$group/$force intentionally ignored. Return type is `bool` (not the 8.2-only standalone `false`) to keep the file parseable on the PHP 8.1 floor; `@return false` above keeps the precise type for static analysis.
 		$found = false;
 		return false;
 	}
