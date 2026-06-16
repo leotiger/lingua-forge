@@ -28,7 +28,7 @@
  *    `WC_Order_Item_Product::get_product()` resolves variation_id first, so the
  *    order line still hydrates the variation the customer actually purchased.
  *    "View product" and the admin order title therefore surface the
- *    purchased-language variation. This is intentional: the order keeps a record of 
+ *    purchased-language variation. This is intentional: the order keeps a record of
  *    which language version it was placed against, while `total_sales` and WC Analytics
  *    still aggregate to the source product through the line item's (now source) product_id.
  *

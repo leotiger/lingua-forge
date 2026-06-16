@@ -471,10 +471,25 @@ conventions they codify all live in this file.
   `check_admin_referer`, AJAX endpoints use `check_ajax_referer`. Add a
   dedicated nonce per metabox / form rather than relying on WP's
   edit_post nonce.
-- **Sanitize on input, escape on output.** Standard WP idioms:
-  `sanitize_key`, `sanitize_text_field`, `wp_unslash`, `absint` on the
-  way in; `esc_html`, `esc_attr`, `esc_url`, `wp_json_encode` on the way
-  out.
+- **Sanitize on input, escape on output — no exceptions.**
+  - *Input:* never read `$_GET` / `$_POST` / `$_REQUEST` / `$_SERVER`
+    raw. Always `wp_unslash()` first, then a typed sanitizer for the
+    expected shape — `sanitize_text_field`, `sanitize_key`, `absint` /
+    `intval`, `sanitize_email`, `sanitize_textarea_field`, `esc_url_raw`
+    (URLs being stored), `wp_kses_post` (HTML being stored). Verify the
+    nonce **and** capability *before* reading request data.
+  - *Output:* escape late, at the point of output — `esc_html()` for
+    text, `esc_attr()` for attribute values, `esc_url()` for URLs,
+    `esc_js()` for inline JS, and `wp_kses_post()` **only** where HTML is
+    intentionally allowed. Build JSON with `wp_json_encode`; JSON-LD
+    `<script>` output goes through the `</` → `<\/` guard in
+    `SchemaManager::output_schema()`.
+  - Any unavoidable exception carries a specific
+    `phpcs:ignore <SniffName>` with a one-line reason — never a blanket
+    ignore. phpcs enforces this
+    (`WordPress.Security.ValidatedSanitizedInput` / `EscapeOutput` /
+    `NonceVerification`); run it via the sandbox PHP (see § Verifying
+    changes when PHP isn't installed locally).
 
 ---
 
