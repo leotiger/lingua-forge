@@ -43,11 +43,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	$sha256 = '';
+	$sha256 = 'bec9ac5da61364164af06353833caad84527beed77697201515ad848cc117c25';
 
-	// Current release only — do not accumulate history here; it bloats the manifest.
+	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.3.3 &#8212; 2026-06-21</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Language, Template, and Translations meta boxes are no longer displayed on edit screens for post types excluded from Lingua Forge routing via Settings &#8594; System. <code>add_source_footnotes_meta_box()</code> gains the same guard inside its existing loop. (<code>language-router/includes/admin/class-meta-boxes.php</code>)</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_metabox_excluded_post_types</code> filter &#8212; lets third-party plugins extend or override the metabox exclusion list without touching the System panel option. Receives the array already built from the saved option; filter callbacks can add or remove types. Follows the naming convention of <code>linguaforge_source_footnotes_excluded_post_types</code>. (<code>language-router/includes/admin/class-meta-boxes.php</code>)</li>' .
+			'<li><strong>Changed:</strong> i18n pipeline is now a two-step composer workflow &#8212; <code>composer make-pot</code> regenerates the POT and merges new/changed strings into all 26 locale .po files via <code>msgmerge</code>; a new <code>composer compile-pos</code> command compiles each .po into a binary .mo (via <code>msgfmt</code>) and a .l10n.php cache (via <code>wp i18n make-php</code>). Requires <code>gettext</code> on PATH. (<code>dev/bin/make-pot.sh</code>, <code>dev/bin/compile-pos.sh</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.3.2 &#8212; 2026-06-15</h4>' .
 		'<ul>' .
 			'<li><strong>Changed:</strong> IndexNow submission is now asynchronous &#8212; publishing or updating a translated post previously triggered a blocking request to api.indexnow.org inside the save (up to a 15-second timeout), stalling the editor save / REST response. The save handler now schedules a single WP-Cron event (<code>linguaforge_indexnow_submit</code>) carrying only the post ID; the outbound POST runs in a background cron request via <code>run_scheduled_submit()</code>. Rapid re-saves of the same post are debounced and the URL set is re-collected at run time, so a burst of sibling creation submits the translation group once. Manual &#8220;Submit all URLs&#8221; from the Sitemap panel remains synchronous. Core WP-Cron only &#8212; no Action Scheduler dependency. (<code>class-indexnow-manager.php</code>)</li>' .
@@ -56,13 +63,6 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 			'<li><strong>Fixed:</strong> On sites with a persistent object cache, a sitemap chunk transient evicted independently of the sitemap index is now regenerated on demand instead of serving an empty <code>&lt;urlset&gt;</code>. (<code>class-sitemap-manager.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> WooCommerce order email language is now discarded after each status transition (priority-99 clear), so one order&#8217;s email language can no longer leak to another during bulk admin status changes. (<code>WcOrderLang.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> On paginated singular content (multipage posts using <code>&lt;!--nextpage--&gt;</code> or paginated comments), the canonical and hreflang tags now point at the page being viewed instead of page 1. (<code>class-hreflang.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.3.1 &#8212; 2026-06-14</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> GDPR right-to-erasure gap in AI usage statistics &#8212; <code>PrivacyIntegration</code> now registers an exporter (date, feature, provider, model, token counts per row) and an anonymising eraser: existing anonymous rows receive summed counts via <code>UPDATE&nbsp;&#8230;&nbsp;JOIN</code>; rows with no anonymous counterpart are inserted fresh via <code>INSERT&nbsp;IGNORE</code>; the user-identified originals are then deleted. Aggregate billing data is preserved; the personal link (WP user ID) is removed. <code>_lf_order_lang</code> order meta rides WooCommerce&#8217;s own order anonymiser. (<code>ai/includes/Core/PrivacyIntegration.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce catalogue block pagination broken on WC 10 / WP 6.5+ &#8212; the 2.2.16 <code>isInteractivityRequest()</code> guard detected interactivity requests by URL parameters (<code>?cst</code>, <code>query-N-page</code>). WP 6.5+ and WC 10+ dropped those parameters and send an <code>X-WP-Interactivity-Router-Nonce</code> header instead; the URL-only guard missed these, causing <code>?lang=</code> injection on pagination fetches and an empty page 2+ response. <code>frontend-lang.js</code> now also inspects request headers on <code>fetch()</code> calls for this header. (<code>language-router/assets/frontend-lang.js</code>)</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce variation stock not routing to source product &#8212; <code>StockRouter::maybe_route()</code> and <code>rewrite_stock_sql()</code> defaulted to <code>[&#8216;product&#8217;]</code> while <code>MetaDelegate</code> already defaulted to <code>[&#8216;product&#8217;, &#8216;product_variation&#8217;]</code>. Translated variation stock writes (e.g. <code>_stock</code> reduced on purchase) passed through without routing to the source variation. Both default arrays aligned to <code>[&#8216;product&#8217;, &#8216;product_variation&#8217;]</code>. (<code>StockRouter.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

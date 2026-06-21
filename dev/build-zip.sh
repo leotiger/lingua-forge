@@ -66,3 +66,22 @@ zip -r "$ZIP_PATH" "$PLUGIN_SLUG/"
 rm -rf "$BUILD_DIR"
 
 echo "✓ Built: $ZIP_PATH"
+
+# Compute SHA-256 of the ZIP and patch it into docs/lf-update-manifest.php.
+# shasum -a 256 on macOS, sha256sum on Linux.
+if command -v sha256sum &>/dev/null; then
+    SHA256=$(sha256sum "$ZIP_PATH" | awk '{print $1}')
+elif command -v shasum &>/dev/null; then
+    SHA256=$(shasum -a 256 "$ZIP_PATH" | awk '{print $1}')
+else
+    echo "⚠  sha256sum / shasum not found — update \$sha256 in docs/lf-update-manifest.php manually." >&2
+    SHA256=""
+fi
+
+MANIFEST="$PLUGIN_DIR/docs/lf-update-manifest.php"
+if [[ -n "$SHA256" && -f "$MANIFEST" ]]; then
+    # Replace `$sha256 = '...';` with the freshly computed digest.
+    # Works whether the field was previously empty or already set.
+    sed -i.bak "s/\\\$sha256 = '[^']*';/\$sha256 = '$SHA256';/" "$MANIFEST" && rm -f "${MANIFEST}.bak"
+    echo "✓ SHA-256 written to docs/lf-update-manifest.php: $SHA256"
+fi
