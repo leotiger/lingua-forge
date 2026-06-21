@@ -2,6 +2,22 @@
 
 ---
 
+## [2.3.3] — 2026-06-21
+
+### Fixed
+- **LF meta boxes no longer appear on excluded CPTs** — `MetaBoxes::add_language_meta_box()`, `add_template_meta_box()`, and `add_translations_meta_box()` previously passed `null` as the `$screen` argument to `add_meta_box()`, which registers on every post-type edit screen regardless of whether the type is excluded from Lingua Forge routing. All three methods now accept the `string $post_type` argument that `add_meta_boxes` passes, guard against the exclusion list, and pass `$post_type` explicitly to `add_meta_box()`. `add_source_footnotes_meta_box()` — which already looped post types individually — gains the same check inside its loop. (`language-router/includes/admin/class-meta-boxes.php`)
+
+### Added
+- **`linguaforge_metabox_excluded_post_types` filter** — a new filterable hook in `MetaBoxes::is_post_type_excluded()` lets third-party plugins extend or override the metabox exclusion list without touching the System panel option (`linguaforge_secondary_query_excluded_types`). The filter receives the array already built from the option, so third-party exclusions layer on top of user intent. Removing a type the user excluded is possible but intentional. Follows the same naming convention as `linguaforge_source_footnotes_excluded_post_types` and `linguaforge_cpt_archive_excluded_post_types`. (`language-router/includes/admin/class-meta-boxes.php`)
+
+### Changed
+- **i18n pipeline is now a two-step composer workflow** — `composer make-pot` (previously only generated the POT file) now also runs `msgmerge --update` against all 26 active locale `.po` files, merging new and changed strings while preserving existing translations and flagging modified source strings as fuzzy for review. A new `composer compile-pos` command (step 4–5) compiles translated `.po` files into binary `.mo` files via `msgfmt` and generates `.l10n.php` PHP caches via `wp i18n make-php`. Both scripts live in `dev/bin/` alongside the existing `make-pot.sh`; `gettext` tools (`msgmerge`, `msgfmt`) must be available on PATH (`brew install gettext` on macOS, `apt-get install gettext` on Ubuntu). (`dev/bin/make-pot.sh`, `dev/bin/compile-pos.sh` NEW, `dev/composer.json`)
+
+### Tests
+- **MetaBoxes (CPT exclusion)** — new `MetaBoxesIntegrationTest` (4 integration tests) covering the metabox suppression behaviour: a non-excluded public CPT shows all four LF boxes (`lf_lang`, `lf_page_template`, `lf_trans`, `lf_source_footnotes`); a CPT in the `linguaforge_secondary_query_excluded_types` option shows none; a CPT added to the `linguaforge_metabox_excluded_post_types` filter (not in the option) shows none; a CPT removed from the exclusion list by the filter (despite being in the option) shows all boxes. (`tests/integration/MetaBoxesIntegrationTest.php`)
+
+---
+
 ## [2.3.2] — 2026-06-15
 
 ### Changed

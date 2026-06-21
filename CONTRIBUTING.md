@@ -55,7 +55,13 @@ outside the plugin namespace.
     meta constraint injected by `QueryFilter::handle_secondary_pre_get_posts()`;
     `wpcf7_contact_form` is built-in; additional types can be added via
     Settings → Router → "Excluded post types" or by hooking this filter
-    directly; receives `string[] $types`).
+    directly; receives `string[] $types`),
+    `linguaforge_metabox_excluded_post_types` (filter on the array of post
+    type slugs whose edit screens must not show any Lingua Forge meta boxes —
+    Language, Template, Translations, Source Footnotes; seeded from the
+    `linguaforge_secondary_query_excluded_types` option so it is always a
+    superset of the user's System-panel exclusion list; receives
+    `string[] $types`).
   - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
     translation payload before it is written to the result cache; receives
     `array $payload`, `int $post_id`, `string $target_lang`),
@@ -1205,7 +1211,7 @@ Run every command from the `dev/` directory:
 | PHPUnit — unit only (fast, no WP)  | `composer test:unit`          |
 | PHPUnit — integration only         | `composer test:integration`   |
 | PHPUnit — WooCommerce integration  | `composer test:integration:wc` |
-| All of the above                   | `composer qa`                 |
+| PHP lint + analyse + unit + JS/CSS lint | `composer qa`            |
 | Start wp-env (Docker WP install)   | `npm run env:start`           |
 | Stop wp-env                        | `npm run env:stop`            |
 | Run WP-CLI inside wp-env           | `npm run env:cli -- <args>`   |
@@ -1357,12 +1363,11 @@ PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH" composer coverage
 
 ```bash
 cd dev/
-composer qa                  # lint + analyse + test
+composer qa                  # PHPCS + PHPStan + unit tests + ESLint + Stylelint
 composer plugin-check        # the .org checker
-npm run lint:js && npm run lint:css
 ```
 
-If all four are green, the plugin is ready to push via SFTP / rsync.
+If both are green, the plugin is ready to push via SFTP / rsync.
 `dev/` is excluded from every deploy by `.distignore` — nothing in it
 ever reaches the server or a .org build ZIP.
 
@@ -1397,8 +1402,7 @@ eval "$(bash dev/scripts/setup-php-sandbox.sh --print-path)"  # add php to PATH 
 It is arch-aware (aarch64 / x86_64) and exits immediately if `php` is
 already available. The sandbox is wiped between sessions, so re-run it
 once per new session. The manual recipe it automates — confirmed working
-in the Cowork sandbox this project is developed in, ~3 minutes, full
-`composer qa` toolchain:
+in the Cowork sandbox this project is developed in, ~3 minutes, full `composer qa` toolchain:
 
 ```bash
 # 1) Pull the .deb files (no sudo).
@@ -1483,6 +1487,30 @@ Every string that a site administrator or editor might read — labels,
 descriptions, error messages, Settings page text, metabox content,
 admin notices, REST error messages — **must** pass through a
 localization function. The plugin text domain is `lingua-forge`.
+
+### i18n pipeline — two-step composer workflow
+
+Updating translations is a two-step process, both run from `dev/`:
+
+```bash
+# Step 1 — extract + merge
+composer make-pot
+# Regenerates languages/lingua-forge.pot from source, then runs msgmerge
+# against all 26 active .po files.  New strings appear untranslated;
+# changed source strings are marked #, fuzzy for human review.
+# Requires: php, curl, msgmerge  (brew install gettext / apt-get install gettext)
+
+# → Review and translate new/fuzzy strings in the .po files, then:
+
+# Step 2 — compile
+composer compile-pos
+# Compiles each translated .po into a .mo binary (msgfmt) and a
+# .l10n.php PHP cache (wp i18n make-php).
+# Requires: php, curl, msgfmt  (same gettext package as above)
+```
+
+Both scripts live in `dev/bin/` and download `wp-cli.phar` to `dev/` on
+first run (no global WP-CLI or Docker needed).
 
 ### Which function to use
 

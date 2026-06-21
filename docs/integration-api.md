@@ -196,6 +196,34 @@ add_filter(
 
 ---
 
+### `linguaforge_metabox_excluded_post_types`
+
+Extend or override the list of post types whose edit screens should not show any Lingua Forge meta boxes (Language, Template, Translations, Source Footnotes). The filter receives the array already built from the `linguaforge_secondary_query_excluded_types` option — the same list managed via Settings → System — so it is always a superset of the admin's explicit choices.
+
+```php
+// Add a post type that isn't in the System panel option.
+add_filter(
+    'linguaforge_metabox_excluded_post_types',
+    function ( array $types ): array {
+        $types[] = 'my_internal_cpt';
+        return $types;
+    }
+);
+```
+
+```php
+// Remove a type the admin excluded — useful when a plugin manages
+// its own LF integration and needs the meta boxes on that type.
+add_filter(
+    'linguaforge_metabox_excluded_post_types',
+    function ( array $types ): array {
+        return array_values( array_diff( $types, [ 'my_managed_cpt' ] ) );
+    }
+);
+```
+
+---
+
 ### `linguaforge_cpt_create_allowed`
 
 Control whether a translated post of a given post type should be created. Return `false` to block Lingua Forge from creating a translation for specific types. This runs inside `Sync::handle_save_post()` and has no effect on post types that are already excluded by the `$pto->public === false` gate.

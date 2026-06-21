@@ -55,7 +55,7 @@ composer test:unit            # PHPUnit unit suite — no Docker needed
 composer test:integration     # PHPUnit integration suite — wp-env up
 composer test:integration:wc  # WooCommerce integration suite only (needs WC in .wp-env.override.json)
 composer test                 # both suites
-composer qa                   # lint + analyse + unit tests
+composer qa                   # lint (PHPCS) + analyse (PHPStan) + unit tests + lint:js (ESLint) + lint:css (Stylelint)
 composer plugin-check         # the official .org checker (inside wp-env)
 composer coverage:run         # unit + integration suites with Clover + HTML output; installs pcov automatically
 composer coverage:merge       # merge unit + integration Clovers → combined/
@@ -66,10 +66,12 @@ npm run lint:js
 npm run lint:css
 npm run format
 
-# i18n
-composer make-pot              # regenerate languages/lingua-forge.pot
-                               # downloads wp-cli.phar to dev/ on first run (curl + php required)
-                               # no Docker or global WP-CLI needed
+# i18n (two-step pipeline — gettext required: brew install gettext / apt-get install gettext)
+composer make-pot              # Step 1: regenerate .pot from source + msgmerge into all 26 .po files
+                               #   New strings appear untranslated; changed strings marked fuzzy.
+                               #   Review/translate .po files, then run compile-pos.
+composer compile-pos           # Step 2: compile each .po → .mo (msgfmt) + .l10n.php (wp i18n make-php)
+                               #   Both scripts download wp-cli.phar to dev/ on first run (no Docker needed)
 
 # wp-env
 npm run env:start
@@ -117,7 +119,7 @@ Only needed when you want to re-test scaffold from an empty state.
 | `npm run env:seed`            | Sets permalinks, router options, installs DE/CA/ES language packs, creates sample pages (including the language switcher block appended to EN Home for E2E tests), simple WC product group, and a **variable WC product** (Test Shirt EN/DE/CA with `pa_color` attribute, Red/Blue variations with `_variation_description`, translated term names Rot/Blau/Vermell, and product_brand "Acme"). Prompts for AI provider + API key. Safe to re-run — all creation steps are idempotent. | Yes |
 | `npm run test:e2e`            | Playwright E2E suite: routing + hreflang + switcher, Settings page, lang column, WC product list, WC checkout journey (DE cart + checkout via WcPageBridge), AI translation, modal UI, FSE localisation pipeline. Requires `env:start` (keep running) + `env:seed`. | Yes |
 | `composer test`               | `test:unit` + `test:integration`                                   | Yes           |
-| `composer qa`                 | `lint` → `analyse` → `test:unit`                                   | No            |
+| `composer qa`                 | `lint` → `analyse` → `test:unit` → `lint:js` → `lint:css`         | No            |
 | `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |
 | `composer plugin-check`       | starts wp-env CLI, runs the WP Plugin Check tool inside it         | Yes           |
 | `composer coverage:run`       | unit + integration suites with Clover + HTML; installs pcov automatically; copies integration report out of container | Yes |
@@ -125,7 +127,7 @@ Only needed when you want to re-test scaffold from an empty state.
 | `composer coverage`           | `coverage:run` → `coverage:merge`; summary.txt + combined clover land in `coverage/combined/` | Yes |
 
 Notes:
-- `composer qa` runs only the **unit** suite — intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
+- `composer qa` runs the unit suite plus JS and CSS linting — intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
 - `composer test:integration` and `composer test:integration:wc` require wp-env to be running (`npm run env:start`) and Docker Desktop to be open. Both commands include a `wp eval` step that creates the plugin's custom DB tables (Glossary, CacheStore, TranslationMemory, UsageRecorder) before phpunit runs — the activation hook does not create these tables, and `admin_init` never fires in a CLI context.
 - **Integration tests that touch AI endpoints** need `Registry::init()` and `FeatureController::init()` called explicitly in `setUp()` — `Plugin::boot()` is guarded by `should_boot()` which returns false in CLI context (not admin, REST, or WP-CLI). See `FeatureControllerRestTest` for the pattern.
 - **Integration tests for the REST layer** use `rest_do_request()` with a fresh `WP_REST_Server` instance created in `setUp()` and reset to `null` in `tearDown()` — the standard WP REST test pattern.
@@ -162,10 +164,10 @@ in bulk. When in doubt, accept nothing and fix manually.
 ## Pre-deploy gate
 
 ```bash
-composer qa && composer plugin-check && npm run lint:js && npm run lint:css
+composer qa && composer plugin-check
 ```
 
-`composer qa` runs lint + `composer analyse` (PHPStan) + unit tests in one shot.
+`composer qa` runs PHPCS lint + PHPStan analysis + unit tests + ESLint + Stylelint in one shot.
 If green, the plugin root is ready to push to production via SFTP / rsync.
 Nothing in `dev/` reaches the deploy target — `.distignore` excludes it.
 

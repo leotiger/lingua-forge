@@ -1,15 +1,35 @@
 #!/usr/bin/env bash
-# make-pot.sh — regenerate languages/lingua-forge.pot
-# Requires: php, curl (both standard on macOS / most Linux distros)
-# No Docker, no global WP-CLI needed. wp-cli.phar is downloaded once to dev/
-# and reused on subsequent runs.
+# make-pot.sh — extract source strings and merge into .po files
+#
+# Pipeline steps covered:
+#   1. wp i18n make-pot  → languages/lingua-forge.pot
+#   2. msgmerge --update → merges new/changed strings into each .po
+#                          (existing translations kept; new strings untranslated;
+#                           changed source strings marked #, fuzzy for review)
+#
+# After this script, review/translate new and fuzzy strings in the .po files,
+# then run: composer compile-pos
+#
+# Requires: php, curl, msgmerge (gettext)
+#   macOS:  brew install gettext && brew link gettext --force
+#   Ubuntu: apt-get install gettext
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEV_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PLUGIN_DIR="$(cd "$DEV_DIR/.." && pwd)"
+LANG_DIR="$PLUGIN_DIR/languages"
 PHAR="$DEV_DIR/wp-cli.phar"
+POT="$LANG_DIR/lingua-forge.pot"
+
+LOCALES=(
+    ar ca de_DE el en_US es_ES eu fa_IR fr_FR hi_IN
+    hu_HU id_ID it_IT ja km ko_KR nl_NL pl_PL pt_PT
+    ru_RU sv_SE sw th tr_TR ur zh_CN
+)
+
+# ── 1. Download WP-CLI if needed ────────────────────────────────────────────
 
 if [ ! -f "$PHAR" ]; then
     echo "wp-cli.phar not found — downloading..."
@@ -19,10 +39,42 @@ if [ ! -f "$PHAR" ]; then
     echo "Downloaded to dev/wp-cli.phar"
 fi
 
+# ── 2. Generate POT ──────────────────────────────────────────────────────────
+
 echo "Generating POT file..."
 php "$PHAR" i18n make-pot "$PLUGIN_DIR" \
-    "$PLUGIN_DIR/languages/lingua-forge.pot" \
+    "$POT" \
     --domain=lingua-forge \
     --exclude=dev
+echo "  ✓ languages/lingua-forge.pot"
 
-echo "Done: languages/lingua-forge.pot"
+# ── 3. Merge new/changed strings into each .po ──────────────────────────────
+
+if ! command -v msgmerge &>/dev/null; then
+    echo ""
+    echo "⚠  msgmerge not found — skipping .po merge."
+    echo "   macOS:  brew install gettext && brew link gettext --force"
+    echo "   Ubuntu: apt-get install gettext"
+    echo ""
+    echo "Translate new strings manually, then run: composer compile-pos"
+else
+    echo "Merging into .po files..."
+    for LOCALE in "${LOCALES[@]}"; do
+        PO="$LANG_DIR/lingua-forge-${LOCALE}.po"
+
+        if [ ! -f "$PO" ]; then
+            echo "  ⚠  $PO not found — skipping $LOCALE"
+            continue
+        fi
+
+        msgmerge --update --backup=none --quiet "$PO" "$POT"
+        echo "  ✓ languages/lingua-forge-${LOCALE}.po  (merged)"
+    done
+
+    echo ""
+    echo "Review and translate any new or fuzzy strings in the .po files,"
+    echo "then run: composer compile-pos"
+fi
+
+echo ""
+echo "Done."

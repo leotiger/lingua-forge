@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.3.3 =
+* Fixed: Language, Template, and Translations meta boxes are no longer displayed for post types that have been excluded from Lingua Forge routing via Settings → System. (`language-router/includes/admin/class-meta-boxes.php`)
+
 = 2.3.2 =
 * Changed: IndexNow submission is now asynchronous — publishing or updating a translated post no longer blocks on the outbound IndexNow request. The save handler schedules a single WP-Cron event and the HTTP POST runs in the background; rapid re-saves of the same post are debounced. Manual "Submit all URLs" from the Sitemap panel stays synchronous. (`class-indexnow-manager.php`)
 * Changed: AI-module diagnostic logging is now gated behind WP_DEBUG (via a new shared logger), so production sites no longer accumulate AI request/translation diagnostics in debug.log. (`ai/includes/Core/Log.php`)
@@ -296,6 +299,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.3.3 =
+Excluded post types no longer show LF meta boxes. No database changes. No flush required.
 
 = 2.3.2 =
 IndexNow submission moved to a background WP-Cron job, so saving a translated post is no longer delayed by the outbound request. No database changes. No flush required.

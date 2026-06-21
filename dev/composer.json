@@ -83,9 +83,12 @@
             "@coverage:setup",
             "@lint",
             "@analyse",
-            "@test:unit"
+            "@test:unit",
+            "@lint:js",
+            "@lint:css"
         ],
-        "make-pot": "bash bin/make-pot.sh"
+        "make-pot": "bash bin/make-pot.sh",
+        "compile-pos": "bash bin/compile-pos.sh"
     },
     "scripts-descriptions": {
         "lint": "Run PHPCS against ../ using WordPress Coding Standards.",
@@ -100,7 +103,8 @@
         "coverage:merge": "Merge unit and integration Clover XMLs into coverage/combined/. Run after coverage:run.",
         "coverage": "Full coverage pipeline: coverage:run → coverage:merge. Reports land in coverage/unit/, coverage/integration/, coverage/combined/.",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
-        "qa": "Local pre-deploy gate: coverage:setup → lint → analyse → unit tests. Integration tests require wp-env and must be run separately with composer test:integration.",
-        "make-pot": "Regenerate languages/lingua-forge.pot. Downloads wp-cli.phar to dev/ on first run (curl + php required); no Docker or global WP-CLI needed."
+        "qa": "Local pre-deploy gate: coverage:setup → lint (PHPCS) → analyse (PHPStan) → unit tests → lint:js (ESLint) → lint:css (Stylelint). Integration tests require wp-env and must be run separately with composer test:integration.",
+        "make-pot": "Extract source strings (make-pot) and merge into .po files (msgmerge). Review/translate fuzzy strings, then run compile-pos.",
+        "compile-pos": "Compile translated .po files into .mo binaries and .l10n.php caches (steps 4–5 of the i18n pipeline)."
     }
 }

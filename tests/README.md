@@ -78,6 +78,7 @@ tests/
     ├── LanguageUninstallerIntegrationTest.php     ← uninstall() end-to-end: posts deleted; protected lang noop; mods-disallowed path
     ├── LinkFixerScanTest.php                      ← scan_post(): wrong-language/no-translation/unresolved/correct-lang/shape
     ├── ManagerIntegrationTest.php                 ← lang_permalink() early exits: source-lang post, non-existent post ID
+    ├── MetaBoxesIntegrationTest.php               ← CPT metabox exclusion: option-excluded + filter-excluded suppress all LF boxes; filter un-exclude restores them (4 tests)
     ├── MetaDescriptionIntegrationTest.php         ← MetaDescription::run() via StubProvider: success, empty response, cache hit
     ├── MetaDescriptionModuleIntegrationTest.php   ← meta-description Module: get(), save(), output_tags() bloginfo fallback
     ├── MissingTranslationNoticeBlockTest.php      ← FSE block render gating + escaping

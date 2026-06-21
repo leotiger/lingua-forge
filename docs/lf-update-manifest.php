@@ -35,9 +35,9 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.3.2';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.3.2/lingua-forge-2.3.2.zip';
-	$last_updated = '2026-06-15';
+	$version      = '2.3.3';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.3.3/lingua-forge-2.3.3.zip';
+	$last_updated = '2026-06-21';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after

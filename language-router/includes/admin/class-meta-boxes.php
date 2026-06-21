@@ -22,6 +22,28 @@ class MetaBoxes {
 	}
 
 	// =========================================================
+	// HELPERS
+	// =========================================================
+
+	/**
+	 * Returns true if $post_type has been excluded from Lingua Forge routing
+	 * via the admin System panel (option: linguaforge_secondary_query_excluded_types).
+	 * Excluded CPTs must not receive any LF meta boxes.
+	 */
+	private function is_post_type_excluded( string $post_type ): bool {
+		$saved    = (string) get_option( 'linguaforge_secondary_query_excluded_types', '' );
+		$excluded = $saved !== ''
+			? array_filter( array_map( 'trim', explode( ',', $saved ) ) )
+			: [];
+
+		// Filterable so third-party plugins can add (or remove) post types
+		// without touching the System panel option.
+		$excluded = (array) apply_filters( 'linguaforge_metabox_excluded_post_types', $excluded );
+
+		return in_array( $post_type, $excluded, true );
+	}
+
+	// =========================================================
 	// HOOK REGISTRATION
 	// =========================================================
 
@@ -59,12 +81,15 @@ class MetaBoxes {
 	// LANGUAGE META BOX
 	// =========================================================
 
-	public function add_language_meta_box(): void {
+	public function add_language_meta_box( string $post_type ): void {
+		if ( $this->is_post_type_excluded( $post_type ) ) {
+			return;
+		}
 		add_meta_box(
 			'lf_lang',
 			'Language',
 			[ $this, 'render_language_meta_box' ],
-			null,
+			$post_type,
 			'side'
 		);
 	}
@@ -111,12 +136,15 @@ class MetaBoxes {
 	// TEMPLATE META BOX
 	// =========================================================
 
-	public function add_template_meta_box(): void {
+	public function add_template_meta_box( string $post_type ): void {
+		if ( $this->is_post_type_excluded( $post_type ) ) {
+			return;
+		}
 		add_meta_box(
 			'lf_page_template',
 			'Template',
 			[ $this, 'render_template_meta_box' ],
-			null,
+			$post_type,
 			'side',
 			'default'
 		);
@@ -223,12 +251,15 @@ class MetaBoxes {
 	// TRANSLATIONS META BOX
 	// =========================================================
 
-	public function add_translations_meta_box(): void {
+	public function add_translations_meta_box( string $post_type ): void {
+		if ( $this->is_post_type_excluded( $post_type ) ) {
+			return;
+		}
 		add_meta_box(
 			'lf_trans',
 			'Translations',
 			[ $this, 'render_translations_meta_box' ],
-			null,
+			$post_type,
 			'side'
 		);
 	}
@@ -339,6 +370,9 @@ class MetaBoxes {
 
 		foreach ( get_post_types( [ 'public' => true ], 'names' ) as $type ) {
 			if ( in_array( $type, $excluded, true ) ) {
+				continue;
+			}
+			if ( $this->is_post_type_excluded( $type ) ) {
 				continue;
 			}
 			add_meta_box(
