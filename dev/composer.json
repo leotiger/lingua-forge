@@ -42,6 +42,8 @@
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf; RESULT=$?; [ $RESULT -le 2 ] && exit 0 || exit $RESULT",
+        "lint:js": "npm run lint:js",
+        "lint:css": "npm run lint:css",
         "analyse": "phpstan analyse --memory-limit=2G",
         "test": "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit",
         "test:unit": "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit",

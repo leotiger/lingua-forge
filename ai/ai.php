@@ -54,6 +54,18 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
     );
 }
 
+// ── Deferred translation worker ─────────────────────────────────────────────
+// Registered unconditionally (NOT inside Plugin::boot(), which short-circuits on
+// plain frontend and WP-Cron requests) so a queued job always finds its callback
+// when it runs in a cron / Action Scheduler request. The ::class form is a plain
+// string, so TranslationQueue is autoloaded only when the hook actually fires.
+add_action(
+	'linguaforge_run_queued_translation',
+	[ \LinguaForge\AI\Features\TranslationQueue::class, 'run_queued' ],
+	10,
+	3
+);
+
 // ── Public PHP API ────────────────────────────────────────────────────────────
 // Thin procedural wrappers around AI-module classes. Theme code and third-party
 // plugins should call these rather than reaching into the class hierarchy.
@@ -92,4 +104,39 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  */
 function linguaforge_trigger_translation( int $source_post_id, string $target_lang, array $params = [] ): int|\WP_Error {
 	return \LinguaForge\AI\Features\TranslationTrigger::run( $source_post_id, $target_lang, $params );
+}
+
+/**
+ * Queue a translation job for deferred (off-request) execution.
+ *
+ * Non-blocking counterpart to linguaforge_trigger_translation(). Instead of
+ * making the AI call inline, it schedules the work to run shortly after the
+ * current request — via Action Scheduler when available (it ships with
+ * WooCommerce and many hosts), or a single WP-Cron event otherwise. The job runs
+ * the same pipeline as linguaforge_trigger_translation() and so still fires the
+ * `linguaforge_translation_complete` action on success.
+ *
+ * Intended for programmatic publishers that would otherwise make N blocking AI
+ * calls in a single intake request (one per target language). Replace a
+ * synchronous `foreach ( $langs as $l ) linguaforge_trigger_translation( … )`
+ * loop with `linguaforge_queue_translation()` to move all AI work off the
+ * request. Duplicate pending jobs for the same post + language + params are
+ * skipped.
+ *
+ * Fire-and-forget: there is no caller to return a result to, so the job logs
+ * (WP_DEBUG-gated) and swallows any failure. Use linguaforge_trigger_translation()
+ * directly when you need the new post ID or a WP_Error synchronously.
+ *
+ * @param int    $source_post_id  Post ID of the source-language post to translate.
+ * @param string $target_lang     Two-letter language code, e.g. 'es'. Must be an
+ *                                active Lingua Forge language.
+ * @param array  $params          Same keys as linguaforge_trigger_translation():
+ *                                force_refresh (bool), force_draft (bool),
+ *                                with_meta_description (bool).
+ * @return void
+ *
+ * @since 2.4.0
+ */
+function linguaforge_queue_translation( int $source_post_id, string $target_lang, array $params = [] ): void {
+	\LinguaForge\AI\Features\TranslationQueue::queue( $source_post_id, $target_lang, $params );
 }

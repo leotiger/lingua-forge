@@ -35,34 +35,32 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.3.3';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.3.3/lingua-forge-2.3.3.zip';
-	$last_updated = '2026-06-21';
+	$version      = '2.4.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.4.0/lingua-forge-2.4.0.zip';
+	$last_updated = '2026-06-30';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	$sha256 = 'bec9ac5da61364164af06353833caad84527beed77697201515ad848cc117c25';
+	// TODO(release): build lingua-forge-2.4.0.zip, upload it to the v2.4.0 GitHub
+	// release, then paste its sha256 here before deploying this manifest.
+	$sha256 = '';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.4.0 &#8212; 2026-06-30</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> <code>linguaforge_queue_translation()</code> &#8212; a non-blocking companion to <code>linguaforge_trigger_translation()</code> that runs a translation off-request via Action Scheduler (when available) or WP-Cron, so programmatic publishers can translate into many languages without making blocking AI calls inline. (<code>ai/ai.php</code>, <code>ai/includes/Features/TranslationQueue.php</code>)</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_translated_post_meta</code> filter &#8212; lets an integration declare the post meta a programmatically-created translated post is born with (featured image, gallery, custom fields), written via <code>meta_input</code> so the translation is complete the moment it exists. WooCommerce operational keys remain delegated by MetaDelegate. (<code>ai/includes/Features/TranslationTrigger.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> A first-time translated post now keeps its translated excerpt &#8212; it was discarded on creation, so the meta description fell back to a trimmed slice of the content. The create path now writes <code>post_excerpt</code> from the AI&#8217;s <code>translated_excerpt</code>, matching the update path. (<code>ai/includes/Features/TranslationTrigger.php</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.3.3 &#8212; 2026-06-21</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> Language, Template, and Translations meta boxes are no longer displayed on edit screens for post types excluded from Lingua Forge routing via Settings &#8594; System. <code>add_source_footnotes_meta_box()</code> gains the same guard inside its existing loop. (<code>language-router/includes/admin/class-meta-boxes.php</code>)</li>' .
 			'<li><strong>Added:</strong> <code>linguaforge_metabox_excluded_post_types</code> filter &#8212; lets third-party plugins extend or override the metabox exclusion list without touching the System panel option. Receives the array already built from the saved option; filter callbacks can add or remove types. Follows the naming convention of <code>linguaforge_source_footnotes_excluded_post_types</code>. (<code>language-router/includes/admin/class-meta-boxes.php</code>)</li>' .
-			'<li><strong>Changed:</strong> i18n pipeline is now a two-step composer workflow &#8212; <code>composer make-pot</code> regenerates the POT and merges new/changed strings into all 26 locale .po files via <code>msgmerge</code>; a new <code>composer compile-pos</code> command compiles each .po into a binary .mo (via <code>msgfmt</code>) and a .l10n.php cache (via <code>wp i18n make-php</code>). Requires <code>gettext</code> on PATH. (<code>dev/bin/make-pot.sh</code>, <code>dev/bin/compile-pos.sh</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.3.2 &#8212; 2026-06-15</h4>' .
-		'<ul>' .
-			'<li><strong>Changed:</strong> IndexNow submission is now asynchronous &#8212; publishing or updating a translated post previously triggered a blocking request to api.indexnow.org inside the save (up to a 15-second timeout), stalling the editor save / REST response. The save handler now schedules a single WP-Cron event (<code>linguaforge_indexnow_submit</code>) carrying only the post ID; the outbound POST runs in a background cron request via <code>run_scheduled_submit()</code>. Rapid re-saves of the same post are debounced and the URL set is re-collected at run time, so a burst of sibling creation submits the translation group once. Manual &#8220;Submit all URLs&#8221; from the Sitemap panel remains synchronous. Core WP-Cron only &#8212; no Action Scheduler dependency. (<code>class-indexnow-manager.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The IndexNow verification key is no longer generated during a front-end request. Key-file serving now uses a read-only accessor that never writes an option; the key is created only in admin / submission contexts, removing a write-on-read (and a cold-request race) on anonymous GETs. (<code>class-indexnow-manager.php</code>)</li>' .
-			'<li><strong>Changed:</strong> AI-module diagnostic logging is now gated behind <code>WP_DEBUG</code> via a new shared <code>Log::debug()</code> helper, so production sites no longer accumulate AI request/translation diagnostics in <code>debug.log</code>. (<code>ai/includes/Core/Log.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> On sites with a persistent object cache, a sitemap chunk transient evicted independently of the sitemap index is now regenerated on demand instead of serving an empty <code>&lt;urlset&gt;</code>. (<code>class-sitemap-manager.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> WooCommerce order email language is now discarded after each status transition (priority-99 clear), so one order&#8217;s email language can no longer leak to another during bulk admin status changes. (<code>WcOrderLang.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> On paginated singular content (multipage posts using <code>&lt;!--nextpage--&gt;</code> or paginated comments), the canonical and hreflang tags now point at the page being viewed instead of page 1. (<code>class-hreflang.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

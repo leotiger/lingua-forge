@@ -2,6 +2,42 @@
 
 ---
 
+## [2.4.0] — 2026-06-30
+
+_Programmatic-publisher integration API from the Agnosis compatibility audit
+(`lingua-forge-audit/AUDIT-COMPAT-AGNOSIS-2026-06-30.md`). All additive; no change
+to existing behaviour._
+
+### Fixed
+- **Translated posts are now born with their translated excerpt** — `TranslationTrigger::create_translated_post()` wrote `post_content` but not `post_excerpt`, even though the AI payload already carries `translated_excerpt` (the update path used it; the create path discarded it). A first-time translation therefore had an empty excerpt, so `SeoManager::get_og_description()` fell back from the excerpt to a trimmed slice of `post_content`. The create path now writes `post_excerpt` from `translated_excerpt`, restoring symmetry with the update path. Benefits every integration that relies on the excerpt for the description (e.g. Agnosis artwork). (`ai/includes/Features/TranslationTrigger.php`) — Agnosis audit §2c.
+
+### Added
+- **`linguaforge_queue_translation()`** — non-blocking counterpart to
+  `linguaforge_trigger_translation()`. Schedules a translation to run off-request
+  via Action Scheduler when available, falling back to a single WP-Cron event,
+  then runs the same pipeline (and fires `linguaforge_translation_complete`).
+  Lets a programmatic publisher translating into N languages avoid making N
+  blocking AI calls in one intake request. Duplicate pending jobs for the same
+  post + language + params are debounced; fire-and-forget, so failures are logged
+  (WP_DEBUG-gated) rather than returned. New worker class
+  `LinguaForge\AI\Features\TranslationQueue` (hook `linguaforge_run_queued_translation`,
+  registered unconditionally so it fires in bare cron requests). (`ai/ai.php`,
+  `ai/includes/Features/TranslationQueue.php`) — Agnosis audit §3a.
+- **`linguaforge_translated_post_meta` filter** — lets an integration declare the
+  post meta a programmatically-created translated post is born with. Fires inside
+  `TranslationTrigger::create_translated_post()` before insertion and is written
+  via `wp_insert_post()`'s `meta_input`, so the translated post is complete the
+  moment it exists (no window where a reader sees it without its featured image,
+  gallery, or other custom meta) — replacing the after-the-fact
+  `linguaforge_translation_complete` patch-up pattern. Receives
+  `($meta, $source_id, $lang, $source_post_type)`; LF's own `_lf_trid` / `_lf_lang`
+  are stripped so the filter cannot clobber group membership. WooCommerce
+  operational keys written on a translated product remain delegated by MetaDelegate
+  (the write is shadowed). (`ai/includes/Features/TranslationTrigger.php`) —
+  Agnosis audit §3b.
+
+---
+
 ## [2.3.3] — 2026-06-21
 
 ### Fixed

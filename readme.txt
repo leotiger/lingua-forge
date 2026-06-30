@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.3.3
+Stable tag: 2.4.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.4.0 =
+* Added: `linguaforge_queue_translation()` — a non-blocking companion to `linguaforge_trigger_translation()` that runs a translation off-request via Action Scheduler (when available) or WP-Cron. Lets programmatic publishers translate into many languages without making blocking AI calls inline. (`ai/ai.php`, `ai/includes/Features/TranslationQueue.php`)
+* Added: `linguaforge_translated_post_meta` filter — lets an integration declare the post meta a programmatically-created translated post is born with (featured image, gallery, custom fields), written via `meta_input` so the translation is complete the moment it exists. WooCommerce operational keys remain delegated by MetaDelegate. (`ai/includes/Features/TranslationTrigger.php`)
+* Fixed: A first-time translated post now keeps its translated excerpt — it was discarded on creation, so the meta description fell back to a trimmed slice of the content. The create path now writes `post_excerpt` from the AI's `translated_excerpt`, matching the update path. (`ai/includes/Features/TranslationTrigger.php`)
+
 = 2.3.3 =
 * Fixed: Language, Template, and Translations meta boxes are no longer displayed for post types that have been excluded from Lingua Forge routing via Settings → System. (`language-router/includes/admin/class-meta-boxes.php`)
 
@@ -299,6 +304,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.4.0 =
+New programmatic-publisher integration API: async translation queue (`linguaforge_queue_translation()`) and a born-with-meta filter (`linguaforge_translated_post_meta`); first-time translations now keep their excerpt. All additive — no behaviour change, no database changes, no flush required.
 
 = 2.3.3 =
 Excluded post types no longer show LF meta boxes. No database changes. No flush required.

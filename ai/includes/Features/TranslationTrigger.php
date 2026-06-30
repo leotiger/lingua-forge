@@ -174,18 +174,68 @@ class TranslationTrigger {
 			? 'draft'
 			: ( in_array( $source->post_status, $allowed, true ) ? $source->post_status : 'draft' );
 
+		// ── Integration-supplied meta — born with the post ────────────────────
+		/**
+		 * Filter the post meta a programmatically-created translated post is born
+		 * with. Fires before the post is inserted; the returned pairs are written
+		 * via wp_insert_post()'s meta_input, so the translated post is complete the
+		 * moment it exists — there is no window where a reader (object-cache warm-up,
+		 * a queued broadcast, a sitemap ping) sees it without its featured image,
+		 * gallery, or other custom meta. Prefer this over patching meta after the
+		 * fact on `linguaforge_translation_complete`.
+		 *
+		 * LF's own translation-group keys (`_lf_trid`, `_lf_lang`) are written
+		 * authoritatively after insert and cannot be overridden through this filter.
+		 *
+		 * WooCommerce note: writing an operational product key (`_thumbnail_id`,
+		 * `_product_image_gallery`, `_price`, `_sku`, …) onto a translated *product*
+		 * has no observable effect — MetaDelegate serves those keys from the source
+		 * product at read time, so such a write is silently shadowed. (Translated
+		 * custom-attribute values are the documented exception; see MetaDelegate.)
+		 * Use `$source_post_type` to scope the filter to the types you own.
+		 *
+		 * @param array<string,mixed> $meta             Meta key→value pairs to write. Default empty.
+		 * @param int                 $source_id        Source post ID.
+		 * @param string              $target_lang      Target language code.
+		 * @param string              $source_post_type Source post type (for scoping).
+		 */
+		$meta = (array) apply_filters(
+			'linguaforge_translated_post_meta', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+			[],
+			$source->ID,
+			$target_lang,
+			$source->post_type
+		);
+
+		// LF-authoritative group keys are written below, never via the filter.
+		unset( $meta['_lf_trid'], $meta['_lf_lang'] );
+
 		// ── Insert — bypass LF save hooks (same pattern as AbstractTranslateCommand) ──
 		$router = \LinguaForge\Router\Router::get_instance();
 		remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10 );
 		remove_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
 
-		$new_id = wp_insert_post( [
+		$insert = [
 			'post_title'   => $title,
 			'post_content' => (string) ( $result['output'] ?? '' ),
 			'post_status'  => $target_status,
 			'post_type'    => $source->post_type,
 			'post_author'  => (int) $source->post_author,
-		], true );
+		];
+
+		// Carry the translated excerpt at birth (symmetry with update_translated_post).
+		// The AI already returned it in this payload; without this the first-time
+		// translation has no excerpt, so SEO og:description falls back from the
+		// excerpt to a trimmed slice of post_content.
+		if ( isset( $result['translated_excerpt'] ) ) {
+			$insert['post_excerpt'] = (string) $result['translated_excerpt'];
+		}
+
+		if ( $meta !== [] ) {
+			$insert['meta_input'] = $meta;
+		}
+
+		$new_id = wp_insert_post( $insert, true );
 
 		add_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10, 2 );
 		add_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );

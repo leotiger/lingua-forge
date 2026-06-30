@@ -291,6 +291,7 @@ instead of reaching into the class instances directly. All are prefixed
 | Function | Returns | Purpose |
 |---|---|---|
 | `linguaforge_trigger_translation( $source_id, $lang, $params = [] )` | `int\|WP_Error` | Programmatically run the full AI translation pipeline (AI call → create-or-update translated post → TRID link → cache clear → `linguaforge_translation_complete` action). Returns the new/updated post ID or a `WP_Error`. Accepted `$params` keys: `force_refresh` (bool), `force_draft` (bool), `with_meta_description` (bool). |
+| `linguaforge_queue_translation( $source_id, $lang, $params = [] )` | `void` | Non-blocking counterpart to `linguaforge_trigger_translation()`. Schedules the translation to run off-request — via Action Scheduler when available, else a single WP-Cron event — then runs the same pipeline (and fires `linguaforge_translation_complete`). Same `$params` keys. Duplicate pending jobs for the same post + language + params are skipped. Fire-and-forget: failures are logged (WP_DEBUG-gated), not returned. Use for publishers translating into many languages from one request. (Since 2.4.0) |
 
 **Developer / internal**
 
@@ -849,6 +850,7 @@ add_action( 'linguaforge_loaded', function () {
 | Hook | Signature | Purpose |
 |---|---|---|
 | `linguaforge_translation_content` | `(array $payload, int $post_id, string $lang)` | Modify translated content before cache/return |
+| `linguaforge_translated_post_meta` | `(array $meta, int $source_id, string $lang, string $source_post_type)` | Declare post meta a programmatically-created translated post is born with (written via `meta_input` inside `create_translated_post()`). Default `[]`. `_lf_trid` / `_lf_lang` are stripped — LF writes them authoritatively. ⚠️ WC: operational product keys (`_thumbnail_id`, `_price`, …) written on a translated *product* are shadowed by MetaDelegate; scope by `$source_post_type`. (Since 2.4.0) |
 | `linguaforge_translation_worker_config` | `(WorkerConfig $cfg, int $post_id, array $params)` | Override AI model / temperature / max_tokens |
 | `linguaforge_ai_provider` | `(AIProviderInterface $provider, int $post_id, WorkerConfig $cfg)` | Swap the AI provider instance — inject a custom provider or a test stub |
 | `linguaforge_wc_delegate_post_types` | `(string[] $types)` | Add post types to WC shared-stock delegation |
@@ -884,6 +886,26 @@ if ( is_wp_error( $post_id ) ) {
 `linguaforge_trigger_translation()` is defined in `ai/ai.php` and requires
 the AI module to be active. It fires `linguaforge_translation_complete` on
 success, so any hooks registered on that action will run automatically.
+
+To move that work off the current request — e.g. a programmatic publisher that
+would otherwise make one blocking AI call per active language in a single intake
+request — use the non-blocking variant instead:
+
+```php
+foreach ( $target_langs as $lang ) {
+    linguaforge_queue_translation( $source_id, $lang );
+}
+```
+
+`linguaforge_queue_translation()` schedules each job via Action Scheduler when
+it is available (it ships with WooCommerce and many hosts), falling back to a
+single WP-Cron event otherwise. The worker runs the same pipeline as
+`linguaforge_trigger_translation()` and fires `linguaforge_translation_complete`
+on success. Because it is fire-and-forget there is no return value; when you need
+the new post ID or a `WP_Error` synchronously, call
+`linguaforge_trigger_translation()` directly. The worker callback is registered
+unconditionally at module load (hook `linguaforge_run_queued_translation`), so it
+is present in the bare WP-Cron / Action Scheduler request that runs the job.
 
 ### REST read endpoints
 
