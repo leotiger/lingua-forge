@@ -2,10 +2,18 @@
 /**
  * Unit tests for LinguaForge\AI\Integrations\WooCommerce\AdminSaveGuard.
  *
- * Tests the two public static methods that can be exercised without a WP runtime:
+ * Tests the public static methods that can be exercised without a WP runtime:
  *
- *   whitelist_meta_write()          — meta-write filter active during intercepted save.
- *   allow_source_sku_on_translated() — SKU uniqueness filter for LF-managed products.
+ *   whitelist_meta_write()        — meta-write filter active during intercepted save.
+ *   pre_has_unique_sku()          — genuine short-circuit filter (wc_product_pre_has_unique_sku,
+ *                                   WC 9.0+): a non-null bool returned here IS the final
+ *                                   "is unique?" answer (true = unique).
+ *   flag_source_sku_conflict()   — legacy observation-only filter (wc_product_has_unique_sku).
+ *                                   WARNING: its polarity is the OPPOSITE of "is_unique" —
+ *                                   the incoming/outgoing bool is $sku_found (true = a
+ *                                   duplicate WAS found by WC's direct SQL check). This
+ *                                   method never flips that value; it only records
+ *                                   source-product conflicts for shutdown suppression.
  *
  * maybe_intercept_translated_save() is not tested here — it calls
  * VariationSync::disable_for_request() and add_filter(), which require a live WP
@@ -134,102 +142,182 @@ final class AdminSaveGuardTest extends WcUnitTestCase {
 	}
 
 	// =========================================================================
-	// allow_source_sku_on_translated() — $is_unique already true
+	// pre_has_unique_sku() — an earlier filter already decided
 	// =========================================================================
 
 	/**
-	 * When WC already considers the SKU unique ($is_unique=true), LF must not
-	 * interfere — returns true immediately.
+	 * When an earlier filter already returned a non-null short-circuit value,
+	 * LF must not interfere — returns it unchanged.
 	 */
-	public function test_allow_sku_returns_true_when_already_unique(): void {
-		$this->assertTrue(
-			AdminSaveGuard::allow_source_sku_on_translated( true, 1, 'SKU-001' )
+	public function test_pre_has_unique_sku_passes_through_earlier_short_circuit(): void {
+		$this->assertFalse(
+			AdminSaveGuard::pre_has_unique_sku( false, 1, 'SKU-001' )
 		);
-		$this->assertNull(
-			static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ),
-			'No pending suppress should be set when $is_unique is already true.'
+		$this->assertTrue(
+			AdminSaveGuard::pre_has_unique_sku( true, 1, 'SKU-001' )
 		);
 	}
 
 	// =========================================================================
-	// allow_source_sku_on_translated() — non-product post type
+	// pre_has_unique_sku() — non-product post type / not LF-managed
 	// =========================================================================
 
 	/**
-	 * Posts that are not 'product' or 'product_variation' must pass $is_unique
-	 * through unchanged (no LF intervention).
+	 * Posts that are not 'product' or 'product_variation' must return null
+	 * (no LF intervention — WC proceeds with its own check).
 	 */
-	public function test_allow_sku_ignores_non_product_post_type(): void {
+	public function test_pre_has_unique_sku_ignores_non_product_post_type(): void {
 		$this->make_post( 5, 'page' );
 		$this->set_meta( 5, '_lf_lang', 'es' );
 
-		$result = AdminSaveGuard::allow_source_sku_on_translated( false, 5, 'SKU-001' );
+		$result = AdminSaveGuard::pre_has_unique_sku( null, 5, 'SKU-001' );
 
-		$this->assertFalse( $result, 'Non-product post type must return $is_unique unchanged.' );
-		$this->assertNull( static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
+		$this->assertNull( $result, 'Non-product post type must return null (proceed normally).' );
 	}
 
-	// =========================================================================
-	// allow_source_sku_on_translated() — not LF-managed
-	// =========================================================================
-
 	/**
-	 * Products without _lf_lang meta are not managed by LF — $is_unique passed through.
+	 * Products without _lf_lang meta are not managed by LF — returns null.
 	 */
-	public function test_allow_sku_ignores_non_lf_product(): void {
+	public function test_pre_has_unique_sku_ignores_non_lf_product(): void {
 		$this->make_post( 6, 'product' );
 		// No _lf_lang meta → get_post_meta returns ''.
 
-		$result = AdminSaveGuard::allow_source_sku_on_translated( false, 6, 'SKU-001' );
+		$result = AdminSaveGuard::pre_has_unique_sku( null, 6, 'SKU-001' );
 
-		$this->assertFalse( $result );
-		$this->assertNull( static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
+		$this->assertNull( $result );
 	}
 
 	// =========================================================================
-	// allow_source_sku_on_translated() — translated product
+	// pre_has_unique_sku() — translated product/variation
 	// =========================================================================
 
 	/**
-	 * A translated product (lang ≠ source) must be allowed unconditionally (true)
-	 * because the "duplicate" is always the source product's own SKU row.
+	 * A translated product (lang ≠ source) must be forced unique (true) because
+	 * the only "duplicate" WC could find is the source product's own SKU row
+	 * (or a stray physical row on the translated post).
 	 */
-	public function test_allow_sku_returns_true_for_translated_product(): void {
+	public function test_pre_has_unique_sku_returns_true_for_translated_product(): void {
 		$this->make_post( 7, 'product' );
 		$this->set_meta( 7, '_lf_lang', 'es' ); // source_language() = 'en' → es ≠ en → translated
 
-		$result = AdminSaveGuard::allow_source_sku_on_translated( false, 7, 'SKU-001' );
+		$result = AdminSaveGuard::pre_has_unique_sku( null, 7, 'SKU-001' );
 
-		$this->assertTrue( $result, 'Translated product must always pass the SKU uniqueness check.' );
+		$this->assertTrue( $result, 'Translated product must be forced unique via the short-circuit filter.' );
 	}
 
 	/**
-	 * product_variation post type with a translated lang must also be allowed.
+	 * product_variation post type with a translated lang must also be forced unique.
 	 */
-	public function test_allow_sku_returns_true_for_translated_variation(): void {
+	public function test_pre_has_unique_sku_returns_true_for_translated_variation(): void {
 		$this->make_post( 8, 'product_variation' );
 		$this->set_meta( 8, '_lf_lang', 'ca' ); // source = 'en' → ca ≠ en
 
-		$result = AdminSaveGuard::allow_source_sku_on_translated( false, 8, 'SKU-VAR-001' );
+		$result = AdminSaveGuard::pre_has_unique_sku( null, 8, 'SKU-VAR-001' );
 
 		$this->assertTrue( $result );
 	}
 
 	// =========================================================================
-	// allow_source_sku_on_translated() — source product records pending suppress
+	// pre_has_unique_sku() — source product/variation: let WC validate normally
 	// =========================================================================
 
 	/**
-	 * Source product (_lf_lang = source_language) must return $is_unique unchanged
-	 * AND record the product + SKU for later suppression at shutdown.
+	 * Source product (_lf_lang = source_language) must return null so WC's own
+	 * uniqueness check runs unmodified.
 	 */
-	public function test_allow_sku_records_pending_for_source_product(): void {
+	public function test_pre_has_unique_sku_returns_null_for_source_product(): void {
 		$this->make_post( 9, 'product' );
 		$this->set_meta( 9, '_lf_lang', 'en' ); // source_language() = 'en' → source product
 
-		$result = AdminSaveGuard::allow_source_sku_on_translated( false, 9, 'SKU-SRC' );
+		$result = AdminSaveGuard::pre_has_unique_sku( null, 9, 'SKU-SRC' );
 
-		$this->assertFalse( $result, 'Source product must let WC validate normally (returns false).' );
+		$this->assertNull( $result, 'Source product must let WC validate normally (no short-circuit).' );
+	}
+
+	// =========================================================================
+	// flag_source_sku_conflict() — no conflict found
+	// =========================================================================
+
+	/**
+	 * When WC's direct SQL check found no conflict ($sku_found=false), LF must
+	 * not interfere and must not record a pending suppression.
+	 */
+	public function test_flag_conflict_returns_false_when_no_conflict_found(): void {
+		$this->assertFalse(
+			AdminSaveGuard::flag_source_sku_conflict( false, 1, 'SKU-001' )
+		);
+		$this->assertNull(
+			static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ),
+			'No pending suppress should be set when no conflict was found.'
+		);
+	}
+
+	// =========================================================================
+	// flag_source_sku_conflict() — non-product post type / not LF-managed
+	// =========================================================================
+
+	/**
+	 * Posts that are not 'product' or 'product_variation' must pass $sku_found
+	 * through unchanged (no LF intervention).
+	 */
+	public function test_flag_conflict_ignores_non_product_post_type(): void {
+		$this->make_post( 5, 'page' );
+		$this->set_meta( 5, '_lf_lang', 'es' );
+
+		$result = AdminSaveGuard::flag_source_sku_conflict( true, 5, 'SKU-001' );
+
+		$this->assertTrue( $result, 'Non-product post type must return $sku_found unchanged.' );
+		$this->assertNull( static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
+	}
+
+	/**
+	 * Products without _lf_lang meta are not managed by LF — $sku_found passed through.
+	 */
+	public function test_flag_conflict_ignores_non_lf_product(): void {
+		$this->make_post( 6, 'product' );
+		// No _lf_lang meta → get_post_meta returns ''.
+
+		$result = AdminSaveGuard::flag_source_sku_conflict( true, 6, 'SKU-001' );
+
+		$this->assertTrue( $result );
+		$this->assertNull( static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
+	}
+
+	// =========================================================================
+	// flag_source_sku_conflict() — translated product (already resolved upstream)
+	// =========================================================================
+
+	/**
+	 * Translated products are already resolved by pre_has_unique_sku(); this
+	 * method is a defensive fallback only and must not record a suppression
+	 * for them.
+	 */
+	public function test_flag_conflict_ignores_translated_product(): void {
+		$this->make_post( 7, 'product' );
+		$this->set_meta( 7, '_lf_lang', 'es' ); // source_language() = 'en' → es ≠ en → translated
+
+		$result = AdminSaveGuard::flag_source_sku_conflict( true, 7, 'SKU-001' );
+
+		$this->assertTrue( $result, 'Translated product must return $sku_found unchanged (defensive fallback).' );
+		$this->assertNull( static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
+	}
+
+	// =========================================================================
+	// flag_source_sku_conflict() — source product records pending suppress
+	// =========================================================================
+
+	/**
+	 * Source product (_lf_lang = source_language) with a genuine conflict found
+	 * must return $sku_found unchanged (letting WC's block stand) AND record the
+	 * product + SKU for later suppression of the spurious notice at shutdown.
+	 */
+	public function test_flag_conflict_records_pending_for_source_product(): void {
+		$this->make_post( 9, 'product' );
+		$this->set_meta( 9, '_lf_lang', 'en' ); // source_language() = 'en' → source product
+
+		$result = AdminSaveGuard::flag_source_sku_conflict( true, 9, 'SKU-SRC' );
+
+		$this->assertTrue( $result, 'Source product must let WC validate normally (returns $sku_found unchanged).' );
 		$this->assertSame( 9, static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_product' ) );
 		$this->assertSame( 'SKU-SRC', static::read_static( AdminSaveGuard::class, 'pending_sku_suppress_sku' ) );
 	}

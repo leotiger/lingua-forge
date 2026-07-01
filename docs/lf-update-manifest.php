@@ -45,7 +45,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// (safe for existing cached manifests; new downloads will verify once set).
 	// TODO(release): build lingua-forge-2.4.0.zip, upload it to the v2.4.0 GitHub
 	// release, then paste its sha256 here before deploying this manifest.
-	$sha256 = '';
+	$sha256 = '61b9eda5ee1789405eb543f486e7402399f10cee81307d9ad6e008826962d8b3';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.

@@ -19,9 +19,40 @@
  *   _edit_lock / _edit_last — WP concurrent-edit tracking (harmless).
  *
  * SKU: MetaDelegate serves source SKU at runtime via get_post_metadata, but
- * wc_product_has_unique_sku() uses direct SQL and sees a duplicate.  The
- * wc_product_has_unique_sku filter below resolves this; whitelist_meta_write()
- * also blocks the subsequent _sku write.
+ * wc_product_has_unique_sku() (the WC helper function) queries the
+ * wc_product_meta_lookup table directly and can see a genuine duplicate row
+ * (e.g. once WC's own lookup-table sync has run for a translated product/
+ * variation). Two separate filters resolve this — do not conflate them:
+ *
+ *   `wc_product_pre_has_unique_sku` (WC 9.0+) — a genuine short-circuit filter.
+ *   Returning a non-null bool here IS the final "is this SKU unique?" answer
+ *   (true = unique). pre_has_unique_sku() below hooks this to force `true`
+ *   for translated LF products/variations unconditionally, before WC's own
+ *   DB check even runs.
+ *
+ *   `wc_product_has_unique_sku` — an internal-implementation filter with the
+ *   OPPOSITE polarity despite the shared name: WC passes it $sku_found (true
+ *   = a duplicate WAS found), and a truthy return from the filter chain makes
+ *   the outer function return false (not unique). flag_source_sku_conflict()
+ *   below hooks this ONLY to observe genuine conflicts on SOURCE products (to
+ *   drive the shutdown notice-suppression pass) — it must NOT be used to try
+ *   to "allow" a save by returning `true`, since that reads as "duplicate
+ *   confirmed" to WC, not "allowed". (This class used to make exactly that
+ *   mistake for translated products: see git history pre-2.4.1 — the
+ *   `allow_source_sku_on_translated()` override returned `true` from this
+ *   filter for translated products, which WC read as "yes, duplicate", so
+ *   translated saves were blocked whenever a real duplicate row existed —
+ *   the delegation model's whole point. Verified failing with a standalone
+ *   WC-filter-chain replica before this fix; see AUDIT-2026-06-06.md follow-up.)
+ *
+ * whitelist_meta_write() also blocks the subsequent _sku write during
+ * intercepted classic-editor saves of a translated PRODUCT post. It does NOT
+ * cover the WC_AJAX variation-save path (save_variations), which is a
+ * separate request with no woocommerce_meta_nonce POST — this is why a
+ * translated product's own Variations tab can still physically write `_sku`
+ * onto a translated variation if someone types a value there directly. That
+ * stray row is the "genuine duplicate" the two filters above exist to work
+ * around; it does not, on its own, indicate data corruption.
  *
  * @package LinguaForge\AI\Integrations\WooCommerce
  * @since   2.2.14
@@ -55,7 +86,7 @@ class AdminSaveGuard {
 
 	/**
 	 * Product ID whose spurious SKU-duplicate error should be suppressed before
-	 * WC writes it to the persistent option.  Set by allow_source_sku_on_translated()
+	 * WC writes it to the persistent option.  Set by flag_source_sku_conflict()
 	 * when a source product's conflict is identified as a false positive (all
 	 * conflicting rows belong to the same LF translation group).  Null means no
 	 * suppression is pending.
@@ -77,8 +108,13 @@ class AdminSaveGuard {
 
 	public static function init(): void {
 		// ── SKU duplicate guard (translated products) ─────────────────────────
+		// Genuine short-circuit (WC 9.0+): true/false here IS the final answer,
+		// bypassing WC's own DB check entirely for translated LF products.
+		add_filter( 'wc_product_pre_has_unique_sku', [ self::class, 'pre_has_unique_sku' ], 10, 3 );
+
+		// Raw/internal filter — observation-only, for source-side notice suppression.
 		// Priority 10 (default) — fires after WC's own filter callbacks (none).
-		add_filter( 'wc_product_has_unique_sku', [ self::class, 'allow_source_sku_on_translated' ], 10, 3 );
+		add_filter( 'wc_product_has_unique_sku', [ self::class, 'flag_source_sku_conflict' ], 10, 3 );
 
 		// ── SKU false-positive notice suppression (source products) ───────────
 		// WC stores product errors in a WP option at shutdown priority 10 via
@@ -244,48 +280,92 @@ class AdminSaveGuard {
 	// =========================================================================
 
 	/**
-	 * Allow translated LF products to pass WooCommerce's SKU uniqueness check.
+	 * Force translated LF products/variations to be treated as SKU-unique,
+	 * bypassing WC's own uniqueness check entirely.
 	 *
-	 * wc_product_has_unique_sku() is a direct SQL query that bypasses MetaDelegate.
-	 * For a translated product being saved the "duplicate" found is always the
-	 * source product's own _sku row — allow it unconditionally.
+	 * Hooked on `wc_product_pre_has_unique_sku` (WC 9.0+), a genuine short-circuit
+	 * filter: a non-null bool returned here IS the final "is unique?" answer
+	 * (true = unique), so returning `true` reliably allows the save — unlike the
+	 * legacy `wc_product_has_unique_sku` filter (see flag_source_sku_conflict()),
+	 * whose polarity is inverted and cannot be used to "allow" a save this way.
 	 *
-	 * For source products the spurious error notice is suppressed separately by
-	 * filter_sku_error_on_display() rather than short-circuiting the WC filter,
-	 * which would introduce a save-loop.
+	 * For a translated product/variation, any "duplicate" WC could find is always
+	 * the source's own _sku row (or a stray physical row left on the translated
+	 * post — see class docblock) — never a genuinely unrelated product. Source
+	 * products/variations are left to WC's normal check (return null).
 	 *
-	 * @param  bool   $is_unique  Current filter value (true = unique, false = duplicate).
-	 * @param  int    $product_id WooCommerce product ID being validated.
-	 * @param  string $sku        SKU value being checked.
-	 * @return bool
+	 * @param  bool|null $short_circuit  null = no earlier filter decided; proceed normally.
+	 * @param  int       $product_id     WooCommerce product/variation ID being validated.
+	 * @param  string    $sku            SKU value being checked.
+	 * @return bool|null
 	 */
-	public static function allow_source_sku_on_translated( bool $is_unique, int $product_id, string $sku ): bool {
-		if ( $is_unique ) {
-			return $is_unique;
+	public static function pre_has_unique_sku( ?bool $short_circuit, int $product_id, string $sku ): ?bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- $sku accepted for filter signature compatibility; not needed here.
+		if ( null !== $short_circuit ) {
+			return $short_circuit; // An earlier filter already decided — don't interfere.
 		}
 
 		$post = get_post( $product_id );
 		if ( ! $post || ! in_array( $post->post_type, [ 'product', 'product_variation' ], true ) ) {
-			return $is_unique;
+			return null;
 		}
 
 		$lang = (string) get_post_meta( $product_id, '_lf_lang', true );
 		if ( '' === $lang ) {
-			return $is_unique; // Not managed by LF.
+			return null; // Not managed by LF.
 		}
 
-		// Translated product — the "duplicate" is always the source row.
-		if ( $lang !== Router::get_instance()->source_language() ) {
-			return true;
+		if ( $lang === Router::get_instance()->source_language() ) {
+			return null; // Source product/variation — let WC validate normally.
 		}
 
-		// Source product — let WC validate normally (returns false = WC throws exception,
-		// stores error in $meta_box_errors).  Record the candidate for suppression; the
-		// actual conflict-group check happens at shutdown priority 5 in
-		// suppress_sku_error_before_store() so we don't add SQL inside a hot filter chain.
+		return true; // Translated — always unique from LF's perspective.
+	}
+
+	/**
+	 * Observe genuine SKU conflicts on SOURCE products/variations and flag them
+	 * for possible notice suppression at shutdown.
+	 *
+	 * Hooked on the legacy `wc_product_has_unique_sku` filter. WARNING: this
+	 * filter's polarity is the OPPOSITE of "is_unique" despite the shared name —
+	 * WC passes $sku_found (true = a duplicate WAS found via direct SQL against
+	 * wc_product_meta_lookup), and a truthy value returned from the filter chain
+	 * makes the outer wc_product_has_unique_sku() function return false (not
+	 * unique). This method never changes that outcome for source products: WC's
+	 * own validation is left to stand (the actual save is genuinely blocked when
+	 * a real conflict exists), it only records the candidate for the shutdown
+	 * notice-suppression pass in suppress_sku_error_before_store().
+	 *
+	 * Translated products/variations are already resolved upstream by
+	 * pre_has_unique_sku() (WC never reaches this filter for them once that
+	 * short-circuits), so this method passes them through unchanged as a
+	 * defensive fallback only.
+	 *
+	 * @param  bool   $sku_found  true = WC's direct SQL check found a conflicting row.
+	 * @param  int    $product_id WooCommerce product ID being validated.
+	 * @param  string $sku        SKU value being checked.
+	 * @return bool
+	 */
+	public static function flag_source_sku_conflict( bool $sku_found, int $product_id, string $sku ): bool {
+		if ( ! $sku_found ) {
+			return $sku_found; // No conflict — nothing to flag.
+		}
+
+		$post = get_post( $product_id );
+		if ( ! $post || ! in_array( $post->post_type, [ 'product', 'product_variation' ], true ) ) {
+			return $sku_found;
+		}
+
+		$lang = (string) get_post_meta( $product_id, '_lf_lang', true );
+		if ( '' === $lang || $lang !== Router::get_instance()->source_language() ) {
+			return $sku_found; // Not LF-managed, or a translated post (already resolved upstream).
+		}
+
+		// Record the candidate for suppression; the actual conflict-group check
+		// happens at shutdown priority 5 in suppress_sku_error_before_store() so
+		// we don't add SQL inside a hot filter chain.
 		self::$pending_sku_suppress_product = $product_id;
 		self::$pending_sku_suppress_sku     = $sku;
-		return $is_unique;
+		return $sku_found;
 	}
 
 	// =========================================================================
@@ -298,7 +378,7 @@ class AdminSaveGuard {
 	 *
 	 * Runs on `shutdown` at priority 5 — before WC_Admin_Meta_Boxes::append_to_error_store()
 	 * at priority 10.  If $pending_sku_suppress_product was set by
-	 * allow_source_sku_on_translated() during this request, and the SQL check
+	 * flag_source_sku_conflict() during this request, and the SQL check
 	 * confirms the conflict is entirely within the same LF translation group, the
 	 * SKU error is removed from WC_Admin_Meta_Boxes::$meta_box_errors.
 	 *
