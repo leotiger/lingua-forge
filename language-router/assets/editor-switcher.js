@@ -19,10 +19,10 @@
  */
 
 ( function ( wp ) {
-	const { registerBlockType }       = wp.blocks;
-	const { createElement: el }       = wp.element;
-	const { InspectorControls }       = wp.blockEditor;
-	const { PanelBody, SelectControl, TextControl } = wp.components;
+	const { registerBlockType }                       = wp.blocks;
+	const { createElement: el }                       = wp.element;
+	const { InspectorControls, PanelColorSettings }   = wp.blockEditor;
+	const { PanelBody, SelectControl, TextControl }   = wp.components;
 
 	registerBlockType( 'custom/lsflr-switcher', {
 		apiVersion: 3,
@@ -35,7 +35,8 @@
 			show:        { type: 'string', default: 'label' },
 			customLabel: { type: 'string', default: 'Language' },
 			iconHtml:    { type: 'string', default: '🌐' },
-			overlayMode: { type: 'string', default: 'never' }
+			overlayMode: { type: 'string', default: 'never' },
+			iconColor:   { type: 'string', default: '' }
 		},
 
 		edit: function ( props ) {
@@ -100,7 +101,17 @@
 							],
 							onChange: function ( v ) { setAttributes( { direction: v } ); }
 						} )
-					)
+					),
+					( attributes.show === 'icon' || attributes.show === 'icon-label' ) &&
+					el( PanelColorSettings, {
+						title:        'Color',
+						initialOpen:  false,
+						colorSettings: [ {
+							value:    attributes.iconColor,
+							onChange: function ( v ) { setAttributes( { iconColor: v || '' } ); },
+							label:    'Icon color'
+						} ]
+					} )
 				),
 				el( 'div', {}, 'LSFLR Switcher' )
 			);

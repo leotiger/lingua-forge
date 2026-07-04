@@ -286,6 +286,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 == Changelog ==
 
 = 2.4.2 =
+* Added: Language Switcher — new "Icon color" block setting (Inspector, when display mode is "Icon only" or "Icon + language"), using a theme-palette-aware colour picker. Lets you override the icon's colour for sections whose background is set locally rather than via the theme's global style, where the switcher's automatic contrast colour can otherwise end up matching the background. (`class-lsflr-switcher.php`, `editor-switcher.js`)
 * Fixed: Language Switcher — Grid Overlay's "Auto" list style could silently override an "Icon only" display and show the current language as a plain text link instead. On any page where secondary languages are configured but have no translated content yet, only one language is available to switch to; the width heuristic that decides when to auto-expand used that count directly, so it was almost always satisfied and hid the icon trigger in favour of the (now pointless) self-referential text link. The heuristic no longer runs when there's nothing to switch to. (`class-lsflr-switcher.php`)
 * Changed: Grid Overlay's language panel no longer lists the current language alongside the other languages — it now shows only the languages you can switch to, matching the classic dropdown's existing behaviour. (`class-lsflr-switcher.php`, `lsflr.css`)
 

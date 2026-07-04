@@ -43,16 +43,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): readme.txt changed after the previous hash below was taken,
-	// so it's stale — re-zip lingua-forge-2.4.2.zip, upload it to the v2.4.2
-	// GitHub release, then paste the new sha256 here before deploying this manifest.
-	$sha256 = '';
+	// TODO(release): the icon-color feature (class-lsflr-switcher.php,
+	// editor-switcher.js) landed after the previous test zip's hash was taken,
+	// so it's stale again — re-zip lingua-forge-2.4.2.zip, upload it, then paste
+	// the new sha256 here before deploying this manifest.
+	$sha256 = 'f743d04b0804a3e50e79418546e38b964681d358f28fdc43eb7acb076f377c8b';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
 		'<h4>2.4.2 &#8212; 2026-07-04</h4>' .
 		'<ul>' .
+			'<li><strong>Added:</strong> Language Switcher &#8212; new &#8220;Icon color&#8221; block setting (Inspector, when display mode is &#8220;Icon only&#8221; or &#8220;Icon + language&#8221;), using a theme-palette-aware colour picker. Lets you override the icon&#8217;s colour for sections whose background is set locally rather than via the theme&#8217;s global style, where the switcher&#8217;s automatic contrast colour can otherwise end up matching the background. (<code>language-router/includes/class-lsflr-switcher.php</code>, <code>language-router/assets/editor-switcher.js</code>)</li>' .
 			'<li><strong>Fixed:</strong> Language Switcher &#8212; Grid Overlay&#8217;s &#8220;Auto&#8221; list style could silently override an &#8220;Icon only&#8221; display and show the current language as a plain text link instead. On any page where secondary languages are configured but have no translated content yet, only one language is available to switch to; the width heuristic that decides when to auto-expand used that count directly, so it was almost always satisfied and hid the icon trigger in favour of the (now pointless) self-referential text link. The heuristic no longer runs when there&#8217;s nothing to switch to. (<code>language-router/includes/class-lsflr-switcher.php</code>)</li>' .
 			'<li><strong>Changed:</strong> Grid Overlay&#8217;s language panel no longer lists the current language alongside the other languages &#8212; it now shows only the languages you can switch to, matching the classic dropdown&#8217;s existing behaviour. (<code>language-router/includes/class-lsflr-switcher.php</code>, <code>language-router/assets/lsflr.css</code>)</li>' .
 		'</ul>' .

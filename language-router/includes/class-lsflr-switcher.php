@@ -107,6 +107,33 @@ class Switcher {
 		return $langs;
 	}
 
+	/**
+	 * Validate a user-supplied icon colour before it's echoed into an inline
+	 * `style` attribute. Accepts the formats the block editor's colour picker
+	 * (or a theme.json palette reference) can realistically produce; rejects
+	 * everything else so an unexpected value can't break out of the `color:`
+	 * declaration.
+	 *
+	 * @param  mixed $value Raw attribute value.
+	 * @return string Sanitised colour, or '' if not a recognised format.
+	 */
+	private static function sanitize_icon_color( $value ): string {
+		if ( ! is_string( $value ) || $value === '' ) return '';
+
+		$value = trim( $value );
+
+		// #fff / #ffffff / #ffffffff
+		if ( (bool) preg_match( '/^#[0-9a-fA-F]{3,8}$/', $value ) ) return $value;
+
+		// rgb()/rgba()/hsl()/hsla() with numeric, %, and . characters only.
+		if ( (bool) preg_match( '/^(rgb|rgba|hsl|hsla)\(\s*[0-9.%,\s\/]+\)$/i', $value ) ) return $value;
+
+		// CSS custom property reference, e.g. var(--wp--preset--color--contrast).
+		if ( (bool) preg_match( '/^var\(--[a-zA-Z0-9-]+(?:,\s*[^)]+)?\)$/', $value ) ) return $value;
+
+		return '';
+	}
+
 	public function translate_current_url( string $target_lang, ?int $post_id = null, bool $force_permalink = false ): string {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set value used only for URL path parsing; home_url() encodes the result.
 		$current_url = home_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/' );
@@ -211,6 +238,7 @@ class Switcher {
 			'customLabel' => 'Language',
 			'iconHtml'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M351.9 280l-190.9 0c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zM160.9 232l190.9 0C349 167.5 334.7 108.1 314.4 64.6 303 40.2 290.7 22.8 279.3 12.2 268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4zm-48 0C116.4 146.4 138.5 66.9 170.8 14.7 78.7 47.3 10.9 131.2 1.5 232l111.4 0zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3L1.5 280zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3l-111.4 0zm111.4-48C501.9 131.2 434.1 47.3 342 14.7 374.3 66.9 396.4 146.4 399.9 232l111.4 0z"/></svg>',
 			'overlayMode' => 'never',
+			'iconColor'   => '',
 		] );
 
 		$langs = $this->get_languages();
@@ -234,16 +262,25 @@ class Switcher {
 			] );
 		};
 
+		// Optional per-instance override for the icon's colour. Default behaviour
+		// (no inline style) leaves the icon on --lsflr-color, which tracks the
+		// active theme's global contrast colour — this override exists for
+		// sections whose background is set locally (e.g. a manually dark-styled
+		// header) rather than via the theme's global style, where that automatic
+		// contrast colour can end up matching the background instead of standing
+		// out against it.
+		$icon_color = self::sanitize_icon_color( $atts['iconColor'] );
+		$icon_style = $icon_color !== '' ? ' style="color:' . esc_attr( $icon_color ) . ';"' : '';
+		$icon_span  = '<span class="lsflr-icon"' . $icon_style . '>' . $get_icon( $atts['iconHtml'] ) . '</span>';
+
 		if ( $atts['show'] === 'custom' ) {
 			// Store raw value — wp_kses_post() at echo point handles entity normalisation.
 			// Pre-escaping with esc_html() here would double-encode entities (e.g. & → &amp;amp;).
 			$toggle = $atts['customLabel'];
 		} elseif ( $atts['show'] === 'icon' ) {
-			$toggle = '<span class="lsflr-icon">' . $get_icon( $atts['iconHtml'] ) . '</span>';
+			$toggle = $icon_span;
 		} elseif ( $atts['show'] === 'icon-label' ) {
-			$toggle =
-				'<span class="lsflr-icon">' . $get_icon( $atts['iconHtml'] ) . '</span>' .
-				'<span class="lsflr-label">' . esc_html( $current['label'] ) . '</span>';
+			$toggle = $icon_span . '<span class="lsflr-label">' . esc_html( $current['label'] ) . '</span>';
 		} else {
 			$toggle = esc_html( $current['label'] );
 		}
@@ -260,7 +297,7 @@ class Switcher {
 			$toggle_kses = [
 				'svg'  => [ 'xmlns' => true, 'viewbox' => true ],
 				'path' => [ 'd' => true, 'fill' => true ],
-				'span' => [ 'class' => true ],
+				'span' => [ 'class' => true, 'style' => true ],
 			];
 			?>
 
@@ -467,7 +504,7 @@ class Switcher {
 				<div class="lsflr-current"><?php echo wp_kses( $toggle, [
 						'svg'  => [ 'xmlns' => true, 'viewbox' => true ],
 						'path' => [ 'd' => true, 'fill' => true ],
-						'span' => [ 'class' => true ],
+						'span' => [ 'class' => true, 'style' => true ],
 					] ); ?></div>
 
 				<?php if ( $others ) : ?>
