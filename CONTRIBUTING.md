@@ -1085,6 +1085,24 @@ under control; the ignore directive is what makes WPCS tolerate it.
   `CacheStore::ensure_table()` compares
   `linguaforge_ai_cache_db_version` against the `DB_VERSION` constant
   and only runs `dbDelta` on mismatch.
+- **A virtual/dynamic response served on `template_redirect` must call
+  `status_header( 200 )` explicitly if the URL matches no real post,
+  page, or registered rewrite rule.** WordPress's own request parsing
+  has already called `status_header( 404 )` before `template_redirect`
+  fires for any such unmatched URL — `robots.txt` is exempt only
+  because it has a dedicated `is_robots()` fast-path that bypasses 404
+  determination entirely. Without the override, the handler's body can
+  be completely correct while the response still goes out under an
+  inherited 404 status: browsers render 404 bodies fine, so a manual
+  visit looks correct, but any status-code-aware consumer (search
+  crawlers, IndexNow verification, Google Search Console) correctly
+  rejects it regardless of body content. Confirmed live in 2.4.1 on both
+  `IndexNowManager`'s key-file route and `SitemapManager`'s sitemap-chunk
+  route (curl with WordPress's own User-Agent returned each file's
+  correct body under an HTTP/2 404). `send_key_file_headers()` and
+  `send_xml_headers()` are the reference pattern — call
+  `status_header( 200 )` before `nocache_headers()`. Any new
+  `template_redirect`-based virtual-file handler needs the same call.
 
 ---
 

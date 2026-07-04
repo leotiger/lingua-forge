@@ -8,51 +8,12 @@
  * content, excerpt), (2) silently block every non-whitelisted meta write so
  * WC never persists operational meta (SKU, price, stock, …), and (3) disable
  * VariationSync for the save duration.  Torn down at redirect_post_location
- * after the full save chain (including inner wp_update_post calls) completes.
- *
- * Only activates when woocommerce_meta_nonce is present in $_POST (classic
- * admin editor).  REST API and programmatic saves pass straight through.
- *
- * Whitelisted meta keys (allowed through during an intercepted save):
- *   _lf_*              — LF-internal state (lang, trid, …).
- *   _wp_page_template  — handle_save_post() must correct the FSE template slug.
- *   _edit_lock / _edit_last — WP concurrent-edit tracking (harmless).
- *
- * SKU: MetaDelegate serves source SKU at runtime via get_post_metadata, but
- * wc_product_has_unique_sku() (the WC helper function) queries the
- * wc_product_meta_lookup table directly and can see a genuine duplicate row
- * (e.g. once WC's own lookup-table sync has run for a translated product/
- * variation). Two separate filters resolve this — do not conflate them:
- *
- *   `wc_product_pre_has_unique_sku` (WC 9.0+) — a genuine short-circuit filter.
- *   Returning a non-null bool here IS the final "is this SKU unique?" answer
- *   (true = unique). pre_has_unique_sku() below hooks this to force `true`
- *   for translated LF products/variations unconditionally, before WC's own
- *   DB check even runs.
- *
- *   `wc_product_has_unique_sku` — an internal-implementation filter with the
- *   OPPOSITE polarity despite the shared name: WC passes it $sku_found (true
- *   = a duplicate WAS found), and a truthy return from the filter chain makes
- *   the outer function return false (not unique). flag_source_sku_conflict()
- *   below hooks this ONLY to observe genuine conflicts on SOURCE products (to
- *   drive the shutdown notice-suppression pass) — it must NOT be used to try
- *   to "allow" a save by returning `true`, since that reads as "duplicate
- *   confirmed" to WC, not "allowed". (This class used to make exactly that
- *   mistake for translated products: see git history pre-2.4.1 — the
- *   `allow_source_sku_on_translated()` override returned `true` from this
- *   filter for translated products, which WC read as "yes, duplicate", so
- *   translated saves were blocked whenever a real duplicate row existed —
- *   the delegation model's whole point. Verified failing with a standalone
- *   WC-filter-chain replica before this fix; see AUDIT-2026-06-06.md follow-up.)
- *
- * whitelist_meta_write() also blocks the subsequent _sku write during
- * intercepted classic-editor saves of a translated PRODUCT post. It does NOT
- * cover the WC_AJAX variation-save path (save_variations), which is a
- * separate request with no woocommerce_meta_nonce POST — this is why a
- * translated product's own Variations tab can still physically write `_sku`
- * onto a translated variation if someone types a value there directly. That
- * stray row is the "genuine duplicate" the two filters above exist to work
- * around; it does not, on its own, indicate data corruption.
+ * after the full save chain completes. Only activates when
+ * woocommerce_meta_nonce is present in $_POST (classic admin editor); REST
+ * API and programmatic saves pass straight through. See whitelist_meta_write()
+ * for the meta key whitelist, and pre_has_unique_sku() /
+ * flag_source_sku_conflict() for the two same-named-but-opposite-polarity SKU
+ * uniqueness filters this class hooks.
  *
  * @package LinguaForge\AI\Integrations\WooCommerce
  * @since   2.2.14
@@ -227,6 +188,16 @@ class AdminSaveGuard {
 	 * The $check parameter is null when no earlier filter has acted; returning
 	 * null means "proceed normally", any other value short-circuits the write.
 	 *
+	 * Also blocks the subsequent _sku write during intercepted classic-editor
+	 * saves of a translated PRODUCT post. Does NOT cover the WC_AJAX
+	 * variation-save path (save_variations), which is a separate request with
+	 * no woocommerce_meta_nonce POST — this is why a translated product's own
+	 * Variations tab can still physically write `_sku` onto a translated
+	 * variation if someone types a value there directly. That stray row is the
+	 * "genuine duplicate" the SKU filters below (pre_has_unique_sku() /
+	 * flag_source_sku_conflict()) exist to work around; it does not, on its
+	 * own, indicate data corruption.
+	 *
 	 * @param  mixed  $check     null = proceed; anything else = short-circuit result.
 	 * @param  int    $object_id Post ID receiving the meta write.
 	 * @param  string $meta_key  Meta key being written.
@@ -339,6 +310,17 @@ class AdminSaveGuard {
 	 * pre_has_unique_sku() (WC never reaches this filter for them once that
 	 * short-circuits), so this method passes them through unchanged as a
 	 * defensive fallback only.
+	 *
+	 * WARNING — do not "fix" this by returning true for translated products.
+	 * This class used to make exactly that mistake: the pre-2.4.1
+	 * `allow_source_sku_on_translated()` override returned `true` from this
+	 * filter for translated products, which WC reads as "yes, duplicate" (see
+	 * the polarity warning above) — so translated saves were blocked whenever
+	 * a real duplicate row existed, defeating the whole point of the
+	 * delegation model. Verified failing with a standalone WC-filter-chain
+	 * replica before this fix; see AUDIT-2026-06-06.md follow-up. The correct
+	 * fix is pre_has_unique_sku() above, which short-circuits before this
+	 * filter is ever reached for translated products/variations.
 	 *
 	 * @param  bool   $sku_found  true = WC's direct SQL check found a conflicting row.
 	 * @param  int    $product_id WooCommerce product ID being validated.

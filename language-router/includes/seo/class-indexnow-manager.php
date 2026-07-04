@@ -120,10 +120,54 @@ class IndexNowManager {
 			return;
 		}
 
-		header( 'Content-Type: text/plain; charset=UTF-8' );
+		$this->send_key_file_headers();
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hex key is alphanumeric only.
 		echo $key . "\n";
 		exit;
+	}
+
+	/**
+	 * Send the status and headers for the key-file response.
+	 *
+	 * Split out from maybe_serve_key_file() so it can be exercised in a test
+	 * without triggering the exit() that immediately follows it in the real
+	 * request flow — PHPUnit cannot observe assertions made after a test method
+	 * hits exit(), so the header-emission behaviour would otherwise be
+	 * untestable (see the note on the matching branch in
+	 * IndexNowManagerIntegrationTest).
+	 *
+	 * status_header( 200 ) is required, not cosmetic: the key-file URL never
+	 * matches a real post/page/rewrite rule, so WordPress's own request parsing
+	 * already calls status_header( 404 ) before template_redirect fires (unlike
+	 * robots.txt, which has a dedicated is_robots() fast-path that bypasses 404
+	 * determination entirely). Without this call the response body is correct
+	 * but goes out under a 404 status line — browsers still render the body so
+	 * a manual check looks fine, but key_file_reachable() and real IndexNow
+	 * crawlers both require an actual 200 and will reject a 404 regardless of
+	 * body content. Calling status_header() here still works because nothing
+	 * has been echoed yet, so no output has been sent.
+	 *
+	 * A full-page cache or CDN sitting in front of WordPress does not know this
+	 * response is dynamic; without explicit no-cache headers it can freeze a
+	 * stale hit for this exact URL (most commonly a 404 captured before the key
+	 * existed, or a previous key after rotate_key()). Logged-in admin requests
+	 * typically bypass such caches, so a manual browser check can "load
+	 * perfectly" while anonymous requests — including key_file_reachable()'s own
+	 * self-check and real IndexNow crawlers — keep receiving the stale response.
+	 * nocache_headers() prevents that split-brain by forcing every hit to run
+	 * this handler fresh.
+	 */
+	private function send_key_file_headers(): void {
+		status_header( 200 );
+		nocache_headers();
+		// status_header() and nocache_headers() both guard their own header()
+		// calls with headers_sent() internally; this explicit header() call has
+		// no such built-in guard, so it needs its own — matching WP core's own
+		// defensive pattern and preventing a "headers already sent" PHP warning
+		// if anything upstream of template_redirect ever produces output first.
+		if ( ! headers_sent() ) {
+			header( 'Content-Type: text/plain; charset=UTF-8' );
+		}
 	}
 
 	// =========================================================

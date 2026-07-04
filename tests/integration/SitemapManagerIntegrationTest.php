@@ -12,6 +12,19 @@
  *                             revisions and posts without trid are skipped
  *   append_robots_txt()     — adds Sitemap: directive when site is public; skips
  *                             when site is not public
+ *   maybe_serve_sitemap()   — returns without exiting on a non-matching request
+ *   send_xml_headers()      — status_header( 200 ), nocache_headers(), Content-Type,
+ *                             and X-Robots-Tag on the matching path. status_header( 200 )
+ *                             was added after a chunk URL was confirmed live (curl
+ *                             against cal-talaia.cat) to come back as a 404 with a
+ *                             correct PHP-generated body — the same root cause as
+ *                             IndexNowManager's key-file route; nocache_headers()
+ *                             was added 2.4.1. The matching branch of
+ *                             maybe_serve_sitemap() itself ends in `exit` via
+ *                             serve_xml() and so cannot be exercised end-to-end
+ *                             under PHPUnit; send_xml_headers() is invoked
+ *                             directly via ReflectionMethod instead, the same
+ *                             pattern used in IndexNowManagerIntegrationTest.
  *
  * Strategy:
  *   • flush_cache() is called in setUp() so every test starts with a cold cache.
@@ -33,8 +46,10 @@ namespace LinguaForge\Tests\Integration;
 
 use LinguaForge\Router\Context;
 use LinguaForge\Router\Router;
+use LinguaForge\Router\Seo\SitemapManager;
 use LinguaForge\Router\Translation\TridGroup;
 use ReflectionClass;
+use ReflectionMethod;
 use WP_UnitTestCase;
 
 final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
@@ -364,5 +379,118 @@ final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( '<urlset', $chunk );
 		$this->assertStringNotContainsString( '<url>', $chunk,
 			'An out-of-range chunk must be an empty urlset.' );
+	}
+
+	// =========================================================================
+	// maybe_serve_sitemap() — non-matching request must not exit
+	// =========================================================================
+
+	/**
+	 * maybe_serve_sitemap() must return normally (no exit) for a URL that is
+	 * neither the sitemap index nor a chunk file.
+	 */
+	public function test_maybe_serve_sitemap_returns_on_non_matching_request(): void {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Test save/restore of a server superglobal; value is only stored and restored verbatim, never used as input.
+		$saved = $_SERVER['REQUEST_URI'] ?? null;
+		$_SERVER['REQUEST_URI'] = '/an-ordinary-page/';
+
+		Router::get_instance()->sitemap_manager->maybe_serve_sitemap();
+
+		if ( null === $saved ) {
+			unset( $_SERVER['REQUEST_URI'] );
+		} else {
+			$_SERVER['REQUEST_URI'] = $saved;
+		}
+
+		$this->assertTrue( true, 'maybe_serve_sitemap() returned without exiting on a non-matching request.' );
+	}
+
+	// =========================================================================
+	// §2.4.1 — send_xml_headers() — nocache regression coverage
+	// =========================================================================
+
+	/**
+	 * send_xml_headers() must call nocache_headers(), which sends a
+	 * Cache-Control: no-cache directive.
+	 *
+	 * This is the exact behaviour added in 2.4.1 to fix a full-page cache/CDN
+	 * freezing a stale (typically 404) response for a sitemap chunk URL, which
+	 * let Googlebot's anonymous fetch of a <sitemap><loc> from the index go
+	 * undiscovered even though the chunk loaded fine for a logged-in admin whose
+	 * requests bypass such caches.
+	 *
+	 * Unlike status_header() (see test_send_xml_headers_sends_status_200()
+	 * below), WP core's nocache_headers() checks headers_sent() *before* doing
+	 * anything at all — including firing its own 'nocache_headers' filter — so
+	 * that filter can never be observed once headers are already sent, which is
+	 * permanently true for the rest of this process from the moment WordPress's
+	 * own PHPUnit bootstrap first writes output. headers_list() doesn't help
+	 * either: it's always empty under the CLI SAPI.
+	 *
+	 * So this call is verified two ways instead: (1) the method's own source
+	 * text is inspected via reflection to confirm the literal nocache_headers()
+	 * call is still present, and (2) the method must complete without throwing
+	 * despite headers already being sent — regression-guarding the
+	 * headers_sent() guard 2.4.2 added around this method's own explicit
+	 * header() calls (WP core's status_header()/nocache_headers() already guard
+	 * themselves; ours didn't, and crashed under exactly this condition until
+	 * that guard was added).
+	 *
+	 * The method is invoked directly via reflection (it is private, and is
+	 * always followed by `echo $xml; exit;` in the real call site, serve_xml(),
+	 * which PHPUnit cannot observe past).
+	 */
+	public function test_send_xml_headers_calls_nocache_headers(): void {
+		$method = new ReflectionMethod( SitemapManager::class, 'send_xml_headers' );
+
+		$source     = (string) file_get_contents( (string) $method->getFileName() );
+		$body_lines = array_slice(
+			explode( "\n", $source ),
+			$method->getStartLine() - 1,
+			$method->getEndLine() - $method->getStartLine() + 1
+		);
+		$this->assertStringContainsString( 'nocache_headers();', implode( "\n", $body_lines ),
+			'send_xml_headers() must call nocache_headers() to prevent a full-page cache/CDN from freezing a stale response.' );
+
+		$method->setAccessible( true );
+		$method->invoke( Router::get_instance()->sitemap_manager );
+		$this->addToAssertionCount( 1 ); // Reaching here means it didn't crash despite headers already being sent.
+	}
+
+	/**
+	 * send_xml_headers() must call status_header( 200 ).
+	 *
+	 * Regression coverage for a confirmed live failure: curl against
+	 * cal-talaia.cat with WordPress's own User-Agent got HTTP/2 404 back for
+	 * a chunk URL (/lf-sitemap-0.xml), with the correct XML body and
+	 * x-powered-by: PHP confirming this handler generated the response. A
+	 * chunk URL never matches a real post/page/rewrite rule, so WordPress's
+	 * own request parsing has already called status_header( 404 ) before
+	 * template_redirect fires — the same root cause fixed in
+	 * IndexNowManager::send_key_file_headers(). Same CLI-header limitation as
+	 * test_send_xml_headers_calls_nocache_headers() above: asserted via WP
+	 * core's 'status_header' filter rather than inspecting sent headers
+	 * directly.
+	 */
+	public function test_send_xml_headers_sends_status_200(): void {
+		$captured_code = null;
+		add_filter(
+			'status_header',
+			function ( $status_header, $code ) use ( &$captured_code ) {
+				$captured_code = $code;
+				return $status_header;
+			},
+			10,
+			2
+		);
+
+		$method = new ReflectionMethod( SitemapManager::class, 'send_xml_headers' );
+		$method->setAccessible( true );
+		$method->invoke( Router::get_instance()->sitemap_manager );
+
+		remove_all_filters( 'status_header' );
+
+		$this->assertSame( 200, $captured_code,
+			'send_xml_headers() must call status_header( 200 ) to override any 404 status WordPress already queued for this unmatched URL.' );
 	}
 }

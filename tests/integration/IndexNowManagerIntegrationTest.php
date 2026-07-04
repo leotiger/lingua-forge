@@ -18,6 +18,11 @@
  *                             debounces duplicates, skips drafts and non-LF posts
  *   run_scheduled_submit()  — the cron callback collects siblings and submits
  *   maybe_serve_key_file()  — returns without exiting on a non-matching request
+ *   send_key_file_headers() — status_header( 200 ), nocache_headers(), and
+ *                             Content-Type on the matching path (status_header( 200 )
+ *                             overrides the 404 WordPress already queues for this
+ *                             unmatched URL before template_redirect fires; the
+ *                             nocache_headers() call was added 2.4.1)
  *
  * Strategy:
  *   • Outbound HTTP is intercepted with the `pre_http_request` filter (same
@@ -28,10 +33,28 @@
  *   • The IndexNow key option and any scheduled cron events are cleared in
  *     setUp()/tearDown() so tests do not bleed into each other.
  *
- * The matching branch of maybe_serve_key_file() ends in `exit` and therefore
- * cannot be exercised under PHPUnit; only the non-matching (no-exit) guard is
- * tested here. The serving output is covered by the live key-file reachability
- * check in the Sitemap panel.
+ * The matching branch of maybe_serve_key_file() itself ends in `exit` and
+ * therefore still cannot be exercised end-to-end under PHPUnit; only the
+ * non-matching (no-exit) guard is tested directly against that method. Its
+ * header-emission logic, however, lives in the private send_key_file_headers()
+ * helper (extracted in 2.4.1 for exactly this reason) and is invoked here via
+ * ReflectionMethod so the no-cache-header regression fixed in 2.4.1 has real
+ * coverage without needing to survive past an exit().
+ *
+ * A further environment wrinkle: WordPress's own PHPUnit bootstrap
+ * (wordpress-phpunit/includes/bootstrap.php) writes output before handing
+ * control to any test, so headers_sent() is true for the rest of the process
+ * from that point on. WP core's status_header() applies its 'status_header'
+ * filter unconditionally (only the actual header() call is headers_sent()-
+ * guarded), so that one is directly observable — see
+ * test_send_key_file_headers_sends_status_200(). nocache_headers(), however,
+ * checks headers_sent() *before* doing anything, including firing its own
+ * 'nocache_headers' filter — so that filter can never be observed in this
+ * process, and test_send_key_file_headers_calls_nocache_headers() instead
+ * verifies the call via the method's own source text (see that test for
+ * details) plus a "does not throw" check, which regression-guards the
+ * headers_sent() guard 2.4.2 added around this method's own explicit
+ * header() call.
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -47,6 +70,7 @@ use LinguaForge\Router\Router;
 use LinguaForge\Router\Seo\IndexNowManager;
 use LinguaForge\Router\Translation\TridGroup;
 use ReflectionClass;
+use ReflectionMethod;
 use WP_UnitTestCase;
 
 final class IndexNowManagerIntegrationTest extends WP_UnitTestCase {
@@ -401,6 +425,99 @@ final class IndexNowManagerIntegrationTest extends WP_UnitTestCase {
 		}
 
 		$this->assertTrue( true, 'maybe_serve_key_file() returned without exiting on a non-matching request.' );
+	}
+
+	// =========================================================================
+	// §2.4.1 — send_key_file_headers() — nocache regression coverage
+	// =========================================================================
+
+	/**
+	 * send_key_file_headers() must call nocache_headers(), which sends a
+	 * Cache-Control: no-cache directive.
+	 *
+	 * This is the exact behaviour added in 2.4.1 to fix a full-page cache/CDN
+	 * freezing a stale (pre-key-existence) response for the key-file URL, which
+	 * made key_file_reachable() report "not reachable" even though the file
+	 * loaded fine for a logged-in admin whose requests bypass such caches.
+	 *
+	 * Unlike status_header() (see test_send_key_file_headers_sends_status_200()
+	 * below), WP core's nocache_headers() checks headers_sent() *before* doing
+	 * anything at all — including firing its own 'nocache_headers' filter — so
+	 * that filter can never be observed once headers are already sent, which is
+	 * permanently true for the rest of this process from the moment WordPress's
+	 * own PHPUnit bootstrap first writes output (see the class docblock).
+	 * headers_list() doesn't help either: it's always empty under the CLI SAPI.
+	 *
+	 * So this call is verified two ways instead: (1) the method's own source
+	 * text is inspected via reflection to confirm the literal nocache_headers()
+	 * call is still present, and (2) the method must complete without throwing
+	 * despite headers already being sent — regression-guarding the
+	 * headers_sent() guard 2.4.2 added around this method's own explicit
+	 * header() call (WP core's status_header()/nocache_headers() already guard
+	 * themselves; ours didn't, and crashed under exactly this condition until
+	 * that guard was added).
+	 *
+	 * The method is invoked directly via reflection (it is private, and is
+	 * always followed by `echo ...; exit;` in the real call site,
+	 * maybe_serve_key_file(), which PHPUnit cannot observe past).
+	 */
+	public function test_send_key_file_headers_calls_nocache_headers(): void {
+		$method = new ReflectionMethod( IndexNowManager::class, 'send_key_file_headers' );
+
+		$source     = (string) file_get_contents( (string) $method->getFileName() );
+		$body_lines = array_slice(
+			explode( "\n", $source ),
+			$method->getStartLine() - 1,
+			$method->getEndLine() - $method->getStartLine() + 1
+		);
+		$this->assertStringContainsString( 'nocache_headers();', implode( "\n", $body_lines ),
+			'send_key_file_headers() must call nocache_headers() to prevent a full-page cache/CDN from freezing a stale response.' );
+
+		$method->setAccessible( true );
+		$method->invoke( $this->indexnow() );
+		$this->addToAssertionCount( 1 ); // Reaching here means it didn't crash despite headers already being sent.
+	}
+
+	/**
+	 * send_key_file_headers() must call status_header( 200 ).
+	 *
+	 * Regression coverage for a real IndexNow submission failure: the key-file
+	 * URL never matches a real post/page/rewrite rule, so WordPress's own
+	 * request parsing has already called status_header( 404 ) before
+	 * template_redirect fires — unlike robots.txt, which has a dedicated
+	 * is_robots() fast-path that bypasses 404 determination entirely. Without
+	 * an explicit status_header( 200 ) override here, the response body is
+	 * correct but goes out under a 404 status line: browsers still render the
+	 * body (so a manual check looked fine), but key_file_reachable() and real
+	 * IndexNow crawlers both require an actual 200 and reject a 404 regardless
+	 * of body content. Confirmed live against cal-talaia.cat before this fix —
+	 * curl with WordPress's own User-Agent got the correct key back under an
+	 * HTTP/2 404.
+	 *
+	 * Same CLI-header limitation as test_send_key_file_headers_calls_nocache_headers()
+	 * above: asserted via WP core's 'status_header' filter rather than
+	 * inspecting sent headers directly.
+	 */
+	public function test_send_key_file_headers_sends_status_200(): void {
+		$captured_code = null;
+		add_filter(
+			'status_header',
+			function ( $status_header, $code ) use ( &$captured_code ) {
+				$captured_code = $code;
+				return $status_header;
+			},
+			10,
+			2
+		);
+
+		$method = new ReflectionMethod( IndexNowManager::class, 'send_key_file_headers' );
+		$method->setAccessible( true );
+		$method->invoke( $this->indexnow() );
+
+		remove_all_filters( 'status_header' );
+
+		$this->assertSame( 200, $captured_code,
+			'send_key_file_headers() must call status_header( 200 ) to override any 404 status WordPress already queued for this unmatched URL.' );
 	}
 
 	// =========================================================================

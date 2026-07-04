@@ -125,11 +125,59 @@ class SitemapManager {
 	 * @param string $xml
 	 */
 	private function serve_xml( string $xml ): void {
-		header( 'Content-Type: application/xml; charset=UTF-8' );
-		header( 'X-Robots-Tag: noindex, follow' );
+		$this->send_xml_headers();
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- XML is generated internally; esc_xml() would corrupt valid XML entities.
 		echo $xml;
 		exit;
+	}
+
+	/**
+	 * Send the headers for a sitemap (index or chunk) response.
+	 *
+	 * Split out from serve_xml() so it can be exercised in a test without
+	 * triggering the exit() that immediately follows it in the real request
+	 * flow — PHPUnit cannot observe assertions made after a test method hits
+	 * exit(), so the header-emission behaviour would otherwise be untestable.
+	 *
+	 * status_header( 200 ) is required for chunk URLs, confirmed live against
+	 * cal-talaia.cat: a chunk request (/lf-sitemap-0.xml) came back as an
+	 * HTTP/2 404 with the correct body and content-type, and x-powered-by:
+	 * PHP confirming this handler generated it. A chunk URL never matches a
+	 * real post/page/rewrite rule, so WordPress's own request parsing has
+	 * already called status_header( 404 ) before template_redirect fires —
+	 * unlike robots.txt, which has a dedicated is_robots() fast-path that
+	 * bypasses 404 determination entirely. The index URL (/lf-sitemap.xml)
+	 * came back 200 on the same server without this fix, for reasons not yet
+	 * confirmed (possibly a stale static file bypassing PHP rather than this
+	 * code); status_header( 200 ) here is a safe no-op for that case either
+	 * way, since it only overrides a status that hasn't been sent to the
+	 * client yet. See IndexNowManager::send_key_file_headers() for the
+	 * identical fix on the key-file route, where this was first found.
+	 *
+	 * A full-page cache or CDN in front of WordPress does not know this response
+	 * is dynamic; without explicit no-cache headers it can freeze a stale hit for
+	 * this exact URL (most commonly a 404 captured before any chunk existed, or a
+	 * shrunk chunk count after posts were unpublished). Logged-in admin requests
+	 * typically bypass such caches, so a manual browser check of a chunk URL can
+	 * "load perfectly" while an anonymous crawler — including Googlebot fetching a
+	 * <sitemap><loc> from the index — keeps receiving the stale response and never
+	 * discovers the chunk's URLs. nocache_headers() forces every hit to run this
+	 * handler fresh; the 24h transient cache (see class docblock) still avoids the
+	 * expensive DB regeneration, so this doesn't reintroduce the query cost.
+	 */
+	private function send_xml_headers(): void {
+		status_header( 200 );
+		nocache_headers();
+		// status_header() and nocache_headers() both guard their own header()
+		// calls with headers_sent() internally; these two explicit header() calls
+		// have no such built-in guard, so they need their own — matching WP
+		// core's own defensive pattern and preventing a "headers already sent"
+		// PHP warning if anything upstream of template_redirect ever produces
+		// output first.
+		if ( ! headers_sent() ) {
+			header( 'Content-Type: application/xml; charset=UTF-8' );
+			header( 'X-Robots-Tag: noindex, follow' );
+		}
 	}
 
 	// =========================================================

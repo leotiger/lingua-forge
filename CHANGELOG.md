@@ -2,6 +2,14 @@
 
 ---
 
+## [2.4.1] — 2026-07-03
+
+### Fixed
+- **IndexNow key-file submissions could fail with 403 even though the key file loaded fine in a browser** — the key-file URL (`/<key>.txt`) never matches a real post/page/rewrite rule, so WordPress's own request parsing already calls `status_header(404)` before `template_redirect` fires, unlike `robots.txt`, which has a dedicated `is_robots()` fast-path that bypasses 404 determination entirely. `IndexNowManager::maybe_serve_key_file()` served the correct key body but never overrode that inherited status, so the response went out under an HTTP 404 even though the body was correct. Browsers render 404 bodies fine, so a manual visit to the key-file URL looked correct, but `key_file_reachable()`'s own self-check and real IndexNow crawlers both require an actual 200 and reject a 404 regardless of body content, causing submissions to fail with 403 and the Sitemap panel's "Submit all URLs" button to stay disabled. `send_key_file_headers()` now calls `status_header(200)` — alongside the existing `nocache_headers()` call, which guards against a separate risk: a full-page cache/CDN freezing a stale hit for this URL. Confirmed live against cal-talaia.cat: `curl` with WordPress's own User-Agent returned the key body under an HTTP/2 404 before this fix, HTTP/2 200 after. (`language-router/includes/seo/class-indexnow-manager.php`)
+- **Sitemap chunk files (`/lf-sitemap-{N}.xml`) could go undiscovered by Google despite loading fine in a browser** — the same root cause as the IndexNow fix above: a chunk URL never matches a real post/page/rewrite rule, so WordPress already queues a 404 status before `template_redirect` fires. `SitemapManager::send_xml_headers()` (called from `serve_xml()`) served the correct XML body under that inherited 404 status. Google Search Console and any other status-code-aware sitemap consumer reject a 404 regardless of body content, so a chunk's URLs — reached via the `<loc>` entries in the `/lf-sitemap.xml` index — could go unindexed even though a logged-in admin's browser visit looked fine. `send_xml_headers()` now calls `status_header(200)` alongside the existing `nocache_headers()` call (which guards against a full-page cache/CDN freezing a stale response for a chunk URL). Confirmed live against cal-talaia.cat: a chunk request returned an HTTP/2 404 with a correct, PHP-generated body before this fix, HTTP/2 200 after; the sitemap index (`/lf-sitemap.xml`) was unaffected, confirmed returning 200 both before and after. The 24h internal transient cache that avoids the expensive DB regeneration is unaffected; only the HTTP status/caching of the outer response changed. (`language-router/includes/seo/class-sitemap-manager.php`)
+
+---
+
 ## [2.4.0] — 2026-06-30
 
 _Programmatic-publisher integration API from the Agnosis compatibility audit
