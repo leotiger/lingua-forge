@@ -2,6 +2,16 @@
 
 ---
 
+## [2.4.2] — 2026-07-04
+
+### Fixed
+- **Language Switcher: Grid Overlay's "Auto" list style could silently override an "Icon only" display, showing the current language as a plain text link instead of the configured icon.** `render_switcher()`'s `auto` overlay mode adds a class that hides the icon trigger and reveals the language panel inline once a `ResizeObserver` decides the container is wide enough (`neededWidth = langCount * 7em`). On any page where secondary languages are configured site-wide but this particular post has no translated siblings yet, `Switcher::get_languages()` correctly returns only one entry (itself), so `langCount` was `1` and `neededWidth` collapsed to ~7em — trivially satisfied at almost any real container width. The icon trigger was hidden nearly every time, replaced by a single, non-functional self-referential text link (e.g. "English"), silently overriding the "Icon only" setting. Confirmed live on an Agnosis-family site: reproduced only with List style = "Grid overlay — auto" (never with "Grid overlay — always", which skips this heuristic entirely and has no such issue). The `ResizeObserver` now only runs when there's at least one other language to switch to. (`language-router/includes/class-lsflr-switcher.php`)
+
+### Changed
+- **Grid Overlay's language panel no longer lists the current language.** Previously the panel-grid rendered every entry in `$langs`, including the current language (shown de-emphasised via `.lsflr-panel-current`); the classic dropdown's submenu already excluded it via `$others`. The panel now renders `$others` too, so both list styles show only the languages you can actually switch to. The now-unreachable `.lsflr-panel-current` CSS rule was removed. The auto-expand width heuristic above was updated to size against this same `$others` count. (`language-router/includes/class-lsflr-switcher.php`, `language-router/assets/lsflr.css`)
+
+---
+
 ## [2.4.1] — 2026-07-03
 
 ### Fixed

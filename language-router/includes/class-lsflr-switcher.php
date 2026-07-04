@@ -289,12 +289,11 @@ class Switcher {
 				>&times;</button>
 
 				<div class="lsflr-panel-grid">
-					<?php foreach ( $langs as $lang ) : ?>
+					<?php foreach ( $others as $lang ) : ?>
 						<a
 							href="<?php echo esc_url( $lang['url'] ); ?>"
 							lang="<?php echo esc_attr( $lang['code'] ); ?>"
-							class="lsflr-lang-item<?php echo $lang['current'] ? ' lsflr-panel-current' : ''; ?>"
-							<?php if ( $lang['current'] ) echo 'aria-current="true"'; ?>
+							class="lsflr-lang-item"
 						><?php echo esc_html( $lang['label'] ); ?></a>
 					<?php endforeach; ?>
 				</div>
@@ -437,11 +436,17 @@ class Switcher {
 			});
 
 			<?php if ( $overlay_mode === 'auto' ) : ?>
-			/* auto mode: switch to dropdown-style when container is wide enough */
-			if ('ResizeObserver' in window) {
+			/* auto mode: switch to dropdown-style when container is wide enough.
+			   The panel-grid now lists $others only (current language excluded, to
+			   match the classic dropdown's submenu), so the width heuristic sizes
+			   against that same count. Skipped entirely when there are zero other
+			   languages (e.g. secondary languages are configured site-wide but this
+			   post has no translated siblings yet) — otherwise the trigger would
+			   hide in favour of an empty panel with nothing to switch to. */
+			if ('ResizeObserver' in window && <?php echo count( $others ); ?> > 0) {
 				var ro = new ResizeObserver(function(entries) {
 					var containerWidth = entries[0].contentRect.width;
-					var langCount = <?php echo count( $langs ); ?>;
+					var langCount = <?php echo count( $others ); ?>;
 					/* Heuristic: ~7em per language label at current font size */
 					var neededWidth = langCount * 7 * parseFloat(getComputedStyle(document.documentElement).fontSize);
 					wrap.classList.toggle('lsflr-overlay-auto-expanded', containerWidth >= neededWidth);

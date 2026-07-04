@@ -35,32 +35,32 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.4.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.4.1/lingua-forge-2.4.1.zip';
-	$last_updated = '2026-07-03';
+	$version      = '2.4.2';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.4.2/lingua-forge-2.4.2.zip';
+	$last_updated = '2026-07-04';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): build lingua-forge-2.4.1.zip, upload it to the v2.4.1 GitHub
-	// release, then paste its sha256 here before deploying this manifest.
-	$sha256 = '2aacccd7f51a17b8a762eb935fb2a3800e991c2b626adc65dfe803b5f7b45d72';
+	// TODO(release): readme.txt changed after the previous hash below was taken,
+	// so it's stale — re-zip lingua-forge-2.4.2.zip, upload it to the v2.4.2
+	// GitHub release, then paste the new sha256 here before deploying this manifest.
+	$sha256 = '';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.4.2 &#8212; 2026-07-04</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Language Switcher &#8212; Grid Overlay&#8217;s &#8220;Auto&#8221; list style could silently override an &#8220;Icon only&#8221; display and show the current language as a plain text link instead. On any page where secondary languages are configured but have no translated content yet, only one language is available to switch to; the width heuristic that decides when to auto-expand used that count directly, so it was almost always satisfied and hid the icon trigger in favour of the (now pointless) self-referential text link. The heuristic no longer runs when there&#8217;s nothing to switch to. (<code>language-router/includes/class-lsflr-switcher.php</code>)</li>' .
+			'<li><strong>Changed:</strong> Grid Overlay&#8217;s language panel no longer lists the current language alongside the other languages &#8212; it now shows only the languages you can switch to, matching the classic dropdown&#8217;s existing behaviour. (<code>language-router/includes/class-lsflr-switcher.php</code>, <code>language-router/assets/lsflr.css</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.4.1 &#8212; 2026-07-03</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> IndexNow key-file submissions could fail with 403 even though the file loaded fine in a browser. The key-file URL never matches a real post/page/rewrite rule, so WordPress had already set an HTTP 404 status before the plugin&#8217;s handler ran &#8212; the correct key was served, but under a 404 status line that browsers render fine but that the reachability self-check and real IndexNow crawlers correctly reject. The response now explicitly sends status 200. (<code>language-router/includes/seo/class-indexnow-manager.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> Sitemap chunk files (<code>/lf-sitemap-{N}.xml</code>) could go undiscovered by Google for the same reason &#8212; served with a correct XML body under an inherited HTTP 404 status, which Search Console rejects regardless of body content. The response now explicitly sends status 200. The sitemap index (<code>/lf-sitemap.xml</code>) was not affected. (<code>language-router/includes/seo/class-sitemap-manager.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.4.0 &#8212; 2026-06-30</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> <code>linguaforge_queue_translation()</code> &#8212; a non-blocking companion to <code>linguaforge_trigger_translation()</code> that runs a translation off-request via Action Scheduler (when available) or WP-Cron, so programmatic publishers can translate into many languages without making blocking AI calls inline. (<code>ai/ai.php</code>, <code>ai/includes/Features/TranslationQueue.php</code>)</li>' .
-			'<li><strong>Added:</strong> <code>linguaforge_translated_post_meta</code> filter &#8212; lets an integration declare the post meta a programmatically-created translated post is born with (featured image, gallery, custom fields), written via <code>meta_input</code> so the translation is complete the moment it exists. WooCommerce operational keys remain delegated by MetaDelegate. (<code>ai/includes/Features/TranslationTrigger.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> A first-time translated post now keeps its translated excerpt &#8212; it was discarded on creation, so the meta description fell back to a trimmed slice of the content. The create path now writes <code>post_excerpt</code> from the AI&#8217;s <code>translated_excerpt</code>, matching the update path. (<code>ai/includes/Features/TranslationTrigger.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

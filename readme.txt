@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,10 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.4.2 =
+* Fixed: Language Switcher — Grid Overlay's "Auto" list style could silently override an "Icon only" display and show the current language as a plain text link instead. On any page where secondary languages are configured but have no translated content yet, only one language is available to switch to; the width heuristic that decides when to auto-expand used that count directly, so it was almost always satisfied and hid the icon trigger in favour of the (now pointless) self-referential text link. The heuristic no longer runs when there's nothing to switch to. (`class-lsflr-switcher.php`)
+* Changed: Grid Overlay's language panel no longer lists the current language alongside the other languages — it now shows only the languages you can switch to, matching the classic dropdown's existing behaviour. (`class-lsflr-switcher.php`, `lsflr.css`)
+
 = 2.4.1 =
 * Fixed: IndexNow key-file submissions could fail with 403 even though the file loaded fine in a browser. The key-file URL never matches a real post/page/rewrite rule, so WordPress had already set an HTTP 404 status before the plugin's handler ran — the correct key was served, but under a 404 status line that browsers render fine but that `key_file_reachable()` and real IndexNow crawlers correctly reject. The response now explicitly sends status 200. (`class-indexnow-manager.php`)
 * Fixed: Sitemap chunk files (`/lf-sitemap-{N}.xml`) could go undiscovered by Google for the same reason — served with a correct XML body under an inherited HTTP 404 status, which Search Console rejects regardless of body content. The response now explicitly sends status 200. The sitemap index (`/lf-sitemap.xml`) was not affected. (`class-sitemap-manager.php`)
@@ -309,16 +313,7 @@ For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CH
 
 == Upgrade Notice ==
 
-= 2.4.1 =
-Fixes the IndexNow key-file and sitemap chunk URLs being served under an incorrect HTTP 404 status (WordPress queues 404 for these URLs before the plugin's handler runs), which caused IndexNow submissions to fail and could keep sitemap chunk URLs out of Google Search Console. Both now correctly send status 200. No database changes. No flush required.
-
-= 2.4.0 =
-New programmatic-publisher integration API: async translation queue (`linguaforge_queue_translation()`) and a born-with-meta filter (`linguaforge_translated_post_meta`); first-time translations now keep their excerpt. All additive — no behaviour change, no database changes, no flush required.
-
-= 2.3.3 =
-Excluded post types no longer show LF meta boxes. No database changes. No flush required.
-
-= 2.3.2 =
-IndexNow submission moved to a background WP-Cron job, so saving a translated post is no longer delayed by the outbound request. No database changes. No flush required.
+= 2.4.2 =
+Fixes Grid Overlay "Auto" mode showing the current language as text instead of the configured icon when secondary languages are untranslated, and excludes the current language from the Grid Overlay panel to match the dropdown. No database changes. No flush required.
 
 
