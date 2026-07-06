@@ -65,6 +65,7 @@ use LinguaForge\AI\Admin\MetaBox;
 use LinguaForge\Router\Context;
 use LinguaForge\Router\Router;
 use ReflectionClass;
+use ReflectionMethod;
 use WP_UnitTestCase;
 
 final class MetaBoxIntegrationTest extends WP_UnitTestCase {
@@ -128,6 +129,23 @@ final class MetaBoxIntegrationTest extends WP_UnitTestCase {
 
 	private function make_post( string $post_type = 'post' ): int {
 		return (int) $this->factory->post->create( [ 'post_type' => $post_type, 'post_status' => 'publish' ] );
+	}
+
+	// =========================================================================
+	// instance_languages()
+	// =========================================================================
+
+	public function test_instance_languages_sorted_by_language_code(): void {
+		// Pinned deliberately out of alphabetical order (fr, de, en) — a
+		// coincidentally-alphabetical instance list wouldn't exercise the sort.
+		$this->pin_langs_to( [ 'fr', 'de', 'en' ] );
+
+		$ref = new ReflectionMethod( MetaBox::class, 'instance_languages' );
+		$ref->setAccessible( true );
+		$result = $ref->invoke( null );
+
+		$this->assertSame( [ 'de', 'en', 'fr' ], array_keys( $result ),
+			'The translate-to language map must be sorted by language code regardless of the instance list\'s configured order.' );
 	}
 
 	// =========================================================================

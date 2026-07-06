@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.4.2
+Stable tag: 2.5.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,14 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.5.0 =
+* Added: Support for "Your latest posts" as the site's front page (Settings → Reading) — translated homepages now live at `/es/`, `/fr/`, etc., alongside the existing static-front-page support. Includes: language-scoped post listing on the latest-posts front page (previously all languages appeared mixed); a "Blog Home" entry in the FSE template scaffold list so the latest-posts template can be translated per language; automatic `home-{lang}` template selection at runtime; a redirect from `/` to the language-prefixed root for returning visitors whose detected language differs from the site's source language; and a synthetic per-language homepage entry (with hreflang alternates) in the XML sitemap. (`class-query-filter.php`, `class-front-page-query.php`, `class-redirector.php`, `class-sitemap-manager.php`, `TemplateDefinitions.php`)
+* Added: Translated posts, pages, and CPTs now get their featured image copied from the source post automatically when the translation is created — none of the 3 built-in translation paths did this before. Skipped for WooCommerce products (already served live from the source via `MetaDelegate`) and when an integration's `linguaforge_translated_post_meta` filter already supplied one. A new "Fix Featured Images" bulk-fix button (next to "Fix Links" in the Posts/Pages/CPT admin list toolbar) retroactively fixes existing translations missing or out of sync with their source's featured image. Gallery images are unaffected — they live in post content, which is already translated. (`TranslationTrigger.php`, `AbstractTranslateCommand.php`, `PostListColumn.php`, `class-lsflr-featured-image-fixer.php`)
+* Added: Language lists in translate-action UIs (Retranslate dropdown, AI Translate-to dropdown, Quick Translate popover, Translations meta box) are now sorted alphabetically by language code instead of following arbitrary database/discovery order. (`PostListColumn.php`, `MetaBox.php`, `AdminToolbar.php`, `class-meta-boxes.php`)
+* Fixed: A translated post of a custom post type with its own rewrite slug (e.g. `/art/some-artwork/`) 404'd once language-prefixed (`/es/art/some-artwork/`) — only the CPT's archive had a language-prefixed inbound rewrite rule, not its single-post permalink. A new rule closes this for every public, non-hierarchical CPT with a custom rewrite slug. **Re-save Settings → Permalinks once after updating** to pick up the new rule. (`class-manager.php`)
+* Fixed: A theme with `home.html` but no `front-page.html` could render the theme's generic fallback content instead of real content on secondary-language homepages — "Front Page" is no longer offered for scaffolding (and no longer preferred at runtime) unless the active theme actually ships a base `front-page.html`. (`TemplateDefinitions.php`, `class-front-page-query.php`, `class-sync.php`)
+* Fixed: Language Switcher block could produce a double-slash URL (e.g. `/fr//`) when linking to the homepage of a site using "Your latest posts" — the link still worked (an extra redirect resolved it) but wasn't clean. (`class-lsflr-switcher.php`)
+
 = 2.4.2 =
 * Added: Language Switcher — new "Icon color" block setting (Inspector, when display mode is "Icon only" or "Icon + language"), using a theme-palette-aware colour picker. Lets you override the icon's colour for sections whose background is set locally rather than via the theme's global style, where the switcher's automatic contrast colour can otherwise end up matching the background. (`class-lsflr-switcher.php`, `editor-switcher.js`)
 * Fixed: Language Switcher — Grid Overlay's "Auto" list style could silently override an "Icon only" display and show the current language as a plain text link instead. On any page where secondary languages are configured but have no translated content yet, only one language is available to switch to; the width heuristic that decides when to auto-expand used that count directly, so it was almost always satisfied and hid the icon trigger in favour of the (now pointless) self-referential text link. The heuristic no longer runs when there's nothing to switch to. (`class-lsflr-switcher.php`)
@@ -313,6 +321,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.5.0 =
+Adds "Your latest posts" homepage support and automatic featured-image copying for translations. Also fixes translated custom-post-type permalinks 404ing. Re-save Settings > Permalinks once after updating.
 
 = 2.4.2 =
 Fixes Grid Overlay "Auto" mode showing the current language as text instead of the configured icon when secondary languages are untranslated, and excludes the current language from the Grid Overlay panel to match the dropdown. No database changes. No flush required.

@@ -214,8 +214,16 @@ class Switcher {
 		}
 
 		// Non-singular: switching to source language → strip prefix only.
+		//
+		// $new_path is empty on the homepage itself (bare '/', or '/{lang}/' once
+		// the prefix is stripped above) — most commonly reached now via a
+		// "Your latest posts" front page, where is_singular() is false for the
+		// homepage. Building the suffix conditionally avoids a double slash
+		// (".../[lang]//") in that case; trailingslashit() only runs when there
+		// is an actual sub-path to append.
+		$suffix = trim( $new_path, '/' );
 		if ( $target_lang === $source_lang ) {
-			return $home_url . '/' . trim( $new_path, '/' ) . '/' . $query;
+			return $home_url . '/' . ( $suffix !== '' ? \trailingslashit( $suffix ) : '' ) . $query;
 		}
 
 		// Non-singular: subdomain mode.
@@ -223,8 +231,8 @@ class Switcher {
 			return $lang_base_url . ( $new_path ? \trailingslashit( $new_path ) : '' ) . $query;
 		}
 
-		// Non-singular: path-prefix mode.
-		return $home_url . '/' . $target_lang . '/' . $new_path . '/' . $query;
+		// Non-singular: path-prefix mode. Same empty-$new_path guard as above.
+		return $home_url . '/' . $target_lang . '/' . ( $new_path !== '' ? \trailingslashit( $new_path ) : '' ) . $query;
 	}
 
 	// =========================================================

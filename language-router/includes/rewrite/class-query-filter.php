@@ -148,7 +148,17 @@ class QueryFilter {
 
 		// Frontend
 		if ( ! is_admin() ) {
-			if ( $q->is_front_page() ) return;
+			// A static front page (Settings -> Reading -> "A static page") is a
+			// singular Page query resolved by ID/permalink -- there is no post
+			// listing to scope by language, so it is skipped entirely.
+			//
+			// When the front page instead shows the latest posts ("Your latest
+			// posts"), is_front_page() is ALSO true, but the query is a normal
+			// posts listing that must be scoped to the active language exactly
+			// like any other archive/home query -- without this distinction every
+			// language's posts would appear mixed together on `/{lang}/`. Fall
+			// through to the is_archive()/is_home() branch below in that case.
+			if ( $q->is_front_page() && 'page' === get_option( 'show_on_front' ) ) return;
 
 			// Skip WC post types on the frontend — same reason as admin: WC has its own
 			// query pipeline and a meta_query JOIN on products is prohibitively expensive.

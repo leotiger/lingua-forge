@@ -210,6 +210,22 @@ class TranslationTrigger {
 		// LF-authoritative group keys are written below, never via the filter.
 		unset( $meta['_lf_trid'], $meta['_lf_lang'] );
 
+		// ── Featured image — copy from source, unless already supplied above ──
+		// Without this, a translated post/page/CPT is born with no featured
+		// image at all (nothing in the 3 built-in creation paths ever set it).
+		// Skipped for WooCommerce products/variations: MetaDelegate already
+		// serves `_thumbnail_id` from the source product at read time, so
+		// writing a copy here would just be silently shadowed.
+		if ( ! isset( $meta['_thumbnail_id'] )
+			&& post_type_supports( $source->post_type, 'thumbnail' )
+			&& ! in_array( $source->post_type, [ 'product', 'product_variation' ], true )
+		) {
+			$source_thumbnail_id = (int) get_post_thumbnail_id( $source->ID );
+			if ( $source_thumbnail_id ) {
+				$meta['_thumbnail_id'] = $source_thumbnail_id;
+			}
+		}
+
 		// ── Insert — bypass LF save hooks (same pattern as AbstractTranslateCommand) ──
 		$router = \LinguaForge\Router\Router::get_instance();
 		remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10 );

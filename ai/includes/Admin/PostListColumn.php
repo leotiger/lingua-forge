@@ -127,6 +127,10 @@ class PostListColumn {
 			return; // No other language available to translate from.
 		}
 
+		// Sort by language code so the "From" list reads in a predictable order
+		// rather than whatever order the DB happened to return TRID siblings in.
+		ksort( $translations );
+
 		echo ' <span class="lf-retranslate-wrap">';
 
 		// Language selector.
@@ -559,13 +563,29 @@ class PostListColumn {
 			? $source->post_status
 			: 'draft';
 
-		$new_id = wp_insert_post( [
+		$insert = [
 			'post_title'   => $title,
 			'post_content' => (string) ( $result['output'] ?? '' ),
 			'post_status'  => $target_status,
 			'post_type'    => $source->post_type,
 			'post_author'  => (int) $source->post_author,
-		], true );
+		];
+
+		// ── Featured image — copy from source ─────────────────────────────────
+		// Without this the translation is born with no featured image at all.
+		// Skipped for WooCommerce products/variations: MetaDelegate already
+		// serves `_thumbnail_id` from the source product at read time, so a
+		// copy here would just be silently shadowed.
+		if ( post_type_supports( $source->post_type, 'thumbnail' )
+			&& ! in_array( $source->post_type, [ 'product', 'product_variation' ], true )
+		) {
+			$source_thumbnail_id = (int) get_post_thumbnail_id( $post_id );
+			if ( $source_thumbnail_id ) {
+				$insert['meta_input'] = [ '_thumbnail_id' => $source_thumbnail_id ];
+			}
+		}
+
+		$new_id = wp_insert_post( $insert, true );
 
 		if ( is_wp_error( $new_id ) ) {
 			return [

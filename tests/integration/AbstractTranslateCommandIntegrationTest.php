@@ -309,6 +309,34 @@ final class AbstractTranslateCommandIntegrationTest extends WP_UnitTestCase {
 		$this->assertSame( $source_trid, get_post_meta( $target_id, '_lf_trid', true ) );
 	}
 
+	public function test_apply_translation_copies_source_thumbnail_on_create(): void {
+		$source_id     = $this->make_post( 'publish' );
+		$attachment_id = (int) $this->factory->attachment->create( [ 'post_parent' => $source_id ] );
+		// A raw meta write, not set_post_thumbnail(): the latter additionally
+		// requires wp_get_attachment_image() to render the attachment, which a
+		// bare factory attachment (no real file/generated sizes) fails, so
+		// set_post_thumbnail() would silently no-op. create_trid_linked_post()
+		// only reads the _thumbnail_id meta value via get_post_thumbnail_id().
+		update_post_meta( $source_id, '_thumbnail_id', $attachment_id );
+
+		$result = $this->invoke( 'apply_translation', [
+			$source_id, 'es', [ 'output' => 'x' ], false, false,
+		] );
+
+		$this->assertSame( $attachment_id, (int) get_post_thumbnail_id( $result['target_id'] ),
+			'The source post\'s featured image must be copied onto a newly created translation.' );
+	}
+
+	public function test_apply_translation_no_thumbnail_copied_when_source_has_none(): void {
+		$source_id = $this->make_post( 'publish' );
+
+		$result = $this->invoke( 'apply_translation', [
+			$source_id, 'es', [ 'output' => 'x' ], false, false,
+		] );
+
+		$this->assertSame( 0, (int) get_post_thumbnail_id( $result['target_id'] ) );
+	}
+
 	public function test_apply_translation_force_draft_overrides_published_source(): void {
 		$source_id = $this->make_post( 'publish' );
 

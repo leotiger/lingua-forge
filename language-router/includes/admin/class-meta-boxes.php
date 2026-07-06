@@ -283,7 +283,12 @@ class MetaBoxes {
 		$linked   = []; // [ lang => post_id ]
 		$unlinked = []; // [ lang, … ]
 
-		foreach ( $this->router->context->languages() as $l ) {
+		// Sort by language code so both the linked and unlinked lists render in
+		// a predictable order rather than Context::languages()'s discovery order.
+		$langs = $this->router->context->languages();
+		sort( $langs );
+
+		foreach ( $langs as $l ) {
 			if ( $l === $current_lang ) {
 				continue;
 			}

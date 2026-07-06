@@ -67,6 +67,13 @@ final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
 		update_option( 'linguaforge_routing_mode',          'path', false );
 		update_option( 'linguaforge_seo_sitemap_enabled',   true,  false );
 
+		// Default every test in this file to a static front page so the
+		// pre-existing assertions below (empty DB → empty sitemap, etc.) are
+		// unaffected by the synthetic-homepage-entry behaviour added for
+		// "Your latest posts" mode — tests further down opt into 'posts'
+		// explicitly where that behaviour is what's under test.
+		update_option( 'show_on_front', 'page' );
+
 		$this->reset_context_caches();
 
 		$this->tg = Router::get_instance()->trid_group;
@@ -492,5 +499,76 @@ final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
 
 		$this->assertSame( 200, $captured_code,
 			'send_xml_headers() must call status_header( 200 ) to override any 404 status WordPress already queued for this unmatched URL.' );
+	}
+
+	// =========================================================================
+	// Synthetic homepage entry — "Your latest posts" front page
+	// =========================================================================
+
+	/**
+	 * When the front page shows the latest posts (Settings → Reading), the
+	 * sitemap must include a synthetic entry for the language-prefixed homepage
+	 * of every active language — with hreflang alternates — even when no
+	 * LF-managed post exists yet. Without this, /es/, /fr/, … are real,
+	 * crawlable URLs that would otherwise never appear in the sitemap.
+	 */
+	public function test_latest_posts_front_adds_homepage_entries_for_every_language(): void {
+		update_option( 'show_on_front', 'posts' );
+		add_filter( 'lf_languages_list', static fn( array $l ): array =>
+			array_values( array_unique( array_merge( $l, [ 'es', 'fr' ] ) ) ) );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'lf_languages_list' );
+
+		$this->assertStringContainsString( home_url( '/' ), $chunk,
+			'Source-language homepage (bare root) must appear in the sitemap.' );
+		$this->assertStringContainsString( home_url( '/es/' ), $chunk,
+			'Spanish language-prefixed homepage must appear in the sitemap.' );
+		$this->assertStringContainsString( home_url( '/fr/' ), $chunk,
+			'French language-prefixed homepage must appear in the sitemap.' );
+		$this->assertStringContainsString( 'hreflang="es-ES"', $chunk );
+		$this->assertStringContainsString( 'hreflang="fr-FR"', $chunk );
+	}
+
+	/**
+	 * The synthetic homepage entry must respect subdomain routing mode — each
+	 * language's homepage URL must be its own subdomain root, not a path prefix
+	 * on the primary domain.
+	 */
+	public function test_latest_posts_front_uses_subdomains_in_subdomain_mode(): void {
+		update_option( 'show_on_front', 'posts' );
+		update_option( 'linguaforge_routing_mode', 'subdomain', false );
+		$this->reset_context_caches();
+		add_filter( 'lf_languages_list', static fn( array $l ): array =>
+			array_values( array_unique( array_merge( $l, [ 'es' ] ) ) ) );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'lf_languages_list' );
+		update_option( 'linguaforge_routing_mode', 'path', false );
+		$this->reset_context_caches();
+
+		$this->assertStringContainsString( 'es.', $chunk,
+			'Subdomain-mode homepage entry must use the es. subdomain, not a /es/ path prefix.' );
+		$this->assertStringNotContainsString( '/es/', $chunk,
+			'Subdomain-mode homepage entry must not also carry a path prefix.' );
+	}
+
+	/**
+	 * A static front page must NOT receive a synthetic homepage entry — this
+	 * is the pre-existing behaviour (a static front page is a normal Page post,
+	 * already covered by the DB query when it carries _lf_trid meta) and must
+	 * remain unaffected by the new "Your latest posts" support.
+	 */
+	public function test_static_front_page_does_not_add_synthetic_homepage_entry(): void {
+		// setUp() already sets show_on_front = 'page'; assert explicitly so this
+		// test's intent survives even if that default changes later.
+		$this->assertSame( 'page', get_option( 'show_on_front' ) );
+
+		$xml = Router::get_instance()->sitemap_manager->get_sitemap_xml();
+
+		$this->assertStringNotContainsString( '<sitemap>', $xml,
+			'Static front page (no LF-managed posts) must not receive a synthetic sitemap homepage entry.' );
 	}
 }

@@ -143,17 +143,37 @@ class Redirector {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WP search query parameter for language-aware search; no data is modified.
 		if ( ( $path === '/' || $path === '' ) && empty( $_GET['s'] ) ) {
 			$front_id = get_option( 'page_on_front' );
-			if ( ! $front_id ) return;
 
-			$translations = $this->router->trid_group->get_translations( $front_id );
+			if ( $front_id ) {
+				$translations = $this->router->trid_group->get_translations( $front_id );
 
-			if ( ! empty( $translations[LF_LANG] ) ) {
-				$target = get_permalink( $translations[LF_LANG] );
-				if ( untrailingslashit( $target ) !== untrailingslashit( home_url( '/' ) ) ) {
-					$target = $this->router->context->safe_query_args( $target );
-					wp_safe_redirect( $target, 302 );
-					exit;
+				if ( ! empty( $translations[LF_LANG] ) ) {
+					$target = get_permalink( $translations[LF_LANG] );
+					if ( untrailingslashit( $target ) !== untrailingslashit( home_url( '/' ) ) ) {
+						$target = $this->router->context->safe_query_args( $target );
+						wp_safe_redirect( $target, 302 );
+						exit;
+					}
 				}
+				return;
+			}
+
+			// Latest-posts front ("Your latest posts"): there is no dedicated front-page
+			// post to hold per-language translations — the translated homepage is simply
+			// the language-prefixed root (/es/, /fr/, …). A visitor whose language was
+			// detected from the lf_lang cookie or the Accept-Language header (rather than
+			// the URL itself, since bare '/' carries no prefix) must be redirected to that
+			// prefixed root so the URL matches the language actually being served.
+			//
+			// Subdomain routing mode has no path prefix — the request already lands on the
+			// correct language subdomain via DNS/host, so no redirect is needed there.
+			if (
+				LF_LANG !== $this->router->context->source_language() &&
+				$this->router->context->routing_mode() !== 'subdomain'
+			) {
+				$target = $this->router->context->safe_query_args( home_url( '/' . LF_LANG . '/' ) );
+				wp_safe_redirect( $target, 302 );
+				exit;
 			}
 		}
 	}

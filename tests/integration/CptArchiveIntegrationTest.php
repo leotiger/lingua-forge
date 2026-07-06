@@ -339,11 +339,20 @@ final class CptArchiveIntegrationTest extends WP_UnitTestCase {
 
 		unregister_post_type( 'lf_noarchive' );
 
+		// Single-post rules (added by add_cpt_single_rewrite_rules(), which
+		// keys on rewrite slug presence, not has_archive) are out of scope for
+		// this test — 'lf_noarchive' legitimately still gets one, since
+		// individual posts of that type have their own permalink regardless
+		// of whether an archive exists. Only archive-shaped rules (no `name=`
+		// capture) are asserted against here.
 		foreach ( $rules as $query ) {
+			if ( str_contains( $query, 'name=$matches' ) ) {
+				continue;
+			}
 			$this->assertStringNotContainsString(
 				'post_type=lf_noarchive',
 				$query,
-				'No rewrite rule must reference a CPT with has_archive = false.'
+				'No archive rewrite rule must reference a CPT with has_archive = false.'
 			);
 		}
 	}
@@ -367,11 +376,18 @@ final class CptArchiveIntegrationTest extends WP_UnitTestCase {
 
 		$rules = $this->capture_registration_rules();
 
+		// Single-post rules are governed by the separate
+		// linguaforge_cpt_single_excluded_post_types filter, not this one —
+		// 'lf_event' legitimately still gets a single-post rule here. Only
+		// archive-shaped rules (no `name=` capture) are asserted against.
 		foreach ( $rules as $query ) {
+			if ( str_contains( $query, 'name=$matches' ) ) {
+				continue;
+			}
 			$this->assertStringNotContainsString(
 				'post_type=lf_event',
 				$query,
-				'No rewrite rule must be generated for a CPT that appears in the linguaforge_cpt_archive_excluded_post_types list.'
+				'No archive rewrite rule must be generated for a CPT that appears in the linguaforge_cpt_archive_excluded_post_types list.'
 			);
 		}
 	}

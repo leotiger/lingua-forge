@@ -14,7 +14,11 @@
  *   • the filter receives the source id, target language, and source post type;
  *   • LF's own group keys (_lf_trid, _lf_lang) cannot be overridden through the
  *     filter — they keep their authoritative values;
- *   • with no filter registered, behaviour is unchanged (no stray meta).
+ *   • with no filter registered, behaviour is unchanged (no stray meta);
+ *   • the source post's featured image (`_thumbnail_id`) is copied onto the
+ *     new translation automatically when the source has one, skipped when it
+ *     doesn't, and left alone when the `linguaforge_translated_post_meta`
+ *     filter already supplied an explicit `_thumbnail_id`.
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -151,5 +155,51 @@ final class TranslationTriggerMetaFilterIntegrationTest extends WP_UnitTestCase 
 		$this->assertIsInt( $new_id );
 		$this->assertSame( '', (string) get_post_meta( $new_id, '_thumbnail_id', true ) );
 		$this->assertSame( '', (string) get_post_meta( $new_id, '_agnosis_medium', true ) );
+	}
+
+	// =========================================================================
+	// Automatic featured-image copy
+	// =========================================================================
+
+	public function test_source_thumbnail_is_copied_to_translated_post(): void {
+		$attachment_id = (int) self::factory()->attachment->create( [ 'post_parent' => $this->source_id ] );
+		// A raw meta write, not set_post_thumbnail(): the latter additionally
+		// requires wp_get_attachment_image() to render the attachment, which a
+		// bare factory attachment (no real file/generated sizes) fails, so
+		// set_post_thumbnail() would silently no-op. create_translated_post()
+		// only reads the _thumbnail_id meta value via get_post_thumbnail_id().
+		update_post_meta( $this->source_id, '_thumbnail_id', $attachment_id );
+
+		$new_id = $this->create_translation();
+
+		$this->assertIsInt( $new_id );
+		$this->assertSame( $attachment_id, (int) get_post_thumbnail_id( $new_id ) );
+	}
+
+	public function test_no_thumbnail_copied_when_source_has_none(): void {
+		$new_id = $this->create_translation();
+
+		$this->assertIsInt( $new_id );
+		$this->assertSame( 0, (int) get_post_thumbnail_id( $new_id ) );
+	}
+
+	public function test_filter_supplied_thumbnail_takes_precedence_over_source(): void {
+		$source_attachment = (int) self::factory()->attachment->create( [ 'post_parent' => $this->source_id ] );
+		update_post_meta( $this->source_id, '_thumbnail_id', $source_attachment );
+
+		$override_attachment = (int) self::factory()->attachment->create();
+
+		add_filter(
+			'linguaforge_translated_post_meta',
+			static function ( array $meta ) use ( $override_attachment ): array {
+				$meta['_thumbnail_id'] = $override_attachment;
+				return $meta;
+			}
+		);
+
+		$new_id = $this->create_translation();
+
+		$this->assertIsInt( $new_id );
+		$this->assertSame( $override_attachment, (int) get_post_thumbnail_id( $new_id ) );
 	}
 }

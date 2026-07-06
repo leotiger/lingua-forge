@@ -7,6 +7,11 @@
  *                           LF_LANG not defined guard, lang query-var set, search flags
  *   handle_pre_get_posts() admin branch — WC non-content skip, WC content skip when no
  *                           user-meta filter, lang filter applied, outdated filter double clause
+ *   handle_pre_get_posts() frontend branch — static front page (show_on_front='page')
+ *                           adds no _lf_lang clause; latest-posts front
+ *                           (show_on_front='posts', "Your latest posts") DOES add the
+ *                           clause, since is_front_page() is true there too but the
+ *                           query is a normal posts listing, not a singular Page lookup.
  *   query()               — LF_LANG guard, already-constrained skip
  *   query_fallback()      — OR clause with active lang + source
  *
@@ -255,6 +260,69 @@ final class QueryFilterIntegrationTest extends WP_UnitTestCase {
 
 		$this->assertTrue( $has_lang_ne,    '_lf_lang != source clause must be present for outdated filter' );
 		$this->assertTrue( $has_not_exists, '_lf_translation_source_updated_at NOT EXISTS clause must be present' );
+	}
+
+	// =========================================================================
+	// handle_pre_get_posts() — frontend: static page vs latest-posts front
+	// =========================================================================
+
+	/**
+	 * Static front page (show_on_front = 'page'): the front-page query is a
+	 * singular Page lookup with nothing to scope by language — no _lf_lang
+	 * meta_query clause must be added to the main query. This is the
+	 * pre-existing behaviour, preserved by the fix below.
+	 */
+	public function test_pre_get_posts_static_front_page_adds_no_lang_clause(): void {
+		$front_id = (int) self::factory()->post->create( [ 'post_type' => 'page', 'post_status' => 'publish' ] );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $front_id );
+
+		$this->go_to( '/' );
+
+		$this->assertTrue( $GLOBALS['wp_query']->is_front_page(),
+			'Sanity check: / must resolve to the front page.' );
+
+		$meta_query = (array) $GLOBALS['wp_query']->get( 'meta_query' );
+		$keys       = array_column( array_filter( $meta_query, 'is_array' ), 'key' );
+		$this->assertNotContains( '_lf_lang', $keys,
+			'A static front page must not receive a _lf_lang meta_query clause.' );
+
+		delete_option( 'show_on_front' );
+		delete_option( 'page_on_front' );
+	}
+
+	/**
+	 * Latest-posts front (show_on_front = 'posts', Settings → Reading → "Your
+	 * latest posts"): is_front_page() is ALSO true here, but the query is a
+	 * normal posts listing and must receive the same _lf_lang meta_query
+	 * clause as any other archive/home query. Regression test for the
+	 * language-mixing bug fixed in handle_pre_get_posts() — previously EVERY
+	 * language's posts appeared together on `/{lang}/` because the method
+	 * returned before reaching the is_archive()/is_home() branch below.
+	 */
+	public function test_pre_get_posts_latest_posts_front_adds_lang_clause(): void {
+		update_option( 'show_on_front', 'posts' );
+		update_option( 'page_on_front', 0 );
+
+		$this->go_to( '/' );
+
+		$this->assertTrue( $GLOBALS['wp_query']->is_front_page(),
+			'Sanity check: / must resolve to the front page.' );
+		$this->assertTrue( $GLOBALS['wp_query']->is_home(),
+			'Sanity check: latest-posts front page must also be the posts/home query.' );
+
+		$meta_query = (array) $GLOBALS['wp_query']->get( 'meta_query' );
+		$found      = false;
+		foreach ( array_filter( $meta_query, 'is_array' ) as $clause ) {
+			if ( ( $clause['key'] ?? '' ) === '_lf_lang' && ( $clause['value'] ?? '' ) === LF_LANG ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertTrue( $found,
+			'A latest-posts front page must receive a _lf_lang meta_query clause, same as any other archive/home query.' );
+
+		delete_option( 'show_on_front' );
 	}
 
 	// =========================================================================

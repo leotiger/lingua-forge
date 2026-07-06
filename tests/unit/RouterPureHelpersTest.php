@@ -223,4 +223,50 @@ final class RouterPureHelpersTest extends TestCase {
 
 		$this->assertSame( $permalink, $result );
 	}
+
+	// =========================================================================
+	// Switcher::build_translated_url() — non-singular homepage (empty $new_path)
+	//
+	// Regression coverage: with a "Your latest posts" front page, is_singular()
+	// is false on the homepage itself, so these branches (previously only
+	// reachable with a non-empty sub-path, e.g. an archive) are now reached
+	// with $new_path === ''. The old implementation produced a double slash
+	// (".../de//") in that case.
+	// =========================================================================
+
+	public function test_build_url_homepage_path_mode_no_double_slash(): void {
+
+		$result = Switcher::build_translated_url(
+			self::HOME . '/en/',
+			'de', 'en', self::LANGS, 'path',
+			false, '', false, '',
+			self::LANG_BASE, self::HOME
+		);
+
+		$this->assertSame( 'https://example.org/de/', $result );
+	}
+
+	public function test_build_url_homepage_path_mode_to_source_lang_no_double_slash(): void {
+
+		$result = Switcher::build_translated_url(
+			self::HOME . '/de/',
+			'en', 'en', self::LANGS, 'path',
+			false, '', false, '',
+			self::LANG_BASE, self::HOME
+		);
+
+		$this->assertSame( 'https://example.org/', $result );
+	}
+
+	public function test_build_url_bare_root_path_mode_no_double_slash(): void {
+
+		$result = Switcher::build_translated_url(
+			self::HOME . '/',
+			'de', 'en', self::LANGS, 'path',
+			false, '', false, '',
+			self::LANG_BASE, self::HOME
+		);
+
+		$this->assertSame( 'https://example.org/de/', $result );
+	}
 }

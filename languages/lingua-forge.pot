@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lingua Forge 2.4.1\n"
+"Project-Id-Version: Lingua Forge 2.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-03T21:58:58+00:00\n"
+"POT-Creation-Date: 2026-07-05T18:26:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lingua-forge\n"
@@ -348,26 +348,31 @@ msgstr ""
 msgid "Front Page"
 msgstr ""
 
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:69
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:70
+msgid "Blog Home"
+msgstr ""
+
 #. translators: %s: CPT singular label, e.g. "Product"
-#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:116
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:148
 #, php-format
 msgid "Single: %s"
 msgstr ""
 
 #. translators: %s: CPT singular label, e.g. "Product"
-#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:121
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:153
 #, php-format
 msgid "Single %s"
 msgstr ""
 
 #. translators: %s: CPT plural label, e.g. "Products"
-#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:131
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:163
 #, php-format
 msgid "Archive: %s"
 msgstr ""
 
 #. translators: %s: CPT plural label, e.g. "Products"
-#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:136
+#: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:168
 #, php-format
 msgid "%s Archive"
 msgstr ""
@@ -566,6 +571,7 @@ msgid "Overrides the AI preset for Translation and Content Generation on this pa
 msgstr ""
 
 #: ai/includes/Admin/MetaBox.php:847
+#: language-router/includes/class-lsflr-featured-image-fixer.php:321
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51
 #: ai/assets/admin-diff-modal.js:49
@@ -4495,33 +4501,113 @@ msgid "These footnotes come from the source page and are shown here for referenc
 msgstr ""
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:324
+#: language-router/includes/class-language-router.php:327
 #, php-format
 msgid "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;%2$s&#8221; theme are preserved in the database but are currently inactive. They will become active again if you reactivate that theme. To carry your translations to the new theme, regenerate them via <strong>Settings → Lingua Forge → Router → FSE scaffold</strong>."
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:81
-msgid "Scanning posts for broken language links…"
+#: language-router/includes/class-lsflr-featured-image-fixer.php:96
+msgid "Scanning posts for missing or out-of-sync featured images…"
 msgstr ""
 
+#: language-router/includes/class-lsflr-featured-image-fixer.php:97
 #: language-router/includes/class-lsflr-link-fixer.php:82
 msgid "Re-scanning…"
 msgstr ""
 
+#: language-router/includes/class-lsflr-featured-image-fixer.php:98
 #: language-router/includes/class-lsflr-link-fixer.php:83
 msgid "Scan failed: "
 msgstr ""
 
+#: language-router/includes/class-lsflr-featured-image-fixer.php:99
 #: language-router/includes/class-lsflr-link-fixer.php:84
 msgid "unknown error"
 msgstr ""
 
+#: language-router/includes/class-lsflr-featured-image-fixer.php:100
 #: language-router/includes/class-lsflr-link-fixer.php:85
 msgid "Scan request failed. Please try again."
 msgstr ""
 
+#: language-router/includes/class-lsflr-featured-image-fixer.php:101
 #: language-router/includes/class-lsflr-link-fixer.php:86
 msgid "⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts have their Language meta set to <strong>{lang}</strong> in the Language metabox."
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:102
+msgid "✅ All <strong>{lang}</strong> featured images are already in sync with their source post. Scanned <strong>{scanned}</strong> post(s)."
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:103
+msgid "Found <strong>{n}</strong> post(s) missing or out of sync with their source featured image, out of <strong>{scanned}</strong> scanned for <strong>{lang}</strong>."
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:104
+#: language-router/includes/class-lsflr-link-fixer.php:92
+msgid "Post"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:105
+msgid "Current"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:106
+msgid "Source (EN)"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:107
+msgid "None"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:108
+msgid "Copy from source"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:109
+msgid "Copying…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:110
+msgid "✅ Copied"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:111
+#: language-router/includes/class-lsflr-link-fixer.php:100
+#: language-router/includes/class-lsflr-link-fixer.php:124
+msgid "❌ Failed"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:112
+#: language-router/includes/class-lsflr-link-fixer.php:101
+msgid "Done — {done} of {total} post(s) fixed."
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:113
+#: language-router/includes/class-lsflr-link-fixer.php:103
+msgid "Fixing {n} / {total}…"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:297
+msgid "Fix Featured Images"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:323
+msgid "Featured Image Fixer"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:331
+#: language-router/includes/class-lsflr-link-fixer.php:807
+msgid "Fix All"
+msgstr ""
+
+#: language-router/includes/class-lsflr-featured-image-fixer.php:334
+#: language-router/includes/class-lsflr-link-fixer.php:810
+msgid "Re-scan"
+msgstr ""
+
+#: language-router/includes/class-lsflr-link-fixer.php:81
+msgid "Scanning posts for broken language links…"
 msgstr ""
 
 #: language-router/includes/class-lsflr-link-fixer.php:87
@@ -4544,10 +4630,6 @@ msgstr ""
 msgid "Found {parts} across <strong>{total}</strong> of <strong>{scanned}</strong> scanned post(s) for <strong>{lang}</strong>."
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:92
-msgid "Post"
-msgstr ""
-
 #: language-router/includes/class-lsflr-link-fixer.php:94
 msgid "link(s)"
 msgstr ""
@@ -4568,21 +4650,8 @@ msgstr ""
 msgid "⚠ No changes"
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:100
-#: language-router/includes/class-lsflr-link-fixer.php:124
-msgid "❌ Failed"
-msgstr ""
-
-#: language-router/includes/class-lsflr-link-fixer.php:101
-msgid "Done — {done} of {total} post(s) fixed."
-msgstr ""
-
 #: language-router/includes/class-lsflr-link-fixer.php:102
 msgid "({skipped} had no replaceable links — re-scan to investigate)"
-msgstr ""
-
-#: language-router/includes/class-lsflr-link-fixer.php:103
-msgid "Fixing {n} / {total}…"
 msgstr ""
 
 #: language-router/includes/class-lsflr-link-fixer.php:106
@@ -4641,16 +4710,8 @@ msgstr ""
 msgid "Internal Link Fixer"
 msgstr ""
 
-#: language-router/includes/class-lsflr-link-fixer.php:807
-msgid "Fix All"
-msgstr ""
-
-#: language-router/includes/class-lsflr-link-fixer.php:810
-msgid "Re-scan"
-msgstr ""
-
 #: language-router/includes/class-lsflr-switcher-widget.php:25
-#: language-router/includes/class-lsflr-switcher.php:459
+#: language-router/includes/class-lsflr-switcher.php:509
 msgid "Language Switcher"
 msgstr ""
 
@@ -4686,11 +4747,11 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher.php:283
+#: language-router/includes/class-lsflr-switcher.php:328
 msgid "Select language"
 msgstr ""
 
-#: language-router/includes/class-lsflr-switcher.php:288
+#: language-router/includes/class-lsflr-switcher.php:333
 msgid "Close language panel"
 msgstr ""
 

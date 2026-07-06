@@ -42,11 +42,12 @@ require_once __DIR__ . '/includes/admin/class-columns.php';
 require_once __DIR__ . '/includes/admin/class-filters.php';
 require_once __DIR__ . '/includes/admin/class-scripts.php';
 
-// Language Switcher + Link Fixer — loaded before the Router class so the
-// Router constructor can instantiate them as sub-objects.
+// Language Switcher + Link Fixer + Featured Image Fixer — loaded before the
+// Router class so the Router constructor can instantiate them as sub-objects.
 require_once __DIR__ . '/includes/class-lsflr-switcher.php';
 require_once __DIR__ . '/includes/class-lsflr-switcher-widget.php';
 require_once __DIR__ . '/includes/class-lsflr-link-fixer.php';
+require_once __DIR__ . '/includes/class-lsflr-featured-image-fixer.php';
 require_once __DIR__ . '/includes/rest/class-data-endpoints.php';
 
 // Router orchestrator — requires all sub-classes above.

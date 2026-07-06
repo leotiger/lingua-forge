@@ -74,10 +74,21 @@ class Sync {
 
 		if ( $type === 'page' ) {
 			// Use front-page-{lang} when this page is the static front page or
-			// a translation of it. WordPress applies front-page.html automatically
-			// for the static front page; the lang variant mirrors that behaviour.
-			$front_id = (int) get_option( 'page_on_front' );
-			if ( $front_id > 0 ) {
+			// a translation of it — but only when the active theme actually ships
+			// a base front-page.html. WordPress applies front-page.html
+			// automatically for the static front page ONLY when the theme has
+			// one; a theme without it uses page.html for the front page just
+			// like any other static page, so assigning 'front-page-{lang}' on
+			// such a theme would point at a template WordPress would never
+			// select at the source language either. Fall through to the normal
+			// 'page' base in that case.
+			// Scoped lookup (theme//slug), not the generic template_exists() helper —
+			// that helper's get_block_templates() fallback matches the slug across
+			// ANY theme/plugin namespace, which would false-positive if some other
+			// registered template happens to share the bare 'front-page' slug.
+			$front_id            = (int) get_option( 'page_on_front' );
+			$has_base_front_page = null !== get_block_template( get_stylesheet() . '//front-page' );
+			if ( $front_id > 0 && $has_base_front_page ) {
 				$post_trid  = $this->router->trid_group->get_trid( $post->ID );
 				$front_trid = $this->router->trid_group->get_trid( $front_id );
 				if ( $post->ID === $front_id ||

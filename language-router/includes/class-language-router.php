@@ -40,6 +40,7 @@ defined( 'ABSPATH' ) || exit;
  *   Admin\Scripts    – enqueue admin + frontend scripts
  *   Switcher         – Language Switcher block, renderer, URL translator
  *   LinkFixer        – internal-link scanner and fixer for translated posts
+ *   FeaturedImageFixer – featured-image scanner and fixer for translated posts
  */
 
 use LinguaForge\Router\I18n\Overrides      as I18nOverrides;
@@ -63,7 +64,7 @@ use LinguaForge\Router\Admin\Columns;
 use LinguaForge\Router\Admin\Filters;
 use LinguaForge\Router\Admin\Scripts;
 use WP_Query;
-// Switcher and LinkFixer are in the root LinguaForge\Router namespace — no alias needed.
+// Switcher, LinkFixer, and FeaturedImageFixer are in the root LinguaForge\Router namespace — no alias needed.
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -117,6 +118,7 @@ class Router {
 		$this->scripts       = new Scripts( $this );
 		$this->switcher      = new Switcher( $this );
 		$this->link_fixer    = new LinkFixer( $this );
+		$this->featured_image_fixer = new FeaturedImageFixer( $this );
 
 		$this->define_lang_constant();
 		$this->register_hooks();
@@ -165,6 +167,7 @@ class Router {
 	public Scripts          $scripts;
 	public Switcher         $switcher;
 	public LinkFixer        $link_fixer;
+	public FeaturedImageFixer $featured_image_fixer;
 
 	// =========================================================
 	// BOOTSTRAP

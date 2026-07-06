@@ -440,13 +440,29 @@ abstract class AbstractTranslateCommand {
         remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'  ], 10 );
         remove_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
 
-        $new_id = wp_insert_post( [
+        $insert = [
             'post_title'   => $title,
             'post_content' => (string) ( $result['output'] ?? '' ),
             'post_status'  => $target_status,
             'post_type'    => $source->post_type,
             'post_author'  => (int) $source->post_author,
-        ], true );
+        ];
+
+        // ── Featured image — copy from source ──────────────────────────────
+        // Without this the translation is born with no featured image at all.
+        // Skipped for WooCommerce products/variations: MetaDelegate already
+        // serves `_thumbnail_id` from the source product at read time, so a
+        // copy here would just be silently shadowed.
+        if ( post_type_supports( $source->post_type, 'thumbnail' )
+            && ! in_array( $source->post_type, [ 'product', 'product_variation' ], true )
+        ) {
+            $source_thumbnail_id = (int) get_post_thumbnail_id( $source_post_id );
+            if ( $source_thumbnail_id ) {
+                $insert['meta_input'] = [ '_thumbnail_id' => $source_thumbnail_id ];
+            }
+        }
+
+        $new_id = wp_insert_post( $insert, true );
 
         add_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'  ], 10, 2 );
         add_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );

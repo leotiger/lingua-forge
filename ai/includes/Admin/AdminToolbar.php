@@ -39,13 +39,19 @@ class AdminToolbar {
      * The intersection ensures only languages that are BOTH understood by the
      * AI and actually managed by this instance appear in the dropdown.
      *
+     * Sorted by language code (ksort) so the Quick Translate popover lists
+     * languages in a predictable order rather than Translation::get_languages()'s
+     * built-in insertion order.
+     *
      * @return array<string,string>  e.g. ['en' => 'English', 'es' => 'Spanish']
      */
     private static function instance_languages(): array {
-        return array_intersect_key(
+        $languages = array_intersect_key(
             Translation::get_languages(),
             array_flip( linguaforge_languages() )
         );
+        ksort( $languages );
+        return $languages;
     }
 
     // ── Admin Bar node ────────────────────────────────────────────────────────

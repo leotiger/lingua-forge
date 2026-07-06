@@ -381,6 +381,34 @@ final class RedirectorRedirectIntegrationTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @testdox Latest-posts front (page_on_front = 0) + bare root in the source
+	 *          language does not redirect.
+	 *
+	 * This exercises the new "Your latest posts" branch added to the homepage
+	 * redirect: when there is no static front-page post, a non-source LF_LANG
+	 * (detected from the lf_lang cookie/Accept-Language, since bare '/' carries
+	 * no URL prefix) should redirect to the language-prefixed root. LF_LANG is
+	 * fixed to the source language ('en') in this CLI test harness (see class
+	 * docblock), so only the negative guard path — source-language visitor,
+	 * no redirect — is reachable here; the same limitation applies to
+	 * handle_singular_redirect() above.
+	 */
+	public function test_init_redirects_latest_posts_front_source_lang_no_redirect(): void {
+		if ( ! defined( 'LF_LANG' ) ) {
+			$this->markTestSkipped( 'LF_LANG not defined.' );
+		}
+
+		update_option( 'page_on_front', 0 );
+		update_option( 'show_on_front', 'posts' );
+
+		$_SERVER['REQUEST_URI'] = '/';
+		$_GET                   = [];
+
+		$this->router->redirector->handle_init_redirects();
+		$this->addToAssertionCount( 1 );
+	}
+
+	/**
 	 * @testdox Root path at init with page_on_front set + TRID translation fires redirect.
 	 */
 	public function test_init_redirects_homepage_fires_when_translation_exists(): void {

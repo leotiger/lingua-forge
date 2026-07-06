@@ -88,6 +88,13 @@ class Manager {
 		// being swallowed by `pagename=events` (which WP would 404).
 		$this->add_cpt_archive_rewrite_rules( $langs );
 
+		// CPT single-post rules — same precedence requirement, and covers a
+		// distinct 404: a translated CPT post with a custom rewrite slug (e.g.
+		// /es/art/some-artwork/) has no matching inbound rule at all without
+		// this, since the fallback below treats the whole remainder as a flat
+		// `pagename`, and `art/some-artwork` is not a real hierarchical page path.
+		$this->add_cpt_single_rewrite_rules( $langs );
+
 		// General taxonomy archive rules — same precedence requirement; must sit
 		// before the generic fallback so /es/event-type/conference/ routes to the
 		// correct taxonomy archive rather than being consumed by `pagename`.
@@ -186,6 +193,81 @@ class Manager {
 			add_rewrite_rule(
 				'^(' . $langs . ')/' . $escaped . '/?$',
 				'index.php?lang=$matches[1]&post_type=' . $pto->name,
+				'top'
+			);
+		}
+	}
+
+	// =========================================================
+	// CPT SINGLE-POST REWRITE RULES
+	// =========================================================
+
+	/**
+	 * Registers language-prefixed rewrite rules for the single-post permalink
+	 * of every public CPT that has a custom rewrite slug.
+	 *
+	 * `lang_permalink()` / `rewrite_lang_permalink()` below build a translated
+	 * CPT post's URL by prepending `{lang}/` to whatever the untranslated
+	 * permalink already was — for a CPT with rewrite slug `art`, that produces
+	 * `/{lang}/art/{postname}/`. Confirmed live on an Agnosis-family site
+	 * (`agnosis_artwork`, rewrite slug `art`): without a dedicated inbound rule,
+	 * that URL falls through to the generic pagename fallback registered at the
+	 * end of register_rewrite_rules(), which treats `art/{postname}` as a single
+	 * hierarchical page path — no such page exists, so the request 404s, even
+	 * though the CPT post itself exists and its un-prefixed permalink
+	 * (`/art/{postname}/`) resolves fine. This is the single-post equivalent of
+	 * the CPT-archive gap add_cpt_archive_rewrite_rules() already closes.
+	 *
+	 * Built-in `post`/`page`/`attachment` are excluded — they either have no
+	 * comparable custom slug segment or are already handled by the generic
+	 * fallback (`post` normally has an empty rewrite slug; WordPress itself
+	 * falls back from an unmatched `pagename` to a `post`-type lookup by name).
+	 * WooCommerce `product`/`product_variation` are excluded by default,
+	 * mirroring add_cpt_archive_rewrite_rules()'s exclusion — WC's own
+	 * permalink/rewrite handling for products has not been audited against
+	 * this rule and is left untouched to avoid an unverified interaction;
+	 * site owners who need this for WC products can re-include them via the
+	 * `linguaforge_cpt_single_excluded_post_types` filter.
+	 *
+	 * Hierarchical CPTs are skipped: their single-post permalinks can contain
+	 * a variable-depth ancestor path (like Pages), which a fixed
+	 * `{slug}/{postname}` pattern does not model — the same reason Pages
+	 * themselves are excluded rather than handled here.
+	 *
+	 * @param string $langs  Pipe-separated language alternation string, e.g. 'ca|es|en'.
+	 */
+	private function add_cpt_single_rewrite_rules( string $langs ): void {
+		$excluded = (array) apply_filters(
+			'linguaforge_cpt_single_excluded_post_types',
+			[ 'post', 'page', 'attachment', 'product', 'product_variation' ]
+		);
+
+		$post_types = get_post_types( [ 'public' => true ], 'objects' );
+
+		foreach ( $post_types as $pto ) {
+			if ( in_array( $pto->name, $excluded, true ) ) {
+				continue;
+			}
+			if ( $pto->hierarchical ) {
+				continue;
+			}
+			// Only CPTs with a real rewrite slug hit the fallback-swallows-it
+			// failure mode this closes; a CPT with rewrite disabled has no
+			// front-end single permalink to prefix in the first place.
+			if ( empty( $pto->rewrite ) || empty( $pto->rewrite['slug'] ) ) {
+				continue;
+			}
+
+			$slug    = ltrim( (string) $pto->rewrite['slug'], '/' );
+			$escaped = preg_quote( $slug, '#' );
+
+			// `post_type` + `name` (rather than the CPT's own query_var, which
+			// may be disabled via `query_var => false`) is the same lookup
+			// WordPress's own core-generated CPT single rules resolve through,
+			// so this works regardless of that CPT's query_var configuration.
+			add_rewrite_rule(
+				'^(' . $langs . ')/' . $escaped . '/([^/]+)/?$',
+				'index.php?lang=$matches[1]&post_type=' . $pto->name . '&name=$matches[2]',
 				'top'
 			);
 		}

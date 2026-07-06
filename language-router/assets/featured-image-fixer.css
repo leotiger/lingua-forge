@@ -1,0 +1,117 @@
+/**
+ * Featured Image Fixer modal — mirrors language-router/assets/link-fixer.css
+ * conventions (same overlay/box treatment, different ID namespace so both
+ * modals can be enqueued on the same edit.php screen without colliding).
+ */
+
+#lsflr-thumbfixer-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba( 0, 0, 0, .55 );
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#lsflr-thumbfixer-modal {
+	position: relative;
+	width: min( 720px, 92vw );
+	max-height: 85vh;
+	overflow-y: auto;
+	background: #fff;
+	border-radius: 6px;
+	box-shadow: 0 6px 32px rgba( 0, 0, 0, .3 );
+	padding: 28px 32px 24px;
+}
+
+#lsflr-thumbfixer-close {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	background: none;
+	border: none;
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+	color: #646970;
+}
+
+#lsflr-thumbfixer-close:hover {
+	color: #1d2327;
+}
+
+#lsflr-thumbfixer-modal h2 {
+	margin-top: 0;
+	margin-bottom: 14px;
+	font-size: 18px;
+}
+
+#lsflr-thumbfixer-status {
+	margin-bottom: 12px;
+}
+
+#lsflr-thumbfixer-results table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 16px;
+}
+
+#lsflr-thumbfixer-results th,
+#lsflr-thumbfixer-results td {
+	text-align: left;
+	padding: 8px 10px;
+	border-bottom: 1px solid #dcdcde;
+	vertical-align: middle;
+}
+
+#lsflr-thumbfixer-results img.lsflr-thumb-preview {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 3px;
+	border: 1px solid #dcdcde;
+	display: block;
+}
+
+#lsflr-thumbfixer-results .lsflr-thumb-none {
+	color: #8c8f94;
+	font-style: italic;
+	font-size: 12px;
+}
+
+#lsflr-thumbfixer-results tr.lsflr-fixed td {
+	background: #edfaef;
+}
+
+#lsflr-thumbfixer-results tr.lsflr-failed td {
+	background: #fcf0f1;
+}
+
+#lsflr-thumbfixer-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#lsflr-thumbfix-progress {
+	color: #646970;
+	font-size: 13px;
+}
+
+@keyframes lsflr-thumbfixer-spin {
+	from { transform: rotate( 0deg ); }
+	to   { transform: rotate( 360deg ); }
+}
+
+.lsflr-thumbfixer-spinner {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	border: 2px solid #dcdcde;
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	animation: lsflr-thumbfixer-spin .6s linear infinite;
+	vertical-align: middle;
+	margin-right: 6px;
+}

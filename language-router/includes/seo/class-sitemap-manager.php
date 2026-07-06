@@ -342,7 +342,26 @@ class SitemapManager {
 			)
 		);
 
-		if ( empty( $rows ) ) {
+		// ── Group rows by TRID ────────────────────────────────────────────────
+		$groups = [];
+		foreach ( $rows as $row ) {
+			$groups[ $row->trid ][] = $row;
+		}
+
+		// ── Synthetic homepage entry ("Your latest posts") ────────────────────
+		// When the front page shows the latest posts (Settings → Reading), there
+		// is no Page post carrying _lf_trid/_lf_lang meta for the homepage URL —
+		// without this, /es/, /fr/, … would be real, crawlable URLs that never
+		// appear in the sitemap. Static-front-page sites already get their
+		// homepage from the row query above (page_on_front is a normal post).
+		if ( 'posts' === get_option( 'show_on_front' ) ) {
+			$home_group = $this->build_home_sitemap_group();
+			if ( ! empty( $home_group ) ) {
+				$groups['__lf_home__'] = $home_group;
+			}
+		}
+
+		if ( empty( $groups ) ) {
 			// Cache empty responses so we don't re-query on every request.
 			set_transient( self::CACHE_KEY, $this->empty_index_xml(), self::CACHE_TTL );
 			set_transient( self::CACHE_KEY_CHUNK . '0', $this->empty_urlset_xml(), self::CACHE_TTL );
@@ -350,12 +369,6 @@ class SitemapManager {
 			update_option( 'linguaforge_sitemap_url_count', 0, false );
 			update_option( 'linguaforge_sitemap_cached_at', wp_date( 'c' ), false );
 			return;
-		}
-
-		// ── Group rows by TRID ────────────────────────────────────────────────
-		$groups = [];
-		foreach ( $rows as $row ) {
-			$groups[ $row->trid ][] = $row;
 		}
 
 		// ── Split into chunks of GROUPS_PER_CHUNK TRIDs each ─────────────────
@@ -421,7 +434,10 @@ class SitemapManager {
 			$latest_mod = '';
 
 			foreach ( $posts as $row ) {
-				$permalink = get_permalink( (int) $row->ID );
+				// Synthetic homepage rows (built by build_home_sitemap_group()) carry
+				// their target URL directly on ->url — there is no post ID to resolve
+				// via get_permalink().
+				$permalink = $row->url ?? get_permalink( (int) $row->ID );
 				if ( ! $permalink ) {
 					continue;
 				}
@@ -460,6 +476,45 @@ class SitemapManager {
 
 		$xml .= '</urlset>';
 		return $xml;
+	}
+
+	/**
+	 * Build a synthetic TRID-style group for the homepage when the front page
+	 * shows the latest posts ("Your latest posts" under Settings → Reading).
+	 *
+	 * There is no Page post in this mode to carry _lf_trid/_lf_lang meta for the
+	 * homepage URL, so generate_and_cache() cannot discover /es/, /fr/, … via the
+	 * normal DB query. This builds one row per active language directly from
+	 * routing config, in the same shape generate_chunk_xml() already consumes —
+	 * each row carries ->url instead of ->ID so get_permalink() is never called.
+	 *
+	 * @return array<int, \stdClass>  One row per active language, or [] if the
+	 *                                 front page is not in "latest posts" mode.
+	 */
+	private function build_home_sitemap_group(): array {
+		$source = $this->router->context->source_language();
+		$mode   = $this->router->context->routing_mode();
+		$now    = current_time( 'mysql', true );
+
+		$group = [];
+		foreach ( $this->router->context->languages() as $lang ) {
+			if ( $mode === 'subdomain' ) {
+				// lang_base_url() already resolves the correct per-language subdomain
+				// root for both the source language and every other language.
+				$url = $this->router->context->lang_base_url( $lang );
+			} else {
+				$url = ( $lang === $source ) ? home_url( '/' ) : home_url( '/' . $lang . '/' );
+			}
+
+			$row                    = new \stdClass();
+			$row->ID                = 0;
+			$row->url               = $url;
+			$row->lang              = $lang;
+			$row->post_modified_gmt = $now;
+			$group[]                = $row;
+		}
+
+		return $group;
 	}
 
 	/**

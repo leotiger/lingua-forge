@@ -267,6 +267,34 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'value="es"', $html, "The post's own language must never appear as a from-language option." );
 	}
 
+	public function test_render_retranslate_button_lists_siblings_sorted_by_language_code(): void {
+		$trid  = $this->trid();
+		$fr_id = $this->make_post();
+		$de_id = $this->make_post();
+		$en_id = $this->make_post();
+		$es_id = $this->make_post();
+		// Inserted out of alphabetical order (fr, de, en) so the assertion below
+		// actually exercises the sort rather than coincidentally matching DB order.
+		$this->tg->set_trid( $fr_id, $trid ); $this->tg->set_lang( $fr_id, 'fr' );
+		$this->tg->set_trid( $de_id, $trid ); $this->tg->set_lang( $de_id, 'de' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_retranslate_button( $es_id );
+		$html = ob_get_clean();
+
+		$de_pos = strpos( $html, 'value="de"' );
+		$en_pos = strpos( $html, 'value="en"' );
+		$fr_pos = strpos( $html, 'value="fr"' );
+
+		$this->assertNotFalse( $de_pos );
+		$this->assertNotFalse( $en_pos );
+		$this->assertNotFalse( $fr_pos );
+		$this->assertTrue( $de_pos < $en_pos && $en_pos < $fr_pos,
+			'From-language options must be sorted alphabetically by language code (de, en, fr), regardless of insertion/DB order.' );
+	}
+
 	public function test_render_retranslate_button_silent_for_source_language_post(): void {
 		$trid  = $this->trid();
 		$en_id = $this->make_post();
@@ -322,6 +350,30 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 			get_post_meta( $source_id, '_lf_trid', true ),
 			get_post_meta( $target->ID, '_lf_trid', true )
 		);
+	}
+
+	public function test_ajax_fill_missing_copies_source_thumbnail_to_new_translation(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		$attachment_id = (int) $this->factory->attachment->create( [ 'post_parent' => $source_id ] );
+		// A raw meta write, not set_post_thumbnail(): the latter additionally
+		// requires wp_get_attachment_image() to render the attachment, which a
+		// bare factory attachment (no real file/generated sizes) fails, so
+		// set_post_thumbnail() would silently no-op. create_linked_post() only
+		// reads the _thumbnail_id meta value via get_post_thumbnail_id().
+		update_post_meta( $source_id, '_thumbnail_id', $attachment_id );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Título', '<p>Contenido</p>' )
+		), 10, 3 );
+
+		$resp    = $this->dispatch_fill_missing( $source_id );
+		$outcome = $resp['data']['results']['es'] ?? null;
+
+		$this->assertNotNull( $outcome );
+		$this->assertSame( $attachment_id, (int) get_post_thumbnail_id( (int) $outcome['id'] ),
+			'The bulk "Translate missing" action must copy the source post\'s featured image onto the new translation.' );
 	}
 
 	public function test_ajax_fill_missing_reports_nothing_to_do_when_all_exist(): void {

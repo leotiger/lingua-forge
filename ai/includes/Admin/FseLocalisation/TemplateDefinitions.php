@@ -59,6 +59,16 @@ class TemplateDefinitions {
                 'label' => __( 'Front Page',     'lingua-forge' ),
                 'title' => __( 'Front Page',     'lingua-forge' ),
             ],
+            // 'Blog Home' — used by WordPress whenever the latest posts are shown,
+            // either as the site's front page (Settings → Reading → "Your latest
+            // posts") or as a dedicated "Posts page" alongside a static front page.
+            // Swapped in at runtime by Routing\FrontPageQuery, which resolves
+            // 'home-{lang}' whenever is_home() is true and no more specific
+            // 'front-page-{lang}' override applies.
+            'home'       => [
+                'label' => __( 'Blog Home',      'lingua-forge' ),
+                'title' => __( 'Blog Home',      'lingua-forge' ),
+            ],
         ];
 
         // ── Collect all registered block templates in one query ──────────────
@@ -83,6 +93,28 @@ class TemplateDefinitions {
 
         // All available slugs (theme + plugin) — used for CPT pattern matching.
         $all_slugs = array_merge( $theme_slugs, array_keys( $plugin_tpls ) );
+
+        // ── Drop hardcoded slots the active theme/plugin doesn't actually ship ──
+        // 'front-page' and 'home' are the two slots WordPress's own template
+        // hierarchy treats as interchangeable (front-page.html overrides home.html
+        // whenever both exist and is_front_page() is true) — offering to scaffold
+        // one that the theme doesn't have is actively misleading, not just inert:
+        // ScaffoldHandler falls back to copying the theme's 'index' template as a
+        // starting point (documented, reasonable for a slot meant to be customised
+        // afterward), but FrontPageQuery/Sync still treat the resulting
+        // '{slug}-{lang}' row as authoritative at runtime purely because it exists,
+        // regardless of whether the base slug means anything for this theme. On a
+        // theme with no front-page.html (only home.html), a scaffolded but
+        // never-customised 'front-page-{lang}' silently wins over the correctly
+        // authored 'home-{lang}' for every language that has one — rendering the
+        // theme's generic index/"Hello world" fallback instead of real content.
+        // Removing the entry here stops it being offered in the first place; the
+        // corresponding runtime guards live in FrontPageQuery and Sync.
+        foreach ( [ 'front-page', 'home' ] as $slot ) {
+            if ( ! in_array( $slot, $all_slugs, true ) ) {
+                unset( $defs[ $slot ] );
+            }
+        }
 
         // ── CPT slots: single-{cpt} / archive-{cpt} ──────────────────────────
         // Checked against ALL available templates (theme + plugin) so that
