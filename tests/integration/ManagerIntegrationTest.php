@@ -57,6 +57,32 @@ final class ManagerIntegrationTest extends WP_UnitTestCase {
 	}
 
 	// =========================================================================
+	// 0. register_rewrite_rules() must run after CPT registration
+	// =========================================================================
+
+	/**
+	 * register_rewrite_rules() must be hooked at 'init' priority > 10.
+	 *
+	 * It calls get_post_types() (via add_cpt_archive_rewrite_rules() /
+	 * add_cpt_single_rewrite_rules()) to enumerate every registered CPT with a
+	 * custom rewrite slug. Themes and plugins register their own post types on
+	 * 'init' at the default priority (10); if this hook also ran at priority 10,
+	 * whether a given CPT is visible yet depends on unpredictable same-priority
+	 * callback ordering. Confirmed live on an Agnosis-family site: a CPT
+	 * ("art") registered on a later same-priority 'init' callback was invisible
+	 * to get_post_types() here, so its language-prefixed single-post rewrite
+	 * rule was silently never added — no rewrite-rules flush fixes that, since
+	 * the rule was never queued for one in the first place.
+	 */
+	public function test_register_rewrite_rules_hooked_after_default_init_priority(): void {
+		$priority = has_action( 'init', [ Router::get_instance()->rewrite, 'register_rewrite_rules' ] );
+
+		$this->assertNotFalse( $priority, 'register_rewrite_rules() must be hooked on init.' );
+		$this->assertGreaterThan( 10, $priority,
+			'register_rewrite_rules() must run after the default init priority (10) so CPTs registered by other plugins/themes are already visible to get_post_types().' );
+	}
+
+	// =========================================================================
 	// 1. Source-language post — URL returned unchanged
 	// =========================================================================
 
@@ -105,5 +131,77 @@ final class ManagerIntegrationTest extends WP_UnitTestCase {
 			$result,
 			'lang_permalink() must return the URL unchanged when the post ID does not resolve to a WP_Post.'
 		);
+	}
+
+	// =========================================================================
+	// 3. get_permalink() for a custom post type must be language-prefixed
+	// =========================================================================
+
+	/**
+	 * WordPress's get_permalink() never applies the post_link/page_link filters
+	 * for a CUSTOM post type — get_post_permalink() applies post_type_link
+	 * instead (post_link only fires for the built-in 'post' type; page_link
+	 * only for 'page'). Confirmed live on an Agnosis-family site: the Language
+	 * Switcher calls get_permalink() to build each language's link, and every
+	 * "art" CPT link rendered without its language prefix because
+	 * register_hooks() only hooked post_link/page_link. This test exercises
+	 * get_permalink() itself (not lang_permalink() directly) so it fails if the
+	 * post_type_link hook is ever removed.
+	 */
+	public function test_get_permalink_is_language_prefixed_for_custom_post_type(): void {
+		register_post_type( 'lf_test_cpt', [
+			'public'  => true,
+			'rewrite' => [ 'slug' => 'widget' ],
+		] );
+
+		$post_id = (int) self::factory()->post->create( [
+			'post_type'   => 'lf_test_cpt',
+			'post_status' => 'publish',
+			'post_name'   => 'a-widget',
+		] );
+
+		Router::get_instance()->trid_group->set_lang( $post_id, 'es' );
+
+		$permalink = get_permalink( $post_id );
+
+		$this->assertStringContainsString( '/es/', $permalink,
+			'get_permalink() for a translated custom-post-type post must be language-prefixed — this is what the Language Switcher relies on.' );
+
+		unregister_post_type( 'lf_test_cpt' );
+	}
+
+	/**
+	 * WooCommerce products intentionally stay on a single, language-neutral
+	 * permalink for every translation (see lang_permalink_excluded_post_types()'s
+	 * docblock) — the post_type_link hook must not change that.
+	 */
+	public function test_get_permalink_unprefixed_for_excluded_post_type(): void {
+		// 'product' may already be registered by an active WooCommerce install in
+		// this test environment — only register (and later unregister) it here
+		// when it isn't, so this test works either way.
+		$registered_here = ! post_type_exists( 'product' );
+		if ( $registered_here ) {
+			register_post_type( 'product', [
+				'public'  => true,
+				'rewrite' => [ 'slug' => 'product' ],
+			] );
+		}
+
+		$post_id = (int) self::factory()->post->create( [
+			'post_type'   => 'product',
+			'post_status' => 'publish',
+			'post_name'   => 'a-product',
+		] );
+
+		Router::get_instance()->trid_group->set_lang( $post_id, 'es' );
+
+		$permalink = get_permalink( $post_id );
+
+		$this->assertStringNotContainsString( '/es/', $permalink,
+			'WooCommerce product permalinks must remain language-neutral even when translated.' );
+
+		if ( $registered_here ) {
+			unregister_post_type( 'product' );
+		}
 	}
 }

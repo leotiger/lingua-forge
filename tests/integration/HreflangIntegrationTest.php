@@ -208,6 +208,33 @@ final class HreflangIntegrationTest extends WP_UnitTestCase {
 			'Lang prefix must not be doubled in the es alternate (§5.3 regression)' );
 	}
 
+	/**
+	 * Regression — a bare language-root home request (e.g. /es/, no further path
+	 * segments) must not duplicate the language prefix in the non-source-language
+	 * alternates.
+	 *
+	 * Before this fix, trim(REQUEST_URI, '/') on a bare lang-root request reduced
+	 * $path to just the lang code itself (e.g. 'es') with no trailing slash left
+	 * for the `^(lang)/` strip regex to anchor on, so the strip silently failed
+	 * and the lang code got re-prepended downstream — producing /es/es/. Confirmed
+	 * live on an Agnosis-family site's homepage in path routing mode.
+	 */
+	public function test_home_bare_lang_root_hreflang_has_no_duplicated_prefix(): void {
+
+		$this->go_to( '/' );
+		$_SERVER['REQUEST_URI'] = '/es/'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- test setup: simulates a bare language-root home request.
+
+		ob_start();
+		Router::get_instance()->hreflang->print_hreflang_tags();
+		$output = (string) ob_get_clean();
+
+		$this->assertStringNotContainsString( '/es/es/', $output,
+			'Bare language-root home request must not duplicate the lang prefix (regression).' );
+		$this->assertStringContainsString( home_url( '/es/' ), $output );
+		// Source lang (en) must resolve to the bare home URL, not /en/.
+		$this->assertStringContainsString( home_url( '/' ), $output );
+	}
+
 	// =========================================================================
 	// print_canonical()
 	// =========================================================================
@@ -256,6 +283,31 @@ final class HreflangIntegrationTest extends WP_UnitTestCase {
 			'Archive canonical must include the category slug' );
 		$this->assertStringNotContainsString( '/en/', $output,
 			'Source language must not appear as a path prefix in the canonical' );
+	}
+
+	/**
+	 * Regression — same bare-lang-root duplication bug as the hreflang test
+	 * above, but for print_canonical(). print_canonical() drives its lang from
+	 * LF_LANG rather than REQUEST_URI, so this only exercises the $path
+	 * derivation — LF_LANG defaults to the source language ('en') in wp-env CLI
+	 * mode, so the canonical here is expected to be the bare home URL either way.
+	 * The duplication this test guards against would show up as a doubled
+	 * segment in $path itself feeding into a non-source-language canonical
+	 * (covered end-to-end by the hreflang test; this asserts the canonical
+	 * branch's own $path derivation doesn't regress either).
+	 */
+	public function test_print_canonical_home_bare_lang_root_no_duplicated_prefix(): void {
+
+		$this->go_to( '/' );
+		$_SERVER['REQUEST_URI'] = '/es/'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- test setup: simulates a bare language-root home request.
+
+		ob_start();
+		Router::get_instance()->hreflang->print_canonical();
+		$output = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'rel="canonical"', $output );
+		$this->assertStringNotContainsString( '/es/es/', $output,
+			'Bare language-root home request must not duplicate the lang prefix (regression).' );
 	}
 
 	// =========================================================================

@@ -102,10 +102,7 @@ class Hreflang {
 		if ( is_archive() || is_home() ) {
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 			$path = trim( wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
-
-			$langs_regex = implode( '|', array_map( 'preg_quote', $this->router->context->languages() ) );
-			$path        = preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
-			$path        = preg_replace( '#/+#', '/', $path );
+			$path = $this->strip_lang_prefix_from_path( $path );
 
 			foreach ( $this->router->context->languages() as $lang ) {
 				if ( $this->router->context->routing_mode() === 'subdomain' ) {
@@ -156,9 +153,7 @@ class Hreflang {
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- REQUEST_URI is a server-set URL string; wp_unslash() applied and value is used only for URL path parsing/routing.
 			$path = trim( wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
 
-			$langs_regex = implode( '|', array_map( 'preg_quote', $this->router->context->languages() ) );
-			$path        = preg_replace( '#^(' . $langs_regex . ')/#', '', $path );
-			$path        = preg_replace( '#/+#', '/', $path );
+			$path = $this->strip_lang_prefix_from_path( $path );
 
 			$lang = defined( 'LF_LANG' ) ? LF_LANG : $this->router->context->source_language();
 
@@ -174,6 +169,32 @@ class Hreflang {
 			}
 			echo '<link rel="canonical" href="' . esc_url( $url ) . '" />' . "\n";
 		}
+	}
+
+	/**
+	 * Strip a leading language-code segment from a request path.
+	 *
+	 * Used by both print_hreflang_tags() and print_canonical() to derive the
+	 * language-neutral remainder of the current archive/home REQUEST_URI
+	 * before rebuilding it with each target language's own prefix.
+	 *
+	 * $path arrives already trim()'d of surrounding slashes, so when the
+	 * ENTIRE path is just the language code (a bare language-root request
+	 * like `/fr/`), there is no trailing slash left for a `^(lang)/` regex
+	 * to anchor on. Without the `(/|$)` alternation below, that case fell
+	 * through unstripped and got the language re-prepended downstream,
+	 * producing a duplicated segment (e.g. canonical/hreflang URLs ending
+	 * in `/fr/fr/` instead of `/fr/`) — confirmed live on an Agnosis-family
+	 * site's homepage in both path and subdomain routing modes.
+	 *
+	 * @param  string $path Trimmed REQUEST_URI path (no leading/trailing slash).
+	 * @return string
+	 */
+	private function strip_lang_prefix_from_path( string $path ): string {
+		$langs_regex = implode( '|', array_map( 'preg_quote', $this->router->context->languages() ) );
+		$path        = (string) preg_replace( '#^(' . $langs_regex . ')(/|$)#', '', $path );
+		$path        = preg_replace( '#/+#', '/', $path );
+		return trim( $path, '/' );
 	}
 
 	/**

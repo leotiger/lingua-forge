@@ -24,10 +24,36 @@ class Manager {
 	// =========================================================
 
 	public function register_hooks(): void {
-		add_action( 'init',        [ $this, 'register_rewrite_rules' ] );
+		// Priority 20: add_cpt_archive_rewrite_rules() / add_cpt_single_rewrite_rules()
+		// below both call get_post_types() to enumerate every registered CPT with a
+		// custom rewrite slug. At the default init priority (10), that call can run
+		// before a theme's or another plugin's own `add_action( 'init', ...register_post_type... )`
+		// callback has fired (registration order among same-priority 'init' callbacks
+		// follows plugin/theme load order, which Lingua Forge does not control) — any
+		// CPT registered "later" in that same request is invisible to get_post_types()
+		// at that point, so no language-prefixed rewrite rule is ever added for it, no
+		// matter how many times permalinks are subsequently flushed. Confirmed live on
+		// an Agnosis-family site: the "art" CPT's rewrite rule was silently never
+		// registered because its plugin's post-type registration ran after this hook.
+		// Priority 20 matches the same fix already applied to Columns::register_hooks()
+		// for the identical class of problem (CPT-dependent admin-column hooks).
+		add_action( 'init',        [ $this, 'register_rewrite_rules' ], 20 );
 		add_filter( 'query_vars',  [ $this, 'add_query_vars' ] );
 		add_filter( 'post_link',   [ $this, 'lang_permalink' ], 10, 2 );
 		add_filter( 'page_link',   [ $this, 'lang_permalink' ], 10, 2 );
+
+		// get_permalink() for any CUSTOM post type (registered via register_post_type(),
+		// e.g. an "art" CPT) never runs through post_link/page_link at all — WordPress's
+		// own get_post_permalink() applies the post_type_link filter instead (post_link
+		// is documented core-side as applying only to the built-in 'post' type). Without
+		// this, get_permalink() for a translated CPT post silently returns the un-prefixed
+		// URL, which is exactly what the Language Switcher calls to build each language's
+		// link — confirmed live on an Agnosis-family site: the switcher rendered every
+		// "art" CPT link without its language prefix. lang_permalink()'s own signature
+		// (2 args: $url, $post) is reused as-is; the two extra args post_type_link passes
+		// ($leavename, $sample) are irrelevant to path-prefix rewriting and simply not
+		// requested via the accepted_args below.
+		add_filter( 'post_type_link', [ $this, 'lang_permalink' ], 10, 2 );
 
 		// Prefix CPT archive links with the active language so breadcrumbs,
 		// get_post_type_archive_link(), and nav-menu items pointing to CPT
@@ -466,9 +492,33 @@ class Manager {
 		);
 	}
 
+	/**
+	 * Post types excluded from language-prefixed permalink rewriting even though
+	 * lang_permalink() now runs on post_type_link (see register_hooks()).
+	 *
+	 * WooCommerce products intentionally stay on a single, language-neutral
+	 * permalink (e.g. /product/camisa/) for every translation — LF_LANG on that
+	 * URL is always the source language regardless of which translation is
+	 * being viewed (see the language-neutral-URL handling in Switcher and
+	 * CatalogQuery). Rewriting product/product_variation permalinks here would
+	 * silently change that established behaviour for every WooCommerce site.
+	 *
+	 * @return string[]
+	 */
+	private function lang_permalink_excluded_post_types(): array {
+		return (array) apply_filters(
+			'linguaforge_permalink_excluded_post_types', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+			[ 'product', 'product_variation' ]
+		);
+	}
+
 	public function lang_permalink( string $url, $post ): string {
 		if ( is_numeric( $post ) ) $post = get_post( $post );
 		if ( ! $post instanceof \WP_Post ) return $url;
+
+		if ( in_array( $post->post_type, $this->lang_permalink_excluded_post_types(), true ) ) {
+			return $url;
+		}
 
 		// Only rewrite URLs for public, front-end post types.
 		$post_type_obj = get_post_type_object( $post->post_type );
