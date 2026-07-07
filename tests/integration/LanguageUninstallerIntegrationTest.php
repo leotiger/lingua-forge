@@ -17,16 +17,29 @@
  *   1. Uninstall a secondary language → all its posts deleted, result count correct.
  *   2. Uninstall the source language → protected guard fires, no posts deleted.
  *   3. Uninstall with file mods disallowed → posts deleted, files surfaced in skipped list.
+ *   4. Uninstall also purges the target language's CPT Block Pattern translations
+ *      from the `linguaforge_pattern_translations` option, leaving other languages'
+ *      translations for the same pattern untouched (added alongside the 2.5.1
+ *      Danger Zone redirect fix, once patterns were found to be invisible to
+ *      collect_post_ids()'s postmeta query — they live in an option, not a post).
+ *   5. Uninstall also removes matching files from the uploads-based
+ *      i18n-overrides directory (Loco Translate "Copy to Safe Storage",
+ *      manual .mo uploads) — a second confirmed live gap in the 2.5.1 cycle,
+ *      found after Yoruba stayed active post-uninstall because its only
+ *      footprint was an override file, which collect_locale_files() (scoped
+ *      to WP_LANG_DIR only) never looked at.
  *
  * Design notes:
  *   • $GLOBALS['wpdb'] is injected directly — this is the real wpdb in wp-env.
  *   • WP_UnitTestCase wraps every test in a DB transaction rolled back on
  *     tearDown — no manual post/meta or option cleanup needed.
  *   • Context caches are reset in setUp() so option changes are re-read fresh.
- *   • File deletion is not tested here because wp-env's WP_LANG_DIR contains no
- *     matching locale files for test language codes ('de'). The DISALLOW_FILE_MODS
- *     path (test 3) verifies the mods_allowed/files_skipped contract without
- *     touching the real filesystem.
+ *   • WP_LANG_DIR file deletion is not tested here because wp-env's WP_LANG_DIR
+ *     contains no matching locale files for test language codes ('de'). The
+ *     DISALLOW_FILE_MODS path (test 3) verifies the mods_allowed/files_skipped
+ *     contract without touching the real filesystem. i18n-overrides file
+ *     deletion (test 5) IS exercised against the real filesystem, since that
+ *     directory is uploads-based and always writable in wp-env.
  *
  * Run via: composer test:integration  (requires wp-env running).
  *
@@ -37,6 +50,7 @@ declare(strict_types=1);
 
 namespace LinguaForge\Tests\Integration;
 
+use LinguaForge\AI\Admin\FseLocalisation\PatternDiscovery;
 use LinguaForge\AI\Admin\Language\LanguageUninstaller;
 use LinguaForge\AI\Admin\Language\UninstallResult;
 use LinguaForge\Router\Context;
@@ -168,5 +182,91 @@ final class LanguageUninstallerIntegrationTest extends WP_UnitTestCase {
 		// when wp-env has no matching locale files, but the contract holds.
 		$this->assertIsArray( $result->files_skipped, 'files_skipped must always be an array.' );
 		$this->assertNull( get_post( $de ), 'The de post must be force-deleted regardless of file_mod status.' );
+	}
+
+	// =========================================================================
+	// 4. Uninstall purges the target language's pattern translations
+	// =========================================================================
+
+	/**
+	 * CPT Block Pattern translations are stored in the
+	 * `linguaforge_pattern_translations` option, not as posts, so they are
+	 * invisible to collect_post_ids()'s postmeta query. uninstall() must purge
+	 * the target language's entries via PatternDiscovery::delete_language() and
+	 * report the count in UninstallResult::$patterns_deleted, while leaving
+	 * other languages' translations of the same pattern intact.
+	 */
+	public function test_uninstall_removes_pattern_translations_for_target_language_only(): void {
+		PatternDiscovery::save_translation( 'theme/hero', self::TARGET_LANG, 'Hallo' );
+		PatternDiscovery::save_translation( 'theme/hero', 'fr', 'Bonjour' );
+		PatternDiscovery::save_translation( 'theme/footer-cta', self::TARGET_LANG, 'Jetzt kaufen' );
+
+		$result = $this->make_uninstaller()->uninstall( self::TARGET_LANG );
+
+		$this->assertSame( 2, $result->patterns_deleted, 'One removal per pattern that had a target-language translation.' );
+		$this->assertFalse( PatternDiscovery::translation_exists( 'theme/hero', self::TARGET_LANG ) );
+		$this->assertFalse( PatternDiscovery::translation_exists( 'theme/footer-cta', self::TARGET_LANG ) );
+		$this->assertTrue( PatternDiscovery::translation_exists( 'theme/hero', 'fr' ), 'Other languages for the same pattern must survive.' );
+	}
+
+	/**
+	 * The protected-language guard must short-circuit before any pattern
+	 * translations are touched, matching the existing posts_deleted = 0
+	 * contract for a protected-language uninstall.
+	 */
+	public function test_uninstall_protected_language_does_not_touch_pattern_translations(): void {
+		PatternDiscovery::save_translation( 'theme/hero', self::SOURCE_LANG, 'Hello' );
+
+		$result = $this->make_uninstaller()->uninstall( self::SOURCE_LANG );
+
+		$this->assertSame( 0, $result->patterns_deleted );
+		$this->assertTrue( PatternDiscovery::translation_exists( 'theme/hero', self::SOURCE_LANG ) );
+	}
+
+	// =========================================================================
+	// 5. Uninstall removes i18n-overrides files (Loco Translate safe storage)
+	// =========================================================================
+
+	/**
+	 * Reproduces the confirmed live bug: a language whose only footprint is a
+	 * file in the uploads-based i18n-overrides directory (e.g. a Loco
+	 * Translate custom translation copied via LanguageOverridesPanel's
+	 * "Copy to Safe Storage" feature) survived uninstall entirely —
+	 * collect_locale_files() only ever looked at WP_LANG_DIR, never at this
+	 * directory, so a target language with zero WP_LANG_DIR files and zero
+	 * _lf_lang posts reported a clean "0 posts / 0 files" success while
+	 * remaining active in Context::discover_plugin_locales() forever.
+	 *
+	 * Uses the real uploads-based path (Context::i18n_overrides_dir()) rather
+	 * than a temp dir — this is the one collect_locale_files() test class
+	 * intentionally can't cover (it requires a live WP_UPLOAD_DIR), so it's
+	 * verified here instead.
+	 */
+	public function test_uninstall_removes_i18n_override_files_for_target_language(): void {
+		$dir = Router::get_instance()->context->i18n_overrides_dir();
+		wp_mkdir_p( $dir );
+
+		$target_mo = $dir . 'some-plugin-' . self::TARGET_LANG . '.mo';
+		$other_mo  = $dir . 'some-plugin-fr.mo';
+		touch( $target_mo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_touch -- test fixture; mirrors a real Loco Translate "Copy to Safe Storage" file.
+		touch( $other_mo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_touch -- test fixture for the "other languages must survive" assertion.
+
+		try {
+			$result = $this->make_uninstaller()->uninstall( self::TARGET_LANG );
+
+			$this->assertContains( $target_mo, $result->files_deleted, 'The target language\'s override file must be reported as deleted.' );
+			$this->assertFileDoesNotExist( $target_mo, 'The target language\'s override file must actually be removed from disk.' );
+			$this->assertFileExists( $other_mo, 'Other languages\' override files must survive.' );
+		} finally {
+			// Belt-and-braces cleanup in case an assertion above failed before
+			// uninstall() ran (or deletion itself failed) — don't leak fixture
+			// files into subsequent test runs on the same wp-env volume.
+			if ( file_exists( $target_mo ) ) {
+				unlink( $target_mo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test cleanup.
+			}
+			if ( file_exists( $other_mo ) ) {
+				unlink( $other_mo ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test cleanup.
+			}
+		}
 	}
 }

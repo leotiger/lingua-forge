@@ -17,6 +17,7 @@ use LinguaForge\AI\Core\Log;
 use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Core\TranslationMemory;
 use LinguaForge\AI\Core\UsageRecorder;
+use LinguaForge\Router\Context;
 
 defined('ABSPATH') || exit;
 
@@ -191,7 +192,7 @@ class Translation implements FeatureInterface {
         // ── 3. Site locale ────────────────────────────────────────────────────
         // Trim "de_DE" → "de", "en_US" → "en", etc.
 
-        $code = strtolower( substr( get_locale(), 0, 2 ) );
+        $code = Context::lang_from_locale( get_locale() );
 
         if ( array_key_exists( $code, self::get_languages() ) ) {
             return $code;

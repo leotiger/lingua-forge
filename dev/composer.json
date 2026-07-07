@@ -68,7 +68,7 @@
             "WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php -d pcov.enabled=1 -d pcov.directory=.. vendor/bin/phpunit --testsuite=unit --coverage-clover coverage/unit/clover.xml --coverage-html coverage/unit/html --coverage-text=coverage/unit/coverage.txt",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate lingua-forge woocommerce'",
             "./node_modules/.bin/wp-env run tests-cli bash -c 'wp eval \"\\LinguaForge\\AI\\Core\\CacheStore::ensure_table(); \\LinguaForge\\AI\\Core\\Glossary::ensure_table(); \\LinguaForge\\AI\\Core\\TranslationMemory::ensure_table(); \\LinguaForge\\AI\\Core\\UsageRecorder::ensure_table(); echo \\\"Plugin tables ready.\\n\\\";\"'",
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'mkdir -p /var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration/html && cd /var/www/html/wp-content/plugins/lingua-forge/dev && XDEBUG_MODE=coverage php -d memory_limit=512M vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --coverage-clover coverage/integration/clover.xml --coverage-html coverage/integration/html --coverage-text=coverage/integration/coverage.txt'",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'mkdir -p /var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration/html && cd /var/www/html/wp-content/plugins/lingua-forge/dev && php -d memory_limit=512M -d pcov.enabled=1 -d pcov.directory=/var/www/html/wp-content/plugins/lingua-forge vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration --coverage-clover coverage/integration/clover.xml --coverage-html coverage/integration/html --coverage-text=coverage/integration/coverage.txt'",
             "bash scripts/copy-integration-coverage.sh"
         ],
         "coverage:merge": "@php scripts/merge-coverage.php",
@@ -90,7 +90,8 @@
             "@lint:css"
         ],
         "make-pot": "bash bin/make-pot.sh",
-        "compile-pos": "bash bin/compile-pos.sh"
+        "compile-pos": "bash bin/compile-pos.sh",
+        "build-zip": "bash bin/build-zip.sh"
     },
     "scripts-descriptions": {
         "lint": "Run PHPCS against ../ using WordPress Coding Standards.",
@@ -107,6 +108,7 @@
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
         "qa": "Local pre-deploy gate: coverage:setup → lint (PHPCS) → analyse (PHPStan) → unit tests → lint:js (ESLint) → lint:css (Stylelint). Integration tests require wp-env and must be run separately with composer test:integration.",
         "make-pot": "Extract source strings (make-pot) and merge into .po files (msgmerge). Review/translate fuzzy strings, then run compile-pos.",
-        "compile-pos": "Compile translated .po files into .mo binaries and .l10n.php caches (steps 4–5 of the i18n pipeline)."
+        "compile-pos": "Compile translated .po files into .mo binaries and .l10n.php caches (steps 4–5 of the i18n pipeline).",
+        "build-zip": "Package the plugin into a distributable zip (rsync + .distignore) at ~/Github/lingua-forge-deploy/. Also clears, then rewrites, docs/lf-update-manifest.php's $sha256 field to match the built zip."
     }
 }

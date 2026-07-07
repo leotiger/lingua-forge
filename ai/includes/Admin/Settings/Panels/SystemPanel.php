@@ -22,6 +22,8 @@
 
 namespace LinguaForge\AI\Admin\Settings\Panels;
 
+use LinguaForge\Router\Context;
+
 defined( 'ABSPATH' ) || exit;
 
 class SystemPanel {
@@ -88,7 +90,7 @@ class SystemPanel {
             return;
         }
 
-        $wp_locale_code = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $wp_locale_code = Context::lang_from_locale( (string) get_locale() );
 
         if ( $wp_locale_code === $primary_lang ) {
             // WP locale IS the primary language — never a mismatch.

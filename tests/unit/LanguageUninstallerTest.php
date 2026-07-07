@@ -358,4 +358,65 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 		// Both match the 'de' prefix — document this is expected.
 		$this->assertCount( 2, $result );
 	}
+
+	// =========================================================================
+	// collect_override_files()
+	//
+	// Covers the i18n-overrides directory (LanguageOverridesPanel's uploads-
+	// based storage, and the "Loco Translate — Copy to Safe Storage" feature).
+	// Files here follow {textdomain}-{locale}.mo — the locale is a SUFFIX, the
+	// opposite of collect_locale_files()'s prefix convention — so this is a
+	// genuinely different matching rule, not just the same test reused.
+	// =========================================================================
+
+	public function test_collect_override_files_returns_empty_for_empty_dir(): void {
+		$dir    = $this->make_lang_dir( [] );
+		$result = $this->make_uninstaller()->collect_override_files( 'yo', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
+
+	public function test_collect_override_files_finds_suffix_matching_mo(): void {
+		// Reproduces the confirmed live bug: a Loco Translate file copied to
+		// safe storage for a plugin's Yoruba strings, named with the locale as
+		// a suffix. collect_locale_files() (prefix match) would never find
+		// this — it lives in an entirely different directory.
+		$dir = $this->make_lang_dir( [ '' => [ 'some-plugin-yo.mo', 'some-plugin-de.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_override_files( 'yo', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 1, $result );
+		$this->assertStringContainsString( 'some-plugin-yo.mo', $result[0] );
+	}
+
+	public function test_collect_override_files_finds_po_files(): void {
+		$dir = $this->make_lang_dir( [ '' => [ 'lingua-forge-yo.mo', 'lingua-forge-yo.po' ] ] );
+		$result = $this->make_uninstaller()->collect_override_files( 'yo', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 2, $result );
+	}
+
+	public function test_collect_override_files_matches_region_variant_suffix(): void {
+		// {textdomain}-{lang}_{COUNTRY}.mo (e.g. de_DE) must still match the
+		// bare two-char language code, same as collect_locale_files() does.
+		$dir = $this->make_lang_dir( [ '' => [ 'vikbooking-de_DE.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_override_files( 'de', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 1, $result );
+	}
+
+	public function test_collect_override_files_does_not_match_other_languages(): void {
+		$dir = $this->make_lang_dir( [ '' => [ 'some-plugin-de.mo', 'some-plugin-fr.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_override_files( 'yo', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
+
+	public function test_collect_override_files_ignores_files_with_no_locale_suffix(): void {
+		// A file with no recognisable "-{locale}.mo" suffix (e.g. the
+		// textdomain itself, or an unrelated file) must not match anything.
+		$dir = $this->make_lang_dir( [ '' => [ 'readme.mo', 'plugin.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_override_files( 'yo', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
 }

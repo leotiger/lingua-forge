@@ -70,6 +70,28 @@ class LocaleDetector {
 
 		// 3. Fallback map — extend via the filter for custom or regional variants.
 		//    'pt' defaults to pt_PT (Portugal); override with 'pt' => 'pt_BR' if needed.
+		//
+		//    Every language this plugin ships its own UI translation for (see
+		//    languages/lingua-forge-*.po) must have an entry here, even when no
+		//    WordPress core language pack for it is installed — without one, an
+		//    unmapped code falls through to step 4's 'en_US' default and becomes
+		//    indistinguishable from English to every caller that compares locale
+		//    strings (e.g. the admin-bar language switcher's active-language
+		//    check in class-meta-boxes.php, or filter_locale()/apply_locale()
+		//    for front-end string translations). hi/ur/th/sw/km/eu were missing
+		//    despite being bundled languages.
+		//
+		//    NOTE: this map intentionally does NOT need a 'yo' entry for Yoruba.
+		//    An earlier version of this fix added 'yo' => 'yo' on the mistaken
+		//    assumption that WordPress's locale for Yoruba is 'yo' — it's
+		//    actually the bare 3-letter 'yor' (see Context::lang_from_locale()).
+		//    Since Context::languages() now derives the lang code from the FULL
+		//    locale instead of truncating to 2 characters, a real Yoruba install
+		//    produces the lang code 'yor', which step 2 above already resolves
+		//    correctly via a direct match against get_available_languages() —
+		//    no fallback entry needed. A stray 'yo' => 'yo' entry here would be
+		//    actively wrong: 'yo' is not an installable WordPress locale, so
+		//    switch_to_locale('yo') would silently fail to load anything.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		$fallback_map = apply_filters( 'lf_lang_fallback_map', [
 			'ca' => 'ca',
@@ -97,6 +119,12 @@ class LocaleDetector {
 			'he' => 'he_IL',
 			'fa' => 'fa_IR',
 			'id' => 'id_ID',
+			'hi' => 'hi_IN',
+			'ur' => 'ur',
+			'th' => 'th',
+			'sw' => 'sw',
+			'km' => 'km',
+			'eu' => 'eu',
 		] );
 
 		if ( isset( $fallback_map[$lang] ) ) {
@@ -109,10 +137,19 @@ class LocaleDetector {
 	}
 
 	public function language_label( string $lang ): string {
-		$locale = $this->locale_from_lang( $lang );
-
 		if ( function_exists( 'locale_get_display_language' ) ) {
-			$label = locale_get_display_language( $locale, $locale );
+			// ICU/CLDR (which backs PHP's intl functions) generally doesn't
+			// recognise WordPress's own bare 3-letter locale slugs for
+			// languages that have a real ISO 639-1 code (e.g. "yor" for
+			// Yoruba) — it expects the ISO 639-1 form ("yo") and silently
+			// echoes an unrecognised identifier back unlabelled rather than
+			// producing a real display name, so normalise via
+			// Context::iso_639_1_from_lang() before asking ICU. This is a
+			// display-only concern: locale_from_lang()'s own real, installable
+			// WordPress locale is used everywhere else (loading translation
+			// files, switch_to_locale(), etc.) and is untouched by this.
+			$display_locale = Context::iso_639_1_from_lang( $lang );
+			$label           = locale_get_display_language( $display_locale, $display_locale );
 			return mb_convert_case( $label, MB_CASE_TITLE, 'UTF-8' );
 		}
 

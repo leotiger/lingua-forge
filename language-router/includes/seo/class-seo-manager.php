@@ -32,6 +32,7 @@
 
 namespace LinguaForge\Router\Seo;
 
+use LinguaForge\Router\Context;
 use LinguaForge\Router\Router;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -374,6 +375,14 @@ class SeoManager {
 	 * @return string        Facebook locale (e.g. 'de_DE').
 	 */
 	public static function lang_to_locale( string $lang ): string {
+
+		// Normalise WordPress's own bare 3-letter-only locale slugs (e.g.
+		// 'yor' for Yoruba) to their real ISO 639-1 code first — og:locale
+		// expects language_TERRITORY, and 'yor' would produce a malformed
+		// "yor_YOR" via the fallback below. Internal routing/URLs/postmeta
+		// are untouched; this is purely for this outbound-facing conversion.
+		// See Context::iso_639_1_from_lang().
+		$lang = Context::iso_639_1_from_lang( $lang );
 
 		static $map = null;
 

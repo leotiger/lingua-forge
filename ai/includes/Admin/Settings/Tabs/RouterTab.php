@@ -15,6 +15,7 @@ use LinguaForge\AI\Admin\Settings\Tabs\Sections\TemplatesSection;
 use LinguaForge\AI\Admin\Language\LanguageUninstaller;
 use LinguaForge\AI\Admin\SettingsPage;
 use LinguaForge\AI\Integrations\WooCommerce\OrderItemNormalizer;
+use LinguaForge\Router\Context;
 
 defined('ABSPATH') || exit;
 
@@ -103,9 +104,10 @@ class RouterTab extends Tab {
         <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         elseif ( ! empty( $_GET['lf_lang_uninstalled'] ) ) :
             // phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read-only integer GET flags set by wp_safe_redirect() after uninstall; (int) cast is the effective sanitization.
-            $lf_posts   = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_posts']   ?? '0' ) );
-            $lf_files   = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_files']   ?? '0' ) );
-            $lf_skipped = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_skipped'] ?? '0' ) );
+            $lf_posts    = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_posts']    ?? '0' ) );
+            $lf_files    = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_files']    ?? '0' ) );
+            $lf_skipped  = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_skipped']  ?? '0' ) );
+            $lf_patterns = (int) sanitize_text_field( wp_unslash( $_GET['lf_uninstall_patterns'] ?? '0' ) );
             // phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         ?>
             <div class="notice notice-success is-dismissible">
@@ -120,6 +122,13 @@ class RouterTab extends Tab {
                             /* translators: %d: number of locale files removed */
                             _n( '%d locale file removed.', '%d locale files removed.', $lf_files, 'lingua-forge' ),
                             $lf_files
+                        ) ); ?>
+                    <?php endif; ?>
+                    <?php if ( $lf_patterns > 0 ) : ?>
+                        <?php echo esc_html( sprintf(
+                            /* translators: %d: number of CPT block pattern translations removed */
+                            _n( '%d pattern translation removed.', '%d pattern translations removed.', $lf_patterns, 'lingua-forge' ),
+                            $lf_patterns
                         ) ); ?>
                     <?php endif; ?>
                 </p>
@@ -154,7 +163,7 @@ class RouterTab extends Tab {
         // Should fire:     WP=en_US, primary=ca, zero _lf_lang=en posts.
         // Must NOT fire:   WP=en_US, primary=ca, English content exists.
         // Must NOT fire:   WP=en_US, primary=en  (locale == primary).
-        $lf_wp_locale_code  = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $lf_wp_locale_code  = Context::lang_from_locale( (string) get_locale() );
         $lf_locale_mismatch = false;
 
         if ( $primary_stored !== '' && $lf_wp_locale_code !== $primary_stored ) {
@@ -431,7 +440,7 @@ class RouterTab extends Tab {
         $router          = \LinguaForge\Router\Router::get_instance();
         $source_lang     = $router->source_language();
         $secondary_langs = array_values( array_filter( $router->languages(), fn( $l ) => $l !== $source_lang ) );
-        $wp_locale_lang  = strtolower( substr( (string) get_locale(), 0, 2 ) );
+        $wp_locale_lang  = Context::lang_from_locale( (string) get_locale() );
         ?>
 
         <!-- ── Language Setup ────────────────────────────────────────────── -->
@@ -589,7 +598,7 @@ class RouterTab extends Tab {
             update_option( OrderItemNormalizer::OPT_NORMALIZE, ! empty( $_POST[ OrderItemNormalizer::OPT_NORMALIZE ] ) ? 'yes' : 'no', false );
         }
 
-        wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . SettingsPage::PAGE_SLUG . '&lf_router_saved=1#router' );
+        wp_safe_redirect( admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG ) . '&lf_router_saved=1#router' );
         exit;
     }
 
@@ -604,7 +613,7 @@ class RouterTab extends Tab {
 
         flush_rewrite_rules();
 
-        wp_safe_redirect( admin_url( 'options-general.php' ) . '?page=' . SettingsPage::PAGE_SLUG . '&lf_permalinks_flushed=1#router' );
+        wp_safe_redirect( admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG ) . '&lf_permalinks_flushed=1#router' );
         exit;
     }
 
@@ -713,13 +722,13 @@ class RouterTab extends Tab {
 
         $redirect = add_query_arg(
             [
-                'page'                 => SettingsPage::PAGE_SLUG,
-                'lf_lang_uninstalled'  => '1',
-                'lf_uninstall_posts'   => $result->posts_deleted,
-                'lf_uninstall_files'   => count( $result->files_deleted ),
-                'lf_uninstall_skipped' => count( $result->files_skipped ),
+                'lf_lang_uninstalled'   => '1',
+                'lf_uninstall_posts'    => $result->posts_deleted,
+                'lf_uninstall_files'    => count( $result->files_deleted ),
+                'lf_uninstall_skipped'  => count( $result->files_skipped ),
+                'lf_uninstall_patterns' => $result->patterns_deleted,
             ],
-            admin_url( 'options-general.php' )
+            admin_url( 'admin.php?page=' . SettingsPage::PAGE_SLUG )
         ) . '#router';
 
         wp_safe_redirect( $redirect );

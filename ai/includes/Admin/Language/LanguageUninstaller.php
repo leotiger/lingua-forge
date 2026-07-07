@@ -27,6 +27,7 @@
  * Unit-testable methods (no WP runtime needed):
  *   • collect_post_ids()   — pure $wpdb->get_col() call.
  *   • collect_locale_files() — filesystem glob + prefix filter; pass a temp dir.
+ *   • collect_override_files() — i18n-overrides dir glob + suffix filter; pass a temp dir.
  *   • is_protected()       — Router + get_locale() polyfill.
  *
  * Integration-only methods (require wp-env):
@@ -40,6 +41,8 @@
 
 namespace LinguaForge\AI\Admin\Language;
 
+use LinguaForge\AI\Admin\FseLocalisation\PatternDiscovery;
+use LinguaForge\Router\Context;
 use LinguaForge\Router\Router;
 
 defined( 'ABSPATH' ) || exit;
@@ -78,8 +81,9 @@ class LanguageUninstaller {
 			return true;
 		}
 
-		// WordPress instance locale (e.g. 'de' from 'de_DE').
-		$wp_locale_lang = strtolower( substr( (string) \get_locale(), 0, 2 ) );
+		// WordPress instance locale (e.g. 'de' from 'de_DE', or the full 'yor'
+		// from a bare 3-letter locale — see Context::lang_from_locale()).
+		$wp_locale_lang = Context::lang_from_locale( (string) \get_locale() );
 		if ( $lang === $wp_locale_lang ) {
 			return true;
 		}
@@ -155,6 +159,61 @@ class LanguageUninstaller {
 		return $files;
 	}
 
+	/**
+	 * Return override .mo/.po files (LanguageOverridesPanel's uploads-based
+	 * i18n-overrides directory) belonging to the given language.
+	 *
+	 * Unlike collect_locale_files(), files here follow WordPress's
+	 * {textdomain}-{locale}.mo convention — the locale is a SUFFIX, not a
+	 * prefix (e.g. "vikbooking-yo.mo", "lingua-forge-de_DE.mo") — so
+	 * collect_locale_files()'s str_starts_with() prefix check never matches
+	 * them. This directory is also entirely separate from WP_LANG_DIR: it is
+	 * Lingua Forge's own uploads-based storage, explicitly designed (see
+	 * LanguageOverridesPanel::render(), the "Loco Translate — Copy to Safe
+	 * Storage" section) to survive plugin/theme reinstalls and WP core
+	 * updates. A language that became active purely via a file dropped
+	 * here — e.g. a Loco Translate custom translation an admin copied to
+	 * safe storage — has no presence in WP_LANG_DIR at all, so without this
+	 * method uninstall() could report success (0 files found, 0 skipped)
+	 * while Context::discover_plugin_locales() kept the language in the
+	 * router's active list forever. This scenario was suspected during a
+	 * live Yoruba uninstall that reported 0 posts / 0 files removed while
+	 * the language stayed active — that specific case actually turned out
+	 * to be caused by a different bug (WordPress's real locale slug for
+	 * Yoruba is the 3-letter "yor", not "yo" — see
+	 * Context::lang_from_locale()), but an override-only language is a
+	 * real, independently reachable gap this method still needs to cover.
+	 *
+	 * Matches a locale suffix of two OR three letters — the three-letter
+	 * case covers a {textdomain}-yor.mo style file for one of WordPress's
+	 * bare 3-character-only locales (see Context::lang_from_locale() for
+	 * the full list/explanation).
+	 *
+	 * @param  string $lang           Language code (2 or 3 characters).
+	 * @param  string $overrides_dir  Root overrides directory. Defaults to
+	 *                                 the real Context::i18n_overrides_dir()
+	 *                                 path; pass a temp dir in tests.
+	 * @return string[]  Absolute file paths.
+	 */
+	public function collect_override_files( string $lang, string $overrides_dir = '' ): array {
+		if ( $overrides_dir === '' ) {
+			$overrides_dir = $this->router->context->i18n_overrides_dir();
+		}
+		$overrides_dir = \trailingslashit( $overrides_dir );
+
+		$files = [];
+		foreach ( [ '*.mo', '*.po' ] as $ext ) {
+			foreach ( glob( $overrides_dir . $ext ) ?: [] as $path ) {
+				if ( preg_match( '/-([a-z]{2,3})(?:_[a-z]{2})?\.(?:mo|po)$/i', basename( $path ), $m )
+					&& strtolower( $m[1] ) === $lang ) {
+					$files[] = $path;
+				}
+			}
+		}
+
+		return $files;
+	}
+
 	// =========================================================================
 	// Deletion
 	// =========================================================================
@@ -216,16 +275,24 @@ class LanguageUninstaller {
 	/**
 	 * Uninstall a language: delete all content, remove locale files, flush rules.
 	 *
-	 * Returns an empty UninstallResult (posts_deleted = 0, empty file lists) if
-	 * $lang is protected — callers should call is_protected() first for a clean
-	 * early-return UX, but this guard prevents accidental damage if skipped.
+	 * Returns an empty UninstallResult (posts_deleted = 0, empty file lists,
+	 * patterns_deleted = 0) if $lang is protected — callers should call
+	 * is_protected() first for a clean early-return UX, but this guard prevents
+	 * accidental damage if skipped.
 	 *
 	 * Order of operations:
 	 *   1. Guard check.
-	 *   2. Collect and delete all posts with _lf_lang = $lang.
+	 *   2. Collect and delete all posts with _lf_lang = $lang — this covers
+	 *      every post-based entity (posts, pages, CPTs, templates, template
+	 *      parts, navigation menus; see collect_post_ids() docblock).
 	 *   3. If file mods are allowed: collect and delete locale files.
 	 *      If not: collect the paths so the caller can surface them in a notice.
-	 *   4. flush_rewrite_rules() — removes language-prefix rewrite rules that
+	 *   4. Remove the language's CPT Block Pattern translations. Patterns are
+	 *      stored in the `linguaforge_pattern_translations` option rather than
+	 *      as posts (see PatternDiscovery::save_translation()), so step 2's
+	 *      postmeta query never touches them — without this step they would
+	 *      survive uninstall indefinitely as orphaned option data.
+	 *   5. flush_rewrite_rules() — removes language-prefix rewrite rules that
 	 *      referenced the now-deleted locale pack.
 	 *
 	 * @param  string $lang  Two-character language code.
@@ -236,7 +303,7 @@ class LanguageUninstaller {
 
 		// Guard — fail safe, no deletions.
 		if ( $this->is_protected( $lang ) ) {
-			return new UninstallResult( 0, [], [], $mods_allowed );
+			return new UninstallResult( 0, [], [], $mods_allowed, 0 );
 		}
 
 		// ── 1. Delete content ─────────────────────────────────────────────────
@@ -244,7 +311,13 @@ class LanguageUninstaller {
 		$posts_deleted = $this->delete_posts( $post_ids );
 
 		// ── 2. Delete locale files ────────────────────────────────────────────
-		$locale_files  = $this->collect_locale_files( $lang );
+		// Both WP_LANG_DIR (core/plugin/theme packs) and the i18n-overrides
+		// directory (Loco Translate copies, manual uploads) must be checked —
+		// a language can be active in the router via either source alone.
+		$locale_files  = array_merge(
+			$this->collect_locale_files( $lang ),
+			$this->collect_override_files( $lang )
+		);
 		$files_deleted = [];
 		$files_skipped = [];
 
@@ -257,9 +330,12 @@ class LanguageUninstaller {
 			$files_skipped = $locale_files;
 		}
 
-		// ── 3. Flush rewrite rules ─────────────────────────────────────────────
+		// ── 3. Remove CPT Block Pattern translations ────────────────────────────
+		$patterns_deleted = PatternDiscovery::delete_language( $lang );
+
+		// ── 4. Flush rewrite rules ─────────────────────────────────────────────
 		\flush_rewrite_rules();
 
-		return new UninstallResult( $posts_deleted, $files_deleted, $files_skipped, $mods_allowed );
+		return new UninstallResult( $posts_deleted, $files_deleted, $files_skipped, $mods_allowed, $patterns_deleted );
 	}
 }

@@ -28,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__, 2 ) . '/' );
 }
 
+require_once dirname( __DIR__, 2 ) . '/language-router/includes/class-context.php';
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-seo-manager.php';
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-schema-manager.php';
 require_once dirname( __DIR__, 2 ) . '/language-router/includes/seo/class-social-share.php';
@@ -77,6 +78,15 @@ final class SeoHelpersTest extends TestCase {
 		$this->assertSame( 'xx_XX', $result );
 	}
 
+	/**
+	 * WordPress's bare 3-letter locale slug 'yor' (Yoruba) must be normalised
+	 * to its real ISO 639-1 code 'yo' before the language_TERRITORY fallback
+	 * runs — otherwise og:locale would be the malformed 'yor_YOR'.
+	 */
+	public function test_lang_to_locale_normalises_bare_three_letter_locale(): void {
+		$this->assertSame( 'yo_YO', SeoManager::lang_to_locale( 'yor' ) );
+	}
+
 	public function test_lang_to_locale_filter_overrides_map(): void {
 		$GLOBALS['lf_test_filters']['linguaforge_seo_og_locale_map'] = function ( array $map ): array {
 			$map['de'] = 'de_AT';
@@ -119,6 +129,16 @@ final class SeoHelpersTest extends TestCase {
 		$result = SchemaManager::lang_to_bcp47( 'xx' );
 		$this->assertSame( 'xx-XX', $result );
 		$this->assertStringContainsString( '-', $result );
+	}
+
+	/**
+	 * WordPress's bare 3-letter locale slug 'yor' (Yoruba) must be normalised
+	 * to its real ISO 639-1 code 'yo' before the hyphenated fallback runs —
+	 * otherwise hreflang would receive the malformed 'yor-YOR' (a 3-letter
+	 * region subtag is not valid BCP 47).
+	 */
+	public function test_lang_to_bcp47_normalises_bare_three_letter_locale(): void {
+		$this->assertSame( 'yo-YO', SchemaManager::lang_to_bcp47( 'yor' ) );
 	}
 
 	// =========================================================================

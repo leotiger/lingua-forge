@@ -617,6 +617,23 @@ class MetaBoxes {
 	 *
 	 * Appears as a globe icon + two-letter code in the top-right bar cluster,
 	 * with a flyout listing every active language. A ✓ marks the current one.
+	 *
+	 * $current_lang is resolved exactly once, then reused for both the parent
+	 * label and every flyout item's checkmark — previously the flyout loop
+	 * independently re-derived "is this language active?" per item by comparing
+	 * locale_from_lang( $lang ) against $user_locale again. Two different
+	 * language codes that happen to resolve to the identical locale string (e.g.
+	 * an active router language with no fallback-map entry, which
+	 * locale_from_lang() silently resolves to 'en_US' — colliding with English
+	 * itself) would then BOTH satisfy that per-item check, showing two
+	 * checkmarks and, since the top loop has the same flaw, a parent label that
+	 * could pick the wrong one of the two (confirmed live: an unmapped 'yo'
+	 * router language showed as the current language and was double-checked
+	 * alongside the real current language, 'en'). Comparing against the single
+	 * $current_lang value instead makes exactly one item active by construction,
+	 * regardless of any such collision — see also the locale_from_lang()
+	 * fallback-map fix in class-locale-detector.php, which addresses the
+	 * collision itself.
 	 */
 	public function add_locale_admin_bar_node( \WP_Admin_Bar $wp_admin_bar ): void {
 		if ( ! is_admin() || ! current_user_can( 'edit_posts' ) ) {
@@ -653,8 +670,7 @@ class MetaBoxes {
 		$ajax_url = admin_url( 'admin-ajax.php' );
 
 		foreach ( $languages as $lang ) {
-			$locale    = $this->router->locale_from_lang( $lang );
-			$is_active = ( $locale === $user_locale ) || ( $lang === $source_lang && $user_locale === '' );
+			$is_active = ( $lang === $current_lang );
 
 			$wp_admin_bar->add_node( [
 				'parent' => 'lf-locale-switcher',

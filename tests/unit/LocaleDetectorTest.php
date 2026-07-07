@@ -117,6 +117,89 @@ final class LocaleDetectorTest extends TestCase {
 	}
 
 	// =========================================================================
+	// locale_from_lang() — fallback map additions (2.5.1)
+	//
+	// Auditing the fallback map against languages/lingua-forge-*.po (this
+	// plugin's own bundled UI translations) turned up six languages with no
+	// entry, which fell through to the en_US default and became
+	// indistinguishable from English to any caller comparing locale strings —
+	// surfacing as a double-checked language in the admin-bar switcher (see
+	// AdminBarLocaleSwitcherIntegrationTest): hi, ur, th, sw, km, eu.
+	//
+	// Yoruba ('yo') is NOT one of these, despite an earlier version of this
+	// fix treating it as though it were (see the fallback_map's own comment
+	// in class-locale-detector.php for the full story: WordPress's real
+	// locale slug for Yoruba is the bare 3-letter 'yor', not 'yo' — a fact
+	// only discovered once a live Yoruba install proved un-uninstallable).
+	// Since Context::lang_from_locale() no longer truncates bare 3-letter
+	// locales to 2 characters, 'yor' now resolves correctly via step 2's
+	// direct match against installed locales with no fallback-map entry at
+	// all — see test_yor_resolves_via_override_directory_discovery() below.
+	// =========================================================================
+
+	public function test_hindi_maps_to_hi_IN(): void {
+		$this->assertSame( 'hi_IN', $this->detector->locale_from_lang( 'hi' ) );
+	}
+
+	public function test_urdu_maps_to_ur(): void {
+		$this->assertSame( 'ur', $this->detector->locale_from_lang( 'ur' ) );
+	}
+
+	public function test_thai_maps_to_th(): void {
+		$this->assertSame( 'th', $this->detector->locale_from_lang( 'th' ) );
+	}
+
+	public function test_swahili_maps_to_sw(): void {
+		$this->assertSame( 'sw', $this->detector->locale_from_lang( 'sw' ) );
+	}
+
+	public function test_khmer_maps_to_km(): void {
+		$this->assertSame( 'km', $this->detector->locale_from_lang( 'km' ) );
+	}
+
+	public function test_basque_maps_to_eu(): void {
+		$this->assertSame( 'eu', $this->detector->locale_from_lang( 'eu' ) );
+	}
+
+	/**
+	 * Confirmed live bug (the actual root cause, found only after a manual
+	 * 'yo' fallback-map entry failed to make Yoruba fully uninstallable):
+	 * WordPress's real locale slug for Yoruba is the bare 3-letter 'yor',
+	 * not the 2-letter 'yo' this codebase previously assumed everywhere via
+	 * substr($locale, 0, 2) truncation.
+	 *
+	 * Creates a real fixture file in the i18n-overrides directory (the unit
+	 * test polyfill for wp_upload_dir() points at a real temp directory) so
+	 * discover_plugin_locales() reports 'yor' as a known locale, then asserts
+	 * locale_from_lang('yor') resolves it via step 2's direct match — no
+	 * fallback-map entry needed or present for it at all.
+	 */
+	public function test_yor_resolves_via_override_directory_discovery(): void {
+		$dir = sys_get_temp_dir() . '/lf-unit-test-uploads/lingua-forge/i18n-overrides/';
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0755, true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir -- test fixture dir; WP_Filesystem is not available without a WordPress runtime.
+		}
+		$file = $dir . 'some-plugin-yor.mo';
+		touch( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_touch -- test fixture file; WP_Filesystem is not available without a WordPress runtime.
+
+		try {
+			$this->assertSame( 'yor', $this->detector->locale_from_lang( 'yor' ) );
+		} finally {
+			if ( file_exists( $file ) ) {
+				unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- test cleanup.
+			}
+		}
+	}
+
+	public function test_unmapped_yo_still_falls_back_to_en_US(): void {
+		// 'yo' itself is not a real WordPress locale and has no fallback-map
+		// entry (see the note above) — it must behave exactly like any other
+		// unrecognised code and default to en_US, not silently resolve to
+		// something that looks plausible but isn't installable.
+		$this->assertSame( 'en_US', $this->detector->locale_from_lang( 'yo' ) );
+	}
+
+	// =========================================================================
 	// locale_from_lang() — hard override
 	// =========================================================================
 
@@ -159,6 +242,20 @@ final class LocaleDetectorTest extends TestCase {
 
 	public function test_language_label_for_unknown_lang_returns_non_empty_string(): void {
 		$label = $this->detector->language_label( 'xx' );
+		$this->assertIsString( $label );
+		$this->assertNotSame( '', $label );
+	}
+
+	/**
+	 * language_label('yor') must not crash, and — same caveat as the two
+	 * tests above re: intl extension availability — must not return an
+	 * empty string. The interesting case here is internal: it exercises
+	 * Context::iso_639_1_from_lang('yor') === 'yo' being fed to
+	 * locale_get_display_language() instead of the bare 'yor', which ICU
+	 * generally doesn't recognise as a real locale identifier.
+	 */
+	public function test_language_label_for_bare_three_letter_locale_returns_non_empty_string(): void {
+		$label = $this->detector->language_label( 'yor' );
 		$this->assertIsString( $label );
 		$this->assertNotSame( '', $label );
 	}

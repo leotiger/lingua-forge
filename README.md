@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.5.0 — stable, open for testing.**
+> **Version 2.5.1 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -536,7 +536,7 @@ Every translatable post carries four post-meta fields, all registered with `show
 
 | Meta key | Type | Description |
 |---|---|---|
-| `_lf_lang` | `string` | Two-letter language code |
+| `_lf_lang` | `string` | Language code — WordPress's own locale slug, lowercased and stripped of any region suffix (usually 2 letters, but kept whole for the ~20 WP locales, e.g. Yoruba `yor`, that have no 2-letter form) |
 | `_lf_trid` | `string` | Shared translation group ID (UUID) |
 | `_lf_source_updated_at` | `number` | Unix timestamp of the last source-language save |
 | `_lf_translation_source_updated_at` | `number` | Source timestamp at the time the translation was last synced |
@@ -680,7 +680,7 @@ Each entity produced by this workflow is a real WordPress `wp_template`, `wp_tem
 
 ### Admin UX
 
-The **Lang** column in the post list shows the two-letter code, a **⚠** warning if the translation is outdated, and **⭕ DE, FR** for any languages missing a translation entirely.
+The **Lang** column in the post list shows the language code (usually 2 letters, occasionally 3 — see the `_lf_lang` reference above), a **⚠** warning if the translation is outdated, and **⭕ DE, FR** for any languages missing a translation entirely.
 
 A language filter dropdown and an "Outdated only" filter are added to the post list toolbar. The active language filter persists per user via user meta.
 

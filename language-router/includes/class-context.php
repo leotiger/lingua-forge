@@ -66,13 +66,127 @@ class Context {
 		return $scheme . '://' . $lang . '.' . $this->base_domain() . '/';
 	}
 
+	/**
+	 * Derive a Lingua Forge "lang" code from a full WordPress locale string.
+	 *
+	 * Locales with an underscore (e.g. "de_DE", "zh_CN", "pt_PT_ao90") use the
+	 * segment before the FIRST underscore — this is exactly the 2-character
+	 * ISO 639-1 language subtag for every such locale WordPress ships.
+	 *
+	 * Locales with NO underscore are returned unchanged. Most of these are
+	 * already a bare 2-character code ("ca", "ja", "th"), but WordPress's own
+	 * locale registry also has roughly two dozen bare THREE-character codes
+	 * for languages that have no ISO 639-1 code of their own — "yor" (Yoruba),
+	 * "ckb" (Sorani Kurdish), "dsb" (Lower Sorbian), "sah" (Sakha), "arg"
+	 * (Aragonese), and others.
+	 *
+	 * Before this method existed, every locale was unconditionally truncated
+	 * to its first two characters (`substr($locale, 0, 2)`) regardless of
+	 * length. That's harmless for a 3-character locale whose first two
+	 * letters happen to coincide with its real ISO 639-1 code purely by
+	 * chance (Yoruba's "yor" → "yo" does), but produces an outright wrong,
+	 * different language's code for most of the others (e.g. "sah" (Sakha)
+	 * truncates to "sa", which is Sanskrit's real code) — and even in the
+	 * lucky "yor" → "yo" case, the *reverse* lookup in
+	 * LocaleDetector::locale_from_lang('yo') can never find "yor" again,
+	 * since it only matches a locale that IS the lang code or starts with
+	 * "{lang}_", neither of which "yor" satisfies for lang "yo". Confirmed
+	 * live: a site with the Yoruba language pack installed could never fully
+	 * uninstall it — collect_locale_files() would find and delete "yor.mo",
+	 * but "yo" (the truncated code) stayed in Context::languages() forever,
+	 * because get_available_languages() kept returning "yor" as long as any
+	 * OTHER trace of it existed, and even once none did, nothing ever
+	 * resolved "yo" back to a real, loadable locale for the admin-bar
+	 * preview switcher.
+	 *
+	 * This keeps WordPress's own locale slug verbatim for 3-letter-only
+	 * locales rather than normalising it to the "textbook" ISO 639-1
+	 * equivalent where one exists — internal routing/URLs/postmeta always
+	 * use this value, and changing it after the fact would break already-
+	 * published URLs and stored postmeta on any site already using it. For
+	 * outbound-facing correctness (hreflang, og:locale, browser-language
+	 * auto-detection, display labels) see iso_639_1_from_lang() below,
+	 * which normalises just for those specific purposes without touching
+	 * the internal lang code at all.
+	 *
+	 * @param  string $locale  A WordPress locale string (e.g. from
+	 *                          get_locale() or get_available_languages()).
+	 * @return string  Lowercased lang code.
+	 */
+	public static function lang_from_locale( string $locale ): string {
+		$underscore_pos = strpos( $locale, '_' );
+		$lang           = $underscore_pos !== false ? substr( $locale, 0, $underscore_pos ) : $locale;
+		return strtolower( $lang );
+	}
+
+	/**
+	 * Normalise a Lingua Forge lang code to its real ISO 639-1 equivalent,
+	 * for outbound-facing uses only (hreflang tags, og:locale, ICU/CLDR
+	 * display-name lookups, and matching a visitor's Accept-Language header).
+	 *
+	 * lang_from_locale() deliberately keeps WordPress's own locale slug
+	 * verbatim for 3-letter-only locales, since changing the INTERNAL lang
+	 * code after a site has already published URLs and stored postmeta with
+	 * it would be a breaking change. But several outbound-facing systems do
+	 * expect (or strongly prefer) the real ISO 639-1 code when one exists:
+	 *
+	 *   - BCP 47 primary subtags used in hreflang and og:locale are commonly
+	 *     paired with a 2-letter region (e.g. "yo-NG"); WordPress's "yor"
+	 *     slug produces a malformed tag if used directly.
+	 *   - PHP's intl extension (backed by ICU/CLDR) generally does not
+	 *     recognise WordPress's bare 3-letter slugs and silently echoes them
+	 *     back unlabelled rather than producing a real display name.
+	 *   - A visitor whose browser correctly reports `Accept-Language: yo`
+	 *     (the real ISO code) won't match a router language of "yor" without
+	 *     this reverse mapping.
+	 *
+	 * Only includes languages verified against the official ISO 639-1 ↔
+	 * ISO 639-3 mapping (https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes)
+	 * where the two codes are unambiguous individual-language equivalents.
+	 * Several of WordPress's other bare 3-letter locales are deliberately
+	 * NOT included here because mapping them would be linguistically wrong,
+	 * not just incomplete:
+	 *   - "ckb" (Sorani Kurdish), "dsb"/"hsb" (Lower/Upper Sorbian), "sah"
+	 *     (Sakha), "ceb" (Cebuano), "fur" (Friulian), "kab" (Kabyle), "haz"
+	 *     (Hazaragi), "rhg" (Rohingya), "skr" (Saraiki), "szl" (Silesian) —
+	 *     none of these have a real ISO 639-1 code at all.
+	 *   - "ary" (Moroccan Arabic) and "azb" (South Azerbaijani) each have a
+	 *     related macrolanguage code ("ar", "az") already used by WordPress
+	 *     for a DIFFERENT, more general locale — mapping the dialect-specific
+	 *     code onto the macrolanguage code would silently merge two distinct
+	 *     languages together instead of correcting a naming mismatch.
+	 *
+	 * @param  string $lang  Lingua Forge lang code (from lang_from_locale()).
+	 * @return string  The real ISO 639-1 code when a safe one exists, else
+	 *                  $lang unchanged.
+	 */
+	public static function iso_639_1_from_lang( string $lang ): string {
+		static $map = null;
+
+		if ( $map === null ) {
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
+			$map = apply_filters( 'lf_lang_iso_639_1_map', [
+				'arg' => 'an',  // Aragonese
+				'bel' => 'be',  // Belarusian
+				'dzo' => 'dz',  // Dzongkha
+				'kir' => 'ky',  // Kyrgyz
+				'oci' => 'oc',  // Occitan
+				'snd' => 'sd',  // Sindhi
+				'tah' => 'ty',  // Tahitian
+				'yor' => 'yo',  // Yoruba
+			] );
+		}
+
+		return $map[ $lang ] ?? $lang;
+	}
+
 	public function source_language(): string {
 		if ( $this->cached_source_language !== null ) return $this->cached_source_language;
 		$stored = sanitize_key( (string) get_option( 'linguaforge_primary_language', '' ) );
-		// Fall back to the WordPress site locale (first two characters) so that an
-		// unconfigured install behaves sensibly rather than returning an empty string.
+		// Fall back to the WordPress site locale so that an unconfigured install
+		// behaves sensibly rather than returning an empty string.
 		if ( $stored === '' ) {
-			$stored = sanitize_key( substr( get_locale(), 0, 2 ) );
+			$stored = sanitize_key( self::lang_from_locale( get_locale() ) );
 		}
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- lf_ is this plugin's registered short prefix; hook is public API.
 		return $this->cached_source_language = apply_filters( 'lf_primary_language', $stored );
@@ -106,7 +220,7 @@ class Context {
 
 		$langs = [];
 		foreach ( $locales as $locale ) {
-			$langs[] = strtolower( substr( $locale, 0, 2 ) );
+			$langs[] = self::lang_from_locale( $locale );
 		}
 
 		$src = $this->source_language();
@@ -155,20 +269,25 @@ class Context {
 	 * Files follow the standard WordPress naming convention:
 	 *   {textdomain}-{locale}.mo
 	 *
-	 * The locale suffix is either a bare two-letter code ("ca", "ja") or a
-	 * language_COUNTRY pair ("it_IT", "pt_PT", "de_DE"). Both forms are matched
-	 * by the regex so any plugin's translation file is accepted automatically —
-	 * no anchor on a specific text domain is needed.
+	 * The locale suffix is a bare two- or three-letter code ("ca", "ja",
+	 * "yor") or a language_COUNTRY pair ("it_IT", "pt_PT", "de_DE"). The
+	 * three-letter case covers WordPress's own bare 3-character locale slugs
+	 * for languages with no ISO 639-1 code of their own (see
+	 * Context::lang_from_locale() for the full explanation) — every one of
+	 * those in WordPress's locale registry is 3 characters, never more, so
+	 * {2,3} covers the full range without over-matching. All forms are
+	 * matched by the regex so any plugin's translation file is accepted
+	 * automatically — no anchor on a specific text domain is needed.
 	 *
-	 * @return string[]  e.g. ['it_IT', 'pt_PT', 'de_DE', 'ca', …]
+	 * @return string[]  e.g. ['it_IT', 'pt_PT', 'de_DE', 'ca', 'yor', …]
 	 */
 	public function discover_plugin_locales(): array {
 		$files   = glob( $this->i18n_overrides_dir() . '*.mo' ) ?: [];
 		$locales = [];
 
 		foreach ( $files as $file ) {
-			// Match the locale at the end: either "xx_XX" or bare "xx".
-			if ( preg_match( '/-([a-z]{2}(?:_[A-Z]{2})?)\.mo$/i', $file, $m ) ) {
+			// Match the locale at the end: either "xx_XX" or bare "xx"/"xxx".
+			if ( preg_match( '/-([a-z]{2,3}(?:_[A-Z]{2})?)\.mo$/i', $file, $m ) ) {
 				$locales[] = $m[1];
 			}
 		}
@@ -410,6 +529,24 @@ class Context {
 				$prefix = substr( $tag, 0, 2 );
 				if ( in_array( $prefix, $langs, true ) ) {
 					return $prefix;
+				}
+			}
+
+			// ISO 639-1 match against a router language whose lang code is one
+			// of WordPress's bare 3-letter-only locale slugs (e.g. this site's
+			// router uses 'yor', but the browser correctly reports the real
+			// ISO code 'yo' — or a regional variant of it, 'yo-NG'). Without
+			// this, a visitor whose browser is doing everything right could
+			// never auto-match such a language, since 'yo' itself never
+			// appears in $langs — only the internal 'yor' code does.
+			// $primary is the tag up to its first hyphen (or the whole tag if
+			// there is none), regardless of length — unlike the two checks
+			// above, which only handle a 2-character primary subtag.
+			$hyphen_pos = strpos( $tag, '-' );
+			$primary    = $hyphen_pos !== false ? substr( $tag, 0, $hyphen_pos ) : $tag;
+			foreach ( $langs as $candidate ) {
+				if ( self::iso_639_1_from_lang( $candidate ) === $primary ) {
+					return $candidate;
 				}
 			}
 		}

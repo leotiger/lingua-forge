@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.5.1 =
+* Fixed: The Danger Zone "Uninstall {LANG}" action on Settings → Router appeared to do nothing — the deletion actually ran, but the redirect afterward pointed at `wp-admin/options-general.php`, a URL the plugin's settings page (a top-level admin menu page) doesn't live under, so WordPress silently fell back to the default Settings → General screen with no success notice. The same wrong-redirect bug also affected saving Router settings and flushing permalinks from the same tab. All three now redirect to the actual settings page and show their confirmation notice. (`RouterTab.php`)
+* Fixed: Uninstalling a language could leave it only partially removed, for three independent reasons — CPT Block Pattern translations lived in a single option rather than as posts and were invisible to the uninstall's postmeta query; custom translation files copied into the Maintenance tab's "Loco Translate — Copy to Safe Storage" location were never scanned for removal; and for languages where WordPress's own locale slug isn't the 2-letter code this plugin assumed everywhere (e.g. Yoruba's real slug is the 3-letter `yor`, not `yo`), uninstall could report success while the language stayed active forever. All three fixed: pattern translations are now purged and counted in the success notice, the Loco safe-storage directory is now scanned too, and a new `Context::lang_from_locale()` replaces the lossy 2-character truncation everywhere it appeared, so any of WordPress's roughly two dozen bare 3-letter-only locale codes resolves correctly. Internal routing/URLs/postmeta are unaffected — no site's existing URLs or stored data change. (`PatternDiscovery.php`, `LanguageUninstaller.php`, `class-context.php`, `SystemPanel.php`, `RouterTab.php`, `Translation.php`)
+* Fixed: The admin-bar "Preview Language" switcher could show two languages checked at once (and label the wrong one as current) — confirmed with Yoruba added as an active language, which had no locale mapping and silently collided with English's own locale. Added the missing mapping (plus five others found via audit: hi, ur, th, sw, km, eu) and made the switcher compare against a single resolved "current language" value instead of re-deriving it per item, so this class of bug can't recur even for a future unmapped language. (`class-locale-detector.php`, `class-meta-boxes.php`)
+* Fixed: hreflang tags, og:locale, the "Preview Language" label, and browser-language auto-detection didn't understand WordPress's bare 3-letter locale slugs. A new `Context::iso_639_1_from_lang()` normalises the handful of affected languages (Yoruba, Belarusian, Dzongkha, Kyrgyz, Occitan, Sindhi, Tahitian, Aragonese) to their real ISO 639-1 code for these outbound-facing uses only, without touching internal routing/URLs/postmeta. (`class-context.php`, `class-locale-detector.php`, `class-schema-manager.php`, `class-seo-manager.php`)
+
 = 2.5.0 =
 * Added: Support for "Your latest posts" as the site's front page (Settings → Reading) — translated homepages now live at `/es/`, `/fr/`, etc., alongside the existing static-front-page support. Includes: language-scoped post listing on the latest-posts front page (previously all languages appeared mixed); a "Blog Home" entry in the FSE template scaffold list so the latest-posts template can be translated per language; automatic `home-{lang}` template selection at runtime; a redirect from `/` to the language-prefixed root for returning visitors whose detected language differs from the site's source language; and a synthetic per-language homepage entry (with hreflang alternates) in the XML sitemap. (`class-query-filter.php`, `class-front-page-query.php`, `class-redirector.php`, `class-sitemap-manager.php`, `TemplateDefinitions.php`)
 * Added: Translated posts, pages, and CPTs now get their featured image copied from the source post automatically when the translation is created — none of the 3 built-in translation paths did this before. Skipped for WooCommerce products (already served live from the source via `MetaDelegate`) and when an integration's `linguaforge_translated_post_meta` filter already supplied one. A new "Fix Featured Images" bulk-fix button (next to "Fix Links" in the Posts/Pages/CPT admin list toolbar) retroactively fixes existing translations missing or out of sync with their source's featured image. Gallery images are unaffected — they live in post content, which is already translated. (`TranslationTrigger.php`, `AbstractTranslateCommand.php`, `PostListColumn.php`, `class-lsflr-featured-image-fixer.php`)
@@ -324,6 +330,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.5.1 =
+Fixes Danger Zone redirect failures, language uninstall bugs (including a WordPress locale-code mismatch that made some languages permanently unremovable), and the admin-bar switcher double-checking languages. No database changes. No flush required.
 
 = 2.5.0 =
 Adds "Your latest posts" homepage support and automatic featured-image copying for translations. Also fixes translated custom-post-type permalinks 404ing. Re-save Settings > Permalinks once after updating.

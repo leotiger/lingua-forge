@@ -48,9 +48,20 @@ if [[ -z "$DOCKER" ]]; then
     done
 fi
 
+# Resolve via wp-env itself rather than `docker ps --filter name=tests-cli`
+# — with multiple wp-env projects running, and at least one other project
+# mounting this same plugin as a dependency alongside its own, that filter
+# can match more than one container with no way to tell them apart by name
+# or even by mount destination alone (see setup-coverage.sh's history for
+# the full story of how this went wrong here on 2026-07-06).
 CONTAINER=""
-if [[ -n "$DOCKER" ]]; then
-    CONTAINER=$("$DOCKER" ps --filter "name=tests-cli" --format "{{.Names}}" 2>/dev/null | head -1)
+WP_ENV_BIN="$(cd "$(dirname "$0")" && pwd)/node_modules/.bin/wp-env"
+if [[ -x "$WP_ENV_BIN" ]]; then
+    CONTAINER=$(
+        "$WP_ENV_BIN" run tests-cli bash -c 'hostname' 2>/dev/null \
+            | grep -oE '^[0-9a-f]{12}$' \
+            | tail -1
+    )
 fi
 
 CONTAINER_COVERAGE="/var/www/html/wp-content/plugins/lingua-forge/dev/coverage/integration"

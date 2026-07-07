@@ -1103,6 +1103,29 @@ under control; the ignore directive is what makes WPCS tolerate it.
   `send_xml_headers()` are the reference pattern — call
   `status_header( 200 )` before `nocache_headers()`. Any new
   `template_redirect`-based virtual-file handler needs the same call.
+- **A WordPress locale slug is not always 2 letters — never
+  `substr( $locale, 0, 2 )` to derive a lang code.** ~20 locales in
+  WP's own registry (Yoruba `yor`, Sorani Kurdish `ckb`, Sakha `sah`,
+  and others) are bare 3-letter codes with no 2-letter form; truncating
+  them silently produces the wrong code (`sah` → `sa`, which is
+  Sanskrit's real code) or a code that looks right but can never be
+  reverse-matched back to the installed locale (`yor` → `yo`, which
+  happens to be Yoruba's genuine ISO 639-1 code, so it "works" for
+  detection but `locale_from_lang( 'yo' )` can't find an installed
+  locale that IS `yo` or starts with `yo_`, and uninstall/protection
+  logic silently no-ops). Use `Context::lang_from_locale( $locale )`
+  for any internal routing/URL/postmeta-facing derivation — it splits
+  at the first underscore if present, otherwise returns the bare slug
+  unchanged. Separately, anything **outbound-facing** (hreflang,
+  `og:locale`, Schema.org `inLanguage`, ICU/CLDR display names, browser
+  `Accept-Language` matching) needs a real ISO 639-1 code, which a bare
+  WP-only slug like `yor` is not — use
+  `Context::iso_639_1_from_lang( $lang )` there instead, a small
+  filterable (`lf_lang_iso_639_1_map`) map covering only the WP locales
+  that have an unambiguous individual-language ISO 639-1 equivalent.
+  Both live in `language-router/includes/class-context.php`;
+  `git grep 'iso_639_1_from_lang'` shows the existing outbound call
+  sites as a template for adding a new one.
 
 ---
 

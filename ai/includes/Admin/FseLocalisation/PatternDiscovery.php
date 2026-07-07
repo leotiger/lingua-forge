@@ -137,4 +137,42 @@ class PatternDiscovery {
         $translations[ $key ][ $lang ]  = $content;
         update_option( 'linguaforge_pattern_translations', $translations, false );
     }
+
+    /**
+     * Remove every stored translation for one language from the option.
+     *
+     * Pattern translations live entirely in the `linguaforge_pattern_translations`
+     * option (see save_translation() above) rather than as posts, so they are
+     * invisible to LanguageUninstaller::collect_post_ids()'s postmeta query —
+     * without this method, uninstalling a language would leave its pattern
+     * translations behind indefinitely, unreachable through the UI. Called
+     * from LanguageUninstaller::uninstall().
+     *
+     * A pattern's entry is dropped entirely once its last language is removed,
+     * so the option doesn't accumulate empty arrays over time.
+     *
+     * @param  string $lang  Two-character language code.
+     * @return int  Number of patterns from which a translation was removed.
+     */
+    public static function delete_language( string $lang ): int {
+        $translations = (array) get_option( 'linguaforge_pattern_translations', [] );
+        $removed      = 0;
+
+        foreach ( $translations as $key => $langs ) {
+            if ( ! is_array( $langs ) || ! array_key_exists( $lang, $langs ) ) {
+                continue;
+            }
+            unset( $translations[ $key ][ $lang ] );
+            $removed++;
+            if ( empty( $translations[ $key ] ) ) {
+                unset( $translations[ $key ] );
+            }
+        }
+
+        if ( $removed > 0 ) {
+            update_option( 'linguaforge_pattern_translations', $translations, false );
+        }
+
+        return $removed;
+    }
 }

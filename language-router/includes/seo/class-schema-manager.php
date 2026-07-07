@@ -38,6 +38,7 @@
 
 namespace LinguaForge\Router\Seo;
 
+use LinguaForge\Router\Context;
 use LinguaForge\Router\Router;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -578,6 +579,14 @@ class SchemaManager {
 	 * @return string        BCP 47 locale (e.g. 'de-DE').
 	 */
 	public static function lang_to_bcp47( string $lang ): string {
+
+		// Normalise WordPress's own bare 3-letter-only locale slugs (e.g.
+		// 'yor' for Yoruba) to their real ISO 639-1 code first — using 'yor'
+		// directly here would produce a malformed tag like "yor-YOR" via the
+		// fallback below (a 3-letter region subtag is not valid BCP 47).
+		// Internal routing/URLs/postmeta are untouched; this is purely for
+		// this outbound-facing conversion. See Context::iso_639_1_from_lang().
+		$lang = Context::iso_639_1_from_lang( $lang );
 
 		static $map = null;
 

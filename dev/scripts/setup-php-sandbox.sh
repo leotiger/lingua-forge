@@ -20,8 +20,31 @@
 #
 # Ubuntu 22.04 ships PHP 8.1 (the project's declared floor). The full toolchain
 # runs in-sandbox: `php -l`, phpcs, phpstan, and the whole unit suite —
-#     WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php vendor/bin/phpunit --testsuite=unit
+#     WP_TESTS_DIR='' WP_PHPUNIT__DIR='' php vendor/bin/phpunit --testsuite=unit --no-coverage
+# (--no-coverage matters: the <coverage> block in phpcs.xml.dist/phpunit's
+# config makes PHPUnit try to collect coverage even without a --coverage-*
+# flag whenever a driver is available, which can make a plain run hang far
+# past a reasonable timeout — see project memory "PHPUnit sandbox hang".)
 # Integration tests still need wp-env + Docker, which the sandbox does not have.
+#
+# --- Why this still installs 8.1, not 8.3 (investigated 2026-07-06) ---------
+# Production hosting and wp-env (dev/.wp-env.json) have both moved to PHP 8.3.
+# Bumping this script to match was investigated and shelved: Ubuntu 22.04
+# (jammy, this sandbox's base image) doesn't ship php8.3 in its own archive,
+# and the two standard third-party sources for it are both unreachable here —
+# the sandbox has no root (`sudo` is hard-blocked by "no new privileges", so
+# `add-apt-repository` for ondrej/php is out) and the outbound proxy's
+# allowlist returns 403 for both ppa.launchpadcontent.net and
+# packages.sury.org (deb.sury.org). Ubuntu 24.04 (noble) *does* ship php8.3,
+# and its package pool is reachable at ports.ubuntu.com (already-allowlisted,
+# since jammy's own packages come from there) — but noble's .debs are linked
+# against a newer glibc (2.39 vs jammy's 2.35) and largely renamed for the
+# 64-bit time_t transition (e.g. libssl3 → libssl3t64), so cleanly extracting
+# and running them here would mean also bundling a foreign glibc userland
+# (invoking it via its own ld.so with an explicit --library-path) — doable in
+# principle, but fragile enough that it wasn't pursued. If this sandbox ever
+# gets a newer base image (or a wider network allowlist), re-attempt this
+# rather than the noble/glibc route.
 # =============================================================================
 set -euo pipefail
 

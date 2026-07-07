@@ -49,7 +49,7 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 
 	public function test_source_language_falls_back_to_wp_locale_when_option_absent(): void {
 		delete_option( 'linguaforge_primary_language' );
-		$expected = sanitize_key( substr( get_locale(), 0, 2 ) );
+		$expected = sanitize_key( Context::lang_from_locale( get_locale() ) );
 		$this->assertSame( $expected, $this->ctx()->source_language() );
 	}
 
@@ -61,7 +61,7 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 	public function test_source_language_falls_back_to_wp_locale_when_option_is_empty(): void {
 		// Empty stored value → falls back to the WordPress site locale (first two chars).
 		update_option( 'linguaforge_primary_language', '', false );
-		$expected = sanitize_key( substr( get_locale(), 0, 2 ) );
+		$expected = sanitize_key( Context::lang_from_locale( get_locale() ) );
 		$this->assertSame( $expected, $this->ctx()->source_language() );
 	}
 
@@ -123,8 +123,46 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 		$this->assertIsArray( $langs );
 		foreach ( $langs as $lang ) {
 			$this->assertIsString( $lang );
-			$this->assertSame( 2, strlen( $lang ), "Language code '{$lang}' must be two characters." );
+			// Most lang codes are exactly 2 characters, but WordPress's own
+			// locale registry has bare 3-letter-only codes for languages with
+			// no ISO 639-1 code of their own (e.g. "yor" Yoruba) — see
+			// Context::lang_from_locale(). A hardcoded assertSame(2, ...) here
+			// would fail the moment such a locale is installed; >= 2 (never
+			// empty) is the actual invariant.
+			$this->assertGreaterThanOrEqual( 2, strlen( $lang ), "Language code '{$lang}' must be at least two characters." );
 		}
+	}
+
+	/**
+	 * Confirmed live bug: languages() used to derive every lang code —
+	 * including the WP site locale itself (get_locale(), always added to the
+	 * candidate list) — by truncating to the first two characters, which
+	 * silently mangled any bare 3-letter-only WordPress locale (e.g. "sah"
+	 * Sakha truncated to "sa", Sanskrit's real code). Context::lang_from_locale()
+	 * now keeps such locales whole.
+	 *
+	 * Exercised via the core 'locale' filter (get_locale()'s own extension
+	 * point) rather than a real installed locale pack, since wp-env's test
+	 * environment has no 3-letter-locale pack available to switch to. Uses a
+	 * named callback so only this test's override is removed afterward —
+	 * removing ALL 'locale' filters would also strip
+	 * LocaleDetector::filter_locale(), which is registered for the lifetime
+	 * of the test process and other integration tests depend on.
+	 */
+	public function test_languages_keeps_bare_three_letter_wp_locale_whole(): void {
+		// Priority 20 so this override wins over LocaleDetector::filter_locale(),
+		// which is registered at priority 0.
+		$override = static fn(): string => 'yor';
+		add_filter( 'locale', $override, 20 );
+
+		try {
+			$langs = $this->ctx()->languages();
+		} finally {
+			remove_filter( 'locale', $override, 20 );
+		}
+
+		$this->assertContains( 'yor', $langs );
+		$this->assertNotContains( 'yo', $langs );
 	}
 
 	public function test_languages_respects_lf_languages_list_filter(): void {
@@ -208,6 +246,29 @@ final class ContextOptionsTest extends WP_UnitTestCase {
 		// 'de' has no explicit q, defaults to 1.0; 'ca' has q=0.9 — 'de' wins.
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'de,ca;q=0.9';
 		$this->assertSame( 'de', $this->ctx()->detect_browser_lang( [ 'ca', 'de' ] ) );
+	}
+
+	/**
+	 * A router language whose lang code is one of WordPress's bare
+	 * 3-letter-only locale slugs (e.g. 'yor' for Yoruba) must still be
+	 * auto-detected when the browser correctly reports the real ISO 639-1
+	 * code ('yo') rather than WordPress's own slug — 'yo' itself never
+	 * appears in $langs, only 'yor' does, so this only works via
+	 * Context::iso_639_1_from_lang()'s reverse match.
+	 */
+	public function test_detect_browser_lang_matches_iso_639_1_code_to_bare_three_letter_locale(): void {
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'yo,en;q=0.8';
+		$this->assertSame( 'yor', $this->ctx()->detect_browser_lang( [ 'en', 'yor' ] ) );
+	}
+
+	/**
+	 * Same as above but with a regional variant of the ISO code (e.g. a
+	 * Nigerian browser locale) — the hyphen-splitting must not assume the
+	 * primary subtag is exactly two characters.
+	 */
+	public function test_detect_browser_lang_matches_iso_639_1_regional_variant(): void {
+		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'yo-NG,en;q=0.8';
+		$this->assertSame( 'yor', $this->ctx()->detect_browser_lang( [ 'en', 'yor' ] ) );
 	}
 
 	// ── Subdomain routing — §6.0.1 Medium (class-context.php, 52%) ───────────

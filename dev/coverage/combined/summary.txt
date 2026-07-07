@@ -1,4 +1,4 @@
-COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
+COMBINED COVERAGE  (unit + integration)  —  2026-07-07 00:17
 ──────────────────────────────────────────────────────────────────────
   File                                                           Cov%
 ──────────────────────────────────────────────────────────────────────
@@ -6,17 +6,17 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
   ❌ ai/includes/Admin/FseLocalisation/LinkFixer.php              0%
   ❌ ai/includes/Admin/FseLocalisation/PartDiscovery.php          0%
   ❌ ai/includes/Admin/FseLocalisation/PartRefFixer.php           0%
-  ✅ ai/includes/Admin/FseLocalisation/PatternDiscovery.php      97%
+  ✅ ai/includes/Admin/FseLocalisation/PatternDiscovery.php      98%
   ❌ ai/includes/Admin/FseLocalisation/PatternExpander.php        0%
   ❌ ai/includes/Admin/FseLocalisation/PatternHandler.php         0%
   ✅ ai/includes/Admin/FseLocalisation/RepairHandler.php         86%
   ❌ ai/includes/Admin/FseLocalisation/ScaffoldHandler.php        0%
-  ❌ ai/includes/Admin/FseLocalisation/TemplateDefinitions.php    0%
+  🔶 ai/includes/Admin/FseLocalisation/TemplateDefinitions.php   69%
   ❌ ai/includes/Admin/FseLocalisation/TranslateHandler.php       0%
-  ✅ ai/includes/Admin/Language/LanguageUninstaller.php          94%
+  ✅ ai/includes/Admin/Language/LanguageUninstaller.php          99%
   ✅ ai/includes/Admin/Language/UninstallResult.php             100%
-  ❌ ai/includes/Admin/MetaBox.php                                1%
-  ❌ ai/includes/Admin/PostListColumn.php                         0%
+  ❌ ai/includes/Admin/MetaBox.php                               42%
+  🔶 ai/includes/Admin/PostListColumn.php                        66%
   ❌ ai/includes/Admin/Settings/Panels/CacheStatsPanel.php        0%
   ❌ ai/includes/Admin/Settings/Panels/CompatibilityPanel.php     0%
   ❌ ai/includes/Admin/Settings/Panels/DebugFilesPanel.php        0%
@@ -49,18 +49,18 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
   ❌ ai/includes/Admin/Settings/Tabs/Tab.php                      0%
   ❌ ai/includes/Admin/SettingsHelp.php                           0%
   ❌ ai/includes/Admin/SettingsPage.php                           0%
-  ❌ ai/includes/CLI/AbstractTranslateCommand.php                 0%
+  ✅ ai/includes/CLI/AbstractTranslateCommand.php                82%
   ❌ ai/includes/CLI/CacheClearCommand.php                        0%
   ❌ ai/includes/CLI/Commands.php                                 0%
   ❌ ai/includes/CLI/FillTranslationsCommand.php                  0%
   ❌ ai/includes/CLI/FixNavLangCommand.php                        0%
   ❌ ai/includes/CLI/MissingTranslationsCommand.php               0%
   ❌ ai/includes/CLI/RetranslateCommand.php                       0%
-  ❌ ai/includes/CLI/TranslateCommand.php                         0%
+  ❌ ai/includes/CLI/TranslateCommand.php                         2%
   ❌ ai/includes/Contracts/AIProviderInterface.php                0%
   ✅ ai/includes/Core/Autoloader.php                             86%
   ✅ ai/includes/Core/BlockTextExtractor.php                     96%
-  ✅ ai/includes/Core/CacheStore.php                             82%
+  ✅ ai/includes/Core/CacheStore.php                             90%
   ✅ ai/includes/Core/Config.php                                 98%
   🔶 ai/includes/Core/Glossary.php                               79%
   ✅ ai/includes/Core/JsonRepair.php                             94%
@@ -69,21 +69,21 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
   ✅ ai/includes/Core/ModelCatalog.php                           94%
   ❌ ai/includes/Core/Plugin.php                                  0%
   ✅ ai/includes/Core/PrivacyIntegration.php                     86%
-  ❌ ai/includes/Core/TranslationDebug.php                        7%
+  ❌ ai/includes/Core/TranslationDebug.php                       46%
   ✅ ai/includes/Core/TranslationMemory.php                      96%
   ✅ ai/includes/Core/UsageRecorder.php                          92%
   ✅ ai/includes/Features/ChunkTranslation.php                   90%
-  ❌ ai/includes/Features/ContentGenerator.php                   18%
+  ❌ ai/includes/Features/ContentGenerator.php                   43%
   ✅ ai/includes/Features/Contracts/FeatureInterface.php        100%
-  ❌ ai/includes/Features/ExcerptGenerator.php                    6%
+  ❌ ai/includes/Features/ExcerptGenerator.php                   12%
   ✅ ai/includes/Features/JsonEnvelopeTranslator.php             97%
-  ✅ ai/includes/Features/MetaDescription.php                    90%
-  ✅ ai/includes/Features/Registry.php                           88%
-  🔶 ai/includes/Features/Translation.php                        74%
+  ✅ ai/includes/Features/MetaDescription.php                    94%
+  ✅ ai/includes/Features/Registry.php                          100%
+  ✅ ai/includes/Features/Translation.php                        93%
   ✅ ai/includes/Features/TranslationMemoryTranslator.php        90%
   ❌ ai/includes/Features/TranslationQueue.php                   45%
-  ❌ ai/includes/Features/TranslationTrigger.php                  0%
-  ❌ ai/includes/Integrations/WooCommerce/AdminSaveGuard.php     40%
+  ❌ ai/includes/Features/TranslationTrigger.php                 49%
+  🔶 ai/includes/Integrations/WooCommerce/AdminSaveGuard.php     66%
   ❌ ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php   39%
   ❌ ai/includes/Integrations/WooCommerce/Bootstrap.php           4%
   ✅ ai/includes/Integrations/WooCommerce/CatalogQuery.php       86%
@@ -99,7 +99,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
   ✅ ai/includes/Integrations/WooCommerce/TaxonomyDelegate.php   88%
   ❌ ai/includes/Integrations/WooCommerce/TermNameAdmin.php       0%
   ✅ ai/includes/Integrations/WooCommerce/TermNameFilter.php     84%
-  🔶 ai/includes/Integrations/WooCommerce/TermNameTranslator.php   50%
+  🔶 ai/includes/Integrations/WooCommerce/TermNameTranslator.php   54%
   ✅ ai/includes/Integrations/WooCommerce/VariationDelegate.php   94%
   🔶 ai/includes/Integrations/WooCommerce/VariationSync.php      79%
   🔶 ai/includes/Integrations/WooCommerce/WcOrderLang.php        66%
@@ -115,32 +115,32 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-06 01:18
   ✅ ai/includes/REST/RateLimiter.php                            81%
   ❌ language-router/includes/admin/class-columns.php             0%
   ❌ language-router/includes/admin/class-filters.php             0%
-  ❌ language-router/includes/admin/class-meta-boxes.php         12%
+  ❌ language-router/includes/admin/class-meta-boxes.php         26%
   ❌ language-router/includes/admin/class-scripts.php             0%
-  🔶 language-router/includes/class-context.php                  66%
-  ❌ language-router/includes/class-language-router.php           3%
-  🔶 language-router/includes/class-locale-detector.php          77%
-  ❌ language-router/includes/class-lsflr-featured-image-fixer.php    0%
+  🔶 language-router/includes/class-context.php                  71%
+  ❌ language-router/includes/class-language-router.php           2%
+  🔶 language-router/includes/class-locale-detector.php          78%
+  ❌ language-router/includes/class-lsflr-featured-image-fixer.php   16%
   ❌ language-router/includes/class-lsflr-link-fixer.php         29%
   ❌ language-router/includes/class-lsflr-switcher-widget.php     0%
-  ❌ language-router/includes/class-lsflr-switcher.php            6%
+  ❌ language-router/includes/class-lsflr-switcher.php           10%
   ❌ language-router/includes/db/class-migrator.php               0%
   ❌ language-router/includes/i18n/class-overrides.php            0%
   ✅ language-router/includes/rest/class-data-endpoints.php      94%
-  🔶 language-router/includes/rewrite/class-manager.php          55%
-  🔶 language-router/includes/rewrite/class-query-filter.php     52%
-  ❌ language-router/includes/routing/class-front-page-query.php   27%
-  ❌ language-router/includes/routing/class-redirector.php       30%
+  ✅ language-router/includes/rewrite/class-manager.php          93%
+  🔶 language-router/includes/rewrite/class-query-filter.php     78%
+  ✅ language-router/includes/routing/class-front-page-query.php   82%
+  ❌ language-router/includes/routing/class-redirector.php       47%
   🔶 language-router/includes/search/class-index.php             56%
   🔶 language-router/includes/search/class-query.php             51%
-  🔶 language-router/includes/seo/class-hreflang.php             70%
-  ❌ language-router/includes/seo/class-indexnow-manager.php     46%
+  🔶 language-router/includes/seo/class-hreflang.php             71%
+  🔶 language-router/includes/seo/class-indexnow-manager.php     74%
   🔶 language-router/includes/seo/class-schema-manager.php       57%
-  ✅ language-router/includes/seo/class-seo-manager.php          81%
-  ❌ language-router/includes/seo/class-sitemap-manager.php      43%
+  ✅ language-router/includes/seo/class-seo-manager.php          82%
+  ✅ language-router/includes/seo/class-sitemap-manager.php      80%
   ❌ language-router/includes/seo/class-social-share.php         31%
-  ❌ language-router/includes/translation/class-sync.php         30%
+  ❌ language-router/includes/translation/class-sync.php         49%
   ✅ language-router/includes/translation/class-trid-group.php   95%
   ❌ meta-description/meta-description.php                       27%
 ──────────────────────────────────────────────────────────────────────
-  TOTAL: 29.50%  (5373 / 18213 statements)
+  TOTAL: 37.58%  (6366 / 16940 statements)
