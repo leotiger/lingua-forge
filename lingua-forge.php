@@ -3,7 +3,7 @@
  * Plugin Name:       Lingua Forge
  * Plugin URI:        https://github.com/leotiger/lingua-forge
  * Description:       Multilingual routing, complete multilingual SEO (hreflang, Open Graph, Schema.org, sitemap), and AI content tools for WordPress. Language detection, URL routing, translation, content generation, and a full SEO layer — no companion plugin required.
- * Version:           2.5.2
+ * Version:           2.5.4
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Uli Hake
@@ -33,7 +33,7 @@ if ( defined( 'LINGUAFORGE_FILE' ) ) {
 define( 'LINGUAFORGE_FILE',    __FILE__ );
 define( 'LINGUAFORGE_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'LINGUAFORGE_URL',     plugin_dir_url( __FILE__ ) );
-define( 'LINGUAFORGE_VERSION', '2.5.2' );
+define( 'LINGUAFORGE_VERSION', '2.5.4' );
 
 // =========================================================
 // ACTIVATION / DEACTIVATION
@@ -108,6 +108,15 @@ add_action( 'admin_init', function () {
 
 register_deactivation_hook( __FILE__, function () {
     flush_rewrite_rules();
+
+    // Cancel the missing-translation backfill scan (see
+    // ai/includes/Features/TranslationBackfill.php). Hardcoded hook name
+    // rather than referencing the class: register_deactivation_hook callbacks
+    // must stay resolvable even if the AI module's autoloader path changes.
+    $timestamp = wp_next_scheduled( 'linguaforge_backfill_missing_translations' );
+    if ( $timestamp ) {
+        wp_unschedule_event( $timestamp, 'linguaforge_backfill_missing_translations' );
+    }
 } );
 
 // Load bundled .mo / .l10n.php translations (WP 6.5+ performant format).

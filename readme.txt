@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.5.2
+Stable tag: 2.5.4
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,13 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.5.4 =
+* Added: "Trash + Siblings" — a new row action on the Posts/Pages/CPT admin list tables (next to Edit | Quick Edit | Trash | View) that trashes a post together with every other language version in its translation group, and a matching "Move to Trash (incl. translations)" bulk action. Both only appear when a post actually has translated siblings, act immediately (no confirmation prompt, matching the stock "Trash" link's own reversible behaviour), and report a "Trashed N posts (including translations)" notice afterward. Skips the static front page / posts page and any post the current user can't delete, reporting them as skipped rather than failing silently. Two new hooks for integrations: `linguaforge_trash_cascade_post_ids` (filter the group before it's trashed) and `linguaforge_trash_cascade_complete` (fires after, with the trashed/skipped ID lists). (`language-router/includes/translation/class-trash-cascade.php` NEW)
+* Added: `linguaforge_trash_translation_group( $post_id, $check_caps = false )` — public function for integrations that want the same cascading-trash behaviour from their own code, not through wp-admin. Defaults to not requiring `current_user_can()`, matching `linguaforge_trigger_translation()`'s existing convention, since a REST endpoint or CLI command calling in often has no logged-in WP user at all. Pass `true` to require it instead. (`language-router/language-router.php`)
+
+= 2.5.3 =
+* Added: Automatic missing-translation backfill. Previously, if a queued translation (Action Scheduler / WP-Cron job) timed out, errored, or was otherwise lost, the resulting gap was silent — nothing ever revisited it, and an admin only found out by noticing a missing language switcher entry or by running the `missing_translations` / `fill_translations` WP-CLI commands by hand. A new hourly scan re-derives the same "which posts are missing which active language" check those CLI commands compute and re-queues just the missing (post, language) pairs through the normal async pipeline, up to 25 jobs per run. Each queued job's outcome (success or failure) is now recorded on the source post, so a pair that fails 5 times in a row is left alone for 24 hours before one more automatic retry — enough for a fixed API key or an ended provider outage to recover on its own without hammering a structurally broken case every tick. The schedule itself is checked on every admin request, not just on activation, so it self-heals if the cron event is ever dropped (SFTP/rsync deploy, host cron reset, etc.). The manual CLI commands are unchanged and still work for an immediate, on-demand check. (`ai/includes/Features/TranslationBackfill.php` NEW, `ai/includes/Features/TranslationQueue.php`, `ai/ai.php`, `lingua-forge.php`)
+
 = 2.5.2 =
 * Fixed: The Language Switcher could render nothing at all on a "Your latest posts" front page, even with every language correctly configured. A stray, untranslated post (WordPress's own default "Hello world!" sample, or any other leftover post — not specific to WooCommerce or any post type) could get silently picked up as "the current post" via `get_the_ID()` on a non-singular request, and since it had no translation group the switcher hid itself entirely, even though the site's real content was fully translated. `get_the_ID()` is now only trusted when `is_singular()` is actually true; a non-singular front page falls through to the existing per-language URL fallback instead. (`class-lsflr-switcher.php`)
 
@@ -333,6 +340,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.5.4 =
+Adds a "Trash + Siblings" row action and bulk action to trash a post and all its translated versions together from the Posts/Pages list. No database changes. No flush required.
+
+= 2.5.3 =
+Adds automatic hourly backfill for missing translations — a queued translation that timed out or failed is now retried automatically instead of sitting silently missing. No database changes. No flush required.
 
 = 2.5.2 =
 Fixes the Language Switcher going blank on a "Your latest posts" homepage when an untranslated stray post exists. No database changes. No flush required.

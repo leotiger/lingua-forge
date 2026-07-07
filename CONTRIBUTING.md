@@ -61,13 +61,30 @@ outside the plugin namespace.
     Language, Template, Translations, Source Footnotes; seeded from the
     `linguaforge_secondary_query_excluded_types` option so it is always a
     superset of the user's System-panel exclusion list; receives
-    `string[] $types`).
+    `string[] $types`),
+    `linguaforge_trash_cascade_post_ids` (filter on the array of post IDs
+    about to be trashed together by `Translation\TrashCascade::trash_group()`
+    — the "Trash + Siblings" row action on the Posts/Pages/CPT list tables;
+    receives `int[] $ids`, `int $post_id` the action was triggered from),
+    `linguaforge_trash_cascade_complete` (action after a trash-cascade run;
+    receives `int[] $trashed`, `int[] $skipped`, `int $post_id`).
   - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
     translation payload before it is written to the result cache; receives
     `array $payload`, `int $post_id`, `string $target_lang`),
     `linguaforge_translation_complete` (action after a CLI / programmatic
     translation creates or updates a post; receives `int $new_id`,
-    `int $source_id`, `string $target_lang`).
+    `int $source_id`, `string $target_lang`),
+    `linguaforge_backfill_post_types` (filter on the array of post type slugs
+    `Features\TranslationBackfill`'s hourly self-heal scan checks for
+    missing-translation gaps; defaults to every public post type minus
+    WordPress' own internal types; receives `string[] $types`).
+  - **AI sub-module cron hook:** `linguaforge_backfill_missing_translations`
+    — the recurring `wp_schedule_event()` hook `TranslationBackfill::run()`
+    is registered on (hourly). Not intended to be hooked by third parties;
+    documented here because `lingua-forge.php`'s deactivation handler
+    references it by this hardcoded string (see that file for why — the
+    callback must stay resolvable even if the AI module's autoloader path
+    changes).
   - **SEO sub-module hooks** (new in 2.2.0):
     - `linguaforge_seo_og_type` — filter; override the resolved `og:type` per page. Receives `string $type` ('article'|'website'). WooCommerce integration uses this to return `'product'` on product pages.
     - `linguaforge_seo_og_extra_tags` — action; fires after the full OG + Twitter Card set. Use to append additional Open Graph properties (e.g. WC price/availability).
@@ -130,7 +147,14 @@ a short name is meaningfully more readable.
     stores the two most recent rule-based scores as a JSON array,
     newest-first; used by the Lang column score badge to show a Δ delta.
     Written by `SeoAnalysisPanel::save_score_history()`; read by
-    `SeoAnalysisPanel::get_score_history()`; max 2 entries).
+    `SeoAnalysisPanel::get_score_history()`; max 2 entries), `_lf_translation_failures`
+    (on the *source* post — per-target-language queued-translation failure
+    state as an array keyed by lang code, each entry `{attempts, last_attempt,
+    last_error}`; written by `Features\TranslationBackfill::record_failure()`
+    and cleared by `::clear_failure()`, both called from
+    `TranslationQueue::run_queued()` on every queued job's outcome; read by
+    `TranslationBackfill::run()`'s cooldown check so a structurally broken
+    pair — e.g. a revoked API key — isn't retried every hourly tick).
   - **Internal routing key:** `_lf_auto_template` (tracks which FSE
     template was auto-assigned by the Language Router so it can be
     retracted if the language setting changes; not in the uninstall list
@@ -262,6 +286,12 @@ instead of reaching into the class instances directly. All are prefixed
 | `linguaforge_get_translations( $id )` | `array` | `[ lang => post_id ]` map for all variants |
 | `linguaforge_clear_translation_cache( $id )` | `void` | Bust the `wp_cache` entry for a TRID group |
 | `linguaforge_get_missing_languages( $id )` | `string[]` | Language codes that have no translation yet |
+
+**Cascading trash (Since 2.5.4)**
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_trash_translation_group( $id, $check_caps = false )` | `array{trashed:int,skipped:int}` | Trash `$id` together with every other post in its TRID group — the engine behind the "Trash + Siblings" row action / "Move to Trash (incl. translations)" bulk action in wp-admin. `$check_caps` defaults to **false** here (unlike the wp-admin entry points, which always check) — matching `linguaforge_trigger_translation()`'s convention of not enforcing `current_user_can()` itself, since a programmatic caller (a REST endpoint, a CLI command) very often has no meaningful current-WP-user context (e.g. an anonymous, token-authenticated request). The calling integration is responsible for its own authorization before calling in. Pass `true` to also require `current_user_can('delete_post', $id)` per post. Skips (and reports as skipped) already-trashed posts and the site's static front page / posts page. Fires `linguaforge_trash_cascade_complete` with the actual trashed/skipped ID arrays for callers that need more than the counts. |
 
 **Outdated tracking**
 

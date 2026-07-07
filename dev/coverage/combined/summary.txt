@@ -1,4 +1,4 @@
-COMBINED COVERAGE  (unit + integration)  —  2026-07-07 11:40
+COMBINED COVERAGE  (unit + integration)  —  2026-07-07 20:27
 ──────────────────────────────────────────────────────────────────────
   File                                                           Cov%
 ──────────────────────────────────────────────────────────────────────
@@ -80,8 +80,9 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-07 11:40
   ✅ ai/includes/Features/MetaDescription.php                    94%
   ✅ ai/includes/Features/Registry.php                          100%
   ✅ ai/includes/Features/Translation.php                        93%
+  ✅ ai/includes/Features/TranslationBackfill.php                89%
   ✅ ai/includes/Features/TranslationMemoryTranslator.php        90%
-  ❌ ai/includes/Features/TranslationQueue.php                   45%
+  ❌ ai/includes/Features/TranslationQueue.php                   44%
   ❌ ai/includes/Features/TranslationTrigger.php                 49%
   🔶 ai/includes/Integrations/WooCommerce/AdminSaveGuard.php     66%
   ❌ ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php   39%
@@ -140,7 +141,8 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-07 11:40
   ✅ language-router/includes/seo/class-sitemap-manager.php      80%
   ❌ language-router/includes/seo/class-social-share.php         31%
   ❌ language-router/includes/translation/class-sync.php         49%
+  🔶 language-router/includes/translation/class-trash-cascade.php   70%
   ✅ language-router/includes/translation/class-trid-group.php   95%
   ❌ meta-description/meta-description.php                       27%
 ──────────────────────────────────────────────────────────────────────
-  TOTAL: 37.77%  (6399 / 16940 statements)
+  TOTAL: 38.33%  (6587 / 17186 statements)

@@ -33,6 +33,7 @@ defined( 'ABSPATH' ) || exit;
  *   Search\Query     – search template override, form fix, SQL extend/boost
  *   Translation\TridGroup – get/set lang/trid, get_translations, cache clear
  *   Translation\Sync – outdated tracking, template assignment, handle_save_post
+ *   Translation\TrashCascade – "Trash + Siblings" row action, trashes a TRID group together
  *   Db\Migrator      – ensure_lang_index, check_db_version
  *   Admin\MetaBoxes  – 4 meta boxes, ajax_set_language, ajax_import_translation
  *   Admin\Columns    – lang column, quick-edit box
@@ -58,6 +59,7 @@ use LinguaForge\Router\Search\Index        as SearchIndex;
 use LinguaForge\Router\Search\Query        as SearchQuery;
 use LinguaForge\Router\Translation\TridGroup;
 use LinguaForge\Router\Translation\Sync    as TranslationSync;
+use LinguaForge\Router\Translation\TrashCascade;
 use LinguaForge\Router\Db\Migrator;
 use LinguaForge\Router\Admin\MetaBoxes;
 use LinguaForge\Router\Admin\Columns;
@@ -111,6 +113,7 @@ class Router {
 		$this->front_page_query  = new FrontPageQuery();
 		$this->trid_group    = new TridGroup( $this );
 		$this->sync          = new TranslationSync( $this );
+		$this->trash_cascade = new TrashCascade( $this );
 		$this->migrator      = new Migrator();
 		$this->meta_boxes    = new MetaBoxes( $this );
 		$this->columns       = new Columns( $this );
@@ -160,6 +163,7 @@ class Router {
 	public FrontPageQuery   $front_page_query;
 	public TridGroup        $trid_group;
 	public TranslationSync  $sync;
+	public TrashCascade     $trash_cascade;
 	public Migrator         $migrator;
 	public MetaBoxes        $meta_boxes;
 	public Columns          $columns;
@@ -258,6 +262,7 @@ class Router {
 		$this->columns->register_hooks();
 		$this->filters->register_hooks();
 		$this->scripts->register_admin_hooks();
+		$this->trash_cascade->register_hooks();
 
 		add_action( 'after_switch_theme', [ $this, 'on_switch_theme' ], 10, 2 );
 		add_action( 'admin_notices',      [ $this, 'show_theme_switch_notice' ] );
@@ -459,6 +464,9 @@ class Router {
 	public function is_outdated( int $post_id ): bool                 { return $this->sync->is_outdated( $post_id ); }
 	public function resolve_template_for_lang( $post, string $lang ): ?string { return $this->sync->resolve_template_for_lang( $post, $lang ); }
 	public function template_exists( string $slug ): bool            { return $this->sync->template_exists( $slug ); }
+
+	// -- TrashCascade --
+	public function trash_translation_group( int $post_id, bool $check_caps = true ): array { return $this->trash_cascade->trash_group( $post_id, $check_caps ); }
 
 	// -- Rewrite\QueryFilter --
 	public function query( array $args = [] ): WP_Query              { return $this->query_filter->query( $args ); }

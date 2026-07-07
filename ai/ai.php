@@ -66,6 +66,16 @@ add_action(
 	3
 );
 
+// ── Automatic missing-translation backfill ──────────────────────────────────
+// Self-heals a post left with a translation gap (a queued job that timed out,
+// errored, or was otherwise lost) by periodically re-scanning for TRID-group
+// gaps in the active languages and re-queuing just the missing ones — the
+// same recovery an admin would otherwise have to trigger by hand via
+// `wp linguaforge missing_translations` + `wp linguaforge fill_translations`.
+// Registered unconditionally for the same reason as the worker above: the
+// scan itself runs in a WP-Cron request, which never reaches Plugin::boot().
+\LinguaForge\AI\Features\TranslationBackfill::register_hooks();
+
 // ── Public PHP API ────────────────────────────────────────────────────────────
 // Thin procedural wrappers around AI-module classes. Theme code and third-party
 // plugins should call these rather than reaching into the class hierarchy.

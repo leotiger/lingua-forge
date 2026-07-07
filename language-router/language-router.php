@@ -25,6 +25,7 @@ require_once __DIR__ . '/includes/i18n/class-overrides.php';
 require_once __DIR__ . '/includes/db/class-migrator.php';
 require_once __DIR__ . '/includes/translation/class-trid-group.php';
 require_once __DIR__ . '/includes/translation/class-sync.php';
+require_once __DIR__ . '/includes/translation/class-trash-cascade.php';
 require_once __DIR__ . '/includes/rewrite/class-manager.php';
 require_once __DIR__ . '/includes/rewrite/class-query-filter.php';
 require_once __DIR__ . '/includes/routing/class-redirector.php';
@@ -139,6 +140,46 @@ function linguaforge_is_outdated( int $post_id ): bool {
 
 function linguaforge_get_missing_languages( int $post_id ): array {
 	return \LinguaForge\Router\Router::get_instance()->get_missing_languages( $post_id );
+}
+
+/**
+ * Trash $post_id together with every other post in its TRID translation
+ * group — the same engine behind the "Trash + Siblings" row action and
+ * "Move to Trash (incl. translations)" bulk action in wp-admin.
+ *
+ * Unlike those two wp-admin entry points, $check_caps defaults to false
+ * here: a programmatic caller (a REST endpoint, a CLI command, an
+ * integration's own removal flow) very often has no meaningful current-WP-user
+ * context at all — an anonymous, token-authenticated request being the
+ * common case — so gating on current_user_can() would silently skip every
+ * post rather than trash anything. Matches the existing
+ * linguaforge_trigger_translation() / linguaforge_queue_translation()
+ * convention: this function does not authorize the action, it performs it —
+ * the calling integration is responsible for deciding the caller is allowed
+ * to do this before calling in (e.g. verifying its own signed token, or
+ * that the requester is the post's own author) — same as it would already
+ * have to before calling wp_trash_post() directly.
+ *
+ * Skips (and reports as skipped) posts already in the Trash and the site's
+ * static front page / posts page, which core refuses to trash regardless.
+ * Fires `linguaforge_trash_cascade_complete` on completion — receives the
+ * trashed/skipped post ID arrays and the triggering $post_id — so a caller
+ * that wants the specifics rather than just the counts this function
+ * returns can hook that instead.
+ *
+ * @param int  $post_id    Any post in the translation group — the group is
+ *                          resolved from its TRID, not just its own siblings.
+ * @param bool $check_caps Pass true to also require
+ *                          current_user_can('delete_post', $id) per post,
+ *                          matching the wp-admin row/bulk action behaviour.
+ *                          Default false.
+ * @return array{trashed:int,skipped:int} Counts, not IDs — hook
+ *                          `linguaforge_trash_cascade_complete` for the IDs.
+ *
+ * @since 2.5.4
+ */
+function linguaforge_trash_translation_group( int $post_id, bool $check_caps = false ): array {
+	return \LinguaForge\Router\Router::get_instance()->trash_translation_group( $post_id, $check_caps );
 }
 
 function linguaforge_query( array $args = [] ): WP_Query {

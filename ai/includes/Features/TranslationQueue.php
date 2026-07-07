@@ -92,7 +92,11 @@ class TranslationQueue {
 	 * Runs in a cron / Action Scheduler request where Plugin::boot() (hence
 	 * Registry::init()) may not have run, so it self-initialises the feature
 	 * registry. Errors are logged (WP_DEBUG-gated) and swallowed — a background
-	 * job has no caller to hand a WP_Error back to.
+	 * job has no caller to hand a WP_Error back to. Success and failure are
+	 * both recorded via TranslationBackfill so a timed-out or otherwise-failed
+	 * job leaves a trail: TranslationBackfill's recurring scan uses that state
+	 * to find and re-queue the still-missing (post, lang) pair automatically,
+	 * rather than the gap sitting silently until someone notices.
 	 *
 	 * @param int    $source_post_id Source-language post ID.
 	 * @param string $target_lang    Target language code.
@@ -113,6 +117,10 @@ class TranslationQueue {
 				$target_lang,
 				$result->get_error_message()
 			) );
+			TranslationBackfill::record_failure( $source_post_id, $target_lang, $result->get_error_message() );
+			return;
 		}
+
+		TranslationBackfill::clear_failure( $source_post_id, $target_lang );
 	}
 }

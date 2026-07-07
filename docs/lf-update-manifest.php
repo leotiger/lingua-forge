@@ -35,33 +35,30 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.5.2';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.5.2/lingua-forge-2.5.2.zip';
+	$version      = '2.5.4';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.5.4/lingua-forge-2.5.4.zip';
 	$last_updated = '2026-07-07';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.5.2.zip — build it, upload
-	// to the v2.5.2 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.5.4.zip — build it, upload
+	// to the v2.5.4 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = 'd6e6b031a3eb3e2bc169844ca6827d492f52facc0d72c95848ad7e638ec6f751';
+	$sha256 = 'dc4b149f607ec9650591a6d53a1a04ecef6bf576b6cc43c3065623a0936bf37a';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.5.2 &#8212; 2026-07-07</h4>' .
+		'<h4>2.5.4 &#8212; 2026-07-07</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> The Language Switcher could render nothing at all on a &#8220;Your latest posts&#8221; front page, even with every language correctly configured &#8212; confirmed live on an Agnosis-family site. A stray, untranslated post (WordPress&#8217;s own default &#8220;Hello world!&#8221; sample, or any other leftover post &#8212; not specific to WooCommerce or any post type) could get silently picked up as &#8220;the current post&#8221; via <code>get_the_ID()</code> on a non-singular request, and since it had no translation group the switcher hid itself entirely, even though the site&#8217;s real content was fully translated. <code>get_the_ID()</code> is now only trusted when <code>is_singular()</code> is actually true, ahead of the existing WooCommerce shop-page override; a non-singular front page falls through to the existing per-language URL fallback instead. (<code>language-router/includes/class-lsflr-switcher.php</code>)</li>' .
+			'<li><strong>Added:</strong> &#8220;Trash + Siblings&#8221; &#8212; a new row action on the Posts/Pages/CPT admin list tables (next to Edit | Quick Edit | Trash | View) that trashes a post together with every other language version in its translation group, and a matching &#8220;Move to Trash (incl. translations)&#8221; bulk action. Both only appear when a post actually has translated siblings, act immediately with no confirmation prompt (matching the stock &#8220;Trash&#8221; link&#8217;s own reversible behaviour), and report a &#8220;Trashed N posts (including translations)&#8221; notice afterward. Skips the static front page / posts page and any post the current user can&#8217;t delete, reporting them as skipped rather than failing silently. Two new hooks for integrations: <code>linguaforge_trash_cascade_post_ids</code> and <code>linguaforge_trash_cascade_complete</code>. (<code>language-router/includes/translation/class-trash-cascade.php</code> NEW)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.5.1 &#8212; 2026-07-06</h4>' .
+		'<h4>2.5.3 &#8212; 2026-07-07</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> The Danger Zone &#8220;Uninstall {LANG}&#8221; action on Settings &#8594; Router appeared to silently do nothing &#8212; the deletion ran correctly, but the redirect afterward pointed at a URL the plugin&#8217;s settings page (a top-level admin menu page) doesn&#8217;t live under, so WordPress fell back to the default Settings &#8594; General screen with no success notice. The Router tab&#8217;s Save button and Flush Permalinks button shared the identical bug. All three now redirect correctly and show their confirmation notice. (<code>ai/includes/Admin/Settings/Tabs/RouterTab.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Uninstalling a language could leave it only partially removed, for three independent reasons &#8212; CPT Block Pattern translations lived in a single option rather than as posts and were invisible to the uninstall&#8217;s postmeta query; custom translation files copied into the Maintenance tab&#8217;s &#8220;Loco Translate &#8212; Copy to Safe Storage&#8221; location were never scanned for removal; and for languages where WordPress&#8217;s own locale slug isn&#8217;t the 2-letter code this plugin assumed everywhere (e.g. Yoruba&#8217;s real slug is the 3-letter &#8220;yor&#8221;, not &#8220;yo&#8221;), uninstall could report success while the language stayed active forever. All three fixed: pattern translations are now purged and counted in the success notice, the Loco safe-storage directory is now scanned too, and a new <code>Context::lang_from_locale()</code> replaces the lossy 2-character truncation everywhere it appeared. Internal routing/URLs/postmeta are unaffected. (<code>ai/includes/Admin/FseLocalisation/PatternDiscovery.php</code>, <code>ai/includes/Admin/Language/LanguageUninstaller.php</code>, <code>language-router/includes/class-context.php</code>, <code>ai/includes/Admin/Settings/Panels/SystemPanel.php</code>, <code>ai/includes/Admin/Settings/Tabs/RouterTab.php</code>, <code>ai/includes/Features/Translation.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The admin-bar &#8220;Preview Language&#8221; switcher could show two languages checked at once, and could label the wrong one as current &#8212; confirmed with Yoruba added as an active language, which had no locale mapping and silently collided with English&#8217;s own locale. Added the missing mapping (plus five others found via audit: hi, ur, th, sw, km, eu) and made the switcher compare against a single resolved current-language value instead of re-deriving it per item. (<code>language-router/includes/class-locale-detector.php</code>, <code>language-router/includes/admin/class-meta-boxes.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> hreflang tags, og:locale, the &#8220;Preview Language&#8221; label, and browser-language auto-detection didn&#8217;t understand WordPress&#8217;s bare 3-letter locale slugs. A new <code>Context::iso_639_1_from_lang()</code> normalises the handful of affected languages to their real ISO 639-1 code for these outbound-facing uses only, without touching internal routing/URLs/postmeta. (<code>language-router/includes/class-context.php</code>, <code>language-router/includes/class-locale-detector.php</code>, <code>language-router/includes/seo/class-schema-manager.php</code>, <code>language-router/includes/seo/class-seo-manager.php</code>)</li>' .
+			'<li><strong>Added:</strong> Automatic missing-translation backfill. Previously, if a queued translation (Action Scheduler / WP-Cron job) timed out, errored, or was otherwise lost, the resulting gap was silent &#8212; nothing ever revisited it, and an admin only found out by noticing a missing language switcher entry or by running the <code>missing_translations</code> / <code>fill_translations</code> WP-CLI commands by hand. A new hourly scan re-derives the same &#8220;which posts are missing which active language&#8221; check those CLI commands compute and re-queues just the missing (post, language) pairs through the normal async pipeline, up to 25 jobs per run. Each queued job&#8217;s outcome is now recorded on the source post, so a pair that fails 5 times in a row is left alone for 24 hours before one more automatic retry. The schedule itself is checked on every admin request, not just on activation, so it self-heals if the cron event is ever dropped. (<code>ai/includes/Features/TranslationBackfill.php</code> NEW, <code>ai/includes/Features/TranslationQueue.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 
