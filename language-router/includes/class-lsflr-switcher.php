@@ -44,7 +44,20 @@ class Switcher {
 	// =========================================================
 
 	public function get_languages(): array {
-		$post_id        = get_the_ID() ?: null;
+		// Only trust get_the_ID() when we're actually on a singular post. On a
+		// non-singular request (archives, search, and critically a "Your latest
+		// posts" front page) WordPress's own WP::register_globals() still points
+		// the global $post at the first row of the MAIN query — even when the
+		// active template never loops over it (e.g. a front-page.html/home.html
+		// that renders a custom block instead of a Query Loop). get_the_ID()
+		// would then return that row's ID despite is_singular() being false,
+		// and the singular branch below would key off a post that has nothing
+		// to do with "the current page" — e.g. a leftover, untranslated
+		// post-type=post row that happens to be the newest post while a block
+		// theme's homepage displays something else entirely. That silently
+		// emptied the switcher on a "Your latest posts" homepage whose only
+		// `post` was WordPress's own default "Hello world!" sample content.
+		$post_id        = is_singular() ? ( get_the_ID() ?: null ) : null;
 		$force_permalink = false;
 
 		// Translated WC shop pages (/es/tienda/, /ca/botiga/): inject_shop_post_type()

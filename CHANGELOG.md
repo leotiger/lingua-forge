@@ -2,6 +2,16 @@
 
 ---
 
+## [2.5.2] — 2026-07-07
+
+### Fixed
+- **Language Switcher could render nothing at all on a "Your latest posts" front page, even with every language correctly configured and other pages switching fine.** Confirmed live on agnosis.art: the homepage (Settings → Reading → "Your latest posts") uses a block theme's `home.html`, which renders a custom block (`agnosis/gallery-overview`) instead of a Query Loop — but WordPress still runs the ordinary `post_type=post` main query behind the scenes for that request, and `WP::register_globals()` unconditionally points the global `$post` at the first row of that query's results *before any template renders*, regardless of whether the active template ever loops over it. `Switcher::get_languages()` computed `$post_id = get_the_ID() ?: null` unconditionally — with no `is_singular()` guard on the general case (only the WooCommerce shop-page override checked it) — so a non-singular archive/front-page request could still resolve a truthy `$post_id` from that stray main-query post. On agnosis.art the only `post`-type row left in the database was WordPress's own default "Hello world!" sample post; it has no translation group (`_lf_trid` empty), so `Router::get_translations()` returned `[]` and `get_languages()` returned `[]` per its existing "singular post with no translations → hide the switcher" rule — except this wasn't a singular post at all, and the site's real content (entirely `agnosis_artwork`/`agnosis_biography`/`agnosis_event` custom post types) was fully translated the whole time. This is **not** WooCommerce-specific and **not** specific to any particular post type — it reproduces with any untranslated `post`-type (or custom-post-type) row that simply happens to be the newest one, on any site using "Your latest posts" as its front page. Fix: `$post_id` is now only taken from `get_the_ID()` when `is_singular()` is actually true (`$post_id = is_singular() ? ( get_the_ID() ?: null ) : null;`), ahead of the existing WooCommerce shop-page override, which is unchanged and still layers on top of it for its own non-singular special case. A non-singular front page now always falls through to the existing, always-populated `array_fill_keys( $this->router->languages(), null )` fallback, exactly as it already does for every other archive/search/category page. (`language-router/includes/class-lsflr-switcher.php`)
+
+### Tests
+- **Switcher on a "Your latest posts" front page** — new `SwitcherLatestPostsFrontIntegrationTest` (2 integration tests) reproduces the exact production scenario via `go_to( home_url( '/' ) )` (which exercises the real `WP::register_globals()` mechanism, not a mock): one test with an untranslated `post`-type row present, one with an untranslated arbitrary custom post type, both asserting `Switcher::get_languages()` still returns one entry per active language rather than `[]`. Confirmed green via `composer test:integration`. (`tests/integration/SwitcherLatestPostsFrontIntegrationTest.php` NEW)
+
+---
+
 ## [2.5.1] — 2026-07-06
 
 ### Fixed
