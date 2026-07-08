@@ -2,50 +2,17 @@
 /**
  * Class LinguaForge\AI\Admin\PostListColumn
  *
- * Injects action buttons into the existing "Lang" column (rendered by
- * LinguaForge\Router\Admin\Columns) for two scenarios:
+ * Injects three action buttons into the "Lang" column rendered by
+ * LinguaForge\Router\Admin\Columns, each fired via its own hook:
+ * "Translate missing" (lf_lang_column_missing), "Retranslate", and "Sync"
+ * (both on lf_lang_column_retranslate, unconditional for every post).
  *
- *   • "Translate missing" — shown on source-language posts that are missing
- *     one or more target-language translations.  Hooks `lf_lang_column_missing`.
- *
- *   • "Retranslate" — shown on every TRID-linked post regardless of outdated
- *     status, so editors can force a fresh translation at any time.
- *     Hooks `lf_lang_column_retranslate`.
- *
- *   • "Sync" — shown on every TRID-linked post, including the source-language
- *     post. Retranslates FROM the current post's language INTO every other
- *     configured language in one operation: missing languages are created,
- *     existing ones are force-refreshed. Unlike "Retranslate", Sync is not
- *     blocked on the source post by language alone — a source-language post
- *     can always push its content out to every translation, and (subject to
- *     the safeguards below) a secondary-language post can just as
- *     deliberately overwrite the source via back-translation, since the
- *     whole point of Sync is "make every other version match this one."
- *     Also hooked onto `lf_lang_column_retranslate` (fired unconditionally
- *     for every post).
- *
- *     Secondary-language safeguards (off by default, on a per-post-type
- *     basis) — triggering Sync FROM a secondary-language post is blocked
- *     unless explicitly allowed, via two independent guards:
- *       - WooCommerce products/variations: `linguaforge_wc_allow_secondary_sync`
- *         option (Settings → Behavior → WooCommerce) or the
- *         `linguaforge_wc_secondary_sync_allowed` filter.
- *         See wc_secondary_sync_blocked().
- *       - Every other post type: `linguaforge_allow_secondary_sync` option
- *         (Settings → Behavior → Sync) or the `linguaforge_secondary_sync_allowed`
- *         filter. See general_secondary_sync_blocked().
- *     The two are independent — enabling one has no effect on the other.
- *     Syncing FROM the primary-language post is always allowed regardless of
- *     post type or either setting; the restriction only applies to the
- *     primary-overwriting direction.
- *
- * All three hooks are fired by Columns::render_lang_column() in the
- * language-router module, keeping the AI module fully decoupled.
- *
- * The core Sync logic lives in run_sync(), a reusable method (not just an
- * AJAX handler) so third-party code can trigger the same operation
- * programmatically via the `linguaforge_sync_translations()` wrapper function
- * defined in `ai/ai.php`.
+ * Sync fans a post out to every other language, including the primary —
+ * unlike Retranslate it is never blocked by language alone, subject to two
+ * independent off-by-default secondary-language safeguards; see run_sync(),
+ * wc_secondary_sync_blocked(), and general_secondary_sync_blocked() for the
+ * full detail. Reusable outside wp-admin via `linguaforge_sync_translations()`
+ * (`ai/ai.php`).
  *
  * @package LinguaForge\AI\Admin
  * @since   1.8.1
