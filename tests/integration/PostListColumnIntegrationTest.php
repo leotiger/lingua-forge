@@ -23,6 +23,44 @@
  *                                 rejects target==from, rejects a missing
  *                                 from-language sibling, rejects insufficient
  *                                 permissions
+ *   render_sync_button()        — outputs the button on both source and
+ *                                 secondary posts (unlike Retranslate, never
+ *                                 suppressed for the source post); suppressed
+ *                                 for wp_navigation and for a post with no
+ *                                 assigned language
+ *   ajax_sync()                 — fans a post's content out to every other
+ *                                 configured language via a StubProvider:
+ *                                 creates a missing sibling, force-refreshes
+ *                                 an existing one (and clears its outdated
+ *                                 flag), and — the key behavioural difference
+ *                                 from ajax_retranslate() — can overwrite the
+ *                                 primary/source post itself when triggered
+ *                                 from a secondary-language post, while also
+ *                                 clearing the outdated flag on the
+ *                                 triggering post so it isn't left looking
+ *                                 stale against the content it just produced;
+ *                                 rejects wp_navigation, an invalid post ID,
+ *                                 and insufficient permissions; surfaces a
+ *                                 provider failure
+ *   WooCommerce Sync safeguard  — a secondary-language 'product' post is
+ *                                 blocked from Sync (button hidden, AJAX
+ *                                 rejected) unless the
+ *                                 linguaforge_wc_allow_secondary_sync option
+ *                                 or the linguaforge_wc_secondary_sync_allowed
+ *                                 filter allows it; syncing FROM the primary
+ *                                 product is unaffected either way
+ *   General Sync safeguard      — the same restriction as above, covering
+ *                                 every OTHER post type (ordinary posts,
+ *                                 pages, non-WC CPTs), via the independent
+ *                                 linguaforge_allow_secondary_sync option /
+ *                                 linguaforge_secondary_sync_allowed filter;
+ *                                 also covers guard independence — enabling
+ *                                 the WooCommerce toggle alone never lifts
+ *                                 the general restriction (or a WC product),
+ *                                 and vice versa
+ *   linguaforge_sync_translations() — the public API wrapper (ai/ai.php):
+ *                                 $check_caps defaults to false (bypasses
+ *                                 current_user_can()), true enforces it
  *
  * NOT covered here (left for a follow-up pass):
  *   - render_seo_score_badge() — couples to SeoAnalysisPanel's stored score
@@ -106,6 +144,10 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 	protected function tearDown(): void {
 		remove_filter( 'lf_languages_list', [ $this, 'pin_langs' ] );
 		remove_all_filters( 'linguaforge_ai_provider' );
+		remove_all_filters( 'linguaforge_wc_secondary_sync_allowed' );
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+		remove_all_filters( 'linguaforge_secondary_sync_allowed' );
+		delete_option( 'linguaforge_allow_secondary_sync' );
 		// Context::cached_languages (and friends) are static properties that
 		// persist for the rest of the PHPUnit process. Without resetting them
 		// here, the ['en','es'] pin above leaks into every test that runs after
@@ -219,6 +261,14 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 			[ PostListColumn::class, 'ajax_retranslate' ],
 			PostListColumn::NONCE_NAME_RETRANSLATE,
 			$params
+		);
+	}
+
+	private function dispatch_sync( int $post_id ): array {
+		return $this->dispatch(
+			[ PostListColumn::class, 'ajax_sync' ],
+			PostListColumn::NONCE_NAME_SYNC,
+			[ 'post_id' => $post_id ]
 		);
 	}
 
@@ -515,5 +565,452 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 
 		$this->assertFalse( $resp['success'] ?? true );
 		$this->assertSame( 'Insufficient permissions.', $resp['data']['message'] ?? null );
+	}
+
+	// =========================================================================
+	// render_sync_button()
+	// =========================================================================
+
+	public function test_render_sync_button_shown_on_source_post(): void {
+		$en_id = $this->make_post();
+		$this->tg->set_trid( $en_id, $this->trid() );
+		$this->tg->set_lang( $en_id, 'en' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $en_id );
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'lf-sync', $html,
+			'Unlike Retranslate, Sync must be available on the source-language post too.' );
+	}
+
+	public function test_render_sync_button_suppressed_on_secondary_post_by_default(): void {
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$es_id = $this->make_post();
+		$this->tg->set_trid( $es_id, $this->trid() );
+		$this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $es_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html,
+			'Sync from a secondary-language post must be blocked by default for every post type, not just WooCommerce products.' );
+	}
+
+	public function test_render_sync_button_shown_on_secondary_post_when_option_enabled(): void {
+		update_option( 'linguaforge_allow_secondary_sync', 1, false );
+
+		$es_id = $this->make_post();
+		$this->tg->set_trid( $es_id, $this->trid() );
+		$this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $es_id );
+		$html = ob_get_clean();
+
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$this->assertStringContainsString( 'lf-sync', $html );
+	}
+
+	public function test_render_sync_button_suppressed_for_wp_navigation(): void {
+		$post_id = $this->make_post( 'publish', 'wp_navigation' );
+		$this->tg->set_lang( $post_id, 'en' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $post_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html );
+	}
+
+	public function test_render_sync_button_suppressed_without_assigned_language(): void {
+		$post_id = $this->make_post();
+		// A normal save auto-assigns the source language via
+		// Sync::handle_save_post() (wp_after_insert_post), so a freshly
+		// created 'post' is never actually lang-less in practice — force the
+		// "not yet assigned" state directly to exercise the guard clause.
+		delete_post_meta( $post_id, '_lf_lang' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $post_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html );
+	}
+
+	// =========================================================================
+	// ajax_sync()
+	// =========================================================================
+
+	public function test_ajax_sync_from_source_creates_missing_translation(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Título', '<p>Contenido</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $source_id );
+
+		$this->assertTrue( $resp['success'] ?? false, 'AJAX must report success.' );
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertNotNull( $outcome );
+		$this->assertSame( 'created', $outcome['status'] );
+
+		$target = get_post( (int) $outcome['id'] );
+		$this->assertSame( '<p>Contenido</p>', $target->post_content );
+		$this->assertSame( 'es', get_post_meta( $target->ID, '_lf_lang', true ) );
+	}
+
+	public function test_ajax_sync_from_source_refreshes_existing_translation(): void {
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$target_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $target_id, $trid ); $this->tg->set_lang( $target_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Actualizado', '<p>Nuevo contenido</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $source_id );
+
+		$this->assertTrue( $resp['success'] ?? false );
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertSame( 'updated', $outcome['status'] ?? null );
+
+		$target = get_post( $target_id );
+		$this->assertSame( '<p>Nuevo contenido</p>', $target->post_content );
+
+		// The refreshed target must be marked in sync against the (unchanged)
+		// source timestamp — no ⚠ outdated flag left behind.
+		$this->assertSame(
+			get_post_meta( $source_id, '_lf_source_updated_at', true ),
+			get_post_meta( $target_id, '_lf_translation_source_updated_at', true )
+		);
+	}
+
+	public function test_ajax_sync_rejects_secondary_post_by_default(): void {
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$es_id     = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		$this->assertFalse( $resp['success'] ?? true,
+			'Sync from a secondary-language post of an ordinary post type must be blocked by default.' );
+		$this->assertStringContainsString( 'secondary-language post', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_from_secondary_overwrites_primary_source_post_when_allowed(): void {
+		update_option( 'linguaforge_allow_secondary_sync', 1, false );
+
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$es_id     = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Back-translated title', '<p>Back-translated content</p>' )
+		), 10, 3 );
+
+		// Trigger Sync FROM the secondary (es) post — unlike Retranslate, this
+		// must be allowed to overwrite the primary/source post once the general
+		// secondary-sync safeguard is explicitly lifted.
+		$resp = $this->dispatch_sync( $es_id );
+
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$this->assertTrue( $resp['success'] ?? false, 'AJAX must report success.' );
+		$outcome = $resp['data']['results']['en'] ?? null;
+		$this->assertNotNull( $outcome, 'A result entry for the primary language "en" must be present.' );
+		$this->assertSame( 'updated', $outcome['status'] );
+
+		$source = get_post( $source_id );
+		$this->assertSame( '<p>Back-translated content</p>', $source->post_content,
+			'Sync from a secondary language must be able to overwrite the primary/source post.' );
+
+		// The secondary post that drove the sync must not be left showing as
+		// outdated relative to the primary content it was just used to produce.
+		$this->assertSame(
+			get_post_meta( $source_id, '_lf_source_updated_at', true ),
+			get_post_meta( $es_id, '_lf_translation_source_updated_at', true )
+		);
+	}
+
+	public function test_ajax_sync_allows_secondary_post_via_general_filter_override(): void {
+		// The option stays off; the filter alone lifts the restriction.
+		add_filter( 'linguaforge_secondary_sync_allowed', '__return_true' );
+
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$es_id     = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'X', 'Y' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		remove_filter( 'linguaforge_secondary_sync_allowed', '__return_true' );
+
+		$this->assertTrue( $resp['success'] ?? false,
+			'The linguaforge_secondary_sync_allowed filter must be able to lift the restriction independently of the option.' );
+	}
+
+	// =========================================================================
+	// Guard independence — WooCommerce vs. general secondary-sync safeguards
+	// =========================================================================
+
+	public function test_ajax_sync_wc_guard_unaffected_by_general_option(): void {
+		// Only the GENERAL option is enabled; the WooCommerce-specific one is not.
+		update_option( 'linguaforge_allow_secondary_sync', 1, false );
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$this->assertFalse( $resp['success'] ?? true,
+			'Enabling the general secondary-sync setting must not lift the separate WooCommerce-specific restriction.' );
+		$this->assertStringContainsString( 'WooCommerce product', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_general_guard_unaffected_by_wc_option(): void {
+		// Only the WooCommerce-specific option is enabled; the general one is not.
+		update_option( 'linguaforge_wc_allow_secondary_sync', 1, false );
+		delete_option( 'linguaforge_allow_secondary_sync' );
+
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$es_id     = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$this->assertFalse( $resp['success'] ?? true,
+			'Enabling the WooCommerce-specific secondary-sync setting must not lift the separate general restriction on an ordinary post.' );
+		$this->assertStringContainsString( 'secondary-language post', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_rejects_wp_navigation(): void {
+		$post_id = $this->make_post( 'publish', 'wp_navigation' );
+		$this->tg->set_lang( $post_id, 'en' );
+
+		$resp = $this->dispatch_sync( $post_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertStringContainsString( 'Router tab', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_rejects_invalid_post_id(): void {
+		$resp = $this->dispatch_sync( 0 );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertSame( 'Invalid post ID.', $resp['data']['message'] ?? null );
+	}
+
+	public function test_ajax_sync_rejects_insufficient_permissions(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		wp_set_current_user( $this->subscriber_id );
+		$resp = $this->dispatch_sync( $source_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertSame( 'Insufficient permissions.', $resp['data']['message'] ?? null );
+	}
+
+	public function test_ajax_sync_surfaces_provider_failure(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider( null ), 10, 3 );
+
+		$resp = $this->dispatch_sync( $source_id );
+
+		$this->assertFalse( $resp['success'] ?? true, 'Every target language failing must report overall failure.' );
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertSame( 'error', $outcome['status'] ?? null );
+	}
+
+	// =========================================================================
+	// WooCommerce Sync safeguard
+	// =========================================================================
+
+	public function test_render_sync_button_suppressed_for_secondary_wc_product_by_default(): void {
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $es_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html,
+			'Sync must be hidden on a secondary-language WooCommerce product by default.' );
+	}
+
+	public function test_render_sync_button_shown_for_primary_wc_product_regardless_of_setting(): void {
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$en_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $this->trid() );
+		$this->tg->set_lang( $en_id, 'en' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $en_id );
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'lf-sync', $html,
+			'Syncing FROM the primary product must always be allowed.' );
+	}
+
+	public function test_render_sync_button_shown_for_secondary_wc_product_when_option_enabled(): void {
+		update_option( 'linguaforge_wc_allow_secondary_sync', 1, false );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_sync_button( $es_id );
+		$html = ob_get_clean();
+
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$this->assertStringContainsString( 'lf-sync', $html );
+	}
+
+	public function test_ajax_sync_rejects_secondary_wc_product_by_default(): void {
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertStringContainsString( 'WooCommerce product', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_allows_secondary_wc_product_when_option_enabled(): void {
+		update_option( 'linguaforge_wc_allow_secondary_sync', 1, false );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Back-translated', '<p>Back-translated body</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$this->assertTrue( $resp['success'] ?? false );
+		$outcome = $resp['data']['results']['en'] ?? null;
+		$this->assertSame( 'updated', $outcome['status'] ?? null );
+	}
+
+	public function test_ajax_sync_allows_secondary_wc_product_via_filter_override(): void {
+		// The option stays off; the filter alone lifts the restriction.
+		add_filter( 'linguaforge_wc_secondary_sync_allowed', '__return_true' );
+
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish', 'product' );
+		$es_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'X', 'Y' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $es_id );
+
+		remove_filter( 'linguaforge_wc_secondary_sync_allowed', '__return_true' );
+
+		$this->assertTrue( $resp['success'] ?? false,
+			'The linguaforge_wc_secondary_sync_allowed filter must be able to lift the restriction independently of the option.' );
+	}
+
+	public function test_ajax_sync_allows_from_source_wc_product_by_default(): void {
+		delete_option( 'linguaforge_wc_allow_secondary_sync' );
+
+		$en_id = $this->make_post( 'publish', 'product' );
+		$this->tg->set_lang( $en_id, 'en' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Título', '<p>Contenido</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $en_id );
+
+		$this->assertTrue( $resp['success'] ?? false,
+			'Syncing FROM the primary-language product must be allowed even with the safeguard on.' );
+	}
+
+	// =========================================================================
+	// linguaforge_sync_translations() public API wrapper
+	// =========================================================================
+
+	public function test_linguaforge_sync_translations_defaults_check_caps_to_false(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Título', '<p>Contenido</p>' )
+		), 10, 3 );
+
+		wp_set_current_user( $this->subscriber_id ); // No edit_post capability on this post.
+
+		$result = linguaforge_sync_translations( $source_id );
+
+		$this->assertTrue( $result['success'] ?? false,
+			'linguaforge_sync_translations() must not enforce current_user_can() by default.' );
+	}
+
+	public function test_linguaforge_sync_translations_check_caps_true_enforces_permissions(): void {
+		$source_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		wp_set_current_user( $this->subscriber_id );
+
+		$result = linguaforge_sync_translations( $source_id, true );
+
+		$this->assertFalse( $result['success'] ?? true );
+		$this->assertSame( 'Insufficient permissions.', $result['message'] ?? null );
 	}
 }

@@ -33,7 +33,14 @@ outside the plugin namespace.
   `linguaforge_block_editor_allow_lock_blocks`,
   `linguaforge_secondary_query_excluded_types` (comma-separated list of
   post type slugs excluded from secondary-query language filtering; managed
-  via Settings → Router → "Excluded post types").
+  via Settings → Router → "Excluded post types"), `linguaforge_wc_allow_secondary_sync`
+  (boolean; off by default — allows the "Sync" button/API to overwrite the
+  primary WooCommerce product from a secondary-language product/variation;
+  managed via Settings → Behavior → WooCommerce), `linguaforge_allow_secondary_sync`
+  (boolean; off by default — the same restriction as
+  `linguaforge_wc_allow_secondary_sync`, but for every OTHER post type;
+  independent of it — enabling one does not enable the other; managed via
+  Settings → Behavior → Sync).
 - **`admin_post_*` and `wp_ajax_*` action names.** Examples:
   `admin_post_linguaforge_clear_ai_cache`,
   `wp_ajax_linguaforge_test_provider`.
@@ -77,7 +84,19 @@ outside the plugin namespace.
     `linguaforge_backfill_post_types` (filter on the array of post type slugs
     `Features\TranslationBackfill`'s hourly self-heal scan checks for
     missing-translation gaps; defaults to every public post type minus
-    WordPress' own internal types; receives `string[] $types`).
+    WordPress' own internal types; receives `string[] $types`),
+    `linguaforge_wc_secondary_sync_allowed` (filter; overrides whether the
+    "Sync" button/API may be triggered from a secondary-language WooCommerce
+    `product`/`product_variation` post — which would overwrite the primary
+    product via back-translation. Defaults to the
+    `linguaforge_wc_allow_secondary_sync` option (off). Has no effect on
+    syncing FROM the primary product, which is always allowed; receives
+    `bool $allowed`), `linguaforge_secondary_sync_allowed` (filter; the same
+    restriction as `linguaforge_wc_secondary_sync_allowed` above, but for
+    every post type OTHER than a WooCommerce product/variation. Defaults to
+    the `linguaforge_allow_secondary_sync` option (off). The two filters are
+    independent — a post is routed to exactly one of them by post type, so
+    enabling either has no effect on the other; receives `bool $allowed`).
   - **AI sub-module cron hook:** `linguaforge_backfill_missing_translations`
     — the recurring `wp_schedule_event()` hook `TranslationBackfill::run()`
     is registered on (hourly). Not intended to be hooked by third parties;
@@ -322,6 +341,7 @@ instead of reaching into the class instances directly. All are prefixed
 |---|---|---|
 | `linguaforge_trigger_translation( $source_id, $lang, $params = [] )` | `int\|WP_Error` | Programmatically run the full AI translation pipeline (AI call → create-or-update translated post → TRID link → cache clear → `linguaforge_translation_complete` action). Returns the new/updated post ID or a `WP_Error`. Accepted `$params` keys: `force_refresh` (bool), `force_draft` (bool), `with_meta_description` (bool). |
 | `linguaforge_queue_translation( $source_id, $lang, $params = [] )` | `void` | Non-blocking counterpart to `linguaforge_trigger_translation()`. Schedules the translation to run off-request — via Action Scheduler when available, else a single WP-Cron event — then runs the same pipeline (and fires `linguaforge_translation_complete`). Same `$params` keys. Duplicate pending jobs for the same post + language + params are skipped. Fire-and-forget: failures are logged (WP_DEBUG-gated), not returned. Use for publishers translating into many languages from one request. (Since 2.4.0) |
+| `linguaforge_sync_translations( $post_id, $check_caps = false )` | `array{success:bool,message?:string,results?:array,from_lang?:string}` | The engine behind the "Sync" button in the post list Lang column: retranslates `$post_id` out into **every** other active language in one blocking call — creating any that are missing, force-refreshing any that already exist. Unlike `linguaforge_trigger_translation()` (one target) this fans out to the whole TRID group, and unlike `linguaforge_queue_translation()` it is synchronous. The primary/source language is not exempt: if `$post_id` is itself a secondary-language post, this can overwrite the primary post via back-translation — the entire point of Sync. Two independent, off-by-default safeguards restrict that direction: syncing FROM a secondary-language WooCommerce `product`/`product_variation` is blocked unless `linguaforge_wc_allow_secondary_sync` (option) or `linguaforge_wc_secondary_sync_allowed` (filter) allows it; syncing FROM a secondary-language post of any OTHER post type is blocked unless `linguaforge_allow_secondary_sync` (option) or `linguaforge_secondary_sync_allowed` (filter) allows it. Enabling one has no effect on the other. Syncing FROM the primary post is always allowed regardless of either. `$check_caps` defaults to **false**, same convention as `linguaforge_trash_translation_group()` — pass `true` to also require `current_user_can('edit_post', $post_id)`. (Since 2.6.0) |
 
 **Developer / internal**
 

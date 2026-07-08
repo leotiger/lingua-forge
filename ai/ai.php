@@ -150,3 +150,59 @@ function linguaforge_trigger_translation( int $source_post_id, string $target_la
 function linguaforge_queue_translation( int $source_post_id, string $target_lang, array $params = [] ): void {
 	\LinguaForge\AI\Features\TranslationQueue::queue( $source_post_id, $target_lang, $params );
 }
+
+/**
+ * Retranslate a post out into every other configured language — the engine
+ * behind the "Sync" button in the post list Lang column.
+ *
+ * Unlike linguaforge_trigger_translation() (one target language) and
+ * linguaforge_queue_translation() (one target, deferred), this fans a single
+ * post out to EVERY other active language in one call: a language with no
+ * translation yet is created, a language that already has one is
+ * force-refreshed in place. The primary/source language is not exempt — if
+ * $post_id is itself a secondary-language post, this can overwrite the
+ * source post via back-translation. That is the intended behaviour of Sync:
+ * "make every other version match this one."
+ *
+ * Secondary-language safeguards still apply, via two independent guards:
+ * syncing FROM a secondary-language 'product' or 'product_variation' post is
+ * blocked unless the `linguaforge_wc_allow_secondary_sync` option or the
+ * `linguaforge_wc_secondary_sync_allowed` filter allows it — see
+ * PostListColumn::wc_secondary_sync_blocked(); syncing FROM a
+ * secondary-language post of any OTHER post type is blocked unless the
+ * `linguaforge_allow_secondary_sync` option or the
+ * `linguaforge_secondary_sync_allowed` filter allows it — see
+ * PostListColumn::general_secondary_sync_blocked(). Enabling one has no
+ * effect on the other. Syncing FROM the primary post is always unaffected by
+ * either.
+ *
+ * $check_caps defaults to false here, unlike the wp-admin "Sync" button
+ * (which always checks), matching linguaforge_trigger_translation() /
+ * linguaforge_trash_translation_group()'s convention: a programmatic caller
+ * (a REST endpoint, a CLI command, another plugin's own workflow) very often
+ * has no meaningful current-WP-user context at all, so gating on
+ * current_user_can() by default would silently do nothing rather than sync
+ * anything. The calling integration is responsible for its own authorization
+ * before calling in. Pass true to also require
+ * current_user_can('edit_post', $post_id).
+ *
+ * This call is synchronous and blocking — it makes one AI request per target
+ * language before returning. For many languages, consider looping
+ * linguaforge_queue_translation() per target instead if you don't need the
+ * "overwrite everything, including the primary" behaviour Sync provides.
+ *
+ * @param int  $post_id     Post ID to sync FROM. Its own `_lf_lang` determines direction.
+ * @param bool $check_caps  Require current_user_can('edit_post', $post_id). Default false.
+ * @return array{success:bool,message?:string,results?:array<string,array{status:string,id?:int,edit_url?:string,message?:string}>,from_lang?:string}
+ *
+ * @example
+ * $result = linguaforge_sync_translations( 42 );
+ * if ( empty( $result['success'] ) ) {
+ *     error_log( $result['message'] ?? 'Sync failed' );
+ * }
+ *
+ * @since 2.6.0
+ */
+function linguaforge_sync_translations( int $post_id, bool $check_caps = false ): array {
+	return \LinguaForge\AI\Admin\PostListColumn::run_sync( $post_id, $check_caps );
+}

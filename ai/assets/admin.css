@@ -1072,6 +1072,26 @@ details[open] .lf-danger-zone__summary::before {
     color: #b32d2e;
 }
 
+/* ── "Sync" button ── */
+.lf-sync {
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    padding: 2px 8px !important;
+}
+
+.lf-sync--busy {
+    opacity: 0.7;
+    cursor: wait !important;
+}
+
+/* Inline error note appended after the Sync button on failure. */
+.lf-sync-error {
+    font-size: 11px;
+    color: #b32d2e;
+}
+
 /* SEO score badge — shown in the Lang column when a score has been stored. */
 .lf-seo-badge {
     display: inline-block;

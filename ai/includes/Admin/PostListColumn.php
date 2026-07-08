@@ -12,8 +12,40 @@
  *     status, so editors can force a fresh translation at any time.
  *     Hooks `lf_lang_column_retranslate`.
  *
- * Both hooks are fired by Columns::render_lang_column() in the language-router
- * module, keeping the AI module fully decoupled.
+ *   • "Sync" — shown on every TRID-linked post, including the source-language
+ *     post. Retranslates FROM the current post's language INTO every other
+ *     configured language in one operation: missing languages are created,
+ *     existing ones are force-refreshed. Unlike "Retranslate", Sync is not
+ *     blocked on the source post by language alone — a source-language post
+ *     can always push its content out to every translation, and (subject to
+ *     the safeguards below) a secondary-language post can just as
+ *     deliberately overwrite the source via back-translation, since the
+ *     whole point of Sync is "make every other version match this one."
+ *     Also hooked onto `lf_lang_column_retranslate` (fired unconditionally
+ *     for every post).
+ *
+ *     Secondary-language safeguards (off by default, on a per-post-type
+ *     basis) — triggering Sync FROM a secondary-language post is blocked
+ *     unless explicitly allowed, via two independent guards:
+ *       - WooCommerce products/variations: `linguaforge_wc_allow_secondary_sync`
+ *         option (Settings → Behavior → WooCommerce) or the
+ *         `linguaforge_wc_secondary_sync_allowed` filter.
+ *         See wc_secondary_sync_blocked().
+ *       - Every other post type: `linguaforge_allow_secondary_sync` option
+ *         (Settings → Behavior → Sync) or the `linguaforge_secondary_sync_allowed`
+ *         filter. See general_secondary_sync_blocked().
+ *     The two are independent — enabling one has no effect on the other.
+ *     Syncing FROM the primary-language post is always allowed regardless of
+ *     post type or either setting; the restriction only applies to the
+ *     primary-overwriting direction.
+ *
+ * All three hooks are fired by Columns::render_lang_column() in the
+ * language-router module, keeping the AI module fully decoupled.
+ *
+ * The core Sync logic lives in run_sync(), a reusable method (not just an
+ * AJAX handler) so third-party code can trigger the same operation
+ * programmatically via the `linguaforge_sync_translations()` wrapper function
+ * defined in `ai/ai.php`.
  *
  * @package LinguaForge\AI\Admin
  * @since   1.8.1
@@ -35,6 +67,8 @@ class PostListColumn {
 	const NONCE_NAME             = 'lf_fill_missing_nonce';
 	const AJAX_ACTION_RETRANSLATE = 'lf_retranslate';
 	const NONCE_NAME_RETRANSLATE  = 'lf_retranslate_nonce';
+	const AJAX_ACTION_SYNC         = 'lf_sync';
+	const NONCE_NAME_SYNC          = 'lf_sync_nonce';
 
 	// =========================================================================
 	// Boot
@@ -47,6 +81,9 @@ class PostListColumn {
 		// "Retranslate" — fires on every post regardless of outdated status.
 		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_retranslate_button' ], 10, 1 );
 
+		// "Sync" — fires on every post (including the source-language post).
+		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_sync_button' ], 15, 1 );
+
 		// SEO score badge — fires on every post; shows stored score + delta if available.
 		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_seo_score_badge' ], 20, 1 );
 
@@ -56,6 +93,7 @@ class PostListColumn {
 		// AJAX handlers — admin-only (logged-in user required by WordPress).
 		add_action( 'wp_ajax_' . self::AJAX_ACTION,            [ self::class, 'ajax_fill_missing' ] );
 		add_action( 'wp_ajax_' . self::AJAX_ACTION_RETRANSLATE, [ self::class, 'ajax_retranslate'  ] );
+		add_action( 'wp_ajax_' . self::AJAX_ACTION_SYNC,         [ self::class, 'ajax_sync'         ] );
 	}
 
 	// =========================================================================
@@ -156,6 +194,214 @@ class PostListColumn {
 		echo '</span>';
 	}
 
+	/**
+	 * Output the "Sync" button in the Lang column.
+	 *
+	 * Shown on every TRID-linked post, including the source-language post —
+	 * unlike "Retranslate" above, Sync is never blocked on language. Clicking
+	 * it retranslates FROM the current post's language INTO every other
+	 * configured language: missing siblings are created, existing ones are
+	 * force-refreshed. This intentionally allows a secondary-language post to
+	 * overwrite the source post via back-translation; that is the entire
+	 * point of a "make everything else match this one" action, and the
+	 * confirmation dialog on the client side is what stands in for the
+	 * destructive-action guard "Retranslate" gets for free by simply refusing
+	 * to touch the source.
+	 *
+	 * Called via the `lf_lang_column_retranslate` action, fired unconditionally
+	 * by Columns::render_lang_column() for every post. Returns early when the
+	 * post has no language assigned yet, or when fewer than two languages are
+	 * configured (nothing to sync to).
+	 *
+	 * @param int $post_id  Current post ID.
+	 */
+	public static function render_sync_button( int $post_id ): void {
+		// wp_navigation posts are translated via the FSE navigation pipeline, not this one.
+		$post = get_post( $post_id );
+		if ( $post && $post->post_type === 'wp_navigation' ) {
+			return;
+		}
+
+		$router = Router::get_instance();
+		if ( count( $router->languages() ) < 2 ) {
+			return; // Nothing to sync to.
+		}
+
+		$current_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+		if ( '' === $current_lang ) {
+			return;
+		}
+
+		if ( self::wc_secondary_sync_blocked( $post, $current_lang, $router )
+			|| self::general_secondary_sync_blocked( $post, $current_lang, $router )
+		) {
+			return;
+		}
+
+		printf(
+			' <button type="button" class="button button-small lf-sync" data-post-id="%d" title="%s">%s</button>',
+			esc_attr( (string) $post_id ),
+			esc_attr__( 'Retranslate every other language version from this post. Creates any that are missing and overwrites any that already exist — including the primary language, if this post is a translation.', 'lingua-forge' ),
+			esc_html__( 'Sync', 'lingua-forge' )
+		);
+	}
+
+	// =========================================================================
+	// Secondary-language Sync safeguards
+	//
+	// Two independent guards, each with its own setting, checked separately
+	// at every Sync call site (render_sync_button(), run_sync()):
+	//
+	//   • wc_secondary_sync_blocked()      — WooCommerce products/variations
+	//     only. Unchanged since 2.6.0; do not fold into the general guard
+	//     below — WooCommerce keeps its own dedicated toggle regardless of
+	//     the general one, since the primary product is WC's operational
+	//     source of truth (price, SKU, stock) and warrants a separate,
+	//     more visible opt-in.
+	//   • general_secondary_sync_blocked() — every OTHER post type. Added in
+	//     the same release to close the same hole for ordinary posts, pages,
+	//     and non-WC CPTs, which had no restriction at all before this.
+	//
+	// The two are mutually exclusive by post type (is_wc_product_post_type()
+	// routes a post to exactly one of them), so exactly one of the two ever
+	// applies to a given post — enabling one setting never implicitly
+	// enables the other.
+	// =========================================================================
+
+	/**
+	 * Whether $post's post type is a WooCommerce product post (regular or
+	 * variation). A plain post_type check, independent of whether the
+	 * WooCommerce plugin is currently active — a 'product' row in the
+	 * database is still a WooCommerce product even if WC has since been
+	 * deactivated.
+	 *
+	 * @param string $post_type
+	 * @return bool
+	 */
+	private static function is_wc_product_post_type( string $post_type ): bool {
+		return in_array( $post_type, [ 'product', 'product_variation' ], true );
+	}
+
+	/**
+	 * Whether a secondary-language WooCommerce product/variation is allowed
+	 * to trigger Sync — i.e. to overwrite the primary product via
+	 * back-translation. Off by default.
+	 *
+	 * Two escape hatches, checked in order: the
+	 * `linguaforge_wc_allow_secondary_sync` option (Settings → Behavior →
+	 * WooCommerce), then the `linguaforge_wc_secondary_sync_allowed` filter
+	 * for programmatic/per-request overrides that don't need a persistent
+	 * site-wide setting.
+	 *
+	 * @return bool
+	 */
+	private static function wc_secondary_sync_allowed(): bool {
+		/**
+		 * Filters whether Sync may be triggered from a secondary-language
+		 * WooCommerce product or variation, allowing it to overwrite the
+		 * primary/source product via back-translation.
+		 *
+		 * Off by default: the primary product is WooCommerce's operational
+		 * source of truth (price, SKU, stock — see
+		 * Integrations\WooCommerce\MetaDelegate), so an accidental
+		 * back-translation overwrite there is a materially different risk
+		 * than for an ordinary post. Syncing FROM the primary product to
+		 * every translation is unaffected by this filter — it is always
+		 * allowed.
+		 *
+		 * @param bool $allowed Defaults to the `linguaforge_wc_allow_secondary_sync` option (false).
+		 *
+		 * @since 2.6.0
+		 */
+		return (bool) apply_filters(
+			'linguaforge_wc_secondary_sync_allowed', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+			(bool) get_option( 'linguaforge_wc_allow_secondary_sync', false )
+		);
+	}
+
+	/**
+	 * Whether Sync must be blocked for this post: a secondary-language
+	 * WooCommerce product/variation, with the safeguard not lifted.
+	 *
+	 * Syncing FROM the primary language is always allowed regardless of post
+	 * type — this only restricts the primary-overwriting direction.
+	 *
+	 * @param \WP_Post|null $post          The post Sync would run from.
+	 * @param string        $current_lang  That post's language code.
+	 * @param Router        $router        Router instance (avoids re-resolving the singleton).
+	 * @return bool
+	 */
+	private static function wc_secondary_sync_blocked( ?\WP_Post $post, string $current_lang, Router $router ): bool {
+		if ( ! $post || $current_lang === $router->source_language() ) {
+			return false;
+		}
+		if ( ! self::is_wc_product_post_type( $post->post_type ) ) {
+			return false;
+		}
+		return ! self::wc_secondary_sync_allowed();
+	}
+
+	/**
+	 * Whether a secondary-language post of any OTHER (non-WooCommerce) post
+	 * type is allowed to trigger Sync — i.e. to overwrite the primary post
+	 * via back-translation. Off by default, same posture as the WooCommerce
+	 * guard above but independently controlled.
+	 *
+	 * Two escape hatches, checked in order: the
+	 * `linguaforge_allow_secondary_sync` option (Settings → Behavior → Sync),
+	 * then the `linguaforge_secondary_sync_allowed` filter for
+	 * programmatic/per-request overrides that don't need a persistent
+	 * site-wide setting.
+	 *
+	 * @return bool
+	 */
+	private static function secondary_sync_allowed(): bool {
+		/**
+		 * Filters whether Sync may be triggered from a secondary-language post
+		 * of any post type OTHER than a WooCommerce product/variation
+		 * (see `linguaforge_wc_secondary_sync_allowed` for that case),
+		 * allowing it to overwrite the primary/source post via
+		 * back-translation.
+		 *
+		 * Off by default: the primary post is the authoritative content
+		 * every translation derives from, so an accidental back-translation
+		 * overwrite is a deliberate opt-in, not a default. Syncing FROM the
+		 * primary post to every translation is unaffected by this filter —
+		 * it is always allowed.
+		 *
+		 * @param bool $allowed Defaults to the `linguaforge_allow_secondary_sync` option (false).
+		 *
+		 * @since 2.6.0
+		 */
+		return (bool) apply_filters(
+			'linguaforge_secondary_sync_allowed', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+			(bool) get_option( 'linguaforge_allow_secondary_sync', false )
+		);
+	}
+
+	/**
+	 * Whether Sync must be blocked for this post: a secondary-language post
+	 * of any post type OTHER than a WooCommerce product/variation (which has
+	 * its own dedicated guard above), with the safeguard not lifted.
+	 *
+	 * Syncing FROM the primary language is always allowed regardless of post
+	 * type — this only restricts the primary-overwriting direction.
+	 *
+	 * @param \WP_Post|null $post          The post Sync would run from.
+	 * @param string        $current_lang  That post's language code.
+	 * @param Router        $router        Router instance (avoids re-resolving the singleton).
+	 * @return bool
+	 */
+	private static function general_secondary_sync_blocked( ?\WP_Post $post, string $current_lang, Router $router ): bool {
+		if ( ! $post || $current_lang === $router->source_language() ) {
+			return false;
+		}
+		if ( self::is_wc_product_post_type( $post->post_type ) ) {
+			return false; // WooCommerce has its own dedicated guard — see wc_secondary_sync_blocked().
+		}
+		return ! self::secondary_sync_allowed();
+	}
+
 	// =========================================================================
 	// SEO score badge
 	// =========================================================================
@@ -244,9 +490,13 @@ class PostListColumn {
 				'nonce'               => wp_create_nonce( self::NONCE_NAME ),
 				'actionRetranslate'   => self::AJAX_ACTION_RETRANSLATE,
 				'nonceRetranslate'    => wp_create_nonce( self::NONCE_NAME_RETRANSLATE ),
+				'actionSync'          => self::AJAX_ACTION_SYNC,
+				'nonceSync'           => wp_create_nonce( self::NONCE_NAME_SYNC ),
 				'l10n'                => [
 					'translating'  => __( 'Translating…', 'lingua-forge' ),
 					'retranslating' => __( 'Retranslating…', 'lingua-forge' ),
+					'syncing'      => __( 'Syncing…', 'lingua-forge' ),
+					'syncConfirm'  => __( 'This retranslates every other language version of this post from this one — creating any that are missing and overwriting any that already exist (including the primary language, if this post is a translation). This cannot be undone. Continue?', 'lingua-forge' ),
 					'done'         => __( '✓ Done', 'lingua-forge' ),
 					'error'        => __( 'Error', 'lingua-forge' ),
 				],
@@ -524,6 +774,217 @@ class PostListColumn {
 		self::generate_meta_description( $target_id );
 
 		wp_send_json_success( $outcome );
+	}
+
+	/**
+	 * Sync: retranslate every other configured language from the given post.
+	 *
+	 * Thin AJAX wrapper around run_sync() — verifies the nonce, dispatches,
+	 * and translates the result array into a wp_send_json_*() response.
+	 */
+	public static function ajax_sync(): void {
+		check_ajax_referer( self::NONCE_NAME_SYNC, 'nonce' );
+
+		$post_id = absint( $_POST['post_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified by check_ajax_referer above.
+		$result  = self::run_sync( $post_id, true );
+		$data    = array_diff_key( $result, [ 'success' => true ] );
+
+		if ( empty( $result['success'] ) ) {
+			wp_send_json_error( $data );
+		}
+
+		wp_send_json_success( $data );
+	}
+
+	/**
+	 * Core Sync engine: retranslate every other configured language from the
+	 * given post. Not AJAX-specific — this is what `ajax_sync()` and the
+	 * public `linguaforge_sync_translations()` wrapper function (`ai/ai.php`)
+	 * both call.
+	 *
+	 * Unlike ajax_retranslate() (one target, chosen "from" language, never the
+	 * source post), this fans out from ONE source post to EVERY other language
+	 * in the TRID group:
+	 *   - A language with no post yet is created (same as ajax_fill_missing()).
+	 *   - A language that already has a post is force-refreshed in place (same
+	 *     as ajax_retranslate()).
+	 *   - The primary/source language is not exempt: if this post is itself a
+	 *     secondary language, its Sync call will overwrite the source post via
+	 *     back-translation. That is the intended behaviour — Sync means "make
+	 *     every other version match this one" — and is why the client shows a
+	 *     confirmation dialog before calling this endpoint.
+	 *   - Exception: a secondary-language post is blocked from doing this by
+	 *     default, regardless of post type — see wc_secondary_sync_blocked()
+	 *     (WooCommerce products/variations) and general_secondary_sync_blocked()
+	 *     (everything else). Two independent settings, checked separately.
+	 *
+	 * The source-language target (when present in the target set) is always
+	 * processed first, so its `_lf_source_updated_at` timestamp is fresh
+	 * before every other target below it is marked synced against it.
+	 *
+	 * @param  int  $post_id     Post to sync FROM.
+	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', $post_id).
+	 *                           Default true (matches the AJAX/admin-UI behaviour). Programmatic
+	 *                           callers via linguaforge_sync_translations() default this to false —
+	 *                           see that function's docblock for why.
+	 * @return array{success:bool,message?:string,results?:array,from_lang?:string}
+	 */
+	public static function run_sync( int $post_id, bool $check_caps = true ): array {
+		if ( $post_id <= 0 ) {
+			return [ 'success' => false, 'message' => 'Invalid post ID.' ];
+		}
+
+		if ( $check_caps && ! current_user_can( 'edit_post', $post_id ) ) {
+			return [ 'success' => false, 'message' => 'Insufficient permissions.' ];
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post instanceof \WP_Post ) {
+			return [ 'success' => false, 'message' => 'Post not found.' ];
+		}
+
+		if ( $post->post_type === 'wp_navigation' ) {
+			return [
+				'success' => false,
+				'message' => __( 'Navigation posts are translated via the Router tab, not this button.', 'lingua-forge' ),
+			];
+		}
+
+		// ── Resolve from-language + target set ────────────────────────────────
+		$router    = Router::get_instance();
+		$from_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+		if ( '' === $from_lang ) {
+			$from_lang = $router->source_language();
+		}
+
+		// ── WooCommerce safeguard ──────────────────────────────────────────────
+		if ( self::wc_secondary_sync_blocked( $post, $from_lang, $router ) ) {
+			return [
+				'success' => false,
+				'message' => __( 'Sync from a secondary-language WooCommerce product is disabled by default, since it would overwrite the primary product. Enable it in Settings → Behavior → WooCommerce if you want a translation to be able to become the new source content.', 'lingua-forge' ),
+			];
+		}
+
+		// ── General secondary-language safeguard (every other post type) ──────
+		if ( self::general_secondary_sync_blocked( $post, $from_lang, $router ) ) {
+			return [
+				'success' => false,
+				'message' => __( 'Sync from a secondary-language post is disabled by default, since it would overwrite the primary post. Enable it in Settings → Behavior → Sync if you want a translation to be able to become the new source content.', 'lingua-forge' ),
+			];
+		}
+
+		$source_lang = $router->source_language();
+		$targets     = array_values( array_diff( $router->languages(), [ $from_lang ] ) );
+
+		if ( empty( $targets ) ) {
+			return [ 'success' => false, 'message' => 'No other languages are configured to sync to.' ];
+		}
+
+		// Source language first (see method docblock).
+		usort( $targets, static function ( string $a, string $b ) use ( $source_lang ): int {
+			if ( $a === $source_lang ) return -1;
+			if ( $b === $source_lang ) return 1;
+			return 0;
+		} );
+
+		// ── Translation feature ───────────────────────────────────────────────
+		$translation = Registry::get( 'translation' );
+		if ( ! $translation instanceof Translation ) {
+			return [ 'success' => false, 'message' => 'Translation feature not available. Is an AI provider configured?' ];
+		}
+
+		// ── Bypass save hooks for the duration of the batch ───────────────────
+		remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10 );
+		remove_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
+
+		$results = [];
+		$errors  = 0;
+
+		foreach ( $targets as $lang ) {
+
+			// Re-fetch every iteration: a prior pass may have just created or
+			// updated a sibling and cleared the TRID translation cache.
+			$translations = function_exists( 'linguaforge_get_translations' )
+				? linguaforge_get_translations( $post_id )
+				: [];
+
+			// Wipe any stale AI cache entry so a previous translation can never be returned.
+			CacheStore::delete( $post_id, 'translation_' . $lang );
+
+			$result = $translation->run( $post_id, [
+				'target_language' => $lang,
+				'translate_mode'  => 'full',
+				'force_refresh'   => true,
+			] );
+
+			if ( empty( $result['success'] ) ) {
+				$results[ $lang ] = [
+					'status'  => 'error',
+					'message' => (string) ( $result['error'] ?? 'unknown error' ),
+				];
+				++$errors;
+				continue;
+			}
+
+			if ( empty( $translations[ $lang ] ) ) {
+				// Creation gate — same guard as ajax_fill_missing().
+				if ( ! apply_filters( 'linguaforge_cpt_create_allowed', true, $post->post_type ) ) {
+					$results[ $lang ] = [
+						'status'  => 'error',
+						'message' => sprintf(
+							/* translators: %s: post type slug */
+							__( 'Creating translations for post type "%s" requires an active integration.', 'lingua-forge' ),
+							$post->post_type
+						),
+					];
+					++$errors;
+					continue;
+				}
+				$outcome = self::create_linked_post( $post, $lang, $result );
+			} else {
+				$outcome = self::update_linked_post( (int) $translations[ $lang ], $result );
+			}
+
+			if ( 'error' === $outcome['status'] ) {
+				++$errors;
+			} else {
+				$target_id = (int) $outcome['id'];
+
+				if ( $lang === $source_lang ) {
+					// The primary post was just overwritten via back-translation.
+					// Bump its own "source updated" timestamp so every other
+					// sibling processed below (and any future save) measures
+					// freshness against this content, not the pre-sync version.
+					$router->sync->mark_source_updated( $target_id );
+				} elseif ( function_exists( 'linguaforge_mark_translation_synced' ) ) {
+					linguaforge_mark_translation_synced( $target_id );
+				}
+
+				do_action( 'linguaforge_translation_complete', $target_id, $post_id, $lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+
+				self::generate_meta_description( $target_id );
+			}
+
+			$results[ $lang ] = $outcome;
+		}
+
+		// If this post is itself a secondary language and the primary was one
+		// of the sync targets, the primary's timestamp was just bumped above —
+		// mark THIS post synced against it too, so it doesn't turn up as
+		// "outdated" relative to the very content it was just used to produce.
+		if ( $from_lang !== $source_lang && function_exists( 'linguaforge_mark_translation_synced' ) ) {
+			linguaforge_mark_translation_synced( $post_id );
+		}
+
+		// ── Restore save hooks ────────────────────────────────────────────────
+		add_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10, 2 );
+		add_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
+
+		if ( $errors > 0 && $errors === count( $targets ) ) {
+			return [ 'success' => false, 'message' => 'All translations failed.', 'results' => $results ];
+		}
+
+		return [ 'success' => true, 'results' => $results, 'from_lang' => $from_lang ];
 	}
 
 	// =========================================================================

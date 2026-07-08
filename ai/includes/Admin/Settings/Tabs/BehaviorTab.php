@@ -163,6 +163,68 @@ class BehaviorTab extends Tab {
             <?php endforeach; ?>
         </table>
 
+        <!-- ── Sync — general secondary-language safeguard ─────────── -->
+        <h2><?php esc_html_e('Sync', 'lingua-forge'); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'The "Sync" button in the post list Lang column retranslates a post out into every other language, including the primary/source post when it\'s run from a translation. That back-translation direction is restricted by default for every post type. (WooCommerce products and variations have their own separate setting below — this one does not affect them.)', 'lingua-forge' ); ?>
+        </p>
+
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row">
+                    <?php esc_html_e('Secondary-language Sync', 'lingua-forge'); ?>
+                </th>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="linguaforge_allow_secondary_sync"
+                            value="1"
+                            <?php checked( (bool) get_option('linguaforge_allow_secondary_sync', false) ); ?>
+                        >
+                        <?php esc_html_e('Allow "Sync" on a translated post to overwrite the primary post', 'lingua-forge'); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e('Off by default: clicking "Sync" on a translation is blocked from overwriting the primary post. Syncing FROM the primary post to every translation is always allowed regardless of this setting. Turn this on only if you intentionally want a translation to be able to become the new source content.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+
+        <!-- ── WooCommerce — Sync safeguard ───────────────────────── -->
+        <h2><?php esc_html_e('WooCommerce', 'lingua-forge'); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'The primary-language product is WooCommerce\'s operational source of truth for price, SKU, and stock, which are always served from it regardless of which language a shopper is viewing. This is a separate, independent setting from the general "Sync" restriction above — enabling one does not enable the other.', 'lingua-forge' ); ?>
+        </p>
+
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row">
+                    <?php esc_html_e('Secondary-language Sync', 'lingua-forge'); ?>
+                </th>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="linguaforge_wc_allow_secondary_sync"
+                            value="1"
+                            <?php checked( (bool) get_option('linguaforge_wc_allow_secondary_sync', false) ); ?>
+                        >
+                        <?php esc_html_e('Allow "Sync" on a translated product to overwrite the primary product', 'lingua-forge'); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e('Off by default: clicking "Sync" on a translated WooCommerce product is blocked, since it would back-translate onto the primary product\'s title, description, and excerpt. Syncing FROM the primary product to every translation is always allowed regardless of this setting. Turn this on only if you intentionally want a translation to be able to become the new source content.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <?php endif; ?>
+
         <?php
     }
 }

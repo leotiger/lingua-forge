@@ -495,6 +495,23 @@ class SettingsPage {
             false
         );
 
+        // ── Behavior — Sync safeguard (general, every non-WooCommerce post type) ──
+        // Checkbox: absent in $_POST = unchecked = restriction stays ON (default).
+        update_option(
+            'linguaforge_allow_secondary_sync',
+            !empty($_POST['linguaforge_allow_secondary_sync']) ? 1 : 0,
+            false
+        );
+
+        // ── Behavior — WooCommerce Sync safeguard ─────────────────────────────
+        // Independent of the general one above. Checkbox: absent in $_POST =
+        // unchecked = restriction stays ON (default).
+        update_option(
+            'linguaforge_wc_allow_secondary_sync',
+            !empty($_POST['linguaforge_wc_allow_secondary_sync']) ? 1 : 0,
+            false
+        );
+
         // ── Behavior — AI preset (replaces old compliance toggle) ────────────
         $preset_raw   = sanitize_key($_POST['linguaforge_active_preset'] ?? '');
         $valid_presets = array_keys(\LinguaForge\AI\Core\Config::presets());

@@ -171,7 +171,20 @@ When the source post is edited and saved, Lingua Forge records the edit timestam
 
 **Retranslating an outdated post:**
 
-Click **Retranslate** in the Lang column. The existing translated post is updated in place — permalink, TRID link, and any manually edited fields outside the translated content are preserved.
+Click **Retranslate** in the Lang column, choosing which sibling language to pull from. The existing translated post is updated in place — permalink, TRID link, and any manually edited fields outside the translated content are preserved. Retranslate never touches the source-language post; the source is treated as authoritative and edited directly.
+
+**Syncing a post out to every other language:**
+
+Click **Sync** in the Lang column — shown on every language version of a post, including the source-language post itself. Sync retranslates FROM the post you clicked INTO every other active language in one operation: a language with no translation yet is created, a language that already has one is force-refreshed. Unlike Retranslate, Sync is not blocked on the source post by language alone — clicking Sync on a secondary-language post can overwrite the source post via back-translation, which is the point of the button: it makes every other version match the one you're syncing from, wherever that content currently lives. Because a single click can update several posts at once (including the source), a confirmation dialog appears before it runs.
+
+**Secondary-language safeguards:** syncing FROM the primary post is always allowed for every post type. Syncing FROM a *secondary*-language post — the direction that can overwrite the primary — is blocked by default for every post type, via two independent settings under **Settings → Behavior**:
+
+- **Sync** → "Allow 'Sync' on a translated post to overwrite the primary post" — covers every post type except WooCommerce products/variations.
+- **WooCommerce** → "Allow 'Sync' on a translated product to overwrite the primary product" — covers only `product` and `product_variation` posts, since the primary product is also WooCommerce's operational source of truth for price, SKU, and stock (see §4). Shown only when WooCommerce is active.
+
+The two are independent: enabling one has no effect on the other, so a site can allow secondary-language Sync for ordinary content while still keeping WooCommerce products locked down, or vice versa.
+
+**Programmatic Sync:** `linguaforge_sync_translations( $post_id, $check_caps = false )` (defined in `ai/ai.php`) runs the same operation from code — see CONTRIBUTING.md's Public PHP API table for the full signature and the `linguaforge_secondary_sync_allowed` / `linguaforge_wc_secondary_sync_allowed` filters that can override either safeguard per call.
 
 **Bulk retranslation via WP-CLI:**
 

@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.5.5
+Stable tag: 2.6.0
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.0 =
+* Added: "Sync" — a new button in the post list Lang column, shown on every language version of a translated post, including the primary/source post. One click retranslates FROM that post's language INTO every other configured language: any missing language is created, any existing one is force-refreshed in place. Unlike the existing "Retranslate" button, Sync is never blocked on the source-language post — triggering it from a secondary-language post can overwrite the primary post via back-translation, which is the intended behaviour (the point of Sync is "make every other version match this one"), guarded by a confirmation dialog before it runs since it can touch several posts, including the source, in a single click. (`ai/includes/Admin/PostListColumn.php`, `ai/assets/post-list.js`, `ai/assets/admin.css`)
+* Added: WooCommerce safeguard for Sync — syncing a secondary-language product/variation is blocked by default, since it would back-translate onto the primary product (WooCommerce's operational source of truth for price, SKU, and stock). Syncing FROM the primary product is unaffected. Lift the restriction via **Settings → Behavior → WooCommerce**, or the new `linguaforge_wc_secondary_sync_allowed` filter. (`ai/includes/Admin/PostListColumn.php`, `ai/includes/Admin/Settings/Tabs/BehaviorTab.php`)
+* Added: General secondary-language safeguard for Sync — the same restriction as the WooCommerce one above, now covering every other post type (posts, pages, any other CPT), which previously had none. Independent setting: **Settings → Behavior → Sync**, or the `linguaforge_secondary_sync_allowed` filter. Enabling one safeguard's setting does not affect the other. (`ai/includes/Admin/PostListColumn.php`, `ai/includes/Admin/Settings/Tabs/BehaviorTab.php`)
+* Added: `linguaforge_sync_translations( $post_id, $check_caps = false )` — public API for Sync, for integrations that want the same behaviour from their own code. (`ai/ai.php`)
+
 = 2.5.5 =
 * Fixed: Language Switcher — Grid Overlay panel could open anchored to the wrong side of the trigger on an RTL-language page (e.g. Arabic, Farsi, Urdu). The panel's position was always calculated from the trigger's left edge regardless of text direction, which could run language options off the right edge of the viewport instead of opening from the trigger's leading edge the way the classic dropdown's RTL styling already does. The panel now detects the resolved text direction and anchors from the right edge in RTL, matching the dropdown's existing `[dir="rtl"]` behaviour. (`class-lsflr-switcher.php`)
 
@@ -343,6 +349,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.0 =
+Adds a "Sync" button (with two off-by-default safeguards, one for WooCommerce products) in the post list Lang column that retranslates every other language from the post you click it on. No database changes. No flush required.
 
 = 2.5.5 =
 Fixes the Language Switcher's Grid Overlay panel opening off-screen to the right on RTL-language pages. No database changes. No flush required.

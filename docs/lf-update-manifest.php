@@ -35,30 +35,31 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.5.5';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.5.5/lingua-forge-2.5.5.zip';
+	$version      = '2.6.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.0/lingua-forge-2.6.0.zip';
 	$last_updated = '2026-07-08';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.5.5.zip — build it, upload
-	// to the v2.5.5 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.6.0.zip — build it, upload
+	// to the v2.6.0 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = '21749776181bd4461f264d9213cb516b00030ad13afbd4fc12ad0f703f226366';
+	$sha256 = '';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.6.0 &#8212; 2026-07-08</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> &#8220;Sync&#8221; &#8212; a new button in the post list Lang column, shown on every language version of a translated post, including the primary/source post. One click retranslates FROM that post&#8217;s language INTO every other configured language: any missing language is created, any existing one is force-refreshed in place. Unlike the existing &#8220;Retranslate&#8221; button, Sync can overwrite the primary/source post when triggered from a secondary-language post &#8212; a confirmation dialog runs before it fires since it can touch several posts, including the source, in a single click. (<code>ai/includes/Admin/PostListColumn.php</code>)</li>' .
+			'<li><strong>Added:</strong> Two independent safeguards for Sync, both off by default &#8212; syncing a secondary-language WooCommerce product/variation is blocked (it would back-translate onto the primary product, WooCommerce&#8217;s operational source of truth for price, SKU, and stock; lift via Settings &#8594; Behavior &#8594; WooCommerce or the <code>linguaforge_wc_secondary_sync_allowed</code> filter), and the same restriction now also covers every other post type (lift via Settings &#8594; Behavior &#8594; Sync or the <code>linguaforge_secondary_sync_allowed</code> filter). Enabling one has no effect on the other. Also adds <code>linguaforge_sync_translations()</code>, a public API function for triggering Sync from third-party code. (<code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/ai.php</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.5.5 &#8212; 2026-07-08</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> Language Switcher &#8212; Grid Overlay panel could open off the right edge of the viewport on RTL-language pages (Arabic, Farsi, Urdu, etc.). The panel&#8217;s position was always calculated from the trigger&#8217;s left edge regardless of text direction; it now detects the resolved direction and anchors from the right edge in RTL, matching the classic dropdown&#8217;s existing RTL behaviour. (<code>class-lsflr-switcher.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.5.4 &#8212; 2026-07-07</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> &#8220;Trash + Siblings&#8221; &#8212; a new row action on the Posts/Pages/CPT admin list tables (next to Edit | Quick Edit | Trash | View) that trashes a post together with every other language version in its translation group, and a matching &#8220;Move to Trash (incl. translations)&#8221; bulk action. Both only appear when a post actually has translated siblings, act immediately with no confirmation prompt (matching the stock &#8220;Trash&#8221; link&#8217;s own reversible behaviour), and report a &#8220;Trashed N posts (including translations)&#8221; notice afterward. Skips the static front page / posts page and any post the current user can&#8217;t delete, reporting them as skipped rather than failing silently. Two new hooks for integrations: <code>linguaforge_trash_cascade_post_ids</code> and <code>linguaforge_trash_cascade_complete</code>. (<code>language-router/includes/translation/class-trash-cascade.php</code> NEW)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

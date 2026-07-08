@@ -1,12 +1,18 @@
 /**
  * Post-list action button handlers.
  *
- * Handles two buttons injected into the "Lang" column by PostListColumn:
+ * Handles three buttons injected into the "Lang" column by PostListColumn:
  *
  *   .lf-fill-missing  — "Translate missing" on source posts with ⭕ indicator.
  *   .lf-retranslate   — "Retranslate" on any TRID-linked post (outdated or not).
+ *   .lf-sync          — "Sync" on any TRID-linked post, including the source
+ *                       post. Fans this post's content out to every other
+ *                       language — creating missing ones, overwriting
+ *                       existing ones. Confirmed before running since it can
+ *                       touch several posts (and possibly the source post) in
+ *                       one click.
  *
- * On click (both buttons):
+ * On click (all three buttons):
  *   • Disables the button and shows a spinner label
  *   • POSTs to the respective wp_ajax_* handler
  *   • On success: removes the status indicator and replaces the button with "✓ Done"
@@ -128,6 +134,70 @@
 			$btn.prop( 'disabled', false )
 			    .removeClass( 'lf-retranslate--busy' )
 			    .text( 'Retranslate' );
+		} );
+	} );
+
+	// ── "Sync" ────────────────────────────────────────────────────────────────
+
+	$( document ).on( 'click', '.lf-sync', function () {
+		var $btn   = $( this );
+		var postId = $btn.data( 'post-id' );
+		var $cell  = $btn.closest( 'td' );
+
+		if ( $btn.prop( 'disabled' ) ) {
+			return;
+		}
+
+		var confirmMsg = ( cfg.l10n && cfg.l10n.syncConfirm )
+			? cfg.l10n.syncConfirm
+			: 'This retranslates every other language version of this post from this one — creating any that are missing and overwriting any that already exist. This cannot be undone. Continue?';
+
+		if ( ! window.confirm( confirmMsg ) ) {
+			return;
+		}
+
+		$btn.prop( 'disabled', true )
+		    .addClass( 'lf-sync--busy' )
+		    .text( cfg.l10n && cfg.l10n.syncing ? cfg.l10n.syncing : 'Syncing…' );
+
+		$cell.find( '.lf-sync-error' ).remove();
+
+		$.post(
+			cfg.ajaxUrl || ajaxurl,
+			{
+				action:  cfg.actionSync || 'lf_sync',
+				nonce:   cfg.nonceSync  || '',
+				post_id: postId,
+			},
+			function ( response ) {
+				if ( ! response || ! response.success ) {
+					var msg = ( response && response.data && response.data.message )
+						? response.data.message
+						: ( cfg.l10n && cfg.l10n.error ? cfg.l10n.error : 'Error' );
+
+					$btn.prop( 'disabled', false )
+					    .removeClass( 'lf-sync--busy' )
+					    .text( 'Sync' );
+
+					$btn.after(
+						$( '<span class="lf-sync-error"></span>' ).text( ' ' + msg )
+					);
+					return;
+				}
+
+				// A full sync fills every missing language and refreshes every
+				// existing one, so both indicators for THIS row are now stale.
+				$cell.find( '.lf-missing-langs' ).remove();
+				$cell.find( '.lf-outdated-indicator' ).remove();
+				$btn.replaceWith(
+					$( '<span class="lf-fill-done"></span>' )
+						.text( cfg.l10n && cfg.l10n.done ? cfg.l10n.done : '✓ Done' )
+				);
+			}
+		).fail( function () {
+			$btn.prop( 'disabled', false )
+			    .removeClass( 'lf-sync--busy' )
+			    .text( 'Sync' );
 		} );
 	} );
 
