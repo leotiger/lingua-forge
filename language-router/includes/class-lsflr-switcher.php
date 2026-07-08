@@ -391,10 +391,11 @@ class Switcher {
 				var pw  = Math.round(vw * 0.9);
 				var maxH = Math.round(vh * 0.40);
 
-				/* Horizontal: align with trigger leading edge, clamped so panel stays
-				   inside the viewport with 8px margin on each side. */
-				var leftEdge  = Math.min(r.left, vw - pw - 8);
-				leftEdge = Math.max(leftEdge, 8);
+				/* getComputedStyle resolves the inherited `dir` from any ancestor
+				   (html, body, or an RTL content wrapper), which is what actually
+				   controls the rendered layout direction of this switcher instance —
+				   more reliable than checking documentElement.dir directly. */
+				var isRtl = getComputedStyle(wrap).direction === 'rtl';
 
 				/* Vertical: prefer below trigger; fall back to above when insufficient
 				   space below (less than 80px). */
@@ -402,9 +403,27 @@ class Switcher {
 				var spaceAbove = r.top  - gap;
 				var openAbove  = (spaceBelow < 80) ? (spaceAbove > spaceBelow) : false;
 
+				/* Horizontal: anchor to the trigger's leading edge for the current
+				   writing direction — left edge in LTR, right edge in RTL — so the
+				   overlay panel opens toward the same side the non-overlay dropdown's
+				   [dir="rtl"] .lsflr-submenu rule already does. Without this, the panel
+				   always anchored off r.left regardless of direction, which could open
+				   away from an RTL-mirrored trigger and run content off the right edge.
+				   Clamped so the panel always stays inside the viewport with an 8px
+				   margin on each side. */
+				if (isRtl) {
+					var rightEdge = Math.min(vw - r.right, vw - pw - 8);
+					rightEdge = Math.max(rightEdge, 8);
+					panel.style.right = rightEdge + 'px';
+					panel.style.left  = '';
+				} else {
+					var leftEdge = Math.min(r.left, vw - pw - 8);
+					leftEdge = Math.max(leftEdge, 8);
+					panel.style.left  = leftEdge + 'px';
+					panel.style.right = '';
+				}
+
 				panel.style.width    = pw + 'px';
-				panel.style.left     = leftEdge + 'px';
-				panel.style.right    = '';
 
 				if (openAbove) {
 					panel.style.bottom   = (vh - r.top + gap) + 'px';

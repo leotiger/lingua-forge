@@ -35,30 +35,30 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.5.4';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.5.4/lingua-forge-2.5.4.zip';
-	$last_updated = '2026-07-07';
+	$version      = '2.5.5';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.5.5/lingua-forge-2.5.5.zip';
+	$last_updated = '2026-07-08';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.5.4.zip — build it, upload
-	// to the v2.5.4 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.5.5.zip — build it, upload
+	// to the v2.5.5 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = 'dc4b149f607ec9650591a6d53a1a04ecef6bf576b6cc43c3065623a0936bf37a';
+	$sha256 = '21749776181bd4461f264d9213cb516b00030ad13afbd4fc12ad0f703f226366';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.5.5 &#8212; 2026-07-08</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> Language Switcher &#8212; Grid Overlay panel could open off the right edge of the viewport on RTL-language pages (Arabic, Farsi, Urdu, etc.). The panel&#8217;s position was always calculated from the trigger&#8217;s left edge regardless of text direction; it now detects the resolved direction and anchors from the right edge in RTL, matching the classic dropdown&#8217;s existing RTL behaviour. (<code>class-lsflr-switcher.php</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.5.4 &#8212; 2026-07-07</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> &#8220;Trash + Siblings&#8221; &#8212; a new row action on the Posts/Pages/CPT admin list tables (next to Edit | Quick Edit | Trash | View) that trashes a post together with every other language version in its translation group, and a matching &#8220;Move to Trash (incl. translations)&#8221; bulk action. Both only appear when a post actually has translated siblings, act immediately with no confirmation prompt (matching the stock &#8220;Trash&#8221; link&#8217;s own reversible behaviour), and report a &#8220;Trashed N posts (including translations)&#8221; notice afterward. Skips the static front page / posts page and any post the current user can&#8217;t delete, reporting them as skipped rather than failing silently. Two new hooks for integrations: <code>linguaforge_trash_cascade_post_ids</code> and <code>linguaforge_trash_cascade_complete</code>. (<code>language-router/includes/translation/class-trash-cascade.php</code> NEW)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.5.3 &#8212; 2026-07-07</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> Automatic missing-translation backfill. Previously, if a queued translation (Action Scheduler / WP-Cron job) timed out, errored, or was otherwise lost, the resulting gap was silent &#8212; nothing ever revisited it, and an admin only found out by noticing a missing language switcher entry or by running the <code>missing_translations</code> / <code>fill_translations</code> WP-CLI commands by hand. A new hourly scan re-derives the same &#8220;which posts are missing which active language&#8221; check those CLI commands compute and re-queues just the missing (post, language) pairs through the normal async pipeline, up to 25 jobs per run. Each queued job&#8217;s outcome is now recorded on the source post, so a pair that fails 5 times in a row is left alone for 24 hours before one more automatic retry. The schedule itself is checked on every admin request, not just on activation, so it self-heals if the cron event is ever dropped. (<code>ai/includes/Features/TranslationBackfill.php</code> NEW, <code>ai/includes/Features/TranslationQueue.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

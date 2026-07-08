@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.5] — 2026-07-08
+
+### Fixed
+- **Language Switcher — Grid Overlay panel could open off the right edge of the viewport on RTL-language pages.** `positionPanel()` always anchored the fixed `.lsflr-panel` to the trigger's *left* edge and grew rightward, with no awareness of text direction — unlike the classic (non-overlay) dropdown, whose `[dir="rtl"] .lsflr-submenu` CSS rule already anchors to the right and opens leftward for RTL languages (Arabic, Farsi, Urdu, etc.). Because the overlay panel's position is set entirely via inline styles computed in JS, that CSS rule never had a chance to apply to it. The panel now resolves the actual rendered direction via `getComputedStyle(wrap).direction` — which correctly picks up an inherited `dir="rtl"` from any ancestor rather than assuming it's only set on `<html>` — and when RTL, anchors to the trigger's right edge and grows leftward instead, using the same viewport-clamping math already used for the LTR case. (`language-router/includes/class-lsflr-switcher.php`)
+
+---
+
 ## [2.5.4] — 2026-07-07
 
 ### Added
