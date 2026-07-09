@@ -11,8 +11,14 @@
  *                       existing ones. Confirmed before running since it can
  *                       touch several posts (and possibly the source post) in
  *                       one click.
+ *   .lf-sync-templates — "TS" (Template Sync), shown only on the primary/
+ *                       source-language post. Reassigns the correct
+ *                       language-specific template for every EXISTING
+ *                       sibling — no AI call, no content changes — so no
+ *                       confirmation dialog is needed (nothing destructive
+ *                       or irreversible happens).
  *
- * On click (all three buttons):
+ * On click (all four buttons):
  *   • Disables the button and shows a spinner label
  *   • POSTs to the respective wp_ajax_* handler
  *   • On success: removes the status indicator and replaces the button with "✓ Done"
@@ -198,6 +204,62 @@
 			$btn.prop( 'disabled', false )
 			    .removeClass( 'lf-sync--busy' )
 			    .text( 'Sync' );
+		} );
+	} );
+
+	// ── "Template Sync" (TS) ─────────────────────────────────────────────────
+	// No confirm() dialog: unlike Sync, this never touches content and never
+	// creates/overwrites a post, so there is nothing destructive to confirm.
+
+	$( document ).on( 'click', '.lf-sync-templates', function () {
+		var $btn   = $( this );
+		var postId = $btn.data( 'post-id' );
+		var $cell  = $btn.closest( 'td' );
+
+		if ( $btn.prop( 'disabled' ) ) {
+			return;
+		}
+
+		$btn.prop( 'disabled', true )
+		    .addClass( 'lf-sync-templates--busy' )
+		    .text( cfg.l10n && cfg.l10n.syncingTemplates ? cfg.l10n.syncingTemplates : 'Syncing templates…' );
+
+		$cell.find( '.lf-sync-templates-error' ).remove();
+
+		$.post(
+			cfg.ajaxUrl || ajaxurl,
+			{
+				action:  cfg.actionSyncTemplates || 'lf_sync_templates',
+				nonce:   cfg.nonceSyncTemplates  || '',
+				post_id: postId,
+			},
+			function ( response ) {
+				if ( ! response || ! response.success ) {
+					var msg = ( response && response.data && response.data.message )
+						? response.data.message
+						: ( cfg.l10n && cfg.l10n.error ? cfg.l10n.error : 'Error' );
+
+					$btn.prop( 'disabled', false )
+					    .removeClass( 'lf-sync-templates--busy' )
+					    .text( 'TS' );
+
+					$btn.after(
+						$( '<span class="lf-sync-templates-error"></span>' ).text( ' ' + msg )
+					);
+					return;
+				}
+
+				// Template Sync never touches missing/outdated status, so those
+				// indicators (if present in this row) are left alone.
+				$btn.replaceWith(
+					$( '<span class="lf-fill-done"></span>' )
+						.text( cfg.l10n && cfg.l10n.done ? cfg.l10n.done : '✓ Done' )
+				);
+			}
+		).fail( function () {
+			$btn.prop( 'disabled', false )
+			    .removeClass( 'lf-sync-templates--busy' )
+			    .text( 'TS' );
 		} );
 	} );
 

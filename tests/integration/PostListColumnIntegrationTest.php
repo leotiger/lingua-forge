@@ -32,7 +32,13 @@
  *                                 configured language via a StubProvider:
  *                                 creates a missing sibling, force-refreshes
  *                                 an existing one (and clears its outdated
- *                                 flag), and — the key behavioural difference
+ *                                 flag, and reassigns its language-specific
+ *                                 FSE template — a regression guard: Sync's
+ *                                 batch loop unhooks handle_save_post() for
+ *                                 its whole duration, unlike ajax_retranslate(),
+ *                                 so update_linked_post() cannot rely on that
+ *                                 hook firing and must assign the template
+ *                                 explicitly), and — the key behavioural difference
  *                                 from ajax_retranslate() — can overwrite the
  *                                 primary/source post itself when triggered
  *                                 from a secondary-language post, while also
@@ -61,6 +67,22 @@
  *   linguaforge_sync_translations() — the public API wrapper (ai/ai.php):
  *                                 $check_caps defaults to false (bypasses
  *                                 current_user_can()), true enforces it
+ *   render_template_sync_button() — outputs the "TS" button only on the
+ *                                 primary/source-language post; silent for
+ *                                 secondary posts, wp_navigation, and a post
+ *                                 with no assigned language
+ *   ajax_sync_templates()       — reassigns the language-specific FSE
+ *                                 template for every EXISTING sibling in the
+ *                                 TRID group, with no `linguaforge_ai_provider`
+ *                                 filter registered anywhere in the test
+ *                                 (proves it never reaches the translation
+ *                                 feature at all); omits the source-language
+ *                                 post from its own results; rejects a call
+ *                                 from a secondary-language post, wp_navigation,
+ *                                 an invalid post ID, and insufficient
+ *                                 permissions
+ *   linguaforge_sync_templates() — the public API wrapper (ai/ai.php):
+ *                                 $check_caps defaults to false, true enforces it
  *
  * NOT covered here (left for a follow-up pass):
  *   - render_seo_score_badge() — couples to SeoAnalysisPanel's stored score
@@ -268,6 +290,14 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		return $this->dispatch(
 			[ PostListColumn::class, 'ajax_sync' ],
 			PostListColumn::NONCE_NAME_SYNC,
+			[ 'post_id' => $post_id ]
+		);
+	}
+
+	private function dispatch_sync_templates( int $post_id ): array {
+		return $this->dispatch(
+			[ PostListColumn::class, 'ajax_sync_templates' ],
+			PostListColumn::NONCE_NAME_SYNC_TEMPLATES,
 			[ 'post_id' => $post_id ]
 		);
 	}
@@ -504,6 +534,27 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		$this->assertSame( 'Re-traducido', $target->post_title );
 	}
 
+	public function test_ajax_retranslate_reassigns_language_specific_template(): void {
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$target_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $target_id, $trid ); $this->tg->set_lang( $target_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Re-traducido', '<p>Actualizado</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_retranslate( $target_id, 'en' );
+
+		$this->assertTrue( $resp['success'] ?? false );
+		$this->assertSame(
+			'single-es',
+			get_post_meta( $target_id, '_wp_page_template', true ),
+			'Retranslating an existing sibling must (re)assign its language-specific template.'
+		);
+	}
+
 	public function test_ajax_retranslate_defaults_from_lang_to_source_when_omitted(): void {
 		$trid      = $this->trid();
 		$source_id = $this->make_post( 'publish' );
@@ -690,6 +741,39 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		$this->assertSame(
 			get_post_meta( $source_id, '_lf_source_updated_at', true ),
 			get_post_meta( $target_id, '_lf_translation_source_updated_at', true )
+		);
+	}
+
+	public function test_ajax_sync_refresh_reassigns_language_specific_template(): void {
+		// Regression guard: run_sync() unhooks handle_save_post() (and therefore
+		// assign_template_if_needed()) for its ENTIRE batch loop, unlike
+		// ajax_retranslate() which restores the hook before calling into
+		// update_linked_post(). Before this fix, update_linked_post() reset
+		// _wp_page_template to 'default' and nothing ever reassigned it for a
+		// sibling refreshed via Sync — silently stripping the template off an
+		// already-correctly-templated existing translation.
+		$trid      = $this->trid();
+		$source_id = $this->make_post( 'publish' );
+		$target_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $target_id, $trid ); $this->tg->set_lang( $target_id, 'es' );
+
+		// Simulate an existing, already-correctly-templated translation.
+		update_post_meta( $target_id, '_wp_page_template', 'single-es' );
+		update_post_meta( $target_id, '_lf_auto_template', 'single-es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Actualizado', '<p>Nuevo contenido</p>' )
+		), 10, 3 );
+
+		$resp = $this->dispatch_sync( $source_id );
+
+		$this->assertTrue( $resp['success'] ?? false );
+		$this->assertSame( 'updated', $resp['data']['results']['es']['status'] ?? null );
+		$this->assertSame(
+			'single-es',
+			get_post_meta( $target_id, '_wp_page_template', true ),
+			'Sync force-refreshing an existing sibling must reassign its language-specific template, not leave it reset to default.'
 		);
 	}
 
@@ -1009,6 +1093,178 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		wp_set_current_user( $this->subscriber_id );
 
 		$result = linguaforge_sync_translations( $source_id, true );
+
+		$this->assertFalse( $result['success'] ?? true );
+		$this->assertSame( 'Insufficient permissions.', $result['message'] ?? null );
+	}
+
+	// =========================================================================
+	// render_template_sync_button()
+	// =========================================================================
+
+	public function test_render_template_sync_button_shown_on_source_post(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_post();
+		$es_id = $this->make_post();
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_template_sync_button( $en_id );
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'lf-sync-templates', $html );
+	}
+
+	public function test_render_template_sync_button_suppressed_on_secondary_post(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_post();
+		$es_id = $this->make_post();
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		ob_start();
+		PostListColumn::render_template_sync_button( $es_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html,
+			'Template Sync must only ever be shown on the primary/source-language post — restricted from the start, unlike Sync.' );
+	}
+
+	public function test_render_template_sync_button_suppressed_for_wp_navigation(): void {
+		$post_id = $this->make_post( 'publish', 'wp_navigation' );
+		$this->tg->set_lang( $post_id, 'en' );
+
+		ob_start();
+		PostListColumn::render_template_sync_button( $post_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html );
+	}
+
+	public function test_render_template_sync_button_suppressed_without_assigned_language(): void {
+		$post_id = $this->make_post();
+		// A normal save auto-assigns the source language via
+		// Sync::handle_save_post() (wp_after_insert_post), so a freshly
+		// created 'post' is never actually lang-less in practice — force the
+		// "not yet assigned" state directly to exercise the guard clause.
+		delete_post_meta( $post_id, '_lf_lang' );
+
+		ob_start();
+		PostListColumn::render_template_sync_button( $post_id );
+		$html = ob_get_clean();
+
+		$this->assertSame( '', $html );
+	}
+
+	// =========================================================================
+	// ajax_sync_templates() / run_sync_templates()
+	// =========================================================================
+
+	public function test_ajax_sync_templates_reassigns_templates_without_any_ai_provider(): void {
+		// Deliberately no `linguaforge_ai_provider` filter registered anywhere
+		// in this test — proves Template Sync never reaches the translation
+		// feature at all (the entire point: no AI cost).
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish' );
+		$es_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync_templates( $en_id );
+
+		$this->assertTrue( $resp['success'] ?? false, 'AJAX must report success.' );
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertNotNull( $outcome );
+		$this->assertSame( 'synced', $outcome['status'] );
+		$this->assertSame( $es_id, $outcome['id'] );
+		$this->assertSame( 'single-es', $outcome['template'] );
+		$this->assertSame( 'single-es', get_post_meta( $es_id, '_wp_page_template', true ) );
+	}
+
+	public function test_ajax_sync_templates_results_omit_the_source_language_entry(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish' );
+		$es_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync_templates( $en_id );
+
+		$this->assertTrue( $resp['success'] ?? false );
+		$this->assertArrayNotHasKey( 'en', $resp['data']['results'] ?? [ 'en' => true ],
+			'The source-language post is never a template-assignment target.' );
+		$this->assertSame( '', (string) get_post_meta( $en_id, '_wp_page_template', true ),
+			'The primary post must never get an explicit template assigned by Template Sync.' );
+	}
+
+	public function test_ajax_sync_templates_rejects_call_from_secondary_post(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish' );
+		$es_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$resp = $this->dispatch_sync_templates( $es_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertStringContainsString( 'primary/source-language', $resp['data']['message'] ?? '' );
+	}
+
+	public function test_ajax_sync_templates_rejects_wp_navigation(): void {
+		$post_id = $this->make_post( 'publish', 'wp_navigation' );
+		$this->tg->set_lang( $post_id, 'en' );
+
+		$resp = $this->dispatch_sync_templates( $post_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+	}
+
+	public function test_ajax_sync_templates_rejects_invalid_post_id(): void {
+		$resp = $this->dispatch_sync_templates( 0 );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertSame( 'Invalid post ID.', $resp['data']['message'] ?? null );
+	}
+
+	public function test_ajax_sync_templates_rejects_insufficient_permissions(): void {
+		$en_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $en_id, 'en' );
+
+		wp_set_current_user( $this->subscriber_id );
+		$resp = $this->dispatch_sync_templates( $en_id );
+
+		$this->assertFalse( $resp['success'] ?? true );
+		$this->assertSame( 'Insufficient permissions.', $resp['data']['message'] ?? null );
+	}
+
+	// =========================================================================
+	// linguaforge_sync_templates() public API wrapper
+	// =========================================================================
+
+	public function test_linguaforge_sync_templates_defaults_check_caps_to_false(): void {
+		$trid  = $this->trid();
+		$en_id = $this->make_post( 'publish' );
+		$es_id = $this->make_post( 'publish' );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		wp_set_current_user( $this->subscriber_id ); // No edit_post capability on this post.
+
+		$result = linguaforge_sync_templates( $en_id );
+
+		$this->assertTrue( $result['success'] ?? false,
+			'linguaforge_sync_templates() must not enforce current_user_can() by default.' );
+		$this->assertSame( 'single-es', get_post_meta( $es_id, '_wp_page_template', true ) );
+	}
+
+	public function test_linguaforge_sync_templates_check_caps_true_enforces_permissions(): void {
+		$en_id = $this->make_post( 'publish' );
+		$this->tg->set_lang( $en_id, 'en' );
+
+		wp_set_current_user( $this->subscriber_id );
+
+		$result = linguaforge_sync_templates( $en_id, true );
 
 		$this->assertFalse( $result['success'] ?? true );
 		$this->assertSame( 'Insufficient permissions.', $result['message'] ?? null );

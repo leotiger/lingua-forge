@@ -206,3 +206,52 @@ function linguaforge_queue_translation( int $source_post_id, string $target_lang
 function linguaforge_sync_translations( int $post_id, bool $check_caps = false ): array {
 	return \LinguaForge\AI\Admin\PostListColumn::run_sync( $post_id, $check_caps );
 }
+
+/**
+ * Reassign the language-specific FSE template for every EXISTING sibling in
+ * a post's translation group — the engine behind the "TS" (Template Sync)
+ * button in the post list Lang column.
+ *
+ * Unlike linguaforge_sync_translations() / linguaforge_trigger_translation() /
+ * linguaforge_queue_translation(), this never calls the AI translation
+ * feature and never touches post_content, post_title, or post_excerpt — it
+ * only re-resolves and re-writes `_wp_page_template` (via
+ * Sync::assign_template_if_needed()) on translations that already exist. It
+ * also cannot create a missing translation, since doing so requires
+ * translated content, which requires the AI call this function deliberately
+ * avoids. Use this to cheaply "assure" every sibling's template is correct —
+ * after a template rename, a theme change, or recovering from a bug like the
+ * one fixed in 2.6.1 — without spending an AI call on content that hasn't
+ * changed.
+ *
+ * $post_id must be the PRIMARY/source-language post — restricted from the
+ * start, since this is meant as the one entry point that fixes every
+ * sibling's template in a single pass, not a per-post action. Calling it
+ * with a secondary-language post's ID returns
+ * `['success' => false, 'message' => ...]` rather than silently doing
+ * something partial.
+ *
+ * No secondary-language safeguard is needed here (unlike Sync): this
+ * function never touches content, so the back-translation content-overwrite
+ * risk those guards exist for does not apply.
+ *
+ * $check_caps defaults to false, matching linguaforge_sync_translations() /
+ * linguaforge_trigger_translation()'s convention — a programmatic caller
+ * very often has no meaningful current-WP-user context at all. Pass true to
+ * also require current_user_can('edit_post', $post_id).
+ *
+ * @param int  $post_id     Post ID of the PRIMARY/source-language post.
+ * @param bool $check_caps  Require current_user_can('edit_post', $post_id). Default false.
+ * @return array{success:bool,message?:string,results?:array<string,array{status:string,id?:int,template?:string,message?:string}>}
+ *
+ * @example
+ * $result = linguaforge_sync_templates( 42 );
+ * if ( empty( $result['success'] ) ) {
+ *     error_log( $result['message'] ?? 'Template Sync failed' );
+ * }
+ *
+ * @since 2.6.1
+ */
+function linguaforge_sync_templates( int $post_id, bool $check_caps = false ): array {
+	return \LinguaForge\AI\Admin\PostListColumn::run_sync_templates( $post_id, $check_caps );
+}

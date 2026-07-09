@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-08T16:03:49+00:00\n"
+"POT-Creation-Date: 2026-07-09T20:37:23+00:00\n"
 "PO-Revision-Date: 2026-07-05 21:04+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Hungarian\n"
@@ -580,34 +580,49 @@ msgstr ""
 msgid "Close"
 msgstr "Bezárás"
 
-#: ai/includes/Admin/PostListColumn.php:127
+#: ai/includes/Admin/PostListColumn.php:108
 msgid "Translate missing"
 msgstr "Hiányzó fordítás"
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:181
+#: ai/includes/Admin/PostListColumn.php:162
 msgid "From"
 msgstr "Innen"
 
-#: ai/includes/Admin/PostListColumn.php:191
+#: ai/includes/Admin/PostListColumn.php:172
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
 msgid "Retranslate"
 msgstr "Újrafordítás"
 
-#: ai/includes/Admin/PostListColumn.php:244
+#: ai/includes/Admin/PostListColumn.php:225
 msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:245
+#: ai/includes/Admin/PostListColumn.php:226
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Sync"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:450
+#: ai/includes/Admin/PostListColumn.php:265
+msgid ""
+"Reassign the correct language-specific template to every existing "
+"translation of this post. No AI call and no content changes — free and safe "
+"to run any time."
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:266
+msgid "Template Sync — reassign templates for every translation"
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:267
+msgid "TS"
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:472
 msgid ""
 "Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to "
 "update."
@@ -615,7 +630,7 @@ msgstr ""
 "Az utolsó szabályalapú SEO pontszám. Futtassa az elemzést a Beállítások → "
 "SEO → Elemzés menüpontban a frissítéshez."
 
-#: ai/includes/Admin/PostListColumn.php:496
+#: ai/includes/Admin/PostListColumn.php:520
 #: ai/includes/Admin/SettingsPage.php:265
 #: ai/includes/Admin/SettingsPage.php:279
 #: ai/includes/Admin/SettingsPage.php:285
@@ -625,16 +640,16 @@ msgstr ""
 msgid "Translating…"
 msgstr "Fordítás folyamatban…"
 
-#: ai/includes/Admin/PostListColumn.php:497
+#: ai/includes/Admin/PostListColumn.php:521
 msgid "Retranslating…"
 msgstr "Újrafordítás…"
 
-#: ai/includes/Admin/PostListColumn.php:498
+#: ai/includes/Admin/PostListColumn.php:522
 #, fuzzy
 msgid "Syncing…"
 msgstr "Másolás…"
 
-#: ai/includes/Admin/PostListColumn.php:499
+#: ai/includes/Admin/PostListColumn.php:523
 msgid ""
 "This retranslates every other language version of this post from this one — "
 "creating any that are missing and overwriting any that already exist "
@@ -642,22 +657,28 @@ msgid ""
 "be undone. Continue?"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:500
+#: ai/includes/Admin/PostListColumn.php:524
+#, fuzzy
+msgid "Syncing templates…"
+msgstr "Másolás…"
+
+#: ai/includes/Admin/PostListColumn.php:525
 msgid "✓ Done"
 msgstr "✓ Kész"
 
-#: ai/includes/Admin/PostListColumn.php:501
+#: ai/includes/Admin/PostListColumn.php:526
 msgid "Error"
 msgstr "Hiba"
 
-#: ai/includes/Admin/PostListColumn.php:543
-#: ai/includes/Admin/PostListColumn.php:849
+#: ai/includes/Admin/PostListColumn.php:568
+#: ai/includes/Admin/PostListColumn.php:874
+#: ai/includes/Admin/PostListColumn.php:1082
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr ""
 "A navigációs bejegyzéseket a Router fülön fordítják, nem ezen a gombon."
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:582
+#: ai/includes/Admin/PostListColumn.php:607
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration. "
@@ -667,12 +688,12 @@ msgstr ""
 "győződjön meg arról, hogy a szükséges integráció telepítve és aktív."
 
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:723
+#: ai/includes/Admin/PostListColumn.php:748
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr "Nincs \"%s\" verzió ebben a fordítási csoportban."
 
-#: ai/includes/Admin/PostListColumn.php:864
+#: ai/includes/Admin/PostListColumn.php:889
 msgid ""
 "Sync from a secondary-language WooCommerce product is disabled by default, "
 "since it would overwrite the primary product. Enable it in Settings → "
@@ -680,7 +701,7 @@ msgid ""
 "new source content."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:872
+#: ai/includes/Admin/PostListColumn.php:897
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
@@ -688,13 +709,17 @@ msgid ""
 msgstr ""
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:936
+#: ai/includes/Admin/PostListColumn.php:961
 #, fuzzy, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
 msgstr ""
 "A \"%s\" típusú bejegyzések fordításához aktív integráció szükséges. Kérjük, "
 "győződjön meg arról, hogy a szükséges integráció telepítve és aktív."
+
+#: ai/includes/Admin/PostListColumn.php:1095
+msgid "Template Sync can only be run from the primary/source-language post."
+msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"

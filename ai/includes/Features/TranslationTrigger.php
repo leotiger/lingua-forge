@@ -271,6 +271,20 @@ class TranslationTrigger {
 		// ── Invalidate cache now that group membership is fully written ───────
 		$router->trid_group->clear_translation_cache( $new_id );
 
+		// ── Assign a language-specific FSE template if one exists ─────────────
+		// This path bypasses handle_save_post() (unhooked above around
+		// wp_insert_post()) so the new post never gets its template auto-assigned
+		// the way normal editor saves, WP-CLI, and the Sync button all do — each
+		// of those calls assign_template_if_needed() explicitly for the same
+		// reason. Must run after _lf_trid/_lf_lang are written above so that
+		// resolve_template_for_lang()'s front-page-translation detection (which
+		// compares this post's trid against the front page's trid) sees the
+		// correct value instead of an empty just-inserted post.
+		$new_post = get_post( $new_id );
+		if ( $new_post instanceof \WP_Post ) {
+			$router->sync->assign_template_if_needed( $new_id, $new_post, $target_lang );
+		}
+
 		/** @see AbstractTranslateCommand::create_trid_linked_post() for the action docblock */
 		do_action( 'linguaforge_translation_complete', $new_id, $source->ID, $target_lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
 

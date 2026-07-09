@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-08T16:03:49+00:00\n"
+"POT-Creation-Date: 2026-07-09T20:37:23+00:00\n"
 "PO-Revision-Date: 2026-07-05 19:54+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Chinese (China)\n"
@@ -565,40 +565,55 @@ msgstr "覆盖此页面的AI预设，用于翻译和内容生成。所有其他�
 msgid "Close"
 msgstr "关闭"
 
-#: ai/includes/Admin/PostListColumn.php:127
+#: ai/includes/Admin/PostListColumn.php:108
 msgid "Translate missing"
 msgstr "缺失翻译"
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:181
+#: ai/includes/Admin/PostListColumn.php:162
 msgid "From"
 msgstr "来自"
 
-#: ai/includes/Admin/PostListColumn.php:191
+#: ai/includes/Admin/PostListColumn.php:172
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
 msgid "Retranslate"
 msgstr "重新翻译"
 
-#: ai/includes/Admin/PostListColumn.php:244
+#: ai/includes/Admin/PostListColumn.php:225
 msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:245
+#: ai/includes/Admin/PostListColumn.php:226
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Sync"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:450
+#: ai/includes/Admin/PostListColumn.php:265
+msgid ""
+"Reassign the correct language-specific template to every existing "
+"translation of this post. No AI call and no content changes — free and safe "
+"to run any time."
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:266
+msgid "Template Sync — reassign templates for every translation"
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:267
+msgid "TS"
+msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:472
 msgid ""
 "Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to "
 "update."
 msgstr "上次基于规则的SEO评分。请在设置 → SEO → 分析中运行分析以更新。"
 
-#: ai/includes/Admin/PostListColumn.php:496
+#: ai/includes/Admin/PostListColumn.php:520
 #: ai/includes/Admin/SettingsPage.php:265
 #: ai/includes/Admin/SettingsPage.php:279
 #: ai/includes/Admin/SettingsPage.php:285
@@ -608,16 +623,16 @@ msgstr "上次基于规则的SEO评分。请在设置 → SEO → 分析中运�
 msgid "Translating…"
 msgstr "翻译中…"
 
-#: ai/includes/Admin/PostListColumn.php:497
+#: ai/includes/Admin/PostListColumn.php:521
 msgid "Retranslating…"
 msgstr "重新翻译中…"
 
-#: ai/includes/Admin/PostListColumn.php:498
+#: ai/includes/Admin/PostListColumn.php:522
 #, fuzzy
 msgid "Syncing…"
 msgstr "正在复制…"
 
-#: ai/includes/Admin/PostListColumn.php:499
+#: ai/includes/Admin/PostListColumn.php:523
 msgid ""
 "This retranslates every other language version of this post from this one — "
 "creating any that are missing and overwriting any that already exist "
@@ -625,21 +640,27 @@ msgid ""
 "be undone. Continue?"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:500
+#: ai/includes/Admin/PostListColumn.php:524
+#, fuzzy
+msgid "Syncing templates…"
+msgstr "正在复制…"
+
+#: ai/includes/Admin/PostListColumn.php:525
 msgid "✓ Done"
 msgstr "✓ 完成"
 
-#: ai/includes/Admin/PostListColumn.php:501
+#: ai/includes/Admin/PostListColumn.php:526
 msgid "Error"
 msgstr "错误"
 
-#: ai/includes/Admin/PostListColumn.php:543
-#: ai/includes/Admin/PostListColumn.php:849
+#: ai/includes/Admin/PostListColumn.php:568
+#: ai/includes/Admin/PostListColumn.php:874
+#: ai/includes/Admin/PostListColumn.php:1082
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr "导航文章通过路由标签进行翻译，而不是通过此按钮。"
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:582
+#: ai/includes/Admin/PostListColumn.php:607
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration. "
@@ -648,12 +669,12 @@ msgstr ""
 "为\"%s\"类型的文章创建翻译需要激活的集成。请确保已安装并激活所需的集成。"
 
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:723
+#: ai/includes/Admin/PostListColumn.php:748
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr "在此翻译组中未找到%s版本。"
 
-#: ai/includes/Admin/PostListColumn.php:864
+#: ai/includes/Admin/PostListColumn.php:889
 msgid ""
 "Sync from a secondary-language WooCommerce product is disabled by default, "
 "since it would overwrite the primary product. Enable it in Settings → "
@@ -661,7 +682,7 @@ msgid ""
 "new source content."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:872
+#: ai/includes/Admin/PostListColumn.php:897
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
@@ -669,12 +690,16 @@ msgid ""
 msgstr ""
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:936
+#: ai/includes/Admin/PostListColumn.php:961
 #, fuzzy, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
 msgstr ""
 "为\"%s\"类型的文章创建翻译需要激活的集成。请确保已安装并激活所需的集成。"
+
+#: ai/includes/Admin/PostListColumn.php:1095
+msgid "Template Sync can only be run from the primary/source-language post."
+msgstr ""
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"

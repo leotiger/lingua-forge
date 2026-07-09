@@ -2,10 +2,10 @@
 /**
  * Class LinguaForge\AI\Admin\PostListColumn
  *
- * Injects three action buttons into the "Lang" column rendered by
+ * Injects four action buttons into the "Lang" column rendered by
  * LinguaForge\Router\Admin\Columns, each fired via its own hook:
- * "Translate missing" (lf_lang_column_missing), "Retranslate", and "Sync"
- * (both on lf_lang_column_retranslate, unconditional for every post).
+ * "Translate missing" (lf_lang_column_missing), "Retranslate", "Sync", and
+ * "Template Sync" (the latter three all on lf_lang_column_retranslate).
  *
  * Sync fans a post out to every other language, including the primary —
  * unlike Retranslate it is never blocked by language alone, subject to two
@@ -13,6 +13,13 @@
  * wc_secondary_sync_blocked(), and general_secondary_sync_blocked() for the
  * full detail. Reusable outside wp-admin via `linguaforge_sync_translations()`
  * (`ai/ai.php`).
+ *
+ * Template Sync (TS) is Sync's no-AI-cost sibling: it never calls the
+ * translation feature and never touches content, only `_wp_page_template`,
+ * for every EXISTING sibling in the group (it cannot create a missing one
+ * without AI). Shown and runnable only from the primary/source-language
+ * post; see render_template_sync_button() and run_sync_templates(). Reusable
+ * outside wp-admin via `linguaforge_sync_templates()` (`ai/ai.php`).
  *
  * @package LinguaForge\AI\Admin
  * @since   1.8.1
@@ -36,6 +43,8 @@ class PostListColumn {
 	const NONCE_NAME_RETRANSLATE  = 'lf_retranslate_nonce';
 	const AJAX_ACTION_SYNC         = 'lf_sync';
 	const NONCE_NAME_SYNC          = 'lf_sync_nonce';
+	const AJAX_ACTION_SYNC_TEMPLATES = 'lf_sync_templates';
+	const NONCE_NAME_SYNC_TEMPLATES  = 'lf_sync_templates_nonce';
 
 	// =========================================================================
 	// Boot
@@ -51,6 +60,10 @@ class PostListColumn {
 		// "Sync" — fires on every post (including the source-language post).
 		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_sync_button' ], 15, 1 );
 
+		// "Template Sync" (TS) — fires only on the primary/source-language post.
+		// See render_template_sync_button() / run_sync_templates() for why.
+		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_template_sync_button' ], 16, 1 );
+
 		// SEO score badge — fires on every post; shows stored score + delta if available.
 		add_action( 'lf_lang_column_retranslate', [ self::class, 'render_seo_score_badge' ], 20, 1 );
 
@@ -61,6 +74,7 @@ class PostListColumn {
 		add_action( 'wp_ajax_' . self::AJAX_ACTION,            [ self::class, 'ajax_fill_missing' ] );
 		add_action( 'wp_ajax_' . self::AJAX_ACTION_RETRANSLATE, [ self::class, 'ajax_retranslate'  ] );
 		add_action( 'wp_ajax_' . self::AJAX_ACTION_SYNC,         [ self::class, 'ajax_sync'         ] );
+		add_action( 'wp_ajax_' . self::AJAX_ACTION_SYNC_TEMPLATES, [ self::class, 'ajax_sync_templates' ] );
 	}
 
 	// =========================================================================
@@ -210,6 +224,47 @@ class PostListColumn {
 			esc_attr( (string) $post_id ),
 			esc_attr__( 'Retranslate every other language version from this post. Creates any that are missing and overwrites any that already exist — including the primary language, if this post is a translation.', 'lingua-forge' ),
 			esc_html__( 'Sync', 'lingua-forge' )
+		);
+	}
+
+	/**
+	 * "Template Sync" (TS) — reassign the language-specific FSE template for
+	 * every existing sibling in this post's translation group, with no AI
+	 * call and no content/title/excerpt changes. A cheap, safe companion to
+	 * Sync for the one thing Sync's AI call is overkill for: making sure
+	 * every translation's `_wp_page_template` is correct (e.g. after a theme
+	 * template rename, or recovering from a bug like the one fixed in 2.6.1).
+	 *
+	 * Only ever rendered on the primary/source-language post — restricted
+	 * from the start (see run_sync_templates()), since this is meant as one
+	 * entry point that assures every sibling's template in a single pass,
+	 * not a per-post action like Sync/Retranslate. Unlike Sync, no
+	 * secondary-language safeguard is needed here: this action never
+	 * touches post content, so the back-translation content-overwrite risk
+	 * those guards exist for does not apply.
+	 */
+	public static function render_template_sync_button( int $post_id ): void {
+		$post = get_post( $post_id );
+		if ( $post && $post->post_type === 'wp_navigation' ) {
+			return;
+		}
+
+		$router = Router::get_instance();
+		if ( count( $router->languages() ) < 2 ) {
+			return; // Nothing to sync templates to.
+		}
+
+		$current_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+		if ( '' === $current_lang || $current_lang !== $router->source_language() ) {
+			return;
+		}
+
+		printf(
+			' <button type="button" class="button button-small lf-sync-templates" data-post-id="%d" title="%s" aria-label="%s">%s</button>',
+			esc_attr( (string) $post_id ),
+			esc_attr__( 'Reassign the correct language-specific template to every existing translation of this post. No AI call and no content changes — free and safe to run any time.', 'lingua-forge' ),
+			esc_attr__( 'Template Sync — reassign templates for every translation', 'lingua-forge' ),
+			esc_html__( 'TS', 'lingua-forge' )
 		);
 	}
 
@@ -459,11 +514,14 @@ class PostListColumn {
 				'nonceRetranslate'    => wp_create_nonce( self::NONCE_NAME_RETRANSLATE ),
 				'actionSync'          => self::AJAX_ACTION_SYNC,
 				'nonceSync'           => wp_create_nonce( self::NONCE_NAME_SYNC ),
+				'actionSyncTemplates' => self::AJAX_ACTION_SYNC_TEMPLATES,
+				'nonceSyncTemplates'  => wp_create_nonce( self::NONCE_NAME_SYNC_TEMPLATES ),
 				'l10n'                => [
 					'translating'  => __( 'Translating…', 'lingua-forge' ),
 					'retranslating' => __( 'Retranslating…', 'lingua-forge' ),
 					'syncing'      => __( 'Syncing…', 'lingua-forge' ),
 					'syncConfirm'  => __( 'This retranslates every other language version of this post from this one — creating any that are missing and overwriting any that already exist (including the primary language, if this post is a translation). This cannot be undone. Continue?', 'lingua-forge' ),
+					'syncingTemplates' => __( 'Syncing templates…', 'lingua-forge' ),
 					'done'         => __( '✓ Done', 'lingua-forge' ),
 					'error'        => __( 'Error', 'lingua-forge' ),
 				],
@@ -593,7 +651,7 @@ class PostListColumn {
 			if ( empty( $translations[ $lang ] ) ) {
 				$outcome = self::create_linked_post( $post, $lang, $result );
 			} else {
-				$outcome = self::update_linked_post( (int) $translations[ $lang ], $result );
+				$outcome = self::update_linked_post( (int) $translations[ $lang ], $lang, $result );
 			}
 
 			if ( 'error' === $outcome['status'] ) {
@@ -723,7 +781,7 @@ class PostListColumn {
 		}
 
 		// ── Update target post ────────────────────────────────────────────────
-		$outcome = self::update_linked_post( $target_id, $result );
+		$outcome = self::update_linked_post( $target_id, $target_lang, $result );
 
 		if ( 'error' === $outcome['status'] ) {
 			wp_send_json_error( [ 'message' => $outcome['message'] ?? 'Could not update post.' ] );
@@ -909,7 +967,7 @@ class PostListColumn {
 				}
 				$outcome = self::create_linked_post( $post, $lang, $result );
 			} else {
-				$outcome = self::update_linked_post( (int) $translations[ $lang ], $result );
+				$outcome = self::update_linked_post( (int) $translations[ $lang ], $lang, $result );
 			}
 
 			if ( 'error' === $outcome['status'] ) {
@@ -952,6 +1010,124 @@ class PostListColumn {
 		}
 
 		return [ 'success' => true, 'results' => $results, 'from_lang' => $from_lang ];
+	}
+
+	/**
+	 * Template Sync: thin AJAX wrapper around run_sync_templates() — verifies
+	 * the nonce, dispatches, and translates the result array into a
+	 * wp_send_json_*() response. See run_sync_templates() for the engine.
+	 */
+	public static function ajax_sync_templates(): void {
+		check_ajax_referer( self::NONCE_NAME_SYNC_TEMPLATES, 'nonce' );
+
+		$post_id = absint( $_POST['post_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified by check_ajax_referer above.
+		$result  = self::run_sync_templates( $post_id, true );
+		$data    = array_diff_key( $result, [ 'success' => true ] );
+
+		if ( empty( $result['success'] ) ) {
+			wp_send_json_error( $data );
+		}
+
+		wp_send_json_success( $data );
+	}
+
+	/**
+	 * Core Template Sync engine: reassign the language-specific FSE template
+	 * for every existing sibling in $post_id's translation group. Not
+	 * AJAX-specific — this is what ajax_sync_templates() and the public
+	 * `linguaforge_sync_templates()` wrapper function (`ai/ai.php`) both call.
+	 *
+	 * Deliberately NOT a variant of run_sync(): it never calls the
+	 * translation feature (no AI cost), never touches post_content /
+	 * post_title / post_excerpt, and never creates a missing sibling — it
+	 * only re-resolves and re-writes `_wp_page_template` on posts that
+	 * already exist, via Sync::assign_template_if_needed(). Since it never
+	 * touches content, it also never needs run_sync()'s two secondary-
+	 * language safeguards (those exist purely to stop a back-translation
+	 * content overwrite, a risk this action does not carry) — and, unlike
+	 * run_sync()/ajax_fill_missing(), it never needs to unhook
+	 * handle_save_post() either, since it never calls wp_insert_post() or
+	 * wp_update_post() in the first place.
+	 *
+	 * Restricted to the primary/source-language post from the start: this is
+	 * meant as the one entry point that assures every sibling's template in
+	 * a single pass, not a per-post action. Calling it with a
+	 * secondary-language post's ID returns an error rather than silently
+	 * doing something partial or confusing.
+	 *
+	 * @param  int  $post_id     Post ID of the PRIMARY/source-language post.
+	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', $post_id).
+	 *                           Default true (matches the AJAX/admin-UI behaviour). Programmatic
+	 *                           callers via linguaforge_sync_templates() default this to false —
+	 *                           see that function's docblock for why.
+	 * @return array{success:bool,message?:string,results?:array<string,array{status:string,id?:int,template?:string,message?:string}>}
+	 */
+	public static function run_sync_templates( int $post_id, bool $check_caps = true ): array {
+		if ( $post_id <= 0 ) {
+			return [ 'success' => false, 'message' => 'Invalid post ID.' ];
+		}
+
+		if ( $check_caps && ! current_user_can( 'edit_post', $post_id ) ) {
+			return [ 'success' => false, 'message' => 'Insufficient permissions.' ];
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post instanceof \WP_Post ) {
+			return [ 'success' => false, 'message' => 'Post not found.' ];
+		}
+
+		if ( $post->post_type === 'wp_navigation' ) {
+			return [
+				'success' => false,
+				'message' => __( 'Navigation posts are translated via the Router tab, not this button.', 'lingua-forge' ),
+			];
+		}
+
+		$router       = Router::get_instance();
+		$current_lang = (string) get_post_meta( $post_id, '_lf_lang', true );
+		if ( '' === $current_lang ) {
+			$current_lang = $router->source_language();
+		}
+
+		if ( $current_lang !== $router->source_language() ) {
+			return [
+				'success' => false,
+				'message' => __( 'Template Sync can only be run from the primary/source-language post.', 'lingua-forge' ),
+			];
+		}
+
+		$translations = function_exists( 'linguaforge_get_translations' )
+			? linguaforge_get_translations( $post_id )
+			: [];
+
+		$results = [];
+
+		foreach ( $translations as $lang => $target_id ) {
+			// The source-language row (this post itself, or — in a data
+			// integrity edge case — any other post sharing that language) is
+			// never a template-assignment target: resolve_template_for_lang()
+			// returns null for it by design.
+			if ( $lang === $router->source_language() ) {
+				continue;
+			}
+
+			$target_id   = (int) $target_id;
+			$target_post = $target_id > 0 ? get_post( $target_id ) : null;
+
+			if ( ! $target_post instanceof \WP_Post || $target_post->post_type === 'wp_navigation' ) {
+				continue;
+			}
+
+			$router->sync->assign_template_if_needed( $target_id, $target_post, $lang );
+
+			$results[ $lang ] = [
+				'status'   => 'synced',
+				'id'       => $target_id,
+				'template' => (string) get_post_meta( $target_id, '_wp_page_template', true ),
+			];
+		}
+
+		return [ 'success' => true, 'results' => $results ];
 	}
 
 	// =========================================================================
@@ -1083,7 +1259,7 @@ class PostListColumn {
 	 * @param  array $result     Translation::run() result.
 	 * @return array{status:string,id?:int,edit_url?:string,message?:string}
 	 */
-	private static function update_linked_post( int $target_id, array $result ): array {
+	private static function update_linked_post( int $target_id, string $lang, array $result ): array {
 		$update = [
 			'ID'            => $target_id,
 			'post_content'  => (string) ( $result['output'] ?? '' ),
@@ -1093,8 +1269,12 @@ class PostListColumn {
 			// supports 'page-attributes' (WooCommerce adds that support to 'product'), so the
 			// stored FSE slug ends up in the merged $postarr.  FSE slugs are absent from
 			// get_page_templates() → invalid_page_template WP_Error when $wp_error = true.
-			// assign_template_if_needed() running on wp_after_insert_post writes the correct
-			// language-specific template back immediately after the save completes.
+			// The language-specific template is re-assigned explicitly below rather than
+			// relying on handle_save_post()/assign_template_if_needed() firing on
+			// wp_after_insert_post — run_sync() (this method's batch caller) deliberately
+			// unhooks that handler for its entire loop, so the hook is not a safe thing to
+			// depend on here even though ajax_retranslate() (this method's other caller)
+			// restores it before calling in.
 			'page_template' => 'default',
 		];
 
@@ -1120,6 +1300,13 @@ class PostListColumn {
 
 		if ( ! empty( $result['footnotes'] ) ) {
 			update_post_meta( $target_id, 'footnotes', (string) $result['footnotes'] );
+		}
+
+		// Assign a language-specific FSE template if one exists. Explicit, not
+		// hook-dependent — see the comment on 'page_template' above.
+		$target_post = get_post( $target_id );
+		if ( $target_post instanceof \WP_Post ) {
+			Router::get_instance()->sync->assign_template_if_needed( $target_id, $target_post, $lang );
 		}
 
 		return [

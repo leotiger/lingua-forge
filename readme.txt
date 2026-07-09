@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.1 =
+* Added: `linguaforge_template_for_lang` filter — lets an integration override the language-specific FSE template slug Lingua Forge is about to assign to a translated post. Applies across every assignment path (editor save, WP-CLI, Sync button, and programmatic creation), never fires for the source-language post, and returning an empty value suppresses assignment entirely. (`language-router/includes/translation/class-sync.php`)
+* Fixed: A translated post created via `linguaforge_trigger_translation()` / `linguaforge_queue_translation()` (the path every third-party integration uses, e.g. Agnosis) never received its language-specific FSE template (`single-{post_type}-{lang}`), even when one existed — it was left on the default/untranslated template. `TranslationTrigger::create_translated_post()` now calls `Sync::assign_template_if_needed()` after insertion, matching the normal editor save, WP-CLI, and Sync-button paths, which already did this. (`ai/includes/Features/TranslationTrigger.php`)
+* Fixed: The "Sync" button and the "Translate missing" bulk action could silently strip the language-specific template off an already-templated, existing translation when force-refreshing it in place. Both disable the normal save hook for their entire batch, so the compensating template reassignment never ran the way it does for the single-post "Retranslate" action. Templates are now reassigned explicitly, independent of hook state. (`ai/includes/Admin/PostListColumn.php`)
+* Added: "Template Sync" (TS) — a new button next to Sync in the post list Lang column that reassigns the correct language-specific template for every existing translation of a post, with no AI call and no content changes. Only shown on the primary/source-language post. Also adds `linguaforge_sync_templates( $post_id, $check_caps = false )` for programmatic use. (`ai/includes/Admin/PostListColumn.php`, `ai/ai.php`)
+
 = 2.6.0 =
 * Added: "Sync" — a new button in the post list Lang column, shown on every language version of a translated post, including the primary/source post. One click retranslates FROM that post's language INTO every other configured language: any missing language is created, any existing one is force-refreshed in place. Unlike the existing "Retranslate" button, Sync is never blocked on the source-language post — triggering it from a secondary-language post can overwrite the primary post via back-translation, which is the intended behaviour (the point of Sync is "make every other version match this one"), guarded by a confirmation dialog before it runs since it can touch several posts, including the source, in a single click. (`ai/includes/Admin/PostListColumn.php`, `ai/assets/post-list.js`, `ai/assets/admin.css`)
 * Added: WooCommerce safeguard for Sync — syncing a secondary-language product/variation is blocked by default, since it would back-translate onto the primary product (WooCommerce's operational source of truth for price, SKU, and stock). Syncing FROM the primary product is unaffected. Lift the restriction via **Settings → Behavior → WooCommerce**, or the new `linguaforge_wc_secondary_sync_allowed` filter. (`ai/includes/Admin/PostListColumn.php`, `ai/includes/Admin/Settings/Tabs/BehaviorTab.php`)
@@ -349,6 +355,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.1 =
+Fixes translated posts not getting their language-specific template on creation and when refreshed via Sync/Translate missing, adds a filter to override it, and adds a no-AI-cost "Template Sync" button. No database changes. No flush required.
 
 = 2.6.0 =
 Adds a "Sync" button (with two off-by-default safeguards, one for WooCommerce products) in the post list Lang column that retranslates every other language from the post you click it on. No database changes. No flush required.

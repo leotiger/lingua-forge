@@ -53,7 +53,7 @@
        </div>
 </td>
        <td class="danger small"><div align="right">0.00%</div></td>
-       <td class="danger small"><div align="right">0&nbsp;/&nbsp;101</div></td>
+       <td class="danger small"><div align="right">0&nbsp;/&nbsp;104</div></td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
            <span class="sr-only">0.00% covered (danger)</span>
@@ -82,7 +82,7 @@
        </div>
 </td>
        <td class="danger small"><div align="right">0.00%</div></td>
-       <td class="danger small"><div align="right">0&nbsp;/&nbsp;100</div></td>
+       <td class="danger small"><div align="right">0&nbsp;/&nbsp;103</div></td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
            <span class="sr-only">0.00% covered (danger)</span>
@@ -91,7 +91,7 @@
 </td>
        <td class="danger small"><div align="right">0.00%</div></td>
        <td class="danger small"><div align="right">0&nbsp;/&nbsp;4</div></td>
-       <td class="danger small">702</td>
+       <td class="danger small">756</td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
            <span class="sr-only">0.00% covered (danger)</span>
@@ -177,7 +177,7 @@
        </div>
 </td>
        <td class="danger small"><div align="right">0.00%</div></td>
-       <td class="danger small"><div align="right">0&nbsp;/&nbsp;52</div></td>
+       <td class="danger small"><div align="right">0&nbsp;/&nbsp;55</div></td>
        <td class="danger big">       <div class="progress">
          <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="0.00" aria-valuemin="0" aria-valuemax="100" style="width: 0.00%">
            <span class="sr-only">0.00% covered (danger)</span>
@@ -186,7 +186,7 @@
 </td>
        <td class="danger small"><div align="right">0.00%</div></td>
        <td class="danger small"><div align="right">0&nbsp;/&nbsp;1</div></td>
-       <td class="danger small">182</td>
+       <td class="danger small">210</td>
        <td class="danger" colspan="3"></td>
       </tr>
 
@@ -469,12 +469,26 @@
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="271" href="#271">271</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;──&nbsp;Invalidate&nbsp;cache&nbsp;now&nbsp;that&nbsp;group&nbsp;membership&nbsp;is&nbsp;fully&nbsp;written&nbsp;───────</span></td></tr>
     <tr class="danger d-flex"><td  class="col-1 text-right"><a id="272" href="#272">272</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="default">$router</span><span class="default">-&gt;</span><span class="default">trid_group</span><span class="default">-&gt;</span><span class="default">clear_translation_cache</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="keyword">;</span></td></tr>
     <tr class=" d-flex"><td  class="col-1 text-right"><a id="273" href="#273">273</a></td><td class="col-11 codeLine"></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="274" href="#274">274</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">/**&nbsp;@see&nbsp;AbstractTranslateCommand::create_trid_linked_post()&nbsp;for&nbsp;the&nbsp;action&nbsp;docblock&nbsp;*/</span></td></tr>
-    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="275" href="#275">275</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="default">do_action</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">'linguaforge_translation_complete'</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$source</span><span class="default">-&gt;</span><span class="default">ID</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$target_lang</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="keyword">;</span><span class="default">&nbsp;</span><span class="comment">//&nbsp;phpcs:ignore&nbsp;WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound&nbsp;--&nbsp;linguaforge_&nbsp;is&nbsp;the&nbsp;registered&nbsp;plugin&nbsp;prefix.</span></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="276" href="#276">276</a></td><td class="col-11 codeLine"></td></tr>
-    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="277" href="#277">277</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span class="default">&nbsp;</span><span class="default">(int)</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="keyword">;</span></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="278" href="#278">278</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">}</span></td></tr>
-    <tr class=" d-flex"><td  class="col-1 text-right"><a id="279" href="#279">279</a></td><td class="col-11 codeLine"><span class="keyword">}</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="274" href="#274">274</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;──&nbsp;Assign&nbsp;a&nbsp;language-specific&nbsp;FSE&nbsp;template&nbsp;if&nbsp;one&nbsp;exists&nbsp;─────────────</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="275" href="#275">275</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;This&nbsp;path&nbsp;bypasses&nbsp;handle_save_post()&nbsp;(unhooked&nbsp;above&nbsp;around</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="276" href="#276">276</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;wp_insert_post())&nbsp;so&nbsp;the&nbsp;new&nbsp;post&nbsp;never&nbsp;gets&nbsp;its&nbsp;template&nbsp;auto-assigned</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="277" href="#277">277</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;the&nbsp;way&nbsp;normal&nbsp;editor&nbsp;saves,&nbsp;WP-CLI,&nbsp;and&nbsp;the&nbsp;Sync&nbsp;button&nbsp;all&nbsp;do&nbsp;—&nbsp;each</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="278" href="#278">278</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;of&nbsp;those&nbsp;calls&nbsp;assign_template_if_needed()&nbsp;explicitly&nbsp;for&nbsp;the&nbsp;same</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="279" href="#279">279</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;reason.&nbsp;Must&nbsp;run&nbsp;after&nbsp;_lf_trid/_lf_lang&nbsp;are&nbsp;written&nbsp;above&nbsp;so&nbsp;that</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="280" href="#280">280</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;resolve_template_for_lang()'s&nbsp;front-page-translation&nbsp;detection&nbsp;(which</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="281" href="#281">281</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;compares&nbsp;this&nbsp;post's&nbsp;trid&nbsp;against&nbsp;the&nbsp;front&nbsp;page's&nbsp;trid)&nbsp;sees&nbsp;the</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="282" href="#282">282</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;correct&nbsp;value&nbsp;instead&nbsp;of&nbsp;an&nbsp;empty&nbsp;just-inserted&nbsp;post.</span></td></tr>
+    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="283" href="#283">283</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="default">$new_post</span><span class="default">&nbsp;</span><span class="keyword">=</span><span class="default">&nbsp;</span><span class="default">get_post</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="keyword">;</span></td></tr>
+    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="284" href="#284">284</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span class="default">&nbsp;</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">$new_post</span><span class="default">&nbsp;</span><span class="keyword">instanceof</span><span class="default">&nbsp;</span><span class="default">\WP_Post</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="default">&nbsp;</span><span class="keyword">{</span></td></tr>
+    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="285" href="#285">285</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="default">$router</span><span class="default">-&gt;</span><span class="default">sync</span><span class="default">-&gt;</span><span class="default">assign_template_if_needed</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$new_post</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$target_lang</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="keyword">;</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="286" href="#286">286</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">}</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="287" href="#287">287</a></td><td class="col-11 codeLine"></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="288" href="#288">288</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">/**&nbsp;@see&nbsp;AbstractTranslateCommand::create_trid_linked_post()&nbsp;for&nbsp;the&nbsp;action&nbsp;docblock&nbsp;*/</span></td></tr>
+    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="289" href="#289">289</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="default">do_action</span><span class="keyword">(</span><span class="default">&nbsp;</span><span class="default">'linguaforge_translation_complete'</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$source</span><span class="default">-&gt;</span><span class="default">ID</span><span class="keyword">,</span><span class="default">&nbsp;</span><span class="default">$target_lang</span><span class="default">&nbsp;</span><span class="keyword">)</span><span class="keyword">;</span><span class="default">&nbsp;</span><span class="comment">//&nbsp;phpcs:ignore&nbsp;WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound&nbsp;--&nbsp;linguaforge_&nbsp;is&nbsp;the&nbsp;registered&nbsp;plugin&nbsp;prefix.</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="290" href="#290">290</a></td><td class="col-11 codeLine"></td></tr>
+    <tr class="danger d-flex"><td  class="col-1 text-right"><a id="291" href="#291">291</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span class="default">&nbsp;</span><span class="default">(int)</span><span class="default">&nbsp;</span><span class="default">$new_id</span><span class="keyword">;</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="292" href="#292">292</a></td><td class="col-11 codeLine"><span class="default">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">}</span></td></tr>
+    <tr class=" d-flex"><td  class="col-1 text-right"><a id="293" href="#293">293</a></td><td class="col-11 codeLine"><span class="keyword">}</span></td></tr>
 
 </tbody>
 </table>
@@ -485,7 +499,7 @@
     <h4>Legend</h4>
     <p><span class="legend covered-by-small-tests">Covered by small (and larger) tests</span><span class="legend covered-by-medium-tests">Covered by medium (and large) tests</span><span class="legend covered-by-large-tests">Covered by large tests (and tests of unknown size)</span><span class="legend not-covered">Not covered</span><span class="legend not-coverable">Not coverable</span></p>
     <p>
-     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.32</a> using <a href="https://secure.php.net/" target="_top">PHP 8.3.32</a> and <a href="https://phpunit.de/">PHPUnit 9.6.34</a> at Wed Jul 8 16:28:07 UTC 2026.</small>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.32</a> using <a href="https://secure.php.net/" target="_top">PHP 8.3.32</a> and <a href="https://phpunit.de/">PHPUnit 9.6.34</a> at Thu Jul 9 20:36:55 UTC 2026.</small>
     </p>
     <a title="Back to the top" id="toplink" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M12 11L6 5l-6 6h12z"/></svg>

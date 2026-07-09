@@ -67,10 +67,17 @@ class Sync {
 		if ( ! $post || ! $lang ) return null;
 
 		// Primary language uses WordPress's default template hierarchy
-		// (page, single, etc.) — no language suffix is expected.
+		// (page, single, etc.) — no language suffix is expected, and no
+		// override is offered here: linguaforge_template_for_lang only fires
+		// once LF has actually decided to assign an explicit, language-specific
+		// template. Forcing one onto the source-language post is out of scope
+		// (it would also change the "revert to default on language change back
+		// to source" branch in assign_template_if_needed(), which currently
+		// assumes a null return means "nothing to do here").
 		if ( $lang === $this->router->context->source_language() ) return null;
 
-		$type = $post->post_type;
+		$type     = $post->post_type;
+		$resolved = null;
 
 		if ( $type === 'page' ) {
 			// Use front-page-{lang} when this page is the static front page or
@@ -93,17 +100,40 @@ class Sync {
 				$front_trid = $this->router->trid_group->get_trid( $front_id );
 				if ( $post->ID === $front_id ||
 					( null !== $post_trid && $post_trid === $front_trid ) ) {
-					return 'front-page-' . $lang;
+					$resolved = 'front-page-' . $lang;
 				}
 			}
-			$base = 'page';
+			if ( $resolved === null ) {
+				$resolved = 'page-' . $lang;
+			}
 		} elseif ( $type === 'post' ) {
-			$base = 'single';
+			$resolved = 'single-' . $lang;
 		} else {
-			$base = 'single-' . $type; // CPT: e.g. single-product
+			$resolved = 'single-' . $type . '-' . $lang; // CPT: e.g. single-product-es
 		}
 
-		return $base . '-' . $lang;
+		/**
+		 * Filter the language-specific FSE template slug Lingua Forge is about
+		 * to assign to a translated post. Runs for every path that can assign a
+		 * template — a normal editor save, the WP-CLI translate/retranslate
+		 * commands, the post-list "Sync" button, and programmatic creation via
+		 * linguaforge_trigger_translation()/linguaforge_queue_translation() —
+		 * since they all resolve through this one method. Never fires for the
+		 * source-language post (see the early return above).
+		 *
+		 * Return an empty string or null to suppress assignment entirely for
+		 * this post/language — assign_template_if_needed() treats that exactly
+		 * like the "no template" case, reverting a previously auto-assigned
+		 * template to 'default' if one was set, and never touching an
+		 * explicit user choice.
+		 *
+		 * @param string   $resolved The slug LF computed, e.g. 'single-agnosis_artwork-es'.
+		 * @param \WP_Post $post     The post being resolved for.
+		 * @param string   $lang     Target language code.
+		 */
+		$filtered = apply_filters( 'linguaforge_template_for_lang', $resolved, $post, $lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.
+
+		return ( $filtered === null || $filtered === '' ) ? null : (string) $filtered;
 	}
 
 	public function template_exists( string $slug ): bool {
