@@ -2,9 +2,10 @@
  * Lingua Forge — FSE content + navigation translation
  *
  * Handles:
- *   • Per-cell "Translate" button             (.lf-translate-one-btn)
- *   • Per-row "Translate all" button          (.lf-translate-row-btn)
- *   • Per-cell nav "Translate / Re-translate" (.lf-translate-nav-btn)
+ *   • Per-cell "Translate" button                        (.lf-translate-one-btn)
+ *   • Per-row "Translate all" button (Templates)          (.lf-translate-row-btn)
+ *   • "Translate all" button (Template Parts)             (.lf-translate-all-parts-btn)
+ *   • Per-cell nav "Translate / Re-translate"             (.lf-translate-nav-btn)
  *
  * Depends on window.lfRouterTab (injected by SettingsPage before router-tab.js).
  */
@@ -62,21 +63,29 @@
     });
 
     /**
-     * Translate every existing template / part in a row that hasn't been
-     * translated yet in this session.
+     * Translate every existing template / part in a Templates row or
+     * Template Parts group that hasn't been translated yet in this session.
      *
-     * Shared by the row's own "Translate all" button and the global
-     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
-     * Does not touch the triggering button's disabled state — that's the
-     * caller's responsibility.
+     * Shared by both the Templates row's and the Template Parts group's own
+     * "Translate all" button, and the global cross-language "Recreate All
+     * Languages" orchestrator (fse-global-actions.js). Does not touch the
+     * triggering button's disabled state — that's the caller's responsibility.
      *
-     * @param {jQuery}   $tplRow The `.lf-tpl-row` wrapper (Templates section, per language).
-     * @param {Function} onDone  Callback(failedCount, totalCount) fired once every
-     *                           pending button in the row has settled.
+     * @param {jQuery}   $scope The `.lf-tpl-row` (Templates) or `.lf-parts-group`
+     *                          (Template Parts) wrapper, per language. A
+     *                          `.lf-parts-group` contains many
+     *                          `.lf-scaffold-row-msg` spans (one per part
+     *                          row), so its own toolbar message span is
+     *                          looked up explicitly via `.lf-template-bulk-actions`
+     *                          rather than a bare `.find()`.
+     * @param {Function} onDone Callback(failedCount, totalCount) fired once every
+     *                          pending button in scope has settled.
      */
-    function translateAllInRow($tplRow, onDone) {
-        var $msg     = $tplRow.find('.lf-scaffold-row-msg');
-        var $pending = $tplRow.find('.lf-translate-one-btn').not(':disabled');
+    function translateAllInRow($scope, onDone) {
+        var $msg     = $scope.hasClass('lf-parts-group')
+            ? $scope.find('.lf-template-bulk-actions').find('.lf-scaffold-row-msg')
+            : $scope.find('.lf-scaffold-row-msg');
+        var $pending = $scope.find('.lf-translate-one-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
@@ -119,8 +128,8 @@
         });
     }
 
-    // Per-row "Translate all" button — translates every existing template / part
-    // in the row that hasn't been translated yet in this session.
+    // Per-row "Translate all" button (Templates section) — translates every
+    // existing template in the row that hasn't been translated yet this session.
     $(document).on('click', '.lf-translate-row-btn', function () {
         var $btn    = $(this);
         var $tplRow = $btn.closest('.lf-tpl-row');
@@ -130,9 +139,21 @@
         });
     });
 
+    // "Translate all" button (Template Parts section) — translates every
+    // existing part in the group that hasn't been translated yet this session.
+    $(document).on('click', '.lf-translate-all-parts-btn', function () {
+        var $btn   = $(this);
+        var $group = $btn.closest('.lf-parts-group');
+        $btn.prop('disabled', true);
+        translateAllInRow($group, function () {
+            $btn.prop('disabled', false);
+        });
+    });
+
     // ── Expose for the global cross-language orchestrator ────────────────────
     window.lfFseActions = window.lfFseActions || {};
-    window.lfFseActions.translateAll = translateAllInRow;
+    window.lfFseActions.translateAll      = translateAllInRow;
+    window.lfFseActions.translateAllParts = translateAllInRow;
 
     // ── Navigation translation ────────────────────────────────────────────────
 

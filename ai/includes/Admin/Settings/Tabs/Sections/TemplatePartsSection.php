@@ -45,6 +45,23 @@ class TemplatePartsSection {
                     data-lang="<?php echo esc_attr( $lang ); ?>">
                 <?php esc_html_e( 'Re-create all', 'lingua-forge' ); ?>
             </button>
+            <?php if ( $ai_active ) : ?>
+            <button type="button"
+                    class="button lf-translate-all-parts-btn"
+                    data-lang="<?php echo esc_attr( $lang ); ?>">
+                <?php esc_html_e( 'Translate all', 'lingua-forge' ); ?>
+            </button>
+            <?php endif; ?>
+            <button type="button"
+                    class="button lf-fix-links-all-parts-btn"
+                    data-lang="<?php echo esc_attr( $lang ); ?>">
+                <?php esc_html_e( 'Fix all links', 'lingua-forge' ); ?>
+            </button>
+            <button type="button"
+                    class="button lf-fix-nav-refs-all-btn"
+                    data-lang="<?php echo esc_attr( $lang ); ?>">
+                <?php esc_html_e( 'Fix all navs', 'lingua-forge' ); ?>
+            </button>
             <span class="lf-scaffold-row-msg"></span>
         </div>
 

@@ -457,13 +457,23 @@ class RouterTab extends Tab {
         </p>
 
         <!-- Global cross-language actions — runs the same per-language bulk
-             actions below (Re-create all templates, Re-create all parts,
-             Translate all, Fix all parts, Fix all links) for every active
-             language in sequence, one language at a time, since all
-             language panels already exist in the DOM. See fse-global-actions.js. -->
+             actions below for every active language in sequence, one
+             language at a time, since all language panels already exist in
+             the DOM. Three variants, a clean partition of the five
+             underlying steps: the full run (Re-create all templates,
+             Re-create all parts, Translate all, Fix all parts, Fix all
+             links); "Templates Only" (everything except Re-create all
+             parts); and "Template Parts Only" (just Re-create all parts).
+             See fse-global-actions.js. -->
         <div class="lf-global-actions">
-            <button type="button" id="lf-global-recreate-btn" class="button button-primary">
+            <button type="button" id="lf-global-recreate-btn" class="button button-primary lf-global-run-btn">
                 <?php esc_html_e( 'Recreate All Languages', 'lingua-forge' ); ?>
+            </button>
+            <button type="button" id="lf-global-recreate-templates-btn" class="button lf-global-run-btn">
+                <?php esc_html_e( 'Recreate All Languages (Templates Only)', 'lingua-forge' ); ?>
+            </button>
+            <button type="button" id="lf-global-recreate-parts-btn" class="button lf-global-run-btn">
+                <?php esc_html_e( 'Recreate All Languages (Template Parts Only)', 'lingua-forge' ); ?>
             </button>
             <button type="button" id="lf-global-cancel-btn" class="button" style="display:none;">
                 <?php esc_html_e( 'Cancel', 'lingua-forge' ); ?>

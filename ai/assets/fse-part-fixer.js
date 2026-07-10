@@ -2,10 +2,10 @@
  * Lingua Forge — FSE part-reference + navigation-ref fixer
  *
  * Handles:
- *   • Per-cell "Fix Parts" button        (.lf-fix-parts-btn)
- *   • Per-row "Fix all parts" button     (.lf-fix-parts-row-btn)
- *   • Per-cell "Fix Nav" button          (.lf-fix-nav-refs-btn)
- *   • Per-row "Fix all nav refs" button  (.lf-fix-nav-refs-row-btn)
+ *   • Per-cell "Fix Parts" button                    (.lf-fix-parts-btn)
+ *   • Per-row "Fix all parts" button (Templates)     (.lf-fix-parts-row-btn)
+ *   • Per-cell "Fix Nav" button                       (.lf-fix-nav-refs-btn)
+ *   • "Fix all navs" button (Template Parts)          (.lf-fix-nav-refs-all-btn)
  *
  * Depends on window.lfRouterTab (injected by SettingsPage before router-tab.js).
  */
@@ -151,21 +151,33 @@
         fixFseNavRefs($btn.data('slug'), $btn, null);
     });
 
-    // Per-row "Fix all nav refs" button — fixes every existing part in the row
-    // in parallel.
-    $(document).on('click', '.lf-fix-nav-refs-row-btn', function () {
-        var $btn     = $(this);
-        var $tplRow  = $btn.closest('.lf-tpl-row');
-        var $msg     = $tplRow.find('.lf-scaffold-row-msg');
-        var $pending = $tplRow.find('.lf-fix-nav-refs-btn').not(':disabled');
+    /**
+     * Fix wp:navigation ref attributes in every existing part in a
+     * Template Parts group. Fix Nav only ever applies to parts (nav blocks
+     * live in header/footer/etc., never in a page-level template — Templates
+     * section has no equivalent), so unlike the Translate/Fix Links pair
+     * above this has no Templates-row sibling to generalise alongside.
+     *
+     * Shared by the group's own "Fix all navs" button and the global
+     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
+     * Does not touch the triggering button's disabled state — that's the
+     * caller's responsibility.
+     *
+     * @param {jQuery}   $group The `.lf-parts-group` wrapper (Template Parts section, per language).
+     * @param {Function} onDone Callback(failedCount, totalCount) fired once every
+     *                          pending button in the group has settled.
+     */
+    function fixAllNavRefsInGroup($group, onDone) {
+        var $msg     = $group.find('.lf-template-bulk-actions').find('.lf-scaffold-row-msg');
+        var $pending = $group.find('.lf-fix-nav-refs-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                 .text(s.navRefsFixed || '✓ Nav refs fixed.');
+            if (typeof onDone === 'function') { onDone(0, 0); }
             return;
         }
 
-        $btn.prop('disabled', true);
         $msg.removeClass('lf-ok lf-fail lf-warn').text('');
 
         var total  = $pending.length;
@@ -179,7 +191,6 @@
                 done++;
                 if (!success) { failed++; }
                 if (done === total) {
-                    $btn.prop('disabled', false);
                     if (failed === 0) {
                         $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                             .text(s.navRefsFixed || '✓ Nav refs fixed.');
@@ -187,9 +198,23 @@
                         $msg.removeClass('lf-ok lf-warn').addClass('lf-fail')
                             .text(s.navRefsFail || 'Some nav ref fixes failed.');
                     }
+                    if (typeof onDone === 'function') { onDone(failed, total); }
                 }
             });
         });
+    }
+
+    // "Fix all navs" button (Template Parts) — fixes every existing part
+    // in the group in parallel.
+    $(document).on('click', '.lf-fix-nav-refs-all-btn', function () {
+        var $btn   = $(this);
+        var $group = $btn.closest('.lf-parts-group');
+        $btn.prop('disabled', true);
+        fixAllNavRefsInGroup($group, function () {
+            $btn.prop('disabled', false);
+        });
     });
+
+    window.lfFseActions.fixAllNavRefs = fixAllNavRefsInGroup;
 
 }(jQuery));

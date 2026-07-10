@@ -2,8 +2,9 @@
  * Lingua Forge — FSE link fixer
  *
  * Handles:
- *   • Per-cell "Fix Links" button    (.lf-fix-links-btn)
- *   • Per-row "Fix all links" button (.lf-fix-links-row-btn)
+ *   • Per-cell "Fix Links" button                     (.lf-fix-links-btn)
+ *   • Per-row "Fix all links" button (Templates)      (.lf-fix-links-row-btn)
+ *   • "Fix all links" button (Template Parts)         (.lf-fix-links-all-parts-btn)
  *
  * Depends on window.lfRouterTab (injected by SettingsPage before router-tab.js).
  */
@@ -50,20 +51,27 @@
     });
 
     /**
-     * Fix internal links in every existing template / part in a row.
+     * Fix internal links in every existing template / part in a Templates
+     * row or Template Parts group.
      *
-     * Shared by the row's own "Fix all links" button and the global
-     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
-     * Does not touch the triggering button's disabled state — that's the
-     * caller's responsibility.
+     * Shared by both the Templates row's and the Template Parts group's own
+     * "Fix all links" button, and the global cross-language "Recreate All
+     * Languages" orchestrator (fse-global-actions.js). Does not touch the
+     * triggering button's disabled state — that's the caller's responsibility.
      *
-     * @param {jQuery}   $tplRow The `.lf-tpl-row` wrapper (Templates section, per language).
-     * @param {Function} onDone  Callback(failedCount, totalCount) fired once every
-     *                           pending button in the row has settled.
+     * @param {jQuery}   $scope The `.lf-tpl-row` (Templates) or `.lf-parts-group`
+     *                          (Template Parts) wrapper, per language — see the
+     *                          matching note on translateAllInRow() in
+     *                          fse-translate.js for why `.lf-parts-group`
+     *                          needs its own message-span scoping.
+     * @param {Function} onDone Callback(failedCount, totalCount) fired once every
+     *                          pending button in scope has settled.
      */
-    function fixAllLinksInRow($tplRow, onDone) {
-        var $msg     = $tplRow.find('.lf-scaffold-row-msg');
-        var $pending = $tplRow.find('.lf-fix-links-btn').not(':disabled');
+    function fixAllLinksInRow($scope, onDone) {
+        var $msg     = $scope.hasClass('lf-parts-group')
+            ? $scope.find('.lf-template-bulk-actions').find('.lf-scaffold-row-msg')
+            : $scope.find('.lf-scaffold-row-msg');
+        var $pending = $scope.find('.lf-fix-links-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
@@ -98,8 +106,8 @@
         });
     }
 
-    // Per-row "Fix all links" button — fixes every existing template / part
-    // in the row in parallel.
+    // Per-row "Fix all links" button (Templates) — fixes every existing
+    // template in the row in parallel.
     $(document).on('click', '.lf-fix-links-row-btn', function () {
         var $btn    = $(this);
         var $tplRow = $btn.closest('.lf-tpl-row');
@@ -109,8 +117,20 @@
         });
     });
 
+    // "Fix all links" button (Template Parts) — fixes every existing part
+    // in the group in parallel.
+    $(document).on('click', '.lf-fix-links-all-parts-btn', function () {
+        var $btn   = $(this);
+        var $group = $btn.closest('.lf-parts-group');
+        $btn.prop('disabled', true);
+        fixAllLinksInRow($group, function () {
+            $btn.prop('disabled', false);
+        });
+    });
+
     // ── Expose for the global cross-language orchestrator ────────────────────
     window.lfFseActions = window.lfFseActions || {};
-    window.lfFseActions.fixAllLinks = fixAllLinksInRow;
+    window.lfFseActions.fixAllLinks      = fixAllLinksInRow;
+    window.lfFseActions.fixAllLinksParts = fixAllLinksInRow;
 
 }(jQuery));

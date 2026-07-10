@@ -7,6 +7,11 @@
  * these five steps in order: Re-create all templates, Re-create all parts,
  * Translate all, Fix all parts, Fix all links.
  *
+ * "Recreate All Languages (Template Parts Only)" runs the same
+ * language-by-language workflow but with only the Re-create all parts step —
+ * for touching up headers/footers/etc. across every language without also
+ * re-translating or rebuilding page-level templates.
+ *
  * This file owns only the language-by-language sequencing, progress
  * reporting, and cancellation. The actual work for each step is delegated
  * to the shared row-level functions exposed on window.lfFseActions by
@@ -41,70 +46,78 @@
         });
     }
 
-    // Ordered list of steps run for every language. Each `run` delegates to
-    // the shared window.lfFseActions function for that action, scoped to the
-    // given panel's Templates row ('div.lf-tpl-row' — tag-qualified because
+    // Individual step definitions. Each `run` delegates to the shared
+    // window.lfFseActions function for that action, scoped to the given
+    // panel's Templates row ('div.lf-tpl-row' — tag-qualified because
     // Template Parts rows also carry the '.lf-tpl-row' class on a <tr>, a
     // pre-existing naming overlap) or Template Parts group ('.lf-parts-group').
-    var STEPS = [
-        {
-            label: function () { return s.stepRecreateTemplates || 'Re-create all templates'; },
-            run: function ($panel, cb) {
-                var $row = $panel.find('div.lf-tpl-row');
-                if (!$row.length || !window.lfFseActions || !window.lfFseActions.recreateAllTemplates) {
-                    cb(0, 0); return;
-                }
-                window.lfFseActions.recreateAllTemplates($row, cb);
+    var STEP_RECREATE_TEMPLATES = {
+        label: function () { return s.stepRecreateTemplates || 'Re-create all templates'; },
+        run: function ($panel, cb) {
+            var $row = $panel.find('div.lf-tpl-row');
+            if (!$row.length || !window.lfFseActions || !window.lfFseActions.recreateAllTemplates) {
+                cb(0, 0); return;
             }
-        },
-        {
-            label: function () { return s.stepRecreateParts || 'Re-create all parts'; },
-            run: function ($panel, cb) {
-                var $group = $panel.find('.lf-parts-group');
-                if (!$group.length || !window.lfFseActions || !window.lfFseActions.recreateAllParts) {
-                    cb(0, 0); return;
-                }
-                window.lfFseActions.recreateAllParts($group, cb);
-            }
-        },
-        {
-            label: function () { return s.stepTranslateAll || 'Translate all'; },
-            run: function ($panel, cb) {
-                var $row = $panel.find('div.lf-tpl-row');
-                if (!$row.length || !window.lfFseActions || !window.lfFseActions.translateAll) {
-                    cb(0, 0); return;
-                }
-                window.lfFseActions.translateAll($row, cb);
-            }
-        },
-        {
-            label: function () { return s.stepFixAllParts || 'Fix all parts'; },
-            run: function ($panel, cb) {
-                var $row = $panel.find('div.lf-tpl-row');
-                if (!$row.length || !window.lfFseActions || !window.lfFseActions.fixAllParts) {
-                    cb(0, 0); return;
-                }
-                window.lfFseActions.fixAllParts($row, cb);
-            }
-        },
-        {
-            label: function () { return s.stepFixAllLinks || 'Fix all links'; },
-            run: function ($panel, cb) {
-                var $row = $panel.find('div.lf-tpl-row');
-                if (!$row.length || !window.lfFseActions || !window.lfFseActions.fixAllLinks) {
-                    cb(0, 0); return;
-                }
-                window.lfFseActions.fixAllLinks($row, cb);
-            }
+            window.lfFseActions.recreateAllTemplates($row, cb);
         }
-    ];
+    };
+    var STEP_RECREATE_PARTS = {
+        label: function () { return s.stepRecreateParts || 'Re-create all parts'; },
+        run: function ($panel, cb) {
+            var $group = $panel.find('.lf-parts-group');
+            if (!$group.length || !window.lfFseActions || !window.lfFseActions.recreateAllParts) {
+                cb(0, 0); return;
+            }
+            window.lfFseActions.recreateAllParts($group, cb);
+        }
+    };
+    var STEP_TRANSLATE_ALL = {
+        label: function () { return s.stepTranslateAll || 'Translate all'; },
+        run: function ($panel, cb) {
+            var $row = $panel.find('div.lf-tpl-row');
+            if (!$row.length || !window.lfFseActions || !window.lfFseActions.translateAll) {
+                cb(0, 0); return;
+            }
+            window.lfFseActions.translateAll($row, cb);
+        }
+    };
+    var STEP_FIX_ALL_PARTS = {
+        label: function () { return s.stepFixAllParts || 'Fix all parts'; },
+        run: function ($panel, cb) {
+            var $row = $panel.find('div.lf-tpl-row');
+            if (!$row.length || !window.lfFseActions || !window.lfFseActions.fixAllParts) {
+                cb(0, 0); return;
+            }
+            window.lfFseActions.fixAllParts($row, cb);
+        }
+    };
+    var STEP_FIX_ALL_LINKS = {
+        label: function () { return s.stepFixAllLinks || 'Fix all links'; },
+        run: function ($panel, cb) {
+            var $row = $panel.find('div.lf-tpl-row');
+            if (!$row.length || !window.lfFseActions || !window.lfFseActions.fixAllLinks) {
+                cb(0, 0); return;
+            }
+            window.lfFseActions.fixAllLinks($row, cb);
+        }
+    };
+
+    // The three runnable sequences. A run is always one of these — never a
+    // one-off custom mix — so there is exactly one shared progress/summary
+    // UI and one `running` flag guarding all trigger buttons at once.
+    // TEMPLATES_ONLY_STEPS and PARTS_ONLY_STEPS are a clean partition of
+    // ALL_STEPS: every step in ALL_STEPS appears in exactly one of the two.
+    var ALL_STEPS            = [ STEP_RECREATE_TEMPLATES, STEP_RECREATE_PARTS, STEP_TRANSLATE_ALL, STEP_FIX_ALL_PARTS, STEP_FIX_ALL_LINKS ];
+    var TEMPLATES_ONLY_STEPS = [ STEP_RECREATE_TEMPLATES, STEP_TRANSLATE_ALL, STEP_FIX_ALL_PARTS, STEP_FIX_ALL_LINKS ];
+    var PARTS_ONLY_STEPS     = [ STEP_RECREATE_PARTS ];
 
     var running   = false;
     var cancelled = false;
 
     /**
-     * Run every step in STEPS, in order, against one language's panel.
+     * Run every step in `steps`, in order, against one language's panel.
      *
+     * @param {Array}    steps      Ordered list of step definitions to run.
      * @param {jQuery}   $panel     The `.lf-lang-panel` for this language.
      * @param {string}   langLabel  Upper-case language code, for progress text.
      * @param {number}   langIndex  1-based position of this language in the run.
@@ -113,17 +126,17 @@
      * @param {Function} onPanelDone Callback(failedCount, issues[]) fired once
      *                               every step for this language has settled.
      */
-    function runStepsForPanel($panel, langLabel, langIndex, langTotal, $progress, onPanelDone) {
-        var stepIndex    = 0;
-        var panelFailed  = 0;
-        var panelIssues  = [];
+    function runStepsForPanel(steps, $panel, langLabel, langIndex, langTotal, $progress, onPanelDone) {
+        var stepIndex   = 0;
+        var panelFailed = 0;
+        var panelIssues = [];
 
         function nextStep() {
-            if (stepIndex >= STEPS.length) {
+            if (stepIndex >= steps.length) {
                 onPanelDone(panelFailed, panelIssues);
                 return;
             }
-            var step = STEPS[stepIndex];
+            var step = steps[stepIndex];
             stepIndex++;
 
             var progressTpl = s.globalProgress || 'Processing {lang} ({index} of {total}) — {step}…';
@@ -144,21 +157,22 @@
     }
 
     /**
-     * Run the full global sequence across every language panel, one language
-     * at a time. Checks the module-level `cancelled` flag between languages
-     * (not mid-language — a language already in progress always finishes).
+     * Run `steps` across every language panel, one language at a time.
+     * Checks the module-level `cancelled` flag between languages (not
+     * mid-language — a language already in progress always finishes).
      *
+     * @param {Array}    steps      Ordered list of step definitions to run.
      * @param {jQuery}   $panels    All `.lf-lang-panel` elements, in DOM order.
      * @param {jQuery}   $progress  Live progress text element.
      * @param {jQuery}   $summary   Final summary element.
      * @param {Function} onFinished Callback fired once the run ends (completed
      *                              or cancelled).
      */
-    function runGlobal($panels, $progress, $summary, onFinished) {
-        var index         = 0;
-        var total          = $panels.length;
-        var summaryLines   = [];
-        var anyIssues      = false;
+    function runGlobal(steps, $panels, $progress, $summary, onFinished) {
+        var index       = 0;
+        var total       = $panels.length;
+        var summaryLines = [];
+        var anyIssues    = false;
 
         function nextLanguage() {
             if (cancelled) {
@@ -188,7 +202,7 @@
             var lang   = String($panel.data('panel') || '').toUpperCase();
             index++;
 
-            runStepsForPanel($panel, lang, index, total, $progress, function (failedCount, issues) {
+            runStepsForPanel(steps, $panel, lang, index, total, $progress, function (failedCount, issues) {
                 if (failedCount > 0) {
                     anyIssues = true;
                     summaryLines.push('<strong>' + lang + '</strong>: ' + issues.join(', '));
@@ -200,7 +214,15 @@
         nextLanguage();
     }
 
-    $(document).on('click', '#lf-global-recreate-btn', function () {
+    /**
+     * Confirm, then kick off a global run for the given step sequence.
+     * Both trigger buttons (`.lf-global-run-btn`) are disabled for the
+     * duration of any run so the two variants can never overlap.
+     *
+     * @param {Array}  steps      Ordered list of step definitions to run.
+     * @param {string} confirmTpl Confirmation message template (with {total}).
+     */
+    function startGlobalRun(steps, confirmTpl) {
         if (running) {
             return;
         }
@@ -210,8 +232,6 @@
             return;
         }
 
-        var confirmTpl = s.globalConfirm ||
-            'This runs Re-create all templates, Re-create all parts, Translate all, Fix all parts, and Fix all links for every one of your {total} active languages, one language at a time. It overwrites existing templates and parts with fresh copies from the active theme (discarding Site Editor customisations) and re-translates content — none of this can be undone. Translate all makes real AI API calls for every template and part, which may take a while and may incur cost depending on your provider. Continue?';
         if (!window.confirm(fmt(confirmTpl, { total: $panels.length }))) {
             return;
         }
@@ -219,23 +239,41 @@
         running   = true;
         cancelled = false;
 
-        var $startBtn  = $(this);
+        var $runBtns   = $('.lf-global-run-btn');
         var $cancelBtn = $('#lf-global-cancel-btn');
         var $progress  = $('#lf-global-progress');
         var $summary   = $('#lf-global-summary');
 
-        $startBtn.prop('disabled', true);
+        $runBtns.prop('disabled', true);
         $cancelBtn.show().prop('disabled', false);
         $progress.show().text(s.globalStarting || 'Starting…');
         $summary.hide().removeClass('lf-ok lf-fail').empty();
 
-        runGlobal($panels, $progress, $summary, function () {
+        runGlobal(steps, $panels, $progress, $summary, function () {
             running = false;
-            $startBtn.prop('disabled', false);
+            $runBtns.prop('disabled', false);
             $cancelBtn.hide();
             $progress.hide();
             $summary.show();
         });
+    }
+
+    $(document).on('click', '#lf-global-recreate-btn', function () {
+        var confirmTpl = s.globalConfirm ||
+            'This runs Re-create all templates, Re-create all parts, Translate all, Fix all parts, and Fix all links for every one of your {total} active languages, one language at a time. It overwrites existing templates and parts with fresh copies from the active theme (discarding Site Editor customisations) and re-translates content — none of this can be undone. Translate all makes real AI API calls for every template and part, which may take a while and may incur cost depending on your provider. Continue?';
+        startGlobalRun(ALL_STEPS, confirmTpl);
+    });
+
+    $(document).on('click', '#lf-global-recreate-templates-btn', function () {
+        var confirmTpl = s.globalTemplatesConfirm ||
+            'This runs Re-create all templates, Translate all, Fix all parts, and Fix all links for every one of your {total} active languages, one language at a time — template parts (headers, footers, etc.) are left untouched. It overwrites existing templates with fresh copies from the active theme (discarding Site Editor customisations) and re-translates content — none of this can be undone. Translate all makes real AI API calls for every template, which may take a while and may incur cost depending on your provider. Continue?';
+        startGlobalRun(TEMPLATES_ONLY_STEPS, confirmTpl);
+    });
+
+    $(document).on('click', '#lf-global-recreate-parts-btn', function () {
+        var confirmTpl = s.globalPartsConfirm ||
+            'This runs Re-create all parts (headers, footers, and every other template part) for every one of your {total} active languages, one language at a time. It overwrites existing template parts with fresh copies from the active theme, discarding any Site Editor customisations made to them. This cannot be undone. Continue?';
+        startGlobalRun(PARTS_ONLY_STEPS, confirmTpl);
     });
 
     $(document).on('click', '#lf-global-cancel-btn', function () {
