@@ -196,6 +196,30 @@
 }
 
 /* ── Router tab: per-language panels ───────────────────────── */
+/* ── Router tab: global cross-language actions ─────────────── */
+.lf-global-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 0;
+}
+.lf-global-progress {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #1d2327;
+}
+.lf-global-summary {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+.lf-global-summary.lf-ok   { color: #46b450; }
+.lf-global-summary.lf-fail { color: #dc3232; }
+
 .lf-lang-tabs {
     display: flex;
     flex-wrap: wrap;

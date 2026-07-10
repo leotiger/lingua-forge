@@ -298,6 +298,22 @@ class SettingsPage {
                     'translationSaved'    => __( '✓ Translation saved',                                  'lingua-forge' ),
                     'view'                => __( 'View',                                                 'lingua-forge' ),
                     'hide'                => __( 'Hide',                                                 'lingua-forge' ),
+                    'stepRecreateTemplates' => __( 'Re-create all templates', 'lingua-forge' ),
+                    'stepRecreateParts'     => __( 'Re-create all parts',     'lingua-forge' ),
+                    'stepTranslateAll'      => __( 'Translate all',           'lingua-forge' ),
+                    'stepFixAllParts'       => __( 'Fix all parts',           'lingua-forge' ),
+                    'stepFixAllLinks'       => __( 'Fix all links',           'lingua-forge' ),
+                    /* translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js. */
+                    'globalConfirm'         => __( 'This runs Re-create all templates, Re-create all parts, Translate all, Fix all parts, and Fix all links for every one of your {total} active languages, one language at a time. It overwrites existing templates and parts with fresh copies from the active theme (discarding Site Editor customisations) and re-translates content — none of this can be undone. Translate all makes real AI API calls for every template and part, which may take a while and may incur cost depending on your provider. Continue?', 'lingua-forge' ),
+                    'globalStarting'        => __( 'Starting…', 'lingua-forge' ),
+                    /* translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js. */
+                    'globalProgress'        => __( 'Processing {lang} ({index} of {total}) — {step}…', 'lingua-forge' ),
+                    'globalCancelled'       => __( 'Cancelled.', 'lingua-forge' ),
+                    /* translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js. */
+                    'globalProcessedOf'     => __( '{done} of {total} languages processed.', 'lingua-forge' ),
+                    'globalDoneWithIssues'  => __( '⚠ Done with issues.', 'lingua-forge' ),
+                    /* translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js. */
+                    'globalAllDone'         => __( '✓ All {total} languages processed.', 'lingua-forge' ),
                 ],
             ] ) . ';',
             'before'
@@ -321,6 +337,24 @@ class SettingsPage {
                 true
             );
         }
+
+        // Global cross-language orchestrator — depends on all four FSE
+        // action scripts above, since it calls the row-level functions they
+        // expose on window.lfFseActions rather than duplicating any AJAX logic.
+        wp_enqueue_script(
+            'linguaforge-fse-global-actions',
+            LINGUAFORGE_AI_URL . '/assets/fse-global-actions.js',
+            [
+                'jquery',
+                'linguaforge-router-tab',
+                'linguaforge-fse-scaffold',
+                'linguaforge-fse-translate',
+                'linguaforge-fse-link-fixer',
+                'linguaforge-fse-part-fixer',
+            ],
+            $version,
+            true
+        );
 
         // Preset preview — shows each preset's built-in addendum text when the
         // Global AI Preset dropdown changes, so editors can see what the preset

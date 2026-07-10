@@ -456,6 +456,22 @@ class RouterTab extends Tab {
             <?php esc_html_e( 'Select a language to manage its FSE templates, template parts, and navigation menus.', 'lingua-forge' ); ?>
         </p>
 
+        <!-- Global cross-language actions — runs the same per-language bulk
+             actions below (Re-create all templates, Re-create all parts,
+             Translate all, Fix all parts, Fix all links) for every active
+             language in sequence, one language at a time, since all
+             language panels already exist in the DOM. See fse-global-actions.js. -->
+        <div class="lf-global-actions">
+            <button type="button" id="lf-global-recreate-btn" class="button button-primary">
+                <?php esc_html_e( 'Recreate All Languages', 'lingua-forge' ); ?>
+            </button>
+            <button type="button" id="lf-global-cancel-btn" class="button" style="display:none;">
+                <?php esc_html_e( 'Cancel', 'lingua-forge' ); ?>
+            </button>
+        </div>
+        <div id="lf-global-progress" class="lf-global-progress" style="display:none;"></div>
+        <div id="lf-global-summary" class="lf-global-summary" style="display:none;"></div>
+
         <!-- Tab bar -->
         <div class="lf-lang-tabs" role="tablist">
             <?php foreach ( $secondary_langs as $i => $lang ) : ?>

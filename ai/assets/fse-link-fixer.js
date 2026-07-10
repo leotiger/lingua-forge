@@ -49,21 +49,29 @@
         fixFseLinks($btn.data('slug'), $btn.data('post-type'), $btn, null);
     });
 
-    // Per-row "Fix all links" button — fixes every existing template / part
-    // in the row in parallel.
-    $(document).on('click', '.lf-fix-links-row-btn', function () {
-        var $btn     = $(this);
-        var $tplRow  = $btn.closest('.lf-tpl-row');
+    /**
+     * Fix internal links in every existing template / part in a row.
+     *
+     * Shared by the row's own "Fix all links" button and the global
+     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
+     * Does not touch the triggering button's disabled state — that's the
+     * caller's responsibility.
+     *
+     * @param {jQuery}   $tplRow The `.lf-tpl-row` wrapper (Templates section, per language).
+     * @param {Function} onDone  Callback(failedCount, totalCount) fired once every
+     *                           pending button in the row has settled.
+     */
+    function fixAllLinksInRow($tplRow, onDone) {
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-fix-links-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                 .text(s.linksFixed || '✓ Links fixed.');
+            if (typeof onDone === 'function') { onDone(0, 0); }
             return;
         }
 
-        $btn.prop('disabled', true);
         $msg.removeClass('lf-ok lf-fail lf-warn').text('');
 
         var total  = $pending.length;
@@ -77,7 +85,6 @@
                 done++;
                 if (!success) { failed++; }
                 if (done === total) {
-                    $btn.prop('disabled', false);
                     if (failed === 0) {
                         $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                             .text(s.linksFixed || '✓ Links fixed.');
@@ -85,9 +92,25 @@
                         $msg.removeClass('lf-ok lf-warn').addClass('lf-fail')
                             .text(s.linksFail || 'Some link fixes failed.');
                     }
+                    if (typeof onDone === 'function') { onDone(failed, total); }
                 }
             });
         });
+    }
+
+    // Per-row "Fix all links" button — fixes every existing template / part
+    // in the row in parallel.
+    $(document).on('click', '.lf-fix-links-row-btn', function () {
+        var $btn    = $(this);
+        var $tplRow = $btn.closest('.lf-tpl-row');
+        $btn.prop('disabled', true);
+        fixAllLinksInRow($tplRow, function () {
+            $btn.prop('disabled', false);
+        });
     });
+
+    // ── Expose for the global cross-language orchestrator ────────────────────
+    window.lfFseActions = window.lfFseActions || {};
+    window.lfFseActions.fixAllLinks = fixAllLinksInRow;
 
 }(jQuery));

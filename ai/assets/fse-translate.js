@@ -61,21 +61,30 @@
         translateFse($btn.data('slug'), $btn.data('post-type'), $btn, null);
     });
 
-    // Per-row "Translate all" button — translates every existing template / part
-    // in the row that hasn't been translated yet in this session.
-    $(document).on('click', '.lf-translate-row-btn', function () {
-        var $btn     = $(this);
-        var $tplRow  = $btn.closest('.lf-tpl-row');
+    /**
+     * Translate every existing template / part in a row that hasn't been
+     * translated yet in this session.
+     *
+     * Shared by the row's own "Translate all" button and the global
+     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
+     * Does not touch the triggering button's disabled state — that's the
+     * caller's responsibility.
+     *
+     * @param {jQuery}   $tplRow The `.lf-tpl-row` wrapper (Templates section, per language).
+     * @param {Function} onDone  Callback(failedCount, totalCount) fired once every
+     *                           pending button in the row has settled.
+     */
+    function translateAllInRow($tplRow, onDone) {
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-translate-one-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                 .text(s.allTranslated || '✓ All translated.');
+            if (typeof onDone === 'function') { onDone(0, 0); }
             return;
         }
 
-        $btn.prop('disabled', true);
         $msg.removeClass('lf-ok lf-fail lf-warn').text('');
 
         var total  = $pending.length;
@@ -91,7 +100,6 @@
                 if (!success) { failed++; }
                 if (warning)  { warned = true; }
                 if (done === total) {
-                    $btn.prop('disabled', false);
                     if (failed === 0) {
                         var msg = s.allTranslated || '✓ All translated.';
                         if (warned) {
@@ -105,10 +113,26 @@
                         $msg.removeClass('lf-ok lf-warn').addClass('lf-fail')
                             .text(s.translateFail || 'Some translations failed.');
                     }
+                    if (typeof onDone === 'function') { onDone(failed, total); }
                 }
             });
         });
+    }
+
+    // Per-row "Translate all" button — translates every existing template / part
+    // in the row that hasn't been translated yet in this session.
+    $(document).on('click', '.lf-translate-row-btn', function () {
+        var $btn    = $(this);
+        var $tplRow = $btn.closest('.lf-tpl-row');
+        $btn.prop('disabled', true);
+        translateAllInRow($tplRow, function () {
+            $btn.prop('disabled', false);
+        });
     });
+
+    // ── Expose for the global cross-language orchestrator ────────────────────
+    window.lfFseActions = window.lfFseActions || {};
+    window.lfFseActions.translateAll = translateAllInRow;
 
     // ── Navigation translation ────────────────────────────────────────────────
 

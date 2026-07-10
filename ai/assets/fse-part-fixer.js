@@ -53,21 +53,29 @@
         fixFseParts($btn.data('slug'), $btn, null);
     });
 
-    // Per-row "Fix all parts" button — fixes every existing template in the row
-    // in parallel.
-    $(document).on('click', '.lf-fix-parts-row-btn', function () {
-        var $btn     = $(this);
-        var $tplRow  = $btn.closest('.lf-tpl-row');
+    /**
+     * Fix core/template-part references in every existing template in a row.
+     *
+     * Shared by the row's own "Fix all parts" button and the global
+     * cross-language "Recreate All Languages" orchestrator (fse-global-actions.js).
+     * Does not touch the triggering button's disabled state — that's the
+     * caller's responsibility.
+     *
+     * @param {jQuery}   $tplRow The `.lf-tpl-row` wrapper (Templates section, per language).
+     * @param {Function} onDone  Callback(failedCount, totalCount) fired once every
+     *                           pending button in the row has settled.
+     */
+    function fixAllPartsInRow($tplRow, onDone) {
         var $msg     = $tplRow.find('.lf-scaffold-row-msg');
         var $pending = $tplRow.find('.lf-fix-parts-btn').not(':disabled');
 
         if (!$pending.length) {
             $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                 .text(s.partsFixed || '✓ Parts fixed.');
+            if (typeof onDone === 'function') { onDone(0, 0); }
             return;
         }
 
-        $btn.prop('disabled', true);
         $msg.removeClass('lf-ok lf-fail lf-warn').text('');
 
         var total  = $pending.length;
@@ -81,7 +89,6 @@
                 done++;
                 if (!success) { failed++; }
                 if (done === total) {
-                    $btn.prop('disabled', false);
                     if (failed === 0) {
                         $msg.removeClass('lf-fail lf-warn').addClass('lf-ok')
                             .text(s.partsFixed || '✓ Parts fixed.');
@@ -89,10 +96,26 @@
                         $msg.removeClass('lf-ok lf-warn').addClass('lf-fail')
                             .text(s.partsFail || 'Some part fixes failed.');
                     }
+                    if (typeof onDone === 'function') { onDone(failed, total); }
                 }
             });
         });
+    }
+
+    // Per-row "Fix all parts" button — fixes every existing template in the row
+    // in parallel.
+    $(document).on('click', '.lf-fix-parts-row-btn', function () {
+        var $btn    = $(this);
+        var $tplRow = $btn.closest('.lf-tpl-row');
+        $btn.prop('disabled', true);
+        fixAllPartsInRow($tplRow, function () {
+            $btn.prop('disabled', false);
+        });
     });
+
+    // ── Expose for the global cross-language orchestrator ────────────────────
+    window.lfFseActions = window.lfFseActions || {};
+    window.lfFseActions.fixAllParts = fixAllPartsInRow;
 
     // ── FSE navigation ref fixer ──────────────────────────────────────────────
 
