@@ -26,6 +26,15 @@ class ScaffoldHandler {
      * and title "{title_label} {LANG}" (e.g. "Page DE", "Search Results DE").
      * The post content is copied from the existing base template of the active
      * theme, falling back to the index template, then to empty content.
+     *
+     * POST params (continued):
+     *   force – optional. When truthy, bypasses the "already exists" bail and
+     *           overwrites the template with a fresh copy from the active
+     *           theme instead ("Re-create"/"Re-create all"). If a DB-stored
+     *           wp_template post already exists for the slug it is updated in
+     *           place (same post ID); otherwise a new DB override is inserted,
+     *           which also covers the file-only case (a theme .html file with
+     *           no DB row yet).
      */
     public static function ajax_scaffold_template(): void {
         check_ajax_referer( 'linguaforge_scaffold_template', 'nonce' );
@@ -37,6 +46,7 @@ class ScaffoldHandler {
         $lang      = sanitize_key( wp_unslash( $_POST['lang']      ?? '' ) );
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_key() covers [a-z0-9_-] which includes hyphens needed for 'front-page'.
         $base_slug = sanitize_key( wp_unslash( $_POST['base_slug'] ?? '' ) );
+        $force     = ! empty( $_POST['force'] );
 
         // Validate language — must be an active, non-primary language.
         $router = \LinguaForge\Router\Router::get_instance();
@@ -53,8 +63,9 @@ class ScaffoldHandler {
 
         $lang_slug = $base_slug . '-' . $lang;
 
-        // Bail if the template already exists (file or DB).
-        if ( $router->template_exists( $lang_slug ) ) {
+        // Bail if the template already exists (file or DB) — unless the caller
+        // explicitly asked to force a re-create.
+        if ( $router->template_exists( $lang_slug ) && ! $force ) {
             wp_send_json_error( sprintf(
                 /* translators: %s: template slug such as page-de */
                 __( 'Template "%s" already exists.', 'lingua-forge' ),
@@ -98,16 +109,41 @@ class ScaffoldHandler {
         $title_label = $defs[ $base_slug ]['title'];
         $title       = $title_label . ' ' . strtoupper( $lang );
 
-        // Insert as a wp_template post (the same type the Site Editor manages).
-        $post_id = wp_insert_post( [
-            'post_name'      => $lang_slug,
-            'post_title'     => $title,
-            'post_content'   => $content,
-            'post_status'    => 'publish',
-            'post_type'      => 'wp_template',
-            'comment_status' => 'closed',
-            'ping_status'    => 'closed',
-        ], true );
+        // A re-create can target either a DB-stored template (update it in
+        // place, keeping the same post ID) or a file-only template that has
+        // never been saved to the DB (no existing post to find — falls
+        // through to the same insert used for a brand-new template, which
+        // creates the DB override).
+        $existing_posts = get_posts( [
+            'post_type'     => 'wp_template',
+            'name'          => $lang_slug,
+            'post_status'   => 'any',
+            'numberposts'   => 1,
+            'fields'        => 'ids',
+            'no_found_rows' => true,
+        ] );
+        $existing_post_id = $existing_posts ? (int) $existing_posts[0] : 0;
+        $was_recreate      = $existing_post_id > 0;
+
+        if ( $existing_post_id ) {
+            $post_id = wp_update_post( [
+                'ID'             => $existing_post_id,
+                'post_title'     => $title,
+                'post_content'   => $content,
+                'post_status'    => 'publish',
+            ], true );
+        } else {
+            // Insert as a wp_template post (the same type the Site Editor manages).
+            $post_id = wp_insert_post( [
+                'post_name'      => $lang_slug,
+                'post_title'     => $title,
+                'post_content'   => $content,
+                'post_status'    => 'publish',
+                'post_type'      => 'wp_template',
+                'comment_status' => 'closed',
+                'ping_status'    => 'closed',
+            ], true );
+        }
 
         if ( is_wp_error( $post_id ) ) {
             wp_send_json_error( $post_id->get_error_message() );
@@ -152,18 +188,31 @@ class ScaffoldHandler {
                 data-slug="<?php echo esc_attr( $lang_slug ); ?>">
             <?php esc_html_e( 'Fix Parts', 'lingua-forge' ); ?>
         </button>
+        <button type="button"
+                class="button button-small lf-recreate-one-btn"
+                data-lang="<?php echo esc_attr( $lang ); ?>"
+                data-base="<?php echo esc_attr( $base_slug ); ?>">
+            <?php esc_html_e( 'Re-create', 'lingua-forge' ); ?>
+        </button>
         <?php
         $buttons_html = (string) ob_get_clean();
 
         wp_send_json_success( [
             'slug'         => $lang_slug,
             'title'        => $title,
+            'recreated'    => $was_recreate,
             'buttons_html' => $buttons_html,
-            'message'      => sprintf(
-                /* translators: %s: template title such as "Page DE" */
-                __( '"%s" created.', 'lingua-forge' ),
-                $title
-            ),
+            'message'      => $was_recreate
+                ? sprintf(
+                    /* translators: %s: template title such as "Page DE" */
+                    __( '"%s" recreated.', 'lingua-forge' ),
+                    $title
+                )
+                : sprintf(
+                    /* translators: %s: template title such as "Page DE" */
+                    __( '"%s" created.', 'lingua-forge' ),
+                    $title
+                ),
         ] );
     }
 
@@ -179,6 +228,14 @@ class ScaffoldHandler {
      * seeded from the active theme's base part. After creation, any existing DB-stored
      * language templates for that language are updated to reference the new part slug
      * instead of the base slug.
+     *
+     * POST params (continued):
+     *   force – optional. When truthy, bypasses the "already exists" bail and
+     *           overwrites the part with a fresh copy from the active theme
+     *           instead ("Re-create"/"Re-create all"). If a DB-stored
+     *           wp_template_part post already exists for the slug it is
+     *           updated in place (same post ID); otherwise a new DB override
+     *           is inserted, which also covers the file-only case.
      */
     public static function ajax_scaffold_template_part(): void {
         check_ajax_referer( 'linguaforge_scaffold_template_part', 'nonce' );
@@ -190,6 +247,7 @@ class ScaffoldHandler {
         $lang      = sanitize_key( wp_unslash( $_POST['lang']      ?? '' ) );
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_key() normalises to [a-z0-9_-].
         $base_slug = sanitize_key( wp_unslash( $_POST['base_slug'] ?? '' ) );
+        $force     = ! empty( $_POST['force'] );
 
         // Validate language — must be an active, non-primary language.
         $router = \LinguaForge\Router\Router::get_instance();
@@ -206,8 +264,9 @@ class ScaffoldHandler {
 
         $lang_slug = $base_slug . '-' . $lang;
 
-        // Bail if the part already exists (file or DB).
-        if ( PartDiscovery::part_exists( $lang_slug ) ) {
+        // Bail if the part already exists (file or DB) — unless the caller
+        // explicitly asked to force a re-create.
+        if ( PartDiscovery::part_exists( $lang_slug ) && ! $force ) {
             wp_send_json_error( sprintf(
                 /* translators: %s: template part slug such as header-de */
                 __( 'Template part "%s" already exists.', 'lingua-forge' ),
@@ -228,16 +287,40 @@ class ScaffoldHandler {
         // Build the human-readable title: e.g. "Header DE", "Primary Menu DE".
         $title = ucwords( str_replace( '-', ' ', $base_slug ) ) . ' ' . strtoupper( $lang );
 
-        // Insert as a wp_template_part post.
-        $post_id = wp_insert_post( [
-            'post_name'      => $lang_slug,
-            'post_title'     => $title,
-            'post_content'   => $content,
-            'post_status'    => 'publish',
-            'post_type'      => 'wp_template_part',
-            'comment_status' => 'closed',
-            'ping_status'    => 'closed',
-        ], true );
+        // A re-create can target either a DB-stored part (update it in place,
+        // keeping the same post ID) or a file-only part that has never been
+        // saved to the DB (no existing post to find — falls through to the
+        // same insert used for a brand-new part, which creates the DB override).
+        $existing_posts = get_posts( [
+            'post_type'     => 'wp_template_part',
+            'name'          => $lang_slug,
+            'post_status'   => 'any',
+            'numberposts'   => 1,
+            'fields'        => 'ids',
+            'no_found_rows' => true,
+        ] );
+        $existing_post_id = $existing_posts ? (int) $existing_posts[0] : 0;
+        $was_recreate      = $existing_post_id > 0;
+
+        if ( $existing_post_id ) {
+            $post_id = wp_update_post( [
+                'ID'             => $existing_post_id,
+                'post_title'     => $title,
+                'post_content'   => $content,
+                'post_status'    => 'publish',
+            ], true );
+        } else {
+            // Insert as a wp_template_part post.
+            $post_id = wp_insert_post( [
+                'post_name'      => $lang_slug,
+                'post_title'     => $title,
+                'post_content'   => $content,
+                'post_status'    => 'publish',
+                'post_type'      => 'wp_template_part',
+                'comment_status' => 'closed',
+                'ping_status'    => 'closed',
+            ], true );
+        }
 
         if ( is_wp_error( $post_id ) ) {
             wp_send_json_error( $post_id->get_error_message() );
@@ -303,16 +386,29 @@ class ScaffoldHandler {
                 data-slug="<?php echo esc_attr( $lang_slug ); ?>">
             <?php esc_html_e( 'Fix Nav', 'lingua-forge' ); ?>
         </button>
+        <button type="button"
+                class="button button-small lf-recreate-part-btn"
+                data-lang="<?php echo esc_attr( $lang ); ?>"
+                data-base="<?php echo esc_attr( $base_slug ); ?>">
+            <?php esc_html_e( 'Re-create', 'lingua-forge' ); ?>
+        </button>
         <span class="lf-scaffold-row-msg"></span>
         <?php
         $buttons_html = (string) ob_get_clean();
 
-        wp_send_json_success( [
-            'slug'         => $lang_slug,
-            'title'        => $title,
-            'updated'      => $updated,
-            'buttons_html' => $buttons_html,
-            'message'      => sprintf(
+        $message = $was_recreate
+            ? sprintf(
+                /* translators: 1: template part title e.g. "Header DE", 2: count of templates updated */
+                _n(
+                    '"%1$s" recreated. %2$d template updated.',
+                    '"%1$s" recreated. %2$d templates updated.',
+                    $updated,
+                    'lingua-forge'
+                ),
+                $title,
+                $updated
+            )
+            : sprintf(
                 /* translators: 1: template part title e.g. "Header DE", 2: count of templates updated */
                 _n(
                     '"%1$s" created. %2$d template updated.',
@@ -322,7 +418,15 @@ class ScaffoldHandler {
                 ),
                 $title,
                 $updated
-            ),
+            );
+
+        wp_send_json_success( [
+            'slug'         => $lang_slug,
+            'title'        => $title,
+            'updated'      => $updated,
+            'recreated'    => $was_recreate,
+            'buttons_html' => $buttons_html,
+            'message'      => $message,
         ] );
     }
 }

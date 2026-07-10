@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -285,6 +285,10 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.2 =
+* Added: "Re-create all" and per-template "Re-create" buttons in Settings → Router → Templates — force-overwrite an existing FSE template with a fresh copy from the active theme, discarding any Site Editor customisations. Unlike "Create missing"/"Create", which refuse to touch a template that already exists, Re-create replaces the content in place (keeping the same post ID when a DB-stored copy already exists) and is guarded by a confirmation dialog since it can't be undone. New `force` POST param on the existing `linguaforge_scaffold_template` AJAX action. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`, `ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php`, `ai/assets/fse-scaffold.js`)
+* Added: The same "Re-create all" / "Re-create" pair for Settings → Router → Template Parts (headers, footers, and any other theme part) — same `force`-bypass logic against `wp_template_part`, same confirmation guard. New `.lf-parts-group` wrapper gives the parts panel a bulk-action scope it didn't have before. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`, `ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php`, `ai/assets/fse-scaffold.js`)
+
 = 2.6.1 =
 * Added: `linguaforge_template_for_lang` filter — lets an integration override the language-specific FSE template slug Lingua Forge is about to assign to a translated post. Applies across every assignment path (editor save, WP-CLI, Sync button, and programmatic creation), never fires for the source-language post, and returning an empty value suppresses assignment entirely. (`language-router/includes/translation/class-sync.php`)
 * Fixed: A translated post created via `linguaforge_trigger_translation()` / `linguaforge_queue_translation()` (the path every third-party integration uses, e.g. Agnosis) never received its language-specific FSE template (`single-{post_type}-{lang}`), even when one existed — it was left on the default/untranslated template. `TranslationTrigger::create_translated_post()` now calls `Sync::assign_template_if_needed()` after insertion, matching the normal editor save, WP-CLI, and Sync-button paths, which already did this. (`ai/includes/Features/TranslationTrigger.php`)
@@ -355,6 +359,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.2 =
+Adds "Re-create all" and per-template "Re-create" buttons, for both FSE templates and template parts, to force-overwrite one with a fresh copy from the active theme. No database changes. No flush required.
 
 = 2.6.1 =
 Fixes translated posts not getting their language-specific template on creation and when refreshed via Sync/Translate missing, adds a filter to override it, and adds a no-AI-cost "Template Sync" button. No database changes. No flush required.

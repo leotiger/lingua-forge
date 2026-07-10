@@ -2,6 +2,14 @@
 
 ---
 
+## [2.6.2] — 2026-07-10
+
+### Added
+- **"Re-create all" and per-template "Re-create" — Settings → Router → Templates.** "Create missing" and the per-card "Create" button only ever operate on templates that don't exist yet — there was no way to force-refresh a template that already exists from within the same panel (e.g. after a theme update changed the base template, or to discard a Site Editor customisation that broke something). Re-create bypasses the existing "already exists" bail in `ScaffoldHandler::ajax_scaffold_template()` via a new `force` POST param, re-resolves the source content the same way normal creation does (active theme → other template owner → theme index → empty), and applies it in place: if a DB-stored `wp_template` post already exists for the slug it's `wp_update_post()`-ed (same post ID preserved), otherwise it's inserted fresh exactly like a normal "Create" — which also covers the file-only case (a theme `.html` template with no DB row yet) by creating the DB override. New `.lf-recreate-all-btn` (toolbar, always visible) and `.lf-recreate-one-btn` (per card, shown alongside Translate/Fix Links/Fix Parts once a template exists) in `TemplatesSection.php`, wired in `fse-scaffold.js` by extending the existing `scaffoldOne()` helper with a `force` argument. Both actions are destructive (they discard any Site Editor customisations on the overwritten template) and are guarded by a `confirm()` dialog before the AJAX call fires, matching the existing "Sync" button's confirmation pattern. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`, `ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php`, `ai/assets/fse-scaffold.js`, `ai/includes/Admin/SettingsPage.php`)
+- **Same "Re-create all" / "Re-create" pair for Template Parts — Settings → Router → Template Parts (headers, footers, and any other theme part).** Identical design applied to `ScaffoldHandler::ajax_scaffold_template_part()`: the same `force` bypass, the same DB-post-lookup-and-update-in-place-or-insert logic (now against `wp_template_part`), and the same destructive `confirm()` guard. The Template Parts panel previously had no per-language wrapper element to anchor a bulk action against (each part was its own standalone table row) — added a `.lf-parts-group` container (with a `.lf-template-bulk-actions` toolbar inside it, matching the Templates panel's layout) wrapping the existing per-language table so `.lf-recreate-all-parts-btn` has a scope to iterate every part row in. New `.lf-recreate-all-parts-btn` and `.lf-recreate-part-btn` in `TemplatePartsSection.php`, wired in `fse-scaffold.js` by extending `scaffoldPart()` with the same `force` argument. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`, `ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php`, `ai/assets/fse-scaffold.js`, `ai/includes/Admin/SettingsPage.php`)
+
+---
+
 ## [2.6.1] — 2026-07-09
 
 ### Added

@@ -35,34 +35,34 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.6.1';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.1/lingua-forge-2.6.1.zip';
-	$last_updated = '2026-07-09';
+	$version      = '2.6.2';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.2/lingua-forge-2.6.2.zip';
+	$last_updated = '2026-07-10';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.6.1.zip — build it, upload
-	// to the v2.6.1 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.6.2.zip — build it, upload
+	// to the v2.6.2 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = 'cb68038892f76f2934eb8f29478676f20e86e2bd14e85bb82ec9d03172a5e93d';
+	$sha256 = 'b1c94980dc3b2faa97d6411be0012b67b098186746d151a061a8dd1dc1cf90b7';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.6.2 &#8212; 2026-07-10</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> &#8220;Re-create all&#8221; and per-template &#8220;Re-create&#8221; buttons in Settings &#8594; Router &#8594; Templates &#8212; force-overwrite an existing FSE template with a fresh copy from the active theme, discarding any Site Editor customisations. Unlike &#8220;Create missing&#8221;/&#8220;Create&#8221;, which refuse to touch a template that already exists, Re-create replaces the content in place (same post ID when a DB-stored copy already exists) and is guarded by a confirmation dialog since it can&#8217;t be undone. New <code>force</code> POST param on the existing <code>linguaforge_scaffold_template</code> AJAX action. (<code>ai/includes/Admin/FseLocalisation/ScaffoldHandler.php</code>, <code>ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php</code>, <code>ai/assets/fse-scaffold.js</code>)</li>' .
+			'<li><strong>Added:</strong> The same &#8220;Re-create all&#8221; / &#8220;Re-create&#8221; pair for Settings &#8594; Router &#8594; Template Parts (headers, footers, and any other theme part) &#8212; same <code>force</code>-bypass logic against <code>wp_template_part</code>, same confirmation guard. (<code>ai/includes/Admin/FseLocalisation/ScaffoldHandler.php</code>, <code>ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php</code>, <code>ai/assets/fse-scaffold.js</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.6.1 &#8212; 2026-07-09</h4>' .
 		'<ul>' .
 			'<li><strong>Added:</strong> <code>linguaforge_template_for_lang</code> filter &#8212; override the language-specific FSE template slug Lingua Forge is about to assign to a translated post. Applies across every assignment path (editor save, WP-CLI, Sync button, and programmatic creation); never fires for the source-language post; returning an empty value suppresses assignment entirely. (<code>language-router/includes/translation/class-sync.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> A translated post created via <code>linguaforge_trigger_translation()</code> / <code>linguaforge_queue_translation()</code> &#8212; the path every third-party integration uses, e.g. Agnosis &#8212; never received its language-specific FSE template (<code>single-{post_type}-{lang}</code>), even when one existed; it was left on the default/untranslated template. <code>TranslationTrigger::create_translated_post()</code> now assigns it after insertion, matching the normal editor save, WP-CLI, and Sync-button paths, which already did this. (<code>ai/includes/Features/TranslationTrigger.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> The &#8220;Sync&#8221; button and the &#8220;Translate missing&#8221; bulk action could silently strip the language-specific template off an already-templated, existing translation when force-refreshing it in place, since both disable the normal save hook for their entire batch. Templates are now reassigned explicitly, independent of hook state. (<code>ai/includes/Admin/PostListColumn.php</code>)</li>' .
 			'<li><strong>Added:</strong> &#8220;Template Sync&#8221; (TS) &#8212; a new button next to Sync in the post list Lang column that reassigns the correct language-specific template for every existing translation of a post, with no AI call and no content changes. Only shown on the primary/source-language post. Also adds <code>linguaforge_sync_templates( $post_id, $check_caps = false )</code> for programmatic use. (<code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/ai.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.6.0 &#8212; 2026-07-08</h4>' .
-		'<ul>' .
-			'<li><strong>Added:</strong> &#8220;Sync&#8221; &#8212; a new button in the post list Lang column, shown on every language version of a translated post, including the primary/source post. One click retranslates FROM that post&#8217;s language INTO every other configured language: any missing language is created, any existing one is force-refreshed in place. Unlike the existing &#8220;Retranslate&#8221; button, Sync can overwrite the primary/source post when triggered from a secondary-language post &#8212; a confirmation dialog runs before it fires since it can touch several posts, including the source, in a single click. (<code>ai/includes/Admin/PostListColumn.php</code>)</li>' .
-			'<li><strong>Added:</strong> Two independent safeguards for Sync, both off by default &#8212; syncing a secondary-language WooCommerce product/variation is blocked (it would back-translate onto the primary product, WooCommerce&#8217;s operational source of truth for price, SKU, and stock; lift via Settings &#8594; Behavior &#8594; WooCommerce or the <code>linguaforge_wc_secondary_sync_allowed</code> filter), and the same restriction now also covers every other post type (lift via Settings &#8594; Behavior &#8594; Sync or the <code>linguaforge_secondary_sync_allowed</code> filter). Enabling one has no effect on the other. Also adds <code>linguaforge_sync_translations()</code>, a public API function for triggering Sync from third-party code. (<code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/ai.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

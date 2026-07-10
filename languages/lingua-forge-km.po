@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-09T20:37:23+00:00\n"
+"POT-Creation-Date: 2026-07-10T17:07:39+00:00\n"
 "PO-Revision-Date: 2026-07-05 22:31+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Khmer\n"
@@ -50,15 +50,15 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:141
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:177
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:375
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:264
-#: ai/includes/Admin/SettingsPage.php:278
-#: ai/includes/Admin/SettingsPage.php:284 ai/assets/block-action.js:249
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:98
+#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:288
+#: ai/includes/Admin/SettingsPage.php:294 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -101,8 +101,8 @@ msgstr "ការសន្ទនា"
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:35
 #: ai/includes/Admin/FseLocalisation/RepairHandler.php:36
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:186
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:42
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:243
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:42
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:220
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:357
@@ -155,8 +155,8 @@ msgstr "ប្រភេទអត្ថបទមិនត្រឹមត្រូ
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:61
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:58
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:197
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:54
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:255
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:69
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:235
 msgid "Invalid or primary language."
@@ -266,54 +266,76 @@ msgstr[0] "បានជួសជុលគំរូ %d។"
 msgid "All template metadata is already up to date."
 msgstr "មេតាដាតាខ្លួនគំរូទាំងអស់បានធ្វើឱ្យទាន់សម័យរួចហើយ។"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:51
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:61
 msgid "Invalid template type."
 msgstr "ប្រភេទគំរូមិនត្រឹមត្រូវ។"
 
 #. translators: %s: template slug such as page-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:60
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:71
 #, php-format
 msgid "Template \"%s\" already exists."
 msgstr "\"%s\" មានរួចហើយ។"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:148
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:299
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:184
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:382
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Fix Links"
 msgstr "ជួសជុលតំណភ្ជាប់"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:153
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:189
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+#: ai/includes/Admin/SettingsPage.php:283
 msgid "Fix Parts"
 msgstr "ជួសជុលផ្នែក"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:393
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:100
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
+#: ai/includes/Admin/SettingsPage.php:262
+#, fuzzy
+msgid "Re-create"
+msgstr "បង្កើត"
+
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:164
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:208
+#, fuzzy, php-format
+msgid "\"%s\" recreated."
+msgstr "\"%s\" បានបង្កើត។"
+
+#. translators: %s: template title such as "Page DE"
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
 #, php-format
 msgid "\"%s\" created."
 msgstr "\"%s\" បានបង្កើត។"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:204
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:262
 msgid "Invalid template part."
 msgstr "ផ្នែកគំរូមិនត្រឹមត្រូវ។"
 
 #. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:272
 #, php-format
 msgid "Template part \"%s\" already exists."
 msgstr "ផ្នែកគំរូ \"%s\" មានរួចហើយ។"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:304
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:387
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:94
+#: ai/includes/Admin/SettingsPage.php:290
 msgid "Fix Nav"
 msgstr "ជួសជុលការរុករក"
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:317
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:402
+#, fuzzy, php-format
+msgid "\"%1$s\" recreated. %2$d template updated."
+msgid_plural "\"%1$s\" recreated. %2$d templates updated."
+msgstr[0] "\"%1$s\" បានបង្កើត។ %2$d អាប់ដេត។"
+
+#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:413
 #, php-format
 msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
@@ -408,7 +430,7 @@ msgid "SEO Analysis"
 msgstr "វិភាគ SEO"
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:462
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:383
 msgid "Profile"
 msgstr "ប្រវត្តិរូប"
 
@@ -421,53 +443,53 @@ msgid "/ 100"
 msgstr "/ 100"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:535
-#: ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/SettingsPage.php:377
 msgid "Overall SEO score"
 msgstr "ពិន្ទុ SEO សរុប។"
 
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:536
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:378
 msgid "Metric"
 msgstr "មាត្រា។"
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:537
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsPage.php:379
 msgid "Finding"
 msgstr "ការរកឃើញ"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:360
 #: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:380
 msgid "Title"
 msgstr "ចំណងជើង"
 
 #: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:371
 msgid "Meta description"
 msgstr "ការពិពណ៌នាផ្ទាល់ខ្លួន។"
 
 #: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Word count"
 msgstr "ចំនួនពាក្យ"
 
 #: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Reading time"
 msgstr "ពេលវេលាអាន"
 
 #: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:532
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Headings"
 msgstr "ចំណងជើង"
 
 #: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:533
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Images"
 msgstr "រូបភាព"
 
 #: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:534
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:376
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "តំណភ្ជាប់"
@@ -510,15 +532,15 @@ msgstr "បានផ្ទុកពី cache។"
 msgid "↺ Refresh AI Analysis"
 msgstr "↺ បន្ថែមវិភាគ AI"
 
-#: ai/includes/Admin/MetaBox.php:466 ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/MetaBox.php:466 ai/includes/Admin/SettingsPage.php:384
 msgid "Analyse…"
 msgstr "វិភាគ…"
 
-#: ai/includes/Admin/MetaBox.php:538 ai/includes/Admin/SettingsPage.php:379
+#: ai/includes/Admin/MetaBox.php:538 ai/includes/Admin/SettingsPage.php:389
 msgid "Analysis request failed. Please try again."
 msgstr "ការស្នើសុំវិភាគបរាជ័យ។ សូមព្យាយាមម្តងទៀត។"
 
-#: ai/includes/Admin/MetaBox.php:539 ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/MetaBox.php:539 ai/includes/Admin/SettingsPage.php:388
 msgid "No translation found — analyzed the source language version."
 msgstr "មិនមានការបកប្រែទេ — បានវិភាគចំណុចប្រភពភាសា។"
 
@@ -579,8 +601,8 @@ msgid "From"
 msgstr "ពី"
 
 #: ai/includes/Admin/PostListColumn.php:172
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:81
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
 msgid "Retranslate"
 msgstr "បកប្រែម្ដងទៀត"
 
@@ -620,9 +642,9 @@ msgstr ""
 "ដើម្បីធ្វើឱ្យទាន់សម័យ។"
 
 #: ai/includes/Admin/PostListColumn.php:520
-#: ai/includes/Admin/SettingsPage.php:265
-#: ai/includes/Admin/SettingsPage.php:279
-#: ai/includes/Admin/SettingsPage.php:285
+#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:289
+#: ai/includes/Admin/SettingsPage.php:295
 #: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:325
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:338
 #: ai/assets/editor-translate.js:682 ai/assets/toolbar-translate.js:604
@@ -1458,7 +1480,7 @@ msgstr "យោងឯកសារមិនត្រឹមត្រូវ។"
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/SettingsPage.php:381
 msgid "Type"
 msgstr "ប្រភេទ"
 
@@ -1849,7 +1871,7 @@ msgid "Default profile"
 msgstr "ប្រវត្តិដើម"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:385
 msgid "— Auto-detect —"
 msgstr "— ស្វ័យប្រវត្តិរកឃើញ —"
 
@@ -3099,7 +3121,7 @@ msgstr "គ្រប់ពេលវេលា"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:660
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "AI Usage"
 msgstr "ការប្រើប្រាស់ AI"
 
@@ -3259,7 +3281,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "រក្សាទុកការកំណត់ SEO សម្រាប់ WooCommerce"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:654
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:664
 msgid "AI Provider"
 msgstr "ក្រុមហ៊ុនផ្តល់សេវាកម្ម AI"
 
@@ -3382,7 +3404,7 @@ msgid ""
 msgstr "អ្នកផ្គត់ផ្គង់មិនបានផ្តល់ចម្លើយទេ។ ពិនិត្យកំណត់ត្រាកំហុស WordPress សម្រាប់ព័ត៌មានលម្អិត។"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:656
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:666
 msgid "Behavior"
 msgstr "អាកប្បកិរិយា"
 
@@ -3701,7 +3723,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:658
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Glossary"
 msgstr "ពាក្យស្លាក"
 
@@ -3859,7 +3881,7 @@ msgid "Add entry"
 msgstr "បន្ថែមចុះបញ្ជី"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:655
+#: ai/includes/Admin/SettingsPage.php:665
 msgid "Limits"
 msgstr "កំណត់"
 
@@ -4076,12 +4098,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:661
+#: ai/includes/Admin/SettingsPage.php:671
 msgid "Maintenance"
 msgstr "ការថែទាំ"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:657
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:667
 msgid "Router"
 msgstr "Router"
 
@@ -4498,7 +4520,7 @@ msgstr "ការរុករក"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:277
+#: ai/includes/Admin/SettingsPage.php:287
 msgid "Re-translate"
 msgstr "បកប្រែម្ដងទៀត"
 
@@ -4526,12 +4548,12 @@ msgid "Post Types"
 msgstr "ប្រភេទ post"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:288
+#: ai/includes/Admin/SettingsPage.php:298
 msgid "✓ Translation saved"
 msgstr "✓ ប្រែសម្រួលបានរក្សាទុក"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:289
+#: ai/includes/Admin/SettingsPage.php:299
 msgid "View"
 msgstr "មើល"
 
@@ -4547,16 +4569,22 @@ msgstr ""
 "ចម្លងភាសាដែលមានសម្រាប់ផ្នែកគំរូរបស់ប្រធានបទ។ បន្ទាប់ពីចាប់ផ្តើម, "
 "គំរូនឹងត្រូវបានធ្វើឲ្យទាន់សម័យដើម្បីយោងទៅកាន់ផ្នែកភាសាដែលមានសម្រាប់ភាសា។"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:42
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
+#, fuzzy
+msgid "Re-create all"
+msgstr "បកប្រែទាំងអស់"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:54
 msgid "Part"
 msgstr "ផ្នែក"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:43
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:55
 msgid "Status / Actions"
 msgstr "ស្ថានភាព / សកម្មភាព"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:112
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:107
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:123
 #: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:231
 msgid "Create"
 msgstr "បង្កើត"
@@ -4576,21 +4604,21 @@ msgstr ""
 msgid "Create missing"
 msgstr "បង្កើតអ្វីដែលខ្វះ"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:58
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
 msgid "Translate all"
 msgstr "បកប្រែទាំងអស់"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:64
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
 msgid "Fix all parts"
 msgstr "ជួសជុលផ្នែកទាំងអស់"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:74
 msgid "Fix all links"
 msgstr "ជួសជុលតំណភ្ជាប់ទាំងអស់"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:659
+#: ai/includes/Admin/SettingsPage.php:669
 msgid "SEO"
 msgstr "SEO"
 
@@ -4630,7 +4658,7 @@ msgstr "ការរួមបញ្ចូលគ្នា"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:662
+#: ai/includes/Admin/SettingsPage.php:672
 msgid "System"
 msgstr "ប្រព័ន្ធ"
 
@@ -5404,75 +5432,128 @@ msgstr "✓ គំរូទាំងអស់ត្រូវបានបង្�
 msgid "Some templates could not be created."
 msgstr "មានគំរូខ្លះមិនអាចបង្កើតបាន។"
 
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
+#, fuzzy
+msgid "Recreating…"
+msgstr "កំពុងបង្កើត…"
+
+#: ai/includes/Admin/SettingsPage.php:264
+#, fuzzy
+msgid "✓ All templates recreated."
+msgstr "✓ គំរូទាំងអស់ត្រូវបានបង្កើត។"
+
+#: ai/includes/Admin/SettingsPage.php:265
+#, fuzzy
+msgid "Some templates could not be recreated."
+msgstr "មានគំរូខ្លះមិនអាចបង្កើតបាន។"
+
+#: ai/includes/Admin/SettingsPage.php:266
+msgid ""
+"This overwrites this template with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to it. This cannot be undone. "
+"Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:267
+msgid ""
+"This overwrites every template with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to them. This cannot be "
+"undone. Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:268
+#, fuzzy
+msgid "✓ All parts recreated."
+msgstr "✓ ផ្នែកទាំងអស់ត្រូវបានបង្កើត។"
+
+#: ai/includes/Admin/SettingsPage.php:269
+#, fuzzy
+msgid "Some parts could not be recreated."
+msgstr "ផ្នែកខ្លះមិនអាចបង្កើតបាន។"
+
+#: ai/includes/Admin/SettingsPage.php:270
+msgid ""
+"This overwrites this template part with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to it. This cannot be undone. "
+"Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:271
+msgid ""
+"This overwrites every template part with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to them. This cannot be "
+"undone. Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts created."
 msgstr "✓ ផ្នែកទាំងអស់ត្រូវបានបង្កើត។"
 
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be created."
 msgstr "ផ្នែកខ្លះមិនអាចបង្កើតបាន។"
 
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All translated."
 msgstr "✓ បានបកប្រែទាំងអស់។"
 
-#: ai/includes/Admin/SettingsPage.php:267
+#: ai/includes/Admin/SettingsPage.php:277
 msgid "Some translations failed."
 msgstr "ការបកប្រែខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "Review carefully — links and slugs not updated."
 msgstr "ពិនិត្យយ៉ាងប្រុងប្រយ័ត្ន — តំណភ្ជាប់ និងស្លាកឈ្មោះមិនបានធ្វើបច្ចុប្បន្នភាព។"
 
-#: ai/includes/Admin/SettingsPage.php:270
-#: ai/includes/Admin/SettingsPage.php:274
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:284
+#: ai/includes/Admin/SettingsPage.php:291
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "កំពុងជួសជុល…"
 
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "✓ Links fixed."
 msgstr "✓ តំណភ្ជាប់ត្រូវបានជួសជុល។"
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Some link fixes failed."
 msgstr "ការជួសជុលតំណភ្ជាប់ខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:285
 msgid "✓ Parts fixed."
 msgstr "✓ ផ្នែកត្រូវបានជួសជុល។"
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:286
 msgid "Some part fixes failed."
 msgstr "ការជួសជុលផ្នែកខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:292
 msgid "✓ Nav refs fixed."
 msgstr "✓ ការជួសជុលយោងនាវីហ្គេសិនត្រូវបានកំណត់។"
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:293
 msgid "Some nav ref fixes failed."
 msgstr "ការជួសជុលយោងនាវីហ្គេសិនខ្លះបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:286
+#: ai/includes/Admin/SettingsPage.php:296
 msgid "✓ Pattern translated."
 msgstr "✓ គំរូត្រូវបានបកប្រែ។"
 
-#: ai/includes/Admin/SettingsPage.php:287
+#: ai/includes/Admin/SettingsPage.php:297
 msgid "Pattern translation failed."
 msgstr "ការបកប្រែគំរូបរាជ័យ។"
 
-#: ai/includes/Admin/SettingsPage.php:290
+#: ai/includes/Admin/SettingsPage.php:300
 msgid "Hide"
 msgstr "លាក់"
 
-#: ai/includes/Admin/SettingsPage.php:336
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Built-in preset instructions:"
 msgstr "ការណែនាំលំនាំមុនដែលមានស្រាប់៖"
 
-#: ai/includes/Admin/SettingsPage.php:337
+#: ai/includes/Admin/SettingsPage.php:347
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -5481,35 +5562,35 @@ msgstr ""
 "គ្មានការណែនាំលំនាំមុនដែលមានស្រាប់ — លក្ខណៈពិសេស AI មួយៗប្រើការកំណត់លំនាំដើមរបស់ខ្លួន។ "
 "បញ្ចូលក្នុងវាលការណែនាំប្តូរតាមបំណងខាងក្រោមដើម្បីបន្ថែមច្បាប់ទូទៅសម្រាប់គេហទំព័ររបស់អ្នក។"
 
-#: ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/SettingsPage.php:382
 msgid "Modified"
 msgstr "បានកែប្រែ។"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:386
 msgid "edit"
 msgstr "កែសម្រួល"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsPage.php:387
 msgid "No published posts found for the selected filters."
 msgstr "មិនមានប្រកាសផ្សាយទេសម្រាប់តម្រូវការជ្រើសរើស។"
 
-#: ai/includes/Admin/SettingsPage.php:380
+#: ai/includes/Admin/SettingsPage.php:390
 msgid "Just now"
 msgstr "ឥឡូវនេះប៉ុណ្ណោះ"
 
-#: ai/includes/Admin/SettingsPage.php:381
+#: ai/includes/Admin/SettingsPage.php:391
 msgid "Score"
 msgstr "ពិន្ទុ"
 
-#: ai/includes/Admin/SettingsPage.php:382
+#: ai/includes/Admin/SettingsPage.php:392
 msgid "Source title"
 msgstr "ចំណងជើងប្រភព"
 
-#: ai/includes/Admin/SettingsPage.php:383
+#: ai/includes/Admin/SettingsPage.php:393
 msgid "Multilingual SEO overview"
 msgstr "ទិដ្ឋភាពទូទៅ SEO ភាសាច្រើន"
 
-#: ai/includes/Admin/SettingsPage.php:384
+#: ai/includes/Admin/SettingsPage.php:394
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -5521,7 +5602,7 @@ msgstr ""
 "ទំព័រចុចចូលដែលមានអត្ថបទខ្លី ឬទំព័រដែលមានគោលបំណងជាឧបករណ៍នាវីហ្គេសិនអាចមានពិន្ទុទាប។ "
 "ប្រើសេចក្ដីមើលនេះដើម្បីរកឃើញភាពសមស្របពិតប្រាកដក្នុងភាសា មិនមែនសម្រាប់តាមដានលេខ។"
 
-#: ai/includes/Admin/SettingsPage.php:385
+#: ai/includes/Admin/SettingsPage.php:395
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -5531,23 +5612,23 @@ msgstr ""
 "មាតិការបស់វាត្រូវបានគ្រប់គ្រងដោយ WooCommerce — ពិន្ទុបង្ហាញសញ្ញាសម្ព័ន្ធតែប៉ុណ្ណោះ មិនមែនមាតិកា "
 "SEO ដែលអាចកែប្រែបានដោយអ្នកប្រើ។"
 
-#: ai/includes/Admin/SettingsPage.php:421
+#: ai/includes/Admin/SettingsPage.php:431
 msgid "Settings"
 msgstr "ការកំណត់"
 
-#: ai/includes/Admin/SettingsPage.php:433
+#: ai/includes/Admin/SettingsPage.php:443
 msgid "You do not have permission to manage these settings."
 msgstr "អ្នកមិនមានសិទ្ធិគ្រប់គ្រងការកំណត់ទាំងនេះទេ។"
 
-#: ai/includes/Admin/SettingsPage.php:643
+#: ai/includes/Admin/SettingsPage.php:653
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — ការកំណត់"
 
-#: ai/includes/Admin/SettingsPage.php:648
+#: ai/includes/Admin/SettingsPage.php:658
 msgid "Settings saved."
 msgstr "ការកំណត់ត្រូវបានរក្សាទុក។"
 
-#: ai/includes/Admin/SettingsPage.php:693
+#: ai/includes/Admin/SettingsPage.php:703
 msgid "Save Settings"
 msgstr "រក្សាទុកការកំណត់"
 

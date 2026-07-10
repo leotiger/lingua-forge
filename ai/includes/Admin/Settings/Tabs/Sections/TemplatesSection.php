@@ -51,6 +51,11 @@ class TemplatesSection {
                     <?php esc_html_e( 'Create missing', 'lingua-forge' ); ?>
                 </button>
                 <?php endif; ?>
+                <button type="button"
+                        class="button lf-recreate-all-btn"
+                        data-lang="<?php echo esc_attr( $lang ); ?>">
+                    <?php esc_html_e( 'Re-create all', 'lingua-forge' ); ?>
+                </button>
                 <?php if ( $ai_active ) : ?>
                 <button type="button"
                         class="button lf-translate-row-btn"
@@ -103,6 +108,12 @@ class TemplatesSection {
                                     class="button button-small lf-fix-parts-btn"
                                     data-slug="<?php echo esc_attr( $slug ); ?>">
                                 <?php esc_html_e( 'Fix Parts', 'lingua-forge' ); ?>
+                            </button>
+                            <button type="button"
+                                    class="button button-small lf-recreate-one-btn"
+                                    data-lang="<?php echo esc_attr( $lang ); ?>"
+                                    data-base="<?php echo esc_attr( $base ); ?>">
+                                <?php esc_html_e( 'Re-create', 'lingua-forge' ); ?>
                             </button>
                         <?php else : ?>
                             <button type="button"

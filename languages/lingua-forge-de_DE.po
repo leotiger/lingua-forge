@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-09T20:37:23+00:00\n"
+"POT-Creation-Date: 2026-07-10T17:07:39+00:00\n"
 "PO-Revision-Date: 2026-07-05 20:35+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: German\n"
@@ -51,15 +51,15 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:141
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:292
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:177
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:375
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:70
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:93
-#: ai/includes/Admin/SettingsPage.php:264
-#: ai/includes/Admin/SettingsPage.php:278
-#: ai/includes/Admin/SettingsPage.php:284 ai/assets/block-action.js:249
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:98
+#: ai/includes/Admin/SettingsPage.php:274
+#: ai/includes/Admin/SettingsPage.php:288
+#: ai/includes/Admin/SettingsPage.php:294 ai/assets/block-action.js:249
 #: ai/assets/block-action.js:268 ai/assets/block-action.js:292
 #: ai/assets/block-action.js:305 ai/assets/editor-translate.js:227
 #: ai/assets/editor-translate.js:255 ai/assets/editor-translate.js:748
@@ -102,8 +102,8 @@ msgstr "Gesprächig"
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:35
 #: ai/includes/Admin/FseLocalisation/RepairHandler.php:36
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:33
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:186
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:42
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:243
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:42
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:220
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:357
@@ -156,8 +156,8 @@ msgstr "Ungültiger Beitragstyp."
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:61
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:58
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:44
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:197
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:54
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:255
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:69
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:235
 msgid "Invalid or primary language."
@@ -272,54 +272,77 @@ msgstr[1] "%d Vorlagen repariert."
 msgid "All template metadata is already up to date."
 msgstr "Alle Vorlagen-Metadaten sind bereits aktuell."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:51
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:61
 msgid "Invalid template type."
 msgstr "Ungültiger Vorlage-Typ."
 
 #. translators: %s: template slug such as page-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:60
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:71
 #, php-format
 msgid "Template \"%s\" already exists."
 msgstr "Vorlage \"%s\" existiert bereits."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:148
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:299
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:77
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:100
-#: ai/includes/Admin/SettingsPage.php:269
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:184
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:382
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
+#: ai/includes/Admin/SettingsPage.php:279
 msgid "Fix Links"
 msgstr "Links reparieren"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:153
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
-#: ai/includes/Admin/SettingsPage.php:273
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:189
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
+#: ai/includes/Admin/SettingsPage.php:283
 msgid "Fix Parts"
 msgstr "Teile reparieren"
 
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:393
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:100
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
+#: ai/includes/Admin/SettingsPage.php:262
+#, fuzzy
+msgid "Re-create"
+msgstr "Erstellen"
+
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:164
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:208
+#, fuzzy, php-format
+msgid "\"%s\" recreated."
+msgstr "\"%s\" erstellt."
+
+#. translators: %s: template title such as "Page DE"
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
 #, php-format
 msgid "\"%s\" created."
 msgstr "\"%s\" erstellt."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:204
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:262
 msgid "Invalid template part."
 msgstr "Ungültiger Vorlage-Teil."
 
 #. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:272
 #, php-format
 msgid "Template part \"%s\" already exists."
 msgstr "Vorlage-Teil \"%s\" existiert bereits."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:304
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:82
-#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:387
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:94
+#: ai/includes/Admin/SettingsPage.php:290
 msgid "Fix Nav"
 msgstr "Navigation reparieren"
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:317
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:402
+#, fuzzy, php-format
+msgid "\"%1$s\" recreated. %2$d template updated."
+msgid_plural "\"%1$s\" recreated. %2$d templates updated."
+msgstr[0] "\"%1$s\" erstellt. %2$d Vorlage aktualisiert."
+msgstr[1] "\"%1$s\" erstellt. %2$d Vorlagen aktualisiert."
+
+#. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:413
 #, php-format
 msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
@@ -415,7 +438,7 @@ msgid "SEO Analysis"
 msgstr "SEO-Analyse"
 
 #: ai/includes/Admin/MetaBox.php:396 ai/includes/Admin/MetaBox.php:462
-#: ai/includes/Admin/SettingsPage.php:373
+#: ai/includes/Admin/SettingsPage.php:383
 msgid "Profile"
 msgstr "Profil"
 
@@ -428,53 +451,53 @@ msgid "/ 100"
 msgstr "/ 100"
 
 #: ai/includes/Admin/MetaBox.php:399 ai/includes/Admin/MetaBox.php:535
-#: ai/includes/Admin/SettingsPage.php:367
+#: ai/includes/Admin/SettingsPage.php:377
 msgid "Overall SEO score"
 msgstr "Gesamter SEO-Score"
 
 #: ai/includes/Admin/MetaBox.php:400 ai/includes/Admin/MetaBox.php:536
-#: ai/includes/Admin/SettingsPage.php:368
+#: ai/includes/Admin/SettingsPage.php:378
 msgid "Metric"
 msgstr "Metrik"
 
 #: ai/includes/Admin/MetaBox.php:401 ai/includes/Admin/MetaBox.php:537
-#: ai/includes/Admin/SettingsPage.php:369
+#: ai/includes/Admin/SettingsPage.php:379
 msgid "Finding"
 msgstr "Finden"
 
 #: ai/includes/Admin/MetaBox.php:402 ai/includes/Admin/MetaBox.php:528
-#: ai/includes/Admin/SettingsPage.php:360
 #: ai/includes/Admin/SettingsPage.php:370
+#: ai/includes/Admin/SettingsPage.php:380
 msgid "Title"
 msgstr "Titel"
 
 #: ai/includes/Admin/MetaBox.php:403 ai/includes/Admin/MetaBox.php:529
-#: ai/includes/Admin/SettingsPage.php:361
+#: ai/includes/Admin/SettingsPage.php:371
 msgid "Meta description"
 msgstr "Meta-Beschreibung"
 
 #: ai/includes/Admin/MetaBox.php:404 ai/includes/Admin/MetaBox.php:530
-#: ai/includes/Admin/SettingsPage.php:362
+#: ai/includes/Admin/SettingsPage.php:372
 msgid "Word count"
 msgstr "Wortanzahl"
 
 #: ai/includes/Admin/MetaBox.php:405 ai/includes/Admin/MetaBox.php:531
-#: ai/includes/Admin/SettingsPage.php:363
+#: ai/includes/Admin/SettingsPage.php:373
 msgid "Reading time"
 msgstr "Lesezeit"
 
 #: ai/includes/Admin/MetaBox.php:406 ai/includes/Admin/MetaBox.php:532
-#: ai/includes/Admin/SettingsPage.php:364
+#: ai/includes/Admin/SettingsPage.php:374
 msgid "Headings"
 msgstr "Überschriften"
 
 #: ai/includes/Admin/MetaBox.php:407 ai/includes/Admin/MetaBox.php:533
-#: ai/includes/Admin/SettingsPage.php:365
+#: ai/includes/Admin/SettingsPage.php:375
 msgid "Images"
 msgstr "Bilder"
 
 #: ai/includes/Admin/MetaBox.php:408 ai/includes/Admin/MetaBox.php:534
-#: ai/includes/Admin/SettingsPage.php:366
+#: ai/includes/Admin/SettingsPage.php:376
 #: language-router/includes/class-lsflr-link-fixer.php:93
 msgid "Links"
 msgstr "Links"
@@ -519,15 +542,15 @@ msgstr "Geladen aus dem Cache."
 msgid "↺ Refresh AI Analysis"
 msgstr "↺ KI-Analyse aktualisieren"
 
-#: ai/includes/Admin/MetaBox.php:466 ai/includes/Admin/SettingsPage.php:374
+#: ai/includes/Admin/MetaBox.php:466 ai/includes/Admin/SettingsPage.php:384
 msgid "Analyse…"
 msgstr "Analysieren…"
 
-#: ai/includes/Admin/MetaBox.php:538 ai/includes/Admin/SettingsPage.php:379
+#: ai/includes/Admin/MetaBox.php:538 ai/includes/Admin/SettingsPage.php:389
 msgid "Analysis request failed. Please try again."
 msgstr "Analyseanfrage fehlgeschlagen. Bitte versuche es erneut."
 
-#: ai/includes/Admin/MetaBox.php:539 ai/includes/Admin/SettingsPage.php:378
+#: ai/includes/Admin/MetaBox.php:539 ai/includes/Admin/SettingsPage.php:388
 msgid "No translation found — analyzed the source language version."
 msgstr "Keine Übersetzung gefunden — die Quellversion wurde analysiert."
 
@@ -591,8 +614,8 @@ msgid "From"
 msgstr "Von"
 
 #: ai/includes/Admin/PostListColumn.php:172
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:69
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:92
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:81
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
 msgid "Retranslate"
 msgstr "Erneut übersetzen"
 
@@ -632,9 +655,9 @@ msgstr ""
 "Analyse durch, um zu aktualisieren."
 
 #: ai/includes/Admin/PostListColumn.php:520
-#: ai/includes/Admin/SettingsPage.php:265
-#: ai/includes/Admin/SettingsPage.php:279
-#: ai/includes/Admin/SettingsPage.php:285
+#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:289
+#: ai/includes/Admin/SettingsPage.php:295
 #: ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php:325
 #: ai/includes/Integrations/WooCommerce/TermNameAdmin.php:338
 #: ai/assets/editor-translate.js:682 ai/assets/toolbar-translate.js:604
@@ -1528,7 +1551,7 @@ msgstr "Ungültige Dateireferenz."
 
 #: ai/includes/Admin/Settings/Panels/LanguageOverridesPanel.php:238
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:274
-#: ai/includes/Admin/SettingsPage.php:371
+#: ai/includes/Admin/SettingsPage.php:381
 msgid "Type"
 msgstr "Typ"
 
@@ -1936,7 +1959,7 @@ msgid "Default profile"
 msgstr "Standardprofil"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:364
-#: ai/includes/Admin/SettingsPage.php:375
+#: ai/includes/Admin/SettingsPage.php:385
 msgid "— Auto-detect —"
 msgstr "— Automatisch erkennen —"
 
@@ -3265,7 +3288,7 @@ msgstr "Alle Zeiten"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:660
+#: ai/includes/Admin/SettingsPage.php:670
 msgid "AI Usage"
 msgstr "KI-Nutzung"
 
@@ -3433,7 +3456,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "WooCommerce SEO-Einstellungen speichern"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:654
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:664
 msgid "AI Provider"
 msgstr "KI-Anbieter"
 
@@ -3563,7 +3586,7 @@ msgstr ""
 "Fehlerprotokoll für Details."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:656
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:666
 msgid "Behavior"
 msgstr "Verhalten"
 
@@ -3900,7 +3923,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:658
+#: ai/includes/Admin/SettingsPage.php:668
 msgid "Glossary"
 msgstr "Glossar"
 
@@ -4065,7 +4088,7 @@ msgid "Add entry"
 msgstr "Eintrag hinzufügen"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:655
+#: ai/includes/Admin/SettingsPage.php:665
 msgid "Limits"
 msgstr "Grenzen"
 
@@ -4298,12 +4321,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:661
+#: ai/includes/Admin/SettingsPage.php:671
 msgid "Maintenance"
 msgstr "Wartung"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:657
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:667
 msgid "Router"
 msgstr "Router"
 
@@ -4762,7 +4785,7 @@ msgstr "Navigation"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:104
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:87
-#: ai/includes/Admin/SettingsPage.php:277
+#: ai/includes/Admin/SettingsPage.php:287
 msgid "Re-translate"
 msgstr "Neu übersetzen"
 
@@ -4792,12 +4815,12 @@ msgid "Post Types"
 msgstr "Beitragstypen"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:70
-#: ai/includes/Admin/SettingsPage.php:288
+#: ai/includes/Admin/SettingsPage.php:298
 msgid "✓ Translation saved"
 msgstr "✓ Übersetzung gespeichert"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:95
-#: ai/includes/Admin/SettingsPage.php:289
+#: ai/includes/Admin/SettingsPage.php:299
 msgid "View"
 msgstr "Ansicht"
 
@@ -4814,16 +4837,22 @@ msgstr ""
 "werden die Vorlagen aktualisiert, um auf den sprachspezifischen Teil zu "
 "verweisen."
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:42
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
+#, fuzzy
+msgid "Re-create all"
+msgstr "Alles übersetzen"
+
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:54
 msgid "Part"
 msgstr "Teil"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:43
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:55
 msgid "Status / Actions"
 msgstr "Status / Aktionen"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:89
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:112
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:107
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:123
 #: ai/assets/editor-translate.js:230 ai/assets/toolbar-translate.js:231
 msgid "Create"
 msgstr "Erstellen"
@@ -4844,21 +4873,21 @@ msgstr ""
 msgid "Create missing"
 msgstr "Erstellen, was fehlt"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:58
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
 msgid "Translate all"
 msgstr "Alles übersetzen"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:64
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
 msgid "Fix all parts"
 msgstr "Alle Teile reparieren"
 
-#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:69
+#: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:74
 msgid "Fix all links"
 msgstr "Alle Links reparieren"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:659
+#: ai/includes/Admin/SettingsPage.php:669
 msgid "SEO"
 msgstr "SEO"
 
@@ -4898,7 +4927,7 @@ msgstr "Kompatibilität"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:662
+#: ai/includes/Admin/SettingsPage.php:672
 msgid "System"
 msgstr "System"
 
@@ -5731,75 +5760,128 @@ msgstr "✓ Alle Vorlagen erstellt."
 msgid "Some templates could not be created."
 msgstr "Einige Vorlagen konnten nicht erstellt werden."
 
-#: ai/includes/Admin/SettingsPage.php:262
+#: ai/includes/Admin/SettingsPage.php:263
+#, fuzzy
+msgid "Recreating…"
+msgstr "Wird erstellt…"
+
+#: ai/includes/Admin/SettingsPage.php:264
+#, fuzzy
+msgid "✓ All templates recreated."
+msgstr "✓ Alle Vorlagen erstellt."
+
+#: ai/includes/Admin/SettingsPage.php:265
+#, fuzzy
+msgid "Some templates could not be recreated."
+msgstr "Einige Vorlagen konnten nicht erstellt werden."
+
+#: ai/includes/Admin/SettingsPage.php:266
+msgid ""
+"This overwrites this template with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to it. This cannot be undone. "
+"Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:267
+msgid ""
+"This overwrites every template with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to them. This cannot be "
+"undone. Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:268
+#, fuzzy
+msgid "✓ All parts recreated."
+msgstr "✓ Alle Teile erstellt."
+
+#: ai/includes/Admin/SettingsPage.php:269
+#, fuzzy
+msgid "Some parts could not be recreated."
+msgstr "Einige Teile konnten nicht erstellt werden."
+
+#: ai/includes/Admin/SettingsPage.php:270
+msgid ""
+"This overwrites this template part with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to it. This cannot be undone. "
+"Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:271
+msgid ""
+"This overwrites every template part with a fresh copy from the active theme, "
+"discarding any Site Editor customisations made to them. This cannot be "
+"undone. Continue?"
+msgstr ""
+
+#: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts created."
 msgstr "✓ Alle Teile erstellt."
 
-#: ai/includes/Admin/SettingsPage.php:263
+#: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be created."
 msgstr "Einige Teile konnten nicht erstellt werden."
 
-#: ai/includes/Admin/SettingsPage.php:266
+#: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All translated."
 msgstr "✓ Alle übersetzt."
 
-#: ai/includes/Admin/SettingsPage.php:267
+#: ai/includes/Admin/SettingsPage.php:277
 msgid "Some translations failed."
 msgstr "Einige Übersetzungen sind fehlgeschlagen."
 
-#: ai/includes/Admin/SettingsPage.php:268
+#: ai/includes/Admin/SettingsPage.php:278
 msgid "Review carefully — links and slugs not updated."
 msgstr "Überprüfe sorgfältig — Links und Slugs wurden nicht aktualisiert."
 
-#: ai/includes/Admin/SettingsPage.php:270
-#: ai/includes/Admin/SettingsPage.php:274
-#: ai/includes/Admin/SettingsPage.php:281
+#: ai/includes/Admin/SettingsPage.php:280
+#: ai/includes/Admin/SettingsPage.php:284
+#: ai/includes/Admin/SettingsPage.php:291
 #: language-router/includes/class-lsflr-link-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:122
 msgid "Fixing…"
 msgstr "Wird repariert…"
 
-#: ai/includes/Admin/SettingsPage.php:271
+#: ai/includes/Admin/SettingsPage.php:281
 msgid "✓ Links fixed."
 msgstr "✓ Links repariert."
 
-#: ai/includes/Admin/SettingsPage.php:272
+#: ai/includes/Admin/SettingsPage.php:282
 msgid "Some link fixes failed."
 msgstr "Einige Link-Reparaturen sind fehlgeschlagen."
 
-#: ai/includes/Admin/SettingsPage.php:275
+#: ai/includes/Admin/SettingsPage.php:285
 msgid "✓ Parts fixed."
 msgstr "✓ Teile repariert."
 
-#: ai/includes/Admin/SettingsPage.php:276
+#: ai/includes/Admin/SettingsPage.php:286
 msgid "Some part fixes failed."
 msgstr "Einige Teile-Reparaturen sind fehlgeschlagen."
 
-#: ai/includes/Admin/SettingsPage.php:282
+#: ai/includes/Admin/SettingsPage.php:292
 msgid "✓ Nav refs fixed."
 msgstr "✓ Navigationsreferenzen repariert."
 
-#: ai/includes/Admin/SettingsPage.php:283
+#: ai/includes/Admin/SettingsPage.php:293
 msgid "Some nav ref fixes failed."
 msgstr "Einige Navigationsreferenz-Reparaturen sind fehlgeschlagen."
 
-#: ai/includes/Admin/SettingsPage.php:286
+#: ai/includes/Admin/SettingsPage.php:296
 msgid "✓ Pattern translated."
 msgstr "✓ Muster übersetzt."
 
-#: ai/includes/Admin/SettingsPage.php:287
+#: ai/includes/Admin/SettingsPage.php:297
 msgid "Pattern translation failed."
 msgstr "Musterübersetzung fehlgeschlagen."
 
-#: ai/includes/Admin/SettingsPage.php:290
+#: ai/includes/Admin/SettingsPage.php:300
 msgid "Hide"
 msgstr "Verbergen"
 
-#: ai/includes/Admin/SettingsPage.php:336
+#: ai/includes/Admin/SettingsPage.php:346
 msgid "Built-in preset instructions:"
 msgstr "Integrierte Voreinstellungen: "
 
-#: ai/includes/Admin/SettingsPage.php:337
+#: ai/includes/Admin/SettingsPage.php:347
 msgid ""
 "No built-in instructions — each AI feature uses its own tuned defaults. Fill "
 "in the Custom prompt instructions field below to add your own site-wide "
@@ -5809,35 +5891,35 @@ msgstr ""
 "abgestimmten Standardwerte. Fülle das Feld für benutzerdefinierte "
 "Anweisungen unten aus, um eigene siteweite Regeln hinzuzufügen."
 
-#: ai/includes/Admin/SettingsPage.php:372
+#: ai/includes/Admin/SettingsPage.php:382
 msgid "Modified"
 msgstr "Geändert"
 
-#: ai/includes/Admin/SettingsPage.php:376
+#: ai/includes/Admin/SettingsPage.php:386
 msgid "edit"
 msgstr "Bearbeiten"
 
-#: ai/includes/Admin/SettingsPage.php:377
+#: ai/includes/Admin/SettingsPage.php:387
 msgid "No published posts found for the selected filters."
 msgstr "Keine veröffentlichten Beiträge für die ausgewählten Filter gefunden."
 
-#: ai/includes/Admin/SettingsPage.php:380
+#: ai/includes/Admin/SettingsPage.php:390
 msgid "Just now"
 msgstr "Gerade eben"
 
-#: ai/includes/Admin/SettingsPage.php:381
+#: ai/includes/Admin/SettingsPage.php:391
 msgid "Score"
 msgstr "Punktzahl"
 
-#: ai/includes/Admin/SettingsPage.php:382
+#: ai/includes/Admin/SettingsPage.php:392
 msgid "Source title"
 msgstr "Quelltitel"
 
-#: ai/includes/Admin/SettingsPage.php:383
+#: ai/includes/Admin/SettingsPage.php:393
 msgid "Multilingual SEO overview"
 msgstr "Überblick über mehrsprachige SEO"
 
-#: ai/includes/Admin/SettingsPage.php:384
+#: ai/includes/Admin/SettingsPage.php:394
 msgid ""
 "Scores are a signal, not a verdict. Some content is structurally limited — "
 "very short pages, landing pages with little body text, or pages whose "
@@ -5851,7 +5933,7 @@ msgstr ""
 "diese Übersicht, um echte Paritätslücken zwischen den Sprachen zu erkennen, "
 "nicht um eine Zahl zu verfolgen."
 
-#: ai/includes/Admin/SettingsPage.php:385
+#: ai/includes/Admin/SettingsPage.php:395
 msgid ""
 "This is a WooCommerce system page (Shop, Cart, Checkout, etc.). Its content "
 "is managed by WooCommerce — the score reflects structural signals only, not "
@@ -5861,23 +5943,23 @@ msgstr ""
 "Inhalt wird von WooCommerce verwaltet — die Punktzahl spiegelt nur "
 "strukturelle Signale wider, nicht vom Nutzer bearbeitbare SEO-Inhalte."
 
-#: ai/includes/Admin/SettingsPage.php:421
+#: ai/includes/Admin/SettingsPage.php:431
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ai/includes/Admin/SettingsPage.php:433
+#: ai/includes/Admin/SettingsPage.php:443
 msgid "You do not have permission to manage these settings."
 msgstr "Du hast keine Berechtigung, diese Einstellungen zu verwalten."
 
-#: ai/includes/Admin/SettingsPage.php:643
+#: ai/includes/Admin/SettingsPage.php:653
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Einstellungen"
 
-#: ai/includes/Admin/SettingsPage.php:648
+#: ai/includes/Admin/SettingsPage.php:658
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: ai/includes/Admin/SettingsPage.php:693
+#: ai/includes/Admin/SettingsPage.php:703
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 

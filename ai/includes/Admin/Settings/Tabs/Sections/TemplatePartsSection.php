@@ -36,6 +36,18 @@ class TemplatePartsSection {
         <h3><?php esc_html_e( 'Template Parts', 'lingua-forge' ); ?></h3>
         <p><?php esc_html_e( 'Language-specific copies of the theme\'s template parts. Once scaffolded, templates are updated to reference the language-specific part.', 'lingua-forge' ); ?></p>
 
+        <!-- Wrapper serves as the `.lf-parts-group` anchor for bulk-action JS traversal. -->
+        <div class="lf-parts-group" data-lang="<?php echo esc_attr( $lang ); ?>">
+
+        <div class="lf-template-bulk-actions">
+            <button type="button"
+                    class="button lf-recreate-all-parts-btn"
+                    data-lang="<?php echo esc_attr( $lang ); ?>">
+                <?php esc_html_e( 'Re-create all', 'lingua-forge' ); ?>
+            </button>
+            <span class="lf-scaffold-row-msg"></span>
+        </div>
+
         <table class="widefat striped lf-template-scaffold-table">
             <thead>
                 <tr>
@@ -81,6 +93,12 @@ class TemplatePartsSection {
                                     data-slug="<?php echo esc_attr( $lang_slug ); ?>">
                                 <?php esc_html_e( 'Fix Nav', 'lingua-forge' ); ?>
                             </button>
+                            <button type="button"
+                                    class="button button-small lf-recreate-part-btn"
+                                    data-lang="<?php echo esc_attr( $lang ); ?>"
+                                    data-base="<?php echo esc_attr( $part_slug ); ?>">
+                                <?php esc_html_e( 'Re-create', 'lingua-forge' ); ?>
+                            </button>
                         <?php else : ?>
                             <button type="button"
                                     class="button button-small lf-scaffold-part-btn"
@@ -95,6 +113,8 @@ class TemplatePartsSection {
             <?php endforeach; ?>
             </tbody>
         </table>
+
+        </div>
 
     <?php
     }
