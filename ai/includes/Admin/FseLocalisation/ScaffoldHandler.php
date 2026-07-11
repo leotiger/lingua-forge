@@ -109,20 +109,38 @@ class ScaffoldHandler {
         $title_label = $defs[ $base_slug ]['title'];
         $title       = $title_label . ' ' . strtoupper( $lang );
 
+        // Namespace this DB row will be associated with — matches whichever
+        // owner the content came from, so the Site Editor groups it correctly
+        // (WooCommerce-derived templates appear under WooCommerce, not the
+        // active theme). Computed here (rather than after insert/update, as
+        // before) so it can also scope the existing-row lookup below.
+        $namespace = ( $source && $source->theme ) ? (string) $source->theme : $theme;
+
         // A re-create can target either a DB-stored template (update it in
         // place, keeping the same post ID) or a file-only template that has
         // never been saved to the DB (no existing post to find — falls
         // through to the same insert used for a brand-new template, which
         // creates the DB override).
-        $existing_posts = get_posts( [
-            'post_type'     => 'wp_template',
-            'name'          => $lang_slug,
-            'post_status'   => 'any',
-            'numberposts'   => 1,
-            'fields'        => 'ids',
-            'no_found_rows' => true,
-        ] );
-        $existing_post_id = $existing_posts ? (int) $existing_posts[0] : 0;
+        //
+        // Scoped to $namespace's wp_theme term (AUDIT-2026-07-11 §9 — the
+        // "theme-scoping edge"): WordPress's own wp_unique_post_slug() lets
+        // 'wp_template' posts from different themes/owners share the exact
+        // same post_name (e.g. two themes can each have their own "page-de"),
+        // scoped by the wp_theme taxonomy term rather than renamed. A bare
+        // post_name lookup with no theme filter (the previous approach here)
+        // could therefore match an unrelated existing row that merely shares
+        // this slug but belongs to a different theme or plugin — e.g. a
+        // leftover row from a theme that was since switched away from, or a
+        // WooCommerce-owned template — and silently repurpose it via
+        // wp_update_post() instead of creating a fresh, correctly-namespaced
+        // override. get_block_templates()'s 'theme' query arg filters by the
+        // same wp_theme term this method itself writes via wp_set_post_terms()
+        // below, so it correctly disambiguates.
+        $existing_templates = get_block_templates(
+            [ 'slug__in' => [ $lang_slug ], 'theme' => $namespace ],
+            'wp_template'
+        );
+        $existing_post_id = self::resolve_existing_post_id( $existing_templates );
         $was_recreate      = $existing_post_id > 0;
 
         if ( $existing_post_id ) {
@@ -152,7 +170,7 @@ class ScaffoldHandler {
         // Associate the new template with the source template's actual owner so
         // the Site Editor groups it correctly — WooCommerce-derived templates
         // appear under WooCommerce rather than under the active theme.
-        $namespace = ( $source && $source->theme ) ? (string) $source->theme : $theme;
+        // ($namespace was computed above, before the existing-row lookup.)
         wp_set_post_terms( (int) $post_id, $namespace, 'wp_theme' );
 
         // Tag the template with its language so the theme-switch notice can
@@ -291,15 +309,20 @@ class ScaffoldHandler {
         // keeping the same post ID) or a file-only part that has never been
         // saved to the DB (no existing post to find — falls through to the
         // same insert used for a brand-new part, which creates the DB override).
-        $existing_posts = get_posts( [
-            'post_type'     => 'wp_template_part',
-            'name'          => $lang_slug,
-            'post_status'   => 'any',
-            'numberposts'   => 1,
-            'fields'        => 'ids',
-            'no_found_rows' => true,
-        ] );
-        $existing_post_id = $existing_posts ? (int) $existing_posts[0] : 0;
+        //
+        // Scoped to the active theme's wp_theme term (AUDIT-2026-07-11 §9 —
+        // the "theme-scoping edge"): see the matching comment in
+        // ajax_scaffold_template() above for why an un-scoped post_name
+        // lookup is unsafe — a leftover part from a different theme sharing
+        // this slug could otherwise be silently repurposed instead of a
+        // fresh, correctly-namespaced override being created. Parts are
+        // always tagged with the active theme (never a plugin namespace —
+        // see wp_set_post_terms() below), so $theme alone is sufficient here.
+        $existing_parts   = get_block_templates(
+            [ 'slug__in' => [ $lang_slug ], 'theme' => $theme ],
+            'wp_template_part'
+        );
+        $existing_post_id = self::resolve_existing_post_id( $existing_parts );
         $was_recreate      = $existing_post_id > 0;
 
         if ( $existing_post_id ) {
@@ -428,5 +451,37 @@ class ScaffoldHandler {
             'buttons_html' => $buttons_html,
             'message'      => $message,
         ] );
+    }
+
+    /**
+     * Decide which existing DB post (if any) a re-create should update in
+     * place, from the result of a theme/namespace-scoped get_block_templates()
+     * call — extracted as a pure function so the decision itself is
+     * unit-testable without a WordPress boot (AUDIT-2026-07-11 §9:
+     * "the create/update decision logic could be extracted and unit-tested").
+     *
+     * `get_block_templates()` returns a mix of file-based candidates (no DB
+     * row — `wp_id` is 0/absent) and DB-stored ones (`wp_id` is the real post
+     * ID) for the requested slug, already scoped to the given theme/namespace
+     * by the caller's `'theme'` query arg. Only the first, DB-stored match
+     * (if any) is a valid update target; everything else means "insert fresh"
+     * — including the case where the only match is file-only (the theme
+     * ships an `.html` template with no DB override yet).
+     *
+     * @param array<int,object{wp_id?:int}> $candidates Result of get_block_templates().
+     * @return int Existing DB post ID to update in place, or 0 to insert a new post.
+     */
+    public static function resolve_existing_post_id( array $candidates ): int {
+        if ( empty( $candidates ) ) {
+            return 0;
+        }
+
+        $first = $candidates[0];
+
+        if ( ! isset( $first->wp_id ) || ! $first->wp_id ) {
+            return 0;
+        }
+
+        return (int) $first->wp_id;
     }
 }

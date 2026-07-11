@@ -50,11 +50,22 @@ final class TranslationBackfillIntegrationTest extends WP_UnitTestCase {
 			$p->setAccessible( true );
 			$p->setValue( Router::get_instance()->context, null );
 		}
+
+		// The feature is off by default as of 2.6.3 (AUDIT-2026-07-11 §1) and
+		// run() bails early with no usable provider/key — most tests here
+		// exercise the scan logic itself, so opt both in by default and let
+		// the handful of tests for the new gates override locally.
+		update_option( TranslationBackfill::ENABLED_OPTION, true, false );
+		\LinguaForge\AI\Core\KeyStore::set( 'anthropic', 'sk-ant-test-key' );
 	}
 
 	protected function tearDown(): void {
 		remove_all_filters( 'lf_languages_list' );
 		remove_all_filters( 'linguaforge_backfill_post_types' );
+		remove_all_filters( 'linguaforge_cpt_create_allowed' );
+
+		delete_option( TranslationBackfill::ENABLED_OPTION );
+		\LinguaForge\AI\Core\KeyStore::delete( 'anthropic' );
 
 		$timestamp = wp_next_scheduled( TranslationBackfill::CRON_HOOK );
 		if ( $timestamp ) {
@@ -311,5 +322,115 @@ final class TranslationBackfillIntegrationTest extends WP_UnitTestCase {
 		TranslationBackfill::unschedule();
 
 		$this->assertFalse( wp_next_scheduled( TranslationBackfill::CRON_HOOK ) );
+	}
+
+	// =========================================================================
+	// Settings → Behavior toggle (AUDIT-2026-07-11 §1)
+	// =========================================================================
+
+	public function test_maybe_schedule_unschedules_when_disabled(): void {
+		TranslationBackfill::maybe_schedule();
+		$this->assertNotFalse( wp_next_scheduled( TranslationBackfill::CRON_HOOK ), 'Pre-condition: event is scheduled while enabled.' );
+
+		update_option( TranslationBackfill::ENABLED_OPTION, false, false );
+		TranslationBackfill::maybe_schedule();
+
+		$this->assertFalse(
+			wp_next_scheduled( TranslationBackfill::CRON_HOOK ),
+			'Disabling the setting must unschedule the recurring event, not just skip scheduling a new one.'
+		);
+	}
+
+	public function test_run_does_nothing_when_disabled(): void {
+		$post_id = $this->make_source_post_with_gap();
+
+		update_option( TranslationBackfill::ENABLED_OPTION, false, false );
+		TranslationBackfill::run();
+
+		$this->assertFalse(
+			$this->is_queued( $post_id, self::TRANS_LANG ),
+			'run() must not scan or queue anything while the feature is disabled (the 2.6.3 default).'
+		);
+	}
+
+	// =========================================================================
+	// Provider/key bail (AUDIT-2026-07-11 §1)
+	// =========================================================================
+
+	public function test_run_does_nothing_without_a_configured_provider_key(): void {
+		$post_id = $this->make_source_post_with_gap();
+
+		\LinguaForge\AI\Core\KeyStore::delete( 'anthropic' );
+		TranslationBackfill::run();
+
+		$this->assertFalse(
+			$this->is_queued( $post_id, self::TRANS_LANG ),
+			'run() must bail before queuing any job when no AI provider key is configured.'
+		);
+	}
+
+	// =========================================================================
+	// WooCommerce exclusion + creation-gate filter (AUDIT-2026-07-11 §1)
+	// =========================================================================
+
+	public function test_product_post_type_is_excluded_by_default(): void {
+		if ( ! post_type_exists( 'product' ) ) {
+			$this->markTestSkipped( 'WooCommerce not loaded in this test environment.' );
+		}
+
+		$post_id = $this->make_source_post_with_gap( 'product' );
+
+		TranslationBackfill::run();
+
+		$this->assertFalse(
+			$this->is_queued( $post_id, self::TRANS_LANG ),
+			'product must be excluded from the automatic backfill scan by default.'
+		);
+	}
+
+	public function test_linguaforge_backfill_post_types_filter_can_still_opt_product_back_in(): void {
+		if ( ! post_type_exists( 'product' ) ) {
+			$this->markTestSkipped( 'WooCommerce not loaded in this test environment.' );
+		}
+
+		$post_id = $this->make_source_post_with_gap( 'product' );
+
+		add_filter( 'linguaforge_backfill_post_types', static fn (): array => [ 'product' ] );
+		TranslationBackfill::run();
+
+		$this->assertTrue(
+			$this->is_queued( $post_id, self::TRANS_LANG ),
+			'The linguaforge_backfill_post_types filter must still be able to opt product back in.'
+		);
+	}
+
+	public function test_linguaforge_cpt_create_allowed_filter_blocks_the_scan(): void {
+		$post_id = $this->make_source_post_with_gap( 'post' );
+
+		add_filter( 'linguaforge_cpt_create_allowed', static fn ( bool $allowed, string $post_type ): bool =>
+			'post' === $post_type ? false : $allowed, 10, 2 );
+
+		TranslationBackfill::run();
+
+		$this->assertFalse(
+			$this->is_queued( $post_id, self::TRANS_LANG ),
+			'A post type blocked via linguaforge_cpt_create_allowed must not be scanned, matching "Translate missing"/Sync.'
+		);
+	}
+
+	public function test_linguaforge_cpt_create_allowed_filter_leaves_other_types_scanned(): void {
+		$post_id = $this->make_source_post_with_gap( 'post' );
+		$page_id = $this->make_source_post_with_gap( 'page' );
+
+		add_filter( 'linguaforge_cpt_create_allowed', static fn ( bool $allowed, string $post_type ): bool =>
+			'post' === $post_type ? false : $allowed, 10, 2 );
+
+		TranslationBackfill::run();
+
+		$this->assertFalse( $this->is_queued( $post_id, self::TRANS_LANG ) );
+		$this->assertTrue(
+			$this->is_queued( $page_id, self::TRANS_LANG ),
+			'A post type not blocked by the filter must still be scanned normally.'
+		);
 	}
 }

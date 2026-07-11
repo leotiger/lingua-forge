@@ -560,6 +560,18 @@ class SettingsPage {
             false
         );
 
+        // ── Behavior — Automatic Translation Backfill (AUDIT-2026-07-11 §1) ──
+        // Off by default: absent in $_POST = unchecked = feature stays OFF.
+        // Re-checking maybe_schedule() immediately (rather than waiting for the
+        // next 'init') so toggling this off takes effect without an extra page
+        // load — it unschedules the recurring event right away when disabled.
+        update_option(
+            'linguaforge_backfill_enabled',
+            !empty($_POST['linguaforge_backfill_enabled']) ? 1 : 0,
+            false
+        );
+        \LinguaForge\AI\Features\TranslationBackfill::maybe_schedule();
+
         // ── Behavior — AI preset (replaces old compliance toggle) ────────────
         $preset_raw   = sanitize_key($_POST['linguaforge_active_preset'] ?? '');
         $valid_presets = array_keys(\LinguaForge\AI\Core\Config::presets());

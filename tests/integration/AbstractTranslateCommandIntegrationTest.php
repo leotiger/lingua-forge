@@ -309,6 +309,27 @@ final class AbstractTranslateCommandIntegrationTest extends WP_UnitTestCase {
 		$this->assertSame( $source_trid, get_post_meta( $target_id, '_lf_trid', true ) );
 	}
 
+	public function test_apply_translation_writes_translated_excerpt_on_create(): void {
+		// AUDIT-2026-07-11 §2: the create path previously discarded
+		// translated_excerpt entirely (only the update branch, tested above at
+		// line ~434, wrote it) — first-time translations were born with an
+		// empty excerpt. Fixed via the shared TranslationTrigger::build_create_args()
+		// helper so this and the other two creation paths can't drift again.
+		$source_id = $this->make_post( 'publish' );
+
+		$result = $this->invoke( 'apply_translation', [
+			$source_id,
+			'es',
+			[ 'output' => '<p>Contenido</p>', 'translated_title' => 'Título', 'translated_excerpt' => 'Resumen' ],
+			false,
+			false,
+		] );
+
+		$this->assertSame( 'created', $result['status'] );
+		$target = get_post( $result['target_id'] );
+		$this->assertSame( 'Resumen', $target->post_excerpt, 'A newly created translation must carry the AI-translated excerpt, not an empty one.' );
+	}
+
 	public function test_apply_translation_copies_source_thumbnail_on_create(): void {
 		$source_id     = $this->make_post( 'publish' );
 		$attachment_id = (int) $this->factory->attachment->create( [ 'post_parent' => $source_id ] );

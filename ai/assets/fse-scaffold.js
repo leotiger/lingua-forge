@@ -5,7 +5,6 @@
  *   • Single-template "Create" button   (.lf-scaffold-one-btn)
  *   • Per-row "Create missing" button   (.lf-scaffold-all-btn)
  *   • Single-part "Create" button       (.lf-scaffold-part-btn)
- *   • Per-row "Create all parts" button (.lf-scaffold-all-parts-btn)
  *
  * Depends on window.lfRouterTab (injected by SettingsPage before router-tab.js).
  */
@@ -347,45 +346,16 @@
     window.lfFseActions.recreateAllTemplates = recreateAllTemplatesInRow;
     window.lfFseActions.recreateAllParts     = recreateAllPartsInGroup;
 
-    // Per-row "Create all parts" button — creates every pending part in the row.
-    $(document).on('click', '.lf-scaffold-all-parts-btn', function () {
-        var $btn     = $(this);
-        var $partRow = $btn.closest('.lf-tpl-row');
-        var $msg     = $partRow.find('.lf-scaffold-row-msg');
-        var $pending = $partRow.find('.lf-scaffold-part-btn').not(':disabled');
-
-        if (!$pending.length) {
-            $msg.removeClass('lf-fail').addClass('lf-ok')
-                .text(s.allPartsDone || '✓ All parts created.');
-            return;
-        }
-
-        $btn.prop('disabled', true);
-        $msg.removeClass('lf-ok lf-fail').text('');
-
-        var total  = $pending.length;
-        var done   = 0;
-        var failed = 0;
-
-        $pending.each(function () {
-            var $oneBtn = $(this);
-            var $cell   = $oneBtn.closest('.lf-tpl-cell');
-            $oneBtn.prop('disabled', true).text(s.creating || 'Creating…');
-            scaffoldPart($oneBtn.data('lang'), $oneBtn.data('base'), $cell, function (success) {
-                done++;
-                if (!success) { failed++; }
-                if (done === total) {
-                    $btn.prop('disabled', false);
-                    if (failed === 0) {
-                        $msg.removeClass('lf-fail').addClass('lf-ok')
-                            .text(s.allPartsDone || '✓ All parts created.');
-                    } else {
-                        $msg.removeClass('lf-ok').addClass('lf-fail')
-                            .text(s.allPartsFail || 'Some parts could not be created.');
-                    }
-                }
-            });
-        });
-    });
+    // Note (AUDIT-2026-07-11 §7): a "Create all parts" bulk handler for
+    // .lf-scaffold-all-parts-btn used to live here, calling scaffoldPart()
+    // per pending part row. No button carrying that class was ever rendered
+    // in TemplatePartsSection.php — the Template Parts toolbar only ever
+    // exposed per-part "Create" buttons plus, later, Re-create all / Translate
+    // all / Fix all links / Fix all navs (none of which are "create the
+    // still-missing ones"). The handler was therefore genuinely unreachable
+    // dead code, not a wired feature; removed rather than adding a new button
+    // without a specific request for one. scaffoldPart() itself is still very
+    // much alive — used by the single-part Create/Re-create buttons above and
+    // by recreateAllPartsInGroup().
 
 }(jQuery));

@@ -1,4 +1,4 @@
-COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
+COMBINED COVERAGE  (unit + integration)  —  2026-07-11 13:43
 ──────────────────────────────────────────────────────────────────────
   File                                                           Cov%
 ──────────────────────────────────────────────────────────────────────
@@ -10,13 +10,13 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   ❌ ai/includes/Admin/FseLocalisation/PatternExpander.php        0%
   ❌ ai/includes/Admin/FseLocalisation/PatternHandler.php         0%
   ✅ ai/includes/Admin/FseLocalisation/RepairHandler.php         86%
-  ❌ ai/includes/Admin/FseLocalisation/ScaffoldHandler.php        0%
+  ❌ ai/includes/Admin/FseLocalisation/ScaffoldHandler.php        3%
   🔶 ai/includes/Admin/FseLocalisation/TemplateDefinitions.php   69%
   ❌ ai/includes/Admin/FseLocalisation/TranslateHandler.php       0%
   ✅ ai/includes/Admin/Language/LanguageUninstaller.php          99%
   ✅ ai/includes/Admin/Language/UninstallResult.php             100%
   ❌ ai/includes/Admin/MetaBox.php                               42%
-  🔶 ai/includes/Admin/PostListColumn.php                        73%
+  🔶 ai/includes/Admin/PostListColumn.php                        74%
   ❌ ai/includes/Admin/Settings/Panels/CacheStatsPanel.php        0%
   ❌ ai/includes/Admin/Settings/Panels/CompatibilityPanel.php     0%
   ❌ ai/includes/Admin/Settings/Panels/DebugFilesPanel.php        0%
@@ -49,7 +49,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   ❌ ai/includes/Admin/Settings/Tabs/Tab.php                      0%
   ❌ ai/includes/Admin/SettingsHelp.php                           0%
   ❌ ai/includes/Admin/SettingsPage.php                           0%
-  ✅ ai/includes/CLI/AbstractTranslateCommand.php                82%
+  ✅ ai/includes/CLI/AbstractTranslateCommand.php                81%
   ❌ ai/includes/CLI/CacheClearCommand.php                        0%
   ❌ ai/includes/CLI/Commands.php                                 0%
   ❌ ai/includes/CLI/FillTranslationsCommand.php                  0%
@@ -80,10 +80,10 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   ✅ ai/includes/Features/MetaDescription.php                    94%
   ✅ ai/includes/Features/Registry.php                          100%
   ✅ ai/includes/Features/Translation.php                        93%
-  ✅ ai/includes/Features/TranslationBackfill.php                89%
+  ✅ ai/includes/Features/TranslationBackfill.php                90%
   ✅ ai/includes/Features/TranslationMemoryTranslator.php        90%
   ❌ ai/includes/Features/TranslationQueue.php                   44%
-  🔶 ai/includes/Features/TranslationTrigger.php                 50%
+  🔶 ai/includes/Features/TranslationTrigger.php                 56%
   🔶 ai/includes/Integrations/WooCommerce/AdminSaveGuard.php     66%
   ❌ ai/includes/Integrations/WooCommerce/AttributeLabelAdmin.php   39%
   ❌ ai/includes/Integrations/WooCommerce/Bootstrap.php           4%
@@ -100,7 +100,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   ✅ ai/includes/Integrations/WooCommerce/TaxonomyDelegate.php   88%
   ❌ ai/includes/Integrations/WooCommerce/TermNameAdmin.php       0%
   ✅ ai/includes/Integrations/WooCommerce/TermNameFilter.php     84%
-  🔶 ai/includes/Integrations/WooCommerce/TermNameTranslator.php   65%
+  🔶 ai/includes/Integrations/WooCommerce/TermNameTranslator.php   68%
   ✅ ai/includes/Integrations/WooCommerce/VariationDelegate.php   94%
   ✅ ai/includes/Integrations/WooCommerce/VariationSync.php      88%
   🔶 ai/includes/Integrations/WooCommerce/WcOrderLang.php        66%
@@ -111,7 +111,7 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   🔶 ai/includes/Providers/OpenAI.php                            78%
   ✅ ai/includes/Providers/ProviderFactory.php                  100%
   ✅ ai/includes/Providers/WorkerConfig.php                     100%
-  ❌ ai/includes/Providers/WpAiClient.php                         0%
+  ✅ ai/includes/Providers/WpAiClient.php                        85%
   ❌ ai/includes/REST/FeatureController.php                      47%
   ✅ ai/includes/REST/RateLimiter.php                            81%
   ❌ language-router/includes/admin/class-columns.php             0%
@@ -145,4 +145,4 @@ COMBINED COVERAGE  (unit + integration)  —  2026-07-10 17:06
   ✅ language-router/includes/translation/class-trid-group.php   95%
   ❌ meta-description/meta-description.php                       27%
 ──────────────────────────────────────────────────────────────────────
-  TOTAL: 38.69%  (6796 / 17567 statements)
+  TOTAL: 38.89%  (6883 / 17700 statements)

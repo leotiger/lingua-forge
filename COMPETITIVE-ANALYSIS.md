@@ -2,7 +2,7 @@
 
 **Competitors:** WPML · Polylang · TranslatePress · Weglot · MultilingualPress
 **Scope:** Small to medium WordPress sites (1–50 editors, block/FSE themes, 2–10 languages)
-**Date:** June 2026 · Lingua Forge 2.3.1
+**Date:** July 2026 · Lingua Forge 2.6.4
 
 ---
 
@@ -106,7 +106,7 @@ Lingua Forge uses a UUID (TRID) shared across language posts to link them. WPML 
 
 > **Note (June 2026):** WPML's SEO features are delivered by the WPML SEO component (separate install; v2.2.x). Polylang Pro automatically adds hreflang and Open Graph tags and is designed to work alongside Yoast or Rank Math. TranslatePress provides hreflang, sitemaps, and OG/Twitter via the SEO Pack add-on. Weglot auto-manages hreflang and sitemaps (subdirectory mode); it does not output `x-default` by default.
 
-| Feature | Lingua Forge 2.3.1 | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
+| Feature | Lingua Forge 2.6.4 | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
 | hreflang output | ✅ (singular, archive, paginated, x-default; BCP 47 normalised) | ✅ WPML SEO component; hreflang now also in sitemaps since WPML SEO 2.2.x | ✅ Pro (auto-added) | ✅ SEO Pack add-on | ✅ auto (no x-default by default) | ✅ |
 | Self-referencing canonical aligned with hreflang | ✅ native (2.2.16); defers to detected SEO plugin | Via Yoast/Rank Math | Via SEO plugin | Via SEO Pack / SEO plugin | ⚠ cloud-managed | Via SEO plugin |
@@ -273,7 +273,7 @@ WooCommerce ships official language packs for all major languages; WordPress dow
 
 | | Lingua Forge | WPML | Polylang | TranslatePress | Weglot | MultilingualPress |
 |---|---|---|---|---|---|---|
-| WP-CLI commands | ✅ 5 commands (translate, retranslate, fill_translations, missing_translations, cache_clear) — shipped natively; more underway | ⚠ `wp wpml import process` (export/import only; no language management) | ⚠ Pro: native `wp pll language` + `wp pll setting` since 3.8 (Feb 2026); free tier: unofficial community package only | ❌ | ❌ | ⚠ language assignment to subsites + AutoTranslate trigger; multisite-scoped |
+| WP-CLI commands | ✅ 6 commands (translate, retranslate, fill_translations, missing_translations, cache_clear, fix_nav_lang) — shipped natively; more underway | ⚠ `wp wpml import process` (export/import only; no language management) | ⚠ Pro: native `wp pll language` + `wp pll setting` since 3.8 (Feb 2026); free tier: unofficial community package only | ❌ | ❌ | ⚠ language assignment to subsites + AutoTranslate trigger; multisite-scoped |
 | Public PHP API | ✅ (`linguaforge_*` wrapper functions) | ✅ (`wpml_*` filters/functions) | ✅ (`pll_*` functions) | Limited (hooks only) | Limited (REST API) | ✅ (MLP API) |
 | WordPress Multisite required | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ (prerequisite) |
 | Third-party plugin ecosystem dependency | None | Large (WPML-specific APIs widespread) | Moderate | Low | Low | Low |
@@ -320,11 +320,13 @@ Polylang's free tier has no FSE template translation support — block themes wo
 
 Lingua Forge takes the WordPress-native path: every template part — header, footer, navigation, reusable sections — has a language-specific equivalent built in the Site Editor. Each is a real WordPress entity, not a string-swapped version of a shared one. There is no ambiguity, no context collapse, and no shared-string problem. The Quick Translate tool makes building language variants of template parts fast. The result is a fully independent, editorially correct template structure per language. Templates, template parts, posts, pages, blocks — everything is a native WordPress object. Nothing sits outside WordPress's own data model.
 
-The complete FSE localisation workflow shipped natively in 1.6.0: scaffold a language variant of any template or template part, AI-translate it in one click, fix internal links to point at the correct language equivalents, fix template-part slug references, fix `wp:navigation` ref IDs so each header and footer loads the correct language navigation, and create language-specific `wp_navigation` copies with AI-translated labels — all from Settings → Router with no CLI or manual database work required. WP-CLI commands for templates and template parts remain on the roadmap as a future automation path, extending the same five existing commands that already cover posts and pages to the FSE layer.
+The complete FSE localisation workflow shipped natively in 1.6.0: scaffold a language variant of any template or template part, AI-translate it in one click, fix internal links to point at the correct language equivalents, fix template-part slug references, fix `wp:navigation` ref IDs so each header and footer loads the correct language navigation, and create language-specific `wp_navigation` copies with AI-translated labels — all from Settings → Router with no CLI or manual database work required. WP-CLI commands for templates and template parts remain on the roadmap as a future automation path, extending the same six existing commands that already cover posts and pages to the FSE layer.
+
+2.6.2 added force-overwrite tooling on top of that workflow — "Re-create" (per template/part) and "Re-create all" force a fresh copy from the active theme in place, discarding any Site Editor customisation, for the case where a theme update changes the base template or a customisation needs discarding. "Recreate All Languages" (and its templates-only / parts-only variants) runs the entire per-language sequence — re-create, AI-translate, fix links, fix parts, fix navs — across every active language in one click instead of tab by tab.
 
 ### SEO — complete multilingual SEO layer, no companion plugin required
 
-As of 2.3.1, Lingua Forge handles the full multilingual SEO surface natively. No third-party SEO plugin is required:
+As of 2.6.4, Lingua Forge handles the full multilingual SEO surface natively. No third-party SEO plugin is required:
 
 - **hreflang** — output for singular, archive, and paginated contexts; `x-default` pointing to the source language; BCP 47-normalised codes; duplicate output from Yoast, Rank Math, AIOSEO, and SEOPress suppressed automatically via filter
 - **Self-referencing canonical** — emitted per language version (2.2.16), aligned with Google's hreflang guidance (hreflang clusters require a self-referencing canonical); defers to a detected SEO plugin so the two never conflict
@@ -343,7 +345,7 @@ WPML delegates most SEO to Yoast/Rank Math with its WPML SEO add-on handling co-
 
 ### WP-CLI for automation at scale
 
-Lingua Forge ships five native WP-CLI commands covering the full editorial automation loop: `translate`, `retranslate`, `fill_translations`, `missing_translations`, and `cache_clear`. The `missing_translations` + `fill_translations` pipeline can identify and resolve translation gaps across an entire post type in a single shell session, and all commands integrate cleanly with CI/CD pipelines and cron jobs. More commands are underway.
+Lingua Forge ships six native WP-CLI commands covering the full editorial automation loop: `translate`, `retranslate`, `fill_translations`, `missing_translations`, `cache_clear`, and `fix_nav_lang` (backfills language/TRID metadata on `wp_navigation` posts created before v2.1.0). The `missing_translations` + `fill_translations` pipeline can identify and resolve translation gaps across an entire post type in a single shell session, and all commands integrate cleanly with CI/CD pipelines and cron jobs. More commands are underway.
 
 Polylang Pro added native CLI in version 3.8 (February 2026) — `wp pll language` for language management and `wp pll setting` for options — but these are limited to site configuration; no content translation commands exist. The free Polylang tier still relies on the unofficial community-maintained `polylang-cli` package. WPML exposes `wp wpml import process` for its export/import add-on but has no language management or translation commands. MultilingualPress provides CLI for language assignment to subsites and an AutoTranslate trigger, both scoped to its multisite architecture. TranslatePress and Weglot have no CLI support. Lingua Forge remains the only plugin in this space with native CLI for content translation and automation at scale.
 
@@ -356,6 +358,16 @@ Two post-list actions, added in 1.8.1 and 1.8.2, close the loop on batch editori
 **Retranslate outdated (1.8.2):** Target-language posts flagged with the ⚠ outdated indicator show a "From [lang]" dropdown and a Retranslate button inline in the Lang column. The selector lists every available source-language version in the translation group — useful when the Spanish version is more current than the English original and an editor wants to translate from Spanish rather than English. On click: the stale cache is cleared, AI translation reruns with force-refresh, the outdated flag is reset, and the meta description is regenerated — all without entering the editor.
 
 No competitor exposes AI translation actions directly in the post-list column. WPML and Polylang require entering the translation editor or using the WPML Translation Dashboard. TranslatePress and Weglot operate on page output, not on post-list controls. MultilingualPress requires working within each sub-site individually.
+
+### Sync, Trash + Siblings, and other 2.4–2.6 additions
+
+Six more editorial and integration-facing features shipped across the 2.4–2.6 line, on top of the workflows described above:
+
+- **Sync (2.6.0) and Template Sync (2.6.1)** — one click retranslates FROM any post in a translation group INTO every other configured language: missing siblings are created, existing ones are force-refreshed in place, and (deliberately, behind a confirmation dialog and an opt-in safeguard) a secondary-language post can even become the new source via back-translation. Template Sync does the lighter-weight equivalent for FSE template assignment alone, with no AI cost. No competitor offers a single-click "make every other language version match this one" action.
+- **Trash + Siblings (2.5.4)** — a "Trash + Siblings" row action and bulk action trash an entire translation group together in one step, rather than requiring an editor to locate and trash each language version individually.
+- **Asynchronous translation queue + self-healing backfill (2.4.0 / 2.5.3, gated behind an explicit Settings toggle since 2.6.3)** — `linguaforge_queue_translation()` lets a programmatic integration translate into many languages off-request (Action Scheduler / WP-Cron) instead of blocking on inline AI calls; an optional hourly scan can re-queue any (post, language) pair a lost or failed job left behind, with a 24-hour backoff after repeated failures so a mis-configured API key can't retry forever.
+- **"Your latest posts" front-page support (2.5.0)** — translated homepages at `/es/`, `/fr/`, etc. for sites not using a static front page, including a language-scoped post listing and a redirect from `/` to a returning visitor's detected language.
+- **Featured image copy + fixer (2.5.0)** — new translations automatically inherit the source post's featured image; a "Fix Featured Images" bulk action retroactively repairs existing translations that predate this.
 
 ### Single plugin, shared foundation
 
@@ -422,12 +434,10 @@ The following items are out of current scope by design, not competitive gaps:
 - **Non-technical translators** will do most of the translation and a visual click-to-translate front-end interface is the priority.
 - The site relies heavily on **hardcoded theme strings that bypass WordPress i18n** (`__()` / `_e()`) — the narrow category that Language Overrides and language-specific templates do not cover.
 - You want **AI translation included in the license price** (word quotas per plan) with a predictable annual bill rather than per-call API costs.
-- You want AI translation **included in the license price** (word quotas per plan) with a predictable annual bill rather than per-call API costs, and visual click-to-translate on any text is the priority for non-technical translators.
 
 ### Choose Weglot when:
 - **Setup speed** is paramount — Weglot is live in under 5 minutes with zero WordPress expertise.
 - The site is not running on WordPress alone (Shopify, Webflow, Squarespace) and you want one translation layer across all platforms.
-- The site is **not running WordPress** (Shopify, Webflow, Squarespace) and a single translation layer across all platforms is needed.
 - You are comfortable with translations living in **Weglot's cloud** and with pricing that scales with word count — and the budget supports it.
 
 ### Choose MultilingualPress when:
@@ -450,11 +460,11 @@ The following items are out of current scope by design, not competitive gaps:
 | **Weglot** | Non-technical teams, multi-platform, speed of setup | Fastest setup, cloud handles all content types including JS | Highest cost at scale, data sovereignty concerns, strong lock-in |
 | **MultilingualPress** | Enterprise, high-traffic, multisite-native, WooCommerce multi-store | Zero per-request overhead, complete isolation, performance, free open-source core | Requires Multisite, operational complexity, per-site configuration overhead |
 
-For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.3.1 already covers the full multilingual workflow that every competitor charges €99–€349+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
+For a small to medium WordPress site on a block theme — a business site, a magazine, a portfolio, a non-profit — Lingua Forge 2.6.4 already covers the full multilingual workflow that every competitor charges €99–€349+/year to provide. It does so at zero licensing cost, with an AI editorial toolset deeper than anything in this market, designed for the FSE architecture from the ground up, and with no extra storage layer, no string indexing, and no content locked in a third-party cloud.
 
 The differentiation is simple: **Lingua Forge gives a modern WordPress site the complete multilingual workflow — routing, a full native SEO layer, AI translation and content tools, and built-in WooCommerce — permanently free, FSE-native, with a developer experience (WP-CLI, AES-256 key encryption, PHP API, no lock-in) that no competitor matches and a native-block architecture that carries none of the string-interception or cloud-proxy overhead.**
 
-As of 2.3.1, Lingua Forge covers the complete multilingual SEO surface natively — hreflang, self-referencing canonical, Open Graph with locale tags, Schema.org JSON-LD with `inLanguage` annotations (including a language-aware BreadcrumbList), a chunked multilingual sitemap, native IndexNow submission of every language version, per-language noindex, WooCommerce product schema and OG tags, Social Icons block share: rewriting, and AI-powered SEO content analysis — with no companion SEO plugin required. It also covers the WooCommerce variable-product stack *and* the commerce lifecycle for a single-currency store: translated variable products display correct prices, stock, images, and variations; variation descriptions are translatable; attribute term names display in the visitor's language in both block themes and classic templates; product brands are delegated automatically; a REST write guard protects translated posts from external integration accidents; order language is captured at checkout and transactional emails are sent in it; coupons honour all language versions; and sales counts and reviews consolidate per product. Order-language emails, cross-language coupons, and shared reviews reach parity with WCML and Polylang-for-WooCommerce rather than leading them; multi-currency and multi-store remain out of scope by design. For everything else in the competitive surface, Lingua Forge is fully covered at zero licensing cost.
+As of 2.6.4, Lingua Forge covers the complete multilingual SEO surface natively — hreflang, self-referencing canonical, Open Graph with locale tags, Schema.org JSON-LD with `inLanguage` annotations (including a language-aware BreadcrumbList), a chunked multilingual sitemap, native IndexNow submission of every language version, per-language noindex, WooCommerce product schema and OG tags, Social Icons block share: rewriting, and AI-powered SEO content analysis — with no companion SEO plugin required. It also covers the WooCommerce variable-product stack *and* the commerce lifecycle for a single-currency store: translated variable products display correct prices, stock, images, and variations; variation descriptions are translatable; attribute term names display in the visitor's language in both block themes and classic templates; product brands are delegated automatically; a REST write guard protects translated posts from external integration accidents; order language is captured at checkout and transactional emails are sent in it; coupons honour all language versions; and sales counts and reviews consolidate per product. Order-language emails, cross-language coupons, and shared reviews reach parity with WCML and Polylang-for-WooCommerce rather than leading them; multi-currency and multi-store remain out of scope by design. For everything else in the competitive surface, Lingua Forge is fully covered at zero licensing cost.
 
 ---
 

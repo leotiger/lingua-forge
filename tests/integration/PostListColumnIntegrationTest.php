@@ -83,6 +83,15 @@
  *                                 permissions
  *   linguaforge_sync_templates() — the public API wrapper (ai/ai.php):
  *                                 $check_caps defaults to false, true enforces it
+ *   Per-target authorization    — (AUDIT-2026-07-11 §5) run_sync() and
+ *     (§5, cont.)                 run_sync_templates() each also check
+ *                                 current_user_can('edit_post', $target_id) — not
+ *                                 just the triggering post — before overwriting an
+ *                                 EXISTING sibling; a sibling the caller can't edit
+ *                                 is skipped and reported ('status' => 'skipped')
+ *                                 rather than silently written to. $check_caps =
+ *                                 false (the programmatic-caller default) bypasses
+ *                                 both checks together, same flag.
  *
  * NOT covered here (left for a follow-up pass):
  *   - render_seo_score_badge() — couples to SeoAnalysisPanel's stored score
@@ -143,6 +152,7 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 
 	private int $admin_id  = 0;
 	private int $subscriber_id = 0;
+	private int $author_id = 0;
 	private TridGroup $tg;
 
 	// =========================================================================
@@ -158,8 +168,13 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 
 		$this->tg = Router::get_instance()->trid_group;
 
-		$this->admin_id = (int) self::factory()->user->create( [ 'role' => 'administrator' ] );
+		$this->admin_id      = (int) self::factory()->user->create( [ 'role' => 'administrator' ] );
 		$this->subscriber_id = (int) self::factory()->user->create( [ 'role' => 'subscriber' ] );
+		// Author: can edit_post on their OWN posts but not another user's —
+		// used for the per-target authorization tests below (AUDIT-2026-07-11 §5).
+		// Unlike subscriber (no edit_post capability anywhere), author is the
+		// realistic "can trigger Sync at all, but not on every sibling" case.
+		$this->author_id = (int) self::factory()->user->create( [ 'role' => 'author' ] );
 		wp_set_current_user( $this->admin_id );
 	}
 
@@ -454,6 +469,33 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 		$this->assertNotNull( $outcome );
 		$this->assertSame( $attachment_id, (int) get_post_thumbnail_id( (int) $outcome['id'] ),
 			'The bulk "Translate missing" action must copy the source post\'s featured image onto the new translation.' );
+	}
+
+	public function test_ajax_fill_missing_writes_translated_excerpt_on_create(): void {
+		// AUDIT-2026-07-11 §2: create_linked_post() previously omitted
+		// translated_excerpt entirely — the 2.4.0 fix only reached
+		// TranslationTrigger::create_translated_post(), not this "Translate
+		// missing" / Sync creation path. Fixed via the shared
+		// TranslationTrigger::build_create_args() helper.
+		$source_id = (int) $this->factory->post->create( [
+			'post_status'  => 'publish',
+			'post_excerpt' => 'Short description',
+		] );
+		$this->tg->set_lang( $source_id, 'en' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			(string) wp_json_encode( [ 'title' => 'Título', 'content' => '<p>Contenido</p>', 'excerpt' => 'Resumen' ] )
+		), 10, 3 );
+
+		$resp    = $this->dispatch_fill_missing( $source_id );
+		$outcome = $resp['data']['results']['es'] ?? null;
+
+		$this->assertNotNull( $outcome );
+		$this->assertSame( 'created', $outcome['status'] );
+
+		$target = get_post( (int) $outcome['id'] );
+		$this->assertSame( 'Resumen', $target->post_excerpt,
+			'A newly created translation via "Translate missing" must carry the AI-translated excerpt, not an empty one.' );
 	}
 
 	public function test_ajax_fill_missing_reports_nothing_to_do_when_all_exist(): void {
@@ -938,6 +980,69 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 	}
 
 	// =========================================================================
+	// Per-target authorization (AUDIT-2026-07-11 §5)
+	// =========================================================================
+
+	/**
+	 * The nonce + current_user_can() check in ajax_sync() only covers the
+	 * TRIGGERING post. Before this fix, run_sync() would then force-refresh
+	 * every other existing sibling regardless of whether the current user
+	 * could edit it. An Author can edit their own post (the trigger) but not
+	 * another author's post (the sibling) — Sync must skip that sibling and
+	 * report it, not silently overwrite it.
+	 */
+	public function test_ajax_sync_skips_existing_sibling_current_user_cannot_edit(): void {
+		$trid      = $this->trid();
+		$source_id = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->author_id ] );
+		$es_id     = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->admin_id ] );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		$original_content = get_post( $es_id )->post_content;
+
+		wp_set_current_user( $this->author_id );
+
+		$resp = $this->dispatch_sync( $source_id );
+
+		// The only target ('es') was skipped, so overall success must be false.
+		$this->assertFalse( $resp['success'] ?? true,
+			'Sync must not report success when its only target was skipped for lack of permission.' );
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertNotNull( $outcome );
+		$this->assertSame( 'skipped', $outcome['status'] );
+
+		$this->assertSame( $original_content, get_post( $es_id )->post_content,
+			'A sibling the caller cannot edit must not be overwritten by Sync.' );
+	}
+
+	/**
+	 * linguaforge_sync_translations()'s $check_caps = false default (its
+	 * documented convention for trusted programmatic callers) must also
+	 * bypass the new per-target check — not just the triggering-post check —
+	 * otherwise an integration that intentionally opts out of capability
+	 * checks would still have its own writes silently skipped.
+	 */
+	public function test_linguaforge_sync_translations_check_caps_false_does_not_skip_targets(): void {
+		$trid      = $this->trid();
+		$source_id = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->author_id ] );
+		$es_id     = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->admin_id ] );
+		$this->tg->set_trid( $source_id, $trid ); $this->tg->set_lang( $source_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		add_filter( 'linguaforge_ai_provider', fn() => new StubProvider(
+			$this->translation_json( 'Título', '<p>Contenido</p>' )
+		), 10, 3 );
+
+		wp_set_current_user( $this->author_id );
+
+		$result = linguaforge_sync_translations( $source_id ); // $check_caps defaults false.
+
+		$this->assertTrue( $result['success'] ?? false );
+		$this->assertSame( 'updated', $result['results']['es']['status'] ?? null );
+		$this->assertSame( '<p>Contenido</p>', get_post( $es_id )->post_content );
+	}
+
+	// =========================================================================
 	// WooCommerce Sync safeguard
 	// =========================================================================
 
@@ -1236,6 +1341,30 @@ final class PostListColumnIntegrationTest extends WP_UnitTestCase {
 
 		$this->assertFalse( $resp['success'] ?? true );
 		$this->assertSame( 'Insufficient permissions.', $resp['data']['message'] ?? null );
+	}
+
+	/**
+	 * Same per-target authorization gap as run_sync() (AUDIT-2026-07-11 §5),
+	 * for the template-only Sync engine: writing _wp_page_template to a
+	 * sibling the caller cannot edit must be skipped and reported, not
+	 * applied regardless.
+	 */
+	public function test_ajax_sync_templates_skips_sibling_current_user_cannot_edit(): void {
+		$trid  = $this->trid();
+		$en_id = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->author_id ] );
+		$es_id = (int) self::factory()->post->create( [ 'post_status' => 'publish', 'post_author' => $this->admin_id ] );
+		$this->tg->set_trid( $en_id, $trid ); $this->tg->set_lang( $en_id, 'en' );
+		$this->tg->set_trid( $es_id, $trid ); $this->tg->set_lang( $es_id, 'es' );
+
+		wp_set_current_user( $this->author_id );
+
+		$resp = $this->dispatch_sync_templates( $en_id );
+
+		$outcome = $resp['data']['results']['es'] ?? null;
+		$this->assertNotNull( $outcome );
+		$this->assertSame( 'skipped', $outcome['status'] );
+		$this->assertSame( '', (string) get_post_meta( $es_id, '_wp_page_template', true ),
+			'A sibling the caller cannot edit must not have its template reassigned by Template Sync.' );
 	}
 
 	// =========================================================================

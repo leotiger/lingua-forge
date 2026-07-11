@@ -40,9 +40,28 @@ defined( 'ABSPATH' ) || exit;
  * not available, keeping the plugin functional on WP < 7.0 where the core
  * AI Client was not yet included.
  *
+ * ── Verified against the final WP 7.0 API (2026-07-11) ───────────────────
+ * WordPress 7.0 shipped 2026-05-20; this class was originally written against
+ * the March-2026 preview post linked below. Every builder method name and
+ * signature used here (using_system_instruction(), using_temperature(),
+ * using_max_tokens(), as_json_response(), is_supported_for_text_generation(),
+ * generate_text()) was checked against the shipped
+ * wp-includes/ai-client/class-wp-ai-client-prompt-builder.php and its
+ * underlying WordPress\AiClient\Builders\PromptBuilder (php-ai-client SDK)
+ * and matches exactly. One real discrepancy was found and fixed:
+ * with_history() takes a variadic list of WordPress\AiClient\Messages\DTO\Message
+ * objects, NOT the ['role' => ..., 'content' => ...] array shape the rest of
+ * this codebase's providers use — passing a plain array threw an uncaught
+ * PHP TypeError (with_history() is not one of WP_AI_Client_Prompt_Builder's
+ * "generating"/"support-check" methods, so its __call() wrapper does not
+ * catch/convert the failure to a WP_Error; a TypeError also isn't a subclass
+ * of Exception, so even the wrapper's own catch(Exception) would have missed
+ * it). See build_history_messages() below for the fix.
+ *
  * @since   2.3.0
  * @package LinguaForge\AI\Providers
  * @see     https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/
+ * @see     https://github.com/WordPress/WordPress/blob/master/wp-includes/ai-client/class-wp-ai-client-prompt-builder.php
  */
 class WpAiClient implements AIProviderInterface {
 
@@ -119,8 +138,11 @@ class WpAiClient implements AIProviderInterface {
 		}
 
 		if ( ! empty( $history ) ) {
-			// with_history() accepts the same role/content array format.
-			$builder->with_history( $history );
+			$history_messages = self::build_history_messages( $history );
+			if ( ! empty( $history_messages ) ) {
+				// with_history() is variadic — spread the built Message list.
+				$builder->with_history( ...$history_messages );
+			}
 		}
 
 		$builder->using_temperature( $this->config->temperature );
@@ -158,5 +180,62 @@ class WpAiClient implements AIProviderInterface {
 		}
 
 		return $text;
+	}
+
+	/**
+	 * Converts this codebase's ['role' => 'user'|'assistant', 'content' => string]
+	 * history array shape into the list of WordPress\AiClient\Messages\DTO\Message
+	 * objects with_history() actually requires.
+	 *
+	 * Uses dynamic (string) class names rather than literal `new UserMessage(...)`
+	 * calls, and checks class_exists() before touching them — the same
+	 * call_user_func()/function_exists() workaround this file already uses for
+	 * wp_ai_client_prompt() itself, because these WordPress\AiClient\* classes
+	 * only exist on WP 7.0+ and are not present in the wordpress-stubs package
+	 * this plugin's PHPStan run depends on. This keeps static analysis green on
+	 * WP < 7.0 support without suppressing the whole method.
+	 *
+	 * LF's 'system' role is filtered out by the caller before this method ever
+	 * runs (handled separately via using_system_instruction()); 'assistant'
+	 * maps to the SDK's MODEL role since WordPress\AiClient\Messages\Enums\
+	 * MessageRoleEnum only defines USER and MODEL. Any other/unrecognised role
+	 * is treated as USER rather than dropped, since a stray non-standard role
+	 * string is far more likely to be a user-authored turn than a model one.
+	 * Empty-content turns are skipped — Message's own validation would reject
+	 * an empty-parts message, and an empty turn carries no information anyway.
+	 *
+	 * @param array<array{role:string,content:string}> $history
+	 * @return array<object> List of Message instances; empty when the SDK
+	 *                       classes aren't available (e.g. under the unit test
+	 *                       suite, or on a WP version without the AI Client).
+	 */
+	private static function build_history_messages( array $history ): array {
+
+		$part_class  = 'WordPress\\AiClient\\Messages\\DTO\\MessagePart';
+		$user_class  = 'WordPress\\AiClient\\Messages\\DTO\\UserMessage';
+		$model_class = 'WordPress\\AiClient\\Messages\\DTO\\ModelMessage';
+
+		if ( ! class_exists( $part_class ) || ! class_exists( $user_class ) || ! class_exists( $model_class ) ) {
+			return [];
+		}
+
+		$messages = [];
+
+		foreach ( $history as $turn ) {
+			$role    = (string) ( $turn['role']    ?? '' );
+			$content = (string) ( $turn['content'] ?? '' );
+
+			if ( $content === '' ) {
+				continue;
+			}
+
+			$part = new $part_class( $content );
+
+			$message_class = ( $role === 'assistant' ) ? $model_class : $user_class;
+
+			$messages[] = new $message_class( [ $part ] );
+		}
+
+		return $messages;
 	}
 }

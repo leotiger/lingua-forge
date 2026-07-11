@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-10T18:50:22+00:00\n"
+"POT-Creation-Date: 2026-07-11T13:40:09+00:00\n"
 "PO-Revision-Date: 2026-07-05 23:40+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Turkish\n"
@@ -51,8 +51,8 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:177
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:375
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:398
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
 #: ai/includes/Admin/Settings/Tabs/Sections/PatternsSection.php:88
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:99
@@ -103,7 +103,7 @@ msgstr "Konuşma Dili"
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:35
 #: ai/includes/Admin/FseLocalisation/RepairHandler.php:36
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:42
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:243
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:261
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:42
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:220
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:357
@@ -157,7 +157,7 @@ msgstr "Geçersiz gönderi türü."
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:85
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:58
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:54
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:255
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:273
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:69
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:235
 msgid "Invalid or primary language."
@@ -282,22 +282,22 @@ msgstr "Geçersiz şablon türü."
 msgid "Template \"%s\" already exists."
 msgstr "\"%s\" zaten var."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:184
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:382
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:202
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:405
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:106
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:105
 #: ai/includes/Admin/SettingsPage.php:279
 msgid "Fix Links"
 msgstr "Bağlantıları Düzelt"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:189
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:207
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:110
 #: ai/includes/Admin/SettingsPage.php:283
 msgid "Fix Parts"
 msgstr "Parçaları Düzelt"
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:393
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:416
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:117
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:262
@@ -306,35 +306,35 @@ msgid "Re-create"
 msgstr "Oluştur"
 
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:208
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, fuzzy, php-format
 msgid "\"%s\" recreated."
 msgstr "\"%s\" oluşturuldu."
 
 #. translators: %s: template title such as "Page DE"
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:213
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
 #, php-format
 msgid "\"%s\" created."
 msgstr "\"%s\" oluşturuldu."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:262
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:280
 msgid "Invalid template part."
 msgstr "Geçersiz şablon parçası."
 
 #. translators: %s: template part slug such as header-de
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:272
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:290
 #, php-format
 msgid "Template part \"%s\" already exists."
 msgstr "\"%s\" şablon parçası zaten var."
 
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:387
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:410
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:111
 #: ai/includes/Admin/SettingsPage.php:290
 msgid "Fix Nav"
 msgstr "Gezintiyi Düzelt"
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:402
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:425
 #, fuzzy, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
@@ -342,7 +342,7 @@ msgstr[0] "\"%1$s\" oluşturuldu. %2$d şablon güncellendi."
 msgstr[1] "\"%1$s\" oluşturuldu. %2$d şablon güncellendi."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
-#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:413
+#: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
 #, php-format
 msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
@@ -595,56 +595,56 @@ msgstr ""
 "kılar. Diğer tüm özellikler her zaman küresel ön ayarı kullanır."
 
 #: ai/includes/Admin/MetaBox.php:853
-#: language-router/includes/class-lsflr-featured-image-fixer.php:321
+#: language-router/includes/class-lsflr-featured-image-fixer.php:320
 #: language-router/includes/class-lsflr-link-fixer.php:797
 #: ai/assets/admin-content-gen-modal.js:51 ai/assets/admin-diff-modal.js:49
 #: ai/assets/block-action.js:255 ai/assets/editor-translate.js:222
 msgid "Close"
 msgstr "Kapat"
 
-#: ai/includes/Admin/PostListColumn.php:108
+#: ai/includes/Admin/PostListColumn.php:109
 msgid "Translate missing"
 msgstr "Eksik çeviriyi çevir"
 
 #. translators: label prefix for the retranslate language picker
-#: ai/includes/Admin/PostListColumn.php:162
+#: ai/includes/Admin/PostListColumn.php:163
 msgid "From"
 msgstr "İle"
 
-#: ai/includes/Admin/PostListColumn.php:172
+#: ai/includes/Admin/PostListColumn.php:173
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:98
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:97
 msgid "Retranslate"
 msgstr "Yeniden çevir"
 
-#: ai/includes/Admin/PostListColumn.php:225
+#: ai/includes/Admin/PostListColumn.php:226
 msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:226
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
+#: ai/includes/Admin/PostListColumn.php:227
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:265
+#: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:266
+#: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:267
+#: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:472
+#: ai/includes/Admin/PostListColumn.php:473
 msgid ""
 "Last rule-based SEO score. Run analysis in Settings → SEO → Analysis to "
 "update."
@@ -652,7 +652,7 @@ msgstr ""
 "Son kural tabanlı SEO skoru. Güncellemek için Ayarlar → SEO → Analiz "
 "bölümünde analiz yapın."
 
-#: ai/includes/Admin/PostListColumn.php:520
+#: ai/includes/Admin/PostListColumn.php:521
 #: ai/includes/Admin/SettingsPage.php:275
 #: ai/includes/Admin/SettingsPage.php:289
 #: ai/includes/Admin/SettingsPage.php:295
@@ -662,16 +662,16 @@ msgstr ""
 msgid "Translating…"
 msgstr "Çeviriliyor…"
 
-#: ai/includes/Admin/PostListColumn.php:521
+#: ai/includes/Admin/PostListColumn.php:522
 msgid "Retranslating…"
 msgstr "Yeniden çeviriliyor…"
 
-#: ai/includes/Admin/PostListColumn.php:522
+#: ai/includes/Admin/PostListColumn.php:523
 #, fuzzy
 msgid "Syncing…"
 msgstr "Kopyalanıyor…"
 
-#: ai/includes/Admin/PostListColumn.php:523
+#: ai/includes/Admin/PostListColumn.php:524
 msgid ""
 "This retranslates every other language version of this post from this one — "
 "creating any that are missing and overwriting any that already exist "
@@ -679,28 +679,28 @@ msgid ""
 "be undone. Continue?"
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:524
+#: ai/includes/Admin/PostListColumn.php:525
 #, fuzzy
 msgid "Syncing templates…"
 msgstr "Kopyalanıyor…"
 
-#: ai/includes/Admin/PostListColumn.php:525
+#: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
 msgstr "✓ Tamamlandı"
 
-#: ai/includes/Admin/PostListColumn.php:526
+#: ai/includes/Admin/PostListColumn.php:527
 msgid "Error"
 msgstr "Hata"
 
-#: ai/includes/Admin/PostListColumn.php:568
-#: ai/includes/Admin/PostListColumn.php:874
-#: ai/includes/Admin/PostListColumn.php:1082
+#: ai/includes/Admin/PostListColumn.php:569
+#: ai/includes/Admin/PostListColumn.php:887
+#: ai/includes/Admin/PostListColumn.php:1131
 msgid "Navigation posts are translated via the Router tab, not this button."
 msgstr ""
 "Gezinme gönderileri, bu düğme yerine Router sekmesi aracılığıyla çevrilir."
 
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:607
+#: ai/includes/Admin/PostListColumn.php:608
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration. "
@@ -710,12 +710,12 @@ msgstr ""
 "gerektirir. Lütfen gerekli entegrasyonun yüklü ve aktif olduğundan emin olun."
 
 #. translators: %s: language code
-#: ai/includes/Admin/PostListColumn.php:748
+#: ai/includes/Admin/PostListColumn.php:749
 #, php-format
 msgid "No %s version found in this translation group."
 msgstr "Bu çeviri grubunda %s sürümü bulunamadı."
 
-#: ai/includes/Admin/PostListColumn.php:889
+#: ai/includes/Admin/PostListColumn.php:902
 msgid ""
 "Sync from a secondary-language WooCommerce product is disabled by default, "
 "since it would overwrite the primary product. Enable it in Settings → "
@@ -723,15 +723,20 @@ msgid ""
 "new source content."
 msgstr ""
 
-#: ai/includes/Admin/PostListColumn.php:897
+#: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
 msgstr ""
 
+#: ai/includes/Admin/PostListColumn.php:966
+#, fuzzy
+msgid "Skipped — you do not have permission to edit the existing translation."
+msgstr "Bu gönderiyi okuma izniniz yok."
+
 #. translators: %s: post type slug
-#: ai/includes/Admin/PostListColumn.php:961
+#: ai/includes/Admin/PostListColumn.php:997
 #, fuzzy, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
@@ -739,9 +744,14 @@ msgstr ""
 "\"%s\" gönderi türü için çeviri oluşturmak, aktif bir entegrasyon "
 "gerektirir. Lütfen gerekli entegrasyonun yüklü ve aktif olduğundan emin olun."
 
-#: ai/includes/Admin/PostListColumn.php:1095
+#: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
 msgstr ""
+
+#: ai/includes/Admin/PostListColumn.php:1180
+#, fuzzy
+msgid "Skipped — you do not have permission to edit this translation."
+msgstr "Bu gönderiyi okuma izniniz yok."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -2920,7 +2930,7 @@ msgstr ""
 "bakın."
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:198
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:228
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
@@ -3245,7 +3255,7 @@ msgstr "Tüm zamanlar"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:708
+#: ai/includes/Admin/SettingsPage.php:720
 msgid "AI Usage"
 msgstr "Yapay Zeka Kullanımı"
 
@@ -3411,7 +3421,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "WooCommerce SEO Ayarlarını Kaydet"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:702
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:714
 msgid "AI Provider"
 msgstr "AI Sağlayıcısı"
 
@@ -3539,7 +3549,7 @@ msgstr ""
 "Sağlayıcı yanıt vermedi. Detaylar için WordPress hata günlüğünü kontrol edin."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:704
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:716
 msgid "Behavior"
 msgstr "Davranış"
 
@@ -3667,7 +3677,46 @@ msgstr ""
 msgid "View built-in default"
 msgstr "Yerleşik varsayılanı görüntüle"
 
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
+#, fuzzy
+msgid "Automatic Translation Backfill"
+msgstr "Hızlı Çeviri"
+
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
+msgid ""
+"Periodically scans for posts missing a translation in an active language and "
+"queues an AI translation for each gap found — the same recovery you can "
+"already trigger by hand via \"Translate missing\" or the WP-CLI "
+"missing_translations/fill_translations commands, run automatically once an "
+"hour instead."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
+msgid "Automatic backfill"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
+msgid "Automatically translate posts missing a language version"
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
+msgid ""
+"Off by default. This feature makes AI provider requests — and spends the "
+"associated API cost — automatically and in the background, with no per-"
+"request confirmation, for every published post found without a translation "
+"in an active language. Turn this on only if you want every content gap "
+"translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
+"commands to translate on your own schedule."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
+msgid ""
+"WooCommerce products and variations are never included, regardless of this "
+"setting. An integration can also block specific post types via the "
+"linguaforge_cpt_create_allowed filter."
+msgstr ""
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
 "The \"Sync\" button in the post list Lang column retranslates a post out "
 "into every other language, including the primary/source post when it's run "
@@ -3676,17 +3725,17 @@ msgid ""
 "separate setting below — this one does not affect them.)"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:207
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 #, fuzzy
 msgid "Secondary-language Sync"
 msgstr "İkincil diller yapılandırılmadı."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
 "Off by default: clicking \"Sync\" on a translation is blocked from "
 "overwriting the primary post. Syncing FROM the primary post to every "
@@ -3695,7 +3744,7 @@ msgid ""
 "content."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:201
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
 "The primary-language product is WooCommerce's operational source of truth "
 "for price, SKU, and stock, which are always served from it regardless of "
@@ -3704,11 +3753,11 @@ msgid ""
 "the other."
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:217
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
 msgstr ""
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:220
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
 "Off by default: clicking \"Sync\" on a translated WooCommerce product is "
 "blocked, since it would back-translate onto the primary product's title, "
@@ -3872,7 +3921,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:706
+#: ai/includes/Admin/SettingsPage.php:718
 msgid "Glossary"
 msgstr "Terim Sözlüğü"
 
@@ -4034,7 +4083,7 @@ msgid "Add entry"
 msgstr "Giriş ekle"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:703
+#: ai/includes/Admin/SettingsPage.php:715
 msgid "Limits"
 msgstr "Sınırlar"
 
@@ -4261,12 +4310,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:709
+#: ai/includes/Admin/SettingsPage.php:721
 msgid "Maintenance"
 msgstr "Bakım"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:705
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:717
 msgid "Router"
 msgstr "Yönlendirici"
 
@@ -4845,7 +4894,7 @@ msgstr "Tüm parçaları düzelt"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:707
+#: ai/includes/Admin/SettingsPage.php:719
 msgid "SEO"
 msgstr "SEO"
 
@@ -4885,7 +4934,7 @@ msgstr "Uyumluluk"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:710
+#: ai/includes/Admin/SettingsPage.php:722
 msgid "System"
 msgstr "Sistem"
 
@@ -5967,15 +6016,15 @@ msgstr "Ayarlar"
 msgid "You do not have permission to manage these settings."
 msgstr "Bu ayarları yönetme izniniz yok."
 
-#: ai/includes/Admin/SettingsPage.php:691
+#: ai/includes/Admin/SettingsPage.php:703
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Ayarlar"
 
-#: ai/includes/Admin/SettingsPage.php:696
+#: ai/includes/Admin/SettingsPage.php:708
 msgid "Settings saved."
 msgstr "Ayarlar kaydedildi."
 
-#: ai/includes/Admin/SettingsPage.php:741
+#: ai/includes/Admin/SettingsPage.php:753
 msgid "Save Settings"
 msgstr "Ayarları Kaydet"
 
@@ -6266,16 +6315,16 @@ msgstr ""
 "Kredi kalmadı — OpenAI hesabınızı platform.openai.com/account/billing "
 "adresinden yükleyin."
 
-#: ai/includes/Providers/WpAiClient.php:72
+#: ai/includes/Providers/WpAiClient.php:91
 msgid "WordPress AI Client requires WordPress 7.0 or later."
 msgstr ""
 "WordPress AI İstemcisi, WordPress 7.0 veya sonraki sürümleri gerektirir."
 
-#: ai/includes/Providers/WpAiClient.php:95
+#: ai/includes/Providers/WpAiClient.php:114
 msgid "No user message found in the message array."
 msgstr "Mesaj dizisinde kullanıcı mesajı bulunmamaktadır."
 
-#: ai/includes/Providers/WpAiClient.php:137
+#: ai/includes/Providers/WpAiClient.php:159
 msgid ""
 "No text-generation model is available. Configure an AI provider in Settings "
 "→ Connectors."
@@ -6384,33 +6433,33 @@ msgstr ""
 "Çevirilerinizi yeni temaya taşımak için, <strong>Ayarlar → Lingua Forge → "
 "Yönlendirici → FSE iskeleti</strong> aracılığıyla yeniden oluşturun."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:96
+#: language-router/includes/class-lsflr-featured-image-fixer.php:95
 msgid "Scanning posts for missing or out-of-sync featured images…"
 msgstr ""
 "Yazılar eksik veya senkronizasyonu bozuk öne çıkan görseller açısından "
 "taranıyor…"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:97
+#: language-router/includes/class-lsflr-featured-image-fixer.php:96
 #: language-router/includes/class-lsflr-link-fixer.php:82
 msgid "Re-scanning…"
 msgstr "Tekrar tarama…"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:98
+#: language-router/includes/class-lsflr-featured-image-fixer.php:97
 #: language-router/includes/class-lsflr-link-fixer.php:83
 msgid "Scan failed: "
 msgstr "Tarama başarısız: "
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:99
+#: language-router/includes/class-lsflr-featured-image-fixer.php:98
 #: language-router/includes/class-lsflr-link-fixer.php:84
 msgid "unknown error"
 msgstr "bilinmeyen hata"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:100
+#: language-router/includes/class-lsflr-featured-image-fixer.php:99
 #: language-router/includes/class-lsflr-link-fixer.php:85
 msgid "Scan request failed. Please try again."
 msgstr "Tarama isteği başarısız oldu. Lütfen tekrar deneyin."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:101
+#: language-router/includes/class-lsflr-featured-image-fixer.php:100
 #: language-router/includes/class-lsflr-link-fixer.php:86
 msgid ""
 "⚠ No <strong>{lang}</strong> posts found. Make sure all translated posts "
@@ -6420,7 +6469,7 @@ msgstr ""
 "⚠ <strong>{lang}</strong> gönderisi bulunamadı. Tüm çevrilmiş gönderilerin "
 "Dil meta kutusunda <strong>{lang}</strong> olarak ayarlandığından emin olun."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:102
+#: language-router/includes/class-lsflr-featured-image-fixer.php:101
 msgid ""
 "✅ All <strong>{lang}</strong> featured images are already in sync with their "
 "source post. Scanned <strong>{scanned}</strong> post(s)."
@@ -6428,7 +6477,7 @@ msgstr ""
 "✅ Tüm <strong>{lang}</strong> öne çıkan görseller, kaynak gönderileriyle "
 "zaten senkronizedir. Tarandı <strong>{scanned}</strong> gönderi(ler)."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:103
+#: language-router/includes/class-lsflr-featured-image-fixer.php:102
 msgid ""
 "Found <strong>{n}</strong> post(s) missing or out of sync with their source "
 "featured image, out of <strong>{scanned}</strong> scanned for <strong>{lang}"
@@ -6438,65 +6487,65 @@ msgstr ""
 "senkronize olmayan bulundu, <strong>{scanned}</strong> taranmış yazı içinden "
 "<strong>{lang}</strong> için."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:104
+#: language-router/includes/class-lsflr-featured-image-fixer.php:103
 #: language-router/includes/class-lsflr-link-fixer.php:92
 msgid "Post"
 msgstr "Gönderi"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:105
+#: language-router/includes/class-lsflr-featured-image-fixer.php:104
 msgid "Current"
 msgstr "Mevcut"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:106
+#: language-router/includes/class-lsflr-featured-image-fixer.php:105
 msgid "Source (EN)"
 msgstr "Kaynak terim"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:107
+#: language-router/includes/class-lsflr-featured-image-fixer.php:106
 msgid "None"
 msgstr "Hiçbiri"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:108
+#: language-router/includes/class-lsflr-featured-image-fixer.php:107
 msgid "Copy from source"
 msgstr "Kaynaktan kopyala"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:109
+#: language-router/includes/class-lsflr-featured-image-fixer.php:108
 msgid "Copying…"
 msgstr "Kopyalanıyor…"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:110
+#: language-router/includes/class-lsflr-featured-image-fixer.php:109
 msgid "✅ Copied"
 msgstr "✅ Kopyalandı"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:111
+#: language-router/includes/class-lsflr-featured-image-fixer.php:110
 #: language-router/includes/class-lsflr-link-fixer.php:100
 #: language-router/includes/class-lsflr-link-fixer.php:124
 msgid "❌ Failed"
 msgstr "❌ Başarısız"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:112
+#: language-router/includes/class-lsflr-featured-image-fixer.php:111
 #: language-router/includes/class-lsflr-link-fixer.php:101
 msgid "Done — {done} of {total} post(s) fixed."
 msgstr "Tamamlandı — {done} gönderi düzeltildi, toplam {total}."
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:113
+#: language-router/includes/class-lsflr-featured-image-fixer.php:112
 #: language-router/includes/class-lsflr-link-fixer.php:103
 msgid "Fixing {n} / {total}…"
 msgstr "{n} / {total} düzeltiliyor…"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:297
+#: language-router/includes/class-lsflr-featured-image-fixer.php:296
 msgid "Fix Featured Images"
 msgstr "Öne Çıkan Görselleri Düzelt"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:323
+#: language-router/includes/class-lsflr-featured-image-fixer.php:322
 msgid "Featured Image Fixer"
 msgstr "Öne Çıkan Görsel Düzenleyici"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:331
+#: language-router/includes/class-lsflr-featured-image-fixer.php:330
 #: language-router/includes/class-lsflr-link-fixer.php:807
 msgid "Fix All"
 msgstr "Tümünü Düzelt"
 
-#: language-router/includes/class-lsflr-featured-image-fixer.php:334
+#: language-router/includes/class-lsflr-featured-image-fixer.php:333
 #: language-router/includes/class-lsflr-link-fixer.php:810
 msgid "Re-scan"
 msgstr "Yeniden Tara"

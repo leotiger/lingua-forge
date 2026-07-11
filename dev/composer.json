@@ -58,7 +58,8 @@
             "./node_modules/.bin/wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/lingua-forge/dev && php -d memory_limit=512M vendor/bin/phpunit --configuration phpunit.xml.dist --testsuite=integration:wc --no-coverage'"
         ],
         "test:wc-latest": [
-            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin install woocommerce --force --activate && echo \"=== WC VERSION MATRIX RUN ===\" && wp plugin get woocommerce --field=version'",
+            "./node_modules/.bin/wp-env start --update",
+            "./node_modules/.bin/wp-env run tests-cli bash -c 'wp plugin activate woocommerce && echo \"=== WC VERSION MATRIX RUN ===\" && wp plugin get woocommerce --field=version'",
             "@test:integration:wc"
         ],
         "coverage:setup": "bash scripts/setup-coverage.sh",

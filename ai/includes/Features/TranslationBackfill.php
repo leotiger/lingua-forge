@@ -31,6 +31,8 @@
 
 namespace LinguaForge\AI\Features;
 
+use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\KeyStore;
 use LinguaForge\AI\Core\Log;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -39,6 +41,14 @@ class TranslationBackfill {
 
 	/** Cron hook the recurring scan runs on. */
 	public const CRON_HOOK = 'linguaforge_backfill_missing_translations';
+
+	/**
+	 * Settings → Behavior toggle. Off by default: since this feature spends the
+	 * site owner's AI-provider money automatically and in the background (see
+	 * §1 of AUDIT-2026-07-11.md), it must be an explicit opt-in rather than an
+	 * assumed-on behaviour of installing the AI module.
+	 */
+	public const ENABLED_OPTION = 'linguaforge_backfill_enabled';
 
 	/** Meta key on the *source* post holding per-target-language failure state. */
 	public const FAILURE_META_KEY = '_lf_translation_failures';
@@ -80,12 +90,30 @@ class TranslationBackfill {
 	}
 
 	/**
-	 * Ensure the recurring scan is scheduled. No-op if it already is.
+	 * Ensure the recurring scan is scheduled — but only when the feature is
+	 * actually enabled (Settings → Behavior). Unschedules on every check when
+	 * it isn't, so flipping the setting off takes effect on the very next
+	 * request rather than waiting for a pending event to fire once more.
+	 * No-op if the desired state (scheduled/unscheduled) already holds.
 	 */
 	public static function maybe_schedule(): void {
+
+		if ( ! self::is_enabled() ) {
+			self::unschedule();
+			return;
+		}
+
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', self::CRON_HOOK );
 		}
+	}
+
+	/**
+	 * Whether the automatic backfill is turned on. Off by default for new and
+	 * existing installs alike — see ENABLED_OPTION.
+	 */
+	public static function is_enabled(): bool {
+		return (bool) get_option( self::ENABLED_OPTION, false );
 	}
 
 	/**
@@ -112,8 +140,24 @@ class TranslationBackfill {
 	 */
 	public static function run(): void {
 
+		// Re-checked here, not just in maybe_schedule(): the cron event can
+		// already be in the queue from before the setting was turned off (a
+		// scheduled event isn't retroactively cancelled by disabling), and a
+		// stray manual trigger of the hook should also honour the setting.
+		if ( ! self::is_enabled() ) {
+			return;
+		}
+
 		if ( ! Registry::get( 'translation' ) ) {
 			Registry::init();
+		}
+
+		if ( ! self::provider_is_usable() ) {
+			// No provider configured, or no key set for it: every job this scan
+			// would queue is destined to fail. Bail instead of churning
+			// (post, lang) pairs into permanent failure/cooldown cycles on a
+			// site that never had AI configured in the first place.
+			return;
 		}
 
 		if ( ! class_exists( \LinguaForge\Router\Router::class ) ) {
@@ -149,11 +193,23 @@ class TranslationBackfill {
 	}
 
 	/**
+	 * True when the configured AI provider has a usable API key. Cheap,
+	 * synchronous check — no HTTP call — used to bail out of run() before
+	 * queuing jobs that would just fail (and get recorded as such) on a site
+	 * with no provider configured, or a revoked/never-set key.
+	 */
+	private static function provider_is_usable(): bool {
+		$provider = Config::provider();
+		return '' !== (string) KeyStore::get( $provider );
+	}
+
+	/**
 	 * Public post types the scan covers: 'post', 'page', and any public CPT,
-	 * minus WordPress' own internal types. Mirrors the exclusion list used by
-	 * the admin Lang column (class-columns.php) and filter dropdowns
-	 * (class-filters.php) so "which post types does Lingua Forge manage" stays
-	 * consistent across the plugin.
+	 * minus WordPress' own internal types, WooCommerce products/variations,
+	 * and any type an integration has blocked via linguaforge_cpt_create_allowed.
+	 * Mirrors the exclusion list used by the admin Lang column
+	 * (class-columns.php) and filter dropdowns (class-filters.php) so "which
+	 * post types does Lingua Forge manage" stays consistent across the plugin.
 	 *
 	 * @return string[]
 	 */
@@ -170,6 +226,23 @@ class TranslationBackfill {
 			array_keys( get_post_types( [ 'public' => true ] ) ),
 			$internal
 		) );
+
+		// WooCommerce products/variations are excluded by default: the backfill
+		// would otherwise autonomously create translated products via the one
+		// creation path that also skips variation sync (see AUDIT-2026-07-11
+		// §1 and §3). Integrations that want products included can still do so
+		// via the linguaforge_backfill_post_types filter below.
+		$types = array_diff( $types, [ 'product', 'product_variation' ] );
+
+		// Creation gate — same guard ajax_fill_missing()/run_sync() apply per
+		// post before creating a translation. Applied here per post TYPE so the
+		// scan never even queues a job for a type an integration (e.g. a
+		// programmatic-publisher delegation layer) has said isn't ready yet.
+		$types = array_filter( $types, static function ( string $post_type ): bool {
+			return (bool) apply_filters( 'linguaforge_cpt_create_allowed', true, $post_type );
+		} );
+
+		$types = array_values( $types );
 
 		/**
 		 * Filter the post types the automatic missing-translation backfill scans.

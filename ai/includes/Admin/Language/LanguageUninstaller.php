@@ -122,34 +122,59 @@ class LanguageUninstaller {
 	}
 
 	/**
-	 * Return all locale file paths (*.mo and *.po) whose basename starts with
-	 * the two-character language code.
+	 * Return all locale file paths (*.mo and *.po) belonging to $lang.
 	 *
-	 * Searches three directories:
-	 *   • $lang_dir/              — WP core language files (drives get_available_languages())
-	 *   • $lang_dir/plugins/      — plugin translation files
-	 *   • $lang_dir/themes/       — theme translation files
+	 * Searches three directories, each with its own correct matching rule
+	 * (AUDIT-2026-07-11 §4 — both were previously a single naive
+	 * `str_starts_with( basename, $lang )` prefix check, which is wrong-shaped
+	 * for two independent reasons):
+	 *   • $lang_dir/          — WP core language files (drives
+	 *     get_available_languages()). Root files are named exactly
+	 *     `{locale}.mo`/`.po` (e.g. `de_DE.mo`, `yor.mo`) — an EXACT-locale
+	 *     match via locale_root_matches() is required here, not a bare prefix:
+	 *     a plain prefix check on 'ar' also matches `ary.mo`/`arq.mo`
+	 *     (Moroccan/Algerian Arabic), 'ce' matches `ceb.mo` (Cebuano), 'az'
+	 *     matches `azb.mo`, 'ka' matches `kab.mo` — all of WordPress's own
+	 *     locale registry, where one language's slug happens to be a prefix
+	 *     of an unrelated sibling's. Uninstalling the wrong one deleted the
+	 *     wrong language's core pack.
+	 *   • $lang_dir/plugins/  — plugin translation files, named
+	 *     `{textdomain}-{locale}.mo` — the locale is a SUFFIX, not a prefix,
+	 *     so the old prefix check (a) never matched the target language's own
+	 *     packs there (`woocommerce-de_DE.mo` doesn't start with `de`) and
+	 *     (b) could match a wholly unrelated textdomain sharing the same
+	 *     leading letters (uninstalling 'ca' matched `cache-enabler-de_DE.mo`
+	 *     — every locale of an unrelated plugin — since "ca" is a prefix of
+	 *     "cache"). Now uses locale_suffix_matches(), the same matcher
+	 *     collect_override_files() already used correctly for this exact
+	 *     naming convention.
+	 *   • $lang_dir/themes/   — same convention and same fix as plugins/.
 	 *
 	 * Passing a custom $lang_dir is the unit-test seam — tests use a temp
 	 * directory with known fixtures instead of WP_LANG_DIR.
 	 *
-	 * @param  string $lang      Two-character language code (e.g. 'de').
+	 * @param  string $lang      Language code (e.g. 'de', or a bare 3-letter
+	 *                            code like 'yor' — see Context::lang_from_locale()).
 	 * @param  string $lang_dir  Root language directory. Defaults to WP_LANG_DIR.
 	 * @return string[]  Absolute file paths.
 	 */
 	public function collect_locale_files( string $lang, string $lang_dir = WP_LANG_DIR ): array {
 		$lang_dir = \trailingslashit( $lang_dir );
-		$dirs     = [
-			$lang_dir,
-			$lang_dir . 'plugins/',
-			$lang_dir . 'themes/',
-		];
 
 		$files = [];
-		foreach ( $dirs as $dir ) {
+
+		foreach ( [ '*.mo', '*.po' ] as $ext ) {
+			foreach ( glob( $lang_dir . $ext ) ?: [] as $path ) {
+				if ( $this->locale_root_matches( basename( $path ), $lang ) ) {
+					$files[] = $path;
+				}
+			}
+		}
+
+		foreach ( [ $lang_dir . 'plugins/', $lang_dir . 'themes/' ] as $dir ) {
 			foreach ( [ '*.mo', '*.po' ] as $ext ) {
 				foreach ( glob( $dir . $ext ) ?: [] as $path ) {
-					if ( str_starts_with( basename( $path ), $lang ) ) {
+					if ( $this->locale_suffix_matches( basename( $path ), $lang ) ) {
 						$files[] = $path;
 					}
 				}
@@ -160,14 +185,46 @@ class LanguageUninstaller {
 	}
 
 	/**
+	 * True when $basename is an exact WP-core-style locale file for $lang —
+	 * `{lang}.mo`/`.po` or `{lang}_{VARIANT}[_...].mo`/`.po` — not merely
+	 * prefixed by it. Used for the root $lang_dir scan; see collect_locale_files()'s
+	 * docblock for the collision class this closes (e.g. 'ar' no longer
+	 * matches 'ary.mo').
+	 */
+	private function locale_root_matches( string $basename, string $lang ): bool {
+		return (bool) preg_match(
+			'/^' . preg_quote( $lang, '/' ) . '(?:_[a-z0-9]+)*\.(?:mo|po)$/i',
+			$basename
+		);
+	}
+
+	/**
+	 * True when $basename's trailing `-{locale}.mo`/`.po` suffix (WordPress's
+	 * `{textdomain}-{locale}.mo` convention for plugin/theme translations and
+	 * this plugin's own i18n-overrides storage) resolves to $lang.
+	 *
+	 * Shared by collect_locale_files()'s plugins/themes scan and
+	 * collect_override_files() — both directories use this exact naming
+	 * convention, so both need the same suffix-anchored matcher rather than
+	 * the root directory's prefix-anchored one.
+	 *
+	 * @param  string $basename  File basename, e.g. 'woocommerce-de_DE.mo'.
+	 * @param  string $lang      Language code to match, e.g. 'de'.
+	 */
+	private function locale_suffix_matches( string $basename, string $lang ): bool {
+		return (bool) preg_match( '/-([a-z]{2,3})(?:_[a-z]{2})?\.(?:mo|po)$/i', $basename, $m )
+			&& strtolower( $m[1] ) === strtolower( $lang );
+	}
+
+	/**
 	 * Return override .mo/.po files (LanguageOverridesPanel's uploads-based
 	 * i18n-overrides directory) belonging to the given language.
 	 *
-	 * Unlike collect_locale_files(), files here follow WordPress's
-	 * {textdomain}-{locale}.mo convention — the locale is a SUFFIX, not a
-	 * prefix (e.g. "vikbooking-yo.mo", "lingua-forge-de_DE.mo") — so
-	 * collect_locale_files()'s str_starts_with() prefix check never matches
-	 * them. This directory is also entirely separate from WP_LANG_DIR: it is
+	 * Files here follow WordPress's {textdomain}-{locale}.mo convention — the
+	 * locale is a SUFFIX (e.g. "vikbooking-yo.mo", "lingua-forge-de_DE.mo") —
+	 * the same convention (and the same locale_suffix_matches() matcher) as
+	 * collect_locale_files()'s plugins/themes scan. This directory is also
+	 * entirely separate from WP_LANG_DIR: it is
 	 * Lingua Forge's own uploads-based storage, explicitly designed (see
 	 * LanguageOverridesPanel::render(), the "Loco Translate — Copy to Safe
 	 * Storage" section) to survive plugin/theme reinstalls and WP core
@@ -204,8 +261,7 @@ class LanguageUninstaller {
 		$files = [];
 		foreach ( [ '*.mo', '*.po' ] as $ext ) {
 			foreach ( glob( $overrides_dir . $ext ) ?: [] as $path ) {
-				if ( preg_match( '/-([a-z]{2,3})(?:_[a-z]{2})?\.(?:mo|po)$/i', basename( $path ), $m )
-					&& strtolower( $m[1] ) === $lang ) {
+				if ( $this->locale_suffix_matches( basename( $path ), $lang ) ) {
 					$files[] = $path;
 				}
 			}

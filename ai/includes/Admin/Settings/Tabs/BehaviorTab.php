@@ -163,6 +163,36 @@ class BehaviorTab extends Tab {
             <?php endforeach; ?>
         </table>
 
+        <!-- ── Automatic Translation Backfill (§1, AUDIT-2026-07-11) ── -->
+        <h2><?php esc_html_e('Automatic Translation Backfill', 'lingua-forge'); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Periodically scans for posts missing a translation in an active language and queues an AI translation for each gap found — the same recovery you can already trigger by hand via "Translate missing" or the WP-CLI missing_translations/fill_translations commands, run automatically once an hour instead.', 'lingua-forge' ); ?>
+        </p>
+
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row">
+                    <?php esc_html_e('Automatic backfill', 'lingua-forge'); ?>
+                </th>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="linguaforge_backfill_enabled"
+                            value="1"
+                            <?php checked( (bool) get_option('linguaforge_backfill_enabled', false) ); ?>
+                        >
+                        <?php esc_html_e('Automatically translate posts missing a language version', 'lingua-forge'); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e('Off by default. This feature makes AI provider requests — and spends the associated API cost — automatically and in the background, with no per-request confirmation, for every published post found without a translation in an active language. Turn this on only if you want every content gap translated unattended; otherwise use "Translate missing" or the WP-CLI commands to translate on your own schedule.', 'lingua-forge'); ?>
+                        <?php esc_html_e('WooCommerce products and variations are never included, regardless of this setting. An integration can also block specific post types via the linguaforge_cpt_create_allowed filter.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
         <!-- ── Sync — general secondary-language safeguard ─────────── -->
         <h2><?php esc_html_e('Sync', 'lingua-forge'); ?></h2>
 

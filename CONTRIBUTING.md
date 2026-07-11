@@ -40,7 +40,12 @@ outside the plugin namespace.
   (boolean; off by default — the same restriction as
   `linguaforge_wc_allow_secondary_sync`, but for every OTHER post type;
   independent of it — enabling one does not enable the other; managed via
-  Settings → Behavior → Sync).
+  Settings → Behavior → Sync), `linguaforge_backfill_enabled` (boolean; off
+  by default — gates the hourly Automatic Translation Backfill scan
+  (`TranslationBackfill`); checked in both `maybe_schedule()` and `run()`, so
+  disabling it unschedules the recurring event immediately rather than
+  waiting for the current one to fire once more; managed via Settings →
+  Behavior → Automatic Translation Backfill).
 - **`admin_post_*` and `wp_ajax_*` action names.** Examples:
   `admin_post_linguaforge_clear_ai_cache`,
   `wp_ajax_linguaforge_test_provider`.
@@ -412,7 +417,7 @@ missing class.
 
 ```
 lingua-forge.php              Plugin entry point; defines constants, loads sub-modules
-uninstall.php                 Wipe-on-delete handler (named options + LIKE prefixes + tables)
+uninstall.php                 Wipe-on-delete handler (LIKE sweeps + tables + cron/AS cleanup)
 includes/
   class-updater.php           Self-hosted update checker (Linguaforge_Updater)
 
@@ -472,7 +477,7 @@ ai/                           AI features (translation, meta-description, excerp
                               WcOrderLang — captures language to _lf_order_lang; switches email locale
                               CouponTridMap — expands coupon product/category restrictions across TRID siblings
                               ProductReviewRouter — routes review submissions + reads to source product
-                              OrderItemNormalizer — rewrites translated product ID on new order items to source
+                              OrderItemNormalizer — rewrites translated product ID on new order line items to source
                               LocalAttributeTranslator — copies custom (non-taxonomy) attribute meta to translated product
                               AdminSaveGuard — suppresses duplicate-SKU notices when the conflict is a TRID sibling
                               PageTagRepair — repairs product post-tag assignments wiped by WC type normalization
@@ -573,7 +578,32 @@ When adding a new setting, decide which tab it belongs in:
   toggles live in the **AI Usage** tab, not here.
 - **Router** — Language Router settings (active languages, browser
   redirect, slug handling). Has its own admin-post save action
-  (`linguaforge_save_router_settings`) and a Flush Permalinks action.
+  (`linguaforge_save_router_settings`) and a Flush Permalinks action. The
+  Templates / Template Parts / Language Setup panels (FSE scaffold + sync
+  tooling, 2.6.0–2.6.2) use these CSS class/ID namespaces, not previously
+  documented here: `.lf-tpl-row` (per-language wrapper — reused for BOTH the
+  Templates section's row and, since 2.6.2, each individual Template Part's
+  `<tr>`; disambiguate with the tag-qualified selector `div.lf-tpl-row` when
+  it matters), `.lf-parts-group` (Template Parts' per-language wrapper,
+  giving that panel a bulk-action scope the Templates panel already had via
+  `.lf-tpl-row`), `.lf-recreate-*-btn` / `.lf-recreate-all-*-btn` (force-
+  overwrite a template/part from the active theme, discarding Site Editor
+  customisations — guarded by `confirm()`), `#lf-global-recreate-btn` /
+  `#lf-global-recreate-parts-btn` / `#lf-global-recreate-templates-btn`
+  (the three "Recreate All Languages" variants above the language tabs,
+  full / parts-only / templates-only), `.lf-global-run-btn` (shared by all
+  three global buttons so a `running` guard mutually excludes them — they
+  can never overlap), `.lf-translate-row-btn` / `.lf-fix-links-row-btn` /
+  `.lf-fix-parts-row-btn` / `.lf-fix-nav-refs-row-btn` /
+  `.lf-fix-nav-refs-all-btn` (per-row and per-language-group bulk actions —
+  translate, fix links, fix template-part refs, fix `wp:navigation` refs).
+  Row-level click handlers in `fse-scaffold.js` / `fse-translate.js` /
+  `fse-link-fixer.js` / `fse-part-fixer.js` each extract their body into a
+  reusable function exposed on `window.lfFseActions`, so both the per-row
+  button and the global "Recreate All Languages" orchestrator
+  (`fse-global-actions.js`) call the same logic. Template Sync's own button
+  (`.lf-sync-templates`, post-list Lang column, not this settings page) is
+  documented in the Public PHP API table above instead, alongside Sync.
 - **Glossary** — per-language-pair terminology table. Has its own
   admin-post actions (`linguaforge_glossary_add`,
   `linguaforge_glossary_delete`).
@@ -742,7 +772,7 @@ from the source-language product at runtime:
 | `WcOrderLang` | `woocommerce_checkout_order_created`, `woocommerce_order_status_changed`, `woocommerce_email_before_order_table`, `woocommerce_email_footer` | Captures `LF_LANG` to `_lf_order_lang` on checkout; switches email locale to the saved order language for all transactional emails |
 | `CouponTridMap` | `woocommerce_coupon_is_valid_for_product` | Expands product and product-category IDs in coupon restrictions to include all TRID siblings so coupons apply correctly regardless of which language variant is in the cart |
 | `ProductReviewRouter` | `comment_post` priority 1, `comments_pre_query` priority 10 | Redirects review submissions targeting a translated product to the source product; serves source reviews on translated product pages |
-| `OrderItemNormalizer` | `woocommerce_new_order_item` priority 10 | Rewrites the translated product ID on new order line items to the source product ID so sales/stock statistics accumulate on the source |
+| `OrderItemNormalizer` | `woocommerce_checkout_create_order_line_item` priority 10 | Rewrites the translated product ID on new order line items to the source product ID so sales/stock statistics accumulate on the source |
 | `LocalAttributeTranslator` | `wp_after_insert_post` priority 35 | Copies custom (non-taxonomy) `_product_attributes` meta from source to translated product at save time so attribute labels are available without content delegation |
 | `AdminSaveGuard` | `wc_product_pre_has_unique_sku` (short-circuit, WC 9.0+), `wc_product_has_unique_sku` (legacy, observation-only), `save_post` priority 0 | Forces translated products/variations to pass WC's SKU-uniqueness check unconditionally via the genuine short-circuit filter; on source products, leaves WC's check intact but suppresses the spurious admin notice at `shutdown` when every conflicting row is a TRID sibling |
 | `PageTagRepair` | `wp_after_insert_post` priority 40 | Repairs `product` post-tag assignments on translated products when WC's type-normalization routine wipes them |
@@ -1683,12 +1713,21 @@ printf( esc_html__( 'T=%s', 'lingua-forge' ), $meta['temperature'] );
 A short checklist:
 
 1. **Pick the right prefix** (see the table above).
-2. **If it's an option**, add it to the `linguaforge_named_options`
-   array in `uninstall.php` so it gets cleaned up on plugin delete.
+2. **If it's an option prefixed `linguaforge_`, nothing to do in
+   `uninstall.php`** — its single `linguaforge\_%` LIKE sweep (and the
+   matching `_transient_linguaforge_%` / `_transient_timeout_linguaforge_%`
+   sweep, if it's a transient) already covers it, present or future
+   (AUDIT-2026-07-11 §6 replaced the old named-options array + narrow
+   per-feature LIKE prefixes with this, precisely because that array kept
+   drifting out of date — the SEO layer alone shipped ~15 options across
+   2.2.0 with none of them added). **If it's a short `lf_*` name outside
+   that prefix** (rare — only two exist), add an explicit `delete_option()`
+   call for it instead; don't widen the sweep to a bare `lf\_%`, which is
+   too short a prefix to be safe.
 3. **If it's a new table or schema bump**, version it with a dedicated
-   `_db_version` option and run `dbDelta` from a lazy
-   `ensure_table()`-style method. Add a `DROP TABLE IF EXISTS` line to
-   `uninstall.php`.
+   `_db_version` option (covered by the sweep above) and run `dbDelta` from
+   a lazy `ensure_table()`-style method. Add a `DROP TABLE IF EXISTS` line
+   to `uninstall.php`.
 4. **If it's a new filter or action hook**, document its signature in a
    docblock on the function that calls `apply_filters()` / `do_action()`.
    Use the appropriate prefix.
@@ -1703,15 +1742,27 @@ A short checklist:
 7. **If you're moving a class into a namespace**, run the
    global-class-reference audit (grep for the old bare class name across
    all PHP files) and update every call site before the PR lands.
-8. **If it's a new post-meta key**, check whether it should be in the
-   uninstall list and whether the generic unprefixed variant (if any)
-   is safe to delete — keys like `meta_description` may be shared with
-   other plugins and must not be wiped on uninstall.
-9. **Changelog entries in `docs/lf-update-manifest.php` and `readme.txt`
+8. **If it's a new post-meta key**, add it to one of `uninstall.php`'s two
+   meta-key lists — `$linguaforge_always_meta_keys` if it's regenerable/
+   derived bookkeeping (rebuilt or recomputed automatically, no editorial
+   value), or `$linguaforge_content_meta_keys` if it's an editorial
+   decision (only deleted when "Delete content data on uninstall" is
+   explicitly enabled). Unlike options, post meta has no LIKE sweep — these
+   keys must be listed by hand. Also check whether the generic unprefixed
+   variant (if any) is safe to delete — keys like `meta_description` may be
+   shared with other plugins and must not be wiped on uninstall.
+9. **If it's a new cron event or Action Scheduler job**, add a
+   `wp_clear_scheduled_hook()` (and, for Action Scheduler,
+   `as_unschedule_all_actions()` guarded by `function_exists()`) call to
+   `uninstall.php`'s scheduled-events section — cron/AS registrations have
+   no automatic sweep the way options do. (AUDIT-2026-07-11 §6: three
+   scheduled hooks and one AS action group had accumulated with no
+   uninstall-time cleanup at all before this line existed.)
+10. **Changelog entries in `docs/lf-update-manifest.php` and `readme.txt`
    contain the current release only** — never accumulate history there.
    Full history belongs in `CHANGELOG.md`. Replace the previous entry
    on every release; do not prepend to a growing list.
-10. **Don't touch `CHANGELOG.md`, `readme.txt`'s `Stable tag`, or the
+11. **Don't touch `CHANGELOG.md`, `readme.txt`'s `Stable tag`, or the
    `Version:` headers in `lingua-forge.php` / the constants in
    `lingua-forge.php`.** The maintainer cuts releases manually via
    SFTP/rsync and bumps version strings + writes changelog entries at

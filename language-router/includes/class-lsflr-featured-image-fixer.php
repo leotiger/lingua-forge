@@ -6,15 +6,14 @@
  * out of sync with their source-language sibling, and lets an editor copy
  * the source's featured image across — individually or in bulk.
  *
- * Why this exists: none of the built-in translation-creation paths
+ * Why this exists: since 2.5.0, all three built-in translation-creation paths
  * (TranslationTrigger, AbstractTranslateCommand, PostListColumn's bulk
- * "Translate" action) copy `_thumbnail_id` onto a newly created translation.
- * A translated post is therefore born with no featured image unless an
- * integration explicitly supplies one via the `linguaforge_translated_post_meta`
- * filter. Translation-creation now copies the source's thumbnail going
- * forward (see those three classes); this fixer covers translations that
- * already existed before that change, plus any post whose thumbnail was
- * changed on the source afterward and never re-synced on the translation.
+ * "Translate" action) copy the source's `_thumbnail_id` onto a newly created
+ * translation automatically (skipped when an integration already supplied
+ * one via the `linguaforge_translated_post_meta` filter). This fixer covers
+ * the two cases that automatic copy doesn't reach: translations created
+ * before 2.5.0 (born with no featured image at all), and any translation
+ * whose source's featured image changed afterward and was never re-synced.
  *
  * WooCommerce products are intentionally excluded: WooCommerce\MetaDelegate
  * already serves `_thumbnail_id` from the source product at read time for

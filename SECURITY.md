@@ -6,8 +6,12 @@ Only the latest minor release receives security fixes.
 
 | Version | Supported |
 |---------|-----------|
-| 2.3.x (latest) | ✅ |
-| < 2.3 | ❌ |
+| Latest minor release | ✅ |
+| Anything older | ❌ |
+
+(Deliberately not pinned to a specific version number here — this table went
+stale for several minor releases in a row when it was. Check the `Stable tag`
+in `readme.txt` or the latest GitHub release for the current version.)
 
 Patch releases are issued for confirmed security issues regardless of severity.
 Feature releases (minor bumps) may also carry security fixes — always update to

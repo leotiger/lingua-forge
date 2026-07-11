@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.2
+Stable tag: 2.6.4
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -218,7 +218,9 @@ This is a strictly functional cookie. It does not track behaviour, identify indi
 
 = AI features and content data =
 
-When an administrator uses the AI translation, generation, or revision features, the relevant post content is sent to the configured third-party AI provider. See the External Services section below for details on which providers are used and what data is transmitted. No content is sent automatically or without administrator action.
+When an administrator uses the AI translation, generation, or revision features, the relevant post content is sent to the configured third-party AI provider. See the External Services section below for details on which providers are used and what data is transmitted.
+
+An optional **Automatic Translation Backfill** (Settings → Behavior), off by default, periodically scans for posts missing a translation in an active language and sends their content to the configured AI provider without a per-request administrator action. Turning it on is itself the explicit administrator action that authorises this background sending. It never runs without a configured API key, and never includes WooCommerce products/variations. With this feature left off (the default), no content is ever sent automatically or without administrator action.
 
 = Data stored on your server =
 
@@ -230,12 +232,17 @@ The plugin stores the following data in your WordPress database:
 * AI usage statistics (token counts per date, user, feature, provider) in a custom table. No personally identifiable information beyond the WordPress user ID. Dropped on uninstall. Rows for a given user are removed when that user's data is erased via **Tools → Erase Personal Data** (WordPress privacy tools).
 * Language metadata (`_lang`, `_trid`, `_lf_trans_*`) stored as post meta on multilingual posts.
 * Order language (`_lf_order_lang`) stored as WooCommerce order meta when WooCommerce is active. This meta is covered by WooCommerce's own order anonymisation and erasure flows.
+* Translation-backfill failure state (`_lf_translation_failures`) as post meta on a source post, only while Automatic Translation Backfill is enabled and only for (post, language) pairs that failed. Cleared automatically on a successful retry.
 
 All custom tables and plugin-specific options are removed on uninstall.
 
 == External Services ==
 
-This plugin connects to third-party AI APIs to generate and translate content. Connections are only made when an administrator has configured an API key and a user explicitly triggers an AI feature (Generate, Translate, etc.). No data is sent automatically or in the background.
+This plugin connects to third-party AI APIs to generate and translate content. Connections require an administrator to have configured an API key.
+
+By default, connections are also gated on a user explicitly triggering an AI feature (Generate, Translate, Quick Translate, Sync, etc.) — no data is sent automatically or in the background.
+
+If an administrator opts into **Automatic Translation Backfill** (Settings → Behavior → Automatic Translation Backfill, off by default), the plugin additionally sends post content to the configured AI provider on an hourly schedule, without further per-request action, for any published post found missing a translation in an active language. This background sending only occurs while that setting is turned on, and never for WooCommerce products/variations.
 
 = Anthropic (Claude) =
 Used when the active provider is set to Anthropic.
@@ -284,6 +291,22 @@ The plugin periodically checks for updates by fetching a small JSON manifest fro
 The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), passes PHPStan level 5 with WordPress stubs, and is verified clean by the official WordPress Plugin Check tool. JavaScript and CSS are linted via ESLint and Stylelint (@wordpress/scripts). A PHPUnit test suite (unit + integration) ships alongside the source. Source code and contributing guide at https://github.com/leotiger/lingua-forge.
 
 == Changelog ==
+
+= 2.6.4 =
+* Fixed: A first-time translated post created via "Translate missing"/Sync (`PostListColumn::create_linked_post()`) or the WP-CLI `translate`/`fill_translations` commands (`AbstractTranslateCommand::create_trid_linked_post()`) was born with no excerpt — only `TranslationTrigger::create_translated_post()` (the path third-party integrations use) carried it, a gap left by the 2.4.0 excerpt fix. All three creation paths now build their common `wp_insert_post()` args (title, content, status, type, author, excerpt) through one new shared helper, `TranslationTrigger::build_create_args()`, so a future fix to a common field lands in all three by construction instead of requiring a repeat spot-fix. (`ai/includes/Features/TranslationTrigger.php`, `ai/includes/Admin/PostListColumn.php`, `ai/includes/CLI/AbstractTranslateCommand.php`)
+* Fixed: A translated WooCommerce **variable product** created via the programmatic API (`linguaforge_trigger_translation()`/`linguaforge_queue_translation()`, including the Automatic Translation Backfill scan) or the WP-CLI create path was born with no translated variation children and no WC structural taxonomies (`product_type`, `pa_*`, `product_brand`) — the `wp_after_insert_post` hook that normally syncs these always saw an empty `_lf_lang` during creation and silently did nothing. Only "Translate missing"/Sync already compensated for this. All three creation paths now call one shared helper, `TranslationTrigger::sync_variation_children_if_product()`, explicitly after the TRID/lang meta is written. (`ai/includes/Features/TranslationTrigger.php`, `ai/includes/Admin/PostListColumn.php`, `ai/includes/CLI/AbstractTranslateCommand.php`)
+* Fixed: Uninstalling a language (Settings → Router → Danger Zone) could delete the wrong locale files, or miss the right ones, due to unanchored prefix matching in `collect_locale_files()`. At `WP_LANG_DIR` root, uninstalling `de` could also delete an unrelated `den_DK.mo`; uninstalling `ar`, `ce`, `az`, or `ka` could delete real dialect files (`ary`/`arq` Arabic, `ceb` Cebuano, `azb` South Azerbaijani, `kab` Kabyle) that merely share the 2-letter prefix. In the `plugins/`/`themes/` subdirectories, files use a `{textdomain}-{locale}.mo` suffix convention that the old prefix check couldn't match at all, so real files there were silently skipped. Two new helpers replace the old ambiguous regex: `locale_root_matches()` anchors the root-level match so a code can't be a false prefix of a longer one, and `locale_suffix_matches()` checks the actual `-{locale}.mo` suffix convention; `collect_override_files()` (i18n-overrides / Loco "Copy to Safe Storage") now shares the same suffix matcher instead of duplicating its own. (`ai/includes/Admin/Language/LanguageUninstaller.php`)
+* Fixed: **Sync** and **Template Sync** could overwrite a sibling translation the current user has no permission to edit — both checked `current_user_can()` only on the post you clicked, then wrote to every other post in the translation group regardless. Matters for Author-role setups: an Author who can trigger Sync on their own post could still have it overwrite a sibling authored by someone else. Both now check permissions per target too, skipping (and reporting) any post the current user can't edit instead of writing to it. Programmatic callers via `linguaforge_sync_translations()`/`linguaforge_sync_templates()` are unaffected, same as before. (`ai/includes/Admin/PostListColumn.php`)
+* Fixed: The uninstall cleanup (Delete on Plugins → Installed Plugins) had drifted ~30 options, several post meta keys, and every scheduled cron/Action Scheduler job behind current source — the whole SEO layer, sitemap bookkeeping, IndexNow's key, and several other settings had no delete path despite the plugin's own claim to remove "all linguaforge_*/lf_* options". Replaced with a single self-updating options sweep (covers any future option automatically), added the missing post meta keys, and now clears pending cron/Action Scheduler jobs too, so nothing keeps running after the plugin itself is gone. (`uninstall.php`)
+* Fixed: The FSE "Re-create" force path (Settings → Router → Templates and Template Parts) looked up the existing template/part to update in place with no theme scoping, so it could silently overwrite an unrelated same-slug row belonging to a different theme — WordPress itself allows two themes to share a template slug. The lookup is now scoped to the active theme/namespace, matching the pattern already used elsewhere in the same class. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`)
+* Fixed: The **WordPress AI Client** provider (WP 7.0+, Settings → Connectors) crashed with an uncaught PHP error on any multi-turn "Refine" request — reachable via AI Content Generation's or Chunk Translation's Refine step when this provider is selected. Verifying the provider against WordPress's shipped AI Client API (it was originally written against an earlier preview) found `with_history()` needs different input than was being sent; fixed by converting each conversation turn to the object type it actually expects. The other three AI providers (Anthropic, OpenAI, Gemini) were never affected. (`ai/includes/Providers/WpAiClient.php`)
+
+= 2.6.3 =
+* Changed: Automatic Translation Backfill (2.5.3) is now off by default and controlled by a new **Settings → Behavior → Automatic Translation Backfill** toggle — previously it ran unconditionally, hourly, for every site with the AI module active, with no setting to stop it. Enabling it is what now authorises the background AI sends the External Services section discloses. (`ai/includes/Features/TranslationBackfill.php`, `ai/includes/Admin/Settings/Tabs/BehaviorTab.php`, `ai/includes/Admin/SettingsPage.php`)
+* Fixed: The backfill scan no longer queues jobs when no AI provider/API key is configured — previously every queued job failed, and kept retrying on a 24-hour cooldown forever, on a site with no key set at all. (`ai/includes/Features/TranslationBackfill.php`)
+* Fixed: The backfill scan now respects the `linguaforge_cpt_create_allowed` filter per post type, matching "Translate missing" and Sync — previously it was the one creation path that bypassed this integration gate entirely. (`ai/includes/Features/TranslationBackfill.php`)
+* Changed: WooCommerce products and variations are now excluded from the backfill scan by default, since the scan's only creation path doesn't run variation sync (see #3, `AUDIT-2026-07-11.md`). Still reachable via the existing `linguaforge_backfill_post_types` filter if an integration wants them included. (`ai/includes/Features/TranslationBackfill.php`)
+* Changed: `readme.txt`'s External Services / AI-data-and-privacy sections now disclose the background AI sends Automatic Translation Backfill makes when enabled, correcting prior wording that said no data is ever sent automatically.
 
 = 2.6.2 =
 * Added: "Re-create all" and per-template "Re-create" buttons in Settings → Router → Templates — force-overwrite an existing FSE template with a fresh copy from the active theme, discarding any Site Editor customisations. Unlike "Create missing"/"Create", which refuse to touch a template that already exists, Re-create replaces the content in place (keeping the same post ID when a DB-stored copy already exists) and is guarded by a confirmation dialog since it can't be undone. New `force` POST param on the existing `linguaforge_scaffold_template` AJAX action. (`ai/includes/Admin/FseLocalisation/ScaffoldHandler.php`, `ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php`, `ai/assets/fse-scaffold.js`)
@@ -363,6 +386,12 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.4 =
+Fixes missing excerpts/WC variation children on first translations, uninstall gaps (locale files, options/cron sweep), missing per-target Sync permission checks, FSE Re-create's theme-scoping, and a WP AI Client refine-request crash. No database changes. No flush required.
+
+= 2.6.3 =
+Automatic Translation Backfill (hourly AI translation of missing content) is now off by default with a new Settings → Behavior toggle — it previously ran unconditionally. No database changes. No flush required.
 
 = 2.6.2 =
 Adds Re-create (single + bulk, plus a cross-language "Recreate All Languages" run) for FSE templates and template parts. No database changes. No flush required.

@@ -6,6 +6,7 @@ use LinguaForge\AI\Core\TranslationDebug;
 use LinguaForge\AI\Features\MetaDescription;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
+use LinguaForge\AI\Features\TranslationTrigger;
 use LinguaForge\AI\Providers\WorkerConfig;
 
 defined('ABSPATH') || exit;
@@ -418,35 +419,19 @@ abstract class AbstractTranslateCommand {
             update_post_meta( $source_post_id, '_lf_trid', $trid );
         }
 
-        // ── Determine title ───────────────────────────────────────────────
-        $title = ! empty( $result['translated_title'] )
-            ? (string) $result['translated_title']
-            : $source->post_title . ' [' . strtoupper( $target_lang ) . ']';
-
-        // ── Resolve target post_status ────────────────────────────────────
-        // Mirror source status so a published source yields a published
-        // translation. Restrict to safe inheritable values; anything else
-        // (trash, auto-draft, pending, …) falls back to draft.
-        $allowed_statuses = [ 'publish', 'private', 'draft' ];
-        $target_status    = $force_draft
-            ? 'draft'
-            : ( in_array( $source->post_status, $allowed_statuses, true )
-                ? $source->post_status
-                : 'draft' );
+        // ── Common creation args (title, content, status, type, author, excerpt) ──
+        // Shared with TranslationTrigger::create_translated_post() and
+        // PostListColumn::create_linked_post() — see
+        // TranslationTrigger::build_create_args()'s docblock (AUDIT-2026-07-11 §2:
+        // this path previously omitted the translated excerpt at creation, the
+        // same bug the 2.4.0 fix only reached one of the three paths for).
+        $insert = TranslationTrigger::build_create_args( $source, $target_lang, $result, $force_draft );
 
         // ── Create the post, bypassing our own save hook ──────────────────
         // After §2.2 Router split: handle_save_post is on Sync, handle_cache_clear on TridGroup.
         $router = \LinguaForge\Router\Router::get_instance();
         remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'  ], 10 );
         remove_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
-
-        $insert = [
-            'post_title'   => $title,
-            'post_content' => (string) ( $result['output'] ?? '' ),
-            'post_status'  => $target_status,
-            'post_type'    => $source->post_type,
-            'post_author'  => (int) $source->post_author,
-        ];
 
         // ── Featured image — copy from source ──────────────────────────────
         // Without this the translation is born with no featured image at all.
@@ -496,6 +481,12 @@ abstract class AbstractTranslateCommand {
         // without this flush the language switcher keeps serving the stale
         // group until the target post is opened and re-saved in the editor.
         $router->trid_group->clear_translation_cache( $new_id );
+
+        // ── WooCommerce variation children + taxonomies (AUDIT-2026-07-11 §3) ──
+        // The wp_after_insert_post p30 hook that normally does this bailed
+        // during the insert above (its _lf_lang read was still empty), so it
+        // must be called explicitly now that the TRID/lang meta is written.
+        TranslationTrigger::sync_variation_children_if_product( (int) $new_id, $source );
 
         /**
          * Fires after a translated post has been created, linked into its TRID

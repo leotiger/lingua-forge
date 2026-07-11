@@ -31,6 +31,7 @@ use LinguaForge\AI\Core\CacheStore;
 use LinguaForge\AI\Features\MetaDescription;
 use LinguaForge\AI\Features\Registry;
 use LinguaForge\AI\Features\Translation;
+use LinguaForge\AI\Features\TranslationTrigger;
 use LinguaForge\Router\Router;
 
 defined( 'ABSPATH' ) || exit;
@@ -842,13 +843,25 @@ class PostListColumn {
 	 *     default, regardless of post type — see wc_secondary_sync_blocked()
 	 *     (WooCommerce products/variations) and general_secondary_sync_blocked()
 	 *     (everything else). Two independent settings, checked separately.
+	 *   - Per-target authorization (AUDIT-2026-07-11 §5): the $check_caps gate
+	 *     above only covers the TRIGGERING post. Before overwriting an
+	 *     EXISTING sibling (including the primary, once the safeguards above
+	 *     are relaxed), each target is also checked against
+	 *     `current_user_can('edit_post', $target_id)` when $check_caps is
+	 *     true; a target the caller can't edit is skipped and reported
+	 *     ('status' => 'skipped'), matching TrashCascade::trash_group()'s
+	 *     skip-and-report convention, rather than silently overwritten. A
+	 *     target that doesn't exist yet (about to be created) has nothing to
+	 *     authorize against and is unaffected.
 	 *
 	 * The source-language target (when present in the target set) is always
 	 * processed first, so its `_lf_source_updated_at` timestamp is fresh
 	 * before every other target below it is marked synced against it.
 	 *
 	 * @param  int  $post_id     Post to sync FROM.
-	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', $post_id).
+	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', ...) —
+	 *                           both for $post_id itself and, per the note above, for
+	 *                           each existing sibling about to be overwritten.
 	 *                           Default true (matches the AJAX/admin-UI behaviour). Programmatic
 	 *                           callers via linguaforge_sync_translations() default this to false —
 	 *                           see that function's docblock for why.
@@ -924,6 +937,7 @@ class PostListColumn {
 
 		$results = [];
 		$errors  = 0;
+		$skipped = 0;
 
 		foreach ( $targets as $lang ) {
 
@@ -932,6 +946,28 @@ class PostListColumn {
 			$translations = function_exists( 'linguaforge_get_translations' )
 				? linguaforge_get_translations( $post_id )
 				: [];
+
+			// ── Per-target authorization (AUDIT-2026-07-11 §5) ────────────────
+			// The nonce + current_user_can() check above only covers the
+			// TRIGGERING post. Sync then fans out and overwrites every other
+			// existing sibling in the TRID group — including, when the two
+			// secondary-language safeguards above are relaxed, the PRIMARY
+			// post itself. Without this check, a user who can edit the
+			// triggering post but not a given sibling (e.g. an Author who owns
+			// only the post they clicked Sync on) could have that sibling's
+			// content silently overwritten. Skip-and-report, same convention
+			// as TrashCascade::trash_group(). A target that doesn't exist yet
+			// (about to be created, not overwritten) has nothing to authorize
+			// against, so it is unaffected.
+			$existing_target_id = (int) ( $translations[ $lang ] ?? 0 );
+			if ( $check_caps && $existing_target_id > 0 && ! current_user_can( 'edit_post', $existing_target_id ) ) {
+				$results[ $lang ] = [
+					'status'  => 'skipped',
+					'message' => __( 'Skipped — you do not have permission to edit the existing translation.', 'lingua-forge' ),
+				];
+				++$skipped;
+				continue;
+			}
 
 			// Wipe any stale AI cache entry so a previous translation can never be returned.
 			CacheStore::delete( $post_id, 'translation_' . $lang );
@@ -1005,8 +1041,12 @@ class PostListColumn {
 		add_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10, 2 );
 		add_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
 
-		if ( $errors > 0 && $errors === count( $targets ) ) {
-			return [ 'success' => false, 'message' => 'All translations failed.', 'results' => $results ];
+		$unsuccessful = $errors + $skipped;
+		if ( $unsuccessful > 0 && $unsuccessful === count( $targets ) ) {
+			$message = ( $skipped === count( $targets ) )
+				? 'All targets were skipped — insufficient permissions.'
+				: 'All translations failed.';
+			return [ 'success' => false, 'message' => $message, 'results' => $results ];
 		}
 
 		return [ 'success' => true, 'results' => $results, 'from_lang' => $from_lang ];
@@ -1055,8 +1095,17 @@ class PostListColumn {
 	 * secondary-language post's ID returns an error rather than silently
 	 * doing something partial or confusing.
 	 *
+	 * Per-target authorization (AUDIT-2026-07-11 §5): the $check_caps gate
+	 * below only covers the primary post; before writing `_wp_page_template`
+	 * to an existing sibling, each is also checked against
+	 * `current_user_can('edit_post', $target_id)` when $check_caps is true.
+	 * A sibling the caller can't edit is skipped and reported
+	 * ('status' => 'skipped') rather than written to regardless.
+	 *
 	 * @param  int  $post_id     Post ID of the PRIMARY/source-language post.
-	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', $post_id).
+	 * @param  bool $check_caps  Whether to require current_user_can('edit_post', ...) —
+	 *                           both for $post_id itself and, per the note above, for
+	 *                           each existing sibling about to be updated.
 	 *                           Default true (matches the AJAX/admin-UI behaviour). Programmatic
 	 *                           callers via linguaforge_sync_templates() default this to false —
 	 *                           see that function's docblock for why.
@@ -1118,6 +1167,21 @@ class PostListColumn {
 				continue;
 			}
 
+			// ── Per-target authorization (AUDIT-2026-07-11 §5) ────────────────
+			// The $check_caps gate above only covers the triggering (primary)
+			// post; this still writes _wp_page_template on every sibling. Skip
+			// and report a sibling the caller can't edit, rather than writing
+			// to it regardless — same convention as run_sync() above and
+			// TrashCascade::trash_group().
+			if ( $check_caps && ! current_user_can( 'edit_post', $target_id ) ) {
+				$results[ $lang ] = [
+					'status'  => 'skipped',
+					'id'      => $target_id,
+					'message' => __( 'Skipped — you do not have permission to edit this translation.', 'lingua-forge' ),
+				];
+				continue;
+			}
+
 			$router->sync->assign_template_if_needed( $target_id, $target_post, $lang );
 
 			$results[ $lang ] = [
@@ -1156,24 +1220,13 @@ class PostListColumn {
 			update_post_meta( $post_id, '_lf_trid', $trid );
 		}
 
-		// ── Derive post title ─────────────────────────────────────────────────
-		$title = ! empty( $result['translated_title'] )
-			? (string) $result['translated_title']
-			: $source->post_title . ' [' . strtoupper( $lang ) . ']';
-
-		// ── Inherit source status (publish / private / draft only) ────────────
-		$allowed_statuses = [ 'publish', 'private', 'draft' ];
-		$target_status    = in_array( $source->post_status, $allowed_statuses, true )
-			? $source->post_status
-			: 'draft';
-
-		$insert = [
-			'post_title'   => $title,
-			'post_content' => (string) ( $result['output'] ?? '' ),
-			'post_status'  => $target_status,
-			'post_type'    => $source->post_type,
-			'post_author'  => (int) $source->post_author,
-		];
+		// ── Common creation args (title, content, status, type, author, excerpt) ──
+		// Shared with TranslationTrigger::create_translated_post() and
+		// AbstractTranslateCommand::create_trid_linked_post() — see
+		// TranslationTrigger::build_create_args()'s docblock (AUDIT-2026-07-11 §2:
+		// this path previously omitted the translated excerpt at creation, the
+		// same bug the 2.4.0 fix only reached one of the three paths for).
+		$insert = TranslationTrigger::build_create_args( $source, $lang, $result );
 
 		// ── Featured image — copy from source ─────────────────────────────────
 		// Without this the translation is born with no featured image at all.
@@ -1215,17 +1268,13 @@ class PostListColumn {
 			Router::get_instance()->sync->assign_template_if_needed( $new_id, $new_post, $lang );
 		}
 
-		// Sync translated variation children for WooCommerce variable products.
+		// WooCommerce variation children + taxonomies — shared with
+		// TranslationTrigger::create_translated_post() and
+		// AbstractTranslateCommand::create_trid_linked_post() (AUDIT-2026-07-11 §3).
 		// This path bypasses the wp_after_insert_post hook because ajax_fill_missing
 		// removes that hook for the duration of the batch; call explicitly here
 		// after TRID/lang meta is written so MetaDelegate::get_source_id_for() works.
-		if ( 'product' === $source->post_type
-			&& class_exists( 'WooCommerce' )
-			&& class_exists( \LinguaForge\AI\Integrations\WooCommerce\VariationSync::class )
-		) {
-			\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_variations_for( $new_id );
-			\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_wc_taxonomies_from_source( $source->ID, $new_id );
-		}
+		TranslationTrigger::sync_variation_children_if_product( $new_id, $source );
 
 		return [
 			'status'   => 'created',

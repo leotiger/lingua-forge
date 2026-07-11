@@ -82,6 +82,114 @@ class TranslationTrigger {
 	}
 
 	// =========================================================
+	// SHARED CREATION HELPER
+	// =========================================================
+
+	/**
+	 * Build the common wp_insert_post() args every translated-post CREATION
+	 * path needs: title, content, status, type, author, and — critically —
+	 * the translated excerpt when the AI result included one.
+	 *
+	 * Extracted per AUDIT-2026-07-11 §2: the plugin has three independent
+	 * translated-post creation paths (this class, PostListColumn::create_linked_post()
+	 * for "Translate missing"/Sync, and AbstractTranslateCommand::create_trid_linked_post()
+	 * for WP-CLI), and a fix to one of these common fields has twice now landed
+	 * in only one or two of the three (the 2.4.0 excerpt fix originally only
+	 * reached this class). Routing all three through this single helper means
+	 * the next such fix lands everywhere by construction instead of requiring
+	 * a three-way spot-fix.
+	 *
+	 * Callers layer their own path-specific fields on top of the returned
+	 * array (e.g. `meta_input` for a copied featured image or integration-
+	 * supplied meta) before calling wp_insert_post().
+	 *
+	 * @param \WP_Post $source       Source-language post being translated.
+	 * @param string   $target_lang  Target language code — used only for the
+	 *                               synthetic-title fallback (e.g. "Title [ES]").
+	 * @param array    $result       Translation::run() result array.
+	 * @param bool     $force_draft  Always create as 'draft', ignoring the
+	 *                               source post's own status. Default false.
+	 * @return array{post_title:string,post_content:string,post_status:string,post_type:string,post_author:int,post_excerpt?:string}
+	 */
+	public static function build_create_args(
+		\WP_Post $source,
+		string   $target_lang,
+		array    $result,
+		bool     $force_draft = false
+	): array {
+
+		$title = ! empty( $result['translated_title'] )
+			? (string) $result['translated_title']
+			: $source->post_title . ' [' . strtoupper( $target_lang ) . ']';
+
+		$allowed       = [ 'publish', 'private', 'draft' ];
+		$target_status = $force_draft
+			? 'draft'
+			: ( in_array( $source->post_status, $allowed, true ) ? $source->post_status : 'draft' );
+
+		$args = [
+			'post_title'   => $title,
+			'post_content' => (string) ( $result['output'] ?? '' ),
+			'post_status'  => $target_status,
+			'post_type'    => $source->post_type,
+			'post_author'  => (int) $source->post_author,
+		];
+
+		// Carry the translated excerpt at birth. The AI already returns it in
+		// $result; without this a first-time translation has no excerpt, so
+		// SEO og:description falls back from the excerpt to a trimmed slice
+		// of post_content (AUDIT-2026-07-11 §2).
+		if ( isset( $result['translated_excerpt'] ) ) {
+			$args['post_excerpt'] = (string) $result['translated_excerpt'];
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Sync WooCommerce variation children + structural taxonomies onto a
+	 * newly created translated product.
+	 *
+	 * `VariationSync::maybe_sync_on_save()` normally does this itself via a
+	 * `wp_after_insert_post` priority-30 hook, but it bails immediately when
+	 * `_lf_lang` is empty — and every one of the three translated-post
+	 * creation paths writes `_lf_trid`/`_lf_lang` AFTER `wp_insert_post()`
+	 * returns (the new post's own ID has to exist first), so that hook always
+	 * sees an empty `_lf_lang` during creation and silently does nothing. A
+	 * translated variable product was therefore born with no translated
+	 * variation children and no WC structural taxonomies (`product_type`,
+	 * `pa_*`, `product_brand`) until something else re-saved it.
+	 *
+	 * Extracted per AUDIT-2026-07-11 §3: `PostListColumn::create_linked_post()`
+	 * already called this explicitly after writing the TRID/lang meta;
+	 * `TranslationTrigger::create_translated_post()` and
+	 * `AbstractTranslateCommand::create_trid_linked_post()` did not. All three
+	 * creation paths now call this one shared helper instead of duplicating
+	 * (or omitting) the guard, matching the consolidation §2 started for the
+	 * common `wp_insert_post()` args.
+	 *
+	 * No-op for anything other than a WooCommerce 'product' post, or when
+	 * WooCommerce/VariationSync aren't loaded. Callers MUST call this only
+	 * after `_lf_trid`/`_lf_lang` have been written on $new_id — VariationSync
+	 * reads them via `MetaDelegate::get_source_id_for()`.
+	 *
+	 * @param int      $new_id  Newly created translated post ID (TRID/lang meta already written).
+	 * @param \WP_Post $source  Source-language post that was translated.
+	 */
+	public static function sync_variation_children_if_product( int $new_id, \WP_Post $source ): void {
+
+		if ( 'product' !== $source->post_type
+			|| ! class_exists( 'WooCommerce' )
+			|| ! class_exists( \LinguaForge\AI\Integrations\WooCommerce\VariationSync::class )
+		) {
+			return;
+		}
+
+		\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_variations_for( $new_id );
+		\LinguaForge\AI\Integrations\WooCommerce\VariationSync::sync_wc_taxonomies_from_source( $source->ID, $new_id );
+	}
+
+	// =========================================================
 	// PRIVATE HELPERS
 	// =========================================================
 
@@ -162,17 +270,11 @@ class TranslationTrigger {
 			linguaforge_set_trid( $source->ID, $trid );
 		}
 
-		// ── Title ─────────────────────────────────────────────────────────────
-		$title = ! empty( $result['translated_title'] )
-			? (string) $result['translated_title']
-			: $source->post_title . ' [' . strtoupper( $target_lang ) . ']';
-
-		// ── Status ────────────────────────────────────────────────────────────
-		$force_draft     = ! empty( $params['force_draft'] );
-		$allowed         = [ 'publish', 'private', 'draft' ];
-		$target_status   = $force_draft
-			? 'draft'
-			: ( in_array( $source->post_status, $allowed, true ) ? $source->post_status : 'draft' );
+		// ── Common creation args (title, content, status, type, author, excerpt) ──
+		// Shared with PostListColumn::create_linked_post() and
+		// AbstractTranslateCommand::create_trid_linked_post() — see
+		// build_create_args()'s docblock (AUDIT-2026-07-11 §2).
+		$insert = self::build_create_args( $source, $target_lang, $result, ! empty( $params['force_draft'] ) );
 
 		// ── Integration-supplied meta — born with the post ────────────────────
 		/**
@@ -231,22 +333,6 @@ class TranslationTrigger {
 		remove_action( 'wp_after_insert_post', [ $router->sync,       'handle_save_post'   ], 10 );
 		remove_action( 'wp_after_insert_post', [ $router->trid_group, 'handle_cache_clear' ], 20 );
 
-		$insert = [
-			'post_title'   => $title,
-			'post_content' => (string) ( $result['output'] ?? '' ),
-			'post_status'  => $target_status,
-			'post_type'    => $source->post_type,
-			'post_author'  => (int) $source->post_author,
-		];
-
-		// Carry the translated excerpt at birth (symmetry with update_translated_post).
-		// The AI already returned it in this payload; without this the first-time
-		// translation has no excerpt, so SEO og:description falls back from the
-		// excerpt to a trimmed slice of post_content.
-		if ( isset( $result['translated_excerpt'] ) ) {
-			$insert['post_excerpt'] = (string) $result['translated_excerpt'];
-		}
-
 		if ( $meta !== [] ) {
 			$insert['meta_input'] = $meta;
 		}
@@ -284,6 +370,12 @@ class TranslationTrigger {
 		if ( $new_post instanceof \WP_Post ) {
 			$router->sync->assign_template_if_needed( $new_id, $new_post, $target_lang );
 		}
+
+		// ── WooCommerce variation children + taxonomies (AUDIT-2026-07-11 §3) ──
+		// The wp_after_insert_post p30 hook that normally does this bailed
+		// during the insert above (its _lf_lang read was still empty), so it
+		// must be called explicitly now that the TRID/lang meta is written.
+		self::sync_variation_children_if_product( $new_id, $source );
 
 		/** @see AbstractTranslateCommand::create_trid_linked_post() for the action docblock */
 		do_action( 'linguaforge_translation_complete', $new_id, $source->ID, $target_lang ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- linguaforge_ is the registered plugin prefix.

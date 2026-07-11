@@ -305,9 +305,12 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 	}
 
 	public function test_collect_locale_files_finds_files_in_plugins_subdir(): void {
+		// AUDIT-2026-07-11 §4: plugins/themes files follow {textdomain}-{locale}.mo
+		// (suffix), not the root dir's bare {locale}.mo — so the fixture must
+		// actually look like a real plugin translation file, not a bare locale name.
 		$dir = $this->make_lang_dir( [
 			''        => [],
-			'plugins' => [ 'de_DE.mo', 'fr_FR.mo' ],
+			'plugins' => [ 'some-plugin-de_DE.mo', 'some-plugin-fr_FR.mo' ],
 		] );
 		$result = $this->make_uninstaller()->collect_locale_files( 'de', $dir );
 		$this->rm_lang_dir( $dir );
@@ -318,12 +321,32 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 	public function test_collect_locale_files_finds_files_in_themes_subdir(): void {
 		$dir = $this->make_lang_dir( [
 			''       => [],
-			'themes' => [ 'de_DE.mo' ],
+			'themes' => [ 'some-theme-de_DE.mo' ],
 		] );
 		$result = $this->make_uninstaller()->collect_locale_files( 'de', $dir );
 		$this->rm_lang_dir( $dir );
 		$this->assertCount( 1, $result );
 		$this->assertStringContainsString( 'themes', $result[0] );
+	}
+
+	public function test_collect_locale_files_plugins_subdir_uses_suffix_not_prefix(): void {
+		// Regression guard for the pre-fix bug: a bare {locale}.mo (no
+		// {textdomain}- prefix) in plugins/themes must NOT match — that shape
+		// belongs to the root dir's naming convention, not this one.
+		$dir = $this->make_lang_dir( [ 'plugins' => [ 'de_DE.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'de', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result, 'A bare {locale}.mo in plugins/ has no textdomain- prefix and must not match the suffix rule.' );
+	}
+
+	public function test_collect_locale_files_does_not_delete_unrelated_plugin_in_plugins_subdir(): void {
+		// AUDIT-2026-07-11 §4: uninstalling 'ca' previously matched
+		// cache-enabler-de_DE.mo (a prefix match on "ca" against "cache-enabler"),
+		// silently deleting an unrelated plugin's translations of every locale.
+		$dir = $this->make_lang_dir( [ 'plugins' => [ 'cache-enabler-de_DE.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'ca', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result, 'Uninstalling "ca" must not delete an unrelated "cache-enabler" plugin\'s translation files.' );
 	}
 
 	public function test_collect_locale_files_does_not_match_non_prefixed_files(): void {
@@ -336,8 +359,8 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 	public function test_collect_locale_files_aggregates_across_all_three_dirs(): void {
 		$dir = $this->make_lang_dir( [
 			''        => [ 'de_DE.mo' ],
-			'plugins' => [ 'de_DE.mo' ],
-			'themes'  => [ 'de_DE.mo' ],
+			'plugins' => [ 'some-plugin-de_DE.mo' ],
+			'themes'  => [ 'some-theme-de_DE.mo' ],
 		] );
 		$result = $this->make_uninstaller()->collect_locale_files( 'de', $dir );
 		$this->rm_lang_dir( $dir );
@@ -345,18 +368,76 @@ final class LanguageUninstallerTest extends WcUnitTestCase {
 	}
 
 	public function test_collect_locale_files_ignores_partial_prefix_match(): void {
-		// 'den_DK.mo' starts with 'de' but is Danish — should NOT be included
-		// when uninstalling 'de'.
-		// Note: 'strtolower(substr(basename, 0, 2))' === 'de' for 'den_DK.mo',
-		// so the current str_starts_with($basename, $lang) implementation WILL
-		// match 'den_DK.mo'. This test documents the known behaviour: the prefix
-		// match is intentionally broad (two-char code) because WP locale codes
-		// for the same language family all share the prefix.
+		// AUDIT-2026-07-11 §4 fix: a plain prefix match previously included
+		// 'den_DK.mo' (hypothetically Danish) when uninstalling 'de', since
+		// 'den_DK.mo' starts with 'de'. locale_root_matches() now requires an
+		// exact locale match — the character after 'de' must be '_' or the
+		// extension, never another bare letter — so this no longer matches.
 		$dir = $this->make_lang_dir( [ '' => [ 'de_DE.mo', 'den_DK.mo' ] ] );
 		$result = $this->make_uninstaller()->collect_locale_files( 'de', $dir );
 		$this->rm_lang_dir( $dir );
-		// Both match the 'de' prefix — document this is expected.
-		$this->assertCount( 2, $result );
+		$this->assertCount( 1, $result );
+		$this->assertStringContainsString( 'de_DE.mo', $result[0] );
+	}
+
+	// =========================================================================
+	// collect_locale_files() — cross-language collisions (AUDIT-2026-07-11 §4)
+	//
+	// WordPress's own locale registry has sibling locale slugs where one is a
+	// literal string prefix of another. A bare str_starts_with() prefix check
+	// (the pre-fix implementation) matched all of these when uninstalling the
+	// shorter code, deleting the wrong language's core pack.
+	// =========================================================================
+
+	public function test_collect_locale_files_ar_does_not_match_ary_or_arq(): void {
+		// 'ary' = Moroccan Arabic, 'arq' = Algerian Arabic — both distinct from 'ar'.
+		$dir = $this->make_lang_dir( [ '' => [ 'ar.mo', 'ary.mo', 'arq.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'ar', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 1, $result );
+		$this->assertStringContainsString( 'ar.mo', $result[0] );
+	}
+
+	public function test_collect_locale_files_ce_does_not_match_ceb(): void {
+		// 'ceb' = Cebuano, distinct from 'ce' (Chechen).
+		$dir = $this->make_lang_dir( [ '' => [ 'ceb.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'ce', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
+
+	public function test_collect_locale_files_az_does_not_match_azb(): void {
+		// 'azb' = South Azerbaijani, distinct from 'az' (Azerbaijani).
+		$dir = $this->make_lang_dir( [ '' => [ 'azb.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'az', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
+
+	public function test_collect_locale_files_ka_does_not_match_kab(): void {
+		// 'kab' = Kabyle, distinct from 'ka' (Georgian).
+		$dir = $this->make_lang_dir( [ '' => [ 'kab.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'ka', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertSame( [], $result );
+	}
+
+	public function test_collect_locale_files_root_matches_bare_three_letter_locale(): void {
+		// Sanity check the fix doesn't overcorrect: a WP locale that IS a bare
+		// 3-letter code (e.g. Yoruba's real slug "yor") must still match itself.
+		$dir = $this->make_lang_dir( [ '' => [ 'yor.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'yor', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 1, $result );
+	}
+
+	public function test_collect_locale_files_root_matches_multi_segment_locale(): void {
+		// A locale with more than one underscore-separated variant segment
+		// (e.g. WordPress's "pt_PT_ao90") must still match its bare lang code.
+		$dir = $this->make_lang_dir( [ '' => [ 'pt_PT_ao90.mo' ] ] );
+		$result = $this->make_uninstaller()->collect_locale_files( 'pt', $dir );
+		$this->rm_lang_dir( $dir );
+		$this->assertCount( 1, $result );
 	}
 
 	// =========================================================================
