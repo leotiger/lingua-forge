@@ -484,7 +484,8 @@ ai/                           AI features (translation, meta-description, excerp
                               TermNameFilter — translates pa_* term names in all rendering paths (blocks, Store API)
                               TermNameAdmin — term edit/add screen fields; saves/deletes termmeta
                               SeoSupport — WC-specific OG/schema (og:type=product, price, JSON-LD)
-    Providers/                AI provider adapters (Anthropic, OpenAI, Gemini) + factory
+    Providers/                AI provider adapters (Anthropic, OpenAI, Gemini, WpAiClient) + factory
+                              WpAiClient — WP 7.0+ built-in AI Client (wp_ai_client_prompt()); no stored key, routed via Settings → Connectors
     REST/                     REST controller + rate limiter
   assets/                     CSS / JS for the meta box, editor toolbar, Settings page, post list
                               seo-analysis.js — rule-based analysis results rendering (settings page)
@@ -680,43 +681,58 @@ The CLI namespace under `ai/includes/CLI/` is split into:
   `execute(array $args, array $assoc_args): void`.
 - `TranslateCommand.php`, `RetranslateCommand.php`,
   `FillTranslationsCommand.php` — each extends `AbstractTranslateCommand`.
-- `MissingTranslationsCommand.php`, `CacheClearCommand.php` — standalone
-  classes (no translation pipeline involvement), each with an
-  `execute(array $args, array $assoc_args): void`.
+- `MissingTranslationsCommand.php`, `CacheClearCommand.php`,
+  `FixNavLangCommand.php` — standalone classes (no translation pipeline
+  involvement), each with an `execute(array $args, array $assoc_args): void`.
 
-Currently shipped:
+Currently shipped (six commands — docblocks on `Commands.php`'s public
+methods are the source of truth; this list is a summary, not a spec):
 
 - **`wp linguaforge translate <post_id> --to=fr,de[,…]`** — runs the
-  Translation feature for each target language, then writes the result
-  into the TRID-linked target-language post via `wp_update_post`. The
-  `wp_after_insert_post` handlers are temporarily detached during the
-  write so the content-only update doesn't touch the TRID group,
-  language metadata, or outdated flag. Languages without a TRID-linked
-  post are skipped with a warning rather than auto-created (that's the
-  future `translate-missing` command's territory). Per-invocation
-  overrides: `--temperature=<float>`, `--max-tokens=<int>`,
-  `--model=<name>`, `--force` (skip cache), `--dry-run` (generate but
-  don't write).
+  Translation feature for each target language and writes the result into
+  the TRID-linked target-language post. Languages without a TRID-linked
+  post are skipped with a warning rather than auto-created (that's
+  `fill_translations`'s job). Options: `--force` (skip cache), `--dry-run`,
+  `--with-meta-description`, `--temperature=<float>`, `--max-tokens=<int>`,
+  `--model=<name>`, `--format=<table|json|csv|yaml>`.
 
 - **`wp linguaforge retranslate <post_id> --to=fr,de[,…]`** — same pipeline
-  as `translate` but ignores the AI result cache (`--force` implied), so
-  it always calls the provider. Use when content has changed and you want
-  a fresh translation without clearing the cache globally.
+  as `translate` but always bypasses the cache, clears the prior cached
+  translation first, and marks the target post synced afterward so the
+  outdated indicator clears. Same option set as `translate` minus `--force`
+  (implied).
 
-- **`wp linguaforge fill_translations [--post-type=post] [--lang=fr]`** —
-  iterates over all posts of the given type (default: `post`, `page`) and
-  translates into any target languages where a TRID-linked post exists but
-  has no content yet. Safe to re-run; posts with existing content are
-  skipped unless `--force` is passed.
+- **`wp linguaforge fill_translations <post_id> [options]`** — checks
+  every router-active language for `<post_id>` and creates any that are
+  missing (existing TRID-linked posts are never touched — that's
+  `retranslate`'s job). Options: `--check-only` (report only, no API
+  calls; exits 1 if anything is missing — useful in CI), `--dry-run`,
+  `--draft` (new posts inherit source status unless this is set),
+  `--exclude=<langs>`, `--with-meta-description`, plus the same
+  temperature/max-tokens/model/format overrides as `translate`.
 
-- **`wp linguaforge missing_translations [--post-type=post]`** — reports
-  which posts are missing one or more language variants. No writes; pure
-  audit. Pairs with `fill_translations` as a detect-then-fill pipeline.
+- **`wp linguaforge missing_translations <lang> <post_type>`** — scans
+  every post of `<post_type>` whose `_lang` meta equals `<lang>` and
+  reports, per post, which router languages have no TRID-linked
+  translation yet. Pure read — no writes. Options: `--exclude=<langs>`,
+  `--status=<publish|draft|any|…>` (default `publish`), `--format`. Output
+  is designed to pipe straight into `fill_translations` (see the CLI
+  `## EXAMPLES` block on `Commands::missing_translations()`).
 
 - **`wp linguaforge cache_clear`** — wipes AI-result cache entries.
-  Bare command truncates the whole table; `--feature=translation` scopes
-  to feature-key prefix; `--post-id=N` scopes to a single post; both
+  Bare command truncates the whole table; `--feature=<name>` scopes
+  to a feature-key prefix (`translation`, `meta-description`, `excerpt`,
+  `content_generator`); `--post-id=<id>` scopes to a single post; both
   combine. Bare-truncate prompts unless `--yes` is passed.
+
+- **`wp linguaforge fix_nav_lang [--dry-run]`** — one-off backfill for
+  `wp_navigation` posts created before v2.1.0, which predate per-navigation
+  `_lf_lang`/`_lf_trid` tagging. Two passes: infer each post's language
+  from its slug suffix (or base-slug match to an already-tagged sibling),
+  then group same-base-slug navigations under a shared TRID (reusing one
+  if any group member already has it). Idempotent — safe to re-run.
+  (Since 2.1.0 — the CLI command itself predates this doc update; it was
+  simply never added to this list.)
 
 When adding a new command:
 

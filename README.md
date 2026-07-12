@@ -29,7 +29,7 @@ At its core it does three things that always end up intertwined on multilingual 
 
 3. **Gives editors an AI assistant directly inside the block editor** — translate full pages, revise individual blocks, generate content from scratch, and fix quick-translate snippets on the fly, all without leaving WordPress. Results are previewed before anything is applied, and a terminology glossary ensures brand names and technical terms stay consistent across languages.
 
-Everything ships as a single installable plugin. No external services beyond an AI provider API key (Anthropic, OpenAI, or Google Gemini — your choice). No subscription. No data leaves your server except the content you actively send for translation or generation.
+Everything ships as a single installable plugin. No external services beyond an AI provider API key (Anthropic, OpenAI, or Google Gemini — your choice), or WordPress's own built-in AI Client (WP 7.0+, no key stored by Lingua Forge). No subscription. No data leaves your server except the content you actively send for translation or generation.
 
 ---
 
@@ -99,8 +99,9 @@ If you want to understand where this plugin came from and why it exists as a fre
 - Custom rewrite rules for language-prefixed URLs and category archives (path mode); no extra rules needed in subdomain mode
 - Post and page translation groups linked via a shared TRID (UUID)
 - Outdated translation tracking — warnings when source content is updated after a translation was synced
-- **Full FSE template localisation** — language-specific templates (`page-de`, `single-fr`, `search-en`) are auto-assigned when a post's language is set. From **Settings → Router** you can scaffold a language copy of any template or template part in one click, AI-translate it, fix all internal links to point at the correct language equivalents, fix template-part slug references (`footer` → `footer-ca`), and fix `wp:navigation` ref IDs so each header and footer loads the correct language menu — all without CLI or manual database work.
-- **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version.
+- **Sync and Template Sync** — a "Sync" button in the post list Lang column, shown on every language version of a translated post (including the primary), retranslates FROM that post's language INTO every other configured language in one click: missing languages are created, existing ones force-refreshed in place. "Template Sync" does the same for FSE template assignment only, with no AI call. Syncing FROM a secondary-language post can back-translate onto the primary — guarded by two independent off-by-default safeguards (**Settings → Behavior → Sync** and **→ WooCommerce**) plus a confirmation dialog. Public API: `linguaforge_sync_translations()` / `linguaforge_sync_templates()`
+- **Full FSE template localisation** — language-specific templates (`page-de`, `single-fr`, `search-en`) are auto-assigned when a post's language is set. From **Settings → Router** you can scaffold a language copy of any template or template part in one click, AI-translate it, fix all internal links to point at the correct language equivalents, fix template-part slug references (`footer` → `footer-ca`), and fix `wp:navigation` ref IDs so each header and footer loads the correct language menu — all without CLI or manual database work. "Re-create" / "Re-create all" buttons force-overwrite an existing template with a fresh copy from the active theme (discarding Site Editor customisations), theme-scoped so same-slug templates belonging to different themes are never confused. A "Recreate All Languages" orchestrator on **Settings → Router → Language Setup** chains re-create → translate → fix-links → fix-parts across every active language in one run.
+- **Language-specific template parts** — scaffold, AI-translate, fix links, and fix navigation references for `header-{lang}`, `footer-{lang}`, and any other template part. Each is a native `wp_template_part` post with its own content, independent of the base language version. Same Re-create / Re-create all tooling as templates, plus its own "Recreate All Languages (Template Parts Only)" orchestrator.
 - **Language navigation menus** — create per-language `wp_navigation` copies with AI-translated link labels and language-prefixed internal URLs. The Fix Nav action rewrites `wp:navigation` ref IDs inside template parts to point at the correct copy.
 - **Site Editor page-list language filter** — when the Site Editor is opened on a navigation or template post, the sidebar page-list picker automatically scopes its `/wp/v2/pages` REST requests to the current navigation's language. The filter is resolved synchronously at PHP render time (no race condition on the initial load) and corrects itself asynchronously when the navigation ID is not in the initial URL.
 - hreflang tags for singular, archive, and paginated views; automatically suppresses duplicate hreflang output from Yoast SEO, Rank Math, AIOSEO, and SEOPress via filter — see **Settings → SEO → Hreflang**
@@ -135,7 +136,7 @@ Lingua Forge provides a complete multilingual SEO layer. No additional SEO plugi
 
 ### AI Content Tools
 
-Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangeable backends. All results appear in a review panel — nothing is applied automatically.
+Supports **Anthropic Claude**, **OpenAI**, **Google Gemini**, and WordPress's own **built-in AI Client** (WP 7.0+, routed through **Settings → Connectors** — Lingua Forge stores no key for this provider) as interchangeable backends. All results appear in a review panel — nothing is applied automatically.
 
 - **Meta Description Generator** — language-aware, 140–160 character output with SEO quality indicator
 - **Excerpt Generator** — concise editorial excerpt up to 240 characters, language-aware
@@ -150,7 +151,8 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - **AI Usage tracking** — every API call is logged by feature, provider, model, and date. A usage summary (requests, input tokens, output tokens) is available in **Settings → AI Usage** for any date range
 - SHA-256 hash-based result caching in a dedicated custom table; per-language translation cache; force-refresh control
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
-- **WP-CLI support** — five commands for scripted and automated workflows: `translate`, `retranslate`, `fill_translations`, `missing_translations`, and `cache_clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
+- **WP-CLI support** — six commands for scripted and automated workflows: `translate`, `retranslate`, `fill_translations`, `missing_translations`, `fix_nav_lang`, and `cache_clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
+- **Automatic Translation Backfill** — opt-in hourly scan (off by default) that finds posts missing one or more configured-language translations and queues them for creation via the same async pipeline as `linguaforge_queue_translation()`. Enable from **Settings → Behavior → Automatic Translation Backfill**; scope post types with the `linguaforge_backfill_post_types` filter (WooCommerce products/variations excluded by default)
 
 ---
 
@@ -159,7 +161,7 @@ Supports **Anthropic Claude**, **OpenAI**, and **Google Gemini** as interchangea
 - WordPress 6.4 or later (block theme / FSE recommended)
 - PHP 8.1 or later
 - Permalink structure set to anything other than Plain
-- An API key for at least one supported AI provider (Anthropic, OpenAI, or Gemini)
+- An API key for at least one supported AI provider (Anthropic, OpenAI, or Gemini) — or WordPress's built-in AI Client (WP 7.0+) configured via **Settings → Connectors**, no key stored by Lingua Forge
 
 **Optional — WooCommerce integration:** WooCommerce 9.0 or later is required (which in turn requires WordPress 6.9 or later). The core plugin — language routing, full SEO layer, AI tools — works on WordPress 6.4 without WooCommerce. If WooCommerce is not active the WooCommerce delegation layer and WooCommerce-specific SEO output are silently skipped.
 
@@ -293,8 +295,10 @@ However, WordPress core and WooCommerce use `get_locale()` directly in a number 
 Navigate to **Settings → Lingua Forge** and select the active provider from the dropdown, or define the constant in `wp-config.php`:
 
 ```php
-define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini'
+define('LINGUAFORGE_PROVIDER', 'anthropic'); // 'anthropic' | 'openai' | 'gemini' | 'wp-ai-client'
 ```
+
+`wp-ai-client` (WordPress 7.0+) delegates to WordPress core's own `wp_ai_client_prompt()` builder instead of a direct HTTP call — Lingua Forge stores no API key for it; credentials are managed by the site admin through **Settings → Connectors**. Falls back gracefully (with a logged error) on WordPress versions older than 7.0.
 
 #### API keys
 
@@ -323,6 +327,8 @@ Navigate to **Settings → Lingua Forge → Models** to override the model strin
 | **Quality** | `claude-sonnet-4-6` | `gpt-4o` | `gemini-2.5-flash` | Translation, Content Generator |
 
 These are the built-in defaults for each provider. Leave a field blank to use the built-in default for your active provider. To update to a new model version when one ships, enter the new identifier in Settings — no code change or deployment needed.
+
+The `wp-ai-client` provider has no model-string configuration here — model routing is delegated entirely to WordPress core's Connectors settings.
 
 Token budgets and input limits for Translation are configured separately under **Translation Limits** — see the Content Translation section below.
 
@@ -386,7 +392,9 @@ lingua-forge/
         MetaDescription.php
         ExcerptGenerator.php
         Translation.php
-        TranslationTrigger.php       ← linguaforge_trigger_translation() backend
+        TranslationTrigger.php       ← linguaforge_trigger_translation() / linguaforge_queue_translation() backend
+        TranslationQueue.php         ← Async translation runner (Action Scheduler / WP-Cron)
+        TranslationBackfill.php      ← Opt-in hourly missing-translation self-heal scan
         ContentGenerator.php
       Providers/
         AbstractProvider.php         ← Shared HTTP + retry logic for all providers
@@ -395,6 +403,7 @@ lingua-forge/
         Anthropic.php
         OpenAI.php
         Gemini.php
+        WpAiClient.php               ← WP 7.0+ core AI Client provider (no stored key; routed via Settings → Connectors)
       Admin/
         MetaBox.php                  ← Post editor metabox: AI panel (with per-page preset select)
         AdminToolbar.php             ← Admin bar Quick Translate node
@@ -450,7 +459,7 @@ lingua-forge/
           TermNameAdmin.php          ← Term edit/add screen fields for _lf_term_name_{lang} termmeta
           RestWriteGuard.php         ← woocommerce_rest_pre_insert_*: HTTP 422 on PUT/PATCH to translated products
       CLI/
-        Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / cache_clear
+        Commands.php                 ← wp linguaforge translate / retranslate / fill_translations / missing_translations / fix_nav_lang / cache_clear
       REST/
         FeatureController.php        ← POST /lingua-forge/v1/feature/{key}/{post_id}
                                         POST /lingua-forge/v1/translate-chunk
@@ -882,7 +891,7 @@ Test Connection pings (from the API Keys tab) are deliberately excluded from usa
 
 ### WP-CLI
 
-Five commands are available for scripted and automated workflows.
+Six commands are available for scripted and automated workflows.
 
 **`wp linguaforge translate <post_id> --to=<langs>`** — translate a post into one or more target languages using the full feature pipeline (cache lookup, Translation Memory, Glossary, Behavior preset). Writes the result into the TRID-linked target-language post. Options: `--force` (skip cache), `--dry-run` (generate but don't write), `--with-meta-description` (generate and save an AI meta description for each target post immediately after writing the translation), `--temperature=<float>`, `--max-tokens=<int>`, `--model=<name>`, `--format=<table|json|csv|yaml>`.
 
@@ -893,6 +902,8 @@ Five commands are available for scripted and automated workflows.
 **`wp linguaforge missing_translations <lang> <post_type>`** — scans every post of `<post_type>` whose `_lang` meta matches `<lang>` and reports which posts are missing one or more router-language translations. Output columns: `post_id`, `title`, `post_status`, `missing` (comma-separated language codes), `count`. Sorted by missing count descending. Options: `--exclude=<langs>`, `--status=<any|publish|draft|…>` (default `publish`), `--format=<table|json|csv|yaml>`. Pairs directly with `fill_translations`: the warning footer shows the exact command to run on each incomplete post.
 
 **`wp linguaforge cache_clear`** — wipes AI-result cache entries. Bare command truncates the entire table (prompts for confirmation unless `--yes` is passed). Scope with `--feature=translation` or `--post-id=<id>` to target a subset.
+
+**`wp linguaforge fix_nav_lang`** — backfills `_lf_lang` post meta and `_lf_trid` translation groups on `wp_navigation` posts created before v2.1.0 (when navigation menus weren't yet language-tagged). Two-pass: language tagging by slug suffix (`primary-navigation-de` → `de`) or base-slug match to an already-tagged sibling, then TRID grouping by shared base slug (reuses an existing TRID within the group if any member already has one). Options: `--dry-run` (report without writing).
 
 #### Common workflows
 

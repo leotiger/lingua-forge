@@ -54,12 +54,15 @@ composer analyse              # PHPStan, WP stubs
 composer test:unit            # PHPUnit unit suite — no Docker needed
 composer test:integration     # PHPUnit integration suite — wp-env up
 composer test:integration:wc  # WooCommerce integration suite only (needs WC in .wp-env.override.json)
+composer test:wc-latest       # Monthly WC compat check: wp-env start --update (refresh cached WC zip), activate, print version under test, run test:integration:wc
 composer test                 # both suites
-composer qa                   # lint (PHPCS) + analyse (PHPStan) + unit tests + lint:js (ESLint) + lint:css (Stylelint)
+composer qa                   # coverage:setup + lint (PHPCS) + analyse (PHPStan) + unit tests + lint:js (ESLint) + lint:css (Stylelint)
 composer plugin-check         # the official .org checker (inside wp-env)
+composer coverage:setup       # installs pcov if missing (scripts/setup-coverage.sh) — also runs automatically as the first step of `qa` and `coverage:run`
 composer coverage:run         # unit + integration suites with Clover + HTML output; installs pcov automatically
 composer coverage:merge       # merge unit + integration Clovers → combined/
 composer coverage             # full pipeline: coverage:run → coverage:merge
+composer build-zip            # bin/build-zip.sh — builds the release zip for a GitHub release / manifest sha256
 
 # JS / CSS side
 npm run lint:js
@@ -119,8 +122,9 @@ Only needed when you want to re-test scaffold from an empty state.
 | `npm run env:seed`            | Sets permalinks, router options, installs DE/CA/ES language packs, creates sample pages (including the language switcher block appended to EN Home for E2E tests), simple WC product group, and a **variable WC product** (Test Shirt EN/DE/CA with `pa_color` attribute, Red/Blue variations with `_variation_description`, translated term names Rot/Blau/Vermell, and product_brand "Acme"). Prompts for AI provider + API key. Safe to re-run — all creation steps are idempotent. | Yes |
 | `npm run test:e2e`            | Playwright E2E suite: routing + hreflang + switcher, Settings page, lang column, WC product list, WC checkout journey (DE cart + checkout via WcPageBridge), AI translation, modal UI, FSE localisation pipeline. Requires `env:start` (keep running) + `env:seed`. | Yes |
 | `composer test`               | `test:unit` + `test:integration`                                   | Yes           |
-| `composer qa`                 | `lint` → `analyse` → `test:unit` → `lint:js` → `lint:css`         | No            |
+| `composer qa`                 | `coverage:setup` → `lint` → `analyse` → `test:unit` → `lint:js` → `lint:css` | No |
 | `composer test:integration:wc`| WooCommerce suite only — needs WC in `.wp-env.override.json`       | Yes           |
+| `composer test:wc-latest`     | `wp-env start --update` (pulls a fresh WC remote-zip) → activate WC → print version under test → `test:integration:wc` | Yes |
 | `composer plugin-check`       | starts wp-env CLI, runs the WP Plugin Check tool inside it         | Yes           |
 | `composer coverage:run`       | unit + integration suites with Clover + HTML; installs pcov automatically; copies integration report out of container | Yes |
 | `composer coverage:merge`     | merges `coverage/unit/clover.xml` + `coverage/integration/clover.xml` → `coverage/combined/` | No |
@@ -128,6 +132,7 @@ Only needed when you want to re-test scaffold from an empty state.
 
 Notes:
 - `composer qa` runs the unit suite plus JS and CSS linting — intentionally fast and Docker-free. Run `composer test:integration` separately when wp-env is up.
+- **WooCommerce is a remote-zip `.wp-env.override.json` mount**, so `wp-content/plugins/woocommerce` inside the wp-env container is a bind mount — it cannot be `rm -rf`'d or force-reinstalled from inside the container (fails with "Resource busy"/EBUSY). `composer test:wc-latest` works around this the documented way, via `wp-env start --update` (the wp-env mechanism for refreshing cached remote plugin/theme sources) before activating. If it still reports a stale WC version, wp-env's own download cache needs a harder reset (`wp-env destroy` + `wp-env start`, or clear `~/.wp-env`) rather than anything WP-CLI can do from inside the container. Run `test:wc-latest` before any release that touches WC hooks, and roughly monthly otherwise.
 - `composer test:integration` and `composer test:integration:wc` require wp-env to be running (`npm run env:start`) and Docker Desktop to be open. Both commands include a `wp eval` step that creates the plugin's custom DB tables (Glossary, CacheStore, TranslationMemory, UsageRecorder) before phpunit runs — the activation hook does not create these tables, and `admin_init` never fires in a CLI context.
 - **Integration tests that touch AI endpoints** need `Registry::init()` and `FeatureController::init()` called explicitly in `setUp()` — `Plugin::boot()` is guarded by `should_boot()` which returns false in CLI context (not admin, REST, or WP-CLI). See `FeatureControllerRestTest` for the pattern.
 - **Integration tests for the REST layer** use `rest_do_request()` with a fresh `WP_REST_Server` instance created in `setUp()` and reset to `null` in `tearDown()` — the standard WP REST test pattern.
