@@ -126,31 +126,71 @@ abstract class AbstractProvider implements AIProviderInterface {
 
         [$url, $headers, $body] = $this->build_request($messages, $api_key);
 
-        $response = $this->post_with_retry($url, $headers, $body);
+        // Some providers introduce newer model generations that outright
+        // reject legacy sampling parameters (e.g. Anthropic's `temperature`
+        // is rejected with a deterministic HTTP 400 — "temperature is
+        // deprecated for this model" — on some Claude 4.x+ models) rather
+        // than clamping or ignoring them. Detect that specific error and
+        // retry once with the offending key stripped, so admins who set a
+        // model override still get a working call instead of a hard failure.
+        // Models/providers that accept the parameter (and the compliance
+        // presets in Config::apply_compliance(), which rely on it) are
+        // unaffected — this path only engages when the provider explicitly
+        // reports the parameter as deprecated for the requested model.
+        $droppable = $this->droppable_sampling_params();
+        $dropped   = [];
+        $attempts  = count($droppable) + 1;
 
-        if (is_wp_error($response)) {
-            // Final-attempt failure already logged inside post_with_retry().
-            $this->last_error = sprintf(
-                /* translators: %s: technical error detail from the HTTP layer */
-                __('Network error — could not reach the provider: %s', 'lingua-forge'),
-                $response->get_error_message()
-            );
-            return null;
-        }
+        for ($i = 0; $i < $attempts; $i++) {
 
-        $http_code = (int) wp_remote_retrieve_response_code($response);
+            $response = $this->post_with_retry($url, $headers, $body);
 
-        if ($http_code < 200 || $http_code >= 300) {
-            $raw_body      = wp_remote_retrieve_body($response);
-            $decoded_error = json_decode($raw_body, true);
-            $api_message   = is_array($decoded_error) ? $this->extract_api_error($decoded_error) : '';
-            $this->last_error = $this->http_error_message($http_code, $api_message);
-            $this->log_error(sprintf(
-                'unexpected HTTP %d: %s',
-                $http_code,
-                $raw_body
-            ));
-            return null;
+            if (is_wp_error($response)) {
+                // Final-attempt failure already logged inside post_with_retry().
+                $this->last_error = sprintf(
+                    /* translators: %s: technical error detail from the HTTP layer */
+                    __('Network error — could not reach the provider: %s', 'lingua-forge'),
+                    $response->get_error_message()
+                );
+                return null;
+            }
+
+            $http_code = (int) wp_remote_retrieve_response_code($response);
+
+            if ($http_code < 200 || $http_code >= 300) {
+
+                $raw_body      = wp_remote_retrieve_body($response);
+                $decoded_error = json_decode($raw_body, true);
+                $api_message   = is_array($decoded_error) ? $this->extract_api_error($decoded_error) : '';
+
+                if ($http_code === 400) {
+                    foreach ($droppable as $param) {
+                        if (
+                            array_key_exists($param, $body)
+                            && !in_array($param, $dropped, true)
+                            && $this->is_deprecated_param_error($api_message, $param)
+                        ) {
+                            unset($body[$param]);
+                            $dropped[] = $param;
+                            $this->log_error(sprintf(
+                                'provider rejected "%s" as deprecated for this model — retrying without it',
+                                $param
+                            ));
+                            continue 2; // retry the outer loop with the trimmed body
+                        }
+                    }
+                }
+
+                $this->last_error = $this->http_error_message($http_code, $api_message);
+                $this->log_error(sprintf(
+                    'unexpected HTTP %d: %s',
+                    $http_code,
+                    $raw_body
+                ));
+                return null;
+            }
+
+            break; // 2xx — proceed to decode below
         }
 
         $decoded = json_decode(
@@ -228,6 +268,32 @@ abstract class AbstractProvider implements AIProviderInterface {
      * Returning null is fine — UsageRecorder treats it as "skip this call".
      */
     abstract protected function extract_usage(array $decoded): ?array;
+
+    /**
+     * Request-body keys this provider may need to drop and retry once when
+     * the provider reports them as deprecated/unsupported for the specific
+     * model in play (see the strip-and-retry loop in chat() above).
+     *
+     * Default: none — the behaviour is opt-in per provider. Override
+     * alongside is_deprecated_param_error() to enable it.
+     *
+     * @return string[]
+     */
+    protected function droppable_sampling_params(): array {
+        return [];
+    }
+
+    /**
+     * True when $api_message indicates the provider rejected $param
+     * specifically as deprecated/unsupported for the requested model,
+     * rather than some unrelated 400 (bad request shape, invalid value,
+     * etc.) that happens to also involve that key.
+     *
+     * Default: never matches. Override alongside droppable_sampling_params().
+     */
+    protected function is_deprecated_param_error(string $api_message, string $param): bool {
+        return false;
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // HTTP — POST with retry/backoff on transient failures

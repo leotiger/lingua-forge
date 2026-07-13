@@ -4,6 +4,7 @@ namespace LinguaForge\AI\Admin\Settings\Tabs;
 
 use LinguaForge\AI\Admin\SettingsPage;
 use LinguaForge\AI\Core\Config;
+use LinguaForge\AI\Core\KeyStore;
 use LinguaForge\AI\Core\ModelCatalog;
 
 defined('ABSPATH') || exit;
@@ -164,16 +165,24 @@ class GeneralTab extends Tab {
 
         <?php
         // ── Datalists: one per provider, shared by both tier inputs ──────────
-        // Populated from the static catalog; refreshed from the live API when
-        // a "Test connection" succeeds in the API Keys tab (test-connection.js).
+        // Seeded from the static catalog, then overlaid with the live-fetched
+        // model list cached (24 h) the last time "Test connection" succeeded
+        // in the API Keys tab — see ApiKeysTab::ajax_test_provider(). Without
+        // reading that transient back here, a fresh page load would silently
+        // discard the live fetch and always fall back to the hard-coded
+        // catalog, which is why the suggestions could look outdated even right
+        // after a successful test.
         foreach (SettingsPage::providers() as $provider_slug => $provider_label):
             // WP AI Client has no model catalog — model selection is managed by WP core.
             if ( $provider_slug === 'wp-ai-client' ) continue;
-            $models  = ModelCatalog::for_provider($provider_slug);
+            $cached_models = get_transient( 'linguaforge_available_models_' . $provider_slug );
+            $model_ids     = ( is_array( $cached_models ) && $cached_models !== [] )
+                ? $cached_models
+                : ModelCatalog::ids_for_provider( $provider_slug );
             $list_id = 'lf-models-' . $provider_slug;
         ?>
         <datalist id="<?php echo esc_attr($list_id); ?>">
-            <?php foreach ($models as $model_id => $meta): ?>
+            <?php foreach ($model_ids as $model_id): ?>
                 <option value="<?php echo esc_attr($model_id); ?>"></option>
             <?php endforeach; ?>
         </datalist>
@@ -259,6 +268,34 @@ class GeneralTab extends Tab {
                                 <span class="lingua-forge-model-override-badge">
                                     <?php esc_html_e('overridden', 'lingua-forge'); ?>
                                 </span>
+                            <?php endif; ?>
+
+                            <?php if ( KeyStore::get( $slug ) ): ?>
+                                <?php
+                                // Tests the exact string currently in the field above — including
+                                // an unsaved override — rather than "Test connection" in the API
+                                // Keys tab, which only ever pings the saved *light*-tier model and
+                                // so can never confirm a Quality-tier (or any non-default) override
+                                // actually works before you save and start relying on it. This runs
+                                // a real translation of a real published post (capped to a short
+                                // sample) through the tier's actual production code path — it makes
+                                // a genuine, billed API call, unlike "Test connection"'s bare ping.
+                                ?>
+                                <button
+                                    type="button"
+                                    class="button button-small lingua-forge-test-model"
+                                    data-provider="<?php echo esc_attr($slug); ?>"
+                                    data-tier="<?php echo esc_attr($tier_slug); ?>"
+                                    data-input="<?php echo esc_attr($input_id); ?>"
+                                    title="<?php esc_attr_e( 'Translates a short sample of your most recent published post with this exact model — a real, billed API call.', 'lingua-forge' ); ?>"
+                                >
+                                    <?php esc_html_e( 'Test model', 'lingua-forge' ); ?>
+                                </button>
+                                <span
+                                    class="lingua-forge-test-result"
+                                    data-model-result-for="<?php echo esc_attr($input_id); ?>"
+                                    aria-live="polite"
+                                ></span>
                             <?php endif; ?>
                         </td>
 

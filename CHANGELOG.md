@@ -2,6 +2,23 @@
 
 ---
 
+## [2.6.5] — 2026-07-13
+
+Addresses three AI Provider settings gaps found while trying to override the
+Anthropic Quality-tier model to a newer Claude generation: the model
+suggestion list looked permanently stale, there was no way to actually test a
+typed-in override before saving it, and the newer model rejected the request
+outright once it could be tested.
+
+### Fixed
+- **The Models datalist (Settings → AI Provider) reverted to the hard-coded built-in catalog on every page load, discarding the live model list fetched from the provider's own API.** `ApiKeysTab::ajax_test_provider()` already called `ModelCatalog::fetch_from_api()` on a successful "Test connection" and cached the merged catalog+live list in a 24-hour transient (`linguaforge_available_models_{provider}`) — but `GeneralTab::render_content()` never read that transient back; it only ever rendered `ModelCatalog::for_provider()`, the static compiled-in list. The live fetch was real and worked, it just never survived a page refresh, which is why newly-released models could disappear from the suggestions moments after a successful test. `GeneralTab::render_content()` now reads the cached transient first and falls back to the static catalog only when nothing has been cached yet. (`ai/includes/Admin/Settings/Tabs/GeneralTab.php`)
+- **Overriding the Anthropic Quality (or any tier) model to a newer Claude generation that has deprecated the `temperature` sampling parameter failed outright with an HTTP 400 ("temperature is deprecated for this model").** `Anthropic::build_request()` unconditionally sent `temperature` on every call, including the compliance/legal/technical/creative presets that rely on it (`Config::apply_compliance()`). Removing the parameter entirely would have broken preset-driven determinism for models that still accept it, so instead `AbstractProvider::chat()` gained a bounded strip-and-retry: on a 400 whose message names a specific parameter as deprecated for the model, it retries once with that key removed from the request body, via two new provider-overridable hooks (`droppable_sampling_params()`, `is_deprecated_param_error()`). Anthropic is the only provider that currently opts in. (`ai/includes/Providers/AbstractProvider.php`, `ai/includes/Providers/Anthropic.php`)
+
+### Added
+- **"Test model" button next to every Light/Quality model field in Settings → AI Provider → Models — runs a real translation of real content, not a ping.** The existing "Test connection" button (API Keys tab) always pings the saved *light*-tier model for the provider with "reply with the word ping," which only proves a model responds at all — it can't exercise a Quality-tier override, doesn't send real content, and doesn't apply the active behaviour preset's temperature/addendum, so it couldn't have confirmed whether a Quality override actually produces usable translations. The new button tests the exact (saved or unsaved) string in its field by translating a short sample of the site's most recently published post through the tier's real production code path — full JSON-envelope translation for Quality (`Translation::prepare_full_post_inputs()` + `build_system_prompt()` + `JsonEnvelopeTranslator`), chunk translation for Light (mirroring `ChunkTranslation`) — with the currently active Settings → Behavior preset applied exactly as a live translation would, and shows a preview of the translated output plus the preset/language used. Runs via a new `linguaforge_test_model` AJAX endpoint; makes a real, billed API call (result is not cached). `Translation::prepare_full_post_inputs()`, `build_system_prompt()`, and `resolve_compliance_addendum()` were widened from `private` to `public static` so this test (and future callers) can reuse the exact production logic instead of duplicating it; `JsonEnvelopeTranslator::translate()` gained an optional `$bypass_cache` parameter so the test never leaves a stray cache entry under the sampled post. (`ai/includes/Admin/Settings/Tabs/GeneralTab.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`, `ai/includes/Admin/Settings/Tabs/AiProviderTab.php`, `ai/includes/Admin/SettingsPage.php`, `ai/includes/Features/Translation.php`, `ai/includes/Features/JsonEnvelopeTranslator.php`, `ai/assets/test-connection.js`, `ai/assets/settings.css`)
+
+---
+
 ## [2.6.4] — 2026-07-11
 
 Addresses AUDIT-2026-07-11 §2 through §7, the ScaffoldHandler theme-scoping

@@ -175,6 +175,7 @@ class SettingsPage {
         // Test-connection AJAX endpoint — scoped to logged-in admins via the
         // capability check inside the handler.
         add_action('wp_ajax_linguaforge_test_provider', [AiProviderTab::class, 'ajax_test_provider']);
+        add_action('wp_ajax_linguaforge_test_model',    [AiProviderTab::class, 'ajax_test_model']);
 
         // Contextual help tabs (WP_Screen::add_help_tab).
         SettingsHelp::init();
@@ -222,8 +223,11 @@ class SettingsPage {
                 'testing'    => __( 'Testing…',          'lingua-forge' ),
                 'ok'         => __( '✓ Connection OK',   'lingua-forge' ),
                 'fail'       => __( '✗ Failed:',         'lingua-forge' ),
-                'noResponse' => __( 'No response from provider — check the error log for details.', 'lingua-forge' ),
-                'network'    => __( 'Network error — could not reach the WordPress AJAX endpoint.',  'lingua-forge' ),
+                'noResponse'     => __( 'No response from provider — check the error log for details.', 'lingua-forge' ),
+                'network'        => __( 'Network error — could not reach the WordPress AJAX endpoint.',  'lingua-forge' ),
+                'noModel'        => __( 'Enter a model identifier to test.', 'lingua-forge' ),
+                'testingContent' => __( 'Translating a real post with this model…', 'lingua-forge' ),
+                'presetLabel'    => __( 'preset', 'lingua-forge' ),
             ],
         ]);
 

@@ -89,6 +89,27 @@ class Anthropic extends AbstractProvider {
         ];
     }
 
+    /**
+     * Some newer Claude model generations (4.7+ at time of writing) reject
+     * legacy sampling parameters outright rather than clamping them — e.g.
+     * `temperature` comes back as a deterministic HTTP 400 with the message
+     * "temperature is deprecated for this model". Rather than dropping
+     * temperature for every request (which would break the compliance
+     * presets — see Config::apply_compliance() — on models that still
+     * support it), AbstractProvider::chat() retries once without the key
+     * only when the provider explicitly reports it this way.
+     *
+     * @return string[]
+     */
+    protected function droppable_sampling_params(): array {
+        return ['temperature'];
+    }
+
+    protected function is_deprecated_param_error(string $api_message, string $param): bool {
+        return stripos($api_message, $param) !== false
+            && stripos($api_message, 'deprecated') !== false;
+    }
+
     protected function is_truncated(array $decoded): bool {
         return ($decoded['stop_reason'] ?? '') === 'max_tokens';
     }

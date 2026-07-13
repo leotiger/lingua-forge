@@ -39,4 +39,14 @@ class AiProviderTab extends Tab {
     public static function ajax_test_provider(): void {
         ApiKeysTab::ajax_test_provider();
     }
+
+    /**
+     * Proxy for the test-model AJAX handler.
+     *
+     * Wired to wp_ajax_linguaforge_test_model in SettingsPage for the same
+     * reason as ajax_test_provider() above.
+     */
+    public static function ajax_test_model(): void {
+        ApiKeysTab::ajax_test_model();
+    }
 }

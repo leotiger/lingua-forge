@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -292,6 +292,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.5 =
+* Fixed: The Models datalist (Settings → AI Provider) reverted to the hard-coded built-in catalog on every page load, discarding the live model list fetched from the provider's own API when "Test connection" last succeeded — the fetch and its 24-hour cache were both working, but the settings page never read the cached list back when rendering the field suggestions. It now does. (`ai/includes/Admin/Settings/Tabs/GeneralTab.php`)
+* Fixed: Overriding a model to a newer Claude generation that has deprecated the `temperature` parameter failed outright with an HTTP 400 from Anthropic. The request now retries once with the parameter dropped when the provider reports it as deprecated for that model, keeping temperature control intact (still used by the compliance presets) for models that accept it. (`ai/includes/Providers/AbstractProvider.php`, `ai/includes/Providers/Anthropic.php`)
+* Added: "Test model" button next to every Light/Quality model field in Settings → AI Provider → Models — translates a short sample of your most recent published post with the exact (saved or unsaved) model in that field, using the tier's real translation code path and the currently active Behavior preset, and previews the translated output. Replaces a bare connectivity ping, which couldn't confirm a Quality-tier override actually produced usable translations. Makes a real, billed API call. (`ai/includes/Admin/Settings/Tabs/GeneralTab.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`, `ai/includes/Features/Translation.php`, `ai/includes/Features/JsonEnvelopeTranslator.php`, `ai/assets/test-connection.js`)
+
 = 2.6.4 =
 * Fixed: A first-time translated post created via "Translate missing"/Sync (`PostListColumn::create_linked_post()`) or the WP-CLI `translate`/`fill_translations` commands (`AbstractTranslateCommand::create_trid_linked_post()`) was born with no excerpt — only `TranslationTrigger::create_translated_post()` (the path third-party integrations use) carried it, a gap left by the 2.4.0 excerpt fix. All three creation paths now build their common `wp_insert_post()` args (title, content, status, type, author, excerpt) through one new shared helper, `TranslationTrigger::build_create_args()`, so a future fix to a common field lands in all three by construction instead of requiring a repeat spot-fix. (`ai/includes/Features/TranslationTrigger.php`, `ai/includes/Admin/PostListColumn.php`, `ai/includes/CLI/AbstractTranslateCommand.php`)
 * Fixed: A translated WooCommerce **variable product** created via the programmatic API (`linguaforge_trigger_translation()`/`linguaforge_queue_translation()`, including the Automatic Translation Backfill scan) or the WP-CLI create path was born with no translated variation children and no WC structural taxonomies (`product_type`, `pa_*`, `product_brand`) — the `wp_after_insert_post` hook that normally syncs these always saw an empty `_lf_lang` during creation and silently did nothing. Only "Translate missing"/Sync already compensated for this. All three creation paths now call one shared helper, `TranslationTrigger::sync_variation_children_if_product()`, explicitly after the TRID/lang meta is written. (`ai/includes/Features/TranslationTrigger.php`, `ai/includes/Admin/PostListColumn.php`, `ai/includes/CLI/AbstractTranslateCommand.php`)
@@ -386,6 +391,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.5 =
+Fixes a stale AI model suggestion list and a deprecated-parameter error on newer Claude models, and adds a "Test model" button to verify a model override before saving it. No database changes. No flush required.
 
 = 2.6.4 =
 Fixes missing excerpts/WC variation children on first translations, uninstall gaps (locale files, options/cron sweep), missing per-target Sync permission checks, FSE Re-create's theme-scoping, and a WP AI Client refine-request crash. No database changes. No flush required.

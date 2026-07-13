@@ -239,19 +239,21 @@ class Translation implements FeatureInterface {
     // =========================================================================
 
     /**
-    /**
      * Build the system prompt for a translation request.
      *
      * Pure function — all WP-dependent values (compliance addendum, glossary text)
      * must be resolved by the caller and passed in as plain strings. This makes the
-     * method fully unit-testable without any WordPress stubs.
+     * method fully unit-testable without any WordPress stubs, and reusable outside
+     * this class — e.g. the Settings → AI Provider "Test model" content check
+     * (ApiKeysTab::ajax_test_model()) calls this directly to build a realistic
+     * system prompt for whichever tier/model it's verifying.
      *
      * @param  string $compliance_addendum  Output of Config::active_preset_addendum() — '' for standard.
      * @param  string $glossary_text        Output of Glossary::format_for_prompt() — '' when empty.
      * @param  string $extra_instruction    Optional sentence inserted before the CRITICAL JSON RULE.
      * @return string
      */
-    private function build_system_prompt(
+    public static function build_system_prompt(
         string $compliance_addendum,
         string $glossary_text,
         string $extra_instruction = ''
@@ -288,7 +290,7 @@ class Translation implements FeatureInterface {
      * @param  int $post_id  Pass 0 for the global preset.
      * @return string  The addendum text, or '' for the standard (no-addendum) preset.
      */
-    private function resolve_compliance_addendum( int $post_id ): string {
+    public static function resolve_compliance_addendum( int $post_id ): string {
 
         $preset = Config::active_preset( $post_id );
         if ( $preset === 'standard' ) {
@@ -320,7 +322,7 @@ class Translation implements FeatureInterface {
      * @param  int    $post_id          Post ID — used only in the trim diagnostic log.
      * @return array
      */
-    private function prepare_full_post_inputs(
+    public static function prepare_full_post_inputs(
         string $title,
         string $content,
         string $excerpt,
@@ -516,7 +518,7 @@ class Translation implements FeatureInterface {
         }
 
         // ── Prepare content inputs ────────────────────────────────────────────
-        $ctx = $this->prepare_full_post_inputs(
+        $ctx = self::prepare_full_post_inputs(
             $post->post_title,
             $post->post_content,
             (string) $post->post_excerpt,
@@ -543,8 +545,8 @@ class Translation implements FeatureInterface {
         if ( $tm_eligible ) {
             $tm_translator = new TranslationMemoryTranslator(
                 $this->get_worker_config( $post_id ),
-                $this->build_system_prompt(
-                    $this->resolve_compliance_addendum( $post_id ),
+                self::build_system_prompt(
+                    self::resolve_compliance_addendum( $post_id ),
                     Glossary::format_for_prompt( $ctx['source_lang'], $target_language ),
                     'You will receive an array of blocks; return their translations as an array of the same length and order.'
                 )
@@ -566,8 +568,8 @@ class Translation implements FeatureInterface {
 
         $envelope_translator = new JsonEnvelopeTranslator(
             $this->get_worker_config( $post_id ),
-            $this->build_system_prompt(
-                $this->resolve_compliance_addendum( $post_id ),
+            self::build_system_prompt(
+                self::resolve_compliance_addendum( $post_id ),
                 Glossary::format_for_prompt( $ctx['source_lang'], $target_language )
             )
         );

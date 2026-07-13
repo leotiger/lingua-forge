@@ -35,22 +35,29 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.6.4';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.4/lingua-forge-2.6.4.zip';
-	$last_updated = '2026-07-11';
+	$version      = '2.6.5';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.5/lingua-forge-2.6.5.zip';
+	$last_updated = '2026-07-13';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.6.4.zip — build it, upload
-	// to the v2.6.4 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.6.5.zip — build it, upload
+	// to the v2.6.5 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = 'd80c8df82bc99220384f8613e62cf3e6c1160632d48057715ec5c5a26a1b990a';
+	$sha256 = 'f9c7c46946923156088398a1dda99dfb07e6bbfb1046019b49885aae2b004284';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.6.5 &#8212; 2026-07-13</h4>' .
+		'<ul>' .
+			'<li><strong>Fixed:</strong> The Models datalist (Settings &#8594; AI Provider) reverted to the hard-coded built-in catalog on every page load, discarding the live model list fetched from the provider&#8217;s own API the last time &#8220;Test connection&#8221; succeeded &#8212; the fetch and its 24-hour cache both worked, the settings page just never read the cached list back when rendering the suggestions. (<code>ai/includes/Admin/Settings/Tabs/GeneralTab.php</code>)</li>' .
+			'<li><strong>Fixed:</strong> Overriding a model to a newer Claude generation that has deprecated the <code>temperature</code> parameter failed outright with an HTTP 400 from Anthropic. The request now retries once with the parameter dropped when the provider reports it as deprecated for that model, keeping temperature control intact (still used by the compliance presets) for models that accept it. (<code>ai/includes/Providers/AbstractProvider.php</code>, <code>ai/includes/Providers/Anthropic.php</code>)</li>' .
+			'<li><strong>Added:</strong> &#8220;Test model&#8221; button next to every Light/Quality model field &#8212; translates a short sample of your most recent published post with the exact (saved or unsaved) model in that field, using the tier&#8217;s real translation code path and the currently active Behavior preset, and previews the translated output. Replaces a bare connectivity ping, which couldn&#8217;t confirm a Quality-tier override actually produced usable translations. Makes a real, billed API call. (<code>ai/includes/Admin/Settings/Tabs/GeneralTab.php</code>, <code>ai/includes/Admin/Settings/Tabs/ApiKeysTab.php</code>, <code>ai/includes/Features/Translation.php</code>, <code>ai/includes/Features/JsonEnvelopeTranslator.php</code>, <code>ai/assets/test-connection.js</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.6.4 &#8212; 2026-07-11</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> A first-time translated post created via &#8220;Translate missing&#8221;/Sync or the WP-CLI <code>translate</code>/<code>fill_translations</code> commands was born with no excerpt &#8212; only the programmatic-API creation path carried it, a gap left by the 2.4.0 excerpt fix. All three creation paths now build their common <code>wp_insert_post()</code> args through one new shared helper, <code>TranslationTrigger::build_create_args()</code>, so a future fix to a common field lands in all three by construction. (<code>ai/includes/Features/TranslationTrigger.php</code>, <code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/includes/CLI/AbstractTranslateCommand.php</code>)</li>' .
@@ -60,14 +67,6 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 			'<li><strong>Fixed:</strong> The uninstall cleanup had drifted roughly 30 options, several post meta keys, and every scheduled cron/Action Scheduler job behind current source, despite claiming to remove &#8220;all&#8221; plugin options. Replaced with a single self-updating options sweep, the missing post meta keys, and cron/Action Scheduler cleanup. (<code>uninstall.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> The FSE &#8220;Re-create&#8221; force path (Templates and Template Parts) looked up the existing post to update in place with no theme scoping, so it could silently overwrite an unrelated same-slug row belonging to a different theme &#8212; WordPress itself allows two themes to share a template slug. The lookup is now scoped to the active theme/namespace. (<code>ai/includes/Admin/FseLocalisation/ScaffoldHandler.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> The WordPress AI Client provider (WP 7.0+) crashed on any multi-turn &#8220;Refine&#8221; request (AI Content Generation, Chunk Translation) when selected as the active provider &#8212; verifying it against the API as actually shipped (it was originally written against an earlier preview) found <code>with_history()</code> needed a different input shape than was being sent. The other three AI providers were unaffected. (<code>ai/includes/Providers/WpAiClient.php</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.6.3 &#8212; 2026-07-11</h4>' .
-		'<ul>' .
-			'<li><strong>Changed:</strong> Automatic Translation Backfill (2.5.3) is now off by default and controlled by a new <strong>Settings &#8594; Behavior &#8594; Automatic Translation Backfill</strong> toggle &#8212; previously it ran unconditionally, hourly, for every site with the AI module active, with no setting to stop it. (<code>ai/includes/Features/TranslationBackfill.php</code>, <code>ai/includes/Admin/Settings/Tabs/BehaviorTab.php</code>, <code>ai/includes/Admin/SettingsPage.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The backfill scan no longer queues jobs when no AI provider/API key is configured, and now respects the <code>linguaforge_cpt_create_allowed</code> integration filter per post type, matching &#8220;Translate missing&#8221; and Sync. (<code>ai/includes/Features/TranslationBackfill.php</code>)</li>' .
-			'<li><strong>Changed:</strong> WooCommerce products and variations are now excluded from the backfill scan by default, since its creation path doesn&#8217;t run variation sync. Still reachable via the existing <code>linguaforge_backfill_post_types</code> filter. (<code>ai/includes/Features/TranslationBackfill.php</code>)</li>' .
-			'<li><strong>Changed:</strong> <code>readme.txt</code>&#8217;s External Services section now discloses the background AI sends Automatic Translation Backfill makes when enabled.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

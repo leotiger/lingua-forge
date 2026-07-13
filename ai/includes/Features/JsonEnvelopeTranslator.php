@@ -70,6 +70,12 @@ class JsonEnvelopeTranslator {
      * @param  string   $language_name   Human-readable target language (e.g. 'German').
      * @param  string   $target_language Two-letter target language code (e.g. 'de').
      * @param  array    $params          Original request parameters.
+     * @param  bool     $bypass_cache    Skip the CacheStore::set() write on success.
+     *                                   Used by the Settings → AI Provider "Test model"
+     *                                   content check (ApiKeysTab::ajax_test_model()),
+     *                                   which calls this method directly with a synthetic
+     *                                   cache key/hash and must not leave a stray entry
+     *                                   behind under the real post's cache namespace.
      * @return array<string,mixed>
      */
     public function translate(
@@ -80,7 +86,8 @@ class JsonEnvelopeTranslator {
         string   $hash,
         string   $language_name,
         string   $target_language,
-        array    $params
+        array    $params,
+        bool     $bypass_cache = false
     ): array {
 
         $worker_config = new WorkerConfig(
@@ -150,7 +157,9 @@ class JsonEnvelopeTranslator {
          */
         $payload = (array) apply_filters( 'linguaforge_translation_content', $payload, $post_id, $target_language );
 
-        CacheStore::set( $post_id, $cache_key, $hash, $payload );
+        if ( ! $bypass_cache ) {
+            CacheStore::set( $post_id, $cache_key, $hash, $payload );
+        }
 
         return array_merge( [ 'success' => true ], $payload );
     }
