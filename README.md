@@ -42,6 +42,7 @@ Everything ships as a single installable plugin. No external services beyond an 
 - [Requirements](#requirements)
 - [Translations](#translations)
 - [Recommended companions](#recommended-companions)
+- [Built on Lingua Forge](#built-on-lingua-forge)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Architecture](#architecture)
@@ -196,6 +197,16 @@ All translation files (`languages/lingua-forge-{locale}.po/.mo/.l10n.php`) are b
 ## Recommended companions
 
 **[Loco Translate](https://wordpress.org/plugins/loco-translate/)** — for translating third-party plugin and theme strings (`.po`/`.mo` editing, automatic language-pack sync, developer extraction). Integrates cleanly alongside Lingua Forge with no conflicts.
+
+---
+
+## Built on Lingua Forge
+
+Lingua Forge is also a foundation other plugins build on, not just a standalone tool.
+
+**[Agnosis](https://github.com/leotiger/agnosis)** — a free, federated WordPress plugin for independent artist collectives: artists submit work by email, AI writes the description and corrects weak photos, and published work federates to Mastodon and Pixelfed via ActivityPub. Agnosis declares Lingua Forge as a required companion plugin (`Requires Plugins` header — WordPress refuses to activate Agnosis without it) and relies on it for every multilingual surface: the required language field at artist admission, per-recipient locale-switched emails, and native-language fidelity for artwork titles and slugs. A companion FSE block theme, [agnosis-theme](https://github.com/leotiger/agnosis-theme), ships alongside it. Live at [agnosis.art](https://agnosis.art).
+
+If you're building a plugin that needs multilingual routing rather than reinventing it, Lingua Forge's public API — `linguaforge_trigger_translation()`, the REST endpoints, and the hooks documented in [CONTRIBUTING.md](CONTRIBUTING.md) — is designed to be built on the same way.
 
 ---
 
