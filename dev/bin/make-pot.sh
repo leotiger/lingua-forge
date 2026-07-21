@@ -5,10 +5,14 @@
 #   1. wp i18n make-pot  → languages/lingua-forge.pot
 #   2. msgmerge --update → merges new/changed strings into each .po
 #                          (existing translations kept; new strings untranslated;
-#                           changed source strings marked #, fuzzy for review)
+#                           changed source strings marked #, fuzzy)
+#   3. clear-fuzzy.php   → blanks every fuzzy msgstr and strips the fuzzy
+#                          flag, so each one starts clean instead of
+#                          carrying a stale, possibly-wrong auto-matched
+#                          guess into Loco Translate
 #
-# After this script, review/translate new and fuzzy strings in the .po files,
-# then run: composer compile-pos
+# After this script, translate the newly-blank and new strings in the
+# .po files, then run: composer compile-pos
 #
 # Requires: php, curl, msgmerge (gettext)
 #   macOS:  brew install gettext && brew link gettext --force
@@ -71,8 +75,16 @@ else
         echo "  ✓ languages/lingua-forge-${LOCALE}.po  (merged)"
     done
 
+    # ── 4. Clear fuzzy matches ───────────────────────────────────────────
+    # msgmerge's auto-matched "#, fuzzy" guesses are easy to miss in Loco
+    # Translate (a stale translation just sits there looking legitimate).
+    # Blank them so every fuzzy string starts as plainly untranslated.
     echo ""
-    echo "Review and translate any new or fuzzy strings in the .po files,"
+    echo "Clearing fuzzy matches..."
+    php "$SCRIPT_DIR/clear-fuzzy.php" "$LANG_DIR"/lingua-forge-*.po
+
+    echo ""
+    echo "Translate the new and now-blank strings in the .po files,"
     echo "then run: composer compile-pos"
 fi
 

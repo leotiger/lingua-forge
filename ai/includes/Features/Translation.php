@@ -533,6 +533,20 @@ class Translation implements FeatureInterface {
             return $ctx; // propagate error payload
         }
 
+        // Third-party plugins (e.g. a language-preservation or terminology-lock
+        // integration) can inject an extra sentence into the system prompt —
+        // ahead of the CRITICAL JSON RULE — without having to fork this method.
+        // Runs once here so both the TM and JSON-envelope paths below see it.
+        //
+        // Example — tell the AI to leave Latin phrases untranslated:
+        //
+        //   add_filter( 'linguaforge_translation_extra_instruction', function ( $instruction, $post_id ) {
+        //       return trim( $instruction . ' Leave any Latin-language phrases or sentences untranslated, verbatim.' );
+        //   }, 10, 2 );
+        //
+        // @since 2.6.6
+        $extra_instruction = (string) apply_filters( 'linguaforge_translation_extra_instruction', '', $post_id );
+
         // ── Translation Memory fork (§4.5) ────────────────────────────────────
         // Block-level cache + batched API. Falls back to JSON-envelope when TM
         // doesn't apply or returns null on any recoverable failure.
@@ -543,12 +557,16 @@ class Translation implements FeatureInterface {
             && $ctx['source_lang'] !== '';    // need known source for TM keys
 
         if ( $tm_eligible ) {
+            $tm_instruction = trim(
+                'You will receive an array of blocks; return their translations as an array of the same length and order.'
+                . ( $extra_instruction !== '' ? ' ' . $extra_instruction : '' )
+            );
             $tm_translator = new TranslationMemoryTranslator(
                 $this->get_worker_config( $post_id ),
                 self::build_system_prompt(
                     self::resolve_compliance_addendum( $post_id ),
                     Glossary::format_for_prompt( $ctx['source_lang'], $target_language ),
-                    'You will receive an array of blocks; return their translations as an array of the same length and order.'
+                    $tm_instruction
                 )
             );
             $tm_result = $tm_translator->translate(
@@ -570,7 +588,8 @@ class Translation implements FeatureInterface {
             $this->get_worker_config( $post_id ),
             self::build_system_prompt(
                 self::resolve_compliance_addendum( $post_id ),
-                Glossary::format_for_prompt( $ctx['source_lang'], $target_language )
+                Glossary::format_for_prompt( $ctx['source_lang'], $target_language ),
+                $extra_instruction
             )
         );
         $result = $envelope_translator->translate(

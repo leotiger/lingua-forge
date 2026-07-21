@@ -2,6 +2,17 @@
 
 ---
 
+## [2.6.6] — 2026-07-21
+
+Adds the extension point identified while auditing Agnosis's LinguaForge
+compatibility layer (`AUDIT-COMPAT-AGNOSIS`): Agnosis fans a published
+artwork out to every configured site language via `Translation::run()`, and
+needs a way to tell the AI to leave Latin phrases untranslated — but no
+filter exposed the system prompt before the AI call ran.
+
+### Added
+- **New `linguaforge_translation_extra_instruction` filter** lets a third-party plugin inject an extra sentence into the AI translation system prompt, ahead of the CRITICAL JSON RULE — e.g. an integration that needs Latin phrases left untranslated. `Translation::run()` now resolves `apply_filters( 'linguaforge_translation_extra_instruction', '', $post_id )` once and threads it through `build_system_prompt()`'s existing `$extra_instruction` parameter for both the Translation Memory and JSON-envelope code paths (the TM path appends it to its own array-format instruction rather than replacing it). Previously `build_system_prompt()` accepted this parameter but no call site in `run()` passed one, and no filter exposed the slot. (`ai/includes/Features/Translation.php`, `CONTRIBUTING.md`, `README.md`)
+
 ## [2.6.5] — 2026-07-13
 
 Addresses three AI Provider settings gaps found while trying to override the

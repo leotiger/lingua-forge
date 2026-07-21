@@ -80,7 +80,13 @@ outside the plugin namespace.
     receives `int[] $ids`, `int $post_id` the action was triggered from),
     `linguaforge_trash_cascade_complete` (action after a trash-cascade run;
     receives `int[] $trashed`, `int[] $skipped`, `int $post_id`).
-  - **AI sub-module:** `linguaforge_translation_content` (filter on the AI
+  - **AI sub-module:** `linguaforge_translation_extra_instruction` (filter on
+    an extra sentence inserted into the AI system prompt ahead of the CRITICAL
+    JSON RULE, for both the TM and JSON-envelope translation paths in
+    `Translation::run()`; receives `string $instruction` (default `''`),
+    `int $post_id`; return the (possibly appended) instruction string — e.g. to
+    tell the AI to leave Latin phrases untranslated),
+    `linguaforge_translation_content` (filter on the AI
     translation payload before it is written to the result cache; receives
     `array $payload`, `int $post_id`, `string $target_lang`),
     `linguaforge_translation_complete` (action after a CLI / programmatic
@@ -947,6 +953,7 @@ add_action( 'linguaforge_loaded', function () {
 | Hook | Signature | Purpose |
 |---|---|---|
 | `linguaforge_translation_content` | `(array $payload, int $post_id, string $lang)` | Modify translated content before cache/return |
+| `linguaforge_translation_extra_instruction` | `(string $instruction, int $post_id)` | Insert an extra sentence into the AI system prompt before the CRITICAL JSON RULE — e.g. to preserve Latin phrases. Default `''`. (Since 2.6.6) |
 | `linguaforge_translated_post_meta` | `(array $meta, int $source_id, string $lang, string $source_post_type)` | Declare post meta a programmatically-created translated post is born with (written via `meta_input` inside `create_translated_post()`). Default `[]`. `_lf_trid` / `_lf_lang` are stripped — LF writes them authoritatively. ⚠️ WC: operational product keys (`_thumbnail_id`, `_price`, …) written on a translated *product* are shadowed by MetaDelegate; scope by `$source_post_type`. (Since 2.4.0) |
 | `linguaforge_template_for_lang` | `(string $resolved, \WP_Post $post, string $lang)` | Override the language-specific FSE template slug (`Sync::resolve_template_for_lang()`) LF is about to assign. Fires for every assignment path — editor save, WP-CLI, Sync button, and programmatic creation via `linguaforge_trigger_translation()`/`linguaforge_queue_translation()` — since they all resolve through this one method. Never fires for the source-language post. Return `''`/`null` to suppress assignment entirely (treated the same as "no template"). (Since 2.6.1) |
 | `linguaforge_translation_worker_config` | `(WorkerConfig $cfg, int $post_id, array $params)` | Override AI model / temperature / max_tokens |
@@ -1657,11 +1664,17 @@ Updating translations is a two-step process, both run from `dev/`:
 # Step 1 — extract + merge
 composer make-pot
 # Regenerates languages/lingua-forge.pot from source, then runs msgmerge
-# against all 26 active .po files.  New strings appear untranslated;
-# changed source strings are marked #, fuzzy for human review.
+# against all 26 active .po files (new strings appear untranslated; changed
+# source strings are auto-matched and marked #, fuzzy), then runs
+# dev/bin/clear-fuzzy.php, which blanks every fuzzy msgstr and drops the
+# fuzzy flag — a surgical line-level edit that touches only fuzzy entries,
+# so the rest of the .po file's formatting is untouched. This exists so a
+# changed source string never carries a stale, possibly-wrong auto-matched
+# translation into Loco Translate looking already-done; it always starts
+# as plainly untranslated.
 # Requires: php, curl, msgmerge  (brew install gettext / apt-get install gettext)
 
-# → Review and translate new/fuzzy strings in the .po files, then:
+# → Translate the new/blank strings in the .po files, then:
 
 # Step 2 — compile
 composer compile-pos

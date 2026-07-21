@@ -35,38 +35,32 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.6.5';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.5/lingua-forge-2.6.5.zip';
-	$last_updated = '2026-07-13';
+	$version      = '2.6.6';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.6/lingua-forge-2.6.6.zip';
+	$last_updated = '2026-07-21';
 	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.6.5.zip — build it, upload
-	// to the v2.6.5 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.6.6.zip — build it, upload
+	// to the v2.6.6 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = 'f9c7c46946923156088398a1dda99dfb07e6bbfb1046019b49885aae2b004284';
+	$sha256 = '1ebfbc12317e28bc63839ae87db5aa63e978e774d9a2d14459f853170ba56b6b';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
+		'<h4>2.6.6 &#8212; 2026-07-21</h4>' .
+		'<ul>' .
+			'<li><strong>Added:</strong> New <code>linguaforge_translation_extra_instruction</code> filter lets a third-party plugin inject an extra sentence into the AI translation system prompt, ahead of the CRITICAL JSON RULE &#8212; e.g. an integration that needs Latin phrases left untranslated. Receives <code>(string $instruction, int $post_id)</code>; runs for both the Translation Memory and JSON-envelope translation paths. (<code>ai/includes/Features/Translation.php</code>)</li>' .
+		'</ul>' .
+		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.6.5 &#8212; 2026-07-13</h4>' .
 		'<ul>' .
 			'<li><strong>Fixed:</strong> The Models datalist (Settings &#8594; AI Provider) reverted to the hard-coded built-in catalog on every page load, discarding the live model list fetched from the provider&#8217;s own API the last time &#8220;Test connection&#8221; succeeded &#8212; the fetch and its 24-hour cache both worked, the settings page just never read the cached list back when rendering the suggestions. (<code>ai/includes/Admin/Settings/Tabs/GeneralTab.php</code>)</li>' .
 			'<li><strong>Fixed:</strong> Overriding a model to a newer Claude generation that has deprecated the <code>temperature</code> parameter failed outright with an HTTP 400 from Anthropic. The request now retries once with the parameter dropped when the provider reports it as deprecated for that model, keeping temperature control intact (still used by the compliance presets) for models that accept it. (<code>ai/includes/Providers/AbstractProvider.php</code>, <code>ai/includes/Providers/Anthropic.php</code>)</li>' .
 			'<li><strong>Added:</strong> &#8220;Test model&#8221; button next to every Light/Quality model field &#8212; translates a short sample of your most recent published post with the exact (saved or unsaved) model in that field, using the tier&#8217;s real translation code path and the currently active Behavior preset, and previews the translated output. Replaces a bare connectivity ping, which couldn&#8217;t confirm a Quality-tier override actually produced usable translations. Makes a real, billed API call. (<code>ai/includes/Admin/Settings/Tabs/GeneralTab.php</code>, <code>ai/includes/Admin/Settings/Tabs/ApiKeysTab.php</code>, <code>ai/includes/Features/Translation.php</code>, <code>ai/includes/Features/JsonEnvelopeTranslator.php</code>, <code>ai/assets/test-connection.js</code>)</li>' .
-		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.6.4 &#8212; 2026-07-11</h4>' .
-		'<ul>' .
-			'<li><strong>Fixed:</strong> A first-time translated post created via &#8220;Translate missing&#8221;/Sync or the WP-CLI <code>translate</code>/<code>fill_translations</code> commands was born with no excerpt &#8212; only the programmatic-API creation path carried it, a gap left by the 2.4.0 excerpt fix. All three creation paths now build their common <code>wp_insert_post()</code> args through one new shared helper, <code>TranslationTrigger::build_create_args()</code>, so a future fix to a common field lands in all three by construction. (<code>ai/includes/Features/TranslationTrigger.php</code>, <code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/includes/CLI/AbstractTranslateCommand.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> A translated WooCommerce variable product created via the programmatic API or the WP-CLI create path was born with no translated variation children and no WC structural taxonomies &#8212; the sync hook always saw an empty language meta during creation and silently did nothing. All three creation paths now call a shared <code>TranslationTrigger::sync_variation_children_if_product()</code> helper explicitly after that meta is written. (<code>ai/includes/Features/TranslationTrigger.php</code>, <code>ai/includes/Admin/PostListColumn.php</code>, <code>ai/includes/CLI/AbstractTranslateCommand.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Uninstalling a language could delete the wrong plugin/theme locale files, or miss the right ones &#8212; unanchored prefix matching could delete unrelated dialect files sharing a 2-letter prefix (e.g. <code>ar</code> vs <code>ary</code>/<code>arq</code>), and couldn&#8217;t match the <code>{textdomain}-{locale}.mo</code> suffix convention used in <code>plugins/</code>/<code>themes/</code> subdirectories at all. New anchored root and suffix matchers fix both. (<code>ai/includes/Admin/Language/LanguageUninstaller.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Sync and Template Sync could overwrite a sibling translation the current user has no permission to edit &#8212; both only checked permissions on the clicked post, not each post they actually write to. Both now skip (and report) any target post the current user can&#8217;t edit. (<code>ai/includes/Admin/PostListColumn.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The uninstall cleanup had drifted roughly 30 options, several post meta keys, and every scheduled cron/Action Scheduler job behind current source, despite claiming to remove &#8220;all&#8221; plugin options. Replaced with a single self-updating options sweep, the missing post meta keys, and cron/Action Scheduler cleanup. (<code>uninstall.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The FSE &#8220;Re-create&#8221; force path (Templates and Template Parts) looked up the existing post to update in place with no theme scoping, so it could silently overwrite an unrelated same-slug row belonging to a different theme &#8212; WordPress itself allows two themes to share a template slug. The lookup is now scoped to the active theme/namespace. (<code>ai/includes/Admin/FseLocalisation/ScaffoldHandler.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> The WordPress AI Client provider (WP 7.0+) crashed on any multi-turn &#8220;Refine&#8221; request (AI Content Generation, Chunk Translation) when selected as the active provider &#8212; verifying it against the API as actually shipped (it was originally written against an earlier preview) found <code>with_history()</code> needed a different input shape than was being sent. The other three AI providers were unaffected. (<code>ai/includes/Providers/WpAiClient.php</code>)</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

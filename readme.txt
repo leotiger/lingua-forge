@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.5
+Stable tag: 2.6.6
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -292,6 +292,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.6 =
+* Added: New `linguaforge_translation_extra_instruction` filter lets a third-party plugin inject an extra sentence into the AI translation system prompt (before the CRITICAL JSON RULE) — e.g. an integration that needs Latin phrases left untranslated. Receives `(string $instruction, int $post_id)`; runs for both the Translation Memory and JSON-envelope translation paths. (`ai/includes/Features/Translation.php`)
+
 = 2.6.5 =
 * Fixed: The Models datalist (Settings → AI Provider) reverted to the hard-coded built-in catalog on every page load, discarding the live model list fetched from the provider's own API when "Test connection" last succeeded — the fetch and its 24-hour cache were both working, but the settings page never read the cached list back when rendering the field suggestions. It now does. (`ai/includes/Admin/Settings/Tabs/GeneralTab.php`)
 * Fixed: Overriding a model to a newer Claude generation that has deprecated the `temperature` parameter failed outright with an HTTP 400 from Anthropic. The request now retries once with the parameter dropped when the provider reports it as deprecated for that model, keeping temperature control intact (still used by the compliance presets) for models that accept it. (`ai/includes/Providers/AbstractProvider.php`, `ai/includes/Providers/Anthropic.php`)
@@ -391,6 +394,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.6 =
+Adds a filter (`linguaforge_translation_extra_instruction`) letting integrations add a custom instruction to the AI translation prompt. No database changes. No flush required.
 
 = 2.6.5 =
 Fixes a stale AI model suggestion list and a deprecated-parameter error on newer Claude models, and adds a "Test model" button to verify a model override before saving it. No database changes. No flush required.

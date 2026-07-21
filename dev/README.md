@@ -70,9 +70,11 @@ npm run lint:css
 npm run format
 
 # i18n (two-step pipeline — gettext required: brew install gettext / apt-get install gettext)
-composer make-pot              # Step 1: regenerate .pot from source + msgmerge into all 26 .po files
-                               #   New strings appear untranslated; changed strings marked fuzzy.
-                               #   Review/translate .po files, then run compile-pos.
+composer make-pot              # Step 1: regenerate .pot from source + msgmerge into all 26 .po files,
+                               #   then clear-fuzzy.php blanks every fuzzy-matched msgstr and drops
+                               #   the fuzzy flag. New strings appear untranslated; changed source
+                               #   strings end up untranslated too (not a stale fuzzy guess) — ready
+                               #   for a clean retranslation in Loco Translate.
 composer compile-pos           # Step 2: compile each .po → .mo (msgfmt) + .l10n.php (wp i18n make-php)
                                #   Both scripts download wp-cli.phar to dev/ on first run (no Docker needed)
 
