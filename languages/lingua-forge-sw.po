@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 23:15+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Swahili\n"
@@ -303,13 +303,13 @@ msgstr "Rekebisha Sehemu"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Tengeneza upya"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" imetengenezwa upya."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -338,8 +338,8 @@ msgstr "Rekebisha Urambazaji"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" imetengenezwa upya. Kiolezo %2$d kilichohadithwa."
+msgstr[1] "%2$d kiolezo kilizohadithwa."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -623,27 +623,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Tafsiri kila toleo jingine la lugha kutoka kwenye chapisho hili. Hutengeneza zile zenye upungufu na kuandika upya zile zilizopo tayari — ikiwemo lugha ya msingi, ikiwa chapisho hili ni tafsiri."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Synchronize"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Kamatia kiolezo sahihi kinachohusiana na lugha kwa kila tafsiri iliyopo ya chapisho hili. Hakuna simu ya AI wala mabadiliko ya maudhui — bure na salama kuendeshwa wakati wowote."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Synchronize Kiolezo — kamatia kiolezo kwa kila tafsiri"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "SK"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -669,7 +669,7 @@ msgstr "Inatafsiri tena…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Inakamatia…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -677,11 +677,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Hii inatafsiri kila toleo jingine la lugha ya chapisho hili kutoka kwa hili — hutengeneza zile zenye upungufu na kuandika upya zile zilizopo (ikiwemo lugha ya msingi, ikiwa chapisho hili ni tafsiri). Haiwezi kuseswa. Kuendelea?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Inakamatia kiolezo…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -721,33 +721,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "Synchronize kutoka kwa bidhaa ya WooCommerce ya lugha ya upili imezuiwa kwa chaguo-msingi, kwa sababu ingeinua bidhaa ya msingi. Amilisha katika Mipangilio → Tabia → WooCommerce ikiwa unataka tafsiri iweze kuwa chanzo kipya cha maudhui."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "Synchronize kutoka kwa chapisho cha lugha ya upili imezuiwa kwa chaguo-msingi, kwa sababu ingeinua chapisho cha msingi. Amilisha katika Mipangilio → Tabia → Synchronize ikiwa unataka tafsiri iweze kuwa chanzo kipya cha maudhui."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Iliruka — huna ruhusa ya kuhariri tafsiri iliyopo."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "Kutengeneza tafsiri kwa aina ya chapisho \"%s\" kunahitaji ujumuishaji wenye kazi."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Synchronize Kiolezo inaweza kuendeshwa tu kutoka kwa chapisho cha lugha ya msingi/chanzo."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Iliruka — huna ruhusa ya kuhariri tafsiri hii."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3558,37 +3558,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Ingiza kitambulisho cha muundo kuojaribu."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Hakuna chapisho au ukurasa uliochapishwa uliopatikana kuojaribu nao — chapisha maudhui fulani kwanza, au jaribu Quick Translate moja kwa moja."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(bila kichwa)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Kiolezo cha maswali hakikupatikana."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Tafsiri ilishindwa. Tafadhali jaribu tena."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Chapisho la sampuli halina maudhui ya maandishi yanayoonekana kutatamka."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Kiolezo cha maswali ya kipande hakikupatikana."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Muundo haukurudisha majibu. Angalia kumbukumbu ya hitilafu ya WordPress kwa maelezo."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3721,7 +3721,7 @@ msgstr "Tazama chaguo-msingi cha kujengwa ndani"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Kujaza Tafsiri Otomatiki"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3730,15 +3730,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Hupiga kelele kwa kawaida kwa ajili ya chapisha kupoteza tafsiri katika lugha yenye kazi na kuweka AI tafsiri kwa ajili ya kila pengo lililotaka — furaha hiyo sawa ambayo unaweza kufanya badala hiyo kwa mkono kupitia \"Tafsiri kupoteza\" au amri za WP-CLI missing_translations/fill_translations, ziendeshwe otomatiki mara moja kwa saa badala."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Kujaza otomatiki"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Tatamka otomatiki chapisha kupoteza toleo la lugha"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3748,14 +3748,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Imezimwa kwa chaguo-msingi. Kipengele hiki kinafanya ombi la mtoa huduma wa AI — na kutumiaji gharama inayohusiana na API — otomatiki na nyumba, bila uthibitisho kwa ombi kwa ombi, kwa kila chapisha kilichochapishwa kilichopatikana bila tafsiri katika lugha yenye kazi. Washa hii tu ikiwa unataka kila pengo la maudhui kutatamka bila msaada; kama si hivyo tumia \"Tafsiri kupoteza\" au amri za WP-CLI kutatamka kwa ratiba yako mwenyewe."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "Bidhaa za WooCommerce na tofauti hazijajumuishwa kamwe, bila kujali mpangilio huu. Ujumuishaji unaweza pia kuzuia aina mahususi za chapisho kupitia kichujio cha linguaforge_cpt_create_allowed."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3764,16 +3764,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Kitufe cha \"Synchronize\" katika orodha ya chapisho Lang safu inatamka chapisho kutoka kwa kila lugha jingine, ikiwemo chapisho cha msingi/chanzo wakati kiendeshwa kutoka kwa tafsiri. Mwelekeo huo wa back-translation unazuiwa kwa chaguo-msingi kwa kila aina ya chapisho. (Bidhaa za WooCommerce na tofauti zina mpangilio wao binafsi tofauti chini — hii haiathiri."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Synchronize ya Lugha ya Upili"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Ruhusu \"Synchronize\" katika tafsiri kuandika upya chapisho cha msingi"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3782,7 +3782,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Imezimwa kwa chaguo-msingi: kubofya \"Synchronize\" katika tafsiri imezuiwa kutokuandika upya chapisho cha msingi. Kukamatia KUTOKA kwa chapisho cha msingi kwa kila tafsiri daima inaruhusiwa bila kujali mpangilio huu. Washa hii tu ikiwa unataka kweli tafsiri iweze kuwa chanzo kipya cha maudhui."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3791,11 +3791,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Bidhaa ya lugha ya msingi ni chanzo cha kazi cha WooCommerce cha ukweli kwa bei, SKU, na hazina, ambazo zinakupiwa kila wakati kutoka kwa hii bila kujali lugha ambayo kamata anahangaiko kuona. Hii ni mpangilio tofauti, wenye kazi, kutoka kwa vizuizi vya jumla \"Synchronize\" hapo juu — kuamilisha moja haiamilishi nyingine."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Ruhusu \"Synchronize\" katika bidhaa iliyotafsiriwa kuandika upya bidhaa ya msingi"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3805,7 +3805,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Imezimwa kwa chaguo-msingi: kubofya \"Synchronize\" katika bidhaa ya WooCommerce iliyotafsiriwa imezuiwa, kwa sababu ingeinua back-translate kwenye kichwa cha bidhaa ya msingi, maelezo, na muhtasari. Kukamatia KUTOKA kwa bidhaa ya msingi kwa kila tafsiri daima inaruhusiwa bila kujali mpangilio huu. Washa hii tu ikiwa unataka kweli tafsiri iweze kuwa chanzo kipya cha maudhui."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3925,11 +3925,11 @@ msgstr "kimezuiwa"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Inatamka sampuli fupi ya chapisho lako la hivi karibuni liliochapishwa na muundo huu halisi — simu halisi, simu iliyobofywa."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Mtihani wa mtindo"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4410,8 +4410,8 @@ msgstr[1] "Faili %d za lugha zimetolewa."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d tafsiri ya muundo iliyoondolewa."
+msgstr[1] "%d tafsiri za muundo zilizondolewa."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4707,15 +4707,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Tengeneza Upya Lugha Zote"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Tengeneza Upya Lugha Zote (Violezo Tu)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Tengeneza Upya Lugha Zote (Sehemu za Violezo Tu)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4902,7 +4902,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Tengeneza upya zote"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4918,7 +4918,7 @@ msgstr "Rekebisha viungo vyote"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Rekebisha mitandao yote"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5804,11 +5804,11 @@ msgstr "Hitilafu ya mtandao — haikuweza kufikia mwisho wa AJAX wa WordPress."
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Kutafsiri chachu halisi kwa mtindo huu…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "preset"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5840,51 +5840,51 @@ msgstr "Baadhi ya kiolezo hakikuweza kuundwa."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Kutengeneza upya…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Violezo vyote vimetengenuliwa."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Violezo vingine havikuweza kutengenezwa."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Hii inabadilisha violezo hivi na nakala mpya safi kutoka kwa mandharinyuma yenye umeme, ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti uliotengenezwa. Hii haiwezi kutengenezwa. Kuendelea?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Hii inabadilisha violezo vyote na nakala mpya safi kutoka kwa mandharinyuma yenye umeme, ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti uliotengenezwa. Hii haiwezi kutengenezwa. Kuendelea?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Sehemu zote zimefanywa upya."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Sehemu zingine hazikuweza kufanywa upya."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Hii inabadilisha sehemu hii ya violezo na nakala mpya safi kutoka kwa mandharinyuma yenye umeme, ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti uliotengenezwa. Hii haiwezi kutengenezwa. Kuendelea?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Hii inabadilisha sehemu zote za violezo na nakala mpya safi kutoka kwa mandharinyuma yenye umeme, ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti uliotengenezwa. Hii haiwezi kutengenezwa. Kuendelea?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5952,11 +5952,11 @@ msgstr "Ficha"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Tengeneza upya violezo vyote"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Tengeneza upya sehemu zote"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5968,7 +5968,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Hii inatumia Tengeneza upya violezo vyote, Tengeneza upya sehemu zote, Tafsiri zote, Rekebisha sehemu zote, na Rekebisha viungo vyote kwa kila lugha yenye umeme ya {total}, moja moja. Inabadilisha violezo na sehemu zilizopo na nakala mpya safi kutoka kwa mandharinyuma yenye umeme (ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti) na kutafsiri upya maudhui — kila kitu hiki hakiwezi kutengenezwa. Tafsiri zote inafanya simu halisi za AI API kwa kila violezo na sehemu, ambayo inaweza kuchukua muda na inaweza kusambaza gharama kulingana na mtoa huduma wako. Kuendelea?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5980,7 +5980,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Hii inatumia Tengeneza upya violezo vyote, Tafsiri zote, Rekebisha sehemu zote, na Rekebisha viungo vyote kwa kila lugha yenye umeme ya {total}, moja moja — sehemu za violezo (vichwa, pambio, nk) zimeasadiwa sema sio zilizobadilishwa. Inabadilisha violezo zilizopo na nakala mpya safi kutoka kwa mandharinyuma yenye umeme (ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti) na kutafsiri upya maudhui — kila kitu hiki hakiwezi kutengenezwa. Tafsiri zote inafanya simu halisi za AI API kwa kila violezo, ambayo inaweza kuchukua muda na inaweza kusambaza gharama kulingana na mtoa huduma wako. Kuendelea?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5990,34 +5990,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Hii inatumia Tengeneza upya sehemu zote (vichwa, pambio, na sehemu nyingine yote za violezo) kwa kila lugha yenye umeme ya {total}, moja moja. Inabadilisha sehemu za violezo zilizopo na nakala mpya safi kutoka kwa mandharinyuma yenye umeme, ikitupilia mbegu uzalishaji wa Mhariri wa Tovuti uliotengenezwa. Hii haiwezi kutengenezwa. Kuendelea?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Kuanza…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Ikusanya {lang} ({index} ya {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Ilisitishwa."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} ya lugha za {total} ziliikusanya."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Kumalizika na matatizo."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Lugha zote za {total} zilikusanya."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6823,27 +6823,27 @@ msgstr "Nakili imekosa — tafadhali nakili URL kwa mikono."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Mkate + Jivu"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Hamisha kwenye Mkate (pamoja na tafsiri)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Iliyetupilia chachu chachu %d (pamoja na tafsiri)."
+msgstr[1] "Iliyetupilia chachu chachu %d (pamoja na tafsiri)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d chachu iliruka (hakuna ruhusa au imelindwa)."
+msgstr[1] "%d chachu ziliruka (hakuna ruhusa au imelindwa)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

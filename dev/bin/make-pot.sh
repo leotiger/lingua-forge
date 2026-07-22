@@ -9,7 +9,7 @@
 #   3. clear-fuzzy.php   → blanks every fuzzy msgstr and strips the fuzzy
 #                          flag, so each one starts clean instead of
 #                          carrying a stale, possibly-wrong auto-matched
-#                          guess into Loco Translate
+#                          guess forward
 #
 # After this script, translate the newly-blank and new strings in the
 # .po files, then run: composer compile-pos
@@ -76,9 +76,9 @@ else
     done
 
     # ── 4. Clear fuzzy matches ───────────────────────────────────────────
-    # msgmerge's auto-matched "#, fuzzy" guesses are easy to miss in Loco
-    # Translate (a stale translation just sits there looking legitimate).
-    # Blank them so every fuzzy string starts as plainly untranslated.
+    # msgmerge's auto-matched "#, fuzzy" guesses are easy to miss — a stale
+    # translation just sits there looking legitimate. Blank them so every
+    # fuzzy string starts as plainly untranslated.
     echo ""
     echo "Clearing fuzzy matches..."
     php "$SCRIPT_DIR/clear-fuzzy.php" "$LANG_DIR"/lingua-forge-*.po

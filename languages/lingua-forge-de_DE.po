@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 20:35+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: German\n"
@@ -303,13 +303,13 @@ msgstr "Teile reparieren"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Neu erstellen"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" neu erstellt."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -338,8 +338,8 @@ msgstr "Navigation reparieren"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" neu erstellt. %2$d Template aktualisiert."
+msgstr[1] "%2$d Template aktualisiert."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -624,27 +624,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Übersetzen Sie jede andere Sprachversion dieses Beitrags neu. Erstellt fehlende Versionen und überschreibt existierende — einschließlich der Primärsprache, falls dieser Beitrag eine Übersetzung ist."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Sync"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Weisen Sie jeder existierenden Übersetzung dieses Beitrags das korrekte sprachspezifische Template zu. Kein KI-Aufruf und keine Inhaltsänderungen — kostenlos und sicher, jederzeit ausführbar."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Template Sync — Templates für jede Übersetzung neu zuweisen"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "TS"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -670,7 +670,7 @@ msgstr "Erneut übersetzen…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Synchronisierung läuft…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -678,11 +678,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Dies übersetzt jede andere Sprachversion dieses Beitrags neu von diesem aus — erstellt fehlende Versionen und überschreibt existierende (einschließlich der Primärsprache, falls dieser Beitrag eine Übersetzung ist). Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Templates werden synchronisiert…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -723,33 +723,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "Sync von einem WooCommerce-Produkt in einer Sekundärsprache ist standardmäßig deaktiviert, da es das primäre Produkt überschreiben würde. Aktivieren Sie es in Einstellungen → Verhalten → WooCommerce, wenn Sie möchten, dass eine Übersetzung zur neuen Quelle werden kann."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "Sync von einem Beitrag in einer Sekundärsprache ist standardmäßig deaktiviert, da es den primären Beitrag überschreiben würde. Aktivieren Sie es in Einstellungen → Verhalten → Sync, wenn Sie möchten, dass eine Übersetzung zur neuen Quelle werden kann."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Übersprungen — Sie haben keine Berechtigung, die existierende Übersetzung zu bearbeiten."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "Das Erstellen von Übersetzungen für den Beitragstyp \"%s\" erfordert eine aktive Integration."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Template Sync kann nur vom primären/Quellsprachen-Beitrag ausgeführt werden."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Übersprungen — Sie haben keine Berechtigung, diese Übersetzung zu bearbeiten."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3594,37 +3594,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Geben Sie eine Modellkennung zum Testen ein."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Kein veröffentlichter Beitrag oder Seite zum Testen gefunden — veröffentlichen Sie zunächst Inhalte oder versuchen Sie Quick Translate direkt."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(Ohne Titel)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Prompt-Template nicht gefunden."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Übersetzung fehlgeschlagen. Bitte versuchen Sie es erneut."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Der Beispielbeitrag hat keinen sichtbaren Textinhalt zum Übersetzen."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Chunk-Prompt-Template nicht gefunden."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Modell gab keine Antwort. Überprüfen Sie das WordPress-Fehlerprotokoll für Details."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3759,7 +3759,7 @@ msgstr "Integrierten Standard anzeigen"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Automatisches Auffüllen von Übersetzungen"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3768,15 +3768,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Scannt regelmäßig nach Beiträgen, die eine Übersetzung in einer aktiven Sprache fehlt, und stellt eine KI-Übersetzung für jede gefundene Lücke in die Warteschlange — die gleiche Wiederherstellung, die Sie bereits manuell über \"Fehlende übersetzen\" oder die WP-CLI-Befehle missing_translations/fill_translations auslösen können, automatisch stattdessen einmal pro Stunde ausgeführt."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Automatisches Auffüllen"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Übersetzen Sie automatisch Beiträge, denen eine Sprachversion fehlt"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3786,14 +3786,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Standardmäßig deaktiviert. Diese Funktion führt KI-Provider-Anfragen durch — und verursacht die damit verbundenen API-Kosten — automatisch und im Hintergrund, ohne Bestätigung pro Anfrage, für jeden veröffentlichten Beitrag ohne Übersetzung in einer aktiven Sprache. Aktivieren Sie dies nur, wenn Sie möchten, dass jede Inhaltslücke unbeaufsichtigt übersetzt wird; verwenden Sie andernfalls \"Fehlende übersetzen\" oder die WP-CLI-Befehle, um nach Ihrem eigenen Zeitplan zu übersetzen."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "WooCommerce-Produkte und Varianten werden niemals einbezogen, unabhängig von dieser Einstellung. Eine Integration kann auch bestimmte Beitragstypen über den Filter linguaforge_cpt_create_allowed blockieren."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3802,16 +3802,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Die Schaltfläche \"Sync\" in der Lang-Spalte der Beitragsliste übersetzt einen Beitrag in jede andere Sprache, einschließlich der Primär-/Ausgangssprache, wenn sie von einer Übersetzung aus ausgeführt wird. Diese Rück-Übersetzungsrichtung ist standardmäßig für jeden Beitragstyp eingeschränkt. (WooCommerce-Produkte und Varianten haben ihre eigene separate Einstellung unten — diese betrifft sie nicht.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Sync in Sekundärsprache"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Erlauben Sie \"Sync\" auf einer übersetzten Seite, den primären Beitrag zu überschreiben"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3820,7 +3820,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Standardmäßig deaktiviert: Klicken auf \"Sync\" auf einer Übersetzung wird blockiert, um den primären Beitrag nicht zu überschreiben. Das Synchronisieren VOM primären Beitrag zu jeder Übersetzung ist immer erlaubt, unabhängig von dieser Einstellung. Aktivieren Sie dies nur, wenn Sie absichtlich möchten, dass eine Übersetzung zur neuen Quelle werden kann."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3829,11 +3829,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Das Primärsprachen-Produkt ist die operative Quelle der Wahrheit von WooCommerce für Preis, SKU und Bestand, die immer von ihm bereitgestellt werden, unabhängig davon, welche Sprache ein Käufer anzeigt. Dies ist eine separate, unabhängige Einstellung von der allgemeinen \"Sync\"-Einschränkung oben — das Aktivieren einer aktiviert nicht automatisch die andere."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Erlauben Sie \"Sync\" auf einem übersetzten Produkt, das primäre Produkt zu überschreiben"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3843,7 +3843,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Standardmäßig deaktiviert: Klicken auf \"Sync\" auf einem übersetzten WooCommerce-Produkt wird blockiert, da es den Titel, die Beschreibung und den Auszug des primären Produkts rück-übersetzen würde. Das Synchronisieren VOM primären Produkt zu jeder Übersetzung ist immer erlaubt, unabhängig von dieser Einstellung. Aktivieren Sie dies nur, wenn Sie absichtlich möchten, dass eine Übersetzung zur neuen Quelle werden kann."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3963,11 +3963,11 @@ msgstr "überschrieben"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Übersetzt ein kurzes Beispiel Ihres letzten veröffentlichten Beitrags mit genau diesem Modell — ein echter, abgerechneter API-Aufruf."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Testmodell"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4447,8 +4447,8 @@ msgstr[1] "%d Sprachdateien wurden entfernt."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Muster-Übersetzung entfernt."
+msgstr[1] "%d Muster-Übersetzungen entfernt."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4746,15 +4746,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Alle Sprachen neu erstellen"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Alle Sprachen neu erstellen (nur Vorlagen)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Alle Sprachen neu erstellen (nur Vorlagenteile)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4945,7 +4945,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Alle neu erstellen"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4961,7 +4961,7 @@ msgstr "Alle Links reparieren"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Alle Navigationselemente reparieren"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5847,11 +5847,11 @@ msgstr ""
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Übersetzung eines echten Beitrags mit diesem Modell…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "Vorgabe"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5883,51 +5883,51 @@ msgstr "Einige Vorlagen konnten nicht erstellt werden."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Wird neu erstellt…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Alle Vorlagen neu erstellt."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Einige Vorlagen konnten nicht neu erstellt werden."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Dies überschreibt diese Vorlage mit einer frischen Kopie aus dem aktiven Theme und verwirft alle im Site Editor vorgenommenen Anpassungen. Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Dies überschreibt jede Vorlage mit einer frischen Kopie aus dem aktiven Theme und verwirft alle im Site Editor vorgenommenen Anpassungen. Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Alle Teile neu erstellt."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Einige Teile konnten nicht neu erstellt werden."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Dies überschreibt diesen Vorlagenteil mit einer frischen Kopie aus dem aktiven Theme und verwirft alle im Site Editor vorgenommenen Anpassungen. Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Dies überschreibt jeden Vorlagenteil mit einer frischen Kopie aus dem aktiven Theme und verwirft alle im Site Editor vorgenommenen Anpassungen. Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5995,11 +5995,11 @@ msgstr "Verbergen"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Alle Vorlagen neu erstellen"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Alle Teile neu erstellen"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -6011,7 +6011,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Dies führt Alle Vorlagen neu erstellen, Alle Teile neu erstellen, Alle übersetzen, Alle Teile reparieren und Alle Links reparieren für jede Ihrer {total} aktiven Sprachen nacheinander aus. Es überschreibt vorhandene Vorlagen und Teile mit frischen Kopien aus dem aktiven Theme (verwirft Site Editor-Anpassungen) und übersetzt Inhalte neu – nichts davon kann rückgängig gemacht werden. Alle übersetzen führt echte KI-API-Aufrufe für jede Vorlage und jeden Teil aus, was lange dauern kann und je nach Anbieter Kosten verursachen kann. Fortfahren?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -6023,7 +6023,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Dies führt Alle Vorlagen neu erstellen, Alle übersetzen, Alle Teile reparieren und Alle Links reparieren für jede Ihrer {total} aktiven Sprachen nacheinander aus – Vorlagenteile (Header, Footer usw.) bleiben unberührt. Es überschreibt vorhandene Vorlagen mit frischen Kopien aus dem aktiven Theme (verwirft Site Editor-Anpassungen) und übersetzt Inhalte neu – nichts davon kann rückgängig gemacht werden. Alle übersetzen führt echte KI-API-Aufrufe für jede Vorlage aus, was lange dauern kann und je nach Anbieter Kosten verursachen kann. Fortfahren?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -6033,34 +6033,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Dies führt Alle Teile neu erstellen (Header, Footer und jeden anderen Vorlagenteil) für jede Ihrer {total} aktiven Sprachen nacheinander aus. Es überschreibt vorhandene Vorlagenteile mit frischen Kopien aus dem aktiven Theme und verwirft alle im Site Editor vorgenommenen Anpassungen. Dies kann nicht rückgängig gemacht werden. Fortfahren?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Wird gestartet…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Verarbeite {lang} ({index} von {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Abgebrochen."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} von {total} Sprachen verarbeitet."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Fertig mit Problemen."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Alle {total} Sprachen verarbeitet."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6866,27 +6866,27 @@ msgstr "Kopieren fehlgeschlagen — bitte kopiere die URL manuell."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Papierkorb + Geschwister"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "In Papierkorb verschieben (inkl. Übersetzungen)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Beitrag in Papierkorb verschoben (inkl. Übersetzungen)."
+msgstr[1] "%d Beiträge in Papierkorb verschoben (inkl. Übersetzungen)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Beitrag wurde übersprungen (keine Berechtigung oder geschützt)."
+msgstr[1] "%d Beiträge wurden übersprungen (keine Berechtigung oder geschützt)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

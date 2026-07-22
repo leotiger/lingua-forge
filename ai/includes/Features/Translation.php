@@ -479,7 +479,7 @@ class Translation implements FeatureInterface {
         $language_name  = self::get_languages()[ $target_language ];
         $translate_mode = sanitize_text_field( $params['translate_mode'] ?? 'full' );
         if ( $translate_mode === 'chunk' ) {
-            return $this->run_chunk( $language_name, $params );
+            return $this->run_chunk( $language_name, $params, $post_id );
         }
 
         // ── Post load ─────────────────────────────────────────────────────────
@@ -498,8 +498,26 @@ class Translation implements FeatureInterface {
             ? $param_footnotes
             : (string) get_post_meta( $post_id, 'footnotes', true );
 
+        // Third-party plugins (e.g. a language-preservation or terminology-lock
+        // integration) can inject an extra sentence into the system prompt —
+        // ahead of the CRITICAL JSON RULE — without having to fork this method.
+        // Resolved here, ahead of the cache hash below, so both the TM and
+        // JSON-envelope paths see it and a cached translation stays tied to the
+        // instruction that produced it — a filter callback that starts returning
+        // a different instruction (or gets added/removed) invalidates the cache
+        // instead of silently serving a translation built under the old one.
+        //
+        // Example — tell the AI to leave Latin phrases untranslated:
+        //
+        //   add_filter( 'linguaforge_translation_extra_instruction', function ( $instruction, $post_id ) {
+        //       return trim( $instruction . ' Leave any Latin-language phrases or sentences untranslated, verbatim.' );
+        //   }, 10, 2 );
+        //
+        // @since 2.6.6
+        $extra_instruction = (string) apply_filters( 'linguaforge_translation_extra_instruction', '', $post_id );
+
         $cache_key = $this->get_key() . '_' . $target_language;
-        $hash      = CacheStore::hash( [ $post->post_title, $post->post_content, $footnotes_raw, $target_language, Config::provider(), Config::model( Config::translation_tier() ) ] );
+        $hash      = CacheStore::hash( [ $post->post_title, $post->post_content, $footnotes_raw, $target_language, $extra_instruction, Config::provider(), Config::model( Config::translation_tier() ) ] );
 
         // Debug mode bypasses cache so every click triggers a live API call.
         $force  = ! empty( $params['force_refresh'] ) || TranslationDebug::debug_enabled();
@@ -532,20 +550,6 @@ class Translation implements FeatureInterface {
         if ( empty( $ctx['_success'] ) ) {
             return $ctx; // propagate error payload
         }
-
-        // Third-party plugins (e.g. a language-preservation or terminology-lock
-        // integration) can inject an extra sentence into the system prompt —
-        // ahead of the CRITICAL JSON RULE — without having to fork this method.
-        // Runs once here so both the TM and JSON-envelope paths below see it.
-        //
-        // Example — tell the AI to leave Latin phrases untranslated:
-        //
-        //   add_filter( 'linguaforge_translation_extra_instruction', function ( $instruction, $post_id ) {
-        //       return trim( $instruction . ' Leave any Latin-language phrases or sentences untranslated, verbatim.' );
-        //   }, 10, 2 );
-        //
-        // @since 2.6.6
-        $extra_instruction = (string) apply_filters( 'linguaforge_translation_extra_instruction', '', $post_id );
 
         // ── Translation Memory fork (§4.5) ────────────────────────────────────
         // Block-level cache + batched API. Falls back to JSON-envelope when TM
@@ -654,9 +658,14 @@ class Translation implements FeatureInterface {
      *
      * @param  string $language_name  Human-readable language name (e.g. "French").
      * @param  array  $params         Request parameters; chunk_text is required.
+     * @param  int    $post_id        Post the chunk belongs to, when known (meta-box "Translate
+     *   chunk" mode passes the real post being edited). 0 for post-independent callers (the
+     *   Admin Toolbar popover via FeatureController::run_translate_chunk() has no post context).
+     *   Threaded through to ChunkTranslation::run() for the linguaforge_translation_extra_instruction
+     *   filter.
      * @return array
      */
-    public function run_chunk(string $language_name, array $params): array {
+    public function run_chunk(string $language_name, array $params, int $post_id = 0): array {
 
         $provider = ProviderFactory::make( Config::apply_compliance( new WorkerConfig(
             model:       Config::model( Config::quick_translate_tier() ),
@@ -664,7 +673,7 @@ class Translation implements FeatureInterface {
             temperature: 0.2,
         ) ) );
 
-        return ( new ChunkTranslation( $provider ) )->run( $language_name, $params );
+        return ( new ChunkTranslation( $provider ) )->run( $language_name, $params, $post_id );
     }
 
 }

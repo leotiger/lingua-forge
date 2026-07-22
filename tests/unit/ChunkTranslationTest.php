@@ -13,6 +13,14 @@
  *   • Input capping at quick_translate_max_input_chars
  *   • Language code resolution via resolve_language_code()
  *   • build_messages() pure helper — both paths
+ *   • linguaforge_translation_extra_instruction filter — appended to the
+ *     system prompt, receives $post_id, defaults post_id to 0 (added 2.6.7;
+ *     the filter itself shipped 2.6.6 for the full-post paths only)
+ *   • Compliance-preset lookup (Config::active_preset()) — a page's
+ *     per-page _linguaforge_preset override is honoured when a real
+ *     $post_id is passed, falls back to the global preset when the page
+ *     has no override, and post_id 0 (post-independent toolbar popover)
+ *     never consults post meta at all (added 2.6.7)
  *
  * Cache is disabled in all tests (linguaforge_api_cache_enabled = false)
  * to avoid $wpdb dependency. Cache behaviour is covered by CacheStoreHashTest
@@ -116,6 +124,10 @@ final class ChunkTranslationTest extends TestCase {
 
 	protected function tearDown(): void {
 		\LfWcMocks::$wpdb_get_var = null;
+		// Unconditional reset (not just in the tests that set it) so a failed
+		// assertion mid-test can never leak _linguaforge_preset meta into a
+		// later test in this class.
+		\LfWcMocks::$meta = [];
 	}
 
 	// =========================================================================
@@ -335,5 +347,143 @@ final class ChunkTranslationTest extends TestCase {
 
 		$this->assertSame( 'system', $messages[0]['role'] );
 		$this->assertSame( 'MY_SYSTEM_PROMPT', $messages[0]['content'] );
+	}
+
+	// =========================================================================
+	// linguaforge_translation_extra_instruction filter
+	//
+	// Added to full-post translation (Translation::run(), both the TM and
+	// JSON-envelope paths) in 2.6.6. ChunkTranslation::run() never resolved it,
+	// so an integration relying on the filter saw its instruction silently
+	// dropped for any chunk translation — fixed 2.6.7.
+	// =========================================================================
+
+	public function test_no_extra_instruction_leaves_system_prompt_unchanged(): void {
+
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ] );
+
+		$this->assertSame(
+			'You are a professional translator. Output only the translated text — no commentary, no preamble.',
+			$holder->messages[0]['content']
+		);
+	}
+
+	public function test_extra_instruction_filter_is_appended_to_system_prompt(): void {
+
+		$GLOBALS['lf_test_filters']['linguaforge_translation_extra_instruction'] =
+			fn() => 'Leave any Latin-language phrases untranslated, verbatim.';
+
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ] );
+
+		$this->assertStringContainsString(
+			'Leave any Latin-language phrases untranslated, verbatim.',
+			$holder->messages[0]['content']
+		);
+	}
+
+	public function test_extra_instruction_appears_before_output_only_clause(): void {
+
+		// Mirrors the full-post build_system_prompt() contract: the extra
+		// instruction is a trailing sentence, not a replacement of the base rules.
+		$GLOBALS['lf_test_filters']['linguaforge_translation_extra_instruction'] =
+			fn() => 'Preserve scientific Latin binomials verbatim';
+
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ] );
+
+		$system = $holder->messages[0]['content'];
+		$this->assertStringContainsString( 'professional translator', $system );
+		$this->assertStringContainsString( 'Preserve scientific Latin binomials verbatim.', $system );
+	}
+
+	public function test_extra_instruction_filter_receives_post_id(): void {
+
+		$received_post_id = null;
+		$GLOBALS['lf_test_filters']['linguaforge_translation_extra_instruction'] =
+			function ( $instruction, $post_id ) use ( &$received_post_id ) {
+				$received_post_id = $post_id;
+				return $instruction;
+			};
+
+		$this->makeChunk( 'Hola' )->run( 'Spanish', [ 'chunk_text' => 'Hello' ], 42 );
+
+		$this->assertSame( 42, $received_post_id );
+	}
+
+	public function test_extra_instruction_filter_defaults_post_id_to_zero(): void {
+
+		// The Admin Toolbar's /translate-chunk popover is post-independent and
+		// never passes a post_id — run() must default to 0 rather than error.
+		$received_post_id = 'not-called';
+		$GLOBALS['lf_test_filters']['linguaforge_translation_extra_instruction'] =
+			function ( $instruction, $post_id ) use ( &$received_post_id ) {
+				$received_post_id = $post_id;
+				return $instruction;
+			};
+
+		$this->makeChunk( 'Hola' )->run( 'Spanish', [ 'chunk_text' => 'Hello' ] );
+
+		$this->assertSame( 0, $received_post_id );
+	}
+
+	// =========================================================================
+	// Compliance-preset lookup (Config::active_preset()) — post_id also feeds
+	// this now, so a page's per-page `_linguaforge_preset` override is honoured
+	// by chunk mode the same way it already is for full-post Translation.
+	// Relies on \LfWcMocks::$meta (get_post_meta polyfill) and
+	// $GLOBALS['lf_test_options'] (get_option polyfill), both provided by
+	// WcPolyfills.php — loaded transitively when the full suite runs (this
+	// file's setUp() already depends on \LfWcMocks for $wpdb_get_var).
+	// =========================================================================
+
+	public function test_post_specific_preset_addendum_is_applied_when_post_id_given(): void {
+
+		\LfWcMocks::$meta[42]['_linguaforge_preset'] = 'legal';
+
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ], 42 );
+
+		$this->assertStringContainsString( 'Strict-preservation mode is active', $holder->messages[0]['content'] );
+	}
+
+	public function test_post_without_override_falls_back_to_global_preset(): void {
+
+		$GLOBALS['lf_test_options']['linguaforge_active_preset'] = 'technical';
+
+		// post_id 99 has no _linguaforge_preset meta set — must fall through to global.
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ], 99 );
+
+		$this->assertStringContainsString( 'Technical-precision mode is active', $holder->messages[0]['content'] );
+	}
+
+	public function test_post_id_zero_never_checks_post_meta_and_uses_global_only(): void {
+
+		// A per-page override exists on post 7, but the toolbar's /translate-chunk
+		// popover has no post context and always calls run() with post_id 0 (the
+		// default) — it must never pick up post 7's override, only the global setting.
+		\LfWcMocks::$meta[7]['_linguaforge_preset']              = 'legal';
+		$GLOBALS['lf_test_options']['linguaforge_active_preset'] = 'creative';
+
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ] ); // post_id defaults to 0
+
+		$this->assertStringContainsString( 'Creative mode is active', $holder->messages[0]['content'] );
+		$this->assertStringNotContainsString( 'Strict-preservation mode is active', $holder->messages[0]['content'] );
+	}
+
+	public function test_no_preset_configured_leaves_system_prompt_unchanged(): void {
+
+		// Standard preset (the default when nothing is configured) has no
+		// addendum — system prompt must be exactly the base sentence.
+		$holder = new \stdClass();
+		$this->makeChunk( 'Hola', $holder )->run( 'Spanish', [ 'chunk_text' => 'Hello' ], 123 );
+
+		$this->assertSame(
+			'You are a professional translator. Output only the translated text — no commentary, no preamble.',
+			$holder->messages[0]['content']
+		);
 	}
 }

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 22:39+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Korean\n"
@@ -297,13 +297,13 @@ msgstr "부분 수정"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "다시 생성"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" 다시 생성됨."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -332,7 +332,7 @@ msgstr "네비게이션 수정"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
+msgstr[0] "\"%1$s\" 다시 생성됨. %2$d개 템플릿 업데이트됨."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -613,27 +613,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "이 게시물에서 모든 다른 언어 버전을 재번역합니다. 누락된 버전을 생성하고 기존 버전을 덮어씁니다. 이 게시물이 번역본인 경우 기본 언어도 포함됩니다."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "동기화"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "이 게시물의 모든 기존 번역본에 올바른 언어별 템플릿을 다시 할당합니다. AI 호출 없음, 콘텐츠 변경 없음 — 언제든지 자유롭고 안전하게 실행할 수 있습니다."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "템플릿 동기화 — 모든 번역본의 템플릿 다시 할당"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "TS"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -659,7 +659,7 @@ msgstr "재번역 중…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "동기화 중…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -667,11 +667,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "이 게시물에서 모든 다른 언어 버전을 재번역합니다. 누락된 버전을 생성하고 기존 버전을 덮어씁니다(이 게시물이 번역본인 경우 기본 언어 포함). 이 작업은 취소할 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "템플릿 동기화 중…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -709,33 +709,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "보조 언어 WooCommerce 제품에서의 동기화는 기본적으로 비활성화되어 있습니다. 기본 제품을 덮어쓰기 때문입니다. 번역본이 새로운 소스 콘텐츠가 될 수 있도록 하려면 설정 → 동작 → WooCommerce에서 활성화하세요."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "보조 언어 게시물에서의 동기화는 기본적으로 비활성화되어 있습니다. 기본 게시물을 덮어쓰기 때문입니다. 번역본이 새로운 소스 콘텐츠가 될 수 있도록 하려면 설정 → 동작 → 동기화에서 활성화하세요."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "건너뜀 — 기존 번역본을 편집할 수 있는 권한이 없습니다."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "\"%s\" 게시물 타입의 번역본을 생성하려면 활성 통합이 필요합니다."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "템플릿 동기화는 기본/소스 언어 게시물에서만 실행할 수 있습니다."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "건너뜀 — 이 번역본을 편집할 수 있는 권한이 없습니다."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3457,37 +3457,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "테스트할 모델 식별자를 입력하세요."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "테스트할 게시된 게시물 또는 페이지를 찾을 수 없습니다 — 먼저 콘텐츠를 게시하거나 빠른 번역을 직접 시도하세요."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(제목 없음)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "프롬프트 템플릿을 찾을 수 없습니다."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "번역 실패. 다시 시도하세요."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "샘플 게시물에 번역할 수 있는 텍스트 콘텐츠가 없습니다."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "청크 프롬프트 템플릿을 찾을 수 없습니다."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "모델이 응답을 반환하지 않았습니다. WordPress 오류 로그에서 세부 정보를 확인하세요."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3617,7 +3617,7 @@ msgstr "내장 기본값 보기"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "자동 번역 백필"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3626,15 +3626,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "활성 언어에서 번역본이 누락된 게시물을 주기적으로 스캔하고 찾은 각 누락된 부분에 대해 AI 번역을 대기열에 넣습니다 — \"번역본 누락\" 또는 WP-CLI missing_translations/fill_translations 명령으로 직접 트리거할 수 있는 것과 동일한 복구를 자동으로 1시간에 한 번 실행합니다."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "자동 백필"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "언어 버전이 누락된 게시물 자동 번역"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3644,14 +3644,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "기본적으로 꺼져 있습니다. 이 기능은 AI 제공자 요청을 하고 관련 API 비용을 소비합니다 — 자동으로 백그라운드에서, 요청별 확인 없이, 활성 언어에서 번역본이 없는 게시된 모든 게시물에 대해 비용을 소비합니다. 모든 콘텐츠 누락을 자동으로 번역하려는 경우에만 켜세요. 그렇지 않으면 \"번역본 누락\" 또는 WP-CLI 명령을 사용하여 자신의 일정에 따라 번역하세요."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "WooCommerce 제품 및 변형은 이 설정과 관계없이 절대 포함되지 않습니다. 통합은 linguaforge_cpt_create_allowed 필터를 통해 특정 게시물 타입을 차단할 수도 있습니다."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3660,16 +3660,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "게시물 목록 언어 열의 \"동기화\" 버튼은 게시물을 모든 다른 언어로 재번역합니다(번역본에서 실행할 때 기본/소스 게시물 포함). 이 뒤로 방향 번역 방향은 모든 게시물 타입에서 기본적으로 제한됩니다. (WooCommerce 제품 및 변형은 아래에 자체 별도 설정이 있으며, 이 설정은 이들에게 영향을 주지 않습니다.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "보조 언어 동기화"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "번역본의 \"동기화\"가 기본 게시물을 덮어쓸 수 있도록 허용"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3678,7 +3678,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "기본적으로 꺼져 있음: 번역본에서 \"동기화\"를 클릭하면 기본 게시물을 덮어쓰는 것이 차단됩니다. 기본 게시물에서 모든 번역본으로 동기화하는 것은 이 설정과 관계없이 항상 허용됩니다. 번역본이 새로운 소스 콘텐츠가 될 수 있도록 하려는 경우에만 켜세요."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3687,11 +3687,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "기본 언어 제품은 WooCommerce의 가격, SKU 및 재고에 대한 운영상의 정보 소스이며, 쇼핑객이 어느 언어를 보고 있는지와 관계없이 항상 여기서 제공됩니다. 이것은 위의 일반 \"동기화\" 제한과는 별도의 독립적인 설정입니다 — 하나를 활성화하면 다른 하나가 활성화되지 않습니다."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "번역된 제품의 \"동기화\"가 기본 제품을 덮어쓸 수 있도록 허용"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3701,7 +3701,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "기본적으로 꺼져 있음: 번역된 WooCommerce 제품에서 \"동기화\"를 클릭하면 차단됩니다. 기본 제품의 제목, 설명 및 발췌에서 뒤로 번역하기 때문입니다. 기본 제품에서 모든 번역본으로 동기화하는 것은 이 설정과 관계없이 항상 허용됩니다. 번역본이 새로운 소스 콘텐츠가 될 수 있도록 하려는 경우에만 켜세요."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3813,11 +3813,11 @@ msgstr "재정의됨"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "이 정확한 모델로 가장 최근의 게시된 게시물의 짧은 샘플을 번역합니다 — 실제, 청구되는 API 호출입니다."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "모델 테스트"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4272,7 +4272,7 @@ msgstr[0] "%d개의 로케일 파일이 삭제됨."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
+msgstr[0] "%d개의 패턴 번역이 제거되었습니다."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4548,15 +4548,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "모든 언어 다시 생성"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "모든 언어 다시 생성 (템플릿만)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "모든 언어 다시 생성 (템플릿 부분만)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4739,7 +4739,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "모두 다시 생성"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4755,7 +4755,7 @@ msgstr "모든 링크 수정"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "모든 네비게이션 수정"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5579,11 +5579,11 @@ msgstr "네트워크 오류 — WordPress AJAX 엔드포인트에 연결할 수 
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "이 모델로 실제 게시물을 번역 중…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "preset"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5615,51 +5615,51 @@ msgstr "일부 템플릿을 생성할 수 없습니다."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "다시 생성 중…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ 모든 템플릿을 다시 생성했습니다."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "일부 템플릿을 다시 생성할 수 없었습니다."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "이 템플릿을 활성 테마의 새 사본으로 덮어쓰고, Site Editor의 사용자 지정 내용을 삭제합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "모든 템플릿을 활성 테마의 새 사본으로 덮어쓰고, Site Editor의 사용자 지정 내용을 삭제합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ 모든 부분을 다시 생성했습니다."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "일부 부분을 다시 생성할 수 없었습니다."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "이 템플릿 부분을 활성 테마의 새 사본으로 덮어쓰고, Site Editor의 사용자 지정 내용을 삭제합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "모든 템플릿 부분을 활성 테마의 새 사본으로 덮어쓰고, Site Editor의 사용자 지정 내용을 삭제합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5727,11 +5727,11 @@ msgstr "숨기기"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "모든 템플릿 다시 생성"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "모든 부분 다시 생성"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5743,7 +5743,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "활성 언어 {total}개 각각에 대해 모든 템플릿 다시 생성, 모든 부분 다시 생성, 모두 번역, 모든 부분 수정, 모든 링크 수정을 한 번에 실행합니다. 기존 템플릿과 부분을 활성 테마의 새 사본으로 덮어쓰고 (Site Editor 사용자 지정 내용 삭제), 콘텐츠를 다시 번역합니다 — 이 모든 작업은 되돌릴 수 없습니다. 모두 번역은 모든 템플릿과 부분에 대해 실제 AI API 호출을 수행하므로 시간이 걸릴 수 있으며 제공업체에 따라 비용이 발생할 수 있습니다. 계속하시겠습니까?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5755,7 +5755,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "활성 언어 {total}개 각각에 대해 모든 템플릿 다시 생성, 모두 번역, 모든 부분 수정, 모든 링크 수정을 한 번에 실행합니다 — 템플릿 부분 (헤더, 푸터 등)은 변경되지 않습니다. 기존 템플릿을 활성 테마의 새 사본으로 덮어쓰고 (Site Editor 사용자 지정 내용 삭제), 콘텐츠를 다시 번역합니다 — 이 모든 작업은 되돌릴 수 없습니다. 모두 번역은 모든 템플릿에 대해 실제 AI API 호출을 수행하므로 시간이 걸릴 수 있으며 제공업체에 따라 비용이 발생할 수 있습니다. 계속하시겠습니까?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5765,34 +5765,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "활성 언어 {total}개 각각에 대해 모든 부분 (헤더, 푸터 및 다른 모든 템플릿 부분) 다시 생성을 실행합니다. 기존 템플릿 부분을 활성 테마의 새 사본으로 덮어쓰고, Site Editor의 사용자 지정 내용을 삭제합니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "시작 중…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "{lang} 처리 중 ({index}/{total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "취소됨."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done}/{total}개 언어 처리됨."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ 문제가 있으면서 완료됨."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ {total}개 언어 모두 처리됨."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6568,25 +6568,25 @@ msgstr "복사 실패 — URL을 수동으로 복사하세요."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "휴지통 + 관련 항목"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "휴지통으로 이동 (번역 포함)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
+msgstr[0] "%d개 게시물을 휴지통으로 이동했습니다 (번역 포함)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
+msgstr[0] "%d개 게시물을 건너뛰었습니다 (권한 없음 또는 보호됨)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

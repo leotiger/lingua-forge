@@ -5,11 +5,11 @@
  *
  * msgmerge marks a string "#, fuzzy" when it auto-matched the new/changed
  * source string against a stale translation it isn't sure is still correct.
- * Left as-is, that stale guess sits in msgstr and is easy to miss in Loco
- * Translate (it just looks "already translated"). This blanks msgstr (or
- * every msgstr[N] for plurals) for every fuzzy entry and strips the 'fuzzy'
- * token from its flags line — so the string shows up as plainly
- * untranslated and ready for a clean retranslation, not a suspect one.
+ * Left as-is, that stale guess sits in msgstr and is easy to miss — it just
+ * looks "already translated". This blanks msgstr (or every msgstr[N] for
+ * plurals) for every fuzzy entry and strips the 'fuzzy' token from its
+ * flags line — so the string shows up as plainly untranslated and ready
+ * for a clean retranslation, not a suspect one.
  *
  * Every other line — msgid text, comments, references, non-fuzzy entries,
  * line-wrapping — is left byte-for-byte untouched. This is a surgical

@@ -92,6 +92,7 @@
         ],
         "make-pot": "bash bin/make-pot.sh",
         "compile-pos": "bash bin/compile-pos.sh",
+        "translate-missing": "php bin/translate-missing.php",
         "build-zip": "bash bin/build-zip.sh"
     },
     "scripts-descriptions": {
@@ -108,8 +109,9 @@
         "coverage": "Full coverage pipeline: coverage:run → coverage:merge. Reports land in coverage/unit/, coverage/integration/, coverage/combined/.",
         "plugin-check": "Run the official WordPress Plugin Check tool inside wp-env.",
         "qa": "Local pre-deploy gate: coverage:setup → lint (PHPCS) → analyse (PHPStan) → unit tests → lint:js (ESLint) → lint:css (Stylelint). Integration tests require wp-env and must be run separately with composer test:integration.",
-        "make-pot": "Extract source strings (make-pot), merge into .po files (msgmerge), then clear fuzzy matches (blank msgstr + drop the fuzzy flag) so Loco Translate starts clean. Translate the new/blank strings, then run compile-pos.",
+        "make-pot": "Extract source strings (make-pot), merge into .po files (msgmerge), then clear fuzzy matches (blank msgstr + drop the fuzzy flag) so every string starts clean. Translate the new/blank strings, then run compile-pos.",
         "compile-pos": "Compile translated .po files into .mo binaries and .l10n.php caches (steps 4–5 of the i18n pipeline).",
+        "translate-missing": "On-demand (not per-version): AI-translate every empty string across all 26 locales in one pass. Supports Anthropic (default), OpenAI, or Gemini via --provider=; if omitted at an interactive terminal, asks which provider first (Enter for Anthropic). Requires that provider's API key as an env var (ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY) or prompts interactively if unset. Saves after every batch (not just per locale), so an interrupted run resumes with a simple re-run; pass --time-budget=SECONDS to stop cleanly under a wrapper's own process timeout. Writes directly to .po; see dev/translate-missing.log. Flags: --dry-run, --locale=xx, --limit=N, --batch-size=N, --provider=NAME, --model=NAME, --time-budget=SECONDS.",
         "build-zip": "Package the plugin into a distributable zip (rsync + .distignore) at ~/Github/lingua-forge-deploy/. Also clears, then rewrites, docs/lf-update-manifest.php's $sha256 field to match the built zip."
     }
 }

@@ -74,9 +74,20 @@ composer make-pot              # Step 1: regenerate .pot from source + msgmerge 
                                #   then clear-fuzzy.php blanks every fuzzy-matched msgstr and drops
                                #   the fuzzy flag. New strings appear untranslated; changed source
                                #   strings end up untranslated too (not a stale fuzzy guess) — ready
-                               #   for a clean retranslation in Loco Translate.
+                               #   for a clean retranslation.
 composer compile-pos           # Step 2: compile each .po → .mo (msgfmt) + .l10n.php (wp i18n make-php)
                                #   Both scripts download wp-cli.phar to dev/ on first run (no Docker needed)
+composer translate-missing     # On-demand: AI-fills every empty msgstr across all 26 locales.
+                               #   --provider=anthropic (default) | openai | gemini — if omitted at an
+                               #   interactive terminal, asks which provider first (Enter for Anthropic).
+                               #   Requires that provider's API key as an env var (ANTHROPIC_API_KEY /
+                               #   OPENAI_API_KEY / GEMINI_API_KEY), or enter it at an interactive prompt
+                               #   if unset. Saves after every batch (not just per locale), so an interrupted run just
+                               #   needs re-running to continue. Under a wrapper with its own timeout
+                               #   (e.g. 300s), pass --time-budget=SECONDS to stop cleanly before that
+                               #   limit instead of being killed mid-batch. Run between the two steps
+                               #   above. Flags: --dry-run, --locale=xx, --limit=N, --batch-size=N,
+                               #   --provider=NAME, --model=NAME, --time-budget=SECONDS
 
 # wp-env
 npm run env:start

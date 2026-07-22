@@ -3,7 +3,7 @@ Contributors: ulih
 Tags: multilingual, translation, ai, seo, meta-description
 Requires at least: 6.4
 Tested up to: 7.0
-Stable tag: 2.6.6
+Stable tag: 2.6.7
 Requires PHP: 8.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -292,6 +292,11 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 
 == Changelog ==
 
+= 2.6.7 =
+* Fixed: `ChunkTranslation::run()` (Translate-chunk mode and the Admin Toolbar's `/translate-chunk` popover) never resolved the `linguaforge_translation_extra_instruction` filter added in 2.6.6, so an integration relying on it (e.g. Latin-phrase preservation) saw the instruction silently drop for any chunk translation. It now resolves the same filter, with `Translation::run_chunk()` threading through the real post ID for the meta-box path (`0` for the post-independent toolbar popover). (`ai/includes/Features/ChunkTranslation.php`, `ai/includes/Features/Translation.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`)
+* Fixed: Cached translations could silently outlive a change to the `linguaforge_translation_extra_instruction` filter's output — neither the full-post nor the chunk cache hash included the resolved instruction. Both now do. (`ai/includes/Features/Translation.php`, `ai/includes/Features/ChunkTranslation.php`)
+* Fixed: Chunk translation ("Translate chunk" mode) always used the site's global Behavior preset, even for a page with its own per-page preset override — full-post translation already respected the page's override. Chunk mode now does too, when translating from a real page; the post-independent Admin Toolbar popover is unaffected. (`ai/includes/Features/ChunkTranslation.php`, `ai/includes/Core/Config.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`)
+
 = 2.6.6 =
 * Added: New `linguaforge_translation_extra_instruction` filter lets a third-party plugin inject an extra sentence into the AI translation system prompt (before the CRITICAL JSON RULE) — e.g. an integration that needs Latin phrases left untranslated. Receives `(string $instruction, int $post_id)`; runs for both the Translation Memory and JSON-envelope translation paths. (`ai/includes/Features/Translation.php`)
 
@@ -394,6 +399,9 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 For the full changelog see https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md
 
 == Upgrade Notice ==
+
+= 2.6.7 =
+Fixes the 2.6.6 `linguaforge_translation_extra_instruction` filter not running for chunk/quick translations. No database changes. No flush required.
 
 = 2.6.6 =
 Adds a filter (`linguaforge_translation_extra_instruction`) letting integrations add a custom instruction to the AI translation prompt. No database changes. No flush required.

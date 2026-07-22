@@ -49,65 +49,10 @@ outside the plugin namespace.
 - **`admin_post_*` and `wp_ajax_*` action names.** Examples:
   `admin_post_linguaforge_clear_ai_cache`,
   `wp_ajax_linguaforge_test_provider`.
-- **Integration API hooks** — the stable surface for third-party plugins
-  (see *Writing a third-party integration* below). These span all sub-modules:
-  - **Router sub-module:** `linguaforge_loaded` (fires after the router has
-    fully booted; receives `string $version`), `linguaforge_trid_changed`
-    (fires in `TridGroup::set_trid()` only when the TRID UUID changes;
-    receives `int $post_id`, `string $new_trid`, `string $old_trid`),
-    `linguaforge_switcher_output` (filter on the fully-rendered language-
-    switcher HTML; receives `string $html`, `array $langs`, `array $atts`),
-    `linguaforge_page_menu_excluded_page_ids` (filter on the array of page
-    IDs that are hidden from every language's `core/page-list` navigation;
-    receives `int[] $ids`; seeded from `_lf_page_menu_exclude` post meta.
-    Has no effect on classic nav menus — those render from stored
-    `nav_menu_item` posts, not from `get_pages()`),
-    `linguaforge_secondary_query_excluded_post_types` (filter on the array
-    of post type slugs that are excluded from the secondary-query `_lf_lang`
-    meta constraint injected by `QueryFilter::handle_secondary_pre_get_posts()`;
-    `wpcf7_contact_form` is built-in; additional types can be added via
-    Settings → Router → "Excluded post types" or by hooking this filter
-    directly; receives `string[] $types`),
-    `linguaforge_metabox_excluded_post_types` (filter on the array of post
-    type slugs whose edit screens must not show any Lingua Forge meta boxes —
-    Language, Template, Translations, Source Footnotes; seeded from the
-    `linguaforge_secondary_query_excluded_types` option so it is always a
-    superset of the user's System-panel exclusion list; receives
-    `string[] $types`),
-    `linguaforge_trash_cascade_post_ids` (filter on the array of post IDs
-    about to be trashed together by `Translation\TrashCascade::trash_group()`
-    — the "Trash + Siblings" row action on the Posts/Pages/CPT list tables;
-    receives `int[] $ids`, `int $post_id` the action was triggered from),
-    `linguaforge_trash_cascade_complete` (action after a trash-cascade run;
-    receives `int[] $trashed`, `int[] $skipped`, `int $post_id`).
-  - **AI sub-module:** `linguaforge_translation_extra_instruction` (filter on
-    an extra sentence inserted into the AI system prompt ahead of the CRITICAL
-    JSON RULE, for both the TM and JSON-envelope translation paths in
-    `Translation::run()`; receives `string $instruction` (default `''`),
-    `int $post_id`; return the (possibly appended) instruction string — e.g. to
-    tell the AI to leave Latin phrases untranslated),
-    `linguaforge_translation_content` (filter on the AI
-    translation payload before it is written to the result cache; receives
-    `array $payload`, `int $post_id`, `string $target_lang`),
-    `linguaforge_translation_complete` (action after a CLI / programmatic
-    translation creates or updates a post; receives `int $new_id`,
-    `int $source_id`, `string $target_lang`),
-    `linguaforge_backfill_post_types` (filter on the array of post type slugs
-    `Features\TranslationBackfill`'s hourly self-heal scan checks for
-    missing-translation gaps; defaults to every public post type minus
-    WordPress' own internal types; receives `string[] $types`),
-    `linguaforge_wc_secondary_sync_allowed` (filter; overrides whether the
-    "Sync" button/API may be triggered from a secondary-language WooCommerce
-    `product`/`product_variation` post — which would overwrite the primary
-    product via back-translation. Defaults to the
-    `linguaforge_wc_allow_secondary_sync` option (off). Has no effect on
-    syncing FROM the primary product, which is always allowed; receives
-    `bool $allowed`), `linguaforge_secondary_sync_allowed` (filter; the same
-    restriction as `linguaforge_wc_secondary_sync_allowed` above, but for
-    every post type OTHER than a WooCommerce product/variation. Defaults to
-    the `linguaforge_allow_secondary_sync` option (off). The two filters are
-    independent — a post is routed to exactly one of them by post type, so
-    enabling either has no effect on the other; receives `bool $allowed`).
+- **Integration API hooks** — the stable surface for third-party plugins.
+  **Full reference, every hook, every sub-module: [HOOKS.md](HOOKS.md).**
+  See *Writing a third-party integration* below for the narrative
+  walkthrough (safe attach points, bootstrap class structure).
   - **AI sub-module cron hook:** `linguaforge_backfill_missing_translations`
     — the recurring `wp_schedule_event()` hook `TranslationBackfill::run()`
     is registered on (hourly). Not intended to be hooked by third parties;
@@ -115,26 +60,9 @@ outside the plugin namespace.
     references it by this hardcoded string (see that file for why — the
     callback must stay resolvable even if the AI module's autoloader path
     changes).
-  - **SEO sub-module hooks** (new in 2.2.0):
-    - `linguaforge_seo_og_type` — filter; override the resolved `og:type` per page. Receives `string $type` ('article'|'website'). WooCommerce integration uses this to return `'product'` on product pages.
-    - `linguaforge_seo_og_extra_tags` — action; fires after the full OG + Twitter Card set. Use to append additional Open Graph properties (e.g. WC price/availability).
-    - `linguaforge_seo_schema_extra_types` — action; fires after built-in JSON-LD types (Article, WebSite). Receives `string $lang`, `string $in_language` (BCP 47). Use to output additional JSON-LD types.
-    - `linguaforge_seo_og_locale_map` — filter; override the language→Facebook-locale mapping (`array<string,string>`).
-    - `linguaforge_seo_schema_locale_map` — filter; override the language→BCP47 mapping (`array<string,string>`).
-    - `linguaforge_seo_og_image` — filter; override the resolved OG image URL (string).
-    - `linguaforge_seo_og_description` — filter; override the resolved OG description (string).
-    - `linguaforge_seo_schema_data` — filter; modify any schema array before JSON encoding. Receives `array $data`, `string $type` (@type value).
-    - `linguaforge_seo_sitemap_slug` — filter; override the sitemap URL slug (default `'lf-sitemap.xml'`).
-    - `linguaforge_seo_sitemap_xml` — filter; modify the full generated sitemap XML string before serving.
-    - `linguaforge_social_share_url` — filter; override the resolved share URL for a given service. Receives `string $url`, `string $service`.
-  - **AI sub-module settings knobs:** `linguaforge_ai_retry_policy`,
-    `linguaforge_required_capability`, `linguaforge_debug_dir`,
-    `linguaforge_ai_should_boot`, `linguaforge_ai_rate_limit`,
-    `linguaforge_ai_daily_quota`, `linguaforge_translation_worker_config`
-    (per-invocation model / temperature / max_tokens override; receives
-    `WorkerConfig`, `$post_id`, `$params`),
-    `linguaforge_translation_memory_enabled` (disable TM per-invocation;
-    receives `bool $enabled`, `int $post_id`).
+  - **SEO, WooCommerce, and every other sub-module's hooks:** see
+    [HOOKS.md](HOOKS.md) — organized by sub-module there rather than repeated
+    here.
 - **Transient name prefixes.** Examples:
   `linguaforge_rate_user_{id}_{endpoint}`,
   `linguaforge_quota_daily_used_{Ymd}`.
@@ -833,11 +761,9 @@ language prefix.
 
 ### Filters
 
-| Filter | Default | Purpose |
-|---|---|---|
-| `linguaforge_wc_delegate_post_types` | `['product', 'product_variation']` | Which post types participate in meta/taxonomy delegation and stock routing |
-| `linguaforge_wc_delegate_taxonomies` | `['product_cat', 'product_tag', 'product_type', 'product_brand']` | Which WC taxonomy slugs are delegated by `TaxonomyDelegate` (pa_* handled separately by prefix match) |
-| `linguaforge_cpt_create_allowed` | `true` | Gates translated-post creation in `PostListColumn::ajax_fill_missing()` — return `false` for a post type until its delegation layer is confirmed active |
+Full signatures and defaults: [HOOKS.md → WooCommerce integration](HOOKS.md#woocommerce-integration).
+The three most relevant to delegation: `linguaforge_wc_delegate_post_types`,
+`linguaforge_wc_delegate_taxonomies`, `linguaforge_cpt_create_allowed`.
 
 ### Extending the delegation layer
 
@@ -948,30 +874,13 @@ add_action( 'linguaforge_loaded', function () {
 
 ### Available hooks for integrations
 
-**Filters — modify behaviour:**
-
-| Hook | Signature | Purpose |
-|---|---|---|
-| `linguaforge_translation_content` | `(array $payload, int $post_id, string $lang)` | Modify translated content before cache/return |
-| `linguaforge_translation_extra_instruction` | `(string $instruction, int $post_id)` | Insert an extra sentence into the AI system prompt before the CRITICAL JSON RULE — e.g. to preserve Latin phrases. Default `''`. (Since 2.6.6) |
-| `linguaforge_translated_post_meta` | `(array $meta, int $source_id, string $lang, string $source_post_type)` | Declare post meta a programmatically-created translated post is born with (written via `meta_input` inside `create_translated_post()`). Default `[]`. `_lf_trid` / `_lf_lang` are stripped — LF writes them authoritatively. ⚠️ WC: operational product keys (`_thumbnail_id`, `_price`, …) written on a translated *product* are shadowed by MetaDelegate; scope by `$source_post_type`. (Since 2.4.0) |
-| `linguaforge_template_for_lang` | `(string $resolved, \WP_Post $post, string $lang)` | Override the language-specific FSE template slug (`Sync::resolve_template_for_lang()`) LF is about to assign. Fires for every assignment path — editor save, WP-CLI, Sync button, and programmatic creation via `linguaforge_trigger_translation()`/`linguaforge_queue_translation()` — since they all resolve through this one method. Never fires for the source-language post. Return `''`/`null` to suppress assignment entirely (treated the same as "no template"). (Since 2.6.1) |
-| `linguaforge_translation_worker_config` | `(WorkerConfig $cfg, int $post_id, array $params)` | Override AI model / temperature / max_tokens |
-| `linguaforge_ai_provider` | `(AIProviderInterface $provider, int $post_id, WorkerConfig $cfg)` | Swap the AI provider instance — inject a custom provider or a test stub |
-| `linguaforge_wc_delegate_post_types` | `(string[] $types)` | Add post types to WC shared-stock delegation |
-| `linguaforge_cpt_create_allowed` | `(bool $allowed, string $post_type)` | Prevent translation creation for a post type |
-| `linguaforge_switcher_output` | `(string $html, array $langs, array $atts)` | Customise language-switcher HTML |
-| `lf_languages_list` | `(string[] $codes)` | Override the active language list |
-| `lf_hreflang_x_default` | `(string $url, int $post_id, array $translations)` | Override x-default hreflang URL |
-
-**Actions — react to events:**
-
-| Hook | Signature | Purpose |
-|---|---|---|
-| `linguaforge_loaded` | `(string $version)` | Router fully booted; all wrapper functions available |
-| `linguaforge_translation_complete` | `(int $new_id, int $source_id, string $lang)` | Translated post saved (CLI / programmatic path) |
-| `linguaforge_trid_changed` | `(int $post_id, string $new_trid, string $old_trid)` | Post joined or left a translation group |
-| `linguaforge_wc_integration_active` | — | WooCommerce integration booted successfully |
+The full, canonical list — every filter and action, every sub-module,
+signatures and defaults — lives in **[HOOKS.md](HOOKS.md)**, including a
+["Quick start"](HOOKS.md#quick-start--commonly-used-integration-hooks)
+section with the handful most integrations reach for first
+(`linguaforge_loaded`, `linguaforge_translation_content`,
+`linguaforge_translation_extra_instruction`, `linguaforge_translated_post_meta`,
+`linguaforge_template_for_lang`, and others).
 
 ### Programmatic translation
 
@@ -1670,8 +1579,8 @@ composer make-pot
 # fuzzy flag — a surgical line-level edit that touches only fuzzy entries,
 # so the rest of the .po file's formatting is untouched. This exists so a
 # changed source string never carries a stale, possibly-wrong auto-matched
-# translation into Loco Translate looking already-done; it always starts
-# as plainly untranslated.
+# translation forward looking already-done; it always starts as plainly
+# untranslated.
 # Requires: php, curl, msgmerge  (brew install gettext / apt-get install gettext)
 
 # → Translate the new/blank strings in the .po files, then:
@@ -1685,6 +1594,32 @@ composer compile-pos
 
 Both scripts live in `dev/bin/` and download `wp-cli.phar` to `dev/` on
 first run (no global WP-CLI or Docker needed).
+
+**Filling in the blanks between step 1 and step 2:** `composer translate-missing`
+(`dev/bin/translate-missing.php`) AI-translates every empty `msgstr`/`msgstr[N]`
+across all 26 locales in one pass, using a system prompt that knows Lingua
+Forge's own vocabulary (TRID, hreflang, Translation Memory, Sync, glossary, …)
+so translations land in the right register. Supports the same three providers
+as the plugin itself — Anthropic (default), OpenAI, Gemini — via `--provider=`;
+if that flag is omitted and you're at an interactive terminal, the script asks
+which provider to use first (Enter for Anthropic) before anything else — a
+non-interactive run (CI, a pipe) just defaults to Anthropic with no prompt.
+Requires that provider's API key as an env var (`ANTHROPIC_API_KEY` /
+`OPENAI_API_KEY` / `GEMINI_API_KEY`, same names the plugin checks — never
+stored in the repo; if unset, the script prompts for it interactively too, with
+hidden input, used for that run only). Writes directly to the `.po` files,
+saving after every batch (not just once a whole locale finishes) so an
+interrupted run keeps whatever it already translated — every write is also
+appended to `dev/translate-missing.log`. Not a substitute for review — same
+caveat as any AI-drafted string this project ships. If running through a
+tool/wrapper with its own process timeout (e.g. a 300-second cap), pass
+`--time-budget=SECONDS` set safely under that limit; the script stops itself
+cleanly before starting a new batch instead of being killed mid-batch, and
+progress is saved either way, so just re-run the same command to continue.
+Flags: `--dry-run`, `--locale=xx`, `--limit=N`, `--batch-size=N`,
+`--provider=NAME`, `--model=NAME`, `--time-budget=SECONDS`. Mirrors the
+sibling Agnosis project's own `composer translate-missing` tool, adapted to
+this plugin's locale list, domain, and multi-provider support.
 
 ### Which function to use
 
@@ -1758,8 +1693,13 @@ A short checklist:
    a lazy `ensure_table()`-style method. Add a `DROP TABLE IF EXISTS` line
    to `uninstall.php`.
 4. **If it's a new filter or action hook**, document its signature in a
-   docblock on the function that calls `apply_filters()` / `do_action()`.
-   Use the appropriate prefix.
+   docblock on the function that calls `apply_filters()` / `do_action()`,
+   using the appropriate prefix — **and add a row to
+   [HOOKS.md](HOOKS.md)** in the matching sub-module section. The docblock
+   alone doesn't make a hook discoverable to an integrator scanning the
+   docs rather than the source — this two-step requirement replaced a
+   docblock-only rule after ten hooks (2026-07-22 audit) were found with
+   proper docblocks but no entry in any reference doc.
 5. **If it's a Settings UI input**, decide which of the eight tabs it
    belongs in (see the Settings page layout section above), render through
    a `form-table`, save in `handle_save()`, and validate against a

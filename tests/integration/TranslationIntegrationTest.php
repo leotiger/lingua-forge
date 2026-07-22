@@ -125,6 +125,7 @@ final class TranslationIntegrationTest extends WP_UnitTestCase {
 			$post->post_content,
 			'', // footnotes_raw
 			$target_language,
+			'', // extra_instruction — resolved linguaforge_translation_extra_instruction filter output; no filter registered in this test, so ''. Must match Translation::run()'s hash inputs exactly (added 2.6.7) or this pre-seeded entry misses and the test falls through to a real (stubless) provider call.
 			\LinguaForge\AI\Core\Config::provider(),
 			\LinguaForge\AI\Core\Config::model( \LinguaForge\AI\Core\Config::translation_tier() ),
 		] );

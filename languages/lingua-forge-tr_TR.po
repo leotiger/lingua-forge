@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 23:40+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Turkish\n"
@@ -303,13 +303,13 @@ msgstr "Parçaları Düzelt"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Yeniden Oluştur"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" yeniden oluşturuldu."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -338,8 +338,8 @@ msgstr "Gezintiyi Düzelt"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" yeniden oluşturuldu. %2$d şablon güncellendi."
+msgstr[1] "%2$d şablon güncellendi."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -622,27 +622,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Bu yazıyı diğer tüm dil sürümlerine yeniden çevirin. Eksik olanları oluşturun ve varolan olanları üzerine yazın — bu yazı bir çeviri ise birincil dili de içerir."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Senkronize Et"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Bu yazının her mevcut çevirisine doğru dile özel şablonu yeniden atayın. İçerik değişikliği olmaz ve AI çağrısı yapılmaz — her zaman çalıştırmak için güvenli ve ücretsizdir."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Şablon Senkronizasyonu — her çeviri için şablonları yeniden atayın"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "ŞS"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -668,7 +668,7 @@ msgstr "Yeniden çeviriliyor…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Senkronize ediliyor…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -676,11 +676,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Bu, bu yazının diğer tüm dil sürümlerini bu yazıdan yeniden çevirir — eksik olanları oluşturacak ve mevcut olanların üzerine yazacaktır (bu yazı bir çeviri ise birincil dili de içerir). Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Şablonlar senkronize ediliyor…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -719,33 +719,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "İkincil dildeki WooCommerce ürününden Senkronize Et varsayılan olarak devre dışı bırakılmıştır, çünkü birincil ürünün üzerine yazılır. Bir çevirinin yeni kaynak içeriği olabilmesini istiyorsanız Ayarlar → Davranış → WooCommerce'te etkinleştirin."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "İkincil dildeki yazıdan Senkronize Et varsayılan olarak devre dışı bırakılmıştır, çünkü birincil yazının üzerine yazılır. Bir çevirinin yeni kaynak içeriği olabilmesini istiyorsanız Ayarlar → Davranış → Senkronize Et'te etkinleştirin."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Atlandı — mevcut çeviriyi düzenlemek için izniniz yoktur."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "\"%s\" yazı türü için çeviriler oluşturmak etkin bir entegrasyon gerektirir."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Şablon Senkronizasyonu yalnızca birincil/kaynak dil yazısından çalıştırılabilir."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Atlandı — bu çeviriyi düzenlemek için izniniz yoktur."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3548,37 +3548,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Test etmek için bir model tanımlayıcısı girin."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Test için yayınlanmış yazı veya sayfa bulunamadı — önce içerik yayınlayın veya doğrudan Hızlı Çeviri'yi deneyin."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(başlıksız)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "İstem şablonu bulunamadı."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Çeviri başarısız oldu. Lütfen tekrar deneyin."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Örnek yazının çevrilecek görünür metin içeriği yok."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Parça istem şablonu bulunamadı."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Model yanıt vermedi. Ayrıntılar için WordPress hata günlüğünü kontrol edin."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3711,7 +3711,7 @@ msgstr "Yerleşik varsayılanı görüntüle"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Otomatik Çeviri Geri Dolum"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3720,15 +3720,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Etkin bir dilde çeviri eksik olan yazıları periyodik olarak tarar ve bulunan her boşluk için AI çevirisi kuyruğa alır — \"Eksik çevirileri çevir\" aracılığıyla veya WP-CLI missing_translations/fill_translations komutlarıyla tetikleyebileceğiniz aynı kurtarma, bunun yerine saatte bir kez otomatik olarak çalışır."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Otomatik geri dolum"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Dil sürümü eksik olan yazıları otomatik olarak çevirin"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3738,14 +3738,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Varsayılan olarak kapalı. Bu özellik, AI sağlayıcı isteklerini yapar — ve ilişkili API maliyetini harcar — etkin bir dilde çevirisi olmayan her yayınlanmış yazı için otomatik olarak ve arka planda, istek başına onay olmaksızın. Bunu yalnızca her içerik boşluğunun katılımsız çevrilmesini istiyorsanız etkinleştirin; aksi takdirde \"Eksik çevirileri çevir\" veya WP-CLI komutlarını kendi zamanlamanıza göre kullanın."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "WooCommerce ürünleri ve varyasyonları bu ayar ne olursa olsun asla dahil edilmez. Bir entegrasyon, linguaforge_cpt_create_allowed filtresi aracılığıyla belirli yazı türlerini de engelleyebilir."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3754,16 +3754,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Yazı listesindeki Lang sütunundaki \"Senkronize Et\" düğmesi, birincil/kaynak yazıdan çalıştırıldığında, bir yazıyı diğer tüm dillere yeniden çevirir ve birincil yazı da dahil olmak üzere. Bu ters çeviri yönü varsayılan olarak her yazı türü için sınırlıdır. (WooCommerce ürünleri ve varyasyonlarının aşağıda ayrı ayarları vardır — bu ayar onları etkilemez.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "İkincil Dil Senkronizasyonu"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Çevirili yazıda \"Senkronize Et\"in birincil yazının üzerine yazmasına izin verin"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3772,7 +3772,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Varsayılan olarak kapalı: çeviriye tıklanan \"Senkronize Et\" birincil yazının üzerine yazılmaktan engellenir. Birincil yazıdan her çeviriye Senkronize Etme bu ayar ne olursa olsun her zaman izin verilir. Bunu yalnızca bir çevirinin yeni kaynak içeriği olabilmesini istiyorsanız etkinleştirin."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3781,11 +3781,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Birincil dil ürünü, WooCommerce'in fiyat, SKU ve stok için operasyonel gerçeğin kaynağıdır; alıcı hangi dili görüntülüyorsa bağlı olarak her zaman buradan sunulur. Bu, genel \"Senkronize Et\" kısıtlamasından ayrı, bağımsız bir ayardır — birini etkinleştirmek diğerini etkinleştirmez."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Çevirili üründe \"Senkronize Et\"in birincil ürünün üzerine yazmasına izin verin"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3795,7 +3795,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Varsayılan olarak kapalı: çevirili WooCommerce ürününe tıklanan \"Senkronize Et\" engellenir, çünkü birincil ürünün başlığı, açıklaması ve alıntısının üzerine yazılır. Birincil üründen her çeviriye Senkronize Etme bu ayar ne olursa olsun her zaman izin verilir. Bunu yalnızca bir çevirinin yeni kaynak içeriği olabilmesini istiyorsanız etkinleştirin."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3913,11 +3913,11 @@ msgstr "geçersiz kılındı"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "En son yayınlanmış yazınızdan kısa bir örneği bu tam modelle çevirin — gerçek, faturalandırılan bir API çağrısı."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Test modelini dene"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4388,8 +4388,8 @@ msgstr[1] "%d yerel dosya kaldırıldı."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d desen çevirisi kaldırıldı."
+msgstr[1] "%d desen çevirisi kaldırıldı."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4682,15 +4682,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Tüm Dilleri Yeniden Oluştur"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Tüm Dilleri Yeniden Oluştur (Yalnızca Şablonlar)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Tüm Dilleri Yeniden Oluştur (Yalnızca Şablon Parçaları)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4876,7 +4876,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Tümünü yeniden oluştur"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4892,7 +4892,7 @@ msgstr "Tüm bağlantıları düzelt"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Tüm navigasyonları düzelt"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5761,11 +5761,11 @@ msgstr "Ağ hatası — WordPress AJAX uç noktasına ulaşılamadı."
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Bu modelle gerçek bir yazı çeviriliyor…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "ön ayar"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5797,51 +5797,51 @@ msgstr "Bazı şablonlar oluşturulamadı."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Yeniden oluşturuluyor…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Tüm şablonlar yeniden oluşturuldu."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Bazı şablonlar yeniden oluşturulamadı."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Bu şablonu etkin temadan yeni bir kopyayla yazacak ve Site Editor özelleştirmelerini iptal edecek. Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Her şablonu etkin temadan yeni bir kopyayla yazacak ve Site Editor özelleştirmelerini iptal edecek. Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Tüm parçalar yeniden oluşturuldu."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Bazı parçalar yeniden oluşturulamadı."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Bu şablon parçasını etkin temadan yeni bir kopyayla yazacak ve Site Editor özelleştirmelerini iptal edecek. Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Her şablon parçasını etkin temadan yeni bir kopyayla yazacak ve Site Editor özelleştirmelerini iptal edecek. Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5909,11 +5909,11 @@ msgstr "Gizle"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Tüm şablonları yeniden oluştur"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Tüm parçaları yeniden oluştur"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5925,7 +5925,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Bu, {total} etkin dillerinizin her biri için birer birer \"Tüm şablonları yeniden oluştur\", \"Tüm parçaları yeniden oluştur\", \"Tümünü çevir\", \"Tüm parçaları düzelt\" ve \"Tüm bağlantıları düzelt\" işlemlerini çalıştırır. Mevcut şablonları ve parçaları etkin temadan yeni kopyalarla yazacak (Site Editor özelleştirmelerini iptal edecek) ve içeriği yeniden çevirecek — bunların hiçbiri geri alınamaz. \"Tümünü çevir\" her şablon ve parça için gerçek AI API çağrıları yapacak, bu uzun sürebilir ve sağlayıcınıza bağlı olarak ücret gerektirebilir. Devam edilsin mi?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5937,7 +5937,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Bu, {total} etkin dillerinizin her biri için birer birer \"Tüm şablonları yeniden oluştur\", \"Tümünü çevir\", \"Tüm parçaları düzelt\" ve \"Tüm bağlantıları düzelt\" işlemlerini çalıştırır — şablon parçaları (başlıklar, altlıklar vb.) değiştirilmez. Mevcut şablonları etkin temadan yeni kopyalarla yazacak (Site Editor özelleştirmelerini iptal edecek) ve içeriği yeniden çevirecek — bunların hiçbiri geri alınamaz. \"Tümünü çevir\" her şablon için gerçek AI API çağrıları yapacak, bu uzun sürebilir ve sağlayıcınıza bağlı olarak ücret gerektirebilir. Devam edilsin mi?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5947,34 +5947,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Bu, {total} etkin dillerinizin her biri için birer birer \"Tüm parçaları yeniden oluştur\" (başlıklar, altlıklar ve diğer tüm şablon parçaları) işlemini çalıştırır. Mevcut şablon parçalarını etkin temadan yeni kopyalarla yazacak ve Site Editor özelleştirmelerini iptal edecek. Bu işlem geri alınamaz. Devam edilsin mi?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Başlanıyor…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "{lang} işleniyor ({index}/{total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "İptal edildi."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done}/{total} dil işlendi."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Sorunlarla tamamlandı."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Tüm {total} dil işlendi."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6769,27 +6769,27 @@ msgstr "Kopyalama başarısız — lütfen URL'yi manuel kopyalayın."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Çöpü Boşalt + Çeviriler"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Çöpe Taşı (çevirileri dahil)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d yazı çöpe taşındı (çeviriler dahil)."
+msgstr[1] "%d yazı çöpe taşındı (çeviriler dahil)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d yazı atlandı (izin yok veya korumalı)."
+msgstr[1] "%d yazı atlandı (izin yok veya korumalı)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

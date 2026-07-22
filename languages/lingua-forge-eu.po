@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 19:23+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Basque\n"
@@ -305,13 +305,13 @@ msgstr "Zatiak Konpondu"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Berreratu"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" berreratu da."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -340,8 +340,8 @@ msgstr "Nabigazioa Konpondu"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" berreratu da. %2$d txantiloi eguneratu da."
+msgstr[1] "\"%1$s\" berreratu da. %2$d txantiloi eguneratu dira."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -624,27 +624,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Itzuli beste hizkuntza-bertsio guztiak argital honetik. Sortzen du ez daudenak eta gainidazten du dagoeneko daudenak — hasierako hizkuntza barne, argital hau itzulpena bada."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Sinkronizatu"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Esleitu zuzena den hizkuntza-espezifikoa txantiloia argital honen itzulpen-bertsio guztiari. Ez da AI deiketarik eta ez dira eduki-aldaketak — libre eta segura exekutatzeko edozein unetan."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Txantiloi Sinkronizazioa — txantiloak esleitu itzulpen guztientzat"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "TS"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -670,7 +670,7 @@ msgstr "Itzuli berriro…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Sinkronizatzen…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -678,11 +678,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Honek argital honen hizkuntza-bertsio guztiak berriz itzultzen ditu honetik — ez daudenak sortzen eta dagoeneko daudenak gainidazten (hasierako hizkuntza barne, argital hau itzulpena bada). Ezin daiteke desegin. Jarraitu?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Txantiloak sinkronizatzen…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -721,33 +721,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "Hizkuntza sekundarioan dagoen WooCommerce produktutik sinkronizatzea desgaituta dago berez, produktu primarioa gainidaztuko lukeelako. Gaitu Settings → Behavior → WooCommerce atalean itzulpena iturburuko eduki berri bihur daitezala nahi baduzu."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "Hizkuntza sekundarioan dagoen argitalerraren ondotik sinkronizatzea desgaituta dago berez, argital primarioa gainidaztuko lukeelako. Gaitu Settings → Behavior → Sync atalean itzulpena iturburuko eduki berri bihur daitezala nahi baduzu."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Baztertuta — ez duzu baimena dagoen itzulpena editatzeko."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "\"%s\" argital-motarako itzulpenak sortzeak aktibo integrazio baten beharra du."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Txantiloi Sinkronizazioa hasierako/iturburuko-hizkuntzako argitaletik soilik exekuta daiteke."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Baztertuta — ez duzu baimena itzulpen hau editatzeko."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3543,37 +3543,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Sartu modelo-identifikadorea probatzeko."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Ez da argital edo orri argitaratuta aurkitu proba egiteko — argitaratu eduki batzuk lehenago, edo saia zaitez Quick Translate zuzenean."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(titularik gabea)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Promtu txantiloia ez da aurkitu."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Itzulpena huts egin du. Saia zaitez berriro."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Adibide-argitalak ez du itzultzeko testu-eduki ikusgairik."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Zatiaren promtu txantiloia ez da aurkitu."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Modeloak ez du erantzun eman. Egiaztatu WordPress errore-eguna xehetasunak lortzeko."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3708,7 +3708,7 @@ msgstr "Ikusi lehenetsia"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Itzulpen Automatikoa Osaketa"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3717,15 +3717,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Periodikoki aktibitate-hizkuntzetan itzulpena gabeko argitalak bilatzen ditu eta AI itzulpena zartzen du aurkitutako zulo bakoitzerako — eta jada eska dezakezu \"Itzulpen desberdinetan\" eskuz edo WP-CLI missing_translations/fill_translations komandoen bidez, automatikoki ordez behin ordutan."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Osotze automatikoa"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Automatikoki itzuli hizkuntza-bertsio gabeko argitalak"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3735,14 +3735,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Berez desaktibatuta. Ezaugarri hau AI hornitzailearen eskaerak egiten ditu — eta lotutako API kostua gastatzen du — automatikoki eta hondoan, eskaera bakoitzeko berrespenari gabe, argital argitaratutako guztiaren arabera aktibo hizkuntzatan itzulpenik ez duena. Aktibatu hau soilik eduki-zulo guztia arretaz itzuli nahi baduzu; bestela erabili \"Itzulpen desberdinetan\" edo WP-CLI komandoak zure ordutegian itzultzeko."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "WooCommerce produktuak eta bariazioak ez dira inoiz sartzak, ezarpen hori zein den axola gabe. Integrazioak lingaforge_cpt_create_allowed filtroen bidez argital-tipo zehatzak debekatuak izan ditzake."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3751,16 +3751,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Argital-zerrendako \"Sinkronizatu\" botoia Lang zutabean argital osoa berriz itzultzen du beste hizkuntza guztietan, hasierako/iturburuko argital barne itzulpenetik exekutatzen denean. Itzuli-norabide horrek desgaituta dago berez argital-tipo bakoitzerako. (WooCommerce produktuek eta bariazioak haien ezarpen berezia dute behean — hau ez du eragin neurtzen.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Sekundario-hizkuntza Sinkronizazioa"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Baimendu \"Sinkronizatu\" itzulitako argitalean hasierako argitala gainidazteko"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3769,7 +3769,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Berez desaktibatuta: itzulpena batean \"Sinkronizatu\" klikatzea hasierako argitala gainidaztetik blokeatu egiten da. Hasierako argitaletik itzulpen guztietara sinkronizatzea beti onartuta dago ezarpen honekin axola gabe. Aktibatu hau soilik itzulpena iturburuko eduki berri bihur nahi baduzu intentzionalduz."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3778,11 +3778,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Hasierako-hizkuntzako produktua WooCommercek egia-iturburua funtzionala den prezioa, SKUa eta stocka, eta beti hornitzen dira bertatik shoperra ari den hizkuntza axola gabe. Hau argitalaren \"Sinkronizatu\" murriztapen orokorraren ezarpen berezi independentea da — bata gaitzeak bestea ez du gaitzen."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Baimendu \"Sinkronizatu\" itzulitako produktuan hasierako produktua gainidazteko"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3792,7 +3792,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Berez desaktibatuta: itzulitako WooCommerce produktu batean \"Sinkronizatu\" klikatzea blokeatuta dago, hasierako produktuaren izenburua, deskribapena eta laburpena itzultzera atzera eramango lukeelako. Hasierako produktutik itzulpen guztietara sinkronizatzea beti onartuta dago ezarpen honekin axola gabe. Aktibatu hau soilik itzulpena iturburuko eduki berri bihur nahi baduzu intentzionalduz."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3910,11 +3910,11 @@ msgstr "gainditua"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Zure argital-bertsio berrienaren lagin labur bat itzultzen du modelo zehatza honekin — benetako, fakturatutako API deiak."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Proba modeloa"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4384,8 +4384,8 @@ msgstr[1] "%d hizkuntza fitxategi ezabatu da."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d eredu-itzulpena kendu da."
+msgstr[1] "%d eredu-itzulpena kendu dira."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4678,15 +4678,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Berriro sortu Hizkuntza Guztiak"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Berriro sortu Hizkuntza Guztiak (Txantiloiak Soilik)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Berriro sortu Hizkuntza Guztiak (Txantiloi Zatiak Soilik)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4875,7 +4875,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Berriro sortu guztiak"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4891,7 +4891,7 @@ msgstr "Konpondu estekak guztiak"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Zuzendu nabigazioa guztia"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5768,11 +5768,11 @@ msgstr "Sareko errorea — ezin izan da WordPress AJAX puntura iritsi."
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Benetako argitarapena itzultzen ari da eredu honekin…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "aurresetea"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5804,51 +5804,51 @@ msgstr "Etxe batzuk ezin izan dira sortu."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Berrikitzen…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Txantiloi guztiak berrikitu dira."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Txantiloi batzuk ezin izan dira berrikitu."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Honek txantiloi hau aktiboan dagoen gaiaren kopia berri batekin gainidatziko du, Gune Editorean egindako personalizazioak arbuiatuz. Hau ez da desegiteko modukoa. Jarraitu?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Honek txantiloi guztiak aktiboan dagoen gaiaren kopia berri batekin gainidatziko ditu, Gune Editorean egindako personalizazioak arbuiatuz. Hau ez da desegiteko modukoa. Jarraitu?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Txantiloi zati guztiak berrikitu dira."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Txantiloi zati batzuk ezin izan dira berrikitu."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Honek txantiloi zati hau aktiboan dagoen gaiaren kopia berri batekin gainidatziko du, Gune Editorean egindako personalizazioak arbuiatuz. Hau ez da desegiteko modukoa. Jarraitu?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Honek txantiloi zati guztiak aktiboan dagoen gaiaren kopia berri batekin gainidatziko ditu, Gune Editorean egindako personalizazioak arbuiatuz. Hau ez da desegiteko modukoa. Jarraitu?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5916,11 +5916,11 @@ msgstr "Ezkutatu"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Berriro sortu txantiloi guztiak"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Berriro sortu zati guztiak"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5932,7 +5932,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Honek Berriro sortu txantiloi guztiak, Berriro sortu zati guztiak, Itzuli guztiak, Zuzendu zati guztiak, eta Zuzendu esteka guztiak exekutatuko ditu zure {total} hizkuntza aktibo bakoitzarentzat, bata bestearen atzetik. Aktiboan dagoen gaiaren kopia berri batekin txantiloiak eta zatiak gainidatziko ditu (Gune Editorean egindako personalizazioak arbuiatuz) eta edukia berriro itzuliko du — horietako bat ez da desegiteko modukoa. Itzuli guztiak benetako AI API deiak egiten ditu txantiloi eta zati bakoitzarentzat, eta hau denbora hartuko du eta zure hornitzailearen arabera kostuak izan ditzake. Jarraitu?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5944,7 +5944,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Honek Berriro sortu txantiloi guztiak, Itzuli guztiak, Zuzendu zati guztiak, eta Zuzendu esteka guztiak exekutatuko ditu zure {total} hizkuntza aktibo bakoitzarentzat, bata bestearen atzetik — txantiloi zatiak (goiburu, oinak, etab.) untxatuta geratuko dira. Aktiboan dagoen gaiaren kopia berri batekin txantiloiak gainidatziko ditu (Gune Editorean egindako personalizazioak arbuiatuz) eta edukia berriro itzuliko du — horietako bat ez da desegiteko modukoa. Itzuli guztiak benetako AI API deiak egiten ditu txantiloi bakoitzarentzat, eta hau denbora hartuko du eta zure hornitzailearen arabera kostuak izan ditzake. Jarraitu?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5954,34 +5954,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Honek Berriro sortu zati guztiak (goiburuak, oinak, eta beste txantiloi zatiak) exekutatuko ditu zure {total} hizkuntza aktibo bakoitzarentzat, bata bestearen atzetik. Aktiboan dagoen gaiaren kopia berri batekin txantiloi zatiak gainidatziko ditu, Gune Editorean egindako personalizazioak arbuiatuz. Hau ez da desegiteko modukoa. Jarraitu?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Hasten…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Prozesatzen {lang} ({index} / {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Bertan behera utzia."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} / {total} hizkuntza prozesatu dira."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Amaitu arazoekin."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ {total} hizkuntza guztiak prozesatu dira."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6779,27 +6779,27 @@ msgstr "Kopiatu huts egin du — kopiatu URL-a eskuz."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Zabarrua + Auzokoak"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Eraman Zaborrera (itzulpenak barne)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d argitarapena zabarruan sartu da (itzulpenak barne)."
+msgstr[1] "%d argitarapena zabarruan sartu dira (itzulpenak barne)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d argitarapena salto egin da (baimenik ez edo babesturik)."
+msgstr[1] "%d argitarapena salto egin dira (baimenik ez edo babesturik)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

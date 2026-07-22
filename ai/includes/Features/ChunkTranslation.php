@@ -37,11 +37,17 @@ class ChunkTranslation {
 	 *   - chunk_text      (string)  Text to translate.
 	 *   - refine_hint     (string)  Optional: refinement instruction for multi-turn.
 	 *   - previous_output (string)  Optional: prior translation output for multi-turn.
+	 * @param  int                  $post_id        Post the chunk belongs to, when known (meta-box
+	 *   "Translate chunk" mode). 0 when the chunk is post-independent (Admin Toolbar popover) —
+	 *   matches the synthetic post_id already used for this mode's cache key. Threaded into the
+	 *   `linguaforge_translation_extra_instruction` filter and the compliance-preset lookup
+	 *   (Config::active_preset()), so a page's per-page preset override is honoured the same way
+	 *   it is for full-post translation.
 	 * @return array<string, mixed>  Always contains 'success' (bool). On success:
 	 *   'output' (string), 'type' ('chunk'), 'language' (string), 'cached' (bool, only on cache hit).
 	 *   On failure: 'error' (string).
 	 */
-	public function run( string $language_name, array $params ): array {
+	public function run( string $language_name, array $params, int $post_id = 0 ): array {
 
 		// ── 1. Validate input ──────────────────────────────────────────────────
 		$chunk_text = trim( wp_unslash( (string) ( $params['chunk_text'] ?? '' ) ) );
@@ -73,10 +79,32 @@ class ChunkTranslation {
 			$prompt_template
 		);
 
-		// ── 4. Build system prompt + glossary injection ────────────────────────
+		// ── 4. Extra instruction + system prompt + glossary injection ─────────
+		// Same extension point Translation::run() resolves for the full-post
+		// TM and JSON-envelope paths (filter added 2.6.6) — chunk mode was left
+		// out of that cut. Resolved here (rather than at the top of run()) so
+		// it can also feed the cache hash below, keeping a cached chunk tied
+		// to the instruction that produced it.
+		//
+		// @since 2.6.7
+		$extra_instruction = (string) apply_filters( 'linguaforge_translation_extra_instruction', '', $post_id );
+		$extra_sentence    = $extra_instruction !== '' ? ' ' . rtrim( $extra_instruction, '.' ) . '.' : '';
+
+		// $post_id also feeds the compliance-preset lookup (Config::active_preset())
+		// so a page with a per-page `_linguaforge_preset` override (e.g. "Legal" on
+		// one page, "Standard" site-wide) gets that page's addendum here too, matching
+		// full-post Translation for the same page — instead of always falling back to
+		// the global preset regardless of which post the chunk came from. Harmless
+		// when $post_id is 0 (the post-independent Admin Toolbar popover): with no
+		// post to check, active_preset() falls straight through to the global setting,
+		// same as before.
+		//
+		// @since 2.6.7
 		$system_prompt = Config::apply_compliance_to_system(
 			'You are a professional translator. ' .
-			'Output only the translated text — no commentary, no preamble.'
+			'Output only the translated text — no commentary, no preamble.' .
+			$extra_sentence,
+			$post_id
 		);
 
 		// Chunk mode auto-detects source language, so we only pull wildcard
@@ -107,6 +135,7 @@ class ChunkTranslation {
 		$chunk_hash      = CacheStore::hash( [
 			$chunk_text,
 			$language_name,
+			$extra_instruction,
 			Config::provider(),
 			Config::model( Config::quick_translate_tier() ),
 		] );

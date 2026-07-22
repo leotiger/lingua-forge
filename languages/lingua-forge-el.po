@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 20:52+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Greek\n"
@@ -303,13 +303,13 @@ msgstr "Επιδιόρθωση Μερών"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Ανασύσταση"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" ανασυντάχθηκε."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -338,8 +338,8 @@ msgstr "Επιδιόρθωση Πλοήγησης"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" ανασυντάχθηκε. %2$d πρότυπο ενημερώθηκε."
+msgstr[1] "%2$d πρότυπο ενημερώθηκε."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -625,27 +625,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Μεταφράστε ξανά κάθε άλλη έκδοση γλώσσας από αυτήν την ανάρτηση. Δημιουργεί όλες που λείπουν και αντικαθιστά όλες που υπάρχουν ήδη — συμπεριλαμβανομένης της κύριας γλώσσας, εάν αυτή η ανάρτηση είναι μετάφραση."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Συγχρονισμός"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Αναθέστε το σωστό πρότυπο ειδικό για κάθε γλώσσα σε κάθε υπάρχουσα μετάφραση αυτής της ανάρτησης. Χωρίς κλήση AI και χωρίς αλλαγές περιεχομένου — δωρεάν και ασφαλές για εκτέλεση ανά πάσα στιγμή."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Συγχρονισμός προτύπου — αναθέστε πρότυπα για κάθε μετάφραση"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "ΣΠ"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -671,7 +671,7 @@ msgstr "Επαναμεταφράζοντας…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Συγχρονισμός…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -679,11 +679,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Αυτό μεταφράζει ξανά κάθε άλλη έκδοση γλώσσας αυτής της ανάρτησης από αυτήν — δημιουργώντας όλες που λείπουν και αντικαθιστώντας όλες που υπάρχουν ήδη (συμπεριλαμβανομένης της κύριας γλώσσας, εάν αυτή η ανάρτηση είναι μετάφραση). Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Συγχρονισμός προτύπων…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -724,33 +724,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "Ο συγχρονισμός από ένα προϊόν WooCommerce δευτερεύουσας γλώσσας είναι απενεργοποιημένος προεπιλογή, καθώς θα αντικαθιστούσε το κύριο προϊόν. Ενεργοποιήστε το στο Ρυθμίσεις → Συμπεριφορά → WooCommerce εάν θέλετε μια μετάφραση να μπορεί να γίνει το νέο περιεχόμενο πηγής."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "Ο συγχρονισμός από μια ανάρτηση δευτερεύουσας γλώσσας είναι απενεργοποιημένος προεπιλογή, καθώς θα αντικαθιστούσε την κύρια ανάρτηση. Ενεργοποιήστε το στο Ρυθμίσεις → Συμπεριφορά → Συγχρονισμός εάν θέλετε μια μετάφραση να μπορεί να γίνει το νέο περιεχόμενο πηγής."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Παραλείφθηκε — δεν έχετε δικαίωμα να επεξεργαστείτε την υπάρχουσα μετάφραση."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "Η δημιουργία μεταφράσεων για τον τύπο ανάρτησης \"%s\" απαιτεί ενεργή ολοκλήρωση."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Ο συγχρονισμός προτύπου μπορεί να εκτελεστεί μόνο από την ανάρτηση κύριας/πηγής γλώσσας."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Παραλείφθηκε — δεν έχετε δικαίωμα να επεξεργαστείτε αυτήν τη μετάφραση."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3605,37 +3605,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Εισαγάγετε ένα αναγνωριστικό μοντέλου για δοκιμή."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Δεν βρέθηκε δημοσιευμένη ανάρτηση ή σελίδα για δοκιμή — δημοσιεύστε πρώτα κάποιο περιεχόμενο, ή δοκιμάστε απευθείας τη Γρήγορη Μετάφραση."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(χωρίς τίτλο)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Πρότυπο προτροπής δεν βρέθηκε."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Η μετάφραση απέτυχε. Δοκιμάστε ξανά."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Η δείγμα ανάρτηση δεν έχει ορατό περιεχόμενο κειμένου για μετάφραση."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Πρότυπο προτροπής τμήματος δεν βρέθηκε."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Το μοντέλο δεν επέστρεψε απάντηση. Ελέγξτε το αρχείο σφάλματος του WordPress για λεπτομέρειες."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3773,7 +3773,7 @@ msgstr "Προβολή ενσωματωμένης προεπιλογής"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Αυτόματη Επιπλήρωση Μετάφρασης"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3782,15 +3782,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Σαρώνει περιοδικά αναρτήσεις που λείπει μετάφραση σε μια ενεργή γλώσσα και θέτει σε ουρά μια μετάφραση AI για κάθε χάσμα που βρέθηκε — την ίδια ανάκαμψη που μπορείτε ήδη να ενεργοποιήσετε χειροκίνητα μέσω \"Μετάφραση που λείπει\" ή τις εντολές WP-CLI missing_translations/fill_translations, εκτελούμενη αυτόματα μία φορά ανά ώρα."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Αυτόματη επιπλήρωση"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Μεταφράστε αυτόματα αναρτήσεις που λείπει μια έκδοση γλώσσας"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3800,14 +3800,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Απενεργοποιημένο προεπιλογή. Αυτό το χαρακτηριστικό κάνει αιτήματα προς τον AI παρέχοντα — και δαπανά το σχετικό κόστος API — αυτόματα και στο παρασκήνιο, χωρίς επιβεβαίωση ανά αίτημα, για κάθε δημοσιευμένη ανάρτηση που δεν βρέθηκε χωρίς μετάφραση σε ενεργή γλώσσα. Ενεργοποιήστε αυτό μόνο αν θέλετε κάθε κενό περιεχομένου να μεταφραστεί χωρίς επίβλεψη· διαφορετικά χρησιμοποιήστε \"Μετάφραση που λείπει\" ή τις εντολές WP-CLI για μετάφραση σύμφωνα με το δικό σας πρόγραμμα."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "Τα προϊόντα και παραλλαγές WooCommerce δεν περιλαμβάνονται ποτέ, ανεξάρτητα από αυτήν τη ρύθμιση. Μια ολοκλήρωση μπορεί επίσης να αποκλείσει συγκεκριμένους τύπους ανάρτησης μέσω του φίλτρου linguaforge_cpt_create_allowed."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3816,16 +3816,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Το κουμπί \"Συγχρονισμός\" στη στήλη Lang της λίστας ανάρτησης μεταφράζει ξανά μια ανάρτηση σε κάθε άλλη γλώσσα, συμπεριλαμβανομένης της κύριας/πηγής ανάρτησης όταν εκτελείται από μια μετάφραση. Αυτή η κατεύθυνση οπισθομετάφρασης είναι περιορισμένη προεπιλογή για κάθε τύπο ανάρτησης. (Τα προϊόντα WooCommerce και οι παραλλαγές τους έχουν τη δική τους ξεχωριστή ρύθμιση παρακάτω — αυτή δεν τα επηρεάζει.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Συγχρονισμός δευτερεύουσας γλώσσας"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Επιτρέψτε \"Συγχρονισμός\" σε μια μεταφρασμένη ανάρτηση να αντικαταστήσει την κύρια ανάρτηση"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3834,7 +3834,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Απενεργοποιημένο προεπιλογή: το κλικ σε \"Συγχρονισμός\" σε μια μετάφραση απαγορεύεται από την αντικατάσταση της κύριας ανάρτησης. Ο συγχρονισμός ΑΠΟ την κύρια ανάρτηση σε κάθε μετάφραση είναι πάντα επιτρεπτός ανεξάρτητα από αυτήν τη ρύθμιση. Ενεργοποιήστε αυτό μόνο αν θέλετε ένα προϊόν μετάφρασης να μπορεί να γίνει το νέο περιεχόμενο πηγής."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3843,11 +3843,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Το κύριο προϊόν γλώσσας είναι η λειτουργική αρχή αναφοράς του WooCommerce για την τιμή, SKU και απόθεμα, τα οποία παρέχονται πάντα από αυτό ανεξάρτητα από την γλώσσα που προβάλλει ένας αγοραστής. Αυτή είναι μια ξεχωριστή, ανεξάρτητη ρύθμιση από τον γενικό περιορισμό \"Συγχρονισμός\" παραπάνω — η ενεργοποίηση του ενός δεν ενεργοποιεί το άλλο."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Επιτρέψτε \"Συγχρονισμός\" σε ένα μεταφρασμένο προϊόν να αντικαταστήσει το κύριο προϊόν"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3857,7 +3857,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Απενεργοποιημένο προεπιλογή: το κλικ σε \"Συγχρονισμός\" σε ένα μεταφρασμένο προϊόν WooCommerce αποκλείεται, καθώς θα οπισθομετάφραζε στον τίτλο, περιγραφή και απόσπασμα του κύριου προϊόντος. Ο συγχρονισμός ΑΠΟ το κύριο προϊόν σε κάθε μετάφραση είναι πάντα επιτρεπτός ανεξάρτητα από αυτήν τη ρύθμιση. Ενεργοποιήστε αυτό μόνο αν θέλετε ένα μεταφρασμένο προϊόν να μπορεί να γίνει το νέο περιεχόμενο πηγής."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3979,11 +3979,11 @@ msgstr "υπερβαλλόμενο"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Μεταφράζει ένα σύντομο δείγμα της πιο πρόσφατης δημοσιευμένης ανάρτησής σας με ακριβώς αυτό το μοντέλο — μια πραγματική, χρεωθείσα κλήση API."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Δοκιμαστικό μοντέλο"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4469,8 +4469,8 @@ msgstr[1] "Τα αρχεία τοπικής γλώσσας %d διαγράφηκ
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d μετάφραση προτύπου αφαιρέθηκε."
+msgstr[1] "%d μεταφράσεις προτύπου αφαιρέθηκαν."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4770,15 +4770,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Δημιουργία όλων των γλωσσών εκ νέου"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Δημιουργία όλων των γλωσσών εκ νέου (Μόνο πρότυπα)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Δημιουργία όλων των γλωσσών εκ νέου (Μόνο τμήματα προτύπων)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4971,7 +4971,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Δημιουργία όλων εκ νέου"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4987,7 +4987,7 @@ msgstr "Επιδιόρθωση όλων των συνδέσμων"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Επιδιόρθωση όλων των πλοήγησης"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5882,11 +5882,11 @@ msgstr ""
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Μετάφραση ενός πραγματικού δημοσιεύματος με αυτό το μοντέλο…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "προεπιλογή"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5918,51 +5918,51 @@ msgstr "Ορισμένα πρότυπα δεν μπόρεσαν να δημιο�
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Δημιουργία εκ νέου…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Όλα τα πρότυπα δημιουργήθηκαν εκ νέου."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Ορισμένα πρότυπα δεν μπόρεσαν να δημιουργηθούν εκ νέου."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Αυτό αντικαθιστά αυτό το πρότυπο με μια φρέσκια αντιγραφή από το ενεργό θέμα, απορρίπτοντας τυχόν προσαρμογές του Site Editor που έγιναν σε αυτό. Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Αυτό αντικαθιστά κάθε πρότυπο με μια φρέσκια αντιγραφή από το ενεργό θέμα, απορρίπτοντας τυχόν προσαρμογές του Site Editor που έγιναν σε αυτά. Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Όλα τα τμήματα δημιουργήθηκαν εκ νέου."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Ορισμένα τμήματα δεν μπόρεσαν να δημιουργηθούν εκ νέου."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Αυτό αντικαθιστά αυτό το τμήμα προτύπου με μια φρέσκια αντιγραφή από το ενεργό θέμα, απορρίπτοντας τυχόν προσαρμογές του Site Editor που έγιναν σε αυτό. Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Αυτό αντικαθιστά κάθε τμήμα προτύπου με μια φρέσκια αντιγραφή από το ενεργό θέμα, απορρίπτοντας τυχόν προσαρμογές του Site Editor που έγιναν σε αυτά. Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -6030,11 +6030,11 @@ msgstr "Απόκρυψη"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Δημιουργία όλων των προτύπων εκ νέου"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Δημιουργία όλων των τμημάτων εκ νέου"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -6046,7 +6046,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Αυτό εκτελεί Δημιουργία όλων των προτύπων εκ νέου, Δημιουργία όλων των τμημάτων εκ νέου, Μετάφραση όλων, Επιδιόρθωση όλων των τμημάτων και Επιδιόρθωση όλων των συνδέσμων για καθεμία από τις {total} ενεργές γλώσσες σας, η μία γλώσσα κάθε φορά. Αντικαθιστά τα υπάρχοντα πρότυπα και τμήματα με φρέσκιες αντιγραφές από το ενεργό θέμα (απορρίπτοντας προσαρμογές του Site Editor) και επαναμεταφράζει το περιεχόμενο — κανένα από αυτά δεν μπορεί να αναιρεθεί. Η Μετάφραση όλων κάνει πραγματικές κλήσεις AI API για κάθε πρότυπο και τμήμα, που ενδέχεται να χρειαστεί χρόνο και ενδέχεται να προκαλέσει κόστος ανάλογα με τον πάροχό σας. Συνέχεια;"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -6058,7 +6058,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Αυτό εκτελεί Δημιουργία όλων των προτύπων εκ νέου, Μετάφραση όλων, Επιδιόρθωση όλων των τμημάτων και Επιδιόρθωση όλων των συνδέσμων για καθεμία από τις {total} ενεργές γλώσσες σας, η μία γλώσσα κάθε φορά — τα τμήματα προτύπων (κεφαλίδες, υποσέλιδα κ.λπ.) παραμένουν ανεπηρέαστα. Αντικαθιστά τα υπάρχοντα πρότυπα με φρέσκιες αντιγραφές από το ενεργό θέμα (απορρίπτοντας προσαρμογές του Site Editor) και επαναμεταφράζει το περιεχόμενο — κανένα από αυτά δεν μπορεί να αναιρεθεί. Η Μετάφραση όλων κάνει πραγματικές κλήσεις AI API για κάθε πρότυπο, που ενδέχεται να χρειαστεί χρόνο και ενδέχεται να προκαλέσει κόστος ανάλογα με τον πάροχό σας. Συνέχεια;"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -6068,34 +6068,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Αυτό εκτελεί Δημιουργία όλων των τμημάτων εκ νέου (κεφαλίδες, υποσέλιδα και κάθε άλλο τμήμα προτύπου) για καθεμία από τις {total} ενεργές γλώσσες σας, η μία γλώσσα κάθε φορά. Αντικαθιστά τα υπάρχοντα τμήματα προτύπων με φρέσκιες αντιγραφές από το ενεργό θέμα, απορρίπτοντας τυχόν προσαρμογές του Site Editor που έγιναν σε αυτά. Αυτό δεν μπορεί να αναιρεθεί. Συνέχεια;"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Εκκίνηση…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Επεξεργασία {lang} ({index} από {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Ακυρώθηκε."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} από {total} γλώσσες επεξεργάστηκαν."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Ολοκληρώθηκε με προβλήματα."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Όλες οι {total} γλώσσες επεξεργάστηκαν."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6909,27 +6909,27 @@ msgstr ""
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Κάδος + Συνδεδεμένα"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Μετακίνηση στο κάδο (συμπεριλαμβανομένων μεταφράσεων)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Το %d δημοσίευμα μετακινήθηκε στο κάδο (συμπεριλαμβανομένων μεταφράσεων)."
+msgstr[1] "Τα %d δημοσιεύματα μετακινήθηκαν στο κάδο (συμπεριλαμβανομένων μεταφράσεων)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Το %d δημοσίευμα παραβλέφθηκε (χωρίς άδεια ή προστατευμένο)."
+msgstr[1] "Τα %d δημοσιεύματα παραβλέφθηκαν (χωρίς άδεια ή προστατευμένα)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

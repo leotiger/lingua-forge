@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 23:00+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Russian\n"
@@ -187,7 +187,7 @@ msgid "%d link updated."
 msgid_plural "%d links updated."
 msgstr[0] "Обновлена %d ссылка."
 msgstr[1] "Обновлено %d ссылок."
-msgstr[2] ""
+msgstr[2] "Обновлена %d ссылка.|Обновлено %d ссылки.|Обновлено %d ссылок."
 
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:134
 msgid "No language-specific template parts found to map."
@@ -204,7 +204,7 @@ msgid "%d part reference updated."
 msgid_plural "%d part references updated."
 msgstr[0] "Обновлена %d ссылка на часть шаблона."
 msgstr[1] "Обновлено %d ссылок на части шаблона."
-msgstr[2] ""
+msgstr[2] "Обновлена %d ссылка на часть шаблона.|Обновлено %d ссылки на части шаблона.|Обновлено %d ссылок на части шаблона."
 
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:233
 msgid "Invalid language."
@@ -229,7 +229,7 @@ msgid "%d navigation reference updated."
 msgid_plural "%d navigation references updated."
 msgstr[0] "Обновлена %d навигационная ссылка."
 msgstr[1] "Обновлено %d навигационных ссылок."
-msgstr[2] ""
+msgstr[2] "Обновлена %d навигационная ссылка.|Обновлено %d навигационные ссылки.|Обновлено %d навигационных ссылок."
 
 #: ai/includes/Admin/FseLocalisation/PatternHandler.php:39
 #: ai/includes/Admin/FseLocalisation/TranslateHandler.php:46
@@ -272,7 +272,7 @@ msgid "%d template repaired."
 msgid_plural "%d templates repaired."
 msgstr[0] "Исправлено %d шаблон(ов)."
 msgstr[1] "Исправлено %d шаблонов."
-msgstr[2] ""
+msgstr[2] "Исправлен %d шаблон.|Исправлено %d шаблона.|Исправлено %d шаблонов."
 
 #: ai/includes/Admin/FseLocalisation/RepairHandler.php:98
 msgid "All template metadata is already up to date."
@@ -308,13 +308,13 @@ msgstr "Исправить части"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Пересоздать"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" пересоздан."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -343,9 +343,9 @@ msgstr "Исправить навигацию"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "\"%1$s\" пересоздан. %2$d шаблон обновлен.|\"%1$s\" пересоздан. %2$d шаблона обновлено.|\"%1$s\" пересоздан. %2$d шаблонов обновлено."
+msgstr[1] "\"%1$s\" пересоздан. %2$d шаблон обновлен.|\"%1$s\" пересоздан. %2$d шаблона обновлено.|\"%1$s\" пересоздан. %2$d шаблонов обновлено."
+msgstr[2] "\"%1$s\" пересоздан. %2$d шаблон обновлен.|\"%1$s\" пересоздан. %2$d шаблона обновлено.|\"%1$s\" пересоздан. %2$d шаблонов обновлено."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -354,7 +354,7 @@ msgid "\"%1$s\" created. %2$d template updated."
 msgid_plural "\"%1$s\" created. %2$d templates updated."
 msgstr[0] "\"%1$s\" создан. %2$d шаблонов обновлено."
 msgstr[1] "\"%1$s\" создан. %2$d шаблонов обновлено."
-msgstr[2] ""
+msgstr[2] "\"%1$s\" создан. %2$d шаблон обновлен.|\"%1$s\" создан. %2$d шаблона обновлено.|\"%1$s\" создан. %2$d шаблонов обновлено."
 
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:43
 #: ai/includes/Admin/FseLocalisation/TemplateDefinitions.php:44
@@ -629,27 +629,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Пересоздать переводы на все остальные языки на основе этого сообщения. Создаст отсутствующие переводы и перезапишет существующие — включая язык по умолчанию, если это сообщение является переводом."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Синхронизация"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Переназначить правильный языковой шаблон всем существующим переводам этого сообщения. Без вызова ИИ и без изменений содержания — безопасно и бесплатно для выполнения в любое время."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Синхронизация шаблонов — переназначить шаблоны для всех переводов"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "СШ"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -675,7 +675,7 @@ msgstr "Повторный перевод…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Синхронизация…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -683,11 +683,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Это пересоздает переводы этого сообщения на все остальные языки — создавая отсутствующие и перезаписывая существующие (включая язык по умолчанию, если это сообщение является переводом). Это нельзя отменить. Продолжить?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Синхронизация шаблонов…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -725,33 +725,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "Синхронизация со вторичного языкового товара WooCommerce отключена по умолчанию, так как она перезапишет основной товар. Включите это в Параметры → Поведение → WooCommerce, если вы хотите разрешить переводу стать новым исходным содержанием."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "Синхронизация со вторичного языкового сообщения отключена по умолчанию, так как она перезапишет основное сообщение. Включите это в Параметры → Поведение → Синхронизация, если вы хотите разрешить переводу стать новым исходным содержанием."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Пропущено — у вас нет разрешения на редактирование существующего перевода."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "Создание переводов для типа записи \"%s\" требует активной интеграции."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "Синхронизацию шаблонов можно запустить только из исходного сообщения (язык по умолчанию)."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Пропущено — у вас нет разрешения на редактирование этого перевода."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -930,7 +930,7 @@ msgid "AI cache cleared. %d entry was removed."
 msgid_plural "AI cache cleared. %d entries were removed."
 msgstr[0] "Кэш ИИ очищен. Удалено записей: %d."
 msgstr[1] "Кэш ИИ очищен. Удалено записей: %d."
-msgstr[2] ""
+msgstr[2] "Кэш ИИ очищен. Удалена %d запись.|Кэш ИИ очищен. Удалено %d записи.|Кэш ИИ очищен. Удалено %d записей."
 
 #. translators: %d: number of cached blocks removed.
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:338
@@ -939,7 +939,7 @@ msgid "Translation Memory cleared. %d cached block was removed."
 msgid_plural "Translation Memory cleared. %d cached blocks were removed."
 msgstr[0] "Кеш памяти перевода очищен. Удален %d закешированный блок."
 msgstr[1] "Кеш памяти перевода очищен. Удалено %d закешированных блоков."
-msgstr[2] ""
+msgstr[2] "Кеш памяти перевода очищен. Удален %d закешированный блок.|Кеш памяти перевода очищен. Удалено %d закешированных блока.|Кеш памяти перевода очищен. Удалено %d закешированных блоков."
 
 #: ai/includes/Admin/Settings/Panels/CompatibilityPanel.php:77
 msgid ""
@@ -1232,7 +1232,7 @@ msgid "Debug files cleared. %d file was removed."
 msgid_plural "Debug files cleared. %d files were removed."
 msgstr[0] "Файлы отладки очищены. Удален %d файл."
 msgstr[1] "Файлы отладки очищены. Удалено %d файлов."
-msgstr[2] ""
+msgstr[2] "Файлы отладки очищены. Удален %d файл.|Файлы отладки очищены. Удалено %d файла.|Файлы отладки очищены. Удалено %d файлов."
 
 #: ai/includes/Admin/Settings/Panels/DebugFilesPanel.php:75
 msgid "Debug logging enabled."
@@ -1971,7 +1971,7 @@ msgid "%d post"
 msgid_plural "%d posts"
 msgstr[0] "%d сообщение"
 msgstr[1] "%d сообщений"
-msgstr[2] ""
+msgstr[2] "%d сообщение|%d сообщения|%d сообщений"
 
 #. translators: %s: human-readable time difference
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:406
@@ -2017,7 +2017,7 @@ msgid "~%d min read"
 msgid_plural "~%d min read"
 msgstr[0] "~%d мин чтения"
 msgstr[1] "~%d мин чтения"
-msgstr[2] ""
+msgstr[2] "~%d мин чтения|~%d мин чтения|~%d мин чтения"
 
 #: ai/includes/Admin/Settings/Panels/SeoAnalysisPanel.php:966
 msgid "No title set."
@@ -2334,7 +2334,7 @@ msgid "✓ Active — %d URL entry with language alternates"
 msgid_plural "✓ Active — %d URL entries with language alternates"
 msgstr[0] "✓ Активно — %d записи URL с языковыми альтернативами"
 msgstr[1] "✓ Активно — %d записей URL с языковыми альтернативами"
-msgstr[2] ""
+msgstr[2] "✓ Активно — %d запись URL с языковыми альтернативами|✓ Активно — %d записи URL с языковыми альтернативами|✓ Активно — %d записей URL с языковыми альтернативами"
 
 #: ai/includes/Admin/Settings/Panels/SitemapPanel.php:153
 msgid ""
@@ -3122,7 +3122,7 @@ msgid "%d rule registered"
 msgid_plural "%d rules registered"
 msgstr[0] "Зарегистрировано %d правила"
 msgstr[1] "Зарегистрировано %d правил"
-msgstr[2] ""
+msgstr[2] "Зарегистрировано %d правило|Зарегистрировано %d правила|Зарегистрировано %d правил"
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:775
 msgid "No LF rewrite rules found. Flush permalinks if this is unexpected."
@@ -3188,7 +3188,7 @@ msgid "%1$d post tagged with _lf_lang = %2$s."
 msgid_plural "%1$d posts tagged with _lf_lang = %2$s."
 msgstr[0] "%1$d опубликованных сообщений с тегом _lf_lang = %2$s."
 msgstr[1] "%1$d опубликованных сообщений с тегом _lf_lang = %2$s."
-msgstr[2] ""
+msgstr[2] "%1$d опубликованное сообщение с тегом _lf_lang = %2$s.|%1$d опубликованных сообщения с тегом _lf_lang = %2$s.|%1$d опубликованных сообщений с тегом _lf_lang = %2$s."
 
 #: ai/includes/Admin/Settings/Panels/UninstallSettingsPanel.php:30
 msgid "Uninstall Behaviour"
@@ -3560,37 +3560,37 @@ msgstr "Провайдер не ответил. Проверьте журнал 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Введите идентификатор модели для тестирования."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Не найдено опубликованного сообщения или страницы для тестирования — сначала опубликуйте содержание или попробуйте Быстрый перевод напрямую."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(без названия)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Шаблон подсказки не найден."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "Ошибка перевода. Пожалуйста, попробуйте еще раз."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "Пример сообщения не содержит видимого текстового содержания для перевода."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Шаблон подсказки фрагмента не найден."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "Модель не вернула ответ. Проверьте журнал ошибок WordPress для получения подробной информации."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3725,7 +3725,7 @@ msgstr "Просмотр встроенного значения по умолч
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Автоматическое заполнение переводов"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3734,15 +3734,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Периодически сканирует посты, у которых отсутствует перевод на активный язык, и добавляет в очередь AI-перевод для каждого найденного пробела — это та же операция восстановления, которую можно запустить вручную через «Перевести недостающее» или команды WP-CLI missing_translations/fill_translations, но выполняется автоматически один раз в час."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Автоматическое заполнение"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Автоматически переводить посты, для которых отсутствует версия на другом языке"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3752,14 +3752,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "По умолчанию отключено. Эта функция делает запросы к AI-провайдеру — и расходует связанные расходы API — автоматически и в фоне, без подтверждения для каждого запроса, для каждого опубликованного поста, у которого отсутствует перевод на активный язык. Включайте это только если вы хотите переводить все пробелы контента без участия; в противном случае используйте «Перевести недостающее» или команды WP-CLI для перевода по вашему расписанию."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "Товары и вариации WooCommerce никогда не включаются, независимо от этого параметра. Интеграция также может заблокировать определённые типы постов через фильтр linguaforge_cpt_create_allowed."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3768,16 +3768,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "Кнопка «Синхронизировать» в колонке Lang списка постов переводит пост на все остальные языки, включая первичный/исходный пост, когда она запущена из перевода. Это направление обратного перевода ограничено по умолчанию для каждого типа поста. (Товары и вариации WooCommerce имеют собственный отдельный параметр ниже — этот на них не влияет.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Синхронизация вторичного языка"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Разрешить «Синхронизировать» переведённый пост для перезаписи первичного поста"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3786,7 +3786,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "По умолчанию отключено: нажатие «Синхронизировать» на переводе заблокировано от перезаписи первичного поста. Синхронизация ОТ первичного поста на все переводы всегда разрешена независимо от этого параметра. Включайте это только если вы намеренно хотите, чтобы перевод мог стать новым исходным контентом."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3795,11 +3795,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Первичный товар WooCommerce на языке по умолчанию является операционным источником истины для цены, артикула и запасов, которые всегда подаются из него независимо от того, на каком языке просматривает покупатель. Это отдельный, независимый параметр от общего ограничения «Синхронизировать» выше — включение одного не включает другой."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Разрешить «Синхронизировать» переведённый товар для перезаписи первичного товара"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3809,7 +3809,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "По умолчанию отключено: нажатие «Синхронизировать» на переведённом товаре WooCommerce заблокировано, так как это приведёт к обратному переводу на название, описание и выписку первичного товара. Синхронизация ОТ первичного товара на все переводы всегда разрешена независимо от этого параметра. Включайте это только если вы намеренно хотите, чтобы перевод мог стать новым исходным контентом."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3930,11 +3930,11 @@ msgstr "переопределён"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Переводит короткий образец вашего самого последнего опубликованного поста с этой точной моделью — реальный, оплачиваемый вызов API."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Протестировать модель"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4401,7 +4401,7 @@ msgid "Language uninstalled. %d post deleted."
 msgid_plural "Language uninstalled. %d posts deleted."
 msgstr[0] "Язык удален. Удалено %d постов."
 msgstr[1] "Язык удален. Удалено %d постов."
-msgstr[2] ""
+msgstr[2] "Язык удален. Удален %d пост."
 
 #. translators: %d: number of locale files removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:123
@@ -4410,16 +4410,16 @@ msgid "%d locale file removed."
 msgid_plural "%d locale files removed."
 msgstr[0] "Удалён %d файл локализации."
 msgstr[1] "Удалено %d файлов локализации."
-msgstr[2] ""
+msgstr[2] "Удален %d файл локализации."
 
 #. translators: %d: number of CPT block pattern translations removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:130
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Удален %d шаблон перевода."
+msgstr[1] "Удалено %d шаблона перевода."
+msgstr[2] "Удалено %d шаблонов перевода."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4653,7 +4653,7 @@ msgid "%d locale pack installed."
 msgid_plural "%d locale packs installed."
 msgstr[0] "Установлен %d пакет локализации."
 msgstr[1] "Установлено %d пакетов локализации."
-msgstr[2] ""
+msgstr[2] "Установлено %d пакетов локализации."
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:392
 msgid "Install a Language"
@@ -4716,15 +4716,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Воссоздать все языки"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Воссоздать все языки (только шаблоны)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Воссоздать все языки (только части шаблонов)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4911,7 +4911,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Воссоздать всё"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4927,7 +4927,7 @@ msgstr "Исправить все ссылки"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Исправить все навигации"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5803,11 +5803,11 @@ msgstr "Ошибка сети — не удалось достичь конеч�
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Перевод реального поста с этой моделью…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "предустановка"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5839,51 +5839,51 @@ msgstr "Некоторые шаблоны не удалось создать."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Воссоздание…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Все шаблоны воссозданы."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Некоторые шаблоны не удалось воссоздать."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Это перезаписывает этот шаблон свежей копией из активной темы, отбрасывая все настройки Site Editor, сделанные для него. Это невозможно отменить. Продолжить?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Это перезаписывает каждый шаблон свежей копией из активной темы, отбрасывая все настройки Site Editor, сделанные для них. Это невозможно отменить. Продолжить?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Все части воссозданы."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Некоторые части не удалось воссоздать."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Это перезаписывает эту часть шаблона свежей копией из активной темы, отбрасывая все настройки Site Editor, сделанные для неё. Это невозможно отменить. Продолжить?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Это перезаписывает каждую часть шаблона свежей копией из активной темы, отбрасывая все настройки Site Editor, сделанные для них. Это невозможно отменить. Продолжить?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5951,11 +5951,11 @@ msgstr "Скрыть"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Воссоздать все шаблоны"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Воссоздать все части"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5967,7 +5967,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Это запускает «Воссоздать все шаблоны», «Воссоздать все части», «Перевести всё», «Исправить все части» и «Исправить все ссылки» для каждого из ваших {total} активных языков, один язык за раз. Это перезаписывает существующие шаблоны и части свежими копиями из активной темы (отбрасывая настройки Site Editor) и переводит контент заново — ничто из этого невозможно отменить. «Перевести всё» делает реальные вызовы AI API для каждого шаблона и части, что может занять время и может повлечь расходы в зависимости от вашего провайдера. Продолжить?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5979,7 +5979,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Это выполнит переоздание всех шаблонов, перевод всех материалов, исправление всех частей и исправление всех ссылок для всех {total} активных языков по одному языку за раз — части шаблонов (заголовки, подвалы и т. д.) остаются без изменений. Будут перезаписаны существующие шаблоны свежими копиями из активной темы (отменены пользовательские настройки редактора сайта) и повторно переведено содержимое — ничто из этого невозможно отменить. Перевод всех материалов выполняет реальные вызовы API ИИ для каждого шаблона, что может занять некоторое время и может повлечь расходы в зависимости от вашего поставщика. Продолжить?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5989,34 +5989,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Это выполнит переоздание всех частей (заголовков, подвалов и всех остальных частей шаблона) для всех {total} активных языков по одному языку за раз. Будут перезаписаны существующие части шаблонов свежими копиями из активной темы, отменены все пользовательские настройки редактора сайта к ним. Это невозможно отменить. Продолжить?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Начинаю…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Обработка {lang} ({index} из {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Отменено."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} из {total} языков обработано."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Завершено с ошибками."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Все {total} языков обработаны."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6471,7 +6471,7 @@ msgid "%d language not yet linked"
 msgid_plural "%d languages not yet linked"
 msgstr[0] "%d языков ещё не связаны"
 msgstr[1] "%d языков ещё не связаны"
-msgstr[2] ""
+msgstr[2] "%d язык ещё не связан"
 
 #: language-router/includes/admin/class-meta-boxes.php:406
 msgid ""
@@ -6813,29 +6813,29 @@ msgstr "Копирование не удалось — пожалуйста, с�
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Корзина + переводы"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Переместить в корзину (включая переводы)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Удалена в корзину %d запись (включая переводы)."
+msgstr[1] "Удалены в корзину %d записи (включая переводы)."
+msgstr[2] "Удалены в корзину %d записей (включая переводы)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Пропущена %d запись (нет прав доступа или защищена)."
+msgstr[1] "Пропущены %d записи (нет прав доступа или защищены)."
+msgstr[2] "Пропущены %d записей (нет прав доступа или защищены)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T11:34:55+00:00\n"
+"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
 "PO-Revision-Date: 2026-07-05 21:04+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Hungarian\n"
@@ -303,13 +303,13 @@ msgstr "Részek javítása"
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:116
 #: ai/includes/Admin/SettingsPage.php:266
 msgid "Re-create"
-msgstr ""
+msgstr "Újbóli létrehozás"
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:226
 #, php-format
 msgid "\"%s\" recreated."
-msgstr ""
+msgstr "\"%s\" újbóli létrehozása sikerült."
 
 #. translators: %s: template title such as "Page DE"
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:231
@@ -338,8 +338,8 @@ msgstr "Navigáció javítása"
 #, php-format
 msgid "\"%1$s\" recreated. %2$d template updated."
 msgid_plural "\"%1$s\" recreated. %2$d templates updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\"%1$s\" újbóli létrehozása sikerült. %2$d sablon frissítve lett."
+msgstr[1] "%2$d sablon frissítve lett."
 
 #. translators: 1: template part title e.g. "Header DE", 2: count of templates updated
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:436
@@ -623,27 +623,27 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr ""
+msgstr "Fordítsa le újra ezt a bejegyzést az összes többi nyelvi verzióra. Létrehozza azokat, amelyek hiányoznak, és felülírja azokat, amelyek már léteznek — beleértve az elsődleges nyelvet is, ha ez a bejegyzés egy fordítás."
 
 #: ai/includes/Admin/PostListColumn.php:227
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
 msgid "Sync"
-msgstr ""
+msgstr "Szinkronizálás"
 
 #: ai/includes/Admin/PostListColumn.php:266
 msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr ""
+msgstr "Rendelje hozzá a helyes nyelvspecifikus sablont a bejegyzés minden meglévő fordításához. Nincs mesterséges intelligencia hívás és nincs tartalomváltozás — ingyenes és biztonságos bármikor futtatni."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr ""
+msgstr "Sablonok szinkronizálása — sablonok újbóli hozzárendelése az összes fordításhoz"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
-msgstr ""
+msgstr "SZ"
 
 #: ai/includes/Admin/PostListColumn.php:473
 msgid ""
@@ -669,7 +669,7 @@ msgstr "Újrafordítás…"
 
 #: ai/includes/Admin/PostListColumn.php:523
 msgid "Syncing…"
-msgstr ""
+msgstr "Szinkronizálás folyamatban…"
 
 #: ai/includes/Admin/PostListColumn.php:524
 msgid ""
@@ -677,11 +677,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr ""
+msgstr "Ez újra lefordítja a bejegyzés minden más nyelvű verzióját ebből — létrehozza azokat, amelyek hiányoznak, és felülírja azokat, amelyek már léteznek (beleértve az elsődleges nyelvet is, ha ez a bejegyzés egy fordítás). Ezt nem lehet visszavonni. Folytatja?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
-msgstr ""
+msgstr "Sablonok szinkronizálása folyamatban…"
 
 #: ai/includes/Admin/PostListColumn.php:526
 msgid "✓ Done"
@@ -720,33 +720,33 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr ""
+msgstr "A másodlagos nyelvű WooCommerce termékből való szinkronizálás alapértelmezés szerint le van tiltva, mivel felülírná az elsődleges terméket. Engedélyezze ezt a Beállítások → Viselkedés → WooCommerce helyen, ha azt szeretné, hogy egy fordítás legyen az új forrástartalomma."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr ""
+msgstr "A másodlagos nyelvű bejegyzésből való szinkronizálás alapértelmezés szerint le van tiltva, mivel felülírná az elsődleges bejegyzést. Engedélyezze ezt a Beállítások → Viselkedés → Szinkronizálás helyen, ha azt szeretné, hogy egy fordítás legyen az új forrástartalomma."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
-msgstr ""
+msgstr "Kihagyva — nincs engedélye a meglévő fordítás szerkesztéséhez."
 
 #. translators: %s: post type slug
 #: ai/includes/Admin/PostListColumn.php:997
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr ""
+msgstr "A \"%s\" bejegyzéstípushoz szükséges fordítások létrehozásához aktív integrációra van szükség."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr ""
+msgstr "A Sablonok szinkronizálása csak az elsődleges/forrásnyelvi bejegyzésből futtatható."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
-msgstr ""
+msgstr "Kihagyva — nincs engedélye a fordítás szerkesztéséhez."
 
 #: ai/includes/Admin/Settings/Panels/CacheStatsPanel.php:40
 msgid "Translation Caching"
@@ -3559,37 +3559,37 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:397
 #: ai/includes/Admin/SettingsPage.php:228
 msgid "Enter a model identifier to test."
-msgstr ""
+msgstr "Adjon meg egy modell-azonosítót a teszthez."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:411
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr ""
+msgstr "Nincs közzétett bejegyzés vagy oldal a teszteléshez — először közzétegyen valamilyen tartalmat, vagy próbálja ki a Gyors fordítást közvetlenül."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
-msgstr ""
+msgstr "(cím nélkül)"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:486
 msgid "Prompt template not found."
-msgstr ""
+msgstr "Promptsablon nem található."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:537
 msgid "Translation failed. Please try again."
-msgstr ""
+msgstr "A fordítás nem sikerült. Próbálja meg újra."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:579
 msgid "The sample post has no visible text content to translate."
-msgstr ""
+msgstr "A mintabejegyzésnek nincs látható szöveges tartalma a fordításhoz."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:585
 msgid "Chunk prompt template not found."
-msgstr ""
+msgstr "Chunk prompt sablon nem található."
 
-#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:620
+#: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr ""
+msgstr "A modell nem adott vissza választ. További részletekért ellenőrizze a WordPress-hibanapló."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
 #: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
@@ -3725,7 +3725,7 @@ msgstr "Alapértelmezett megtekintése"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:167
 msgid "Automatic Translation Backfill"
-msgstr ""
+msgstr "Automatikus fordítás kitöltése"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:170
 msgid ""
@@ -3734,15 +3734,15 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr ""
+msgstr "Periodikusan megkeresi azokat a bejegyzéseket, amelyekből hiányzik egy fordítás egy aktív nyelven, és mesterséges intelligencia fordítást sorol fel az egyes hiányosságokhoz — ugyanez a helyreállítás, amelyet már manuálisan indíthat a \"Hiányzó fordítások\" vagy a WP-CLI missing_translations/fill_translations parancsok segítségével, automatikusan és óránként futtatva."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
-msgstr ""
+msgstr "Automatikus kitöltés"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:186
 msgid "Automatically translate posts missing a language version"
-msgstr ""
+msgstr "Automatikusan fordítsa le a hiányzó nyelvű bejegyzéseket"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:189
 msgid ""
@@ -3752,14 +3752,14 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr ""
+msgstr "Alapértelmezés szerint ki van kapcsolva. Ez a funkció mesterséges intelligencia szolgáltató kéréseket — és a hozzájuk kapcsolódó API költségeket — automatikusan és a háttérben, kérésenkénti megerősítés nélkül, az aktív nyelvből hiányzó fordítások nélküli minden közzétett bejegyzéshez használ fel. Csak akkor kapcsolja be, ha azt szeretné, hogy minden tartalomhiány fordítva legyen felügyelet nélkül; ellenkező esetben a WP-CLI parancsokkal fordítson saját ütemezés szerint."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr ""
+msgstr "A WooCommerce termékek és variációk soha nem kerülnek be, függetlenül ettől a beállítástól. Az integráció az linguaforge_cpt_create_allowed szűrő segítségével blokkol adott bejegyzéstípusokat."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
 msgid ""
@@ -3768,16 +3768,16 @@ msgid ""
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr ""
+msgstr "A bejegyzéslista Lang oszlopában található \"Szinkronizálás\" gomb újra lefordít egy bejegyzést az összes többi nyelvre, beleértve az elsődleges/forrásbejegyzést is, ha egy fordításból futtatják. Ez a vissza-fordítási irány alapértelmezés szerint korlátozott minden bejegyzéstípusnál. (A WooCommerce termékeknek és variációknak saját külön beállítása van alább — ez nem érinti őket.)"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
 msgid "Secondary-language Sync"
-msgstr ""
+msgstr "Másodlagos nyelvű szinkronizálás"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr ""
+msgstr "Engedélyezze a \"Szinkronizálás\" lehetőséget egy fordított bejegyzésen az elsődleges bejegyzés felülírásához"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
 msgid ""
@@ -3786,7 +3786,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Alapértelmezés szerint ki van kapcsolva: egy fordítás \"Szinkronizálása\" blokkolva van az elsődleges bejegyzés felülírásától. A szinkronizálás az elsődleges bejegyzésből az összes fordításra mindig engedélyezett, függetlenül ettől a beállítástól. Csak akkor kapcsolja be, ha szándékosan azt szeretné, hogy egy fordítás legyen az új forrástartalomma."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
 msgid ""
@@ -3795,11 +3795,11 @@ msgid ""
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr ""
+msgstr "Az elsődleges nyelvű termék a WooCommerce működési igazság forrása az árra, az SKU-ra és a készletre, amelyeket mindig az elsődleges termékről szolgáltatnak, függetlenül attól, hogy a vásárló melyik nyelvet nézi. Ez egy külön, független beállítás az általános \"Szinkronizálás\" korlátozástól — az egyik engedélyezése nem engedélyezi a másikat."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr ""
+msgstr "Engedélyezze a \"Szinkronizálás\" lehetőséget egy fordított terméken az elsődleges termék felülírásához"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
 msgid ""
@@ -3809,7 +3809,7 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr ""
+msgstr "Alapértelmezés szerint ki van kapcsolva: egy lefordított WooCommerce termék \"Szinkronizálása\" blokkolva van, mivel az elsődleges termék címe, leírása és kivonatára vissza-fordítana. A szinkronizálás az elsődleges termékből az összes fordításra mindig engedélyezett, függetlenül ettől a beállítástól. Csak akkor kapcsolja be, ha szándékosan azt szeretné, hogy egy fordítás legyen az új forrástartalomma."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3928,11 +3928,11 @@ msgstr "felülírt"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr ""
+msgstr "Rövid mintát fordít le a legtöbb közelmúltbeli közzétett bejegyzésből ezzel a pontos modellel — egy valódi, számlázott API hívás."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
-msgstr ""
+msgstr "Modell tesztelése"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:313
 msgid ""
@@ -4412,8 +4412,8 @@ msgstr[1] "%d nyelvi fájlok törölve."
 #, php-format
 msgid "%d pattern translation removed."
 msgid_plural "%d pattern translations removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d mintafordítás eltávolítva."
+msgstr[1] "%d mintafordítás eltávolítva."
 
 #. translators: %d: number of locale files that could not be removed
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:141
@@ -4710,15 +4710,15 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:470
 msgid "Recreate All Languages"
-msgstr ""
+msgstr "Az összes nyelv újbóli létrehozása"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:473
 msgid "Recreate All Languages (Templates Only)"
-msgstr ""
+msgstr "Az összes nyelv újbóli létrehozása (csak sablonok)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:476
 msgid "Recreate All Languages (Template Parts Only)"
-msgstr ""
+msgstr "Az összes nyelv újbóli létrehozása (csak sablon részek)"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:479
 #: ai/assets/admin-content-gen-modal.js:83 ai/assets/admin-diff-modal.js:89
@@ -4907,7 +4907,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:46
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:57
 msgid "Re-create all"
-msgstr ""
+msgstr "Összes újbóli létrehozása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:52
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatesSection.php:63
@@ -4923,7 +4923,7 @@ msgstr "Minden link javítása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:63
 msgid "Fix all navs"
-msgstr ""
+msgstr "Összes navigáció javítása"
 
 #: ai/includes/Admin/Settings/Tabs/Sections/TemplatePartsSection.php:71
 msgid "Part"
@@ -5805,11 +5805,11 @@ msgstr "Hálózati hiba — nem lehet elérni a WordPress AJAX végpontot."
 
 #: ai/includes/Admin/SettingsPage.php:229
 msgid "Translating a real post with this model…"
-msgstr ""
+msgstr "Valós bejegyzés fordítása ezzel a modellel…"
 
 #: ai/includes/Admin/SettingsPage.php:230
 msgid "preset"
-msgstr ""
+msgstr "előbeállítás"
 
 #: ai/includes/Admin/SettingsPage.php:257
 msgid "Loading…"
@@ -5841,51 +5841,51 @@ msgstr "Néhány sablont nem sikerült létrehozni."
 
 #: ai/includes/Admin/SettingsPage.php:267
 msgid "Recreating…"
-msgstr ""
+msgstr "Újbóli létrehozás…"
 
 #: ai/includes/Admin/SettingsPage.php:268
 msgid "✓ All templates recreated."
-msgstr ""
+msgstr "✓ Az összes sablon újra lett hozva."
 
 #: ai/includes/Admin/SettingsPage.php:269
 msgid "Some templates could not be recreated."
-msgstr ""
+msgstr "Néhány sablont nem lehetett újra létrehozni."
 
 #: ai/includes/Admin/SettingsPage.php:270
 msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Ez felülírja ezt a sablont az aktív téma friss másolatával, elvetéve a Weboldal-szerkesztőben végzett módosításokat. Ez nem vonható vissza. Folytatás?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Ez felülírja az összes sablont az aktív téma friss másolatával, elvetéve a Weboldal-szerkesztőben végzett módosításokat. Ez nem vonható vissza. Folytatás?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
-msgstr ""
+msgstr "✓ Az összes rész újra lett hozva."
 
 #: ai/includes/Admin/SettingsPage.php:273
 msgid "Some parts could not be recreated."
-msgstr ""
+msgstr "Néhány részt nem lehetett újra létrehozni."
 
 #: ai/includes/Admin/SettingsPage.php:274
 msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr ""
+msgstr "Ez felülírja ezt a sablon részt az aktív téma friss másolatával, elvetéve a Weboldal-szerkesztőben végzett módosításokat. Ez nem vonható vissza. Folytatás?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr ""
+msgstr "Ez felülírja az összes sablon részt az aktív téma friss másolatával, elvetéve a Weboldal-szerkesztőben végzett módosításokat. Ez nem vonható vissza. Folytatás?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5953,11 +5953,11 @@ msgstr "Elrejtés"
 
 #: ai/includes/Admin/SettingsPage.php:305
 msgid "Re-create all templates"
-msgstr ""
+msgstr "Az összes sablon újbóli létrehozása"
 
 #: ai/includes/Admin/SettingsPage.php:306
 msgid "Re-create all parts"
-msgstr ""
+msgstr "Az összes rész újbóli létrehozása"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:311
@@ -5969,7 +5969,7 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Ez futtatja az Összes sablon újbóli létrehozása, Összes rész újbóli létrehozása, Összes fordítása, Összes rész javítása és Összes hivatkozás javítása műveleteket az összes {total} aktív nyelvhez, egyik nyelvről a másikra. Ez felülírja az aktív témából származó meglévő sablonokat és részeket (elvetéve a Weboldal-szerkesztő testreszabásait) és újra fordítja a tartalmakat — ezek közül semmi sem vonható vissza. Az Összes fordítása valódi AI API hívásokat végez minden sablonhoz és részhez, ami hosszú ideig tarthat és költségeket eredményezhet a szolgáltatótól függően. Folytatás?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5981,7 +5981,7 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr ""
+msgstr "Ez futtatja az Összes sablon újbóli létrehozása, Összes fordítása, Összes rész javítása és Összes hivatkozás javítása műveleteket az összes {total} aktív nyelvhez, egyik nyelvről a másikra — a sablon részek (fejlécek, lábléc stb.) érintetlenek maradnak. Ez felülírja az aktív témából származó meglévő sablonokat (elvetéve a Weboldal-szerkesztő testreszabásait) és újra fordítja a tartalmakat — ezek közül semmi sem vonható vissza. Az Összes fordítása valódi AI API hívásokat végez minden sablonhoz, ami hosszú ideig tarthat és költségeket eredményezhet a szolgáltatótól függően. Folytatás?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5991,34 +5991,34 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr ""
+msgstr "Ez futtatja az Összes rész újbóli létrehozása (fejlécek, láblécek és minden más sablon rész) műveletet az összes {total} aktív nyelvhez, egyik nyelvről a másikra. Ez felülírja az aktív témából származó meglévő sablon részeket, elvetéve a Weboldal-szerkesztőben végzett módosításokat. Ez nem vonható vissza. Folytatás?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
-msgstr ""
+msgstr "Indítás…"
 
 #. translators: {lang}, {index}, {total}, {step}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:318
 msgid "Processing {lang} ({index} of {total}) — {step}…"
-msgstr ""
+msgstr "Feldolgozás: {lang} ({index} / {total}) — {step}…"
 
 #: ai/includes/Admin/SettingsPage.php:319
 msgid "Cancelled."
-msgstr ""
+msgstr "Visszavonva."
 
 #. translators: {done}, {total}: placeholders substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:321
 msgid "{done} of {total} languages processed."
-msgstr ""
+msgstr "{done} / {total} nyelvből feldolgozva."
 
 #: ai/includes/Admin/SettingsPage.php:322
 msgid "⚠ Done with issues."
-msgstr ""
+msgstr "⚠ Kész, de hibák adódtak."
 
 #. translators: {total}: number of active languages. Placeholder substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:324
 msgid "✓ All {total} languages processed."
-msgstr ""
+msgstr "✓ Az összes {total} nyelv feldolgozva."
 
 #: ai/includes/Admin/SettingsPage.php:388
 msgid "Built-in preset instructions:"
@@ -6817,27 +6817,27 @@ msgstr "A másolás sikertelen — kérjük, másold a URL-t manuálisan."
 
 #: language-router/includes/translation/class-trash-cascade.php:157
 msgid "Trash + Siblings"
-msgstr ""
+msgstr "Kuka + Társítások"
 
 #: language-router/includes/translation/class-trash-cascade.php:210
 msgid "Move to Trash (incl. translations)"
-msgstr ""
+msgstr "Helyezés a Kukába (fordítások közösen)"
 
 #. translators: %d: number of posts moved to Trash, including the triggering post.
 #: language-router/includes/translation/class-trash-cascade.php:427
 #, php-format
 msgid "Trashed %d post (including translations)."
 msgid_plural "Trashed %d posts (including translations)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bejegyzés helyezve a Kukába (fordítások közösen)."
+msgstr[1] "%d bejegyzés helyezve a Kukába (fordítások közösen)."
 
 #. translators: %d: number of posts skipped (no permission, or a protected front/posts page).
 #: language-router/includes/translation/class-trash-cascade.php:434
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bejegyzés kihagyva (nincs engedély vagy védett)."
+msgstr[1] "%d bejegyzés kihagyva (nincs engedély vagy védett)."
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96

@@ -393,9 +393,11 @@ class Config {
      *
      * Resolution order:
      *   1. Per-page meta `_linguaforge_preset` — only checked when $post_id > 0.
-     *      Only Translation and ContentGenerator pass a post_id; block-level
-     *      endpoints (translate-chunk, revise-block), MetaDescription, and
-     *      ExcerptGenerator all pass 0 and stay global.
+     *      Translation, ContentGenerator, and ChunkTranslation's meta-box
+     *      "Translate chunk" mode (which has a real post in scope) pass a
+     *      post_id. The Admin Toolbar's `/translate-chunk` popover (no post
+     *      context — arbitrary pasted text), revise-block, MetaDescription,
+     *      and ExcerptGenerator all pass 0 and stay global.
      *   2. Global setting `linguaforge_active_preset`.
      *   3. Backwards-compat: old `linguaforge_compliance_mode_enabled` flag → 'legal'.
      *   4. Default: 'standard'.

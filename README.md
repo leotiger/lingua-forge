@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.6.6 — stable, open for testing.**
+> **Version 2.6.7 — stable, open for testing.**
 > This release is considered stable and suitable for production use. Bug reports, compatibility reports, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -252,18 +252,13 @@ add_filter( 'lf_languages_list', fn() => ['ca', 'es', 'en', 'de', 'fr'] );
 
 #### Filters reference
 
-| Filter | Default | Description |
-|---|---|---|
-| `lf_primary_language` | Value from Router settings | Developer override for the source / default language code. Takes priority over **Settings → Router** |
-| `lf_languages_list` | Value from Router settings | Developer override for the full active language list. Takes priority over **Settings → Router** |
-| `lf_lang_force_locale` | `['ca' => 'ca']` | Hard locale overrides (e.g. for VikBooking) |
-| `lf_lang_fallback_map` | `['en'=>'en_US', …]` | Locale fallbacks when no installed locale matches |
-| `lf_lang_default_fallback` | `'en_US'` | Last-resort locale |
-| `lf_base_domain` | Auto from `home_url()` | Override the bare domain used for subdomain URL construction (useful when `home_url()` includes `www` or a non-apex hostname) |
-| `lf_hreflang_mode` | `'custom'` | `'custom'` outputs Lingua Forge hreflang tags and suppresses SEO-plugin duplicates. Any other value (e.g. `'off'`) disables built-in output and hands control to the SEO plugin |
-| `lf_hreflang_x_default` | Source-language URL | Override the URL used for the `x-default` hreflang tag. Receives `$url`, `$post_id`, `$translations` |
-| `lf_i18n_overrides_dir` | `uploads/lingua-forge/i18n-overrides/` | Override the storage path for third-party `.mo` override files |
-| `linguaforge_translation_languages` | Built-in list | Override the AI translation target language list — see Content Translation section |
+The handful of Language Router filters most relevant here:
+`lf_primary_language`, `lf_languages_list`, `lf_lang_force_locale`,
+`lf_lang_fallback_map`, `lf_lang_default_fallback`, `lf_base_domain`,
+`lf_hreflang_mode`, `lf_hreflang_x_default`, `lf_i18n_overrides_dir`, and
+`linguaforge_translation_languages` (AI target-language list). Full
+signatures, defaults, and every other hook in the plugin:
+**[HOOKS.md](HOOKS.md)**.
 
 #### WordPress language setup
 
@@ -1181,7 +1176,7 @@ from within the editor of post objects and WooCommerce products. For most websit
 - **Complete multilingual SEO layer** *(2.2.0)* — hreflang, Open Graph with `og:locale`/`og:locale:alternate`, Schema.org JSON-LD (Article/WebPage/WebSite with `inLanguage`, Product for WooCommerce), dedicated XML sitemap at `/lf-sitemap.xml` with xhtml:link alternates, Social Icons block share: URL rewriting, WooCommerce product OG/schema, and AI-powered SEO content analysis. No companion SEO plugin required. Settings → SEO tab with eight inner panels including a Compatibility tab.
 - **Full Custom Post Type support** — all public CPTs (WooCommerce `product`, any third-party CPT) automatically receive the full admin layer: Lang column with outdated/missing indicators, Retranslate/Translate-missing buttons, filter dropdowns, quick-edit language control, AI translation metabox, FSE template selector, Translation Memory eligibility, and link-fixer scan. Zero configuration. Opt-out filters: `linguaforge_column_post_types`, `linguaforge_ai_metabox_post_types`, `linguaforge_link_fixer_post_types`.
 - **WooCommerce integration** — translated products carry only content fields (title, description, excerpt, meta description); all operational data (price, SKU, stock, dimensions, images, variations, taxonomy assignments) is served transparently from the source-language product at runtime. Category, tag, and attribute term names display in the visitor's language. WooCommerce product OG tags and Product schema output from the SEO layer. Filters: `linguaforge_wc_delegate_post_types`, `linguaforge_wc_delegate_taxonomies`.
-- **Third-party integration API** — hooks: `linguaforge_loaded`, `linguaforge_translation_content`, `linguaforge_translation_extra_instruction`, `linguaforge_translation_complete`, `linguaforge_trid_changed`, `linguaforge_switcher_output`. SEO extension hooks: `linguaforge_seo_og_type`, `linguaforge_seo_og_extra_tags`, `linguaforge_seo_schema_extra_types`. Two public REST endpoints. Public PHP function `linguaforge_trigger_translation()`. Full API documentation in `CONTRIBUTING.md`.
+- **Third-party integration API** — 69 hooks across Router, AI, SEO, and WooCommerce sub-modules; full reference in [HOOKS.md](HOOKS.md). Two public REST endpoints. Public PHP function `linguaforge_trigger_translation()`. Integration walkthrough in `CONTRIBUTING.md`.
 - **Classic theme language switcher** — `[lsflr_switcher]` shortcode and `Lsflr_Switcher_Widget` (Appearance → Widgets) provide the language switcher on any WordPress theme, no block widget area required.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.

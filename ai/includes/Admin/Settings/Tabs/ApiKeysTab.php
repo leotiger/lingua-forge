@@ -591,8 +591,16 @@ define( 'OPENAI_API_KEY',    'sk-…' );</pre>
             $prompt_template
         );
 
+        // Same linguaforge_translation_extra_instruction filter and per-page
+        // compliance-preset lookup ChunkTranslation::run() now resolves — kept
+        // in sync so this test's system prompt (and therefore its preview
+        // output) matches what a real chunk translation of $post would produce.
+        $extra_instruction = (string) apply_filters('linguaforge_translation_extra_instruction', '', $post->ID);
+        $extra_sentence     = $extra_instruction !== '' ? ' ' . rtrim($extra_instruction, '.') . '.' : '';
+
         $system_prompt = Config::apply_compliance_to_system(
-            'You are a professional translator. Output only the translated text — no commentary, no preamble.'
+            'You are a professional translator. Output only the translated text — no commentary, no preamble.' . $extra_sentence,
+            $post->ID
         );
 
         $glossary = Glossary::format_for_prompt('', $target_lang);

@@ -2,6 +2,20 @@
 
 ---
 
+## [2.6.7] — 2026-07-21
+
+Closes a gap in the `linguaforge_translation_extra_instruction` filter (added
+in 2.6.6) identified while assessing Agnosis's proposed F-3 improvement:
+`ChunkTranslation` — Translate-chunk mode in the AI meta box, and the Admin
+Toolbar's `/translate-chunk` popover — never resolved the filter at all, so
+an integration relying on it (e.g. Agnosis's Latin-phrase preservation) saw
+the instruction silently drop for any chunk translation.
+
+### Fixed
+- **`ChunkTranslation::run()` now resolves `linguaforge_translation_extra_instruction`**, the same extension point `Translation::run()` already threaded through the full-post TM and JSON-envelope paths. `Translation::run_chunk()` threads the real `$post_id` through for the meta-box "Translate chunk" mode; the toolbar popover has no post context and passes `0`, matching the synthetic post_id it already uses for chunk caching. `ApiKeysTab::run_light_content_test()` (the Light-tier "Test model" button, which deliberately mirrors `ChunkTranslation`'s system prompt without going through its cache) picks up the same change so its preview stays accurate to what a real chunk translation would produce. (`ai/includes/Features/ChunkTranslation.php`, `ai/includes/Features/Translation.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`, `CONTRIBUTING.md`, `README.md`)
+- **Cached translations could silently outlive a change to the `linguaforge_translation_extra_instruction` filter's output.** Neither the full-post `$hash` in `Translation::run()` nor `ChunkTranslation`'s `$chunk_hash` included the resolved instruction, so if a filter callback's output changed (or the filter was added/removed) between requests, a stale cache entry built under the old instruction could still be served. Both hashes now include the resolved instruction string. (`ai/includes/Features/Translation.php`, `ai/includes/Features/ChunkTranslation.php`)
+- **`ChunkTranslation::run()` also now threads `$post_id` into the compliance-preset lookup (`Config::active_preset()`)**, not just the extra_instruction filter above. Previously chunk mode always used the *global* Settings → Behavior preset regardless of which page a chunk came from — `Config::active_preset()`'s own docblock already documented this as intentional for block-level endpoints, but it meant a page with a per-page `_linguaforge_preset` override (e.g. "Legal" on one page, "Standard" site-wide) got inconsistent treatment depending on whether an editor used full-post Translation or "Translate chunk" on that same page. Meta-box "Translate chunk" mode now honours a page's override the same way full-post Translation does; the post-independent Admin Toolbar `/translate-chunk` popover (`$post_id` 0) is unaffected — with no post to check, `active_preset()` falls straight through to the global setting, same as before. `ApiKeysTab::run_light_content_test()` updated to match. (`ai/includes/Features/ChunkTranslation.php`, `ai/includes/Core/Config.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`)
+
 ## [2.6.6] — 2026-07-21
 
 Adds the extension point identified while auditing Agnosis's LinguaForge
