@@ -46,7 +46,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// TODO(release): pending the built lingua-forge-2.6.7.zip — build it, upload
 	// to the v2.6.7 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = '39e58a97cd4b350c9b69f11b11cc889f1f5434c55c3425d91df3df2db36e9977';
+	$sha256 = '15983fe34bb66f010db4565254a9b6aca7bafb4c58f895044ad1fee505757cec';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
