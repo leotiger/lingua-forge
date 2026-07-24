@@ -11,6 +11,13 @@ package-lock.json
 .phpunit.result.cache
 .phpstan.cache
 
+# Coverage output — reproducible, and embeds this machine's own absolute
+# filesystem paths; never commit (same reasoning applied in the agnosis
+# sibling repo, AUDIT-0.9.39.md §6 / H-1).
+coverage/
+coverage-*.xml
+coverage-*.cov
+
 # wp-env runtime data.
 .wp-env/
 .wp-env.override.json
