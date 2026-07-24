@@ -426,9 +426,10 @@ function lf_missing_placeholders(array $expectedSorted, string $translated): arr
 /**
  * Walk a .po file and yield BOTH singular and plural entries as a
  * unified list, each tagged 'type' => 'single'|'plural'. Multi-line
- * (wrapped) msgid/msgid_plural text is concatenated correctly; entries
- * whose msgstr/msgstr[N] slot(s) are themselves wrapped across multiple
- * lines are flagged 'multiline_warning' and never written to.
+ * (wrapped) msgid/msgid_plural text is concatenated correctly; a msgstr (or
+ * an individual msgstr[N] slot) that is itself wrapped across multiple
+ * lines is flagged 'multiline_warning' (per-slot for plurals — see below)
+ * and never written to.
  */
 function lf_parse_entries(array $lines): array {
 	$entries = [];
@@ -847,13 +848,13 @@ foreach ($poFiles as $poPath) {
 
 	$items = [];
 	foreach ($entries as $entry) {
-		if ($entry['multiline_warning']) {
-			continue; // never touched — same policy as clear-fuzzy.php
-		}
-
 		$isPhpFormat = in_array('php-format', $entry['flags'], true);
 
 		if ($entry['type'] === 'single') {
+			if ($entry['multiline_warning']) {
+				continue; // never touched — same policy as clear-fuzzy.php
+			}
+
 			// I-2 style (ported from Agnosis, 2026-07-24 sync): an
 			// already-translated php-format entry can still be broken — a
 			// translator dropped a required %d/%s — and that's just as much
@@ -894,6 +895,13 @@ foreach ($poFiles as $poPath) {
 			sort($expected);
 
 			foreach ($entry['slots'] as $idx => $slot) {
+				if ($slot['multiline_warning']) {
+					continue; // this slot specifically is wrapped — never
+					          // touched, same policy as clear-fuzzy.php — but
+					          // no longer blocks any OTHER slot of the same
+					          // entry (see lf_parse_entries() above).
+				}
+
 				$missing = [];
 				if ($slot['empty']) {
 					// normal from-scratch case

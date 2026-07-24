@@ -293,7 +293,7 @@ The plugin is developed against WordPress Coding Standards (PHPCS + WPCS 3.1), p
 == Changelog ==
 
 = 2.6.8 =
-* Dev tooling: `dev/bin/translate-missing.php` (the `composer translate-missing` i18n helper) gained character-budget-aware batching and an already-translated-but-broken-placeholder detection/fix pass, ported from the sibling Agnosis project's own copy of this script. No plugin-shipped code changed — `dev/` is excluded from the release ZIP.
+* Dev tooling: `dev/bin/translate-missing.php` (the `composer translate-missing` i18n helper) gained character-budget-aware batching, an already-translated-but-broken-placeholder detection/fix pass, and a fix for a wrapped plural slot silently hiding every later slot in the same entry from translation — all ported from the sibling Agnosis project's own copy of this script. No plugin-shipped code changed — `dev/` is excluded from the release ZIP.
 
 = 2.6.7 =
 * Fixed: `ChunkTranslation::run()` (Translate-chunk mode and the Admin Toolbar's `/translate-chunk` popover) never resolved the `linguaforge_translation_extra_instruction` filter added in 2.6.6, so an integration relying on it (e.g. Latin-phrase preservation) saw the instruction silently drop for any chunk translation. It now resolves the same filter, with `Translation::run_chunk()` threading through the real post ID for the meta-box path (`0` for the post-independent toolbar popover). (`ai/includes/Features/ChunkTranslation.php`, `ai/includes/Features/Translation.php`, `ai/includes/Admin/Settings/Tabs/ApiKeysTab.php`)

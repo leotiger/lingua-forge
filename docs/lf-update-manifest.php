@@ -53,7 +53,7 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	$changelog =
 		'<h4>2.6.8 &#8212; 2026-07-24</h4>' .
 		'<ul>' .
-			'<li><strong>Dev tooling:</strong> <code>dev/bin/translate-missing.php</code> (the <code>composer translate-missing</code> i18n helper) gained character-budget-aware batching and an already-translated-but-broken-placeholder detection/fix pass, ported from the sibling Agnosis project&#8217;s own copy of this script. No plugin-shipped code changed &#8212; <code>dev/</code> is excluded from the release ZIP.</li>' .
+			'<li><strong>Dev tooling:</strong> <code>dev/bin/translate-missing.php</code> (the <code>composer translate-missing</code> i18n helper) gained character-budget-aware batching, an already-translated-but-broken-placeholder detection/fix pass, and a fix for a wrapped plural slot silently hiding every later slot in the same entry from translation &#8212; all ported from the sibling Agnosis project&#8217;s own copy of this script. No plugin-shipped code changed &#8212; <code>dev/</code> is excluded from the release ZIP.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
 		'<h4>2.6.7 &#8212; 2026-07-21</h4>' .
