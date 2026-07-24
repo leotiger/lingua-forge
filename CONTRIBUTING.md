@@ -1599,7 +1599,14 @@ first run (no global WP-CLI or Docker needed).
 (`dev/bin/translate-missing.php`) AI-translates every empty `msgstr`/`msgstr[N]`
 across all 26 locales in one pass, using a system prompt that knows Lingua
 Forge's own vocabulary (TRID, hreflang, Translation Memory, Sync, glossary, …)
-so translations land in the right register. Supports the same three providers
+so translations land in the right register. It also re-checks every
+non-empty `php-format`-flagged entry for a dropped `%s`/`%d`-style
+placeholder and, if found, sends the model the existing translation plus
+which placeholder(s) are missing so it fixes that entry in place, rather
+than only ever touching truly-empty strings. Batches are split by both item
+count (`--batch-size`) and combined source-character length, so a handful of
+long strings can't under-budget a batch's token allowance and truncate the
+model's response. Supports the same three providers
 as the plugin itself — Anthropic (default), OpenAI, Gemini — via `--provider=`;
 if that flag is omitted and you're at an interactive terminal, the script asks
 which provider to use first (Enter for Anthropic) before anything else — a

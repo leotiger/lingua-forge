@@ -2,6 +2,19 @@
 
 ---
 
+## [2.6.8] — 2026-07-24
+
+Dev-tooling-only release — no plugin-shipped code changed (`dev/` is
+excluded from the release ZIP via `.distignore`).
+
+### Dev tooling
+
+- **Ported Agnosis's 2026-07-24 fixes to `dev/bin/translate-missing.php`** (the `composer translate-missing` i18n helper), keeping this plugin's own architecture (`lf_`-prefixed functions, `lf_build_request()`/`lf_extract_response()` dispatch) and domain specifics (`DOMAIN_PROMPT`, `LOCALE_NAMES`, `lingua-forge-*.po` naming) untouched:
+  - **Character-budget-aware batching.** `array_chunk($items, $batchSize)` (count-only) is replaced with `lf_chunk_items_by_budget()`, a greedy bin-packer that also caps each batch's combined source-character length (`MAX_CHARS_PER_CHUNK = 2600`). `lf_estimate_max_tokens()` now sizes each batch's `max_tokens`/`maxOutputTokens` from actual source-content length rather than a flat `count($items) * 150` — the old formula could under-budget a batch of just a few long Settings-description strings and truncate the model's response mid-JSON, silently losing the whole batch. This is a preventive port: the failure was observed and fixed in Agnosis's own copy of the script, not yet in this plugin's.
+  - **Already-translated-but-broken-placeholder detection and fix pass** (Agnosis's "I-2" audit finding). `lf_entry_flags()`/`lf_extract_placeholders()`/`lf_missing_placeholders()` let the work-list builder re-include a non-empty `php-format`-flagged entry whose existing translation is missing a required `%s`/`%d`-style placeholder, sending the model the existing text plus exactly which placeholder(s) it's missing (`existing_translation`/`missing_placeholders` payload keys, `DOMAIN_PROMPT` rule 7) so it fixes the translation in place instead of a from-scratch retranslation only triggering on truly-empty strings. A `--dry-run` pass against this plugin's own bundled `.po` files surfaced **46 such entries across 15 locales** with dropped placeholders — this tool can now detect and fix them (requires a real provider API key to actually run; not executed as part of this dev-tooling change).
+  - **Output-validation defense in depth**, same incident family as above: reject a model response that decodes as JSON itself (an echoed request payload masquerading as a translation) or that contains more placeholders than the source expects (multiple plural forms concatenated into one answer) — both previously would have been written straight into a `.po` file as a plausible-looking but corrupt string.
+  - (`dev/bin/translate-missing.php`)
+
 ## [2.6.7] — 2026-07-21
 
 Closes a gap in the `linguaforge_translation_extra_instruction` filter (added

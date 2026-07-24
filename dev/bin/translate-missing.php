@@ -74,7 +74,10 @@
  *   php bin/translate-missing.php --dry-run              # call the API, print results, write nothing
  *   php bin/translate-missing.php --locale=de_DE         # scope to one locale
  *   php bin/translate-missing.php --limit=10             # cap items translated (testing/cost control)
- *   php bin/translate-missing.php --batch-size=40         # items per API call (default 40)
+ *   php bin/translate-missing.php --batch-size=40         # MAX items per API call (default 40) — a
+ *                                                        # batch may still be split smaller than this
+ *                                                        # if its items' combined content is long
+ *                                                        # enough to need it (see MAX_CHARS_PER_CHUNK)
  *   php bin/translate-missing.php --provider=openai       # anthropic (default) | openai | gemini — skips the interactive picker
  *   php bin/translate-missing.php --model=gpt-4o-mini     # override the provider's default model
  *   php bin/translate-missing.php --time-budget=270       # stop cleanly under a 300s wrapper timeout; re-run to resume
@@ -106,6 +109,16 @@ const PROVIDER_KEY_INFO = [
 	'openai'    => ['env' => 'OPENAI_API_KEY', 'url' => 'https://platform.openai.com/api-keys', 'label' => 'OpenAI'],
 	'gemini'    => ['env' => 'GEMINI_API_KEY', 'url' => 'https://aistudio.google.com/apikey', 'label' => 'Gemini'],
 ];
+
+// Max combined source-character count per batch, regardless of item count.
+// Paired with lf_estimate_max_tokens() below — sized so that a chunk right
+// at this budget still lands comfortably under the 8192 max_tokens/
+// maxOutputTokens cap once translated/JSON-escaped, rather than exactly at
+// it. Ported from Agnosis's dev/bin/translate-missing.php (2026-07-24 sync),
+// which added this after a real batch of long AI-Provider-settings-style
+// descriptions truncated mid-response under the old flat count-based
+// formula. See lf_chunk_items_by_budget().
+const MAX_CHARS_PER_CHUNK = 2600;
 
 $onlyLocale       = null;
 $dryRun           = false;
@@ -306,6 +319,7 @@ Translation rules, no exceptions:
 4. Prefer gender-neutral phrasing where the target language allows it naturally, rather than defaulting to a masculine or feminine form.
 5. Where a "reference" (already-translated sibling text in the same language) is given for a plural entry, match its exact register, terminology choices, and grammatical pattern — extend it correctly to the requested plural category, using standard grammatical agreement for that language and count range.
 6. Where no reference is given, translate naturally for a native speaker of the target locale; this is a first pass, not a final professional translation, so prioritize correctness and natural phrasing over cleverness.
+7. Some items include an "existing_translation" and "missing_placeholders" — these are NOT empty strings, they're translations that already read naturally but are missing a required placeholder (most often because the target language's plural/dual form doesn't grammatically need to state the number). FIX the existing translation by inserting the listed missing placeholder(s) — every gettext-compiled build still needs the placeholder literally present so a runtime substitution has somewhere to go. Keep the existing phrasing/register; don't retranslate from scratch unless the existing text is otherwise wrong.
 
 You will be given a JSON array of items to translate, each with a stable "id". Respond with ONLY a single raw JSON object mapping each id to its translated string — no markdown fences, no commentary, no extra keys, no omitted ids.
 PROMPT;
@@ -355,6 +369,61 @@ function lf_translator_comment(array $lines, int $msgidLine): ?string {
 }
 
 /**
+ * Grab the nearest "#, ..." flags comment directly above a msgid start
+ * line, if present — split on commas, e.g. "#, fuzzy, php-format" becomes
+ * ['fuzzy', 'php-format']. Ported from Agnosis (2026-07-24 sync); used to
+ * scope the format-placeholder check below to entries gettext itself
+ * considers format strings, rather than flagging any translation that
+ * happens to contain a literal "%s"/"%d".
+ */
+function lf_entry_flags(array $lines, int $msgidLine): array {
+	for ($back = 1; $back <= 6; $back++) {
+		$idx = $msgidLine - $back;
+		if ($idx < 0) {
+			break;
+		}
+		if (preg_match('/^#,\s*(.+)$/', $lines[$idx], $m)) {
+			return array_map('trim', explode(',', $m[1]));
+		}
+		if ($lines[$idx] === '' || preg_match('/^msgid/', $lines[$idx])) {
+			break;
+		}
+	}
+	return [];
+}
+
+/**
+ * Extract every printf-style placeholder from a string: %s, %d, %1$s,
+ * %2$d, etc. Returns a plain (non-unique) list — duplicates matter, since
+ * a translation genuinely needs to repeat a placeholder as many times as
+ * the source does. Ported from Agnosis (2026-07-24 sync).
+ */
+function lf_extract_placeholders(string $s): array {
+	preg_match_all('/%(?:\d+\$)?[sdfeEgGxXou]/', $s, $m);
+	return $m[0];
+}
+
+/**
+ * Compare a translation's placeholders against the source's expected set
+ * (already-sorted list). Returns the sorted list of placeholders the
+ * translation is missing (multiset difference — one occurrence removed per
+ * match found), or [] if nothing is missing. Doesn't flag *extra*
+ * placeholders — mirrors Agnosis's I-2 audit finding, where the observed
+ * failure mode was always a dropped placeholder, never an added one.
+ * Ported from Agnosis (2026-07-24 sync).
+ */
+function lf_missing_placeholders(array $expectedSorted, string $translated): array {
+	$missing = $expectedSorted;
+	foreach (lf_extract_placeholders($translated) as $found) {
+		$pos = array_search($found, $missing, true);
+		if ($pos !== false) {
+			unset($missing[$pos]);
+		}
+	}
+	return array_values($missing);
+}
+
+/**
  * Walk a .po file and yield BOTH singular and plural entries as a
  * unified list, each tagged 'type' => 'single'|'plural'. Multi-line
  * (wrapped) msgid/msgid_plural text is concatenated correctly; entries
@@ -395,19 +464,53 @@ function lf_parse_entries(array $lines): array {
 
 				$slots = [];
 				$m2 = $k;
-				$multilineWarning = false;
+				$anySlotMultilineWarning = false;
 				while ($m2 < $n && preg_match('/^msgstr\[(\d+)\]\s+"(.*)"\s*$/', $lines[$m2], $sm)) {
-					$idx = (int) $sm[1];
-					$rawInner = $sm[2];
-					if ($m2 + 1 < $n && preg_match('/^"(.*)"\s*$/', $lines[$m2 + 1]) && !preg_match('/^(msgstr\[|msgid|msgctxt|#)/', $lines[$m2 + 1])) {
-						$multilineWarning = true;
-					}
-					$slots[$idx] = [
-						'line'  => $m2,
-						'text'  => lf_po_unescape($rawInner),
-						'empty' => $rawInner === '',
-					];
+					$idx           = (int) $sm[1];
+					$slotStartLine = $m2;
+					$rawParts      = [$sm[2]];
 					$m2++;
+
+					// Ported from Agnosis (2026-07-24 sync, ritual-row fix): the
+					// old version stopped this whole while() the instant it hit a
+					// line not starting with "msgstr[" — which is exactly what a
+					// wrapped slot's OWN continuation line looks like. So a
+					// wrapped msgstr[0] (e.g. a long source form) didn't just get
+					// flagged; it silently truncated parsing of every slot after
+					// it, meaning higher-index slots were never even discovered,
+					// let alone considered for translation. Now every
+					// continuation line belonging to THIS slot is consumed (and
+					// its content concatenated, same as msgid/msgid_plural above)
+					// before looking for the next msgstr[N] line, so scanning
+					// always reaches every slot regardless of which ones happen
+					// to be wrapped.
+					$slotMultilineWarning = false;
+					while ($m2 < $n
+						&& preg_match('/^"(.*)"\s*$/', $lines[$m2], $cm)
+						&& !preg_match('/^(msgstr\[|msgid|msgctxt|#)/', $lines[$m2])
+					) {
+						$rawParts[] = $cm[1];
+						$slotMultilineWarning = true;
+						$m2++;
+					}
+					if ($slotMultilineWarning) {
+						$anySlotMultilineWarning = true;
+					}
+
+					$rawInner = implode('', $rawParts);
+					$slots[$idx] = [
+						'line'              => $slotStartLine,
+						'text'              => lf_po_unescape($rawInner),
+						'empty'             => $rawInner === '',
+						// A wrapped slot is still never selected for translation
+						// (see the per-slot check in the work-list loop below) —
+						// this flag is what enforces that — but its 'text'/
+						// 'empty' are now reconstructed correctly too, so a
+						// sibling slot's reference-translation context isn't
+						// wrongly built from a truncated "" instead of the
+						// slot's real content.
+						'multiline_warning' => $slotMultilineWarning,
+					];
 				}
 
 				$entries[] = [
@@ -415,9 +518,13 @@ function lf_parse_entries(array $lines): array {
 					'msgid'             => $msgid,
 					'msgid_plural'      => $msgidPlural,
 					'slots'             => $slots,
-					'multiline_warning' => $multilineWarning,
+					// Aggregate (any slot wrapped), kept for anything that
+					// inspects entries generically — the work-list loop below
+					// checks each slot's OWN flag instead of this one.
+					'multiline_warning' => $anySlotMultilineWarning,
 					'start_line'        => $msgidStart,
 					'comment'           => lf_translator_comment($lines, $msgidStart),
+					'flags'             => lf_entry_flags($lines, $msgidStart),
 				];
 				$i = $m2;
 				continue;
@@ -444,6 +551,7 @@ function lf_parse_entries(array $lines): array {
 						'multiline_warning' => $multilineWarning,
 						'start_line'        => $msgidStart,
 						'comment'           => lf_translator_comment($lines, $msgidStart),
+						'flags'             => lf_entry_flags($lines, $msgidStart),
 					];
 				}
 				$i = $j + ($multilineWarning ? 2 : 1);
@@ -564,12 +672,97 @@ function lf_extract_response(string $provider, array $decoded): array {
 }
 
 /**
+ * Recursively sum the character length of every string value in a payload
+ * (handles nested arrays like reference_translations_other_slots, the
+ * sibling-plural-slot map on plural entries). Ported from Agnosis
+ * (2026-07-24 sync).
+ */
+function lf_payload_char_length($value): int {
+	if (is_string($value)) {
+		return mb_strlen($value);
+	}
+	if (is_array($value)) {
+		$sum = 0;
+		foreach ($value as $v) {
+			$sum += lf_payload_char_length($v);
+		}
+		return $sum;
+	}
+	return 0;
+}
+
+/**
+ * Estimate a safe max_tokens/maxOutputTokens budget for one batch, based on
+ * actual source content length rather than a flat per-item count.
+ *
+ * The original formula, min(8192, max(2048, count($items) * 150)), assumed
+ * every item is a short UI string. It isn't: some Settings descriptions run
+ * 300-500+ characters, and a batch of just a handful of such items could
+ * total ~2000 source characters — once translated into a language that
+ * expands on English (German) or wrapped in escaped JSON, the actual output
+ * token need blows past the 2048-token floor this formula assigned, so the
+ * model truncates mid-response and the whole batch fails to parse. This is
+ * what broke a batch in Agnosis's own run of the sibling script (de_DE/
+ * zh_CN), fixed there 2026-07-24 and ported here as a preventive measure —
+ * summing real content length and applying a generous per-character
+ * multiplier (covering translation expansion, JSON-escaping overhead, and
+ * denser tokenization in some scripts) avoids needing per-language tuning.
+ *
+ * Floor 2048 / cap 8192 unchanged from the original formula.
+ */
+function lf_estimate_max_tokens(array $items): int {
+	$totalChars = 0;
+	foreach ($items as $item) {
+		$totalChars += lf_payload_char_length($item['payload'] ?? $item);
+	}
+	return min(8192, max(2048, (int) ceil($totalChars * 3) + 200));
+}
+
+/**
+ * Split $items into chunks respecting BOTH a max item count ($maxCount, the
+ * --batch-size value) AND a max combined source-content budget per chunk
+ * ($maxCharsPerChunk) — a small item count can already contain enough long
+ * strings to blow the token budget on its own, so count-only chunking
+ * (array_chunk()) isn't enough. Greedy bin-packing: keep adding items to the
+ * current chunk until either limit would be exceeded, then start a new one.
+ * A single item that is already over budget on its own still gets its own
+ * solo chunk — it can't be split across two API calls. Ported from Agnosis
+ * (2026-07-24 sync).
+ */
+function lf_chunk_items_by_budget(array $items, int $maxCount, int $maxCharsPerChunk): array {
+	$chunks       = [];
+	$current      = [];
+	$currentChars = 0;
+
+	foreach ($items as $item) {
+		$itemChars = lf_payload_char_length($item['payload'] ?? $item);
+
+		if ($current !== []
+			&& (count($current) >= $maxCount || $currentChars + $itemChars > $maxCharsPerChunk)
+		) {
+			$chunks[]     = $current;
+			$current      = [];
+			$currentChars = 0;
+		}
+
+		$current[]     = $item;
+		$currentChars += $itemChars;
+	}
+
+	if ($current !== []) {
+		$chunks[] = $current;
+	}
+
+	return $chunks;
+}
+
+/**
  * One call to the active provider's API. Returns
  * [assocArrayOfIdToText, ['input'=>,'output'=>]|null].
  */
 function lf_call_ai(string $provider, string $apiKey, string $model, string $system, array $items): array {
 	$userPayload = (string) json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-	$maxTokens   = min(8192, max(2048, count($items) * 150));
+	$maxTokens   = lf_estimate_max_tokens($items);
 
 	[$url, $headers, $body] = lf_build_request($provider, $model, $apiKey, $system, $userPayload, $maxTokens);
 
@@ -657,25 +850,59 @@ foreach ($poFiles as $poPath) {
 		if ($entry['multiline_warning']) {
 			continue; // never touched — same policy as clear-fuzzy.php
 		}
+
+		$isPhpFormat = in_array('php-format', $entry['flags'], true);
+
 		if ($entry['type'] === 'single') {
-			if (!$entry['empty']) {
-				continue;
+			// I-2 style (ported from Agnosis, 2026-07-24 sync): an
+			// already-translated php-format entry can still be broken — a
+			// translator dropped a required %d/%s — and that's just as much
+			// "needs this tool's attention" as an empty msgstr, even though
+			// it isn't empty. Re-include it, but carry the existing (broken)
+			// translation + exactly which placeholder(s) are missing, so the
+			// model FIXES it in place instead of discarding a translation
+			// that's otherwise fine.
+			$expected = $isPhpFormat ? lf_extract_placeholders($entry['msgid']) : [];
+			sort($expected);
+			$missing = [];
+			if ($entry['empty']) {
+				// normal from-scratch case, nothing further to compute
+			} elseif ($expected !== [] && ($missing = lf_missing_placeholders($expected, $entry['text'])) !== []) {
+				// format-mismatch fix case, handled below
+			} else {
+				continue; // already translated and format-clean (or not a format string)
 			}
+
 			$id = 's' . count($items);
+			$payload = [
+				'type'    => 'single',
+				'source'  => $entry['msgid'],
+				'comment' => $entry['comment'],
+			];
+			if (!$entry['empty']) {
+				$payload['existing_translation'] = $entry['text'];
+				$payload['missing_placeholders'] = $missing;
+			}
 			$items[] = [
-				'id'      => $id,
-				'payload' => array_filter([
-					'type'    => 'single',
-					'source'  => $entry['msgid'],
-					'comment' => $entry['comment'],
-				]),
-				'apply' => ['line' => $entry['line']],
+				'id'                    => $id,
+				'payload'               => array_filter($payload),
+				'apply'                 => ['line' => $entry['line']],
+				'expected_placeholders' => $expected,
 			];
 		} else {
+			$expected = $isPhpFormat ? lf_extract_placeholders($entry['msgid']) : [];
+			sort($expected);
+
 			foreach ($entry['slots'] as $idx => $slot) {
-				if (!$slot['empty']) {
+				$missing = [];
+				if ($slot['empty']) {
+					// normal from-scratch case
+				} elseif ($expected !== [] && ($missing = lf_missing_placeholders($expected, $slot['text'])) !== []) {
+					// format-mismatch fix case
+				} else {
 					continue;
 				}
+
 				$siblings = [];
 				foreach ($entry['slots'] as $sIdx => $sSlot) {
 					if ($sIdx !== $idx && !$sSlot['empty']) {
@@ -683,19 +910,25 @@ foreach ($poFiles as $poPath) {
 					}
 				}
 				$id = 'p' . count($items);
+				$payload = [
+					'type'              => 'plural',
+					'source_singular'   => $entry['msgid'],
+					'source_plural'     => $entry['msgid_plural'],
+					'nplurals'          => $nplurals,
+					'plural_formula'    => $formula,
+					'target_slot_index' => $idx,
+					'reference_translations_other_slots' => $siblings ?: null,
+					'comment'           => $entry['comment'],
+				];
+				if (!$slot['empty']) {
+					$payload['existing_translation'] = $slot['text'];
+					$payload['missing_placeholders'] = $missing;
+				}
 				$items[] = [
-					'id'      => $id,
-					'payload' => array_filter([
-						'type'              => 'plural',
-						'source_singular'   => $entry['msgid'],
-						'source_plural'     => $entry['msgid_plural'],
-						'nplurals'          => $nplurals,
-						'plural_formula'    => $formula,
-						'target_slot_index' => $idx,
-						'reference_translations_other_slots' => $siblings ?: null,
-						'comment'           => $entry['comment'],
-					]),
-					'apply' => ['line' => $slot['line'], 'slot' => $idx],
+					'id'                    => $id,
+					'payload'               => array_filter($payload),
+					'apply'                 => ['line' => $slot['line'], 'slot' => $idx],
+					'expected_placeholders' => $expected,
 				];
 			}
 		}
@@ -708,10 +941,15 @@ foreach ($poFiles as $poPath) {
 
 $totalItems = array_sum(array_map(fn($w) => count($w['items']), $work));
 if ($totalItems === 0) {
-	echo "Nothing to translate — every locale is fully filled.\n";
+	echo "Nothing to translate — every locale is fully filled and format-clean.\n";
 	exit(0);
 }
-fwrite(STDERR, "{$totalItems} missing string(s) across " . count($work) . " locale(s), via {$providerLabel} ({$model})" . ($dryRun ? " (dry run)" : "") . ".\n");
+$totalFixes = array_sum(array_map(
+	fn($w) => count(array_filter($w['items'], fn($it) => isset($it['payload']['existing_translation']))),
+	$work
+));
+$fixNote = $totalFixes > 0 ? " ({$totalFixes} of those are existing translations missing a required placeholder — I-2 style — not truly empty)" : "";
+fwrite(STDERR, "{$totalItems} missing/broken string(s){$fixNote} across " . count($work) . " locale(s), via {$providerLabel} ({$model})" . ($dryRun ? " (dry run)" : "") . ".\n");
 
 $logLines = [];
 $totalIn  = 0;
@@ -725,7 +963,7 @@ foreach ($work as $locale => $w) {
 	$lines    = $w['lines'];
 	$path     = $w['path'];
 
-	$chunks           = array_chunk($items, $batchSize);
+	$chunks           = lf_chunk_items_by_budget($items, $batchSize, MAX_CHARS_PER_CHUNK);
 	$totalChunks      = count($chunks);
 	$writtenForLocale = 0;
 
@@ -771,6 +1009,36 @@ foreach ($work as $locale => $w) {
 				continue;
 			}
 			$translated = $result[$id];
+
+			// Defense in depth (ported from Agnosis, 2026-07-24 sync): a
+			// real translated UI string will essentially never itself be
+			// valid, structured JSON. Observed in production there: for a
+			// single-item batch, a provider's model echoed the item's own
+			// request payload back as its "translation" instead of
+			// answering — is_string()/non-empty above both pass (it's a
+			// long non-empty string), so that garbage would get written
+			// straight into the .po file without this check. Reject
+			// anything that decodes as a JSON array/object rather than
+			// trusting it's prose.
+			$looksLikeEchoedJson = is_array(json_decode($translated, true));
+			if ($looksLikeEchoedJson) {
+				fwrite(STDERR, "  [{$locale}] response for {$id} looks like echoed JSON, not a translation — skipped: " . mb_substr($translated, 0, 120) . "\n");
+				continue;
+			}
+
+			// Second defense in depth, same incident family (ported from
+			// Agnosis): a single-item batch can also come back with
+			// MULTIPLE plural forms joined into one answer instead of the
+			// one distinct string each "id" was asked for. A real
+			// single-slot translation never legitimately needs MORE
+			// occurrences of a placeholder than the source itself has, so
+			// reject anything that does rather than trust it.
+			$expectedPlaceholders = $it['expected_placeholders'] ?? [];
+			if ($expectedPlaceholders !== [] && count(lf_extract_placeholders($translated)) > count($expectedPlaceholders)) {
+				fwrite(STDERR, "  [{$locale}] response for {$id} has more placeholders than expected — looks like multiple forms joined into one, not a single translation — skipped: " . mb_substr($translated, 0, 120) . "\n");
+				continue;
+			}
+
 			$apply = $it['apply'];
 
 			if (isset($apply['slot'])) {
