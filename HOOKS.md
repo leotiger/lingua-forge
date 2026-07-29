@@ -130,6 +130,46 @@ gate which post types participate in a specific LF behavior.
 
 ---
 
+## Comment translation
+
+`language-router/includes/comments/` (data model, mirroring, cascade — no AI
+dependency), `ai/includes/Features/CommentTranslation.php`,
+`ai/includes/Features/CommentTranslationQueue.php`,
+`ai/includes/Admin/CommentBulkActions.php`. Off by default — see Settings →
+Behavior → Comment Translation. Full design rationale:
+`lingua-forge-audit/PROPOSAL-comment-translation-2026-07-29.md` (maintainer-only,
+not shipped). New in 2.7.0.
+
+Options (Settings → Behavior → Comment Translation):
+
+| Option | Default | Purpose |
+|---|---|---|
+| `linguaforge_comment_translation_enabled` | `false` | Master toggle. Off by default — this feature makes AI provider requests automatically once a comment is eligible. |
+| `linguaforge_comment_translation_mode` | `'manual'` | `'manual'`: translation only via the Comments-screen "Translate"/"Translate missing" actions. `'auto'`: queues a translation the moment an eligible comment is approved (or arrives already-approved). |
+| `linguaforge_comment_translation_max_backfill_depth` | `2` | How many levels of nested replies "Translate missing" walks in one pass. The original top-level comment is level 0. |
+
+| Hook | Type | Signature | Purpose |
+|---|---|---|---|
+| `linguaforge_comment_translation_excluded_types` | filter | `(string[] $excluded)`, default `[]` | Post types excluded from comment translation, in addition to the hard-excluded `product`/`product_variation` (WooCommerce reviews stay on `ProductReviewRouter`'s separate shared-pool model). |
+| `linguaforge_comment_translation_eligible_types` | filter | `(string[] $types)`, default `['comment']` | `comment_type` values eligible for translation. `'review'` is always refused regardless of what this filter returns. |
+| `linguaforge_comment_translation_complete` | action | `(int $comment_id, array{translated: string[], failed: array<string,string>} $result)` | Fires after a comment-translation attempt, whether or not every target language succeeded. |
+
+Public API (`language-router.php`):
+
+| Function | Returns | Purpose |
+|---|---|---|
+| `linguaforge_get_comment_translations( $comment_id )` | `array<string,int>` | `[ lang => comment_id ]` map for every row in the comment's mirror group — the comment-level analog of `linguaforge_get_translations()`. Works whether `$comment_id` is the canonical comment or one of its mirrors. `(Since 2.7.0.)` |
+
+Comment meta (public data contract, same stability convention as `_lf_lang`/`_lf_trid`):
+
+| Meta key | Scope | Purpose |
+|---|---|---|
+| `_lf_comment_lang` | comment meta | The comment's own written/target language. Always set on a mirror; set on a canonical comment once it's been translated at least once (or detected). |
+| `_lf_comment_group_id` | comment meta | Shared by a canonical comment and every mirror of it — set once, at insertion, to the canonical comment's own ID. Deliberately **not** `_lf_trid`: that groups *posts*, and one post family hosts many independent comments, each needing its own group. |
+| `_lf_comment_translation_failures` | comment meta | Per-target-language failure state (attempts/last_attempt/last_error), same shape as `_lf_translation_failures` but scoped to the comment. |
+
+---
+
 ## SEO
 
 `language-router/includes/seo/`. New in 2.2.0 unless noted.

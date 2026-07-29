@@ -66,6 +66,14 @@ add_action(
 	3
 );
 
+// ── Comment translation queue + 'auto'-mode triggers ────────────────────────
+// Registered unconditionally for the same reason as the translation worker
+// above: a queued job runs in a cron / Action Scheduler request that never
+// reaches Plugin::boot(), and the 'auto'-mode triggers themselves (comment
+// approval / already-approved insert) can fire on a plain frontend request
+// (a visitor's own comment) as easily as in wp-admin.
+\LinguaForge\AI\Features\CommentTranslationQueue::register_hooks();
+
 // ── Automatic missing-translation backfill ──────────────────────────────────
 // Self-heals a post left with a translation gap (a queued job that timed out,
 // errored, or was otherwise lost) by periodically re-scanning for TRID-group

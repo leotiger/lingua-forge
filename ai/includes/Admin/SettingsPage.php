@@ -576,6 +576,38 @@ class SettingsPage {
         );
         \LinguaForge\AI\Features\TranslationBackfill::maybe_schedule();
 
+        // ── Behavior — Comment Translation (PROPOSAL-comment-translation-2026-07-29) ──
+        // Off by default: absent in $_POST = unchecked = feature stays OFF, same
+        // convention as Automatic Translation Backfill above — this also makes AI
+        // provider requests automatically in the background once enabled.
+        update_option(
+            'linguaforge_comment_translation_enabled',
+            !empty($_POST['linguaforge_comment_translation_enabled']) ? 1 : 0,
+            false
+        );
+
+        // Mode: 'manual' (default) or 'auto'. Whitelisted — an unrecognized value
+        // (or a tampered/absent field) falls back to the conservative default
+        // rather than silently defaulting to 'auto'.
+        $comment_mode = sanitize_key( wp_unslash( $_POST['linguaforge_comment_translation_mode'] ?? 'manual' ) );
+        update_option(
+            'linguaforge_comment_translation_mode',
+            in_array( $comment_mode, [ 'manual', 'auto' ], true ) ? $comment_mode : 'manual',
+            false
+        );
+
+        // Max backfill depth: original comment = level 0. Clamped to a sane
+        // non-negative range; 0 disables nested-reply backfill entirely
+        // (still backfills top-level comments) rather than being treated as
+        // "unlimited" — unlimited depth on a deep thread is exactly the
+        // unbounded-AI-spend risk this setting exists to prevent.
+        $max_depth = intval( wp_unslash( $_POST['linguaforge_comment_translation_max_backfill_depth'] ?? 2 ) );
+        update_option(
+            'linguaforge_comment_translation_max_backfill_depth',
+            max( 0, min( 20, $max_depth ) ),
+            false
+        );
+
         // ── Behavior — AI preset (replaces old compliance toggle) ────────────
         $preset_raw   = sanitize_key($_POST['linguaforge_active_preset'] ?? '');
         $valid_presets = array_keys(\LinguaForge\AI\Core\Config::presets());

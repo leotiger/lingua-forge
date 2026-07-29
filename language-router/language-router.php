@@ -26,6 +26,7 @@ require_once __DIR__ . '/includes/db/class-migrator.php';
 require_once __DIR__ . '/includes/translation/class-trid-group.php';
 require_once __DIR__ . '/includes/translation/class-sync.php';
 require_once __DIR__ . '/includes/translation/class-trash-cascade.php';
+require_once __DIR__ . '/includes/comments/class-comment-mirror.php';
 require_once __DIR__ . '/includes/rewrite/class-manager.php';
 require_once __DIR__ . '/includes/rewrite/class-query-filter.php';
 require_once __DIR__ . '/includes/routing/class-redirector.php';
@@ -41,6 +42,8 @@ require_once __DIR__ . '/includes/search/class-query.php';
 require_once __DIR__ . '/includes/admin/class-meta-boxes.php';
 require_once __DIR__ . '/includes/admin/class-columns.php';
 require_once __DIR__ . '/includes/admin/class-filters.php';
+require_once __DIR__ . '/includes/admin/class-comment-columns.php';
+require_once __DIR__ . '/includes/admin/class-comment-filters.php';
 require_once __DIR__ . '/includes/admin/class-scripts.php';
 
 // Language Switcher + Link Fixer + Featured Image Fixer — loaded before the
@@ -180,6 +183,19 @@ function linguaforge_get_missing_languages( int $post_id ): array {
  */
 function linguaforge_trash_translation_group( int $post_id, bool $check_caps = false ): array {
 	return \LinguaForge\Router\Router::get_instance()->trash_translation_group( $post_id, $check_caps );
+}
+
+/**
+ * `[ lang => comment_id ]` map for every row sharing $comment_id's mirror
+ * group — the comment-level analog of linguaforge_get_translations(). Works
+ * whether $comment_id is the canonical comment or one of its mirrors.
+ * Returns [] when Comment Translation isn't enabled, or the comment was
+ * never tagged with a mirror group at all.
+ *
+ * @since 2.7.0
+ */
+function linguaforge_get_comment_translations( int $comment_id ): array {
+	return \LinguaForge\Router\Router::get_instance()->get_comment_translations( $comment_id );
 }
 
 function linguaforge_query( array $args = [] ): WP_Query {

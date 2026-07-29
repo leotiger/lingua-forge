@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
+"POT-Creation-Date: 2026-07-29T14:57:34+00:00\n"
 "PO-Revision-Date: 2026-07-05 23:33+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Thai\n"
@@ -51,6 +51,7 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
+#: ai/includes/Admin/CommentBulkActions.php:153
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:398
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
@@ -97,6 +98,30 @@ msgstr "เชิงเทคนิค"
 msgid "Conversational"
 msgstr "สนทนา"
 
+#: ai/includes/Admin/CommentBulkActions.php:52
+#: ai/includes/Admin/PostListColumn.php:109
+msgid "Translate missing"
+msgstr "แปลที่ขาดหาย"
+
+#. translators: %d: number of comment-language mirrors created
+#: ai/includes/Admin/CommentBulkActions.php:114
+#, php-format
+msgid "%d comment translation created."
+msgid_plural "%d comment translations created."
+msgstr[0] "%d คำแปลของความคิดเห็นถูกสร้างขึ้นแล้ว."
+
+#. translators: %d: number of comment/language pairs not yet translated
+#: ai/includes/Admin/CommentBulkActions.php:121
+#, php-format
+msgid ""
+"%d pair could not be translated yet (e.g. a nested reply waiting on its "
+"parent, or a language currently in cooldown after repeated failures)."
+msgid_plural ""
+"%d pairs could not be translated yet (e.g. nested replies waiting on their "
+"parent, or a language currently in cooldown after repeated failures)."
+msgstr[0] "%d คู่ยังไม่สามารถแปลได้ (เช่น คำตอบที่ซ้อนรอผู้ปกครอง หรือภาษาใดภาษาหนึ่งที่อยู่ในสถานะพักหลังจากล้มเหลวซ้ำ ๆ)."
+
+#: ai/includes/Admin/CommentBulkActions.php:162
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
@@ -592,10 +617,6 @@ msgstr ""
 msgid "Close"
 msgstr "ปิด"
 
-#: ai/includes/Admin/PostListColumn.php:109
-msgid "Translate missing"
-msgstr "แปลที่ขาดหาย"
-
 #. translators: label prefix for the retranslate language picker
 #: ai/includes/Admin/PostListColumn.php:163
 msgid "From"
@@ -612,10 +633,12 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr "แปลภาษาเวอร์ชันอื่น ๆ ทั้งหมดจากโพสต์นี้ สร้างเวอร์ชันที่หายไป และเขียนทับเวอร์ชันที่มีอยู่แล้ว — รวมถึงภาษาหลัก หากโพสต์นี้เป็นการแปล"
+msgstr ""
+"แปลภาษาเวอร์ชันอื่น ๆ ทั้งหมดจากโพสต์นี้ สร้างเวอร์ชันที่หายไป และเขียนทับเวอร์ชันที่มีอยู่แล้ว — "
+"รวมถึงภาษาหลัก หากโพสต์นี้เป็นการแปล"
 
 #: ai/includes/Admin/PostListColumn.php:227
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:269
 msgid "Sync"
 msgstr "ซิงค์"
 
@@ -624,7 +647,9 @@ msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr "กำหนดเทมเพลตที่เหมาะสมสำหรับภาษาให้กับการแปลที่มีอยู่ของโพสต์นี้ ไม่มีการเรียก AI และไม่มีการเปลี่ยนแปลงเนื้อหา — ปลอดภัยและสามารถรันได้ทุกเวลา"
+msgstr ""
+"กำหนดเทมเพลตที่เหมาะสมสำหรับภาษาให้กับการแปลที่มีอยู่ของโพสต์นี้ ไม่มีการเรียก AI "
+"และไม่มีการเปลี่ยนแปลงเนื้อหา — ปลอดภัยและสามารถรันได้ทุกเวลา"
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
@@ -664,7 +689,10 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr "การดำเนินการนี้จะแปลภาษาเวอร์ชันอื่น ๆ ทั้งหมดของโพสต์นี้จากเวอร์ชันนี้ — สร้างเวอร์ชันที่หายไป และเขียนทับเวอร์ชันที่มีอยู่แล้ว (รวมถึงภาษาหลัก หากโพสต์นี้เป็นการแปล) ไม่สามารถเลิกทำได้ ต้องการดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะแปลภาษาเวอร์ชันอื่น ๆ ทั้งหมดของโพสต์นี้จากเวอร์ชันนี้ — สร้างเวอร์ชันที่หายไป "
+"และเขียนทับเวอร์ชันที่มีอยู่แล้ว (รวมถึงภาษาหลัก หากโพสต์นี้เป็นการแปล) ไม่สามารถเลิกทำได้ "
+"ต้องการดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
@@ -706,14 +734,19 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr "ซิงค์จากสินค้า WooCommerce ในภาษาทุติยภูมิถูกปิดใช้งานโดยค่าเริ่มต้น เนื่องจากจะเขียนทับสินค้าหลัก เปิดใช้งานได้ใน การตั้งค่า → พฤติกรรม → WooCommerce หากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
+msgstr ""
+"ซิงค์จากสินค้า WooCommerce ในภาษาทุติยภูมิถูกปิดใช้งานโดยค่าเริ่มต้น เนื่องจากจะเขียนทับสินค้าหลัก "
+"เปิดใช้งานได้ใน การตั้งค่า → พฤติกรรม → WooCommerce "
+"หากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr "ซิงค์จากโพสต์ในภาษาทุติยภูมิถูกปิดใช้งานโดยค่าเริ่มต้น เนื่องจากจะเขียนทับโพสต์หลัก เปิดใช้งานได้ใน การตั้งค่า → พฤติกรรม → ซิงค์ หากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
+msgstr ""
+"ซิงค์จากโพสต์ในภาษาทุติยภูมิถูกปิดใช้งานโดยค่าเริ่มต้น เนื่องจากจะเขียนทับโพสต์หลัก เปิดใช้งานได้ใน "
+"การตั้งค่า → พฤติกรรม → ซิงค์ หากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
@@ -2798,7 +2831,7 @@ msgid ""
 msgstr "ดูการตั้งค่า → SEO → ความเข้ากันได้ สำหรับตารางพฤติกรรมต่อคุณสมบัติเต็มรูปแบบ"
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:228
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:300
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
@@ -3108,7 +3141,7 @@ msgstr "ตลอดเวลา"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:724
+#: ai/includes/Admin/SettingsPage.php:756
 msgid "AI Usage"
 msgstr "การใช้งาน AI"
 
@@ -3267,7 +3300,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "บันทึกการตั้งค่า SEO สำหรับ WooCommerce"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:718
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:750
 msgid "AI Provider"
 msgstr "ผู้ให้บริการ AI"
 
@@ -3401,7 +3434,9 @@ msgstr "ใส่ตัวระบุโมเดลเพื่อทดสอ
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr "ไม่พบโพสต์หรือหน้าที่เผยแพร่เพื่อทดสอบ — เผยแพร่เนื้อหาบางส่วนก่อน หรือลองใช้ Quick Translate โดยตรง"
+msgstr ""
+"ไม่พบโพสต์หรือหน้าที่เผยแพร่เพื่อทดสอบ — เผยแพร่เนื้อหาบางส่วนก่อน หรือลองใช้ Quick "
+"Translate โดยตรง"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
@@ -3428,7 +3463,7 @@ msgid "Model returned no response. Check the WordPress error log for details."
 msgstr "โมเดลไม่ส่งคำตอบกลับมา ตรวจสอบบันทึกข้อผิดพลาด WordPress สำหรับรายละเอียด"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:752
 msgid "Behavior"
 msgstr "พฤติกรรม"
 
@@ -3564,7 +3599,10 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr "สแกนโพสต์ที่ขาดการแปลในภาษาที่ใช้งานอยู่เป็นระยะ และจัดคิวการแปล AI สำหรับแต่ละช่องว่างที่พบ — การกู้คืนเดียวกับที่คุณสามารถทริกเกอร์ด้วยตนเองผ่าน \"Translate missing\" หรือคำสั่ง WP-CLI missing_translations/fill_translations แต่รันอัตโนมัติครั้งละครั้งต่อชั่วโมง"
+msgstr ""
+"สแกนโพสต์ที่ขาดการแปลในภาษาที่ใช้งานอยู่เป็นระยะ และจัดคิวการแปล AI สำหรับแต่ละช่องว่างที่พบ "
+"— การกู้คืนเดียวกับที่คุณสามารถทริกเกอร์ด้วยตนเองผ่าน \"Translate missing\" หรือคำสั่ง WP-"
+"CLI missing_translations/fill_translations แต่รันอัตโนมัติครั้งละครั้งต่อชั่วโมง"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
@@ -3582,56 +3620,136 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr "ปิดใช้งานโดยค่าเริ่มต้น คุณลักษณะนี้ทำให้มีคำขอไปยังผู้ให้บริการ AI — และใช้ค่าใช้ API ที่เกี่ยวข้อง — โดยอัตโนมัติและในพื้นหลัง โดยไม่มีการยืนยันต่อคำขอ สำหรับทุกโพสต์ที่เผยแพร่ที่พบโดยไม่มีการแปลในภาษาที่ใช้งานอยู่ เปิดใช้งานนี้เฉพาะหากคุณต้องการให้ช่องว่างเนื้อหาทั้งหมดได้รับการแปลโดยไม่คำนึงถึง มิฉะนั้น ให้ใช้ \"Translate missing\" หรือคำสั่ง WP-CLI เพื่อแปลตามตารางเวลาของคุณเอง"
+msgstr ""
+"ปิดใช้งานโดยค่าเริ่มต้น คุณลักษณะนี้ทำให้มีคำขอไปยังผู้ให้บริการ AI — และใช้ค่าใช้ API ที่เกี่ยวข้อง "
+"— โดยอัตโนมัติและในพื้นหลัง โดยไม่มีการยืนยันต่อคำขอ "
+"สำหรับทุกโพสต์ที่เผยแพร่ที่พบโดยไม่มีการแปลในภาษาที่ใช้งานอยู่ "
+"เปิดใช้งานนี้เฉพาะหากคุณต้องการให้ช่องว่างเนื้อหาทั้งหมดได้รับการแปลโดยไม่คำนึงถึง มิฉะนั้น ให้ใช้ "
+"\"Translate missing\" หรือคำสั่ง WP-CLI เพื่อแปลตามตารางเวลาของคุณเอง"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr "สินค้า WooCommerce และความแปรผันจะไม่รวมอยู่ด้วยเลย ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร การผสานรวมสามารถบล็อกประเภทโพสต์ที่เฉพาะเจาะจงผ่านตัวกรอง linguaforge_cpt_create_allowed"
+msgstr ""
+"สินค้า WooCommerce และความแปรผันจะไม่รวมอยู่ด้วยเลย ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร "
+"การผสานรวมสามารถบล็อกประเภทโพสต์ที่เฉพาะเจาะจงผ่านตัวกรอง "
+"linguaforge_cpt_create_allowed"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+msgid "Comment Translation"
+msgstr "การแปลความคิดเห็น"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
+msgid ""
+"Mirrors an approved comment onto every language version of the post it "
+"belongs to, translated, as a real comment on each sibling page. Off by "
+"default."
+msgstr "สะท้อนความคิดเห็นที่อนุมัติไปยังทุกเวอร์ชันภาษาของโพสต์ที่เกี่ยวข้อง โดยแสดงผลเป็นความคิดเห็นจริงในแต่ละหน้าเฉพาะสาขา ปิดอยู่เริ่มต้น."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
+msgid "Comment translation"
+msgstr "การแปลความคิดเห็น"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+msgid "Enable comment translation"
+msgstr "เปิดใช้งานการแปลความคิดเห็น"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+msgid ""
+"Off by default. This feature makes AI provider requests — and spends the "
+"associated API cost — for approved comments on any post that has translated "
+"language versions. WooCommerce product reviews are never included; they "
+"already share one review pool across languages."
+msgstr "ปิดอยู่เริ่มต้น ฟีเจอร์นี้จะทำการร้องขอจากผู้ให้บริการ AI — และใช้ค่าใช้จ่าย API ที่เกี่ยวข้อง — สำหรับความคิดเห็นที่อนุมัติในโพสต์ใด ๆ ที่มีเวอร์ชันภาษาที่แปลแล้ว รีวิวผลิตภัณฑ์ WooCommerce จะไม่รวมอยู่; พวกเขาแบ่งปันสระรีวิวเดียวกันข้ามภาษา."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:226
+msgid "Translation trigger"
+msgstr "ตัวกระตุ้นการแปล"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:233
+msgid "Manual — translate only via the Comments screen action"
+msgstr "แบบแมนวล — แปลได้เฉพาะผ่านการกระทำบนหน้าความคิดเห็น"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:236
+msgid "Automatic — translate every comment as soon as it's approved"
+msgstr "อัตโนมัติ — แปลความคิดเห็นทุกข้อทันทีที่ได้รับการอนุมัติ"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:240
+msgid ""
+"Manual (default) queues nothing automatically — use the \"Translate missing"
+"\" bulk action on the Comments screen on your own schedule. Automatic queues "
+"a translation the moment a comment is approved (or arrives already-"
+"approved), which can spend API calls on comments a moderator was about to "
+"reject if there's a large held-for-moderation backlog."
+msgstr "แบบแมนวล (ค่าเริ่มต้น) จะไม่สร้างคิวใด ๆ โดยอัตโนมัติ — ใช้การกระทำแบบกลุ่ม \"แปลที่ขาด\" บนหน้าความคิดเห็นตามตารางของคุณเอง อัตโนมัติจะสร้างคิวการแปลทันทีที่ความคิดเห็นได้รับการอนุมัติ (หรือมีการอนุมัติมาแล้ว) ซึ่งอาจใช้การเรียก API ในความคิดเห็นที่ผู้ดูแลจะปฏิเสธหากมีความคิดเห็นที่รอตรวจสอบจำนวนมาก."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+msgid "Max nested-reply depth"
+msgstr "ความลึกของการตอบสนองที่ซ้อนกันสูงสุด"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:262
+msgid ""
+"How many levels of nested replies \"Translate missing\" will walk and "
+"translate in one pass, counting the original top-level comment as level 0. "
+"Default 2 covers the original comment plus replies and replies-to-replies. "
+"Bounds AI spend on deep threads — anything nested deeper isn't backfilled "
+"until this is raised or a further pass runs."
+msgstr "จำนวนระดับของการตอบสนองที่ซ้อนกันที่ \"แปลที่ขาด\" จะเดินและแปลในครั้งเดียว โดยนับความคิดเห็นระดับสูงสุดแบบต้นฉบับเป็นระดับ 0 ค่าเริ่มต้น 2 ครอบคลุมความคิดเห็นต้นฉบับและการตอบกลับและการตอบกลับของการตอบกลับ การใช้งาน AI จะถูกกำหนดสำหรับกระทู้ที่ลึกมาก — สิ่งใดที่ซ้อนลึกกว่านี้จะไม่ถูกเติมจนกว่าจะเพิ่มขึ้นหรือต้องมีการรันผ่านเพิ่มเติม."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:272
 msgid ""
 "The \"Sync\" button in the post list Lang column retranslates a post out "
 "into every other language, including the primary/source post when it's run "
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr "ปุ่ม \"Sync\" ในคอลัมน์ Lang ของรายชื่อโพสต์จะแปลโพสต์ออกมาในทุกภาษา รวมถึงโพสต์หลักในภาษาเมื่อรันจากการแปล ทิศทางการแปลกลับนี้ถูกจำกัดโดยค่าเริ่มต้นสำหรับทุกประเภทโพสต์ (สินค้า WooCommerce และความแปรผันมีการตั้งค่าแยกต่างหากด้านล่าง — การตั้งค่านี้ไม่ส่งผลกระทบต่อสินค้าเหล่านั้น)"
+msgstr ""
+"ปุ่ม \"Sync\" ในคอลัมน์ Lang ของรายชื่อโพสต์จะแปลโพสต์ออกมาในทุกภาษา "
+"รวมถึงโพสต์หลักในภาษาเมื่อรันจากการแปล "
+"ทิศทางการแปลกลับนี้ถูกจำกัดโดยค่าเริ่มต้นสำหรับทุกประเภทโพสต์ (สินค้า WooCommerce "
+"และความแปรผันมีการตั้งค่าแยกต่างหากด้านล่าง — การตั้งค่านี้ไม่ส่งผลกระทบต่อสินค้าเหล่านั้น)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:278
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:309
 msgid "Secondary-language Sync"
 msgstr "ซิงค์ในภาษาทุติยภูมิ"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:288
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
 msgstr "อนุญาตให้ \"Sync\" บนโพสต์ที่แปลแล้วเขียนทับโพสต์หลัก"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:291
 msgid ""
 "Off by default: clicking \"Sync\" on a translation is blocked from "
 "overwriting the primary post. Syncing FROM the primary post to every "
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "ปิดใช้งานโดยค่าเริ่มต้น: การคลิก \"Sync\" บนการแปลถูกบล็อกจากการเขียนทับโพสต์หลัก การซิงค์จากโพสต์หลักไปยังการแปลทั้งหมดได้รับอนุญาตเสมอ ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร เปิดใช้งานนี้เฉพาะหากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
+msgstr ""
+"ปิดใช้งานโดยค่าเริ่มต้น: การคลิก \"Sync\" บนการแปลถูกบล็อกจากการเขียนทับโพสต์หลัก "
+"การซิงค์จากโพสต์หลักไปยังการแปลทั้งหมดได้รับอนุญาตเสมอ ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร "
+"เปิดใช้งานนี้เฉพาะหากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:303
 msgid ""
 "The primary-language product is WooCommerce's operational source of truth "
 "for price, SKU, and stock, which are always served from it regardless of "
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr "สินค้าในภาษาหลักคือแหล่งข้อมูลปฏิบัติการของ WooCommerce สำหรับราคา SKU และสต็อก ซึ่งเสมอมาให้บริการจากจุดนั้นไม่ว่าภาษาที่ผู้ซื้อกำลังดูจะเป็นอย่างไร นี่คือการตั้งค่าแยกต่างหากและเป็นอิสระจากข้อจำกัด \"Sync\" ทั่วไปด้านบน — การเปิดใช้งานอันใดอันหนึ่งไม่ได้เปิดใช้งานอีกอันหนึ่ง"
+msgstr ""
+"สินค้าในภาษาหลักคือแหล่งข้อมูลปฏิบัติการของ WooCommerce สำหรับราคา SKU และสต็อก "
+"ซึ่งเสมอมาให้บริการจากจุดนั้นไม่ว่าภาษาที่ผู้ซื้อกำลังดูจะเป็นอย่างไร "
+"นี่คือการตั้งค่าแยกต่างหากและเป็นอิสระจากข้อจำกัด \"Sync\" ทั่วไปด้านบน — "
+"การเปิดใช้งานอันใดอันหนึ่งไม่ได้เปิดใช้งานอีกอันหนึ่ง"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:319
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
 msgstr "อนุญาตให้ \"Sync\" บนสินค้าที่แปลแล้วเขียนทับสินค้าหลัก"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:322
 msgid ""
 "Off by default: clicking \"Sync\" on a translated WooCommerce product is "
 "blocked, since it would back-translate onto the primary product's title, "
@@ -3639,7 +3757,11 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "ปิดใช้งานโดยค่าเริ่มต้น: การคลิก \"Sync\" บนสินค้า WooCommerce ที่แปลแล้วถูกบล็อก เนื่องจากจะแปลย้อนกลับไปยังชื่อเรื่อง คำอธิบาย และข้อความสั้นของสินค้าหลัก การซิงค์จากสินค้าหลักไปยังการแปลทั้งหมดได้รับอนุญาตเสมอ ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร เปิดใช้งานนี้เฉพาะหากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
+msgstr ""
+"ปิดใช้งานโดยค่าเริ่มต้น: การคลิก \"Sync\" บนสินค้า WooCommerce ที่แปลแล้วถูกบล็อก "
+"เนื่องจากจะแปลย้อนกลับไปยังชื่อเรื่อง คำอธิบาย และข้อความสั้นของสินค้าหลัก "
+"การซิงค์จากสินค้าหลักไปยังการแปลทั้งหมดได้รับอนุญาตเสมอ ไม่ว่าการตั้งค่านี้จะเป็นอย่างไร "
+"เปิดใช้งานนี้เฉพาะหากคุณต้องการให้การแปลเป็นเนื้อหาต้นทางใหม่"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3751,7 +3873,9 @@ msgstr "โอเวอร์ไรท์แล้ว"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr "แปลตัวอย่างสั้น ๆ ของโพสต์ที่เผยแพร่ล่าสุดของคุณด้วยโมเดลนี้เท่านั้น — การเรียก API ที่แท้จริงและมีการเรียกเก็บเงิน"
+msgstr ""
+"แปลตัวอย่างสั้น ๆ ของโพสต์ที่เผยแพร่ล่าสุดของคุณด้วยโมเดลนี้เท่านั้น — การเรียก API "
+"ที่แท้จริงและมีการเรียกเก็บเงิน"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
@@ -3797,7 +3921,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:722
+#: ai/includes/Admin/SettingsPage.php:754
 msgid "Glossary"
 msgstr "คำศัพท์"
 
@@ -3952,7 +4076,7 @@ msgid "Add entry"
 msgstr "เพิ่มรายการ"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:719
+#: ai/includes/Admin/SettingsPage.php:751
 msgid "Limits"
 msgstr "ขีดจำกัด"
 
@@ -4169,12 +4293,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:725
+#: ai/includes/Admin/SettingsPage.php:757
 msgid "Maintenance"
 msgstr "การบำรุงรักษา"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:721
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:753
 msgid "Router"
 msgstr "เราเตอร์"
 
@@ -4709,7 +4833,7 @@ msgstr "แก้ไขส่วนประกอบทั้งหมด"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:723
+#: ai/includes/Admin/SettingsPage.php:755
 msgid "SEO"
 msgstr "SEO"
 
@@ -4749,7 +4873,7 @@ msgstr "ความเข้ากันได้"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:726
+#: ai/includes/Admin/SettingsPage.php:758
 msgid "System"
 msgstr "ระบบ"
 
@@ -5542,14 +5666,18 @@ msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "การดำเนินการนี้จะเขียนทับ FSE template นี้ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะเขียนทับ FSE template นี้ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ "
+"และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "การดำเนินการนี้จะเขียนทับ FSE templates ทั้งหมดด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะเขียนทับ FSE templates ทั้งหมดด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ "
+"และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
@@ -5564,14 +5692,18 @@ msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "การดำเนินการนี้จะเขียนทับ template part นี้ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะเขียนทับ template part นี้ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ "
+"และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "การดำเนินการนี้จะเขียนทับ template parts ทั้งหมดด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะเขียนทับ template parts ทั้งหมดด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ "
+"และจะทิ้งการปรับแต่งที่ทำใน Site Editor ทั้งหมด ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5655,7 +5787,13 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr "การดำเนินการนี้จะรัน สร้าง FSE templates ทั้งหมดใหม่, สร้าง template parts ทั้งหมดใหม่, Translate all, Fix all parts, และ Fix all links สำหรับทุกภาษาที่ใช้งานอยู่ {total} ภาษา ทีละภาษา มันจะเขียนทับ FSE templates และ parts ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ (ทิ้งการปรับแต่ง Site Editor) และแปลเนื้อหาใหม่ — ไม่สามารถเลิกทำสิ่งเหล่านี้ได้ Translate all ทำการเรียก AI API จริงสำหรับทุก FSE template และ part ซึ่งอาจใช้เวลานาน และอาจมีค่าใช้จ่ายตามผู้ให้บริการของคุณ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะรัน สร้าง FSE templates ทั้งหมดใหม่, สร้าง template parts ทั้งหมดใหม่, "
+"Translate all, Fix all parts, และ Fix all links สำหรับทุกภาษาที่ใช้งานอยู่ {total} "
+"ภาษา ทีละภาษา มันจะเขียนทับ FSE templates และ parts ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ "
+"(ทิ้งการปรับแต่ง Site Editor) และแปลเนื้อหาใหม่ — ไม่สามารถเลิกทำสิ่งเหล่านี้ได้ Translate "
+"all ทำการเรียก AI API จริงสำหรับทุก FSE template และ part ซึ่งอาจใช้เวลานาน "
+"และอาจมีค่าใช้จ่ายตามผู้ให้บริการของคุณ ดำเนินการต่อหรือไม่"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5667,7 +5805,13 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr "การดำเนินการนี้จะรัน สร้าง FSE templates ทั้งหมดใหม่, Translate all, Fix all parts, และ Fix all links สำหรับทุกภาษาที่ใช้งานอยู่ {total} ภาษา ทีละภาษา — template parts (headers, footers ฯลฯ) จะไม่ถูกแตะต้อง มันจะเขียนทับ FSE templates ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ (ทิ้งการปรับแต่ง Site Editor) และแปลเนื้อหาใหม่ — ไม่สามารถเลิกทำสิ่งเหล่านี้ได้ Translate all ทำการเรียก AI API จริงสำหรับทุก FSE template ซึ่งอาจใช้เวลานาน และอาจมีค่าใช้จ่ายตามผู้ให้บริการของคุณ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะรัน สร้าง FSE templates ทั้งหมดใหม่, Translate all, Fix all parts, "
+"และ Fix all links สำหรับทุกภาษาที่ใช้งานอยู่ {total} ภาษา ทีละภาษา — template parts "
+"(headers, footers ฯลฯ) จะไม่ถูกแตะต้อง มันจะเขียนทับ FSE templates "
+"ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ (ทิ้งการปรับแต่ง Site Editor) และแปลเนื้อหาใหม่ — "
+"ไม่สามารถเลิกทำสิ่งเหล่านี้ได้ Translate all ทำการเรียก AI API จริงสำหรับทุก FSE "
+"template ซึ่งอาจใช้เวลานาน และอาจมีค่าใช้จ่ายตามผู้ให้บริการของคุณ ดำเนินการต่อหรือไม่"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5677,7 +5821,11 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr "การดำเนินการนี้จะรัน สร้าง template parts ทั้งหมดใหม่ (headers, footers และ template parts อื่นทั้งหมด) สำหรับทุกภาษาที่ใช้งานอยู่ {total} ภาษา ทีละภาษา มันจะเขียนทับ template parts ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ โดยทิ้งการปรับแต่ง Site Editor ที่ทำกับพวกมัน ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
+msgstr ""
+"การดำเนินการนี้จะรัน สร้าง template parts ทั้งหมดใหม่ (headers, footers และ template "
+"parts อื่นทั้งหมด) สำหรับทุกภาษาที่ใช้งานอยู่ {total} ภาษา ทีละภาษา มันจะเขียนทับ template "
+"parts ที่มีอยู่ด้วยสำเนาใหม่จากธีมที่ใช้งานอยู่ โดยทิ้งการปรับแต่ง Site Editor ที่ทำกับพวกมัน "
+"ไม่สามารถเลิกทำได้ ดำเนินการต่อหรือไม่"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
@@ -5777,15 +5925,15 @@ msgstr "การตั้งค่า"
 msgid "You do not have permission to manage these settings."
 msgstr "คุณไม่มีสิทธิ์จัดการการตั้งค่าเหล่านี้"
 
-#: ai/includes/Admin/SettingsPage.php:707
+#: ai/includes/Admin/SettingsPage.php:739
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — การตั้งค่า"
 
-#: ai/includes/Admin/SettingsPage.php:712
+#: ai/includes/Admin/SettingsPage.php:744
 msgid "Settings saved."
 msgstr "บันทึกการตั้งค่าแล้ว"
 
-#: ai/includes/Admin/SettingsPage.php:757
+#: ai/includes/Admin/SettingsPage.php:789
 msgid "Save Settings"
 msgstr "บันทึกการตั้งค่า"
 
@@ -6127,6 +6275,25 @@ msgstr "ยกเว้นจากเมนูนำทาง"
 msgid "Apply to all language versions"
 msgstr "นำไปใช้กับเวอร์ชันภาษาทั้งหมด"
 
+#: language-router/includes/admin/class-comment-columns.php:52
+#: language-router/includes/admin/class-comment-columns.php:59
+msgid "Lang"
+msgstr "ภาษา"
+
+#. translators: %s: comma-separated list of language codes this comment has been mirrored into
+#: language-router/includes/admin/class-comment-columns.php:106
+#, php-format
+msgid "Also mirrored to: %s"
+msgstr "ยังสะท้อนไปยัง: %s"
+
+#: language-router/includes/admin/class-comment-filters.php:49
+msgid "Filter by language"
+msgstr "กรองตามภาษา"
+
+#: language-router/includes/admin/class-comment-filters.php:51
+msgid "All languages"
+msgstr "ทุกภาษา"
+
 #: language-router/includes/admin/class-meta-boxes.php:130
 msgid "Noindex (hide this language version from search engines)"
 msgstr "ไม่แสดงผล (ซ่อนเวอร์ชันภาษานี้จากเครื่องมือค้นหา)"
@@ -6161,7 +6328,7 @@ msgstr ""
 "เพิ่มเข้าไปในหน้านี้โดยใช้ตัวแก้ไขบล็อก"
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:332
+#: language-router/includes/class-language-router.php:349
 #, php-format
 msgid ""
 "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"

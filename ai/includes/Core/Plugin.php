@@ -3,6 +3,7 @@
 namespace LinguaForge\AI\Core;
 
 use LinguaForge\AI\Admin\AdminToolbar;
+use LinguaForge\AI\Admin\CommentBulkActions;
 use LinguaForge\AI\Admin\MetaBox;
 use LinguaForge\AI\Admin\PostListColumn;
 use LinguaForge\AI\Admin\SettingsPage;
@@ -49,6 +50,7 @@ class Plugin {
         PostListColumn::init();
         SettingsPage::init();
         AdminToolbar::init();
+        CommentBulkActions::init();
 
         FeatureController::init();
     }

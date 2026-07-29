@@ -2,6 +2,57 @@
 
 ---
 
+## [2.7.0] — 2026-07-29
+
+New feature — generic WP comment translation, from
+`lingua-forge-audit/PROPOSAL-comment-translation-2026-07-29.md` (a same-day
+review of Agnosis's own reply-language-mirroring system, adapted to a
+generic, first-party LF feature with no Agnosis dependency).
+
+### Added
+
+- **Comment Translation** — off by default (Settings → Behavior → Comment
+  Translation). Mirrors an approved comment onto every language version of
+  the post it belongs to as a real, already-approved, translated
+  `WP_Comment` row on each sibling — not a shared pool (that model stays
+  exactly as-is for WooCommerce product reviews, via the existing
+  `ProductReviewRouter`).
+  - **Data model & mirroring engine** (no AI dependency):
+    `LinguaForge\Router\Comments\CommentMirror`
+    (`language-router/includes/comments/class-comment-mirror.php`). Owns the
+    comment-scoped mirror-group meta (`_lf_comment_group_id`,
+    deliberately *not* `_lf_trid` — a post-family TRID can host many
+    independent comments, each needing its own group), source-language meta
+    (`_lf_comment_lang`), nested-reply parent mapping onto each sibling, and
+    status cascade (approve/unapprove/spam/trash) across a mirror group.
+  - **AI orchestration**: `LinguaForge\AI\Features\LanguageDetector` (new,
+    independently reusable — LF's first language-*identification* primitive;
+    every other translation flow already knows its source language up
+    front), `LinguaForge\AI\Features\CommentTranslation` (plain-text
+    translate + failure/retry bookkeeping, same shape as
+    `TranslationBackfill`'s), `LinguaForge\AI\Features\CommentTranslationQueue`
+    (Action Scheduler/WP-Cron async queue, same shape as `TranslationQueue`).
+  - **Two trigger modes** (`linguaforge_comment_translation_mode`): `'manual'`
+    (default) translates only via the new Comments-screen "Translate" row
+    action / "Translate missing" bulk action; opt-in `'auto'` queues a
+    translation the moment an eligible comment is approved.
+  - **Depth-capped lazy nested-reply backfill**
+    (`linguaforge_comment_translation_max_backfill_depth`, default `2`,
+    original comment = level 0) — bounds AI spend on deep threads, unlike
+    Agnosis's own eager per-approval recursion.
+  - **Comments-screen admin UX**: a "Lang" column
+    (`LinguaForge\Router\Admin\CommentColumns`) and language filter dropdown
+    (`LinguaForge\Router\Admin\CommentFilters`), plus the
+    "Translate"/"Translate missing" actions
+    (`LinguaForge\AI\Admin\CommentBulkActions`).
+  - **Public API**: `linguaforge_get_comment_translations( $comment_id )` —
+    the comment-level analog of `linguaforge_get_translations()`.
+  - WooCommerce product reviews (`comment_type = 'review'`) and the
+    `product`/`product_variation` post types are always excluded, regardless
+    of the new `linguaforge_comment_translation_excluded_types` /
+    `linguaforge_comment_translation_eligible_types` filters' own output.
+  - Full hook/option reference: [HOOKS.md → Comment translation](HOOKS.md#comment-translation).
+
 ## [2.6.8] — 2026-07-24
 
 Dev-tooling-only release — no plugin-shipped code changed (`dev/` is

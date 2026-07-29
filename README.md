@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.6.8 — stable, in production, open for integration.**
+> **Version 2.7.0 — stable, in production, open for integration.**
 > This release is stable and already running production sites. It's no longer primarily about testing — the plugin has proven itself in real use — and the focus now is integration: other plugins/themes hooking into Lingua Forge's translation, routing, and SEO layers. Bug reports, compatibility reports, integration hooks requests, and pull requests are very welcome.
 
 > **A note on WordPress.org.**
@@ -154,6 +154,7 @@ Supports **Anthropic Claude**, **OpenAI**, **Google Gemini**, and WordPress's ow
 - Configurable model endpoints per provider and tier from the Settings page — no code changes needed when a new model version ships
 - **WP-CLI support** — six commands for scripted and automated workflows: `translate`, `retranslate`, `fill_translations`, `missing_translations`, `fix_nav_lang`, and `cache_clear`. All translation commands accept `--with-meta-description` to generate and save an AI meta description for each target post in the same pass
 - **Automatic Translation Backfill** — opt-in hourly scan (off by default) that finds posts missing one or more configured-language translations and queues them for creation via the same async pipeline as `linguaforge_queue_translation()`. Enable from **Settings → Behavior → Automatic Translation Backfill**; scope post types with the `linguaforge_backfill_post_types` filter (WooCommerce products/variations excluded by default)
+- **Comment Translation** *(2.7.0)* — off by default. Mirrors an approved comment onto every language version of its post as a real, translated comment. Manual mode (default) translates via a "Translate"/"Translate missing" action on the Comments screen; opt-in Automatic mode translates the moment a comment is approved. Nested-reply backfill is depth-capped (default: 2 levels below the original comment) to bound AI spend on deep threads. New Comments-screen "Lang" column and language filter dropdown. WooCommerce product reviews are unaffected — they keep their existing shared-review-pool model (`ProductReviewRouter`)
 
 ---
 

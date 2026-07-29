@@ -12,21 +12,42 @@
 # first — the plugin ships with zero runtime Composer dependencies (see
 # CONTRIBUTING.md).
 #
-# Also maintains docs/lf-update-manifest.php's $sha256 field:
-#   1. Cleared to '' at the very START of the run, before the zip is even
-#      built. A stale digest left over from a previous run is worse than an
-#      empty one — an empty $sha256 just skips verification (a documented,
-#      safe default); a stale one looks valid but silently stops matching
-#      the zip that actually gets uploaded if this run fails partway through
-#      or the resulting zip is rebuilt/replaced afterward. Clearing first
-#      means any failure below leaves the manifest in the same safe "unset"
-#      state it would be in before a release was ever attempted, not a
-#      misleading leftover from a previous one.
-#   2. Set to the freshly-built zip's real sha256sum once the build succeeds.
+# Also maintains docs/lf-update-manifest.php in full — no field needs hand-
+# setting after a run except the changelog HTML block itself:
 #
-# The manifest's $version / $download_url / $last_updated and the changelog
-# HTML block are NOT touched here — those are still updated by hand as part
-# of the version bump, same as always.
+#   - $version / $download_url — written immediately, right after $VERSION is
+#     read from the plugin header below, before the zip is even built. Both
+#     are pure metadata (this plugin's own version string, and a GitHub
+#     release-asset URL computed from it + $PLUGIN_SLUG) with no "unverified
+#     until built" risk the way a digest has, so there's no reason to gate
+#     them on the build actually succeeding — same reasoning Agnosis's own
+#     build-zip.sh applies to $last_updated, extended here to these two as
+#     well since this script already has everything it needs to compute them
+#     with no manual input.
+#   - $sha256:
+#       1. Cleared to '' at the very START of the run, before the zip is even
+#          built. A stale digest left over from a previous run is worse than
+#          an empty one — an empty $sha256 just skips verification (a
+#          documented, safe default); a stale one looks valid but silently
+#          stops matching the zip that actually gets uploaded if this run
+#          fails partway through or the resulting zip is rebuilt/replaced
+#          afterward. Clearing first means any failure below leaves the
+#          manifest in the same safe "unset" state it would be in before a
+#          release was ever attempted, not a misleading leftover from a
+#          previous one.
+#       2. Set to the freshly-built zip's real sha256sum once the build succeeds.
+#   - $last_updated — set to today's UTC date once the build succeeds, same
+#     trigger point as $sha256 (ported from Agnosis's own build-zip.sh, added
+#     there 2026-07-22: the script already knows today's date and the
+#     documented release process builds the zip immediately before shipping
+#     it, so there's no real reason to keep this a separate hand-set field).
+#     Unlike $sha256 it is NOT cleared at the start of a run — a failed/
+#     interrupted build should leave the previous successful build's date in
+#     place, not blank it, since there's no "silently wrong" risk for a plain
+#     display date the way there is for a digest.
+#
+# The changelog HTML block is the one thing still updated by hand — it's
+# prose, not a derivable value.
 #
 # Output: ~/Github/lingua-forge-deploy/lingua-forge-<version>.zip
 #     (or [output-dir]/lingua-forge-<version>.zip)
@@ -52,8 +73,33 @@ mkdir -p "$OUTPUT_DIR"
 
 ZIP_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
 ZIP_PATH="$OUTPUT_DIR/$ZIP_NAME"
+DOWNLOAD_URL="https://github.com/leotiger/lingua-forge/releases/download/v${VERSION}/${ZIP_NAME}"
 
 echo "==> Building $ZIP_NAME"
+
+# --- Write $version / $download_url — pure metadata, no build required ------
+write_manifest_version_and_url() {
+    if [ ! -f "$MANIFEST" ]; then
+        echo "WARNING: manifest not found at $MANIFEST — skipping version/download_url update." >&2
+        return
+    fi
+    if ! grep -qE "^[[:space:]]*[$]version[[:space:]]*=" "$MANIFEST"; then
+        echo "WARNING: could not find a \$version assignment in $(basename "$MANIFEST") — set it manually." >&2
+    else
+        sed -i.bak -E "s/^([[:space:]]*[$]version[[:space:]]*=[[:space:]]*)'[^']*'([[:space:]]*;)/\1'${VERSION}'\2/" "$MANIFEST"
+        rm -f "$MANIFEST.bak"
+    fi
+    if ! grep -qE "^[[:space:]]*[$]download_url[[:space:]]*=" "$MANIFEST"; then
+        echo "WARNING: could not find a \$download_url assignment in $(basename "$MANIFEST") — set it manually." >&2
+    else
+        sed -i.bak -E "s|^([[:space:]]*[$]download_url[[:space:]]*=[[:space:]]*)'[^']*'([[:space:]]*;)|\1'${DOWNLOAD_URL}'\2|" "$MANIFEST"
+        rm -f "$MANIFEST.bak"
+    fi
+    echo "--> Version: $VERSION"
+    echo "--> Download URL: $DOWNLOAD_URL"
+    echo "✓ Wrote \$version / \$download_url into $(basename "$MANIFEST")"
+}
+write_manifest_version_and_url
 
 # --- Clear the manifest's $sha256 before doing anything else ----------------
 clear_manifest_sha() {
@@ -135,6 +181,28 @@ write_manifest_sha() {
 }
 write_manifest_sha
 
+# --- Write today's date into $last_updated -----------------------------------
+# Ported from Agnosis's own build-zip.sh (added there 2026-07-22) — see the
+# header comment above for the reasoning. Same trigger point as $sha256:
+# only written once the build actually succeeds; not cleared at the start of
+# a run.
+write_manifest_last_updated() {
+    if [ ! -f "$MANIFEST" ]; then
+        return
+    fi
+    if ! grep -qE "^[[:space:]]*[$]last_updated[[:space:]]*=" "$MANIFEST"; then
+        echo "WARNING: could not find a \$last_updated assignment in $(basename "$MANIFEST") — set it manually." >&2
+        return
+    fi
+    local today
+    today=$(date -u +%Y-%m-%d)
+    sed -i.bak -E "s/^([[:space:]]*[$]last_updated[[:space:]]*=[[:space:]]*)'[^']*'([[:space:]]*;)/\1'${today}'\2/" "$MANIFEST"
+    rm -f "$MANIFEST.bak"
+    echo "--> Last updated: $today"
+    echo "✓ Wrote \$last_updated into $(basename "$MANIFEST")"
+}
+write_manifest_last_updated
+
 echo ""
 echo "  Contents preview:"
 unzip -l "$ZIP_PATH" | awk 'NR>3 && NR<=33'
@@ -142,5 +210,5 @@ unzip -l "$ZIP_PATH" | awk 'NR>3 && NR<=33'
 echo ""
 echo "Remaining manual steps:"
 echo "  1. Upload $ZIP_NAME to the v$VERSION GitHub release."
-echo "  2. Confirm \$version / \$download_url / \$last_updated in $(basename "$MANIFEST") match this release."
+echo "  2. Write the changelog HTML block in $(basename "$MANIFEST") by hand — the one thing this script doesn't automate."
 echo "  3. Deploy $(basename "$MANIFEST") to wp-content/mu-plugins/ on lingua-forge.com."

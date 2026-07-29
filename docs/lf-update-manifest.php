@@ -35,18 +35,18 @@ function lf_update_manifest_endpoint(): WP_REST_Response {
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.6.8';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.6.8/lingua-forge-2.6.8.zip';
-	$last_updated = '2026-07-24';
+	$version      = '2.7.0';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.7.0/lingua-forge-2.7.0.zip';
+	$last_updated = '2026-07-29';
 	$tested       = '7.0.2';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.6.8.zip — build it, upload
-	// to the v2.6.8 GitHub release, sha256sum it, paste the digest here, then
+	// TODO(release): pending the built lingua-forge-2.7.0.zip — build it, upload
+	// to the v2.7.0 GitHub release, sha256sum it, paste the digest here, then
 	// deploy this manifest.
-	$sha256 = '299f0bbd5c78d3401037ea04dbcc56d0c50b8472677727420a57f98d17c0a64c';
+	$sha256 = 'e52d3c74013b50440d48625278ca19a7cc338032536132a45ce54404381d6ee7';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.

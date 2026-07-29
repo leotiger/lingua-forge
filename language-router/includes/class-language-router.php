@@ -60,10 +60,13 @@ use LinguaForge\Router\Search\Query        as SearchQuery;
 use LinguaForge\Router\Translation\TridGroup;
 use LinguaForge\Router\Translation\Sync    as TranslationSync;
 use LinguaForge\Router\Translation\TrashCascade;
+use LinguaForge\Router\Comments\CommentMirror;
 use LinguaForge\Router\Db\Migrator;
 use LinguaForge\Router\Admin\MetaBoxes;
 use LinguaForge\Router\Admin\Columns;
 use LinguaForge\Router\Admin\Filters;
+use LinguaForge\Router\Admin\CommentColumns;
+use LinguaForge\Router\Admin\CommentFilters;
 use LinguaForge\Router\Admin\Scripts;
 use WP_Query;
 // Switcher, LinkFixer, and FeaturedImageFixer are in the root LinguaForge\Router namespace — no alias needed.
@@ -114,10 +117,13 @@ class Router {
 		$this->trid_group    = new TridGroup( $this );
 		$this->sync          = new TranslationSync( $this );
 		$this->trash_cascade = new TrashCascade( $this );
+		$this->comment_mirror = new CommentMirror( $this );
 		$this->migrator      = new Migrator();
 		$this->meta_boxes    = new MetaBoxes( $this );
 		$this->columns       = new Columns( $this );
 		$this->filters       = new Filters( $this );
+		$this->comment_columns = new CommentColumns( $this );
+		$this->comment_filters = new CommentFilters( $this );
 		$this->scripts       = new Scripts( $this );
 		$this->switcher      = new Switcher( $this );
 		$this->link_fixer    = new LinkFixer( $this );
@@ -164,10 +170,13 @@ class Router {
 	public TridGroup        $trid_group;
 	public TranslationSync  $sync;
 	public TrashCascade     $trash_cascade;
+	public CommentMirror    $comment_mirror;
 	public Migrator         $migrator;
 	public MetaBoxes        $meta_boxes;
 	public Columns          $columns;
 	public Filters          $filters;
+	public CommentColumns   $comment_columns;
+	public CommentFilters   $comment_filters;
 	public Scripts          $scripts;
 	public Switcher         $switcher;
 	public LinkFixer        $link_fixer;
@@ -238,6 +247,12 @@ class Router {
 		$this->sync->register_hooks();
 		$this->trid_group->register_hooks();
 
+		// Generic comment translation — group-ID assignment + status cascade.
+		// Registered unconditionally (not admin-only): comments are inserted
+		// and transition status from the front end (a visitor's own
+		// submission) just as often as from wp-admin moderation.
+		$this->comment_mirror->register_hooks();
+
 		// DB migration
 		$this->migrator->register_hooks();
 
@@ -261,6 +276,8 @@ class Router {
 		$this->meta_boxes->register_hooks();
 		$this->columns->register_hooks();
 		$this->filters->register_hooks();
+		$this->comment_columns->register_hooks();
+		$this->comment_filters->register_hooks();
 		$this->scripts->register_admin_hooks();
 		$this->trash_cascade->register_hooks();
 
@@ -467,6 +484,9 @@ class Router {
 
 	// -- TrashCascade --
 	public function trash_translation_group( int $post_id, bool $check_caps = true ): array { return $this->trash_cascade->trash_group( $post_id, $check_caps ); }
+
+	// -- CommentMirror --
+	public function get_comment_translations( int $comment_id ): array { return $this->comment_mirror->get_comment_translations_map( $comment_id ); }
 
 	// -- Rewrite\QueryFilter --
 	public function query( array $args = [] ): WP_Query              { return $this->query_filter->query( $args ); }

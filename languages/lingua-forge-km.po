@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
+"POT-Creation-Date: 2026-07-29T14:57:34+00:00\n"
 "PO-Revision-Date: 2026-07-05 22:31+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Khmer\n"
@@ -50,6 +50,7 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
+#: ai/includes/Admin/CommentBulkActions.php:153
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:398
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
@@ -96,6 +97,30 @@ msgstr "បច្ចេកទេស"
 msgid "Conversational"
 msgstr "ការសន្ទនា"
 
+#: ai/includes/Admin/CommentBulkActions.php:52
+#: ai/includes/Admin/PostListColumn.php:109
+msgid "Translate missing"
+msgstr "បកប្រែអស់ចោល"
+
+#. translators: %d: number of comment-language mirrors created
+#: ai/includes/Admin/CommentBulkActions.php:114
+#, php-format
+msgid "%d comment translation created."
+msgid_plural "%d comment translations created."
+msgstr[0] "%d ការប្រែសម្រួលមតិ បានបង្កើតឡើង។"
+
+#. translators: %d: number of comment/language pairs not yet translated
+#: ai/includes/Admin/CommentBulkActions.php:121
+#, php-format
+msgid ""
+"%d pair could not be translated yet (e.g. a nested reply waiting on its "
+"parent, or a language currently in cooldown after repeated failures)."
+msgid_plural ""
+"%d pairs could not be translated yet (e.g. nested replies waiting on their "
+"parent, or a language currently in cooldown after repeated failures)."
+msgstr[0] "%d ការប្រែសម្រួលគូ មិនអាចត្រូវបានប្រែសម្រួលបានទេ។"
+
+#: ai/includes/Admin/CommentBulkActions.php:162
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
@@ -591,10 +616,6 @@ msgstr ""
 msgid "Close"
 msgstr "បិទ"
 
-#: ai/includes/Admin/PostListColumn.php:109
-msgid "Translate missing"
-msgstr "បកប្រែអស់ចោល"
-
 #. translators: label prefix for the retranslate language picker
 #: ai/includes/Admin/PostListColumn.php:163
 msgid "From"
@@ -611,10 +632,13 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr "ធ្វើឱ្យប្រែប្រួលឡើងវិញនូវរូបមន្ត ឬកំណែផ្សេងទៀតជាភាសាផ្សេងទៀត។ បង្កើតឯកសារដែលបាត់ হারিয়ে গেছে និងសរសេរលើវិញនូវឯកសារដែលមានរួចហើយ — រួមទាំងលើគេហទំព័រចម្បង ប្រសិនបើប៉ម្ចាត់ដ្ឋាននេះជាការប្រែប្រួល។"
+msgstr ""
+"ធ្វើឱ្យប្រែប្រួលឡើងវិញនូវរូបមន្ត ឬកំណែផ្សេងទៀតជាភាសាផ្សេងទៀត។ បង្កើតឯកសារដែលបាត់ হারিয়ে "
+"গেছে និងសរសេរលើវិញនូវឯកសារដែលមានរួចហើយ — រួមទាំងលើគេហទំព័រចម្បង "
+"ប្រសិនបើប៉ម្ចាត់ដ្ឋាននេះជាការប្រែប្រួល។"
 
 #: ai/includes/Admin/PostListColumn.php:227
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:269
 msgid "Sync"
 msgstr " synchronized"
 
@@ -623,7 +647,9 @@ msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr "ផ្ដល់ជូនតម្រង់ទិសលើគេហទំព័របាលដែលត្រឹមត្រូវទៅគ្រប់ការបកប្រែដែលមាននៃប៉ម្ចាត់ដ្ឋាននេះ។ គ្មាន AI ហើយគ្មានការផ្លាស់ប្តូរខ្លឹមសារ — ដោះស្រាយដោយឥតគិតថ្លៃ និងសុវត្ថិមានក្នុងលក្ខណៈណាមួយ។"
+msgstr ""
+"ផ្ដល់ជូនតម្រង់ទិសលើគេហទំព័របាលដែលត្រឹមត្រូវទៅគ្រប់ការបកប្រែដែលមាននៃប៉ម្ចាត់ដ្ឋាននេះ។ គ្មាន AI "
+"ហើយគ្មានការផ្លាស់ប្តូរខ្លឹមសារ — ដោះស្រាយដោយឥតគិតថ្លៃ និងសុវត្ថិមានក្នុងលក្ខណៈណាមួយ។"
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
@@ -665,7 +691,10 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr "វាធ្វើឱ្យប្រែប្រួលឡើងវិញនូវកំណែផ្សេងទៀតជាភាសាផ្សេងទៀតនៃប៉ម្ចាត់ដ្ឋាននេះដោយយូរៗ — បង្កើតឯកសារដែលបាត់ហើយសរសេរលើវិញនូវឯកសារដែលមាន (រួមទាំងលើគេហទំព័របាល ប្រសិនបើប៉ម្ចាត់ដ្ឋាននេះជាការប្រែប្រួល)។ ដំណើរការនេះមិនអាចត្រូវបានស្ដាប់ស្ដាក់បានទេ។ ពិតប្រាកដឬ?"
+msgstr ""
+"វាធ្វើឱ្យប្រែប្រួលឡើងវិញនូវកំណែផ្សេងទៀតជាភាសាផ្សេងទៀតនៃប៉ម្ចាត់ដ្ឋាននេះដោយយូរៗ — "
+"បង្កើតឯកសារដែលបាត់ហើយសរសេរលើវិញនូវឯកសារដែលមាន (រួមទាំងលើគេហទំព័របាល "
+"ប្រសិនបើប៉ម្ចាត់ដ្ឋាននេះជាការប្រែប្រួល)។ ដំណើរការនេះមិនអាចត្រូវបានស្ដាប់ស្ដាក់បានទេ។ ពិតប្រាកដឬ?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
@@ -707,14 +736,20 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr "Sync ពីលម្អិតផលិតផល WooCommerce ផ្នែកទីពីរ-ភាសាត្រូវបានបិទដោយលក្ខណៈលម្អិត ព្រោះវានឹងសរសេរលើលើគេហទំព័របាលលម្អិតដើម។ ធ្វើឱ្យក្លាយឆ្ងាយក្នុង Settings → Behavior → WooCommerce ប្រសិនបើអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
+msgstr ""
+"Sync ពីលម្អិតផលិតផល WooCommerce ផ្នែកទីពីរ-ភាសាត្រូវបានបិទដោយលក្ខណៈលម្អិត "
+"ព្រោះវានឹងសរសេរលើលើគេហទំព័របាលលម្អិតដើម។ ធ្វើឱ្យក្លាយឆ្ងាយក្នុង Settings → Behavior → "
+"WooCommerce ប្រសិនបើអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr "Sync ពីប៉ម្ចាត់ដ្ឋានប្រភេទទីពីរ-ភាសាត្រូវបានបិទដោយលក្ខណៈលម្អិត ព្រោះវាសរសេរលើប៉ម្ចាត់ដ្ឋានលម្អិតដើម។ ធ្វើឱ្យក្លាយឆ្ងាយក្នុង Settings → Behavior → Sync ប្រសិនបើអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
+msgstr ""
+"Sync ពីប៉ម្ចាត់ដ្ឋានប្រភេទទីពីរ-ភាសាត្រូវបានបិទដោយលក្ខណៈលម្អិត "
+"ព្រោះវាសរសេរលើប៉ម្ចាត់ដ្ឋានលម្អិតដើម។ ធ្វើឱ្យក្លាយឆ្ងាយក្នុង Settings → Behavior → Sync "
+"ប្រសិនបើអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
@@ -2816,7 +2851,7 @@ msgid ""
 msgstr "មើលការកំណត់ → SEO → សមត្ថភាពសម្រាប់តារាងសមត្ថភាពលម្អិត។"
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:228
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:300
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
@@ -3125,7 +3160,7 @@ msgstr "គ្រប់ពេលវេលា"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:724
+#: ai/includes/Admin/SettingsPage.php:756
 msgid "AI Usage"
 msgstr "ការប្រើប្រាស់ AI"
 
@@ -3285,7 +3320,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "រក្សាទុកការកំណត់ SEO សម្រាប់ WooCommerce"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:718
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:750
 msgid "AI Provider"
 msgstr "ក្រុមហ៊ុនផ្តល់សេវាកម្ម AI"
 
@@ -3419,7 +3454,9 @@ msgstr "បញ្ចូលលេខសម្គាល់ម៉ូដែលដើ
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr "គ្មានប៉ម្ចាត់ដ្ឋាន ឬទំព័រដែលបានផ្សាយលម្អិតរកឃើញដើម្បីសាកល្បង — ផ្សាយខ្លឹមសារដំបូង ឬព្យាយាម Quick Translate ដោយផ្ទាល់។"
+msgstr ""
+"គ្មានប៉ម្ចាត់ដ្ឋាន ឬទំព័រដែលបានផ្សាយលម្អិតរកឃើញដើម្បីសាកល្បង — ផ្សាយខ្លឹមសារដំបូង ឬព្យាយាម "
+"Quick Translate ដោយផ្ទាល់។"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
@@ -3446,7 +3483,7 @@ msgid "Model returned no response. Check the WordPress error log for details."
 msgstr "ម៉ូដែលបានត្រឡប់គ្មានការឆ្លើយ។ ពិនិត្យលម្អិតកំហុស WordPress សម្រាប់ព័ត៌មាន។"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:752
 msgid "Behavior"
 msgstr "អាកប្បកិរិយា"
 
@@ -3580,7 +3617,11 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr "ស្កេនដោយប្រវត្តិលម្អិតសម្រាប់ប៉ម្ចាត់ដ្ឋានដែលបាត់ការបកប្រែក្នុងលក្ខណៈលម្អិតសកម្ម និងស្ដាក់ការបកប្រែ AI សម្រាប់គ្រប់ចន្លោះលម្អិត — ការស្ដារលម្អិតដូចដែលអ្នកអាចឱ្យសកម្មដោយដៃរួចហើยតាម \"បកប្រែដែលបាត់\" ឬលេខ WP-CLI missing_translations/fill_translations ដែលដំណើរការដោយស្វ័យប្រវត្តិម្តងម្តងម្តងម្ងាយដូចឧទាហរណ៍វិលលេខម៉ោង។"
+msgstr ""
+"ស្កេនដោយប្រវត្តិលម្អិតសម្រាប់ប៉ម្ចាត់ដ្ឋានដែលបាត់ការបកប្រែក្នុងលក្ខណៈលម្អិតសកម្ម និងស្ដាក់ការបកប្រែ "
+"AI សម្រាប់គ្រប់ចន្លោះលម្អិត — ការស្ដារលម្អិតដូចដែលអ្នកអាចឱ្យសកម្មដោយដៃរួចហើยតាម "
+"\"បកប្រែដែលបាត់\" ឬលេខ WP-CLI missing_translations/fill_translations "
+"ដែលដំណើរការដោយស្វ័យប្រវត្តិម្តងម្តងម្តងម្ងាយដូចឧទាហរណ៍វិលលេខម៉ោង។"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
@@ -3598,56 +3639,137 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr "បិទដោយលក្ខណៈលម្អិត។ លក្ខណៈលម្អិតនេះធ្វើការស្នើសុំក្រុម AI — និងចំណាយថ្លៃ API ដែលពាក់ព័ន្ធ — ដោយស្វ័យប្រវត្តិ និងក្នុងផ្ទាំងក្រោយ គ្មានការបញ្ជាក់ក្នុងលក្ខណៈសរុបទេ សម្រាប់គ្រប់ប៉ម្ចាត់ដ្ឋានបានផ្សាយលម្អិតដែលរកឃើញគ្មានការបកប្រeville។ បង្វិលលក្ខណៈលម្អិតនេះត្រឹមលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់បាននូវគ្រប់ចន្លោះក្រុមបកប្រែដោយគ្មានការងារ; បើមិនដូច្នេះទេប្រើ \"បកប្រែដែលបាត់\" ឬលេខ WP-CLI ដើម្បីបកប្រែលើកាលវិចារណ៍របស់អ្នក។"
+msgstr ""
+"បិទដោយលក្ខណៈលម្អិត។ លក្ខណៈលម្អិតនេះធ្វើការស្នើសុំក្រុម AI — និងចំណាយថ្លៃ API ដែលពាក់ព័ន្ធ — "
+"ដោយស្វ័យប្រវត្តិ និងក្នុងផ្ទាំងក្រោយ គ្មានការបញ្ជាក់ក្នុងលក្ខណៈសរុបទេ "
+"សម្រាប់គ្រប់ប៉ម្ចាត់ដ្ឋានបានផ្សាយលម្អិតដែលរកឃើញគ្មានការបកប្រeville។ "
+"បង្វិលលក្ខណៈលម្អិតនេះត្រឹមលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់បាននូវគ្រប់ចន្លោះក្រុមបកប្រែដោយគ្មានការងារ; "
+"បើមិនដូច្នេះទេប្រើ \"បកប្រែដែលបាត់\" ឬលេខ WP-CLI ដើម្បីបកប្រែលើកាលវិចារណ៍របស់អ្នក។"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr "ផលិតផល WooCommerce និងបទប្បួលមិនត្រូវបានរួមបញ្ចូលផ្នែកក្រោយ ដែលលក្ខណៈលម្អិតនេះ។ ការរួមផ្សំក៏អាចរារាំងប្រភេទលម្អិតជាក់លាក់តាមរយៈលម្អិត linguaforge_cpt_create_allowed។"
+msgstr ""
+"ផលិតផល WooCommerce និងបទប្បួលមិនត្រូវបានរួមបញ្ចូលផ្នែកក្រោយ ដែលលក្ខណៈលម្អិតនេះ។ "
+"ការរួមផ្សំក៏អាចរារាំងប្រភេទលម្អិតជាក់លាក់តាមរយៈលម្អិត linguaforge_cpt_create_allowed។"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+msgid "Comment Translation"
+msgstr "ការប្រែសម្រួលមតិ"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
+msgid ""
+"Mirrors an approved comment onto every language version of the post it "
+"belongs to, translated, as a real comment on each sibling page. Off by "
+"default."
+msgstr "បម្លែងមតិដែលបានអនុម័តទៅក្នុងកំណែភាសាទាំងអស់នៃអត្ថបទដែលវាជាធម្មតា ដែលបានប្រែសម្រួល, ជាមតិពិតនៅលើទំព័រទំនេរ។ បិទជាដើម។"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
+msgid "Comment translation"
+msgstr "ការប្រែសម្រួលមតិ"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+msgid "Enable comment translation"
+msgstr "បើកការប្រែសម្រួលមតិ"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+msgid ""
+"Off by default. This feature makes AI provider requests — and spends the "
+"associated API cost — for approved comments on any post that has translated "
+"language versions. WooCommerce product reviews are never included; they "
+"already share one review pool across languages."
+msgstr "បិទជាដើម។ លក្ខណៈនេះធ្វើការផ្គត់ផ្គង់សំណើពី AI — ហើយចំណាយថ្លៃ API ដែលពាក់ព័ន្ធ — សម្រាប់មតិដែលបានអនុម័តនៅលើអត្ថបទណាមួយដែលមានកំណែភាសាប្រែសម្រួល។ ការពិនិត្យផលិតផល WooCommerce មិនមានក្នុងចំណោម; ពួកវាមានឆ្ពោះទៅកាន់មធ្យោបាយមតិដូចគ្នា។"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:226
+msgid "Translation trigger"
+msgstr "បង្ហាញលទ្ធផលប្រសើរប្រសើរ"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:233
+msgid "Manual — translate only via the Comments screen action"
+msgstr "ដៃឯក — ប្រែសម្រួលតែតាមសកម្មភាពក្រឡូងមតិ"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:236
+msgid "Automatic — translate every comment as soon as it's approved"
+msgstr "ស្វ័យប្រវត្តិ — ប្រែសម្រួលមតិរាល់វាដែលបានអនុម័ត"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:240
+msgid ""
+"Manual (default) queues nothing automatically — use the \"Translate missing"
+"\" bulk action on the Comments screen on your own schedule. Automatic queues "
+"a translation the moment a comment is approved (or arrives already-"
+"approved), which can spend API calls on comments a moderator was about to "
+"reject if there's a large held-for-moderation backlog."
+msgstr "ដៃ (លក្ខណៈលំនាំ) មិនបានកំណត់រឿងណាមួយដោយស្វ័យប្រវត្តិ — ប្រើសកម្មភាព \"ត្រូវប្រែសម្រួលបាត់បង់\" នៅលើផ្ទាំងមតិនៅលើកាលវិភាគរបស់អ្នក។ ស្វ័យប្រវត្តិកំណត់ការប្រែសម្រួលពេលដែលមតិបានអនុម័ត (ឬមកជាពុំបានអនុម័តទេ) ដែលអាចចំណាយការហៅ API សម្រាប់មតិដែលអ្នកគ្រប់គ្រងកំពុងត្រៀមនឹងបដិសេធប្រសិនបើមានចំនួនដាក់រង់ចាំច្រើន។"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+msgid "Max nested-reply depth"
+msgstr "កម្រិតកំណត់ជាច្រើន"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:262
+msgid ""
+"How many levels of nested replies \"Translate missing\" will walk and "
+"translate in one pass, counting the original top-level comment as level 0. "
+"Default 2 covers the original comment plus replies and replies-to-replies. "
+"Bounds AI spend on deep threads — anything nested deeper isn't backfilled "
+"until this is raised or a further pass runs."
+msgstr "ចំនួនកម្រិតនៃការឆ្លើយតបឡើងវិញ ដែល \"ត្រូវប្រែសម្រួលបាត់បង់\" នឹងដើរ និងប្រែសម្រួលនៅក្នុងមួយការលួល, គិតថាមតិដើមដែលជាគ្រួសមជាលេខ ០។ លំនាំដើម ២ គឺក covers អត្ថបទដើមបូកនិយាយនិងការឆ្លើយតប និងការឆ្លើយតប-ទៅ-ការឆ្លើយតប។ កំណត់ការចំណាយ AI ក្នុងកម្លាំងជ្រាបជ្រៅ។ ធាតុណាមួយដែលមានពីរយ៉ាងជ្រាបជ្រៅមិនត្រូវបានបញ្ចូលរង់ចាំរហូតដល់នេះត្រូវបានឡើងឬការលមួយបន្តដំណើរ។"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:272
 msgid ""
 "The \"Sync\" button in the post list Lang column retranslates a post out "
 "into every other language, including the primary/source post when it's run "
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr "ប៊ូតុង \"Sync\" ក្នុងលក្ខណៈលម្អិត Lang ក្នុងបញ្ជីប៉ម្ចាត់ដ្ឋានបកប្រែប៉ម្ចាត់ដ្ឋានចេញក្នុងគ្រប់ភាសាផ្សេងទៀត រួមទាំងប៉ម្ចាត់ដ្ឋានលម្អិត/ប្រភពក្នុងលក្ខណៈលម្អិតដែលវាដំណើរការពីការបកប្រeville។ ទិសដៅត្រឡប់លម្អិតនេះត្រូវបានរារាំងដោយលក្ខណៈលម្អិតសម្រាប់គ្រប់ប្រភេទលម្អិត។ (ផលិតផល WooCommerce និងបទប្បួលមានលក្ខណៈលម្អិតដាច់ដោយឡែកខាងក្រោម — លក្ខណៈលម្អិតនេះមិនប៉ះពាល់ដល់ពួកគេ។)"
+msgstr ""
+"ប៊ូតុង \"Sync\" ក្នុងលក្ខណៈលម្អិត Lang "
+"ក្នុងបញ្ជីប៉ម្ចាត់ដ្ឋានបកប្រែប៉ម្ចាត់ដ្ឋានចេញក្នុងគ្រប់ភាសាផ្សេងទៀត រួមទាំងប៉ម្ចាត់ដ្ឋានលម្អិត/"
+"ប្រភពក្នុងលក្ខណៈលម្អិតដែលវាដំណើរការពីការបកប្រeville។ "
+"ទិសដៅត្រឡប់លម្អិតនេះត្រូវបានរារាំងដោយលក្ខណៈលម្អិតសម្រាប់គ្រប់ប្រភេទលម្អិត។ (ផលិតផល WooCommerce "
+"និងបទប្បួលមានលក្ខណៈលម្អិតដាច់ដោយឡែកខាងក្រោម — លក្ខណៈលម្អិតនេះមិនប៉ះពាល់ដល់ពួកគេ។)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:278
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:309
 msgid "Secondary-language Sync"
 msgstr "Sync ផ្នែកទីពីរ-ភាសា"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:288
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
 msgstr "ឱ្យប្រើ \"Sync\" លើប៉ម្ចាត់ដ្ឋានបកប្រែដើម្បីសរសេរលើប៉ម្ចាត់ដ្ឋាននីតិ"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:291
 msgid ""
 "Off by default: clicking \"Sync\" on a translation is blocked from "
 "overwriting the primary post. Syncing FROM the primary post to every "
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "បិទដោយលក្ខណៈលម្អិត: ការចុចលើ \"Sync\" លើការបកប្រែត្រូវបានរារាំងពីការសរសេរលើប៉ម្ចាត់ដ្ឋាននីតិ។ ការ Sync ពីប៉ម្ចាត់ដ្ឋាននីតិក្នុងលក្ខណៈលម្អិតគ្រប់ប៉ម្ចាត់ដ្ឋាននឹងត្រូវបានអនុញ្ញាតនៅគ្រប់ពេលដែលលក្ខណៈលម្អិតនេះ។ បង្វិលលក្ខណៈលម្អិតនេះលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
+msgstr ""
+"បិទដោយលក្ខណៈលម្អិត: ការចុចលើ \"Sync\" "
+"លើការបកប្រែត្រូវបានរារាំងពីការសរសេរលើប៉ម្ចាត់ដ្ឋាននីតិ។ ការ Sync "
+"ពីប៉ម្ចាត់ដ្ឋាននីតិក្នុងលក្ខណៈលម្អិតគ្រប់ប៉ម្ចាត់ដ្ឋាននឹងត្រូវបានអនុញ្ញាតនៅគ្រប់ពេលដែលលក្ខណៈលម្អិតនេះ។ "
+"បង្វិលលក្ខណៈលម្អិតនេះលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:303
 msgid ""
 "The primary-language product is WooCommerce's operational source of truth "
 "for price, SKU, and stock, which are always served from it regardless of "
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr "ផលិតផល WooCommerce នីតិ-ភាសាគឺប្រតិបត្តិការប្រភពលម្អិតសម្រាប់តម្លៃ SKU និងស្តុក ដែលត្រូវបានបម្រើលម្អិតដោយ វិលលក្ខណៈលម្អិតដែលផ្លាស់ប្តូរ ឡើយលក្ខណៈលម្អិតទាំងមូលដែលក្លាយឆ្ងាយ។ វាជាលក្ខណៈលម្អិតដាច់ដោយឡែក ឯករាជ្យពីលក្ខណៈលម្អិត \"Sync\" ក្នុងលក្ខណៈលម្អិត — ធ្វើឱ្យក្លាយឆ្ងាយលម្អិតមួយក៏មិនចាប់ផ្តើមដូចម្ដេច។"
+msgstr ""
+"ផលិតផល WooCommerce នីតិ-ភាសាគឺប្រតិបត្តិការប្រភពលម្អិតសម្រាប់តម្លៃ SKU និងស្តុក "
+"ដែលត្រូវបានបម្រើលម្អិតដោយ វិលលក្ខណៈលម្អិតដែលផ្លាស់ប្តូរ ឡើយលក្ខណៈលម្អិតទាំងមូលដែលក្លាយឆ្ងាយ។ "
+"វាជាលក្ខណៈលម្អិតដាច់ដោយឡែក ឯករាជ្យពីលក្ខណៈលម្អិត \"Sync\" ក្នុងលក្ខណៈលម្អិត — "
+"ធ្វើឱ្យក្លាយឆ្ងាយលម្អិតមួយក៏មិនចាប់ផ្តើមដូចម្ដេច។"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:319
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
 msgstr "ឱ្យប្រើ \"Sync\" លើផលិតផលបកប្រែដើម្បីសរសេរលើផលិតផលលម្អិត"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:322
 msgid ""
 "Off by default: clicking \"Sync\" on a translated WooCommerce product is "
 "blocked, since it would back-translate onto the primary product's title, "
@@ -3655,7 +3777,11 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "បិទដោយលក្ខណៈលម្អិត: ការចុចលើ \"Sync\" លើផលិតផល WooCommerce បកប្រែត្រូវបានរារាំង ព្រោះវាបន្ទាប់មកត្រឡប់លើចំណងជើងផលិតផលលម្អិត ការពិពណ៌នា និងសេចក្តីសង្ខេប។ ការ Sync ពីផលិតផលលម្អិតក្នុងលក្ខណៈលម្អិតគ្រប់ការបកប្រែនឹងត្រូវបានអនុញ្ញាតនៅគ្រប់ពេលដែលលក្ខណៈលម្អិតនេះ។ បង្វិលលក្ខណៈលម្អិតនេះលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
+msgstr ""
+"បិទដោយលក្ខណៈលម្អិត: ការចុចលើ \"Sync\" លើផលិតផល WooCommerce បកប្រែត្រូវបានរារាំង "
+"ព្រោះវាបន្ទាប់មកត្រឡប់លើចំណងជើងផលិតផលលម្អិត ការពិពណ៌នា និងសេចក្តីសង្ខេប។ ការ Sync "
+"ពីផលិតផលលម្អិតក្នុងលក្ខណៈលម្អិតគ្រប់ការបកប្រែនឹងត្រូវបានអនុញ្ញាតនៅគ្រប់ពេលដែលលក្ខណៈលម្អិតនេះ។ "
+"បង្វិលលក្ខណៈលម្អិតនេះលក្ខណៈលម្អិតប៉ុណ្ណាក្នុងករណីដែលអ្នកចង់ឱ្យការបកប្រែក្លាយជាខ្លឹមសារប្រភពថ្មីដែលក្លាយឆ្ងាយ។"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3766,7 +3892,8 @@ msgstr "បានផ្លាស់ប្តូរ"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr "បកប្រែគំរូខ្លីៗលម្អិតលម្អិតបានផ្សាយលម្អិតផ្នែកទីបំផុតលម្អិតម៉ូដែលលម្អិត — ការស្នើសុំក្រុម API បង្វិលលម្អិត។"
+msgstr ""
+"បកប្រែគំរូខ្លីៗលម្អិតលម្អិតបានផ្សាយលម្អិតផ្នែកទីបំផុតលម្អិតម៉ូដែលលម្អិត — ការស្នើសុំក្រុម API បង្វិលលម្អិត។"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
@@ -3812,7 +3939,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:722
+#: ai/includes/Admin/SettingsPage.php:754
 msgid "Glossary"
 msgstr "ពាក្យស្លាក"
 
@@ -3970,7 +4097,7 @@ msgid "Add entry"
 msgstr "បន្ថែមចុះបញ្ជី"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:719
+#: ai/includes/Admin/SettingsPage.php:751
 msgid "Limits"
 msgstr "កំណត់"
 
@@ -4187,12 +4314,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:725
+#: ai/includes/Admin/SettingsPage.php:757
 msgid "Maintenance"
 msgstr "ការថែទាំ"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:721
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:753
 msgid "Router"
 msgstr "Router"
 
@@ -4732,7 +4859,7 @@ msgstr "ជួសជុលផ្នែកទាំងអស់"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:723
+#: ai/includes/Admin/SettingsPage.php:755
 msgid "SEO"
 msgstr "SEO"
 
@@ -4772,7 +4899,7 @@ msgstr "ការរួមបញ្ចូលគ្នា"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:726
+#: ai/includes/Admin/SettingsPage.php:758
 msgid "System"
 msgstr "ប្រព័ន្ធ"
 
@@ -5571,14 +5698,18 @@ msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "នេះ​នឹង​ជំនួស​ស្គាល់ប័ណ្ណ​នេះ​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
+msgstr ""
+"នេះ​នឹង​ជំនួស​ស្គាល់ប័ណ្ណ​នេះ​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​"
+"មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "នេះ​នឹង​ជំនួស​ស្គាល់ប័ណ្ណ​ទាំងអស់​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
+msgstr ""
+"នេះ​នឹង​ជំនួស​ស្គាល់ប័ណ្ណ​ទាំងអស់​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ "
+"នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
@@ -5593,14 +5724,18 @@ msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "នេះ​នឹង​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​នេះ​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
+msgstr ""
+"នេះ​នឹង​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​នេះ​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ "
+"នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "នេះ​នឹង​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​ទាំងអស់​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
+msgstr ""
+"នេះ​នឹង​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​ទាំងអស់​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site "
+"Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5684,7 +5819,13 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr "នេះ​រត់ Re-create all templates, Re-create all parts, Translate all, Fix all parts, និង Fix all links សម្រាប់​ភាសា​សកម្ម​ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ។ វា​ជំនួស​ស្គាល់ប័ណ្ណ​និង​ផ្នែក​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម (បោះបង់​ការ​កែប្រែ​របស់​ Site Editor) និង​បកប្រែ​ប្រវត្តិសាស្រ្ត​វិញ — គ្មាន​ការ​ធ្វើ​នេះ​ដែលអាច​ត្រឡប់​វិញ​បានទេ។ Translate all ធ្វើ​ការ​ហៅ AI API ពិតប្រាកដ​សម្រាប់​ស្គាល់ប័ណ្ណ​និង​ផ្នែក​នីមួយៗ ដែលអាច​ចំណាយ​ពេល​វេលា​ដ៏​ច្រើន​ និង​អាច​មាន​খ្ចីឈ្នួល​ដោយ​ប្រើ​ប្រាស​ដ៍​របស់​អ្នក។ បន្ត?"
+msgstr ""
+"នេះ​រត់ Re-create all templates, Re-create all parts, Translate all, Fix all "
+"parts, និង Fix all links សម្រាប់​ភាសា​សកម្ម​ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ។ វា​ជំនួស​"
+"ស្គាល់ប័ណ្ណ​និង​ផ្នែក​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម (បោះបង់​ការ​កែប្រែ​របស់​ Site Editor) និង​"
+"បកប្រែ​ប្រវត្តិសាស្រ្ត​វិញ — គ្មាន​ការ​ធ្វើ​នេះ​ដែលអាច​ត្រឡប់​វិញ​បានទេ។ Translate all ធ្វើ​ការ​ហៅ "
+"AI API ពិតប្រាកដ​សម្រាប់​ស្គាល់ប័ណ្ណ​និង​ផ្នែក​នីមួយៗ ដែលអាច​ចំណាយ​ពេល​វេលា​ដ៏​ច្រើន​ និង​អាច​មាន​খ្ចីឈ្នួល​ដោយ​"
+"ប្រើ​ប្រាស​ដ៍​របស់​អ្នក។ បន្ត?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5696,7 +5837,13 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr "នេះ​រត់ Re-create all templates, Translate all, Fix all parts, និង Fix all links សម្រាប់​ភាសា​សកម្ម​ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ — ផ្នែក​ស្គាល់ប័ណ្ណ (ក្បាល, ក្រោយ, ល។ល។) ត្រូវ​បាន​ដោះ​ស្រាយ។ វា​ជំនួស​ស្គាល់ប័ណ្ណ​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម (បោះបង់​ការ​កែប្រែ​របស់​ Site Editor) និង​បកប្រែ​ប្រវត្តិសាស្រ្ត​វិញ — គ្មាន​ការ​ធ្វើ​នេះ​ដែលអាច​ត្រឡប់​វិញ​បានទេ។ Translate all ធ្វើ​ការ​ហៅ AI API ពិតប្រាកដ​សម្រាប់​ស្គាល់ប័ណ្ណ​នីមួយៗ ដែលអាច​ចំណាយ​ពេល​វេលា​ដ៏​ច្រើន​ និង​អាច​មាន​ខ្ចីឈ្នួល​ដោយ​ប្រើ​ប្រាស​ដ៍​របស់​អ្នក។ បន្ត?"
+msgstr ""
+"នេះ​រត់ Re-create all templates, Translate all, Fix all parts, និង Fix all "
+"links សម្រាប់​ភាសា​សកម្ម​ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ — ផ្នែក​ស្គាល់ប័ណ្ណ (ក្បាល, "
+"ក្រោយ, ល។ល។) ត្រូវ​បាន​ដោះ​ស្រាយ។ វា​ជំនួស​ស្គាល់ប័ណ្ណ​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម (បោះបង់​ការ​"
+"កែប្រែ​របស់​ Site Editor) និង​បកប្រែ​ប្រវត្តិសាស្រ្ត​វិញ — គ្មាន​ការ​ធ្វើ​នេះ​ដែលអាច​ត្រឡប់​វិញ​បានទេ។ "
+"Translate all ធ្វើ​ការ​ហៅ AI API ពិតប្រាកដ​សម្រាប់​ស្គាល់ប័ណ្ណ​នីមួយៗ ដែលអាច​ចំណាយ​ពេល​វេលា​ដ៏​ច្រើន​ "
+"និង​អាច​មាន​ខ្ចីឈ្នួល​ដោយ​ប្រើ​ប្រាស​ដ៍​របស់​អ្នក។ បន្ត?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5706,7 +5853,10 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr "នេះ​រត់ Re-create all parts (ក្បាល, ក្រោយ, និង​ផ្នែក​ស្គាល់ប័ណ្ណ​ផ្សេងទៀត) សម្រាប់​ភាសា​សកម្ម​ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ។ វា​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
+msgstr ""
+"នេះ​រត់ Re-create all parts (ក្បាល, ក្រោយ, និង​ផ្នែក​ស្គាល់ប័ណ្ណ​ផ្សេងទៀត) សម្រាប់​ភាសា​សកម្ម​"
+"ចំនួន {total} របស់​អ្នក ម្ដង​មួយ​ក្នុង​ពេល​មួយ។ វា​ជំនួស​ផ្នែក​ស្គាល់ប័ណ្ណ​ដែលមាន​ដោយ​ច្បាប់ថ្មី​ពី​ប្រធានបទ​"
+"សកម្ម ដោយ​បោះបង់​ការ​កែប្រែ​របស់​ Site Editor។ នេះ​មិនអាច​ត្រឡប់​វិញ​បានទេ។ បន្ត?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
@@ -5806,15 +5956,15 @@ msgstr "ការកំណត់"
 msgid "You do not have permission to manage these settings."
 msgstr "អ្នកមិនមានសិទ្ធិគ្រប់គ្រងការកំណត់ទាំងនេះទេ។"
 
-#: ai/includes/Admin/SettingsPage.php:707
+#: ai/includes/Admin/SettingsPage.php:739
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — ការកំណត់"
 
-#: ai/includes/Admin/SettingsPage.php:712
+#: ai/includes/Admin/SettingsPage.php:744
 msgid "Settings saved."
 msgstr "ការកំណត់ត្រូវបានរក្សាទុក។"
 
-#: ai/includes/Admin/SettingsPage.php:757
+#: ai/includes/Admin/SettingsPage.php:789
 msgid "Save Settings"
 msgstr "រក្សាទុកការកំណត់"
 
@@ -6161,6 +6311,25 @@ msgstr "កាត់ចេញពីម៉ឺនុយនាវីហ្គេស
 msgid "Apply to all language versions"
 msgstr "អនុវត្តទៅកំណែភាសាទាំងអស់"
 
+#: language-router/includes/admin/class-comment-columns.php:52
+#: language-router/includes/admin/class-comment-columns.php:59
+msgid "Lang"
+msgstr "ភាសា"
+
+#. translators: %s: comma-separated list of language codes this comment has been mirrored into
+#: language-router/includes/admin/class-comment-columns.php:106
+#, php-format
+msgid "Also mirrored to: %s"
+msgstr "បានបម្លែងទៅកាន់: %s"
+
+#: language-router/includes/admin/class-comment-filters.php:49
+msgid "Filter by language"
+msgstr "ត្រួតពិនិត្យតាមភាសា"
+
+#: language-router/includes/admin/class-comment-filters.php:51
+msgid "All languages"
+msgstr "ភាសាប្រភេទទាំងអស់"
+
 #: language-router/includes/admin/class-meta-boxes.php:130
 msgid "Noindex (hide this language version from search engines)"
 msgstr "មិនត្រូវបញ្ចូលក្នុង index (លាក់វាទៅពីម៉ាស៊ីនស្វែងរក)"
@@ -6195,7 +6364,7 @@ msgstr ""
 "បន្ថែមវាទៅក្នុងទំព័រនេះដោយប្រើកម្មវិធីកែសម្រួលប្លុក។"
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:332
+#: language-router/includes/class-language-router.php:349
 #, php-format
 msgid ""
 "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"

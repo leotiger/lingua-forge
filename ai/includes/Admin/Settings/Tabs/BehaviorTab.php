@@ -193,6 +193,78 @@ class BehaviorTab extends Tab {
             </tr>
         </table>
 
+        <!-- ── Comment Translation (PROPOSAL-comment-translation-2026-07-29) ── -->
+        <h2><?php esc_html_e('Comment Translation', 'lingua-forge'); ?></h2>
+
+        <p>
+            <?php esc_html_e( 'Mirrors an approved comment onto every language version of the post it belongs to, translated, as a real comment on each sibling page. Off by default.', 'lingua-forge' ); ?>
+        </p>
+
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row">
+                    <?php esc_html_e('Comment translation', 'lingua-forge'); ?>
+                </th>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="linguaforge_comment_translation_enabled"
+                            value="1"
+                            <?php checked( (bool) get_option('linguaforge_comment_translation_enabled', false) ); ?>
+                        >
+                        <?php esc_html_e('Enable comment translation', 'lingua-forge'); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e('Off by default. This feature makes AI provider requests — and spends the associated API cost — for approved comments on any post that has translated language versions. WooCommerce product reviews are never included; they already share one review pool across languages.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="linguaforge_comment_translation_mode">
+                        <?php esc_html_e('Translation trigger', 'lingua-forge'); ?>
+                    </label>
+                </th>
+                <td>
+                    <?php $comment_mode = (string) get_option( 'linguaforge_comment_translation_mode', 'manual' ); ?>
+                    <select id="linguaforge_comment_translation_mode" name="linguaforge_comment_translation_mode">
+                        <option value="manual" <?php selected( $comment_mode, 'manual' ); ?>>
+                            <?php esc_html_e('Manual — translate only via the Comments screen action', 'lingua-forge'); ?>
+                        </option>
+                        <option value="auto" <?php selected( $comment_mode, 'auto' ); ?>>
+                            <?php esc_html_e('Automatic — translate every comment as soon as it\'s approved', 'lingua-forge'); ?>
+                        </option>
+                    </select>
+                    <p class="description">
+                        <?php esc_html_e('Manual (default) queues nothing automatically — use the "Translate missing" bulk action on the Comments screen on your own schedule. Automatic queues a translation the moment a comment is approved (or arrives already-approved), which can spend API calls on comments a moderator was about to reject if there\'s a large held-for-moderation backlog.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="linguaforge_comment_translation_max_backfill_depth">
+                        <?php esc_html_e('Max nested-reply depth', 'lingua-forge'); ?>
+                    </label>
+                </th>
+                <td>
+                    <input
+                        type="number"
+                        id="linguaforge_comment_translation_max_backfill_depth"
+                        name="linguaforge_comment_translation_max_backfill_depth"
+                        min="0"
+                        max="20"
+                        step="1"
+                        class="small-text"
+                        value="<?php echo esc_attr( (string) (int) get_option( 'linguaforge_comment_translation_max_backfill_depth', 2 ) ); ?>"
+                    >
+                    <p class="description">
+                        <?php esc_html_e('How many levels of nested replies "Translate missing" will walk and translate in one pass, counting the original top-level comment as level 0. Default 2 covers the original comment plus replies and replies-to-replies. Bounds AI spend on deep threads — anything nested deeper isn\'t backfilled until this is raised or a further pass runs.', 'lingua-forge'); ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
         <!-- ── Sync — general secondary-language safeguard ─────────── -->
         <h2><?php esc_html_e('Sync', 'lingua-forge'); ?></h2>
 

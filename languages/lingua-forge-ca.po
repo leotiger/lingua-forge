@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
+"POT-Creation-Date: 2026-07-29T14:57:34+00:00\n"
 "PO-Revision-Date: 2026-07-05 19:30+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Catalan\n"
@@ -51,6 +51,7 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
+#: ai/includes/Admin/CommentBulkActions.php:153
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:398
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
@@ -97,6 +98,32 @@ msgstr "Tècnic"
 msgid "Conversational"
 msgstr "Conversacional"
 
+#: ai/includes/Admin/CommentBulkActions.php:52
+#: ai/includes/Admin/PostListColumn.php:109
+msgid "Translate missing"
+msgstr "Traducció manca"
+
+#. translators: %d: number of comment-language mirrors created
+#: ai/includes/Admin/CommentBulkActions.php:114
+#, php-format
+msgid "%d comment translation created."
+msgid_plural "%d comment translations created."
+msgstr[0] "%d traducció de comentari creada."
+msgstr[1] "%d traduccions de comentari creades."
+
+#. translators: %d: number of comment/language pairs not yet translated
+#: ai/includes/Admin/CommentBulkActions.php:121
+#, php-format
+msgid ""
+"%d pair could not be translated yet (e.g. a nested reply waiting on its "
+"parent, or a language currently in cooldown after repeated failures)."
+msgid_plural ""
+"%d pairs could not be translated yet (e.g. nested replies waiting on their "
+"parent, or a language currently in cooldown after repeated failures)."
+msgstr[0] "%d parell no s'ha pogut traduir encara (per exemple, una resposta anidada que espera el seu pare, o un idioma actualment en període de reflexió després de fracassos repetits)."
+msgstr[1] "%d parells no s'han pogut traduir encara (per exemple, respostes anidades que esperen el seu pare, o un idioma actualment en període de reflexió després de fracassos repetits)."
+
+#: ai/includes/Admin/CommentBulkActions.php:162
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
@@ -604,10 +631,6 @@ msgstr ""
 msgid "Close"
 msgstr "Tancar"
 
-#: ai/includes/Admin/PostListColumn.php:109
-msgid "Translate missing"
-msgstr "Traducció manca"
-
 #. translators: label prefix for the retranslate language picker
 #: ai/includes/Admin/PostListColumn.php:163
 msgid "From"
@@ -624,10 +647,13 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr "Retradeix cada versió en una altra llengua d'aquest article. Crea les que falten i sobrescriu les que ja existeixen (inclosa la llengua principal, si aquest article és una traducció)."
+msgstr ""
+"Retradeix cada versió en una altra llengua d'aquest article. Crea les que "
+"falten i sobrescriu les que ja existeixen (inclosa la llengua principal, si "
+"aquest article és una traducció)."
 
 #: ai/includes/Admin/PostListColumn.php:227
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:269
 msgid "Sync"
 msgstr "Sincronitzar"
 
@@ -636,11 +662,15 @@ msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr "Reassigna la plantilla específica de llengua correcta a cada traducció existent d'aquest article. Sense crides d'IA ni canvis de contingut — gratuït i segur d'executar en qualsevol moment."
+msgstr ""
+"Reassigna la plantilla específica de llengua correcta a cada traducció "
+"existent d'aquest article. Sense crides d'IA ni canvis de contingut — "
+"gratuït i segur d'executar en qualsevol moment."
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
-msgstr "Sincronització de plantilles — reassigna plantilles per a cada traducció"
+msgstr ""
+"Sincronització de plantilles — reassigna plantilles per a cada traducció"
 
 #: ai/includes/Admin/PostListColumn.php:268
 msgid "TS"
@@ -678,7 +708,11 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr "Això retradeix cada versió en una altra llengua d'aquest article — creant les que falten i sobrescrivint les que ja existeixen (inclosa la llengua principal, si aquest article és una traducció). Això no es pot desfer. Continuar?"
+msgstr ""
+"Això retradeix cada versió en una altra llengua d'aquest article — creant "
+"les que falten i sobrescrivint les que ja existeixen (inclosa la llengua "
+"principal, si aquest article és una traducció). Això no es pot desfer. "
+"Continuar?"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
@@ -722,14 +756,22 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr "La sincronització des d'un producte WooCommerce en llengua secundària està desactivada per defecte, ja que sobrescriuria el producte principal. Activa-la a Configuració → Comportament → WooCommerce si vols que una traducció pugui convertir-se en el nou contingut font."
+msgstr ""
+"La sincronització des d'un producte WooCommerce en llengua secundària està "
+"desactivada per defecte, ja que sobrescriuria el producte principal. Activa-"
+"la a Configuració → Comportament → WooCommerce si vols que una traducció "
+"pugui convertir-se en el nou contingut font."
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr "La sincronització des d'un article en llengua secundària està desactivada per defecte, ja que sobrescriuria l'article principal. Activa-la a Configuració → Comportament → Sincronitzar si vols que una traducció pugui convertir-se en el nou contingut font."
+msgstr ""
+"La sincronització des d'un article en llengua secundària està desactivada "
+"per defecte, ja que sobrescriuria l'article principal. Activa-la a "
+"Configuració → Comportament → Sincronitzar si vols que una traducció pugui "
+"convertir-se en el nou contingut font."
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
@@ -740,11 +782,15 @@ msgstr "Omès — no tens permís per editar la traducció existent."
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr "Crear traduccions per al tipus d'article \"%s\" requereix una integració activa."
+msgstr ""
+"Crear traduccions per al tipus d'article \"%s\" requereix una integració "
+"activa."
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
-msgstr "La sincronització de plantilles només es pot executar des de l'article en llengua principal/font."
+msgstr ""
+"La sincronització de plantilles només es pot executar des de l'article en "
+"llengua principal/font."
 
 #: ai/includes/Admin/PostListColumn.php:1180
 msgid "Skipped — you do not have permission to edit this translation."
@@ -2954,7 +3000,7 @@ msgstr ""
 "comportament per funció."
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:228
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:300
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
@@ -3284,7 +3330,7 @@ msgstr "Tot"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:724
+#: ai/includes/Admin/SettingsPage.php:756
 msgid "AI Usage"
 msgstr "Ús d'IA"
 
@@ -3453,7 +3499,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "Desa la configuració SEO de WooCommerce"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:718
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:750
 msgid "AI Provider"
 msgstr "Proveïdor d'IA"
 
@@ -3594,7 +3640,9 @@ msgstr "Introdueix un identificador de model per provar."
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr "No s'ha trobat cap article o pàgina publicat per provar — publica primer contingut o prova Traducció ràpida directament."
+msgstr ""
+"No s'ha trobat cap article o pàgina publicat per provar — publica primer "
+"contingut o prova Traducció ràpida directament."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
@@ -3618,10 +3666,12 @@ msgstr "Plantilla de sol·licitud de fragment no trobada."
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr "El model no ha retornat cap resposta. Consulta el registre d'errors de WordPress per a més detalls."
+msgstr ""
+"El model no ha retornat cap resposta. Consulta el registre d'errors de "
+"WordPress per a més detalls."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:752
 msgid "Behavior"
 msgstr "Comportament"
 
@@ -3765,7 +3815,12 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr "Explora periòdicament els articles que no tenen traducció en una llengua activa i posa en cua una traducció d'IA per a cada buit trobat — la mateixa recuperació que ja pots activar manualment mitjançant \"Traduir els que falten\" o els comandaments WP-CLI missing_translations/fill_translations, executat automàticament una vegada per hora."
+msgstr ""
+"Explora periòdicament els articles que no tenen traducció en una llengua "
+"activa i posa en cua una traducció d'IA per a cada buit trobat — la mateixa "
+"recuperació que ja pots activar manualment mitjançant \"Traduir els que "
+"falten\" o els comandaments WP-CLI missing_translations/fill_translations, "
+"executat automàticament una vegada per hora."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
@@ -3783,56 +3838,146 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr "Desactivat per defecte. Aquesta funció fa sol·licituds al proveïdor d'IA — i gasta el cost d'API associat — automàticament i en background, sense confirmació per sol·licitud, per a cada article publicat sense traducció en una llengua activa. Activa-ho només si vols que cada buit de contingut es tradueixi desatesa; en cas contrari, utilitza \"Traduir els que falten\" o els comandaments WP-CLI per traduir segons el teu propi calendari."
+msgstr ""
+"Desactivat per defecte. Aquesta funció fa sol·licituds al proveïdor d'IA — i "
+"gasta el cost d'API associat — automàticament i en background, sense "
+"confirmació per sol·licitud, per a cada article publicat sense traducció en "
+"una llengua activa. Activa-ho només si vols que cada buit de contingut es "
+"tradueixi desatesa; en cas contrari, utilitza \"Traduir els que falten\" o "
+"els comandaments WP-CLI per traduir segons el teu propi calendari."
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr "Els productes i variacions de WooCommerce mai no s'inclouen, independentment d'aquesta configuració. Una integració també pot bloquejar tipus de publicació específics mitjançant el filtre linguaforge_cpt_create_allowed."
+msgstr ""
+"Els productes i variacions de WooCommerce mai no s'inclouen, independentment "
+"d'aquesta configuració. Una integració també pot bloquejar tipus de "
+"publicació específics mitjançant el filtre linguaforge_cpt_create_allowed."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+msgid "Comment Translation"
+msgstr "Traducció de comentari"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
+msgid ""
+"Mirrors an approved comment onto every language version of the post it "
+"belongs to, translated, as a real comment on each sibling page. Off by "
+"default."
+msgstr "Reflecteix un comentari aprovat en cada versió lingüística de la publicació a la qual pertany, traduïda, com a un comentari real a cada pàgina germana. Apagat per defecte."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
+msgid "Comment translation"
+msgstr "traducció de comentari"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+msgid "Enable comment translation"
+msgstr "Habilitar la traducció de comentaris"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+msgid ""
+"Off by default. This feature makes AI provider requests — and spends the "
+"associated API cost — for approved comments on any post that has translated "
+"language versions. WooCommerce product reviews are never included; they "
+"already share one review pool across languages."
+msgstr "Apagat per defecte. Aquesta funció fa sol·licituds al proveïdor d’IA — i gasta el cost d'API associat — per a comentaris aprovats en qualsevol publicació que tingui versions idiomàtiques traduïdes. Les ressenyes de productes de WooCommerce no s'inclouen; ja comparteixen un únic grup de ressenyes entre idiomes."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:226
+msgid "Translation trigger"
+msgstr "Gatell de traducció"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:233
+msgid "Manual — translate only via the Comments screen action"
+msgstr "Manual — traduir només a través de l'acció de la pantalla de comentaris"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:236
+msgid "Automatic — translate every comment as soon as it's approved"
+msgstr "Automàtic — traduir cada comentari tan aviat com sigui aprovat"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:240
+msgid ""
+"Manual (default) queues nothing automatically — use the \"Translate missing"
+"\" bulk action on the Comments screen on your own schedule. Automatic queues "
+"a translation the moment a comment is approved (or arrives already-"
+"approved), which can spend API calls on comments a moderator was about to "
+"reject if there's a large held-for-moderation backlog."
+msgstr "Manual (per defecte) no posa res en cua automàticament — utilitzeu l'acció massiva \"Traduir mancants\" a la pantalla de comentaris al vostre propi horari. Automàtic posa en cua una traducció en el moment que un comentari és aprovat (o arriba ja aprovat), cosa que pot gastar crides d'API en comentaris que un moderador estava a punt de rebutjar si hi ha un gran retard en moderació."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+msgid "Max nested-reply depth"
+msgstr "Màx. profunditat de resposta anidada"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:262
+msgid ""
+"How many levels of nested replies \"Translate missing\" will walk and "
+"translate in one pass, counting the original top-level comment as level 0. "
+"Default 2 covers the original comment plus replies and replies-to-replies. "
+"Bounds AI spend on deep threads — anything nested deeper isn't backfilled "
+"until this is raised or a further pass runs."
+msgstr "Quants nivells de respostes anidades \"Traduir mancants\" caminarà i traduirà en una sola passada, comptant el comentari original de nivell superior com nivell 0. El valor per defecte de 2 cobreix el comentari original més les respostes i les respostes a les respostes. Limita la despesa d'IA en fils profunds — qualsevol cosa anidada més profundament no s'omplirà fins que això es raise o es realitzi una passada addicional."
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:272
 msgid ""
 "The \"Sync\" button in the post list Lang column retranslates a post out "
 "into every other language, including the primary/source post when it's run "
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr "El botó \"Sincronitzar\" a la columna Lang de la llista d'articles retradeix un article a cada altra llengua, inclòs l'article principal/font quan s'executa des d'una traducció. Aquesta direcció de retro-traducció està restringida per defecte per a cada tipus d'article. (Els productes i variacions de WooCommerce tenen la seva pròpia configuració separada a continuació — aquesta no els afecta.)"
+msgstr ""
+"El botó \"Sincronitzar\" a la columna Lang de la llista d'articles retradeix "
+"un article a cada altra llengua, inclòs l'article principal/font quan "
+"s'executa des d'una traducció. Aquesta direcció de retro-traducció està "
+"restringida per defecte per a cada tipus d'article. (Els productes i "
+"variacions de WooCommerce tenen la seva pròpia configuració separada a "
+"continuació — aquesta no els afecta.)"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:278
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:309
 msgid "Secondary-language Sync"
 msgstr "Sincronització en llengua secundària"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:288
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
-msgstr "Permet que \"Sincronitzar\" en un article traduït sobrescrigui l'article principal"
+msgstr ""
+"Permet que \"Sincronitzar\" en un article traduït sobrescrigui l'article "
+"principal"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:291
 msgid ""
 "Off by default: clicking \"Sync\" on a translation is blocked from "
 "overwriting the primary post. Syncing FROM the primary post to every "
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "Desactivat per defecte: fer clic a \"Sincronitzar\" en una traducció està blocat de sobrescriure l'article principal. La sincronització DEL article principal a cada traducció sempre està permesa independentment d'aquesta configuració. Activa-ho només si realment vols que una traducció pugui convertir-se en el nou contingut font."
+msgstr ""
+"Desactivat per defecte: fer clic a \"Sincronitzar\" en una traducció està "
+"blocat de sobrescriure l'article principal. La sincronització DEL article "
+"principal a cada traducció sempre està permesa independentment d'aquesta "
+"configuració. Activa-ho només si realment vols que una traducció pugui "
+"convertir-se en el nou contingut font."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:303
 msgid ""
 "The primary-language product is WooCommerce's operational source of truth "
 "for price, SKU, and stock, which are always served from it regardless of "
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr "El producte en llengua principal és la font de veritat operacional de WooCommerce per a preu, SKU i estoc, que sempre es serveixen des d'aquest independentment de la llengua que veu un comprador. Aquesta és una configuració separada e independent de la restricció general \"Sincronitzar\" anterior — activar una no activa l'altra."
+msgstr ""
+"El producte en llengua principal és la font de veritat operacional de "
+"WooCommerce per a preu, SKU i estoc, que sempre es serveixen des d'aquest "
+"independentment de la llengua que veu un comprador. Aquesta és una "
+"configuració separada e independent de la restricció general \"Sincronitzar"
+"\" anterior — activar una no activa l'altra."
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:319
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
-msgstr "Permet que \"Sincronitzar\" en un producte traduït sobrescrigui el producte principal"
+msgstr ""
+"Permet que \"Sincronitzar\" en un producte traduït sobrescrigui el producte "
+"principal"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:322
 msgid ""
 "Off by default: clicking \"Sync\" on a translated WooCommerce product is "
 "blocked, since it would back-translate onto the primary product's title, "
@@ -3840,7 +3985,13 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "Desactivat per defecte: fer clic a \"Sincronitzar\" en un producte WooCommerce traduït està blocat, ja que retro-traduiria al títol, descripció i extracte del producte principal. La sincronització DEL producte principal a cada traducció sempre està permesa independentment d'aquesta configuració. Activa-ho només si realment vols que una traducció pugui convertir-se en el nou contingut font."
+msgstr ""
+"Desactivat per defecte: fer clic a \"Sincronitzar\" en un producte "
+"WooCommerce traduït està blocat, ja que retro-traduiria al títol, descripció "
+"i extracte del producte principal. La sincronització DEL producte principal "
+"a cada traducció sempre està permesa independentment d'aquesta configuració. "
+"Activa-ho només si realment vols que una traducció pugui convertir-se en el "
+"nou contingut font."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3961,7 +4112,9 @@ msgstr "sobre-escrit"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr "Tradueix una mostra breu del teu article publicat més recent amb aquest model exacte — una cridada d'API real i facturada."
+msgstr ""
+"Tradueix una mostra breu del teu article publicat més recent amb aquest "
+"model exacte — una cridada d'API real i facturada."
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
@@ -4009,7 +4162,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:722
+#: ai/includes/Admin/SettingsPage.php:754
 msgid "Glossary"
 msgstr "Glosari"
 
@@ -4176,7 +4329,7 @@ msgid "Add entry"
 msgstr "Afegeix entrada"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:719
+#: ai/includes/Admin/SettingsPage.php:751
 msgid "Limits"
 msgstr "Límits"
 
@@ -4404,12 +4557,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:725
+#: ai/includes/Admin/SettingsPage.php:757
 msgid "Maintenance"
 msgstr "Manteniment"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:721
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:753
 msgid "Router"
 msgstr "Enllaçador"
 
@@ -4999,7 +5152,7 @@ msgstr "Corregir totes les parts"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:723
+#: ai/includes/Admin/SettingsPage.php:755
 msgid "SEO"
 msgstr "SEO"
 
@@ -5039,7 +5192,7 @@ msgstr "Compatibilitat"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:726
+#: ai/includes/Admin/SettingsPage.php:758
 msgid "System"
 msgstr "Sistema"
 
@@ -5905,14 +6058,20 @@ msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "Això sobreescriu aquesta plantilla amb una còpia nova del tema actiu, descartant qualsevol personalització del Site Editor feta a aquesta. Això no es pot desfer. Continuar?"
+msgstr ""
+"Això sobreescriu aquesta plantilla amb una còpia nova del tema actiu, "
+"descartant qualsevol personalització del Site Editor feta a aquesta. Això no "
+"es pot desfer. Continuar?"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "Això sobreescriu cada plantilla amb una còpia nova del tema actiu, descartant qualsevol personalització del Site Editor feta a aquestes. Això no es pot desfer. Continuar?"
+msgstr ""
+"Això sobreescriu cada plantilla amb una còpia nova del tema actiu, "
+"descartant qualsevol personalització del Site Editor feta a aquestes. Això "
+"no es pot desfer. Continuar?"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
@@ -5927,14 +6086,20 @@ msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "Això sobreescriu aquesta part de plantilla amb una còpia nova del tema actiu, descartant qualsevol personalització del Site Editor feta a aquesta. Això no es pot desfer. Continuar?"
+msgstr ""
+"Això sobreescriu aquesta part de plantilla amb una còpia nova del tema "
+"actiu, descartant qualsevol personalització del Site Editor feta a aquesta. "
+"Això no es pot desfer. Continuar?"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "Això sobreescriu cada part de plantilla amb una còpia nova del tema actiu, descartant qualsevol personalització del Site Editor feta a aquestes. Això no es pot desfer. Continuar?"
+msgstr ""
+"Això sobreescriu cada part de plantilla amb una còpia nova del tema actiu, "
+"descartant qualsevol personalització del Site Editor feta a aquestes. Això "
+"no es pot desfer. Continuar?"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -6018,7 +6183,15 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr "Això executa Recrear totes les plantilles, Recrear totes les parts, Traduir tot, Arreglar totes les parts, i Arreglar tots els enllaços per a cada un dels vostres {total} idiomes actius, un idioma a la vegada. Sobreescriu les plantilles i parts existents amb còpies noves del tema actiu (descartant personalitzacions del Site Editor) i torna a traduir el contingut — res d'això es pot desfer. Traduir tot fa crides reals a l'API d'IA per a cada plantilla i part, cosa que pot trigar una estona i pot comportar cost segons el vostre proveïdor. Continuar?"
+msgstr ""
+"Això executa Recrear totes les plantilles, Recrear totes les parts, Traduir "
+"tot, Arreglar totes les parts, i Arreglar tots els enllaços per a cada un "
+"dels vostres {total} idiomes actius, un idioma a la vegada. Sobreescriu les "
+"plantilles i parts existents amb còpies noves del tema actiu (descartant "
+"personalitzacions del Site Editor) i torna a traduir el contingut — res "
+"d'això es pot desfer. Traduir tot fa crides reals a l'API d'IA per a cada "
+"plantilla i part, cosa que pot trigar una estona i pot comportar cost segons "
+"el vostre proveïdor. Continuar?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -6030,7 +6203,15 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr "Això executa Recrear totes les plantilles, Traduir tot, Arreglar totes les parts, i Arreglar tots els enllaços per a cada un dels vostres {total} idiomes actius, un idioma a la vegada — les parts de plantilla (capçaleres, peus de pàgina, etc.) es deixen sense tocar. Sobreescriu les plantilles existents amb còpies noves del tema actiu (descartant personalitzacions del Site Editor) i torna a traduir el contingut — res d'això es pot desfer. Traduir tot fa crides reals a l'API d'IA per a cada plantilla, cosa que pot trigar una estona i pot comportar cost segons el vostre proveïdor. Continuar?"
+msgstr ""
+"Això executa Recrear totes les plantilles, Traduir tot, Arreglar totes les "
+"parts, i Arreglar tots els enllaços per a cada un dels vostres {total} "
+"idiomes actius, un idioma a la vegada — les parts de plantilla (capçaleres, "
+"peus de pàgina, etc.) es deixen sense tocar. Sobreescriu les plantilles "
+"existents amb còpies noves del tema actiu (descartant personalitzacions del "
+"Site Editor) i torna a traduir el contingut — res d'això es pot desfer. "
+"Traduir tot fa crides reals a l'API d'IA per a cada plantilla, cosa que pot "
+"trigar una estona i pot comportar cost segons el vostre proveïdor. Continuar?"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -6040,7 +6221,12 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr "Això executa Recrear totes les parts (capçaleres, peus de pàgina, i cada altra part de plantilla) per a cada un dels vostres {total} idiomes actius, un idioma a la vegada. Sobreescriu les parts de plantilla existents amb còpies noves del tema actiu, descartant qualsevol personalització del Site Editor feta a aquestes. Això no es pot desfer. Continuar?"
+msgstr ""
+"Això executa Recrear totes les parts (capçaleres, peus de pàgina, i cada "
+"altra part de plantilla) per a cada un dels vostres {total} idiomes actius, "
+"un idioma a la vegada. Sobreescriu les parts de plantilla existents amb "
+"còpies noves del tema actiu, descartant qualsevol personalització del Site "
+"Editor feta a aquestes. Això no es pot desfer. Continuar?"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
@@ -6145,15 +6331,15 @@ msgstr "Configuració"
 msgid "You do not have permission to manage these settings."
 msgstr "No teniu permís per gestionar aquestes configuracions."
 
-#: ai/includes/Admin/SettingsPage.php:707
+#: ai/includes/Admin/SettingsPage.php:739
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — Configuració"
 
-#: ai/includes/Admin/SettingsPage.php:712
+#: ai/includes/Admin/SettingsPage.php:744
 msgid "Settings saved."
 msgstr "Configuració desada."
 
-#: ai/includes/Admin/SettingsPage.php:757
+#: ai/includes/Admin/SettingsPage.php:789
 msgid "Save Settings"
 msgstr "Desa la configuració"
 
@@ -6518,6 +6704,25 @@ msgstr "Exclou dels menús de navegació"
 msgid "Apply to all language versions"
 msgstr "Aplica a totes les versions de llengua"
 
+#: language-router/includes/admin/class-comment-columns.php:52
+#: language-router/includes/admin/class-comment-columns.php:59
+msgid "Lang"
+msgstr "Idiomes"
+
+#. translators: %s: comma-separated list of language codes this comment has been mirrored into
+#: language-router/includes/admin/class-comment-columns.php:106
+#, php-format
+msgid "Also mirrored to: %s"
+msgstr "També reflectit a: %s"
+
+#: language-router/includes/admin/class-comment-filters.php:49
+msgid "Filter by language"
+msgstr "Filtrar per idioma"
+
+#: language-router/includes/admin/class-comment-filters.php:51
+msgid "All languages"
+msgstr "Tots els idiomes"
+
 #: language-router/includes/admin/class-meta-boxes.php:130
 msgid "Noindex (hide this language version from search engines)"
 msgstr "Noindex (amaga aquesta versió de l'idioma dels motors de cerca)"
@@ -6555,7 +6760,7 @@ msgstr ""
 "a referència. Afegeix-les a aquesta pàgina utilitzant l'editor de blocs."
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:332
+#: language-router/includes/class-language-router.php:349
 #, php-format
 msgid ""
 "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"

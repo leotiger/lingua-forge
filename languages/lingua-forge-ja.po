@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lingua Forge 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/lingua-forge\n"
-"POT-Creation-Date: 2026-07-21T23:33:36+00:00\n"
+"POT-Creation-Date: 2026-07-29T14:57:34+00:00\n"
 "PO-Revision-Date: 2026-07-05 22:24+0000\n"
 "Last-Translator: admin\n"
 "Language-Team: Japanese\n"
@@ -50,6 +50,7 @@ msgid "https://lingua-forge.com"
 msgstr "https://lingua-forge.com"
 
 #: ai/includes/Admin/AdminToolbar.php:69
+#: ai/includes/Admin/CommentBulkActions.php:153
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:195
 #: ai/includes/Admin/FseLocalisation/ScaffoldHandler.php:398
 #: ai/includes/Admin/Settings/Tabs/Sections/NavigationsSection.php:105
@@ -96,6 +97,30 @@ msgstr "技術的"
 msgid "Conversational"
 msgstr "会話調"
 
+#: ai/includes/Admin/CommentBulkActions.php:52
+#: ai/includes/Admin/PostListColumn.php:109
+msgid "Translate missing"
+msgstr "未翻訳を翻訳"
+
+#. translators: %d: number of comment-language mirrors created
+#: ai/includes/Admin/CommentBulkActions.php:114
+#, php-format
+msgid "%d comment translation created."
+msgid_plural "%d comment translations created."
+msgstr[0] "%d 件のコメント翻訳が作成されました。"
+
+#. translators: %d: number of comment/language pairs not yet translated
+#: ai/includes/Admin/CommentBulkActions.php:121
+#, php-format
+msgid ""
+"%d pair could not be translated yet (e.g. a nested reply waiting on its "
+"parent, or a language currently in cooldown after repeated failures)."
+msgid_plural ""
+"%d pairs could not be translated yet (e.g. nested replies waiting on their "
+"parent, or a language currently in cooldown after repeated failures)."
+msgstr[0] "%d 件のペアはまだ翻訳されていません（例えば、親を待つネストされた返信や、繰り返し失敗した後にクールダウン中の言語など）。"
+
+#: ai/includes/Admin/CommentBulkActions.php:162
 #: ai/includes/Admin/FseLocalisation/LinkFixer.php:36
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:68
 #: ai/includes/Admin/FseLocalisation/PartRefFixer.php:213
@@ -593,10 +618,6 @@ msgstr ""
 msgid "Close"
 msgstr "閉じる"
 
-#: ai/includes/Admin/PostListColumn.php:109
-msgid "Translate missing"
-msgstr "未翻訳を翻訳"
-
 #. translators: label prefix for the retranslate language picker
 #: ai/includes/Admin/PostListColumn.php:163
 msgid "From"
@@ -613,10 +634,12 @@ msgid ""
 "Retranslate every other language version from this post. Creates any that "
 "are missing and overwrites any that already exist — including the primary "
 "language, if this post is a translation."
-msgstr "このポストから他のすべての言語版を再翻訳します。不足しているものは作成され、既存のものは上書きされます。このポストが翻訳の場合、主言語も上書きされます。"
+msgstr ""
+"このポストから他のすべての言語版を再翻訳します。不足しているものは作成され、"
+"既存のものは上書きされます。このポストが翻訳の場合、主言語も上書きされます。"
 
 #: ai/includes/Admin/PostListColumn.php:227
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:269
 msgid "Sync"
 msgstr "同期"
 
@@ -625,7 +648,9 @@ msgid ""
 "Reassign the correct language-specific template to every existing "
 "translation of this post. No AI call and no content changes — free and safe "
 "to run any time."
-msgstr "このポストの既存するすべての翻訳に正しい言語固有テンプレートを再割り当てします。AI呼び出しやコンテンツ変更はなく、無料で安全にいつでも実行できます。"
+msgstr ""
+"このポストの既存するすべての翻訳に正しい言語固有テンプレートを再割り当てしま"
+"す。AI呼び出しやコンテンツ変更はなく、無料で安全にいつでも実行できます。"
 
 #: ai/includes/Admin/PostListColumn.php:267
 msgid "Template Sync — reassign templates for every translation"
@@ -665,7 +690,10 @@ msgid ""
 "creating any that are missing and overwriting any that already exist "
 "(including the primary language, if this post is a translation). This cannot "
 "be undone. Continue?"
-msgstr "このポストからすべての他の言語版を再翻訳します。不足しているものは作成され、既存のものは上書きされます（このポストが翻訳の場合、主言語も上書きされます）。この操作は取り消せません。続行しますか？"
+msgstr ""
+"このポストからすべての他の言語版を再翻訳します。不足しているものは作成され、"
+"既存のものは上書きされます（このポストが翻訳の場合、主言語も上書きされま"
+"す）。この操作は取り消せません。続行しますか？"
 
 #: ai/includes/Admin/PostListColumn.php:525
 msgid "Syncing templates…"
@@ -708,14 +736,20 @@ msgid ""
 "since it would overwrite the primary product. Enable it in Settings → "
 "Behavior → WooCommerce if you want a translation to be able to become the "
 "new source content."
-msgstr "セカンダリ言語のWooCommerceプロダクトからの同期は、デフォルトでは無効になっています。主プロダクトが上書きされるためです。翻訳が新しいソースコンテンツになるようにする場合は、設定 → 動作 → WooCommerceで有効にしてください。"
+msgstr ""
+"セカンダリ言語のWooCommerceプロダクトからの同期は、デフォルトでは無効になって"
+"います。主プロダクトが上書きされるためです。翻訳が新しいソースコンテンツにな"
+"るようにする場合は、設定 → 動作 → WooCommerceで有効にしてください。"
 
 #: ai/includes/Admin/PostListColumn.php:910
 msgid ""
 "Sync from a secondary-language post is disabled by default, since it would "
 "overwrite the primary post. Enable it in Settings → Behavior → Sync if you "
 "want a translation to be able to become the new source content."
-msgstr "セカンダリ言語のポストからの同期は、デフォルトでは無効になっています。主ポストが上書きされるためです。翻訳が新しいソースコンテンツになるようにする場合は、設定 → 動作 → 同期で有効にしてください。"
+msgstr ""
+"セカンダリ言語のポストからの同期は、デフォルトでは無効になっています。主ポス"
+"トが上書きされるためです。翻訳が新しいソースコンテンツになるようにする場合"
+"は、設定 → 動作 → 同期で有効にしてください。"
 
 #: ai/includes/Admin/PostListColumn.php:966
 msgid "Skipped — you do not have permission to edit the existing translation."
@@ -726,7 +760,9 @@ msgstr "スキップしました — 既存の翻訳を編集する権限があ�
 #, php-format
 msgid ""
 "Creating translations for post type \"%s\" requires an active integration."
-msgstr "ポストタイプ「%s」の翻訳を作成するには、アクティブなインテグレーションが必要です。"
+msgstr ""
+"ポストタイプ「%s」の翻訳を作成するには、アクティブなインテグレーションが必要"
+"です。"
 
 #: ai/includes/Admin/PostListColumn.php:1144
 msgid "Template Sync can only be run from the primary/source-language post."
@@ -2885,7 +2921,7 @@ msgstr ""
 "完全な機能ごとの動作表については、設定 → SEO → 互換性を参照してください。"
 
 #: ai/includes/Admin/Settings/Panels/SystemPanel.php:406
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:228
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:300
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:200
 msgid "WooCommerce"
@@ -3203,7 +3239,7 @@ msgstr "全期間"
 
 #: ai/includes/Admin/Settings/Panels/UsageStatsPanel.php:89
 #: ai/includes/Admin/SettingsHelp.php:162
-#: ai/includes/Admin/SettingsPage.php:724
+#: ai/includes/Admin/SettingsPage.php:756
 msgid "AI Usage"
 msgstr "AI使用状況"
 
@@ -3365,7 +3401,7 @@ msgid "Save WooCommerce SEO Settings"
 msgstr "WooCommerce SEO設定を保存"
 
 #: ai/includes/Admin/Settings/Tabs/AiProviderTab.php:24
-#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:718
+#: ai/includes/Admin/SettingsHelp.php:73 ai/includes/Admin/SettingsPage.php:750
 msgid "AI Provider"
 msgstr "AI プロバイダー"
 
@@ -3503,7 +3539,9 @@ msgstr "テストするモデル識別子を入力してください。"
 msgid ""
 "No published post or page found to test with — publish some content first, "
 "or try Quick Translate directly."
-msgstr "テストに使用できる公開ポストまたはページが見つかりません — 最初にコンテンツを公開するか、クイック翻訳を直接試してください。"
+msgstr ""
+"テストに使用できる公開ポストまたはページが見つかりません — 最初にコンテンツを"
+"公開するか、クイック翻訳を直接試してください。"
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:448
 msgid "(untitled)"
@@ -3527,10 +3565,12 @@ msgstr "チャンクプロンプトテンプレートが見つかりません。
 
 #: ai/includes/Admin/Settings/Tabs/ApiKeysTab.php:628
 msgid "Model returned no response. Check the WordPress error log for details."
-msgstr "モデルは応答を返しませんでした。詳細についてはWordPressエラーログを確認してください。"
+msgstr ""
+"モデルは応答を返しませんでした。詳細についてはWordPressエラーログを確認してく"
+"ださい。"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:21
-#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:720
+#: ai/includes/Admin/SettingsHelp.php:87 ai/includes/Admin/SettingsPage.php:752
 msgid "Behavior"
 msgstr "動作"
 
@@ -3666,7 +3706,11 @@ msgid ""
 "already trigger by hand via \"Translate missing\" or the WP-CLI "
 "missing_translations/fill_translations commands, run automatically once an "
 "hour instead."
-msgstr "アクティブな言語で翻訳が不足しているポストを定期的にスキャンし、各ギャップに対してAI翻訳をキューに登録します。「翻訳を埋める」またはWP-CLIの missing_translations/fill_translations コマンドで手動でトリガーできる同じ復旧ですが、1時間ごとに自動で実行されます。"
+msgstr ""
+"アクティブな言語で翻訳が不足しているポストを定期的にスキャンし、各ギャップに"
+"対してAI翻訳をキューに登録します。「翻訳を埋める」またはWP-CLIの "
+"missing_translations/fill_translations コマンドで手動でトリガーできる同じ復旧"
+"ですが、1時間ごとに自動で実行されます。"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:176
 msgid "Automatic backfill"
@@ -3684,56 +3728,138 @@ msgid ""
 "in an active language. Turn this on only if you want every content gap "
 "translated unattended; otherwise use \"Translate missing\" or the WP-CLI "
 "commands to translate on your own schedule."
-msgstr "デフォルトではオフです。この機能はAIプロバイダーリクエストを行い、関連するAPI費用を自動的かつバックグラウンドで、リクエストごとの確認なしで、アクティブな言語で翻訳されていないすべての公開ポストに対して消費します。すべてのコンテンツギャップを無人で翻訳したい場合のみオンにしてください。それ以外の場合は「翻訳を埋める」またはWP-CLIコマンドを使用して独自のスケジュールで翻訳してください。"
+msgstr ""
+"デフォルトではオフです。この機能はAIプロバイダーリクエストを行い、関連するAPI"
+"費用を自動的かつバックグラウンドで、リクエストごとの確認なしで、アクティブな"
+"言語で翻訳されていないすべての公開ポストに対して消費します。すべてのコンテン"
+"ツギャップを無人で翻訳したい場合のみオンにしてください。それ以外の場合は「翻"
+"訳を埋める」またはWP-CLIコマンドを使用して独自のスケジュールで翻訳してくださ"
+"い。"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:190
 msgid ""
 "WooCommerce products and variations are never included, regardless of this "
 "setting. An integration can also block specific post types via the "
 "linguaforge_cpt_create_allowed filter."
-msgstr "この設定に関係なく、WooCommerceプロダクトおよびバリエーションは含まれません。インテグレーションは linguaforge_cpt_create_allowed フィルターを使用して特定のポストタイプをブロックすることもできます。"
+msgstr ""
+"この設定に関係なく、WooCommerceプロダクトおよびバリエーションは含まれません。"
+"インテグレーションは linguaforge_cpt_create_allowed フィルターを使用して特定"
+"のポストタイプをブロックすることもできます。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:197
+msgid "Comment Translation"
+msgstr "コメント翻訳"
 
 #: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:200
+msgid ""
+"Mirrors an approved comment onto every language version of the post it "
+"belongs to, translated, as a real comment on each sibling page. Off by "
+"default."
+msgstr "承認されたコメントを、対応する投稿のすべての言語バージョンにリアルコメントとして翻訳してミラーします。デフォルトではオフです。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
+msgid "Comment translation"
+msgstr "コメント翻訳"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+msgid "Enable comment translation"
+msgstr "コメント翻訳を有効にする"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+msgid ""
+"Off by default. This feature makes AI provider requests — and spends the "
+"associated API cost — for approved comments on any post that has translated "
+"language versions. WooCommerce product reviews are never included; they "
+"already share one review pool across languages."
+msgstr "デフォルトではオフです。この機能は、翻訳された言語バージョンのあるすべての投稿の承認済みコメントに対してAIプロバイダーリクエストを行い、関連するAPIコストを消費します。WooCommerceの製品レビューは含まれません; それらはすでに言語を超えた1つのレビューのプールを共有します。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:226
+msgid "Translation trigger"
+msgstr "翻訳トリガー"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:233
+msgid "Manual — translate only via the Comments screen action"
+msgstr "手動 — コメント画面のアクションを介してのみ翻訳します"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:236
+msgid "Automatic — translate every comment as soon as it's approved"
+msgstr "自動 — コメントが承認され次第、すべてのコメントを翻訳します"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:240
+msgid ""
+"Manual (default) queues nothing automatically — use the \"Translate missing"
+"\" bulk action on the Comments screen on your own schedule. Automatic queues "
+"a translation the moment a comment is approved (or arrives already-"
+"approved), which can spend API calls on comments a moderator was about to "
+"reject if there's a large held-for-moderation backlog."
+msgstr "手動（デフォルト）では自動的に何もキューに入れません — コメント画面で「翻訳が必要なものを翻訳」バルクアクションを自分のスケジュールで使用します。自動化は、コメントが承認された瞬間（または既に承認されている場合）に翻訳をキューに入れます。これは、モデレーターが却下しようとしているコメントにAPI呼び出しを消費する可能性があり、モデレーションの保留中の大規模なバックログがある場合です。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+msgid "Max nested-reply depth"
+msgstr "最大ネスト返信深度"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:262
+msgid ""
+"How many levels of nested replies \"Translate missing\" will walk and "
+"translate in one pass, counting the original top-level comment as level 0. "
+"Default 2 covers the original comment plus replies and replies-to-replies. "
+"Bounds AI spend on deep threads — anything nested deeper isn't backfilled "
+"until this is raised or a further pass runs."
+msgstr "\"翻訳が必要なものを翻訳\"が一度のパスで翻訳し、どのレベルのネストされた返信まで歩くか、元のトップレベルコメントをレベル0として数えます。デフォルトの2は、元のコメントと返信およびその返信をカバーします。深いスレッドにおけるAI支出の制限 — より深くネストされたものは、これが引き上げられるか、さらにパスが実行されるまでバックフィルされません。"
+
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:272
 msgid ""
 "The \"Sync\" button in the post list Lang column retranslates a post out "
 "into every other language, including the primary/source post when it's run "
 "from a translation. That back-translation direction is restricted by default "
 "for every post type. (WooCommerce products and variations have their own "
 "separate setting below — this one does not affect them.)"
-msgstr "ポストリスト言語カラムの「同期」ボタンは、翻訳から実行する場合に主/ソースポストを含む他のすべての言語にポストを再翻訳します。その逆翻訳方向は、すべてのポストタイプに対してデフォルトで制限されています。（WooCommerceプロダクトとバリエーションには、以下に独自の個別設定があります — このものは影響しません。）"
+msgstr ""
+"ポストリスト言語カラムの「同期」ボタンは、翻訳から実行する場合に主/ソースポス"
+"トを含む他のすべての言語にポストを再翻訳します。その逆翻訳方向は、すべてのポ"
+"ストタイプに対してデフォルトで制限されています。（WooCommerceプロダクトとバリ"
+"エーションには、以下に独自の個別設定があります — このものは影響しません。）"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:206
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:237
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:278
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:309
 msgid "Secondary-language Sync"
 msgstr "セカンダリ言語の同期"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:216
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:288
 msgid "Allow \"Sync\" on a translated post to overwrite the primary post"
 msgstr "翻訳された「同期」が主ポストを上書きするのを許可"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:219
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:291
 msgid ""
 "Off by default: clicking \"Sync\" on a translation is blocked from "
 "overwriting the primary post. Syncing FROM the primary post to every "
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "デフォルトではオフ：翻訳で「同期」をクリックすると、主ポストの上書きがブロックされます。主ポストからすべての翻訳への同期は、この設定に関係なく常に許可されます。翻訳が新しいソースコンテンツになるようにしたい場合のみオンにしてください。"
+msgstr ""
+"デフォルトではオフ：翻訳で「同期」をクリックすると、主ポストの上書きがブロッ"
+"クされます。主ポストからすべての翻訳への同期は、この設定に関係なく常に許可さ"
+"れます。翻訳が新しいソースコンテンツになるようにしたい場合のみオンにしてくだ"
+"さい。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:231
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:303
 msgid ""
 "The primary-language product is WooCommerce's operational source of truth "
 "for price, SKU, and stock, which are always served from it regardless of "
 "which language a shopper is viewing. This is a separate, independent setting "
 "from the general \"Sync\" restriction above — enabling one does not enable "
 "the other."
-msgstr "主言語のプロダクトはWooCommerceの価格、SKU、在庫の操作上の真実のソースであり、ショッパーがどの言語を表示しているかに関係なく、常にそこから提供されます。これは上記の一般的な「同期」制限とは別の独立した設定です — 一方を有効にしても他方は有効になりません。"
+msgstr ""
+"主言語のプロダクトはWooCommerceの価格、SKU、在庫の操作上の真実のソースであ"
+"り、ショッパーがどの言語を表示しているかに関係なく、常にそこから提供されま"
+"す。これは上記の一般的な「同期」制限とは別の独立した設定です — 一方を有効にし"
+"ても他方は有効になりません。"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:247
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:319
 msgid "Allow \"Sync\" on a translated product to overwrite the primary product"
 msgstr "翻訳されたプロダクトの「同期」が主プロダクトを上書きするのを許可"
 
-#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:250
+#: ai/includes/Admin/Settings/Tabs/BehaviorTab.php:322
 msgid ""
 "Off by default: clicking \"Sync\" on a translated WooCommerce product is "
 "blocked, since it would back-translate onto the primary product's title, "
@@ -3741,7 +3867,11 @@ msgid ""
 "translation is always allowed regardless of this setting. Turn this on only "
 "if you intentionally want a translation to be able to become the new source "
 "content."
-msgstr "デフォルトではオフ：翻訳されたWooCommerceプロダクトで「同期」をクリックするとブロックされます。主プロダクトのタイトル、説明、抜粋に逆翻訳されるためです。主プロダクトからすべての翻訳への同期は、この設定に関係なく常に許可されます。翻訳が新しいソースコンテンツになるようにしたい場合のみオンにしてください。"
+msgstr ""
+"デフォルトではオフ：翻訳されたWooCommerceプロダクトで「同期」をクリックすると"
+"ブロックされます。主プロダクトのタイトル、説明、抜粋に逆翻訳されるためです。"
+"主プロダクトからすべての翻訳への同期は、この設定に関係なく常に許可されます。"
+"翻訳が新しいソースコンテンツになるようにしたい場合のみオンにしてください。"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:24
 msgid "General"
@@ -3855,7 +3985,9 @@ msgstr "上書き済み"
 msgid ""
 "Translates a short sample of your most recent published post with this exact "
 "model — a real, billed API call."
-msgstr "このモデルでこの正確なモデルで最も最近公開されたポストの短いサンプルを翻訳します — 実際の請求対象のAPI呼び出しです。"
+msgstr ""
+"このモデルでこの正確なモデルで最も最近公開されたポストの短いサンプルを翻訳し"
+"ます — 実際の請求対象のAPI呼び出しです。"
 
 #: ai/includes/Admin/Settings/Tabs/GeneralTab.php:292
 msgid "Test model"
@@ -3903,7 +4035,7 @@ msgstr ""
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:27
 #: ai/includes/Admin/Settings/Tabs/GlossaryTab.php:60
 #: ai/includes/Admin/SettingsHelp.php:111
-#: ai/includes/Admin/SettingsPage.php:722
+#: ai/includes/Admin/SettingsPage.php:754
 msgid "Glossary"
 msgstr "用語集"
 
@@ -4064,7 +4196,7 @@ msgid "Add entry"
 msgstr "エントリを追加"
 
 #: ai/includes/Admin/Settings/Tabs/LimitsTab.php:22
-#: ai/includes/Admin/SettingsPage.php:719
+#: ai/includes/Admin/SettingsPage.php:751
 msgid "Limits"
 msgstr "制限"
 
@@ -4283,12 +4415,12 @@ msgstr ""
 
 #: ai/includes/Admin/Settings/Tabs/MaintenanceTab.php:31
 #: ai/includes/Admin/SettingsHelp.php:177
-#: ai/includes/Admin/SettingsPage.php:725
+#: ai/includes/Admin/SettingsPage.php:757
 msgid "Maintenance"
 msgstr "メンテナンス"
 
 #: ai/includes/Admin/Settings/Tabs/RouterTab.php:41
-#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:721
+#: ai/includes/Admin/SettingsHelp.php:96 ai/includes/Admin/SettingsPage.php:753
 msgid "Router"
 msgstr "ルーター"
 
@@ -4853,7 +4985,7 @@ msgstr "すべてのパーツを修正"
 
 #: ai/includes/Admin/Settings/Tabs/SeoTab.php:35
 #: ai/includes/Admin/SettingsHelp.php:119
-#: ai/includes/Admin/SettingsPage.php:723
+#: ai/includes/Admin/SettingsPage.php:755
 msgid "SEO"
 msgstr "SEO"
 
@@ -4893,7 +5025,7 @@ msgstr "互換性"
 
 #: ai/includes/Admin/Settings/Tabs/SystemTab.php:36
 #: ai/includes/Admin/SettingsHelp.php:186
-#: ai/includes/Admin/SettingsPage.php:726
+#: ai/includes/Admin/SettingsPage.php:758
 msgid "System"
 msgstr "システム"
 
@@ -5718,14 +5850,20 @@ msgid ""
 "This overwrites this template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "このテンプレートを有効なテーマから新しいコピーで上書きし、サイトエディターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続けますか？"
+msgstr ""
+"このテンプレートを有効なテーマから新しいコピーで上書きし、サイトエディターで"
+"加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続けます"
+"か？"
 
 #: ai/includes/Admin/SettingsPage.php:271
 msgid ""
 "This overwrites every template with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "すべてのテンプレートを有効なテーマから新しいコピーで上書きし、サイトエディターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続けますか？"
+msgstr ""
+"すべてのテンプレートを有効なテーマから新しいコピーで上書きし、サイトエディ"
+"ターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続"
+"けますか？"
 
 #: ai/includes/Admin/SettingsPage.php:272
 msgid "✓ All parts recreated."
@@ -5740,14 +5878,20 @@ msgid ""
 "This overwrites this template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to it. This cannot be undone. "
 "Continue?"
-msgstr "このテンプレートパーツを有効なテーマから新しいコピーで上書きし、サイトエディターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続けますか？"
+msgstr ""
+"このテンプレートパーツを有効なテーマから新しいコピーで上書きし、サイトエディ"
+"ターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続"
+"けますか？"
 
 #: ai/includes/Admin/SettingsPage.php:275
 msgid ""
 "This overwrites every template part with a fresh copy from the active theme, "
 "discarding any Site Editor customisations made to them. This cannot be "
 "undone. Continue?"
-msgstr "すべてのテンプレートパーツを有効なテーマから新しいコピーで上書きし、サイトエディターで加えられたカスタマイズをすべて破棄します。この操作は取り消せません。続けますか？"
+msgstr ""
+"すべてのテンプレートパーツを有効なテーマから新しいコピーで上書きし、サイトエ"
+"ディターで加えられたカスタマイズをすべて破棄します。この操作は取り消せませ"
+"ん。続けますか？"
 
 #: ai/includes/Admin/SettingsPage.php:276
 msgid "✓ All parts created."
@@ -5831,7 +5975,15 @@ msgid ""
 "and re-translates content — none of this can be undone. Translate all makes "
 "real AI API calls for every template and part, which may take a while and "
 "may incur cost depending on your provider. Continue?"
-msgstr "この操作は、アクティブな言語 {total} つすべてに対して、「すべてのテンプレートを再作成」「すべてのパーツを再作成」「すべて翻訳」「すべてのパーツを修正」「すべてのリンクを修正」を1つの言語ずつ実行します。既存のテンプレートとパーツは有効なテーマから新しいコピーで上書きされ（サイトエディターのカスタマイズは破棄されます）、コンテンツが再翻訳されます。これらの操作は取り消せません。「すべて翻訳」は各テンプレートとパーツに対して実際のAI API呼び出しを行うため、時間がかかる場合があり、プロバイダーによっては費用が発生する可能性があります。続けますか？"
+msgstr ""
+"この操作は、アクティブな言語 {total} つすべてに対して、「すべてのテンプレート"
+"を再作成」「すべてのパーツを再作成」「すべて翻訳」「すべてのパーツを修正」"
+"「すべてのリンクを修正」を1つの言語ずつ実行します。既存のテンプレートとパーツ"
+"は有効なテーマから新しいコピーで上書きされ（サイトエディターのカスタマイズは"
+"破棄されます）、コンテンツが再翻訳されます。これらの操作は取り消せません。"
+"「すべて翻訳」は各テンプレートとパーツに対して実際のAI API呼び出しを行うた"
+"め、時間がかかる場合があり、プロバイダーによっては費用が発生する可能性があり"
+"ます。続けますか？"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:313
@@ -5843,7 +5995,15 @@ msgid ""
 "Editor customisations) and re-translates content — none of this can be "
 "undone. Translate all makes real AI API calls for every template, which may "
 "take a while and may incur cost depending on your provider. Continue?"
-msgstr "この操作は、アクティブな言語 {total} つすべてに対して、「すべてのテンプレートを再作成」「すべて翻訳」「すべてのパーツを修正」「すべてのリンクを修正」を1つの言語ずつ実行します。テンプレートパーツ（ヘッダーやフッターなど）は変更されません。既存のテンプレートは有効なテーマから新しいコピーで上書きされ（サイトエディターのカスタマイズは破棄されます）、コンテンツが再翻訳されます。これらの操作は取り消せません。「すべて翻訳」は各テンプレートに対して実際のAI API呼び出しを行うため、時間がかかる場合があり、プロバイダーによっては費用が発生する可能性があります。続けますか？"
+msgstr ""
+"この操作は、アクティブな言語 {total} つすべてに対して、「すべてのテンプレート"
+"を再作成」「すべて翻訳」「すべてのパーツを修正」「すべてのリンクを修正」を1つ"
+"の言語ずつ実行します。テンプレートパーツ（ヘッダーやフッターなど）は変更され"
+"ません。既存のテンプレートは有効なテーマから新しいコピーで上書きされ（サイト"
+"エディターのカスタマイズは破棄されます）、コンテンツが再翻訳されます。これら"
+"の操作は取り消せません。「すべて翻訳」は各テンプレートに対して実際のAI API呼"
+"び出しを行うため、時間がかかる場合があり、プロバイダーによっては費用が発生す"
+"る可能性があります。続けますか？"
 
 #. translators: {total}: number of active languages. Placeholder, not a printf %s — substituted client-side in fse-global-actions.js.
 #: ai/includes/Admin/SettingsPage.php:315
@@ -5853,7 +6013,12 @@ msgid ""
 "time. It overwrites existing template parts with fresh copies from the "
 "active theme, discarding any Site Editor customisations made to them. This "
 "cannot be undone. Continue?"
-msgstr "この操作は、アクティブな言語 {total} つすべてに対して、「すべてのパーツを再作成」（ヘッダー、フッター、その他すべてのテンプレートパーツ）を1つの言語ずつ実行します。既存のテンプレートパーツが有効なテーマから新しいコピーで上書きされ、サイトエディターで加えられたカスタマイズはすべて破棄されます。この操作は取り消せません。続けますか？"
+msgstr ""
+"この操作は、アクティブな言語 {total} つすべてに対して、「すべてのパーツを再作"
+"成」（ヘッダー、フッター、その他すべてのテンプレートパーツ）を1つの言語ずつ実"
+"行します。既存のテンプレートパーツが有効なテーマから新しいコピーで上書きさ"
+"れ、サイトエディターで加えられたカスタマイズはすべて破棄されます。この操作は"
+"取り消せません。続けますか？"
 
 #: ai/includes/Admin/SettingsPage.php:316
 msgid "Starting…"
@@ -5955,15 +6120,15 @@ msgstr "設定"
 msgid "You do not have permission to manage these settings."
 msgstr "これらの設定を管理する権限がありません。"
 
-#: ai/includes/Admin/SettingsPage.php:707
+#: ai/includes/Admin/SettingsPage.php:739
 msgid "Lingua Forge — Settings"
 msgstr "Lingua Forge — 設定"
 
-#: ai/includes/Admin/SettingsPage.php:712
+#: ai/includes/Admin/SettingsPage.php:744
 msgid "Settings saved."
 msgstr "設定が保存されました。"
 
-#: ai/includes/Admin/SettingsPage.php:757
+#: ai/includes/Admin/SettingsPage.php:789
 msgid "Save Settings"
 msgstr "設定を保存"
 
@@ -6321,6 +6486,25 @@ msgstr "ナビゲーションメニューから除外"
 msgid "Apply to all language versions"
 msgstr "すべての言語バージョンに適用"
 
+#: language-router/includes/admin/class-comment-columns.php:52
+#: language-router/includes/admin/class-comment-columns.php:59
+msgid "Lang"
+msgstr "言語"
+
+#. translators: %s: comma-separated list of language codes this comment has been mirrored into
+#: language-router/includes/admin/class-comment-columns.php:106
+#, php-format
+msgid "Also mirrored to: %s"
+msgstr "次の言語にもミラーされています: %s"
+
+#: language-router/includes/admin/class-comment-filters.php:49
+msgid "Filter by language"
+msgstr "言語でフィルタリング"
+
+#: language-router/includes/admin/class-comment-filters.php:51
+msgid "All languages"
+msgstr "すべての言語"
+
 #: language-router/includes/admin/class-meta-boxes.php:130
 msgid "Noindex (hide this language version from search engines)"
 msgstr "インデックスしない（この言語バージョンを検索エンジンから隠す）"
@@ -6356,7 +6540,7 @@ msgstr ""
 "います。ブロックエディタを使ってこのページに追加してください。"
 
 #. translators: 1: number of localized templates, 2: previous theme name
-#: language-router/includes/class-language-router.php:332
+#: language-router/includes/class-language-router.php:349
 #, php-format
 msgid ""
 "<strong>Lingua Forge:</strong> %1$d localized template(s) from the &#8220;"
@@ -6693,7 +6877,8 @@ msgstr[0] "%d 件の投稿をゴミ箱に移動しました（翻訳を含む）
 #, php-format
 msgid "%d post was skipped (no permission or protected)."
 msgid_plural "%d posts were skipped (no permission or protected)."
-msgstr[0] "%d 件の投稿がスキップされました（権限がない、または保護されたページです）。"
+msgstr[0] ""
+"%d 件の投稿がスキップされました（権限がない、または保護されたページです）。"
 
 #: meta-description/meta-description.php:67
 #: meta-description/meta-description.php:96
