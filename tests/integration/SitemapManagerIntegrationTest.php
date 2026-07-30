@@ -571,4 +571,99 @@ final class SitemapManagerIntegrationTest extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( '<sitemap>', $xml,
 			'Static front page (no LF-managed posts) must not receive a synthetic sitemap homepage entry.' );
 	}
+
+	// =========================================================================
+	// linguaforge_sitemap_extra_urls (2.7.1) — third-party URL groups
+	// =========================================================================
+
+	/**
+	 * A companion plugin (e.g. Agnosis registering per-artist community
+	 * subdomains LF has no post/language model for) supplies a group via the
+	 * filter; its URL must appear in the sitemap chunk even though no LF post
+	 * exists for it at all.
+	 */
+	public function test_extra_urls_filter_adds_third_party_url(): void {
+		add_filter( 'linguaforge_sitemap_extra_urls', static function ( array $groups ): array {
+			$groups['artist-42'] = [
+				[ 'url' => 'https://someartist.example.com/', 'lang' => 'en' ],
+			];
+			return $groups;
+		} );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'linguaforge_sitemap_extra_urls' );
+
+		$this->assertStringContainsString( 'https://someartist.example.com/', $chunk,
+			'A URL supplied via linguaforge_sitemap_extra_urls must appear in the sitemap even with no LF-managed posts.' );
+	}
+
+	/**
+	 * Rows within one supplied group must be emitted as hreflang alternates of
+	 * each other, exactly like a native LF translation group.
+	 */
+	public function test_extra_urls_filter_rows_become_hreflang_alternates(): void {
+		add_filter( 'linguaforge_sitemap_extra_urls', static function ( array $groups ): array {
+			$groups['artist-42'] = [
+				[ 'url' => 'https://someartist.example.com/', 'lang' => 'en' ],
+				[ 'url' => 'https://someartist.example.com/es/', 'lang' => 'es' ],
+			];
+			return $groups;
+		} );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'linguaforge_sitemap_extra_urls' );
+
+		$this->assertStringContainsString( 'hreflang="en-US" href="https://someartist.example.com/"', $chunk );
+		$this->assertStringContainsString( 'hreflang="es-ES" href="https://someartist.example.com/es/"', $chunk );
+	}
+
+	/**
+	 * A malformed row (missing url or lang) must be silently dropped rather
+	 * than breaking generation for every other group — a third-party plugin
+	 * bug must not be able to take down LF's own sitemap.
+	 */
+	public function test_extra_urls_filter_drops_malformed_rows(): void {
+		$this->make_lf_post( 'en', $this->trid() );
+
+		add_filter( 'linguaforge_sitemap_extra_urls', static function ( array $groups ): array {
+			$groups['broken']    = [ [ 'lang' => 'en' ] ]; // missing url
+			$groups['also-broken'] = [ [ 'url' => 'https://example.com/' ] ]; // missing lang
+			return $groups;
+		} );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'linguaforge_sitemap_extra_urls' );
+
+		$this->assertStringNotContainsString( 'https://example.com/', $chunk,
+			'A row missing "lang" must be dropped, not emitted with an empty hreflang.' );
+	}
+
+	/**
+	 * A caller-supplied group key must never collide with a real _lf_trid
+	 * value — extra groups are re-namespaced under 'lf_extra_' internally, so
+	 * a native LF group and a third-party group can coexist safely in the
+	 * same chunk.
+	 */
+	public function test_extra_urls_coexist_with_native_trid_group(): void {
+		$en_id = $this->make_lf_post( 'en', $this->trid() );
+
+		add_filter( 'linguaforge_sitemap_extra_urls', static function ( array $groups ): array {
+			$groups['artist-42'] = [
+				[ 'url' => 'https://someartist.example.com/', 'lang' => 'en' ],
+			];
+			return $groups;
+		} );
+
+		$chunk = Router::get_instance()->sitemap_manager->get_sitemap_chunk_xml( 0 );
+
+		remove_all_filters( 'linguaforge_sitemap_extra_urls' );
+
+		$this->assertStringContainsString( (string) get_permalink( $en_id ), $chunk,
+			'Native LF-managed post must still appear alongside a third-party group.' );
+		$this->assertStringContainsString( 'https://someartist.example.com/', $chunk,
+			'Third-party group must appear alongside a native LF-managed post.' );
+	}
 }

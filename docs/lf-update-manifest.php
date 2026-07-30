@@ -13,9 +13,22 @@
  *
  * MANIFEST_URL in lingua-forge/includes/class-updater.php must point to:
  * https://lingua-forge.com/wp-json/lingua-forge/v1/update
+ *
+ * Modeled directly on the companion Agnosis plugin's own
+ * docs/agnosis-update-manifest.php (deployed the same way to agnosis.art),
+ * so both self-hosted plugins are administered identically.
+ *
+ * Instance check-in telemetry (which sites are polling this endpoint, and
+ * what version they're running) is NOT implemented in this file — it lives
+ * in lf-manifest-includes/telemetry.php, required below, so this file stays
+ * exactly what its own docblock says it is: a short "what to edit on every
+ * release" document. See that file's own docblock for the full design and
+ * privacy reasoning.
  */
 
 defined( 'ABSPATH' ) || exit;
+
+require_once __DIR__ . '/lf-manifest-includes/telemetry.php';
 
 add_action( 'rest_api_init', function () {
 	register_rest_route(
@@ -29,38 +42,42 @@ add_action( 'rest_api_init', function () {
 	);
 } );
 
-function lf_update_manifest_endpoint(): WP_REST_Response {
+function lf_update_manifest_endpoint( WP_REST_Request $request ): WP_REST_Response {
+
+	// Record this check-in (site URL, WP version, Lingua Forge version —
+	// parsed from the request's own User-Agent) before anything else. Never
+	// allowed to affect or slow the actual manifest response below; see
+	// linguaforge_manifest_telemetry_record()'s own docblock.
+	linguaforge_manifest_telemetry_record( $request );
 
 	// -------------------------------------------------------------------------
 	// UPDATE THESE FIELDS ON EVERY RELEASE
 	// -------------------------------------------------------------------------
 
-	$version      = '2.7.0';
-	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.7.0/lingua-forge-2.7.0.zip';
-	$last_updated = '2026-07-29';
-	$tested       = '7.0.2';
+	$version      = '2.7.1';
+	$download_url = 'https://github.com/leotiger/lingua-forge/releases/download/v2.7.1/lingua-forge-2.7.1.zip';
+	$last_updated = '2026-07-30';
+	$tested       = '7.0';
 
 	// SHA-256 of the release ZIP — run `sha256sum lingua-forge-X.Y.Z.zip` after
 	// building and paste the hex digest here.  Empty string = verification skipped
 	// (safe for existing cached manifests; new downloads will verify once set).
-	// TODO(release): pending the built lingua-forge-2.7.0.zip — build it, upload
-	// to the v2.7.0 GitHub release, sha256sum it, paste the digest here, then
-	// deploy this manifest.
-	$sha256 = 'e52d3c74013b50440d48625278ca19a7cc338032536132a45ce54404381d6ee7';
+	// TODO(release): pending the built lingua-forge-2.7.1.zip — build it, upload
+	// to the v2.7.1 GitHub release, sha256sum it, paste the digest here, then
+	// deploy this manifest. (dev/build-zip.sh does this last step for you
+	// automatically when run locally — see that script.)
+	$sha256 = '39fdaf884680d35f7f17338de5eb7d456beda0b1efed302190a5601000d30f26';
 
 	// Two most recent releases only — do not accumulate history here; it bloats the manifest.
 	// Full changelog: CHANGELOG.md in the plugin repository.
 	$changelog =
-		'<h4>2.6.8 &#8212; 2026-07-24</h4>' .
+		'<h4>2.7.1 &#8212; 2026-07-30</h4>' .
 		'<ul>' .
-			'<li><strong>Dev tooling:</strong> <code>dev/bin/translate-missing.php</code> (the <code>composer translate-missing</code> i18n helper) gained character-budget-aware batching, an already-translated-but-broken-placeholder detection/fix pass, and a fix for a wrapped plural slot silently hiding every later slot in the same entry from translation &#8212; all ported from the sibling Agnosis project&#8217;s own copy of this script. No plugin-shipped code changed &#8212; <code>dev/</code> is excluded from the release ZIP.</li>' .
+			'<li><strong>Added:</strong> <code>linguaforge_sitemap_extra_urls</code> filter &#8212; lets a companion plugin register additional indexable URLs (e.g. per-artist community subdomains) that the sitemap&#8217;s own <code>_lf_trid</code>/<code>_lf_lang</code> query has no way to discover on its own. Rows are emitted as hreflang alternates of each other, same as a native translation group.</li>' .
 		'</ul>' .
-		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>' .
-		'<h4>2.6.7 &#8212; 2026-07-21</h4>' .
+		'<h4>2.7.0 &#8212; 2026-07-29</h4>' .
 		'<ul>' .
-			'<li><strong>Fixed:</strong> <code>ChunkTranslation::run()</code> (Translate-chunk mode and the Admin Toolbar&#8217;s <code>/translate-chunk</code> popover) never resolved the <code>linguaforge_translation_extra_instruction</code> filter added in 2.6.6, so an integration relying on it saw the instruction silently drop for any chunk translation. It now resolves the same filter, with <code>Translation::run_chunk()</code> threading through the real post ID for the meta-box path (<code>0</code> for the post-independent toolbar popover). (<code>ai/includes/Features/ChunkTranslation.php</code>, <code>ai/includes/Features/Translation.php</code>, <code>ai/includes/Admin/Settings/Tabs/ApiKeysTab.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Cached translations could silently outlive a change to the <code>linguaforge_translation_extra_instruction</code> filter&#8217;s output &#8212; neither the full-post nor the chunk cache hash included the resolved instruction. Both now do. (<code>ai/includes/Features/Translation.php</code>, <code>ai/includes/Features/ChunkTranslation.php</code>)</li>' .
-			'<li><strong>Fixed:</strong> Chunk translation always used the site&#8217;s global Behavior preset, even for a page with its own per-page preset override &#8212; full-post translation already respected it. Chunk mode now does too when translating from a real page; the post-independent Admin Toolbar popover is unaffected. (<code>ai/includes/Features/ChunkTranslation.php</code>, <code>ai/includes/Core/Config.php</code>, <code>ai/includes/Admin/Settings/Tabs/ApiKeysTab.php</code>)</li>' .
+			'<li><strong>Added:</strong> Comment Translation (off by default, Settings &#8594; Behavior) &#8212; mirrors an approved comment onto every language version of its post as a real, already-approved, translated comment. Manual (default) or auto trigger mode, depth-capped nested-reply backfill, new Comments-screen Lang column/filter and Translate/Translate missing actions.</li>' .
 		'</ul>' .
 		'<p><a href="https://github.com/leotiger/lingua-forge/blob/main/CHANGELOG.md">Full changelog on GitHub</a></p>';
 

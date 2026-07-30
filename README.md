@@ -1,6 +1,6 @@
 # Lingua Forge
 
-> **Version 2.7.0 — stable, in production, open for integration.**
+> **Version 2.7.1 — stable, in production, open for integration.**
 > This release is stable and already running production sites. It's no longer primarily about testing — the plugin has proven itself in real use — and the focus now is integration: other plugins/themes hooking into Lingua Forge's translation, routing, and SEO layers. Bug reports, compatibility reports, integration hooks requests, and pull requests are very welcome.
 
 > **A note on WordPress.org.**

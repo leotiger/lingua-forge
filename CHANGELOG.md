@@ -2,6 +2,27 @@
 
 ---
 
+## [2.7.1] — 2026-07-30
+
+Closes a sitemap discoverability gap found auditing agnosis.art: Agnosis
+serves personalized per-artist community subdomains that carry no
+`_lf_trid`/`_lf_lang` post meta, so LF's own sitemap query has no way to
+find them — they were silently absent from `/lf-sitemap.xml`.
+
+### Added
+
+- **`linguaforge_sitemap_extra_urls` filter** — lets a companion plugin
+  register additional indexable URLs the sitemap's own DB query can't
+  discover on its own (per-user/per-artist subdomains, or any other content
+  scheme LF has no model of). Returns an array keyed by an arbitrary group
+  id; each value an array of rows (`url` required, `lang` required,
+  `post_modified_gmt` optional) emitted as hreflang alternates of each
+  other, exactly like a native TRID group. A malformed row is dropped
+  rather than breaking generation for every other group, and group keys
+  are re-namespaced internally so a caller-supplied key can never collide
+  with a real TRID. (`language-router/includes/seo/class-sitemap-manager.php`)
+  Full contract: [HOOKS.md → SEO](HOOKS.md#seo).
+
 ## [2.7.0] — 2026-07-29
 
 New feature — generic WP comment translation, from

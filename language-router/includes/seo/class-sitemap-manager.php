@@ -36,8 +36,35 @@
  *   linguaforge_seo_sitemap_enabled  bool  Master switch (default true).
  *
  * ── Filters ───────────────────────────────────────────────────────────────
- *   linguaforge_seo_sitemap_slug  string  URL slug (default 'lf-sitemap.xml').
- *   linguaforge_seo_sitemap_xml   string  Sitemap index XML string before output.
+ *   linguaforge_seo_sitemap_slug        string  URL slug (default 'lf-sitemap.xml').
+ *   linguaforge_seo_sitemap_xml         string  Sitemap index XML string before output.
+ *   linguaforge_sitemap_extra_urls      array   Additional URL groups from a companion
+ *                                                plugin (Since 2.7.1) — see below.
+ *
+ * ── Third-party URLs (linguaforge_sitemap_extra_urls) ────────────────────
+ * LF's own sitemap query only ever discovers URLs it can derive from
+ * _lf_trid/_lf_lang post meta — content a companion plugin serves under a
+ * scheme LF has no model of (e.g. Agnosis's per-artist community
+ * subdomains, someartist.example.com, which carry no post/language data LF
+ * recognizes) is otherwise invisible to it. This filter lets such a plugin
+ * register its own indexable URLs without LF needing any awareness of the
+ * scheme that produced them.
+ *
+ * Return an array keyed by an arbitrary group id (a stable string uniquely
+ * identifying each logical group — e.g. an artist's user ID); each value an
+ * array of rows, either arrays or objects, with:
+ *   url                 string  required. Absolute URL to index.
+ *   lang                string  required. Language code (any active LF
+ *                                language, or any short code meaningful to
+ *                                the caller — LF only uses it to group
+ *                                hreflang alternates within the group).
+ *   post_modified_gmt   string  optional. MySQL UTC datetime for <lastmod>;
+ *                                defaults to the current time.
+ * Rows within one group are emitted as hreflang alternates of each other,
+ * exactly like an LF translation group — supply one row per group only
+ * when there is no cross-language alternate relationship. A malformed row
+ * (missing url or lang) is silently dropped rather than breaking sitemap
+ * generation for every other group. See HOOKS.md for the full reference.
  *
  * @package LinguaForge\Router\Seo
  * @since   2.2.0
@@ -361,6 +388,12 @@ class SitemapManager {
 			}
 		}
 
+		// ── Third-party extra URL groups ──────────────────────────────────────
+		// See linguaforge_sitemap_extra_urls in the class docblock and HOOKS.md.
+		foreach ( $this->extra_url_groups() as $group_key => $group ) {
+			$groups[ $group_key ] = $group;
+		}
+
 		if ( empty( $groups ) ) {
 			// Cache empty responses so we don't re-query on every request.
 			set_transient( self::CACHE_KEY, $this->empty_index_xml(), self::CACHE_TTL );
@@ -515,6 +548,70 @@ class SitemapManager {
 		}
 
 		return $group;
+	}
+
+	/**
+	 * Collect and normalize third-party sitemap URL groups.
+	 *
+	 * Fires linguaforge_sitemap_extra_urls (see class docblock) so a companion
+	 * plugin can register additional indexable URLs that LF's own
+	 * _lf_trid/_lf_lang query has no way to discover — e.g. Agnosis's per-artist
+	 * community subdomains, which live entirely outside LF's post/language data
+	 * model. Never trusts the filter's shape blindly: every row is coerced into
+	 * the same stdClass shape generate_chunk_xml() already consumes (->url,
+	 * ->lang, ->post_modified_gmt), and a malformed row (missing url or lang)
+	 * is dropped rather than corrupting the sitemap or fatal-ing generation for
+	 * every other group. Group keys are re-namespaced under 'lf_extra_' so a
+	 * caller-supplied key can never collide with a real _lf_trid value.
+	 *
+	 * @return array<string, array<int, \stdClass>>  Keyed by a namespaced group
+	 *                                                 key; each value the row-array
+	 *                                                 shape generate_chunk_xml() consumes.
+	 * @since 2.7.1
+	 */
+	private function extra_url_groups(): array {
+
+		$raw = apply_filters( 'linguaforge_sitemap_extra_urls', [] );
+		if ( ! is_array( $raw ) ) {
+			return [];
+		}
+
+		$groups = [];
+
+		foreach ( $raw as $key => $rows ) {
+			if ( ! is_array( $rows ) ) {
+				continue;
+			}
+
+			$normalized = [];
+			foreach ( $rows as $row ) {
+				$row = (array) $row;
+
+				$url  = isset( $row['url'] ) ? esc_url_raw( (string) $row['url'] ) : '';
+				$lang = isset( $row['lang'] ) ? sanitize_key( (string) $row['lang'] ) : '';
+
+				if ( '' === $url || '' === $lang ) {
+					continue; // Malformed row — skip rather than emit an empty <loc>.
+				}
+
+				$modified = isset( $row['post_modified_gmt'] )
+					? (string) $row['post_modified_gmt']
+					: current_time( 'mysql', true );
+
+				$obj                    = new \stdClass();
+				$obj->ID                = 0; // No post ID; ->url is used directly, get_permalink() never called.
+				$obj->url               = $url;
+				$obj->lang              = $lang;
+				$obj->post_modified_gmt = $modified;
+				$normalized[]           = $obj;
+			}
+
+			if ( ! empty( $normalized ) ) {
+				$groups[ 'lf_extra_' . sanitize_key( (string) $key ) ] = $normalized;
+			}
+		}
+
+		return $groups;
 	}
 
 	/**
