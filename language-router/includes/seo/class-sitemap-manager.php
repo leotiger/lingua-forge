@@ -36,35 +36,10 @@
  *   linguaforge_seo_sitemap_enabled  bool  Master switch (default true).
  *
  * ── Filters ───────────────────────────────────────────────────────────────
- *   linguaforge_seo_sitemap_slug        string  URL slug (default 'lf-sitemap.xml').
- *   linguaforge_seo_sitemap_xml         string  Sitemap index XML string before output.
- *   linguaforge_sitemap_extra_urls      array   Additional URL groups from a companion
- *                                                plugin (Since 2.7.1) — see below.
- *
- * ── Third-party URLs (linguaforge_sitemap_extra_urls) ────────────────────
- * LF's own sitemap query only ever discovers URLs it can derive from
- * _lf_trid/_lf_lang post meta — content a companion plugin serves under a
- * scheme LF has no model of (e.g. Agnosis's per-artist community
- * subdomains, someartist.example.com, which carry no post/language data LF
- * recognizes) is otherwise invisible to it. This filter lets such a plugin
- * register its own indexable URLs without LF needing any awareness of the
- * scheme that produced them.
- *
- * Return an array keyed by an arbitrary group id (a stable string uniquely
- * identifying each logical group — e.g. an artist's user ID); each value an
- * array of rows, either arrays or objects, with:
- *   url                 string  required. Absolute URL to index.
- *   lang                string  required. Language code (any active LF
- *                                language, or any short code meaningful to
- *                                the caller — LF only uses it to group
- *                                hreflang alternates within the group).
- *   post_modified_gmt   string  optional. MySQL UTC datetime for <lastmod>;
- *                                defaults to the current time.
- * Rows within one group are emitted as hreflang alternates of each other,
- * exactly like an LF translation group — supply one row per group only
- * when there is no cross-language alternate relationship. A malformed row
- * (missing url or lang) is silently dropped rather than breaking sitemap
- * generation for every other group. See HOOKS.md for the full reference.
+ *   linguaforge_seo_sitemap_slug     string  URL slug (default 'lf-sitemap.xml').
+ *   linguaforge_seo_sitemap_xml      string  Sitemap index XML string before output.
+ *   linguaforge_sitemap_extra_urls   array   Extra URL groups from a companion plugin
+ *                                              (Since 2.7.1) — see extra_url_groups().
  *
  * @package LinguaForge\Router\Seo
  * @since   2.2.0
