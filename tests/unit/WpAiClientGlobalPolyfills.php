@@ -39,8 +39,12 @@ if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
 		if ( array_key_exists( 'generate_text_result', $config ) ) {
 			$builder->generate_text_result = $config['generate_text_result'];
 		}
+		if ( isset( $config['generate_text_results'] ) && is_array( $config['generate_text_results'] ) ) {
+			$builder->generate_text_result = array_shift( $GLOBALS['lf_test_wp_ai_client_builder_config']['generate_text_results'] );
+		}
 
 		$GLOBALS['lf_test_wp_ai_client_builder'] = $builder;
+		$GLOBALS['lf_test_wp_ai_client_builders'][] = $builder;
 
 		return $builder;
 	}

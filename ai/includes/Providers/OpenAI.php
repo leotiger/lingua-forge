@@ -29,11 +29,14 @@ class OpenAI extends AbstractProvider {
     protected function build_request(array $messages, string $api_key): array {
 
         $body = [
-            'model'       => $this->config->model,
-            'messages'    => $messages,
-            'temperature' => $this->config->temperature,
-            'max_tokens'  => $this->config->max_tokens,
+            'model'      => $this->config->model,
+            'messages'   => $messages,
+            'max_tokens' => $this->config->max_tokens,
         ];
+
+        if (! self::model_uses_default_temperature($this->config->model)) {
+            $body['temperature'] = $this->config->temperature;
+        }
 
         // Structured-output mode: ask the API to constrain the response to a
         // JSON object conforming to the supplied schema. OpenAI enforces this
@@ -91,5 +94,32 @@ class OpenAI extends AbstractProvider {
             return __('No credits remaining — top up your OpenAI account at platform.openai.com/account/billing.', 'lingua-forge');
         }
         return (string) ($error['message'] ?? '');
+    }
+
+    /**
+     * Some OpenAI reasoning-era chat models reject any explicit temperature
+     * value, even 0 or 1, and only accept the platform default.
+     */
+    private static function model_uses_default_temperature(string $model): bool {
+        return (bool) preg_match('/^(?:o\d(?:[-.]|$)|gpt-5(?:[-.]|$))/i', $model);
+    }
+
+    /**
+     * Keep the inherited 400 retry path available for new model names that
+     * reject sampling params before this catalog knows about them.
+     *
+     * @return string[]
+     */
+    protected function droppable_sampling_params(): array {
+        return ['temperature'];
+    }
+
+    protected function is_deprecated_param_error(string $api_message, string $param): bool {
+        return stripos($api_message, $param) !== false
+            && (
+                stripos($api_message, 'deprecated') !== false
+                || stripos($api_message, 'unsupported') !== false
+                || stripos($api_message, 'not supported') !== false
+            );
     }
 }

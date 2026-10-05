@@ -197,14 +197,18 @@ final class ProviderChatIntegrationTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Install a pre_http_request stub that captures (URL, headers) into
+	 * Install a pre_http_request stub that captures (URL, headers, body) into
 	 * $captured and returns a 200 with an empty body.
 	 */
 	private function capture_request( array &$captured ): void {
 		add_filter(
 			'pre_http_request',
 			static function ( $pre, array $args, string $url ) use ( &$captured ): array {
-				$captured = [ 'url' => $url, 'headers' => $args['headers'] ?? [] ];
+				$captured = [
+					'url'     => $url,
+					'headers' => $args['headers'] ?? [],
+					'body'    => isset( $args['body'] ) && is_string( $args['body'] ) ? $args['body'] : '',
+				];
 				// Return a minimal valid response to prevent further processing errors.
 				return [
 					'response' => [ 'code' => 200, 'message' => 'OK' ],
@@ -379,6 +383,43 @@ final class ProviderChatIntegrationTest extends WP_UnitTestCase {
 			'Authorization header must use the Bearer scheme.' );
 		$this->assertArrayNotHasKey( 'x-api-key', $captured['headers'],
 			'OpenAI must not send an x-api-key header.' );
+	}
+
+	public function test_openai_omits_temperature_for_models_that_require_default_sampling(): void {
+		$provider = $this->make_provider( 'openai', OpenAI::class, 'gpt-5-mini', 'sk-openai-temperature-test' );
+
+		$captured = [];
+		$this->capture_request( $captured );
+
+		$provider->chat( self::MESSAGES );
+
+		$body = json_decode( $captured['body'], true );
+
+		$this->assertIsArray( $body );
+		$this->assertArrayNotHasKey(
+			'temperature',
+			$body,
+			'OpenAI models that only support default sampling must not receive an explicit temperature.'
+		);
+	}
+
+	public function test_openai_keeps_temperature_for_standard_chat_models(): void {
+		$provider = $this->make_provider( 'openai', OpenAI::class, 'gpt-4o-mini', 'sk-openai-temperature-test' );
+
+		$captured = [];
+		$this->capture_request( $captured );
+
+		$provider->chat( self::MESSAGES );
+
+		$body = json_decode( $captured['body'], true );
+
+		$this->assertIsArray( $body );
+		$this->assertArrayHasKey(
+			'temperature',
+			$body,
+			'Standard OpenAI chat models should keep the configured temperature.'
+		);
+		$this->assertSame( 0.0, $body['temperature'] );
 	}
 
 	/**

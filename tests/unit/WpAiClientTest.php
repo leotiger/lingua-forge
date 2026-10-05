@@ -77,6 +77,7 @@ class WpAiClientTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$GLOBALS['lf_test_wp_ai_client_builder']        = null;
+		$GLOBALS['lf_test_wp_ai_client_builders']       = [];
 		$GLOBALS['lf_test_wp_ai_client_builder_config'] = [];
 	}
 
@@ -279,6 +280,28 @@ class WpAiClientTest extends TestCase {
 
 		$this->assertSame( 'Bonjour le monde', $result );
 		$this->assertSame( '', $provider->get_last_error() );
+	}
+
+	public function test_unsupported_temperature_error_retries_without_temperature(): void {
+
+		$GLOBALS['lf_test_wp_ai_client_builder_config'] = [
+			'generate_text_results' => [
+				new \WP_Error(
+					'bad_request',
+					"Bad Request (400) - Unsupported parameter: 'temperature' is not supported with this model."
+				),
+				'  Hola mundo  ',
+			],
+		];
+
+		$provider = $this->make_provider();
+		$result   = $provider->chat( [ [ 'role' => 'user', 'content' => 'hi' ] ] );
+
+		$this->assertSame( 'Hola mundo', $result );
+		$this->assertSame( '', $provider->get_last_error() );
+		$this->assertCount( 2, $GLOBALS['lf_test_wp_ai_client_builders'] );
+		$this->assertSame( 0.4, $GLOBALS['lf_test_wp_ai_client_builders'][0]->temperature );
+		$this->assertNull( $GLOBALS['lf_test_wp_ai_client_builders'][1]->temperature );
 	}
 
 	public function test_no_user_message_returns_null_without_calling_builder(): void {

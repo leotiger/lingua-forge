@@ -120,6 +120,57 @@ class WpAiClient implements AIProviderInterface {
 		$prompt_text = (string) ( $last['content'] ?? '' );
 		$history     = array_slice( $non_system, 0, -1 );
 
+		$result = $this->generate_text_with_temperature_fallback( $prompt_text, $system, $history );
+
+		if ( is_wp_error( $result ) ) {
+			$this->last_error = $result->get_error_message();
+			Log::debug( sprintf( 'Lingua Forge AI [WP AI Client] %s', $result->get_error_message() ) );
+			return null;
+		}
+
+		$text = trim( (string) $result );
+
+		if ( $text === '' ) {
+			Log::debug( 'Lingua Forge AI [WP AI Client] provider returned a successful response with empty text content — check connector configuration' );
+			return null;
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Build and run a WP AI Client prompt, retrying once without temperature
+	 * when the selected connector/model rejects that sampling parameter.
+	 *
+	 * @param string                                               $prompt_text Last user prompt.
+	 * @param string                                               $system      System instruction, or empty.
+	 * @param array<int, array{role: string, content: string}>      $history     Prior turns.
+	 * @return string|\WP_Error
+	 */
+	private function generate_text_with_temperature_fallback( string $prompt_text, string $system, array $history ) {
+		$result = $this->generate_text( $prompt_text, $system, $history, true );
+
+		if (
+			is_wp_error( $result )
+			&& self::is_unsupported_temperature_error( $result->get_error_message() )
+		) {
+			Log::debug( 'Lingua Forge AI [WP AI Client] connector rejected "temperature" for this model — retrying without it' );
+			$result = $this->generate_text( $prompt_text, $system, $history, false );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Build and run one WP AI Client prompt.
+	 *
+	 * @param string                                               $prompt_text Last user prompt.
+	 * @param string                                               $system      System instruction, or empty.
+	 * @param array<int, array{role: string, content: string}>      $history     Prior turns.
+	 * @param bool                                                 $temperature Whether to send the configured temperature.
+	 * @return string|\WP_Error
+	 */
+	private function generate_text( string $prompt_text, string $system, array $history, bool $temperature ) {
 		// ── Build the prompt ──────────────────────────────────────────────────
 		// Inline function_exists() guard (unreachable at runtime — early-return above covers it)
 		// satisfies Plugin Check's control-flow requirement for optional WP 7.0+ features.
@@ -145,7 +196,9 @@ class WpAiClient implements AIProviderInterface {
 			}
 		}
 
-		$builder->using_temperature( $this->config->temperature );
+		if ( $temperature ) {
+			$builder->using_temperature( $this->config->temperature );
+		}
 		$builder->using_max_tokens( $this->config->max_tokens );
 
 		if ( $this->config->response_schema !== null ) {
@@ -160,26 +213,26 @@ class WpAiClient implements AIProviderInterface {
 				'No text-generation model is available. Configure an AI provider in Settings → Connectors.',
 				'lingua-forge'
 			);
-			return null;
+			return new \WP_Error(
+				'linguaforge_wp_ai_client_unsupported',
+				__(
+					'No text-generation model is available. Configure an AI provider in Settings → Connectors.',
+					'lingua-forge'
+				)
+			);
 		}
 
 		// ── Generate ──────────────────────────────────────────────────────────
-		$result = $builder->generate_text();
+		return $builder->generate_text();
+	}
 
-		if ( is_wp_error( $result ) ) {
-			$this->last_error = $result->get_error_message();
-			Log::debug( sprintf( 'Lingua Forge AI [WP AI Client] %s', $result->get_error_message() ) );
-			return null;
-		}
-
-		$text = trim( (string) $result );
-
-		if ( $text === '' ) {
-			Log::debug( 'Lingua Forge AI [WP AI Client] provider returned a successful response with empty text content — check connector configuration' );
-			return null;
-		}
-
-		return $text;
+	private static function is_unsupported_temperature_error( string $message ): bool {
+		return stripos( $message, 'temperature' ) !== false
+			&& (
+				stripos( $message, 'unsupported' ) !== false
+				|| stripos( $message, 'not supported' ) !== false
+				|| stripos( $message, 'deprecated' ) !== false
+			);
 	}
 
 	/**
